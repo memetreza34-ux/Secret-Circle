@@ -14,14 +14,18 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 
 - drei bis zwanzig eindeutige Spielernamen
 - ein bis mehrere Imposter
-- fünf integrierte Kategorien und gemischter Modus
+- sechs integrierte Kategorien und gemischter Modus
 - eigene Kategorien im Format `Begriff | Hilfswort`
 - optionales neutrales Hilfswort
 - geheime Kartenübergabe
 - konfigurierbarer Timer von einer bis zehn Minuten
-- Rollen- und Begriffsauflösung
+- geheime Abstimmung durch alle Personen
+- Imposter-Raterunde nach erfolgreicher Entdeckung
+- Punktesystem für Gruppe und Imposter
+- Matches mit 1, 3, 5 oder 10 Runden
+- Rangliste nach jeder Runde
 - Wiederaufnahme einer unterbrochenen Runde
-- lokale Speicherung von Einstellungen und zehn abgeschlossenen Runden
+- lokale Speicherung von Einstellungen und zwanzig abgeschlossenen Runden
 - Online-/Offline-Anzeige
 - installierbare PWA mit Offline-Cache
 - keine Anmeldung und keine Serverübertragung
@@ -36,6 +40,9 @@ Die unabhängige Engine in `game-engine.js` übernimmt:
 - Imposter- und Begriffsverteilung
 - Rollenanzeige
 - Phasenwechsel und Restzeit
+- geheime Abstimmung
+- Auflösung und Imposter-Rateschritt
+- Punktestand und Match-Fortschritt
 - sichere Wiederherstellung gespeicherter Spielstände
 - Rundenverlauf
 
@@ -57,5 +64,3 @@ python scripts/validate_project.py
 - öffentliche Store- oder Produktveröffentlichung: `NO_GO`
 
 Vor einer öffentlichen Veröffentlichung fehlen reale Tests auf mehreren iOS-/Android-Geräten, Browser- und PWA-Installationsprüfungen, Accessibility- und Usability-Tests, redaktionelle Prüfung aller Begriffe, Alters- und Datenschutzbewertung sowie ein dokumentierter Releaseprozess.
-
-Das frühere Archiv im Projekt-Hub bleibt als historische Backfill-Quelle erhalten. Dieses öffentliche Repository enthält keine Secrets, Konten oder `.env`-Dateien.
