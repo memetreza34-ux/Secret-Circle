@@ -1,6 +1,6 @@
 'use strict';
-const CACHE='secret-circle-v5';
-const CORE=['./','./index.html','./privacy.html','./styles.css','./pwa.css','./app.js','./game-engine.js','./manifest.webmanifest','./icon.svg'];
+const CACHE='secret-circle-v6';
+const CORE=['./','./index.html','./privacy.html','./styles.css','./pwa.css','./app.js','./game-engine.js','./word-packs.js','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
