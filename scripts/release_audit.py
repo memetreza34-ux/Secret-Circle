@@ -48,17 +48,18 @@ if word_packs.count("entries:[") < 12:
     raise SystemExit('Too few built-in category packs.')
 
 engine_markers = [
-    r'VERSION\s*=\s*5', 'tie_break', 'leaderboard', 'MAX_TIE_BREAKS',
-    'bereits abgestimmt', 'Selbststimmen sind ungültig'
+    r'VERSION\s*=\s*6', 'tie_break', 'leaderboard', 'MAX_TIE_BREAKS',
+    'bereits abgestimmt', 'Selbststimmen sind ungültig', 'usedWords',
+    'normalizeUsedWords', 'unusedEntries'
 ]
 for marker in engine_markers:
     if marker.startswith('VERSION'):
         if not re.search(marker, engine):
-            raise SystemExit('Game engine is not at version 5.')
+            raise SystemExit('Game engine is not at version 6.')
     elif marker not in engine:
         raise SystemExit(f'Game engine safety marker missing: {marker}')
 
-for marker in ['finiteTieBreak', 'duplicateVoteProtection', 'tieBreakCount']:
+for marker in ['finiteTieBreak', 'duplicateVoteProtection', 'nonRepeatingWords', 'exhaustedPoolReset', 'tieBreakCount']:
     if marker not in engine_tests:
         raise SystemExit(f'Engine safety test missing: {marker}')
 
@@ -78,8 +79,8 @@ if not manifest.get('icons'):
     raise SystemExit('PWA manifest requires at least one icon.')
 
 cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
-if not cache_match or cache_match.group(1) != 'secret-circle-v6':
-    raise SystemExit('Service worker cache version must be secret-circle-v6.')
+if not cache_match or cache_match.group(1) != 'secret-circle-v7':
+    raise SystemExit('Service worker cache version must be secret-circle-v7.')
 for asset in ['./index.html', './privacy.html', './styles.css', './pwa.css', './app.js', './game-engine.js', './word-packs.js']:
     if asset not in service_worker:
         raise SystemExit(f'Offline core asset missing from service worker: {asset}')
@@ -98,11 +99,12 @@ print(json.dumps({
     'pwa_cache': cache_match.group(1),
     'privacy': True,
     'offline_core': True,
-    'engine_version': 5,
+    'engine_version': 6,
     'built_in_categories': 14,
     'built_in_terms': 168,
     'finite_voting': True,
     'duplicate_vote_protection': True,
+    'non_repeating_match_words': True,
     'browser_flows': True,
     'accessibility_gates': True,
     'mobile_quality_gates': True
