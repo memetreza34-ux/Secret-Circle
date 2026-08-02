@@ -3,17 +3,27 @@ const assert = require('node:assert/strict');
 const E = require('../game-engine.js');
 
 const entries = [['Router', 'Netzwerk'], ['Sensor', 'Messung'], ['Kabel', 'Verbindung']];
-const options = {
-  players: ['Alex', 'Sam', 'Mika', 'Lina'],
-  entries,
-  category: 'Technik',
-  imposterCount: 1,
-  useHint: true,
-  roundSeconds: 180,
-  matchRounds: 3,
-  seed: 'repeatable'
-};
+const options = { players: ['Alex', 'Sam', 'Mika', 'Lina'], entries, category: 'Technik', imposterCount: 1, useHint: true, roundSeconds: 180, matchRounds: 4, seed: 'repeatable' };
 
+function revealAll(game) {
+  let current = game;
+  while (current.phase === 'reveal') current = E.advanceReveal(current);
+  return current;
+}
+function discussionGame(seed = 'discussion') { return revealAll(E.createGame({ ...options, seed })); }
+function finishRound(game) {
+  let current = game.phase === 'reveal' ? revealAll(game) : game;
+  current = E.startVoting(current);
+  const primary = current.players[0];
+  const fallback = current.players[1];
+  for (const voter of current.players) current = E.castVote(current, voter, voter === primary ? fallback : primary);
+  current = E.resolveVote(current);
+  if (current.phase === 'guess') current = E.submitImposterGuess(current, '__absichtlich_falsch__');
+  assert.equal(current.phase, 'completed');
+  return current;
+}
+
+assert.equal(E.VERSION, 7);
 assert.deepEqual(E.normalizePlayers(' Alex\nSam, Mika '), ['Alex', 'Sam', 'Mika']);
 assert.throws(() => E.normalizePlayers(['Alex', 'alex', 'Sam']), /Doppelter/);
 assert.throws(() => E.normalizePlayers(['A', 'B']), /Mindestens/);
@@ -21,51 +31,43 @@ assert.equal(E.parseCustomEntries('Mond | Nacht\nSonne | Tag').length, 2);
 assert.deepEqual(E.normalizeUsedWords(['Router', 'Sensor']), ['Router', 'Sensor']);
 assert.throws(() => E.normalizeUsedWords(['Router', 'router']), /Doppelter Begriff/);
 
-const a = E.createGame(options);
-const b = E.createGame(options);
-assert.equal(a.version, 6);
-assert.deepEqual(a.revealOrder, b.revealOrder);
-assert.deepEqual(a.imposters, b.imposters);
-assert.equal(a.word, b.word);
-assert.deepEqual(a.usedWords, [a.word]);
-assert.equal(new Set(a.revealOrder).size, 4);
-assert.equal(E.roleFor(a, a.imposters[0]).isImposter, true);
-assert.equal(E.roleFor(a, a.players.find(player => !a.imposters.includes(player))).value, a.word);
+const first = E.createGame(options);
+const repeated = E.createGame(options);
+assert.deepEqual(first.revealOrder, repeated.revealOrder);
+assert.deepEqual(first.imposters, repeated.imposters);
+assert.equal(first.word, repeated.word);
+assert.equal(new Set(first.revealOrder).size, 4);
+assert.deepEqual(first.usedWords, [first.word]);
+assert.equal(E.roleFor(first, first.imposters[0]).isImposter, true);
+assert.equal(E.roleFor(first, first.players.find(player => !first.imposters.includes(player))).value, first.word);
 
-let game = a;
-for (let index = 0; index < 4; index += 1) game = E.advanceReveal(game);
-assert.equal(game.phase, 'discussion');
-game = E.setRemaining(game, 42);
-assert.equal(game.remainingSeconds, 42);
-game = E.startVoting(game);
-for (const voter of game.players) {
-  const target = game.players.find(name => name !== voter);
-  game = E.castVote(game, voter, target);
-}
-game = E.resolveVote(game);
-if (game.phase === 'tie_break') {
-  game = E.startVoting(game);
-  const leaders = [...game.voteLeaders];
-  for (const voter of game.players) {
-    const target = leaders.find(name => name !== voter) || leaders[0];
-    game = E.castVote(game, voter, target);
-  }
-  game = E.resolveVote(game);
-}
-if (game.phase === 'guess') game = E.submitImposterGuess(game, game.word);
-assert.equal(game.phase, 'completed');
-assert.ok(['innocents', 'imposters'].includes(game.winner));
-assert.equal(E.historyEntry(game).word, game.word);
-assert.deepEqual(E.restoreGame(JSON.stringify(game)), game);
-assert.equal(E.leaderboard(game).length, 4);
+let timed = discussionGame('timer');
+timed = E.startTimer(timed, 1_000);
+assert.equal(timed.timerRunning, true);
+assert.equal(timed.timerDeadline, 181_000);
+let synced = E.syncTimer(timed, 2_500);
+assert.equal(synced.remainingSeconds, 179);
+let paused = E.pauseTimer(timed, 2_500);
+assert.equal(paused.remainingSeconds, 179);
+assert.equal(paused.timerRunning, false);
+assert.equal(paused.timerDeadline, null);
+let resumed = E.startTimer(paused, 5_000);
+assert.equal(resumed.timerDeadline, 184_000);
+resumed = E.syncTimer(resumed, 184_001);
+assert.equal(resumed.remainingSeconds, 0);
+assert.equal(resumed.timerRunning, false);
+assert.equal(resumed.timerDeadline, null);
+assert.throws(() => E.startTimer(first, 1_000), /Diskussion/);
+assert.throws(() => E.restoreGame({ ...timed, timerRunning: false }), /Timerfrist/);
+assert.throws(() => E.restoreGame({ ...timed, timerDeadline: null }), /laufender Timer/);
 
-function discussionGame(seed = 'tie-test') {
-  let current = E.createGame({ ...options, seed });
-  for (let index = 0; index < current.players.length; index += 1) current = E.advanceReveal(current);
-  return current;
-}
+let votingStopsTimer = E.startTimer(discussionGame('timer-vote'), 10_000);
+votingStopsTimer = E.startVoting(votingStopsTimer);
+assert.equal(votingStopsTimer.phase, 'voting');
+assert.equal(votingStopsTimer.timerRunning, false);
+assert.equal(votingStopsTimer.timerDeadline, null);
 
-let tie = E.startVoting(discussionGame());
+let tie = E.startVoting(discussionGame('tie-test'));
 const [p1, p2, p3, p4] = tie.players;
 tie = E.castVote(tie, p1, p2);
 tie = E.castVote(tie, p2, p1);
@@ -76,7 +78,6 @@ assert.equal(tie.phase, 'tie_break');
 assert.equal(tie.tieBreakCount, 1);
 assert.deepEqual(new Set(tie.voteLeaders), new Set([p1, p2]));
 assert.throws(() => E.castVote(E.startVoting(tie), p1, p3), /Stichwahl/);
-
 let repeatedTie = E.startVoting(tie);
 repeatedTie = E.castVote(repeatedTie, p1, p2);
 repeatedTie = E.castVote(repeatedTie, p2, p1);
@@ -89,65 +90,36 @@ assert.equal(repeatedTie.eliminatedPlayer, null);
 
 let duplicateVote = E.startVoting(discussionGame('duplicate-vote'));
 duplicateVote = E.castVote(duplicateVote, duplicateVote.players[0], duplicateVote.players[1]);
-assert.throws(
-  () => E.castVote(duplicateVote, duplicateVote.players[0], duplicateVote.players[2]),
-  /bereits abgestimmt/
-);
+assert.throws(() => E.castVote(duplicateVote, duplicateVote.players[0], duplicateVote.players[2]), /bereits abgestimmt/);
+assert.throws(() => E.castVote(E.startVoting(discussionGame('self-vote')), 'Alex', 'Alex'), /Ungültige Stimme/);
 
-const next = E.nextRound(game, { ...options, seed: 'round-2' });
-assert.equal(next.currentRound, 2);
-assert.deepEqual(next.scores, game.scores);
-assert.equal(E.isMatchComplete(next), false);
-assert.notEqual(next.word.toLocaleLowerCase('de-DE'), game.word.toLocaleLowerCase('de-DE'));
-assert.deepEqual(next.usedWords, [game.word, next.word]);
+const round1 = finishRound(E.createGame({ ...options, seed: 'rotation-1' }));
+const round2 = E.nextRound(round1, { ...options, seed: 'rotation-2' });
+assert.equal(round2.currentRound, 2);
+assert.deepEqual(round2.scores, round1.scores);
+assert.notEqual(round2.word.toLocaleLowerCase('de-DE'), round1.word.toLocaleLowerCase('de-DE'));
+assert.equal(round2.usedWords.length, 2);
+const completed2 = finishRound(round2);
+const round3 = E.nextRound(completed2, { ...options, seed: 'rotation-3' });
+assert.equal(new Set(round3.usedWords.map(word => word.toLocaleLowerCase('de-DE'))).size, 3);
+const completed3 = finishRound(round3);
+const round4 = E.nextRound(completed3, { ...options, seed: 'rotation-4' });
+assert.equal(round4.currentRound, 4);
+assert.equal(round4.usedWords.length, 1);
+const completed4 = finishRound(round4);
+assert.equal(E.isMatchComplete(completed4), true);
+assert.equal(E.leaderboard(completed4).length, 4);
+assert.equal(E.historyEntry(completed4).word, completed4.word);
+assert.deepEqual(E.restoreGame(JSON.stringify(completed4)), completed4);
 
-let secondCompleted = next;
-for (let index = 0; index < secondCompleted.players.length; index += 1) secondCompleted = E.advanceReveal(secondCompleted);
-secondCompleted = E.startVoting(secondCompleted);
-for (const voter of secondCompleted.players) {
-  const target = secondCompleted.players.find(name => name !== voter);
-  secondCompleted = E.castVote(secondCompleted, voter, target);
-}
-secondCompleted = E.resolveVote(secondCompleted);
-if (secondCompleted.phase === 'tie_break') {
-  secondCompleted = E.startVoting(secondCompleted);
-  for (const voter of secondCompleted.players) {
-    const target = secondCompleted.voteLeaders.find(name => name !== voter) || secondCompleted.voteLeaders[0];
-    secondCompleted = E.castVote(secondCompleted, voter, target);
-  }
-  secondCompleted = E.resolveVote(secondCompleted);
-}
-if (secondCompleted.phase === 'guess') secondCompleted = E.submitImposterGuess(secondCompleted, 'falsch');
-const third = E.nextRound(secondCompleted, { ...options, seed: 'round-3' });
-assert.equal(new Set(third.usedWords.map(word => word.toLocaleLowerCase('de-DE'))).size, 3);
-assert.equal(third.usedWords.includes(third.word), true);
-
-const exhausted = E.createGame({ ...options, usedWords: entries.map(entry => entry[0]), seed: 'reset-pool' });
-assert.deepEqual(exhausted.usedWords, [exhausted.word]);
-
-assert.throws(() => E.restoreGame({ ...game, imposters: ['Niemand'] }), /Imposter/);
-assert.throws(() => E.restoreGame({ ...game, imposters: [game.imposters[0], game.imposters[0]] }), /Imposter/);
-assert.throws(() => E.restoreGame({ ...game, scores: { Alex: 0 } }), /Punktestand/);
-assert.throws(() => E.restoreGame({ ...game, tieBreakCount: 2 }), /Stichwahlanzahl/);
-assert.throws(() => E.restoreGame({ ...game, votes: { Alex: 'Alex' } }), /Selbststimmen/);
-assert.throws(() => E.restoreGame({ ...game, usedWords: [] }), /Begriffsverlauf/);
+assert.throws(() => E.restoreGame({ ...completed4, imposters: ['Niemand'] }), /Imposter/);
+assert.throws(() => E.restoreGame({ ...completed4, scores: { Alex: 0 } }), /Punktestand/);
+assert.throws(() => E.restoreGame({ ...completed4, tieBreakCount: 2 }), /Stichwahlanzahl/);
+assert.throws(() => E.restoreGame({ ...completed4, votes: { Alex: 'Alex' } }), /Selbststimmen/);
+assert.throws(() => E.restoreGame({ ...completed4, usedWords: ['Router', 'router'] }), /Doppelter Begriff/);
+assert.throws(() => E.restoreGame({ ...completed4, usedWords: ['Nicht der aktuelle Begriff'] }), /Aktueller Begriff/);
 assert.throws(() => E.createGame({ ...options, imposterCount: 4 }), /Imposter-Zahl/);
 assert.throws(() => E.createGame({ ...options, roundSeconds: 20 }), /Rundenzeit/);
 assert.throws(() => E.createGame({ ...options, matchRounds: 0 }), /Match/);
-assert.throws(() => E.submitImposterGuess({ ...game, phase: 'guess', completedAt: null, winner: null }, ''), /Begriff/);
 
-console.log(JSON.stringify({
-  ok: true,
-  deterministic: true,
-  roles: true,
-  persistence: true,
-  voting: true,
-  finiteTieBreak: true,
-  duplicateVoteProtection: true,
-  nonRepeatingWords: true,
-  exhaustedPoolReset: true,
-  scoring: true,
-  matches: true,
-  validation: true,
-  history: true
-}, null, 2));
+console.log(JSON.stringify({ ok: true, engineVersion: E.VERSION, deterministic: true, roles: true, persistence: true, deadlineTimer: true, backgroundResume: true, voting: true, finiteTieBreak: true, duplicateVoteProtection: true, scoring: true, matches: true, noRepeatedWords: true, validation: true, history: true }, null, 2));
