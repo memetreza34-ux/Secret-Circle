@@ -3,12 +3,12 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 required={
- 'index.html':['manifest.webmanifest','game-engine.js','Aktive Runde fortsetzen','Eigene Kategorien','App installieren','voting-screen','guess-screen','leaderboard'],
- 'app.js':['secret-circle-active-v3','serviceWorker','beforeinstallprompt','parseCustomEntries','historyEntry','startVoting','castVote','submitImposterGuess','nextRound'],
- 'game-engine.js':['createGame','restoreGame','advanceReveal','startVoting','castVote','resolveVote','submitImposterGuess','nextRound','leaderboard','Doppelter Spielername'],
+ 'index.html':['manifest.webmanifest','game-engine.js','Aktive Runde fortsetzen','Eigene Kategorien','App installieren','vote-screen','guess-screen','leaderboard'],
+ 'app.js':['secret-circle-active-v4','serviceWorker','beforeinstallprompt','parseCustomEntries','historyEntry','startVoting','castVote','submitImposterGuess','nextRound'],
+ 'game-engine.js':['createGame','restoreGame','advanceReveal','startVoting','castVote','resolveVote','submitImposterGuess','nextRound','leaderboard','Doppelter Spielername','tie_break'],
  'tests/engine.test.js':['deterministic','persistence','validation','voting','scoring','matches'],
  'manifest.webmanifest':['"display": "standalone"','icon.svg','Secret Circle'],
- 'sw.js':['cache.addAll','self.clients.claim','secret-circle-v3'],
+ 'sw.js':['cache.addAll','self.clients.claim','secret-circle-v4','pwa.css'],
  'pwa.css':['.resume','.connection.offline','.result-word','.vote-grid','.leaderboard'],
  'styles.css':['@media(max-width:560px)','card-button']
 }
