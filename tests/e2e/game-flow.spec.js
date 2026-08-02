@@ -8,10 +8,26 @@ async function revealAllCards(page, playerCount) {
   }
 }
 
-async function voteAllPlayers(page, players, targetByVoter) {
-  for (const voter of players) {
-    await expect(page.locator('#voter-name')).toContainText(voter);
-    await page.getByRole('button', { name: targetByVoter[voter] }).click();
+async function castVisibleVote(page, voter, preferredTarget) {
+  await expect(page.locator('#voter-name')).toContainText(voter);
+  const preferred = page.getByRole('button', { name: preferredTarget, exact: true });
+  if (await preferred.count()) {
+    await preferred.click();
+    return;
+  }
+  await page.locator('#vote-options button').first().click();
+}
+
+async function resolveAllVotingRounds(page, players, firstRoundTargets) {
+  let guard = 0;
+  while (await page.locator('#vote-screen').isVisible()) {
+    guard += 1;
+    if (guard > 5) throw new Error('Voting did not resolve after five rounds.');
+    for (const voter of players) {
+      const preferred = firstRoundTargets?.[voter] || players.find(name => name !== voter);
+      await castVisibleVote(page, voter, preferred);
+      if (!(await page.locator('#vote-screen').isVisible())) break;
+    }
   }
 }
 
@@ -32,8 +48,12 @@ test('completes a full match round with voting and result screen', async ({ page
   await expect(page.locator('#round-screen')).toBeVisible();
   await page.getByRole('button', { name: 'Abstimmung starten' }).click();
 
-  const targets = { Alex: 'Sam', Sam: 'Alex', Mika: 'Alex', Lina: 'Alex' };
-  await voteAllPlayers(page, players, targets);
+  await resolveAllVotingRounds(page, players, {
+    Alex: 'Sam',
+    Sam: 'Alex',
+    Mika: 'Alex',
+    Lina: 'Alex'
+  });
 
   if (await page.locator('#guess-screen').isVisible()) {
     await page.locator('#imposter-guess').fill('absichtlich falsch');
