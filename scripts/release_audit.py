@@ -9,7 +9,8 @@ required_files = [
     'index.html', 'privacy.html', 'styles.css', 'pwa.css', 'app.js',
     'game-engine.js', 'manifest.webmanifest', 'sw.js', 'icon.svg',
     'tests/engine.test.js', 'tests/e2e/game-flow.spec.js',
-    'scripts/validate_project.py', '.github/workflows/ci.yml'
+    'tests/e2e/accessibility.spec.js', 'scripts/validate_project.py',
+    '.github/workflows/ci.yml'
 ]
 
 missing = [path for path in required_files if not (ROOT / path).is_file()]
@@ -22,6 +23,7 @@ app = (ROOT / 'app.js').read_text(encoding='utf-8')
 engine = (ROOT / 'game-engine.js').read_text(encoding='utf-8')
 engine_tests = (ROOT / 'tests/engine.test.js').read_text(encoding='utf-8')
 e2e_tests = (ROOT / 'tests/e2e/game-flow.spec.js').read_text(encoding='utf-8')
+a11y_tests = (ROOT / 'tests/e2e/accessibility.spec.js').read_text(encoding='utf-8')
 manifest = json.loads((ROOT / 'manifest.webmanifest').read_text(encoding='utf-8'))
 service_worker = (ROOT / 'sw.js').read_text(encoding='utf-8')
 workflow = (ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8')
@@ -57,6 +59,10 @@ for marker in ['full match round', 'interrupted round', 'local data', 'multiple 
     if marker.lower() not in e2e_tests.lower():
         raise SystemExit(f'Browser test coverage missing: {marker}')
 
+for marker in ['structural accessibility gates', 'retain focus', 'large touch targets', 'reduced motion']:
+    if marker.lower() not in a11y_tests.lower():
+        raise SystemExit(f'Accessibility test coverage missing: {marker}')
+
 if manifest.get('display') != 'standalone':
     raise SystemExit('PWA manifest must use standalone display mode.')
 if not manifest.get('name') or not manifest.get('short_name'):
@@ -88,5 +94,7 @@ print(json.dumps({
     'engine_version': 5,
     'finite_voting': True,
     'duplicate_vote_protection': True,
-    'browser_flows': True
+    'browser_flows': True,
+    'accessibility_gates': True,
+    'mobile_quality_gates': True
 }, ensure_ascii=False, indent=2))
