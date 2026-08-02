@@ -12,6 +12,8 @@
   const BACKUP_FORMAT = 'secret-circle-backup';
   const BACKUP_VERSION = 1;
   const KEY_VERSION = 7;
+  const MAX_BACKUP_BYTES = 2_000_000;
+  const IMPORT_PROBE_KEY = '__secret_circle_import_probe__';
   const keys = {
     active: `secret-circle-active-v${KEY_VERSION}`,
     custom: `secret-circle-custom-v${KEY_VERSION}`,
@@ -22,28 +24,35 @@
 
   function createStore(storage) {
     const warnings = [];
+    let capability;
 
     function available() {
-      if (!storage) return false;
+      if (capability !== undefined) return capability;
+      if (!storage) {
+        capability = false;
+        return false;
+      }
       try {
         const probe = '__secret_circle_probe__';
         storage.setItem(probe, '1');
         storage.removeItem(probe);
-        return true;
+        capability = true;
       } catch {
-        return false;
+        capability = false;
       }
+      return capability;
     }
 
     function rawGet(key) {
-      if (!available()) return null;
+      if (!storage) return null;
       try { return storage.getItem(key); } catch { return null; }
     }
 
     function rawSet(key, value) {
-      if (!available()) return { ok: false, error: 'Lokaler Speicher ist nicht verfügbar.' };
+      if (!storage) return { ok: false, error: 'Lokaler Speicher ist nicht verfügbar.' };
       try {
         storage.setItem(key, value);
+        capability = true;
         return { ok: true };
       } catch (error) {
         return { ok: false, error: error?.message || 'Lokale Daten konnten nicht gespeichert werden.' };
@@ -107,20 +116,23 @@
         const word = text(item.word, 60);
         const winner = item.winner;
         const imposters = Array.isArray(item.imposters) ? item.imposters.map(name => text(name, 32)).filter(Boolean) : [];
+        const playerCount = Number(item.playerCount);
+        const imposterCount = Number.isInteger(item.imposterCount) ? item.imposterCount : imposters.length;
+        const round = Number.isInteger(item.round) ? item.round : 1;
         if (!id || !category || !word || !['innocents', 'imposters'].includes(winner)) return null;
-        if (!Number.isInteger(item.playerCount) || item.playerCount < 3 || item.playerCount > 20) return null;
-        if (!Number.isInteger(item.imposterCount) || item.imposterCount < 1 || item.imposterCount >= item.playerCount) return null;
-        if (!Number.isInteger(item.round) || item.round < 1 || item.round > 20) return null;
+        if (!Number.isInteger(playerCount) || playerCount < 3 || playerCount > 20) return null;
+        if (!Number.isInteger(imposterCount) || imposterCount < 1 || imposterCount >= playerCount) return null;
+        if (!Number.isInteger(round) || round < 1 || round > 20) return null;
         result.push({
           id,
           completedAt: text(item.completedAt, 40),
           category,
-          playerCount: item.playerCount,
-          imposterCount: item.imposterCount,
+          playerCount,
+          imposterCount,
           word,
           imposters,
           winner,
-          round: item.round
+          round
         });
       }
       return result;
@@ -198,6 +210,7 @@
       for (const version of legacyVersions) {
         for (const kind of Object.keys(keys)) rawRemove(legacyKey(kind, version));
       }
+      rawRemove(IMPORT_PROBE_KEY);
     }
 
     function exportBackup(engine) {
@@ -216,11 +229,14 @@
     }
 
     function importBackup(input, engine) {
+      if (typeof input === 'string' && input.length > MAX_BACKUP_BYTES) {
+        return { ok: false, error: 'Die Sicherungsdatei ist zu groß.' };
+      }
       let snapshot;
       try { snapshot = typeof input === 'string' ? JSON.parse(input) : input; } catch {
         return { ok: false, error: 'Die Sicherungsdatei enthält kein gültiges JSON.' };
       }
-      if (!snapshot || snapshot.format !== BACKUP_FORMAT || snapshot.version !== BACKUP_VERSION || !snapshot.data) {
+      if (!snapshot || snapshot.format !== BACKUP_FORMAT || snapshot.version !== BACKUP_VERSION || !snapshot.data || typeof snapshot.data !== 'object') {
         return { ok: false, error: 'Die Datei ist keine unterstützte Secret-Circle-Sicherung.' };
       }
 
@@ -235,13 +251,18 @@
         return { ok: false, error: 'Die Sicherungsdatei enthält ungültige lokale Daten.' };
       }
 
+      const serialized = Object.fromEntries(Object.entries(normalized).map(([kind, value]) => [kind, value === null ? null : JSON.stringify(value)]));
+      const preflight = rawSet(IMPORT_PROBE_KEY, JSON.stringify(serialized));
+      rawRemove(IMPORT_PROBE_KEY);
+      if (!preflight.ok) return { ok: false, error: preflight.error };
+
       const previous = Object.fromEntries(Object.entries(keys).map(([kind, key]) => [kind, rawGet(key)]));
       try {
         for (const [kind, key] of Object.entries(keys)) {
-          const value = normalized[kind];
-          if (value === null) rawRemove(key);
+          const raw = serialized[kind];
+          if (raw === null) rawRemove(key);
           else {
-            const result = rawSet(key, JSON.stringify(value));
+            const result = rawSet(key, raw);
             if (!result.ok) throw Error(result.error);
           }
         }
