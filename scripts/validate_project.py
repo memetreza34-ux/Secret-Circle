@@ -3,13 +3,14 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 required={
- 'index.html':['manifest.webmanifest','game-engine.js','Aktive Runde fortsetzen','Eigene Kategorien','App installieren','vote-screen','guess-screen','leaderboard','clear-all-data','privacy.html'],
+ 'index.html':['manifest.webmanifest','game-engine.js','word-packs.js','Aktive Runde fortsetzen','Eigene Kategorien','App installieren','vote-screen','guess-screen','leaderboard','clear-all-data','privacy.html'],
  'privacy.html':['Deine Daten bleiben auf deinem Gerät','keine Analyse-, Werbe- oder Tracking-Dienste','Zurück zum Spiel'],
- 'app.js':['secret-circle-active-v4','serviceWorker','beforeinstallprompt','parseCustomEntries','historyEntry','startVoting','castVote','submitImposterGuess','nextRound','clearAllData'],
+ 'app.js':['SecretCircleContent','secret-circle-active-v4','serviceWorker','beforeinstallprompt','parseCustomEntries','historyEntry','startVoting','castVote','submitImposterGuess','nextRound','clearAllData'],
+ 'word-packs.js':['SecretCircleContent','Anime','Gaming','Internet & Social Media','Elektroniker'],
  'game-engine.js':['createGame','restoreGame','advanceReveal','startVoting','castVote','resolveVote','submitImposterGuess','nextRound','leaderboard','Doppelter Spielername','tie_break'],
  'tests/engine.test.js':['deterministic','persistence','validation','voting','scoring','matches'],
  'manifest.webmanifest':['"display": "standalone"','icon.svg','Secret Circle'],
- 'sw.js':['cache.addAll','self.clients.claim','secret-circle-v5','pwa.css','privacy.html'],
+ 'sw.js':['cache.addAll','self.clients.claim','secret-circle-v6','pwa.css','privacy.html','word-packs.js'],
  'pwa.css':['.resume','.connection.offline','.result-word','.vote-grid','.leaderboard','.data-controls','.legal-card'],
  'styles.css':['@media(max-width:560px)','card-button']
 }
