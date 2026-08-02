@@ -15,23 +15,33 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
       - name: Check JavaScript syntax
-        run: |
-          node --check app.js
-          node --check game-engine.js
-          node --check sw.js
+        run: npm run check
       - name: Run deterministic engine tests
-        run: node tests/engine.test.js
+        run: npm test
       - name: Validate offline PWA structure
-        run: python scripts/validate_project.py
-      - name: Run production release audit
-        run: python scripts/release_audit.py
+        run: npm run validate
+      - name: Run browser end-to-end tests
+        run: npm run test:e2e
+      - name: Upload browser test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
