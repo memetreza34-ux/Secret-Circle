@@ -18,13 +18,16 @@ assert.deepEqual(E.normalizePlayers(' Alex\nSam, Mika '), ['Alex', 'Sam', 'Mika'
 assert.throws(() => E.normalizePlayers(['Alex', 'alex', 'Sam']), /Doppelter/);
 assert.throws(() => E.normalizePlayers(['A', 'B']), /Mindestens/);
 assert.equal(E.parseCustomEntries('Mond | Nacht\nSonne | Tag').length, 2);
+assert.deepEqual(E.normalizeUsedWords(['Router', 'Sensor']), ['Router', 'Sensor']);
+assert.throws(() => E.normalizeUsedWords(['Router', 'router']), /Doppelter Begriff/);
 
 const a = E.createGame(options);
 const b = E.createGame(options);
-assert.equal(a.version, 5);
+assert.equal(a.version, 6);
 assert.deepEqual(a.revealOrder, b.revealOrder);
 assert.deepEqual(a.imposters, b.imposters);
 assert.equal(a.word, b.word);
+assert.deepEqual(a.usedWords, [a.word]);
 assert.equal(new Set(a.revealOrder).size, 4);
 assert.equal(E.roleFor(a, a.imposters[0]).isImposter, true);
 assert.equal(E.roleFor(a, a.players.find(player => !a.imposters.includes(player))).value, a.word);
@@ -95,12 +98,39 @@ const next = E.nextRound(game, { ...options, seed: 'round-2' });
 assert.equal(next.currentRound, 2);
 assert.deepEqual(next.scores, game.scores);
 assert.equal(E.isMatchComplete(next), false);
+assert.notEqual(next.word.toLocaleLowerCase('de-DE'), game.word.toLocaleLowerCase('de-DE'));
+assert.deepEqual(next.usedWords, [game.word, next.word]);
+
+let secondCompleted = next;
+for (let index = 0; index < secondCompleted.players.length; index += 1) secondCompleted = E.advanceReveal(secondCompleted);
+secondCompleted = E.startVoting(secondCompleted);
+for (const voter of secondCompleted.players) {
+  const target = secondCompleted.players.find(name => name !== voter);
+  secondCompleted = E.castVote(secondCompleted, voter, target);
+}
+secondCompleted = E.resolveVote(secondCompleted);
+if (secondCompleted.phase === 'tie_break') {
+  secondCompleted = E.startVoting(secondCompleted);
+  for (const voter of secondCompleted.players) {
+    const target = secondCompleted.voteLeaders.find(name => name !== voter) || secondCompleted.voteLeaders[0];
+    secondCompleted = E.castVote(secondCompleted, voter, target);
+  }
+  secondCompleted = E.resolveVote(secondCompleted);
+}
+if (secondCompleted.phase === 'guess') secondCompleted = E.submitImposterGuess(secondCompleted, 'falsch');
+const third = E.nextRound(secondCompleted, { ...options, seed: 'round-3' });
+assert.equal(new Set(third.usedWords.map(word => word.toLocaleLowerCase('de-DE'))).size, 3);
+assert.equal(third.usedWords.includes(third.word), true);
+
+const exhausted = E.createGame({ ...options, usedWords: entries.map(entry => entry[0]), seed: 'reset-pool' });
+assert.deepEqual(exhausted.usedWords, [exhausted.word]);
 
 assert.throws(() => E.restoreGame({ ...game, imposters: ['Niemand'] }), /Imposter/);
 assert.throws(() => E.restoreGame({ ...game, imposters: [game.imposters[0], game.imposters[0]] }), /Imposter/);
 assert.throws(() => E.restoreGame({ ...game, scores: { Alex: 0 } }), /Punktestand/);
 assert.throws(() => E.restoreGame({ ...game, tieBreakCount: 2 }), /Stichwahlanzahl/);
 assert.throws(() => E.restoreGame({ ...game, votes: { Alex: 'Alex' } }), /Selbststimmen/);
+assert.throws(() => E.restoreGame({ ...game, usedWords: [] }), /Begriffsverlauf/);
 assert.throws(() => E.createGame({ ...options, imposterCount: 4 }), /Imposter-Zahl/);
 assert.throws(() => E.createGame({ ...options, roundSeconds: 20 }), /Rundenzeit/);
 assert.throws(() => E.createGame({ ...options, matchRounds: 0 }), /Match/);
@@ -114,6 +144,8 @@ console.log(JSON.stringify({
   voting: true,
   finiteTieBreak: true,
   duplicateVoteProtection: true,
+  nonRepeatingWords: true,
+  exhaustedPoolReset: true,
   scoring: true,
   matches: true,
   validation: true,
