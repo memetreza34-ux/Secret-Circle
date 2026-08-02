@@ -7,10 +7,10 @@ required={
  'privacy.html':['Deine Daten bleiben auf deinem Gerät','keine Analyse-, Werbe- oder Tracking-Dienste','Zurück zum Spiel'],
  'app.js':['SecretCircleContent','secret-circle-active-v4','serviceWorker','beforeinstallprompt','parseCustomEntries','historyEntry','startVoting','castVote','submitImposterGuess','nextRound','clearAllData'],
  'word-packs.js':['SecretCircleContent','Anime','Gaming','Internet & Social Media','Elektroniker'],
- 'game-engine.js':['createGame','restoreGame','advanceReveal','startVoting','castVote','resolveVote','submitImposterGuess','nextRound','leaderboard','Doppelter Spielername','tie_break'],
- 'tests/engine.test.js':['deterministic','persistence','validation','voting','scoring','matches'],
+ 'game-engine.js':['VERSION = 6','createGame','restoreGame','advanceReveal','startVoting','castVote','resolveVote','submitImposterGuess','nextRound','leaderboard','normalizeUsedWords','usedWords','Doppelter Spielername','tie_break'],
+ 'tests/engine.test.js':['deterministic','persistence','validation','voting','scoring','matches','nonRepeatingWords','exhaustedPoolReset'],
  'manifest.webmanifest':['"display": "standalone"','icon.svg','Secret Circle'],
- 'sw.js':['cache.addAll','self.clients.claim','secret-circle-v6','pwa.css','privacy.html','word-packs.js'],
+ 'sw.js':['cache.addAll','self.clients.claim','secret-circle-v7','pwa.css','privacy.html','word-packs.js'],
  'pwa.css':['.resume','.connection.offline','.result-word','.vote-grid','.leaderboard','.data-controls','.legal-card'],
  'styles.css':['@media(max-width:560px)','card-button']
 }
