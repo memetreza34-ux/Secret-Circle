@@ -8,7 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 required_files = [
     'index.html', 'privacy.html', 'styles.css', 'pwa.css', 'app.js',
     'game-engine.js', 'manifest.webmanifest', 'sw.js', 'icon.svg',
-    'tests/engine.test.js', 'scripts/validate_project.py', '.github/workflows/ci.yml'
+    'tests/engine.test.js', 'tests/e2e/game-flow.spec.js',
+    'scripts/validate_project.py', '.github/workflows/ci.yml'
 ]
 
 missing = [path for path in required_files if not (ROOT / path).is_file()]
@@ -19,6 +20,8 @@ index = (ROOT / 'index.html').read_text(encoding='utf-8')
 privacy = (ROOT / 'privacy.html').read_text(encoding='utf-8')
 app = (ROOT / 'app.js').read_text(encoding='utf-8')
 engine = (ROOT / 'game-engine.js').read_text(encoding='utf-8')
+engine_tests = (ROOT / 'tests/engine.test.js').read_text(encoding='utf-8')
+e2e_tests = (ROOT / 'tests/e2e/game-flow.spec.js').read_text(encoding='utf-8')
 manifest = json.loads((ROOT / 'manifest.webmanifest').read_text(encoding='utf-8'))
 service_worker = (ROOT / 'sw.js').read_text(encoding='utf-8')
 workflow = (ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8')
@@ -31,12 +34,28 @@ for marker in ['lokal', 'keine', 'tracking', 'löschen']:
     if marker not in privacy.lower():
         raise SystemExit(f'Privacy disclosure missing: {marker}')
 
-for marker in ['localStorage', 'clearAllData', 'serviceWorker', 'beforeinstallprompt', 'prefers-reduced-motion']:
-    if marker not in app and marker != 'prefers-reduced-motion':
+for marker in ['localStorage', 'clearAllData', 'serviceWorker', 'beforeinstallprompt']:
+    if marker not in app:
         raise SystemExit(f'Runtime capability missing: {marker}')
 
-if 'VERSION=4' not in engine or 'tie_break' not in engine or 'leaderboard' not in engine:
-    raise SystemExit('Game engine is not at the expected production feature level.')
+engine_markers = [
+    r'VERSION\s*=\s*5', 'tie_break', 'leaderboard', 'MAX_TIE_BREAKS',
+    'bereits abgestimmt', 'Selbststimmen sind ungültig'
+]
+for marker in engine_markers:
+    if marker.startswith('VERSION'):
+        if not re.search(marker, engine):
+            raise SystemExit('Game engine is not at version 5.')
+    elif marker not in engine:
+        raise SystemExit(f'Game engine safety marker missing: {marker}')
+
+for marker in ['finiteTieBreak', 'duplicateVoteProtection', 'tieBreakCount']:
+    if marker not in engine_tests:
+        raise SystemExit(f'Engine safety test missing: {marker}')
+
+for marker in ['full match round', 'interrupted round', 'local data', 'multiple match rounds']:
+    if marker.lower() not in e2e_tests.lower():
+        raise SystemExit(f'Browser test coverage missing: {marker}')
 
 if manifest.get('display') != 'standalone':
     raise SystemExit('PWA manifest must use standalone display mode.')
@@ -52,7 +71,7 @@ for asset in ['./index.html', './privacy.html', './styles.css', './pwa.css', './
     if asset not in service_worker:
         raise SystemExit(f'Offline core asset missing from service worker: {asset}')
 
-for command in ['node --check app.js', 'node tests/engine.test.js', 'python scripts/validate_project.py']:
+for command in ['npm run check', 'npm test', 'npm run validate', 'npm run test:e2e']:
     if command not in workflow:
         raise SystemExit(f'CI command missing: {command}')
 
@@ -66,5 +85,8 @@ print(json.dumps({
     'pwa_cache': cache_match.group(1),
     'privacy': True,
     'offline_core': True,
-    'engine_version': 4
+    'engine_version': 5,
+    'finite_voting': True,
+    'duplicate_vote_protection': True,
+    'browser_flows': True
 }, ensure_ascii=False, indent=2))
