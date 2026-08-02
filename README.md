@@ -20,15 +20,18 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - geheime Kartenübergabe
 - konfigurierbarer Timer von einer bis zehn Minuten
 - geheime Abstimmung durch alle Personen
+- Stichwahl bei Gleichstand
 - Imposter-Raterunde nach erfolgreicher Entdeckung
 - Punktesystem für Gruppe und Imposter
 - Matches mit 1, 3, 5 oder 10 Runden
 - Rangliste nach jeder Runde
 - Wiederaufnahme einer unterbrochenen Runde
 - lokale Speicherung von Einstellungen und zwanzig abgeschlossenen Runden
+- vollständiges Löschen aller lokalen Daten
 - Online-/Offline-Anzeige
 - installierbare PWA mit Offline-Cache
-- keine Anmeldung und keine Serverübertragung
+- Datenschutzseite
+- keine Anmeldung, kein Tracking und keine Serverübertragung
 
 ## Getestete Spielengine
 
@@ -40,13 +43,13 @@ Die unabhängige Engine in `game-engine.js` übernimmt:
 - Imposter- und Begriffsverteilung
 - Rollenanzeige
 - Phasenwechsel und Restzeit
-- geheime Abstimmung
+- geheime Abstimmung und Stichwahl
 - Auflösung und Imposter-Rateschritt
 - Punktestand und Match-Fortschritt
 - sichere Wiederherstellung gespeicherter Spielstände
 - Rundenverlauf
 
-Test:
+## Lokale Prüfung
 
 ```bash
 node --check app.js
@@ -54,13 +57,25 @@ node --check game-engine.js
 node --check sw.js
 node tests/engine.test.js
 python scripts/validate_project.py
+python scripts/release_audit.py
 ```
+
+## Release-Gate
+
+Ein öffentlicher Release ist nur vorgesehen, wenn:
+
+1. alle Befehle oben erfolgreich laufen,
+2. GitHub Actions auf dem Release-Commit grün ist,
+3. die PWA auf aktuellen Android- und iOS-Geräten getestet wurde,
+4. Offline-Start, Installation, Wiederaufnahme und vollständiges Datenlöschen geprüft wurden,
+5. Accessibility und Spielablauf mit echten Testpersonen validiert wurden,
+6. alle Begriffe redaktionell geprüft wurden.
+
+Siehe außerdem `RELEASE_CHECKLIST.md` und `privacy.html`.
 
 ## Status
 
-- deterministische Engine und Strukturtest: `GO`
-- installierbare lokale Offline-PWA: `GO_WITH_CONDITIONS`
+- deterministische Engine und Strukturtests: `GO`
+- lokale Offline-PWA: `GO_WITH_CONDITIONS`
 - kontrollierter Party-Beta-Test: `GO_WITH_CONDITIONS`
-- öffentliche Store- oder Produktveröffentlichung: `NO_GO`
-
-Vor einer öffentlichen Veröffentlichung fehlen reale Tests auf mehreren iOS-/Android-Geräten, Browser- und PWA-Installationsprüfungen, Accessibility- und Usability-Tests, redaktionelle Prüfung aller Begriffe, Alters- und Datenschutzbewertung sowie ein dokumentierter Releaseprozess.
+- öffentliche produktive Veröffentlichung: `NO_GO`, bis CI und reale Geräteprüfungen dokumentiert erfolgreich sind
