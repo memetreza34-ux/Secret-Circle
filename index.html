@@ -26,14 +26,14 @@
     <section id="setup-screen" class="card" data-screen tabindex="-1">
       <div id="resume-box" class="resume" hidden><div><strong>Aktives Match fortsetzen</strong><span id="resume-text"></span></div><div><button id="resume" type="button">Fortsetzen</button><button id="discard-resume" class="secondary" type="button">Verwerfen</button></div></div>
       <h2>Match einrichten</h2>
-      <label for="players">Spielernamen</label><textarea id="players" rows="7" placeholder="Ein Name pro Zeile">Alex
+      <label>Spielernamen<textarea id="players" rows="7" placeholder="Ein Name pro Zeile">Alex
 Sam
 Mika
-Lina</textarea>
-      <div class="grid four"><label for="category">Kategorie</label><select id="category"></select><label for="imposters">Imposter</label><input id="imposters" type="number" min="1" max="6" value="1"><label for="duration">Rundenzeit</label><select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select><label for="round-count">Runden</label><select id="round-count"><option value="1">1 Runde</option><option value="3" selected>3 Runden</option><option value="5">5 Runden</option><option value="10">10 Runden</option></select></div>
+Lina</textarea></label>
+      <div class="grid four"><label>Kategorie<select id="category"></select></label><label>Imposter<input id="imposters" type="number" min="1" max="6" value="1"></label><label>Rundenzeit<select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select></label><label>Runden<select id="round-count"><option value="1">1 Runde</option><option value="3" selected>3 Runden</option><option value="5">5 Runden</option><option value="10">10 Runden</option></select></label></div>
       <label class="check"><input id="hint" type="checkbox" checked><span>Imposter erhält ein neutrales Hilfswort</span></label>
       <div class="actions"><button id="start" type="button">Match starten</button><button id="toggle-custom" class="secondary" type="button" aria-expanded="false" aria-controls="custom-panel">Eigene Kategorien</button></div>
-      <section id="custom-panel" class="subpanel" hidden><h3>Eigene Kategorie erstellen</h3><form id="custom-form"><label for="custom-name">Name</label><input id="custom-name" maxlength="50" required placeholder="z. B. Anime"><label for="custom-words">Begriffe</label><textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
+      <section id="custom-panel" class="subpanel" hidden><h3>Eigene Kategorie erstellen</h3><form id="custom-form"><label>Name<input id="custom-name" maxlength="50" required placeholder="z. B. Anime"></label><label>Begriffe<textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea></label><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
       <section class="history"><div class="section-heading"><h3>Letzte Runden</h3><button id="clear-history" class="secondary compact" type="button">Verlauf löschen</button></div><div id="history-list"></div></section>
     </section>
 
