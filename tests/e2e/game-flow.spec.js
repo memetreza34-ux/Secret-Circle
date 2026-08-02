@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('node:fs/promises');
 
 async function revealAllCards(page, playerCount) {
   for (let index = 0; index < playerCount; index += 1) {
@@ -22,7 +23,7 @@ async function resolveAllVotingRounds(page, players, firstRoundTargets) {
   let guard = 0;
   while (await page.locator('#vote-screen').isVisible()) {
     guard += 1;
-    if (guard > 5) throw new Error('Voting did not resolve after five rounds.');
+    if (guard > 3) throw new Error('Voting did not resolve after the configured tie break.');
     for (const voter of players) {
       const preferred = firstRoundTargets?.[voter] || players.find(name => name !== voter);
       await castVisibleVote(page, voter, preferred);
@@ -68,9 +69,10 @@ test('completes a full match round with voting and result screen', async ({ page
   await expect(page.locator('#next-round')).toBeHidden();
 });
 
-test('starts the next round and preserves the leaderboard', async ({ page }) => {
+test('starts multiple match rounds, preserves scores and avoids repeated words', async ({ page }) => {
   const players = ['Alex', 'Sam', 'Mika', 'Lina'];
   await startBasicGame(page, players, '3');
+  const firstState = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
   await revealAllCards(page, players.length);
   await page.getByRole('button', { name: 'Abstimmung starten' }).click();
   await resolveAllVotingRounds(page, players, {
@@ -89,8 +91,10 @@ test('starts the next round and preserves the leaderboard', async ({ page }) => 
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
   await expect(page.locator('#reveal-progress')).toContainText('Runde 2/3');
-  const storedScores = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v4')).scores);
-  expect(Object.values(storedScores).reduce((sum, value) => sum + value, 0)).toBeGreaterThan(0);
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+  expect(Object.values(stored.scores).reduce((sum, value) => sum + value, 0)).toBeGreaterThan(0);
+  expect(stored.word).not.toBe(firstState.word);
+  expect(stored.usedWords).toContain(firstState.word);
   expect(scoresBefore).toHaveLength(players.length);
 });
 
@@ -128,6 +132,45 @@ test('creates a custom category and clears all local data', async ({ page }) => 
   await expect(page.locator('#status')).toContainText('Alle lokalen Daten wurden gelöscht');
   const keys = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('secret-circle-')));
   expect(keys).toEqual([]);
+});
+
+test('exports and restores a complete local backup', async ({ page }) => {
+  await page.getByRole('button', { name: 'Eigene Kategorien' }).click();
+  await page.locator('#custom-name').fill('Weltraum');
+  await page.locator('#custom-words').fill('Mond | Nacht\nMars | Planet');
+  await page.getByRole('button', { name: 'Kategorie speichern' }).click();
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Sicherung exportieren' }).click();
+  const download = await downloadPromise;
+  const downloadPath = await download.path();
+  const backupText = await fs.readFile(downloadPath, 'utf8');
+  const backup = JSON.parse(backupText);
+  expect(backup.format).toBe('secret-circle-backup');
+  expect(backup.version).toBe(1);
+  expect(backup.data.custom[0].name).toBe('Weltraum');
+
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
+  await expect(page.locator('#custom-list')).not.toContainText('Weltraum');
+
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#import-data').setInputFiles({
+    name: 'secret-circle-backup.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(backupText)
+  });
+  await expect(page.locator('#status')).toContainText('Sicherung erfolgreich importiert');
+  await expect(page.locator('#custom-list')).toContainText('Weltraum');
+});
+
+test('recovers safely from corrupted persisted data', async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem('secret-circle-custom-v7', '{broken-json'));
+  await page.reload();
+  await expect(page.locator('#setup-screen')).toBeVisible();
+  await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
+  await expect(page.locator('#status')).toContainText('aktuelle Format aktualisiert');
+  expect(await page.evaluate(() => localStorage.getItem('secret-circle-custom-v7'))).toBeNull();
 });
 
 test('exposes privacy information and remains usable on mobile viewport', async ({ page, isMobile }) => {
