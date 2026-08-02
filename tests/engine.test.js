@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('node:assert/strict');
+const E=require('../game-engine.js');
+const entries=[['Router','Netzwerk'],['Sensor','Messung'],['Kabel','Verbindung']];
+assert.deepEqual(E.normalizePlayers(' Alex\nSam, Mika '),['Alex','Sam','Mika']);
+assert.throws(()=>E.normalizePlayers(['Alex','alex','Sam']),/Doppelter/);
+assert.throws(()=>E.normalizePlayers(['A','B']),/Mindestens/);
+assert.equal(E.parseCustomEntries('Mond | Nacht\nSonne | Tag').length,2);
+const options={players:['Alex','Sam','Mika','Lina'],entries,category:'Technik',imposterCount:1,useHint:true,roundSeconds:180,seed:'repeatable'};
+const a=E.createGame(options),b=E.createGame(options);
+assert.deepEqual(a.revealOrder,b.revealOrder);assert.deepEqual(a.imposters,b.imposters);assert.equal(a.word,b.word);assert.equal(new Set(a.revealOrder).size,4);assert.equal(E.roleFor(a,a.imposters[0]).isImposter,true);assert.equal(E.roleFor(a,a.players.find(p=>!a.imposters.includes(p))).value,a.word);
+let game=a;for(let i=0;i<4;i++)game=E.advanceReveal(game);assert.equal(game.phase,'discussion');game=E.setRemaining(game,42);assert.equal(game.remainingSeconds,42);game=E.completeGame(game);assert.equal(game.phase,'completed');assert.equal(E.historyEntry(game).word,game.word);assert.deepEqual(E.restoreGame(JSON.stringify(game)),game);
+assert.throws(()=>E.restoreGame({...game,imposters:['Niemand']}),/Imposter/);assert.throws(()=>E.createGame({...options,imposterCount:4}),/Imposter-Zahl/);assert.throws(()=>E.createGame({...options,roundSeconds:20}),/Rundenzeit/);
+console.log(JSON.stringify({ok:true,deterministic:true,roles:true,persistence:true,validation:true,history:true},null,2));

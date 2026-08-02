@@ -19,5 +19,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: node --check app.js
-      - run: python scripts/validate_project.py
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check game-engine.js
+          node --check sw.js
+      - name: Run deterministic engine tests
+        run: node tests/engine.test.js
+      - name: Validate offline PWA structure
+        run: python scripts/validate_project.py
