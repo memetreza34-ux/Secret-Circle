@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -25,7 +26,8 @@ for relative,markers in required.items():
  for marker in markers:
   if marker.lower() not in text.lower():raise SystemExit(f'Missing marker {marker} in {relative}')
 word_text=(ROOT/'word-packs.js').read_text(encoding='utf-8')
-if word_text.count("],\n")<70:raise SystemExit('Curated word catalog appears too small')
+entry_count=len(re.findall(r"\['[^']+','[^']+'\]",word_text))
+if entry_count!=80:raise SystemExit(f'Curated word catalog mismatch: {entry_count} entries')
 for forbidden in ['.env','node_modules','dist','build']:
  if (ROOT/forbidden).exists():raise SystemExit(f'Forbidden generated path committed: {forbidden}')
-print('Secret Circle accessible multi-round PWA with curated word packs valid.')
+print(f'Secret Circle accessible multi-round PWA valid: {entry_count} curated entries.')
