@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 required_files = [
     'index.html', 'privacy.html', 'styles.css', 'pwa.css', 'app.js',
-    'game-engine.js', 'manifest.webmanifest', 'sw.js', 'icon.svg',
+    'game-engine.js', 'word-packs.js', 'manifest.webmanifest', 'sw.js', 'icon.svg',
     'tests/engine.test.js', 'tests/e2e/game-flow.spec.js',
     'tests/e2e/accessibility.spec.js', 'scripts/validate_project.py',
     '.github/workflows/ci.yml'
@@ -21,6 +21,7 @@ index = (ROOT / 'index.html').read_text(encoding='utf-8')
 privacy = (ROOT / 'privacy.html').read_text(encoding='utf-8')
 app = (ROOT / 'app.js').read_text(encoding='utf-8')
 engine = (ROOT / 'game-engine.js').read_text(encoding='utf-8')
+word_packs = (ROOT / 'word-packs.js').read_text(encoding='utf-8')
 engine_tests = (ROOT / 'tests/engine.test.js').read_text(encoding='utf-8')
 e2e_tests = (ROOT / 'tests/e2e/game-flow.spec.js').read_text(encoding='utf-8')
 a11y_tests = (ROOT / 'tests/e2e/accessibility.spec.js').read_text(encoding='utf-8')
@@ -28,7 +29,7 @@ manifest = json.loads((ROOT / 'manifest.webmanifest').read_text(encoding='utf-8'
 service_worker = (ROOT / 'sw.js').read_text(encoding='utf-8')
 workflow = (ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8')
 
-for marker in ['lang="de"', 'viewport-fit=cover', 'aria-live="polite"', 'privacy.html', 'delete-all-data']:
+for marker in ['lang="de"', 'viewport-fit=cover', 'aria-live="polite"', 'privacy.html', 'delete-all-data', 'word-packs.js']:
     if marker not in index:
         raise SystemExit(f'Release marker missing in index.html: {marker}')
 
@@ -36,9 +37,15 @@ for marker in ['lokal', 'keine', 'tracking', 'löschen']:
     if marker not in privacy.lower():
         raise SystemExit(f'Privacy disclosure missing: {marker}')
 
-for marker in ['localStorage', 'clearAllData', 'serviceWorker', 'beforeinstallprompt']:
+for marker in ['localStorage', 'clearAllData', 'serviceWorker', 'beforeinstallprompt', 'SecretCircleContent']:
     if marker not in app:
         raise SystemExit(f'Runtime capability missing: {marker}')
+
+for marker in ['SecretCircleContent', 'Anime', 'Gaming', 'Internet & Social Media', 'Elektroniker']:
+    if marker not in word_packs:
+        raise SystemExit(f'Built-in content marker missing: {marker}')
+if word_packs.count("entries:[") < 12:
+    raise SystemExit('Too few built-in category packs.')
 
 engine_markers = [
     r'VERSION\s*=\s*5', 'tie_break', 'leaderboard', 'MAX_TIE_BREAKS',
@@ -71,9 +78,9 @@ if not manifest.get('icons'):
     raise SystemExit('PWA manifest requires at least one icon.')
 
 cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
-if not cache_match or cache_match.group(1) != 'secret-circle-v5':
-    raise SystemExit('Service worker cache version must be secret-circle-v5.')
-for asset in ['./index.html', './privacy.html', './styles.css', './pwa.css', './app.js', './game-engine.js']:
+if not cache_match or cache_match.group(1) != 'secret-circle-v6':
+    raise SystemExit('Service worker cache version must be secret-circle-v6.')
+for asset in ['./index.html', './privacy.html', './styles.css', './pwa.css', './app.js', './game-engine.js', './word-packs.js']:
     if asset not in service_worker:
         raise SystemExit(f'Offline core asset missing from service worker: {asset}')
 
@@ -82,7 +89,7 @@ for command in ['npm run check', 'npm test', 'npm run validate', 'npm run test:e
         raise SystemExit(f'CI command missing: {command}')
 
 for forbidden in ['eval(', 'new Function(', 'document.write(', 'innerHTML = location', 'http://']:
-    if forbidden in app or forbidden in engine:
+    if forbidden in app or forbidden in engine or forbidden in word_packs:
         raise SystemExit(f'Forbidden release pattern detected: {forbidden}')
 
 print(json.dumps({
@@ -92,6 +99,8 @@ print(json.dumps({
     'privacy': True,
     'offline_core': True,
     'engine_version': 5,
+    'built_in_categories': 14,
+    'built_in_terms': 168,
     'finite_voting': True,
     'duplicate_vote_protection': True,
     'browser_flows': True,
