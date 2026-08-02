@@ -11,60 +11,65 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="pwa.css">
   <link rel="stylesheet" href="match.css">
+  <link rel="stylesheet" href="accessibility.css">
 </head>
 <body>
-  <main class="shell">
+  <a class="skip-link" href="#setup-screen">Direkt zum Spiel</a>
+  <div id="screen-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+  <main class="shell" id="main-content">
     <header>
       <div class="topbar"><span id="connection" class="connection">Online</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
-      <p class="eyebrow">Offline Partyspiel</p><h1>Secret Circle</h1><p>Begriffe verteilen, abstimmen und über mehrere Runden Punkte sammeln.</p>
+      <p class="eyebrow">Offline Partyspiel</p><h1>Secret Circle</h1><p>Begriffe verteilen, abstimmen und über mehrere Runden Punkte sammeln.</p><p id="content-meta" class="content-meta">Wortpakete werden geladen.</p>
     </header>
-    <p id="status" class="status" role="status"></p>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
 
-    <section id="setup-screen" class="card" data-screen>
+    <section id="setup-screen" class="card" data-screen tabindex="-1">
       <div id="resume-box" class="resume" hidden><div><strong>Aktives Match fortsetzen</strong><span id="resume-text"></span></div><div><button id="resume" type="button">Fortsetzen</button><button id="discard-resume" class="secondary" type="button">Verwerfen</button></div></div>
       <h2>Match einrichten</h2>
-      <label>Spielernamen<textarea id="players" rows="7" placeholder="Ein Name pro Zeile">Alex
+      <label for="players">Spielernamen</label><textarea id="players" rows="7" placeholder="Ein Name pro Zeile">Alex
 Sam
 Mika
-Lina</textarea></label>
-      <div class="grid four"><label>Kategorie<select id="category"></select></label><label>Imposter<input id="imposters" type="number" min="1" max="6" value="1"></label><label>Rundenzeit<select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select></label><label>Runden<select id="round-count"><option value="1">1 Runde</option><option value="3" selected>3 Runden</option><option value="5">5 Runden</option><option value="10">10 Runden</option></select></label></div>
+Lina</textarea>
+      <div class="grid four"><label for="category">Kategorie</label><select id="category"></select><label for="imposters">Imposter</label><input id="imposters" type="number" min="1" max="6" value="1"><label for="duration">Rundenzeit</label><select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select><label for="round-count">Runden</label><select id="round-count"><option value="1">1 Runde</option><option value="3" selected>3 Runden</option><option value="5">5 Runden</option><option value="10">10 Runden</option></select></div>
       <label class="check"><input id="hint" type="checkbox" checked><span>Imposter erhält ein neutrales Hilfswort</span></label>
-      <div class="actions"><button id="start" type="button">Match starten</button><button id="toggle-custom" class="secondary" type="button">Eigene Kategorien</button></div>
-      <section id="custom-panel" class="subpanel" hidden><h3>Eigene Kategorie erstellen</h3><form id="custom-form"><label>Name<input id="custom-name" maxlength="50" required placeholder="z. B. Anime"></label><label>Begriffe<textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea></label><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
+      <div class="actions"><button id="start" type="button">Match starten</button><button id="toggle-custom" class="secondary" type="button" aria-expanded="false" aria-controls="custom-panel">Eigene Kategorien</button></div>
+      <section id="custom-panel" class="subpanel" hidden><h3>Eigene Kategorie erstellen</h3><form id="custom-form"><label for="custom-name">Name</label><input id="custom-name" maxlength="50" required placeholder="z. B. Anime"><label for="custom-words">Begriffe</label><textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
       <section class="history"><div class="section-heading"><h3>Letzte Runden</h3><button id="clear-history" class="secondary compact" type="button">Verlauf löschen</button></div><div id="history-list"></div></section>
     </section>
 
-    <section id="reveal-screen" class="card" data-screen hidden>
+    <section id="reveal-screen" class="card" data-screen tabindex="-1" hidden>
       <p id="reveal-progress" class="eyebrow"></p><h2 id="player-name"></h2><p id="handoff-note" class="handoff"></p>
-      <button id="show-card" class="card-button" type="button">Geheime Karte anzeigen</button>
-      <div id="secret" class="secret" hidden><p id="role"></p><strong id="word"></strong><small id="hint-text"></small></div>
+      <button id="show-card" class="card-button" type="button" aria-controls="secret">Geheime Karte anzeigen</button>
+      <div id="secret" class="secret" hidden aria-live="polite" aria-atomic="true"><p id="role"></p><strong id="word"></strong><small id="hint-text"></small></div>
       <button id="next-player" type="button" hidden>Karte schließen und weitergeben</button>
       <button class="secondary text-button" data-new-game type="button">Match abbrechen</button>
     </section>
 
-    <section id="round-screen" class="card" data-screen hidden>
+    <section id="round-screen" class="card" data-screen tabindex="-1" hidden>
       <p id="round-label" class="eyebrow"></p><h2>Wer kennt den Begriff nicht?</h2><p><strong id="round-category"></strong> · <span id="round-players"></span></p>
-      <div class="timer"><span id="time">03:00</span><button id="timer-toggle" class="secondary" type="button">Timer starten</button></div>
+      <div class="timer"><span id="time" role="timer" aria-label="Verbleibende Zeit">03:00</span><button id="timer-toggle" class="secondary" type="button">Timer starten</button></div>
       <ol class="rules"><li>Eine Person beginnt mit einem kurzen Hinweis.</li><li>Der Begriff darf nicht direkt genannt werden.</li><li>Danach stimmt jede Person geheim ab.</li></ol>
       <section class="scoreboard"><h3>Zwischenstand</h3><div id="live-scoreboard"></div></section>
       <div class="actions"><button id="start-voting" type="button">Abstimmung starten</button><button class="secondary" data-new-game type="button">Match abbrechen</button></div>
     </section>
 
-    <section id="voting-screen" class="card" data-screen hidden>
+    <section id="voting-screen" class="card" data-screen tabindex="-1" hidden>
       <p id="vote-progress" class="eyebrow"></p><h2 id="voter-name"></h2><p id="vote-note" class="handoff"></p>
-      <div id="vote-targets" class="vote-grid"></div>
+      <div id="vote-targets" class="vote-grid" role="group" aria-label="Abstimmungsziele"></div>
       <button id="next-voter" type="button" hidden>Nächste Person</button>
       <button class="secondary text-button" data-new-game type="button">Match abbrechen</button>
     </section>
 
-    <section id="result-screen" class="card" data-screen hidden>
-      <p id="result-round" class="eyebrow"></p><h2>Der Begriff war</h2><div id="result-word" class="result-word"></div><p id="result-meta"></p><p id="vote-result" class="vote-result"></p><h3>Imposter</h3><ul id="result-imposters" class="imposter-list"></ul>
+    <section id="result-screen" class="card" data-screen tabindex="-1" hidden>
+      <p id="result-round" class="eyebrow"></p><h2>Der Begriff war</h2><div id="result-word" class="result-word" aria-live="polite"></div><p id="result-meta"></p><p id="vote-result" class="vote-result"></p><h3>Imposter</h3><ul id="result-imposters" class="imposter-list"></ul>
       <section class="scoreboard"><h3>Punktestand</h3><div id="result-scoreboard"></div></section>
       <p id="match-finished" class="match-finished" hidden></p>
       <div class="actions"><button id="next-round" type="button">Nächste Runde</button><button class="secondary" data-new-game type="button">Neues Match</button></div>
     </section>
   </main>
   <script src="game-engine.js"></script>
+  <script src="word-packs.js"></script>
   <script src="app.js"></script>
+  <script src="accessibility.js"></script>
 </body>
 </html>
