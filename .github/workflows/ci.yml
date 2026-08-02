@@ -9,39 +9,55 @@ permissions:
   contents: read
 
 concurrency:
-  group: secret-circle-ci-${{ github.ref }}
+  group: secret-circle-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  CI: true
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install dependencies
-        run: npm install
+
+      - name: Install pinned dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
+
       - name: Check JavaScript syntax
         run: npm run check
-      - name: Run deterministic engine tests
+
+      - name: Run engine and storage tests
         run: npm test
-      - name: Validate offline PWA structure
+
+      - name: Validate offline PWA and release gates
         run: npm run validate
+
       - name: Run browser end-to-end tests
         run: npm run test:e2e
+
       - name: Upload browser test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report
+          name: playwright-report-${{ github.run_attempt }}
+          path: |
+            playwright-report
+            test-results
           if-no-files-found: ignore
           retention-days: 7
