@@ -14,7 +14,9 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 
 - drei bis zwanzig eindeutige Spielernamen
 - ein bis mehrere Imposter
-- fünf integrierte Kategorien und gemischter Modus
+- acht integrierte Wortpakete und gemischter Modus
+- 80 intern ausgewählte familienfreundliche Begriffe
+- sichtbare Wortpaket-Version `2026.08-rc1`
 - eigene Kategorien im Format `Begriff | Hilfswort`
 - ein, drei, fünf oder zehn Runden pro Match
 - geheime Kartenübergabe
@@ -29,6 +31,40 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - lokaler Verlauf der letzten zwanzig Runden
 - installierbare PWA mit Offline-Cache
 - keine Anmeldung und keine Serverübertragung
+
+## Accessibility
+
+Die Bedienoberfläche ergänzt:
+
+- Sprunglink direkt zum Spiel
+- sichtbare starke Tastaturfokusse
+- Fokuswechsel auf die Überschrift der neu geöffneten Spielphase
+- automatische Fokussierung der Weitergabe-Buttons
+- Live-Ansage beim Bildschirmwechsel
+- semantische Gruppe für Abstimmungsziele
+- Timer-Rolle und Live-Bereiche für geheime Karte und Ergebnis
+- `aria-expanded` für eigene Kategorien
+- Schließen des Kategorienbereichs mit Escape
+- Unterstützung für reduzierte Bewegung
+- zusätzliche Darstellung für erzwungene Systemfarben
+
+Alle eigentlichen Aktionen bleiben native Buttons und Formularelemente und sind damit grundsätzlich per Tastatur bedienbar.
+
+## Wortpakete
+
+`word-packs.js` trennt die redaktionellen Inhalte von Spiel- und UI-Logik.
+
+Aktueller Stand:
+
+- Version: `2026.08-rc1`
+- acht Kategorien
+- zehn Begriffe pro Kategorie
+- 80 Begriffe insgesamt
+- Review-Status: `internal_family_friendly`
+- externe redaktionelle Prüfung: `false`
+- unverbindliche Altersorientierung: `6+`
+
+Die Kennzeichnung ist keine externe Altersfreigabe oder pädagogische Zertifizierung. Eigene Kategorien werden nicht redaktionell geprüft.
 
 ## Punktelogik
 
@@ -50,23 +86,30 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - sichere Wiederherstellung gespeicherter Spielstände
 - Manipulationsprüfung von Stimmen und Punkten
 
-Test:
+## Technische Prüfung
 
 ```bash
 node --check app.js
 node --check game-engine.js
+node --check word-packs.js
+node --check accessibility.js
 node --check sw.js
 node tests/engine.test.js
+node tests/content.test.js
+node tests/accessibility.test.js
 python scripts/validate_project.py
 ```
 
 ## Status
 
 - Mehr-Runden-, Abstimmungs- und Punkteengine: `GO`
+- kuratierte interne Wortpakete: `GO_WITH_CONDITIONS`
+- tastatur- und screenreaderfreundliches lokales Test-Staging: `GO_WITH_CONDITIONS`
 - installierbare lokale Offline-PWA: `GO_WITH_CONDITIONS`
-- kontrollierter Party-Beta-Test: `GO_WITH_CONDITIONS`
 - öffentliche Store- oder Produktveröffentlichung: `NO_GO`
 
-Vor einer öffentlichen Veröffentlichung fehlen reale Tests auf mehreren iOS-/Android-Geräten, Browser- und PWA-Installationsprüfungen, Accessibility- und Usability-Tests, redaktionelle Prüfung aller Begriffe, Alters- und Datenschutzbewertung sowie ein dokumentierter Releaseprozess.
+Gate: `LOCAL_ACCESSIBLE_PARTY_PWA_GO / PUBLIC_RELEASE_NO_GO`.
+
+Vor einer öffentlichen Veröffentlichung fehlen reale Tests auf mehreren iOS-/Android-Geräten, Browser- und PWA-Installationsprüfungen, Tests mit Screenreadern und Tastaturnutzenden, vollständige WCAG-Prüfung, externe redaktionelle und Altersprüfung, Datenschutzbewertung sowie ein dokumentierter Releaseprozess.
 
 Das frühere Archiv im Projekt-Hub bleibt als historische Backfill-Quelle erhalten. Dieses öffentliche Repository enthält keine Secrets, Konten oder `.env`-Dateien.
