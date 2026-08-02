@@ -23,8 +23,14 @@ jobs:
         run: |
           node --check app.js
           node --check game-engine.js
+          node --check word-packs.js
+          node --check accessibility.js
           node --check sw.js
       - name: Run deterministic engine tests
         run: node tests/engine.test.js
+      - name: Validate curated word packs
+        run: node tests/content.test.js
+      - name: Validate accessibility and offline shell
+        run: node tests/accessibility.test.js
       - name: Validate offline PWA structure
         run: python scripts/validate_project.py
