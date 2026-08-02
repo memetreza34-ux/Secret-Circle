@@ -52,9 +52,15 @@ Ergebnis:
 
 Bestätigt wurden Sprunglink, fünf fokussierbare Spielphasen, Live-Ansagen, Fokusübergaben, semantische Abstimmungsgruppe, Timer-Rolle, starke Tastaturfokusse, reduzierte Bewegung, erzwungene Systemfarben und der Offline-Cache für die neuen Dateien.
 
-## Bestehende Engine
+## Bestehende Engine und App-Verbindung
 
 Die Spielengine wurde nicht geändert. Ihr bestehender Test deckt deterministische Verteilung, Mehr-Runden-Modus, Abstimmung, Punkte, Gleichstand, Persistenz und Manipulationsprüfung ab.
+
+Der vollständige Remote-Blob von `app.js` wurde nach der Übertragung geprüft. Die App verwendet `SecretCircleContent`, validiert die Pakete beim Start und ersetzt ausschließlich die frühere eingebettete Begriffsliste. Speicher-Keys, Phasenlogik, Abstimmung und Punkteberechnung bleiben unverändert.
+
+## GitHub-Actions-Befund
+
+Der PR-Lauf `30753838883` endete vor Schritt 1. GitHub stellte keine Steps und keine Job-Logs bereit; Checkout, Syntaxprüfungen, Engine-, Content-, Accessibility- und Strukturtests wurden nicht ausgeführt. Dieser Lauf ist weder ein grüner CI-Nachweis noch ein ausgeführter Codefehler.
 
 ## Grenzen
 
