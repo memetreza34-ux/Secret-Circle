@@ -5,7 +5,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  const VERSION = 5;
+  const VERSION = 6;
   const MIN_PLAYERS = 3;
   const MAX_PLAYERS = 20;
   const MIN_SECONDS = 60;
@@ -14,6 +14,7 @@
 
   const text = (value, maximum = 80) => String(value ?? '').trim().replace(/\s+/g, ' ').slice(0, maximum);
   const clone = value => JSON.parse(JSON.stringify(value));
+  const wordKey = value => text(value, 60).toLocaleLowerCase('de-DE');
 
   function normalizePlayers(input) {
     const values = Array.isArray(input) ? input : String(input ?? '').split(/\n|,/);
@@ -40,12 +41,28 @@
       const word = text(Array.isArray(entry) ? entry[0] : entry?.word, 60);
       const hint = text(Array.isArray(entry) ? entry[1] : entry?.hint, 60) || 'Kein Hilfswort';
       if (!word) continue;
-      const key = word.toLocaleLowerCase('de-DE');
+      const key = wordKey(word);
       if (seen.has(key)) continue;
       seen.add(key);
       result.push({ word, hint });
     }
     if (result.length < 2) throw Error('Eine Kategorie benötigt mindestens zwei unterschiedliche Begriffe.');
+    return result;
+  }
+
+  function normalizeUsedWords(input) {
+    if (input === undefined || input === null) return [];
+    if (!Array.isArray(input)) throw Error('Ungültiger Begriffsverlauf.');
+    const result = [];
+    const seen = new Set();
+    for (const raw of input) {
+      const word = text(raw, 60);
+      if (!word) throw Error('Ungültiger Begriffsverlauf.');
+      const key = wordKey(word);
+      if (seen.has(key)) throw Error('Doppelter Begriff im Begriffsverlauf.');
+      seen.add(key);
+      result.push(word);
+    }
     return result;
   }
 
@@ -62,10 +79,10 @@
     let state = hashSeed(seed) || 0x6d2b79f5;
     return () => {
       state += 0x6d2b79f5;
-      let t = state;
-      t = Math.imul(t ^ (t >>> 15), t | 1);
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      let value = state;
+      value = Math.imul(value ^ (value >>> 15), value | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
     };
   }
 
@@ -81,6 +98,7 @@
   function createGame(options) {
     const players = normalizePlayers(options?.players);
     const entries = normalizeEntries(options?.entries);
+    const usedWords = normalizeUsedWords(options?.usedWords);
     const imposterCount = Number(options?.imposterCount ?? 1);
     const roundSeconds = Number(options?.roundSeconds ?? 180);
     const matchRounds = Number(options?.matchRounds ?? 5);
@@ -92,7 +110,11 @@
     const random = createRng(seed);
     const revealOrder = shuffle(players, random);
     const imposters = revealOrder.slice(0, imposterCount);
-    const selected = entries[Math.floor(random() * entries.length)];
+    const usedKeys = new Set(usedWords.map(wordKey));
+    const unusedEntries = entries.filter(entry => !usedKeys.has(wordKey(entry.word)));
+    const pool = unusedEntries.length ? unusedEntries : entries;
+    const selected = pool[Math.floor(random() * pool.length)];
+    const nextUsedWords = unusedEntries.length ? [...usedWords, selected.word] : [selected.word];
     const createdAt = new Date().toISOString();
     const scores = Object.fromEntries(players.map(name => [name, 0]));
 
@@ -106,6 +128,7 @@
       imposters,
       word: selected.word,
       hint: selected.hint,
+      usedWords: nextUsedWords,
       useHint: options?.useHint !== false,
       roundSeconds,
       remainingSeconds: roundSeconds,
@@ -128,6 +151,8 @@
   function assertGame(game) {
     if (!game || typeof game !== 'object' || game.version !== VERSION) throw Error('Ungültiger oder veralteter Spielstand.');
     const players = normalizePlayers(game.players);
+    const usedWords = normalizeUsedWords(game.usedWords);
+    if (!usedWords.some(word => wordKey(word) === wordKey(game.word))) throw Error('Aktueller Begriff fehlt im Begriffsverlauf.');
     if (!Array.isArray(game.revealOrder) || game.revealOrder.length !== players.length || new Set(game.revealOrder).size !== players.length || game.revealOrder.some(name => !players.includes(name))) throw Error('Ungültige Kartenreihenfolge.');
     if (!Array.isArray(game.imposters) || game.imposters.length < 1 || game.imposters.length >= players.length || new Set(game.imposters).size !== game.imposters.length || game.imposters.some(name => !players.includes(name))) throw Error('Ungültige Imposter-Verteilung.');
     if (!['reveal', 'discussion', 'voting', 'tie_break', 'guess', 'completed'].includes(game.phase)) throw Error('Ungültige Spielphase.');
@@ -259,7 +284,7 @@
     if (next.phase !== 'guess') throw Error('Der Imposter darf jetzt nicht raten.');
     next.imposterGuess = text(guess, 60);
     if (!next.imposterGuess) throw Error('Bitte einen Begriff eingeben.');
-    const correct = next.imposterGuess.toLocaleLowerCase('de-DE') === next.word.toLocaleLowerCase('de-DE');
+    const correct = wordKey(next.imposterGuess) === wordKey(next.word);
     finalizeRound(next, correct);
     return next;
   }
@@ -268,7 +293,7 @@
     const previous = restoreGame(game);
     if (previous.phase !== 'completed') throw Error('Die Runde ist noch nicht beendet.');
     if (previous.currentRound >= previous.matchRounds) throw Error('Das Match ist bereits beendet.');
-    const next = createGame({ ...options, players: previous.players, matchRounds: previous.matchRounds });
+    const next = createGame({ ...options, players: previous.players, matchRounds: previous.matchRounds, usedWords: previous.usedWords });
     next.currentRound = previous.currentRound + 1;
     next.scores = clone(previous.scores);
     return next;
@@ -320,6 +345,7 @@
     MAX_TIE_BREAKS,
     normalizePlayers,
     normalizeEntries,
+    normalizeUsedWords,
     parseCustomEntries,
     createRng,
     shuffle,
