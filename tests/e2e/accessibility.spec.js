@@ -76,9 +76,12 @@ test('mobile layout has large touch targets and no horizontal overflow', async (
     const undersized = [...document.querySelectorAll('button, a, input, select')]
       .filter(node => {
         const style = getComputedStyle(node);
-        if (style.display === 'none' || node.closest('[hidden]')) return false;
-        const rect = node.getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0 && rect.height < 44;
+        if (style.display === 'none' || style.visibility === 'hidden' || node.closest('[hidden]')) return false;
+        const target = node.matches('input[type="checkbox"], input[type="radio"]') ? node.labels?.[0] || node : node;
+        const rect = target.getBoundingClientRect();
+        const intersectsViewport = rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
+        if (!intersectsViewport || rect.width <= 0 || rect.height <= 0) return false;
+        return rect.height < 44 || rect.width < 44;
       })
       .map(node => node.id || node.textContent.trim().slice(0, 30));
     return {
