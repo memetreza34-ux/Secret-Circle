@@ -8,29 +8,56 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: secret-circle-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Install pinned dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
       - name: Check JavaScript syntax
-        run: |
-          node --check app.js
-          node --check game-engine.js
-          node --check word-packs.js
-          node --check accessibility.js
-          node --check sw.js
-      - name: Run deterministic engine tests
-        run: node tests/engine.test.js
-      - name: Validate curated word packs
-        run: node tests/content.test.js
-      - name: Validate accessibility and offline shell
-        run: node tests/accessibility.test.js
-      - name: Validate offline PWA structure
-        run: python scripts/validate_project.py
+        run: npm run check
+
+      - name: Run engine and storage tests
+        run: npm test
+
+      - name: Validate offline PWA and release gates
+        run: npm run validate
+
+      - name: Run browser end-to-end tests
+        run: npm run test:e2e
+
+      - name: Upload browser test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_attempt }}
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 7

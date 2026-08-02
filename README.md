@@ -8,108 +8,71 @@ Secret Circle ist ein lokales Imposter-Partyspiel für drei bis zwanzig Personen
 python -m http.server 8080
 ```
 
-Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App offline verwendet und auf unterstützten Geräten installiert werden.
+Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App über den Service Worker offline verwendet und auf unterstützten Geräten installiert werden.
 
 ## Funktionen
 
 - drei bis zwanzig eindeutige Spielernamen
 - ein bis mehrere Imposter
-- acht integrierte Wortpakete und gemischter Modus
-- 80 intern ausgewählte familienfreundliche Begriffe
-- sichtbare Wortpaket-Version `2026.08-rc1`
-- eigene Kategorien im Format `Begriff | Hilfswort`
-- ein, drei, fünf oder zehn Runden pro Match
+- vierzehn integrierte Kategorien mit 168 Begriffen
+- gemischter Modus und eigene Kategorien im Format `Begriff | Hilfswort`
+- optionales neutrales Hilfswort
+- keine Begriffswiederholung, bis der gewählte Pool aufgebraucht ist
 - geheime Kartenübergabe
-- konfigurierbarer Diskussionstimer
-- geheime Einzelabstimmung am selben Gerät
-- Schutz vor Selbststimmen
-- automatische Auswertung von Mehrheit und Stimmengleichstand
-- Punktesystem für Zivilpersonen und Imposter
+- konfigurierbarer Timer von einer bis zehn Minuten
+- geheime Abstimmung durch alle Personen
+- begrenzte Stichwahl bei Gleichstand
+- Imposter-Raterunde nach erfolgreicher Entdeckung
+- Punktesystem für Gruppe und Imposter
+- Matches mit 1, 3, 5 oder 10 Runden
 - Rangliste nach jeder Runde
-- Matchgewinner nach der letzten Runde
-- Wiederaufnahme während Kartenverteilung, Diskussion oder Abstimmung
-- lokaler Verlauf der letzten zwanzig Runden
+- Wiederaufnahme einer unterbrochenen Runde
+- lokale Speicherung von Einstellungen und zwanzig abgeschlossenen Runden
+- automatische Migration älterer lokaler Daten
+- sichere Wiederherstellung nach beschädigten lokalen Daten
+- Export und Import einer vollständigen JSON-Sicherung
+- vollständiges Löschen aller lokalen Daten
+- Online-/Offline-Anzeige
 - installierbare PWA mit Offline-Cache
-- keine Anmeldung und keine Serverübertragung
+- Datenschutzseite und restriktive Content Security Policy
+- keine Anmeldung, kein Tracking und keine Serverübertragung
 
-## Accessibility
+## Architektur
 
-Die Bedienoberfläche ergänzt:
+- `game-engine.js`: deterministische Spielregeln, Rollen, Abstimmung, Punkte und Matches
+- `word-packs.js`: integrierte Kategorien und Begriffe
+- `data-store.js`: versionierte Speicherung, Migration, Backup und Wiederherstellung
+- `app.js`: Benutzeroberfläche und Ablaufsteuerung
+- `sw.js`: Offline-Cache und PWA-Betrieb
 
-- Sprunglink direkt zum Spiel
-- sichtbare starke Tastaturfokusse
-- Fokuswechsel auf die Überschrift der neu geöffneten Spielphase
-- automatische Fokussierung der Weitergabe-Buttons
-- Live-Ansage beim Bildschirmwechsel
-- semantische Gruppe für Abstimmungsziele
-- Timer-Rolle und Live-Bereiche für geheime Karte und Ergebnis
-- `aria-expanded` für eigene Kategorien
-- Schließen des Kategorienbereichs mit Escape
-- Unterstützung für reduzierte Bewegung
-- zusätzliche Darstellung für erzwungene Systemfarben
-
-Alle eigentlichen Aktionen bleiben native Buttons und Formularelemente und sind damit grundsätzlich per Tastatur bedienbar.
-
-## Wortpakete
-
-`word-packs.js` trennt die redaktionellen Inhalte von Spiel- und UI-Logik.
-
-Aktueller Stand:
-
-- Version: `2026.08-rc1`
-- acht Kategorien
-- zehn Begriffe pro Kategorie
-- 80 Begriffe insgesamt
-- Review-Status: `internal_family_friendly`
-- externe redaktionelle Prüfung: `false`
-- unverbindliche Altersorientierung: `6+`
-
-Die Kennzeichnung ist keine externe Altersfreigabe oder pädagogische Zertifizierung. Eigene Kategorien werden nicht redaktionell geprüft.
-
-## Punktelogik
-
-- Wird ein Imposter eindeutig gewählt, erhalten alle Zivilpersonen einen Punkt.
-- Weitere nicht gewählte Imposter erhalten ebenfalls einen Punkt.
-- Wird kein Imposter eindeutig gewählt, erhalten alle Imposter zwei Punkte.
-- Bei Gleichstand wird niemand eindeutig beschuldigt.
-
-## Getestete Spielengine
-
-`game-engine.js` übernimmt:
-
-- validierte Spieler-, Runden- und Imposter-Konfiguration
-- deterministische Rollen- und Begriffsverteilung
-- Match-ID, Rundennummer und fortlaufende Punktestände
-- Diskussion, Abstimmung und Auswertung
-- Mehrheits- und Gleichstandsberechnung
-- Rangliste und nächste Runde
-- sichere Wiederherstellung gespeicherter Spielstände
-- Manipulationsprüfung von Stimmen und Punkten
-
-## Technische Prüfung
+## Automatisierte Prüfung
 
 ```bash
-node --check app.js
-node --check game-engine.js
-node --check word-packs.js
-node --check accessibility.js
-node --check sw.js
-node tests/engine.test.js
-node tests/content.test.js
-node tests/accessibility.test.js
-python scripts/validate_project.py
+npm install
+npm run check
+npm test
+npm run validate
+npm run test:e2e
 ```
+
+`npm test` prüft sowohl die Spielengine als auch Migration, Datenkorruption, Backup-Import und Rollback. Die Playwright-Tests decken Desktop- und Mobilabläufe, Accessibility, Wiederaufnahme, Mehr-Runden-Matches, Datenlöschung und Sicherungswiederherstellung ab.
+
+## Release-Gate
+
+Ein öffentlicher Release ist nur vorgesehen, wenn:
+
+1. `npm run ci` vollständig erfolgreich läuft,
+2. GitHub Actions auf dem Release-Commit grün ist,
+3. die PWA auf aktuellen Android- und iOS-Geräten getestet wurde,
+4. Offline-Start, Installation, Update, Wiederaufnahme, Backup und vollständiges Datenlöschen geprüft wurden,
+5. Accessibility und Spielablauf mit echten Testpersonen validiert wurden,
+6. alle Begriffe redaktionell geprüft wurden.
+
+Siehe außerdem `RELEASE_CHECKLIST.md` und `privacy.html`.
 
 ## Status
 
-- Mehr-Runden-, Abstimmungs- und Punkteengine: `GO`
-- kuratierte interne Wortpakete: `GO_WITH_CONDITIONS`
-- tastatur- und screenreaderfreundliches lokales Test-Staging: `GO_WITH_CONDITIONS`
-- installierbare lokale Offline-PWA: `GO_WITH_CONDITIONS`
-- öffentliche Store- oder Produktveröffentlichung: `NO_GO`
-
-Gate: `LOCAL_ACCESSIBLE_PARTY_PWA_GO / PUBLIC_RELEASE_NO_GO`.
-
-Vor einer öffentlichen Veröffentlichung fehlen reale Tests auf mehreren iOS-/Android-Geräten, Browser- und PWA-Installationsprüfungen, Tests mit Screenreadern und Tastaturnutzenden, vollständige WCAG-Prüfung, externe redaktionelle und Altersprüfung, Datenschutzbewertung sowie ein dokumentierter Releaseprozess.
-
-Das frühere Archiv im Projekt-Hub bleibt als historische Backfill-Quelle erhalten. Dieses öffentliche Repository enthält keine Secrets, Konten oder `.env`-Dateien.
+- deterministische Engine, Speicher- und Strukturtests: `GO`
+- lokale Offline-PWA: `GO_WITH_CONDITIONS`
+- kontrollierter Party-Beta-Test: `GO_WITH_CONDITIONS`
+- öffentliche produktive Veröffentlichung: `NO_GO`, bis CI und reale Geräteprüfungen dokumentiert erfolgreich sind

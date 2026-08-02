@@ -4,72 +4,85 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#7c3aed">
-  <meta name="description" content="Secret Circle – offline spielbares Imposter-Partyspiel mit Mehr-Runden-Modus.">
+  <meta name="description" content="Secret Circle – offline spielbares Imposter-Partyspiel.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Secret Circle</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="pwa.css">
-  <link rel="stylesheet" href="match.css">
-  <link rel="stylesheet" href="accessibility.css">
 </head>
 <body>
-  <a class="skip-link" href="#setup-screen">Direkt zum Spiel</a>
-  <div id="screen-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
-  <main class="shell" id="main-content">
+  <a class="skip-link" href="#setup-screen">Zum Spiel springen</a>
+  <main class="shell">
     <header>
       <div class="topbar"><span id="connection" class="connection">Online</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
-      <p class="eyebrow">Offline Partyspiel</p><h1>Secret Circle</h1><p>Begriffe verteilen, abstimmen und über mehrere Runden Punkte sammeln.</p><p id="content-meta" class="content-meta">Wortpakete werden geladen.</p>
+      <p class="eyebrow">Offline Partyspiel</p><h1>Secret Circle</h1><p>Begriffe verteilen, Hinweise geben, abstimmen und Punkte sammeln.</p>
     </header>
     <p id="status" class="status" role="status" aria-live="polite"></p>
 
-    <section id="setup-screen" class="card" data-screen tabindex="-1">
-      <div id="resume-box" class="resume" hidden><div><strong>Aktives Match fortsetzen</strong><span id="resume-text"></span></div><div><button id="resume" type="button">Fortsetzen</button><button id="discard-resume" class="secondary" type="button">Verwerfen</button></div></div>
-      <h2>Match einrichten</h2>
-      <label>Spielernamen<textarea id="players" rows="7" placeholder="Ein Name pro Zeile">Alex
+    <section id="setup-screen" class="card" data-screen tabindex="-1" aria-labelledby="setup-title">
+      <div id="resume-box" class="resume" hidden><div><strong>Aktive Runde fortsetzen</strong><span id="resume-text"></span></div><div><button id="resume" type="button">Fortsetzen</button><button id="discard-resume" class="secondary" type="button">Verwerfen</button></div></div>
+      <h2 id="setup-title">Spiel einrichten</h2>
+      <label for="players">Spielernamen</label><textarea id="players" rows="7" placeholder="Ein Name pro Zeile" aria-describedby="players-help">Alex
 Sam
 Mika
-Lina</textarea></label>
-      <div class="grid four"><label>Kategorie<select id="category"></select></label><label>Imposter<input id="imposters" type="number" min="1" max="6" value="1"></label><label>Rundenzeit<select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select></label><label>Runden<select id="round-count"><option value="1">1 Runde</option><option value="3" selected>3 Runden</option><option value="5">5 Runden</option><option value="10">10 Runden</option></select></label></div>
-      <label class="check"><input id="hint" type="checkbox" checked><span>Imposter erhält ein neutrales Hilfswort</span></label>
-      <div class="actions"><button id="start" type="button">Match starten</button><button id="toggle-custom" class="secondary" type="button" aria-expanded="false" aria-controls="custom-panel">Eigene Kategorien</button></div>
-      <section id="custom-panel" class="subpanel" hidden><h3>Eigene Kategorie erstellen</h3><form id="custom-form"><label>Name<input id="custom-name" maxlength="50" required placeholder="z. B. Anime"></label><label>Begriffe<textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea></label><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
-      <section class="history"><div class="section-heading"><h3>Letzte Runden</h3><button id="clear-history" class="secondary compact" type="button">Verlauf löschen</button></div><div id="history-list"></div></section>
+Lina</textarea><small id="players-help" class="muted">Mindestens drei eindeutige Namen, ein Name pro Zeile.</small>
+      <div class="grid three"><label for="category">Kategorie<select id="category"></select></label><label for="imposters">Imposter<input id="imposters" type="number" min="1" max="6" value="1"></label><label for="duration">Rundenzeit<select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select></label></div>
+      <div class="grid three"><label for="match-rounds">Match-Runden<select id="match-rounds"><option value="1">1 Runde</option><option value="3">3 Runden</option><option value="5" selected>5 Runden</option><option value="10">10 Runden</option></select></label><label class="check" for="hint"><input id="hint" type="checkbox" checked><span>Hilfswort</span></label></div>
+      <div class="actions"><button id="start" type="button">Spiel starten</button><button id="toggle-custom" class="secondary" type="button" aria-expanded="false" aria-controls="custom-panel">Eigene Kategorien</button></div>
+      <section id="custom-panel" class="subpanel" hidden aria-labelledby="custom-title"><h3 id="custom-title">Eigene Kategorie erstellen</h3><form id="custom-form"><label for="custom-name">Name<input id="custom-name" maxlength="50" required placeholder="z. B. Anime"></label><label for="custom-words">Begriffe<textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea></label><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
+      <section class="history" aria-labelledby="history-title"><div class="section-heading"><h3 id="history-title">Letzte Runden</h3><button id="clear-history" class="secondary compact" type="button">Verlauf löschen</button></div><div id="history-list"></div></section>
+      <section class="data-controls" aria-labelledby="data-title">
+        <h3 id="data-title">Lokale Daten</h3>
+        <p class="muted">Spielstände, Einstellungen und eigene Kategorien bleiben nur auf diesem Gerät. Sicherungen können als JSON-Datei exportiert und später wiederhergestellt werden.</p>
+        <div class="actions data-actions">
+          <button id="export-data" class="secondary" type="button">Sicherung exportieren</button>
+          <button id="import-data-trigger" class="secondary" type="button">Sicherung importieren</button>
+          <input id="import-data" type="file" accept="application/json,.json" aria-label="Secret-Circle-Sicherungsdatei auswählen" hidden>
+          <button id="clear-all-data" class="danger" type="button">Alle lokalen Daten löschen</button>
+          <a class="button-link secondary-link" href="privacy.html">Datenschutz ansehen</a>
+        </div>
+      </section>
     </section>
 
-    <section id="reveal-screen" class="card" data-screen tabindex="-1" hidden>
+    <section id="reveal-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="player-name">
       <p id="reveal-progress" class="eyebrow"></p><h2 id="player-name"></h2><p id="handoff-note" class="handoff"></p>
-      <button id="show-card" class="card-button" type="button" aria-controls="secret">Geheime Karte anzeigen</button>
-      <div id="secret" class="secret" hidden aria-live="polite" aria-atomic="true"><p id="role"></p><strong id="word"></strong><small id="hint-text"></small></div>
+      <button id="show-card" class="card-button" type="button" aria-describedby="handoff-note">Geheime Karte anzeigen</button>
+      <div id="secret" class="secret" hidden aria-live="polite"><p id="role"></p><strong id="word"></strong><small id="hint-text"></small></div>
       <button id="next-player" type="button" hidden>Karte schließen und weitergeben</button>
-      <button class="secondary text-button" data-new-game type="button">Match abbrechen</button>
+      <button class="secondary text-button" data-new-game type="button">Runde abbrechen</button>
     </section>
 
-    <section id="round-screen" class="card" data-screen tabindex="-1" hidden>
-      <p id="round-label" class="eyebrow"></p><h2>Wer kennt den Begriff nicht?</h2><p><strong id="round-category"></strong> · <span id="round-players"></span></p>
-      <div class="timer"><span id="time" role="timer" aria-label="Verbleibende Zeit">03:00</span><button id="timer-toggle" class="secondary" type="button">Timer starten</button></div>
-      <ol class="rules"><li>Eine Person beginnt mit einem kurzen Hinweis.</li><li>Der Begriff darf nicht direkt genannt werden.</li><li>Danach stimmt jede Person geheim ab.</li></ol>
-      <section class="scoreboard"><h3>Zwischenstand</h3><div id="live-scoreboard"></div></section>
-      <div class="actions"><button id="start-voting" type="button">Abstimmung starten</button><button class="secondary" data-new-game type="button">Match abbrechen</button></div>
+    <section id="round-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="round-title">
+      <p class="eyebrow">Diskussionsrunde <span id="round-number"></span></p><h2 id="round-title">Wer kennt den Begriff nicht?</h2><p><strong id="round-category"></strong> · <span id="round-players"></span></p>
+      <div class="timer"><span id="time" aria-live="off" aria-label="Verbleibende Zeit">03:00</span><button id="timer-toggle" class="secondary" type="button">Timer starten</button></div>
+      <ol class="rules"><li>Eine Person beginnt mit einem kurzen Hinweis.</li><li>Der Begriff darf nicht direkt genannt werden.</li><li>Danach stimmen alle Personen geheim ab.</li></ol>
+      <div class="actions"><button id="start-vote" type="button">Abstimmung starten</button><button class="secondary" data-new-game type="button">Runde abbrechen</button></div>
     </section>
 
-    <section id="voting-screen" class="card" data-screen tabindex="-1" hidden>
-      <p id="vote-progress" class="eyebrow"></p><h2 id="voter-name"></h2><p id="vote-note" class="handoff"></p>
-      <div id="vote-targets" class="vote-grid" role="group" aria-label="Abstimmungsziele"></div>
-      <button id="next-voter" type="button" hidden>Nächste Person</button>
-      <button class="secondary text-button" data-new-game type="button">Match abbrechen</button>
+    <section id="vote-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="voter-name">
+      <p id="vote-progress" class="eyebrow"></p><h2 id="voter-name"></h2><p class="handoff">Nur diese Person darf abstimmen. Danach Gerät weitergeben.</p>
+      <div id="vote-options" class="vote-grid" role="group" aria-label="Abstimmungsoptionen"></div>
+      <button class="secondary text-button" data-new-game type="button">Runde abbrechen</button>
     </section>
 
-    <section id="result-screen" class="card" data-screen tabindex="-1" hidden>
-      <p id="result-round" class="eyebrow"></p><h2>Der Begriff war</h2><div id="result-word" class="result-word" aria-live="polite"></div><p id="result-meta"></p><p id="vote-result" class="vote-result"></p><h3>Imposter</h3><ul id="result-imposters" class="imposter-list"></ul>
-      <section class="scoreboard"><h3>Punktestand</h3><div id="result-scoreboard"></div></section>
-      <p id="match-finished" class="match-finished" hidden></p>
+    <section id="guess-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="guess-title">
+      <p class="eyebrow">Letzte Chance</p><h2 id="guess-title">Der Imposter wurde gefunden</h2><p><strong id="eliminated-player"></strong> darf jetzt den geheimen Begriff erraten.</p>
+      <label for="imposter-guess">Begriff eingeben<input id="imposter-guess" maxlength="60" autocomplete="off" enterkeyhint="done"></label>
+      <button id="submit-guess" type="button">Antwort prüfen</button>
+    </section>
+
+    <section id="result-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="result-heading">
+      <p class="eyebrow">Auflösung</p><h2 id="result-heading">Der Begriff war</h2><div id="result-word" class="result-word"></div><p id="result-meta"></p><h3>Imposter</h3><ul id="result-imposters" class="imposter-list"></ul>
+      <h3>Punktestand</h3><div id="leaderboard" class="leaderboard"></div>
       <div class="actions"><button id="next-round" type="button">Nächste Runde</button><button class="secondary" data-new-game type="button">Neues Match</button></div>
     </section>
   </main>
   <script src="game-engine.js"></script>
   <script src="word-packs.js"></script>
+  <script src="data-store.js"></script>
   <script src="app.js"></script>
-  <script src="accessibility.js"></script>
 </body>
 </html>
