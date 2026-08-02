@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const html=fs.readFileSync(path.join(root,'index.html'),'utf8'),controller=fs.readFileSync(path.join(root,'accessibility.js'),'utf8'),css=fs.readFileSync(path.join(root,'accessibility.css'),'utf8'),sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+for(const marker of ['skip-link','screen-announcement','aria-live="polite"','role="timer"','aria-label="Abstimmungsziele"','word-packs.js','accessibility.js','accessibility.css'])assert.ok(html.includes(marker),`HTML missing ${marker}`);
+assert.equal((html.match(/data-screen/g)||[]).length,5);assert.equal((html.match(/tabindex="-1"/g)||[]).length>=5,true);
+for(const marker of ['MutationObserver','announceVisibleScreen','aria-expanded','next-player','next-voter','Escape','content.METADATA'])assert.ok(controller.includes(marker),`controller missing ${marker}`);
+for(const marker of [':focus-visible','prefers-reduced-motion','forced-colors','skip-link','sr-only'])assert.ok(css.includes(marker),`CSS missing ${marker}`);
+for(const file of ['accessibility.css','accessibility.js','word-packs.js'])assert.ok(sw.includes(`./${file}`),`service worker missing ${file}`);
+assert.ok(sw.includes("secret-circle-v4"));
+console.log(JSON.stringify({ok:true,focusManagement:true,screenAnnouncements:true,keyboardFocus:true,reducedMotion:true,forcedColors:true,offlineShell:true},null,2));
