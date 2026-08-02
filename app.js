@@ -1,8 +1,10 @@
 'use strict';
 const E=window.SecretCircleEngine;
+const CONTENT=window.SecretCircleContent;
+if(!CONTENT?.words||!CONTENT?.labels)throw Error('Secret-Circle-Inhalte konnten nicht geladen werden.');
 const KEYS={active:'secret-circle-active-v4',custom:'secret-circle-custom-v4',history:'secret-circle-history-v4',settings:'secret-circle-settings-v4'};
-const WORDS={alltag:[['Schlüssel','Gegenstand'],['Regenschirm','Wetter'],['Kissen','Wohnung'],['Fahrstuhl','Gebäude'],['Zahnbürste','Bad'],['Einkaufswagen','Geschäft'],['Staubsauger','Haushalt'],['Fernbedienung','Wohnzimmer'],['Wecker','Zeit'],['Rucksack','Unterwegs']],schule:[['Tafel','Unterricht'],['Pausenhof','Schule'],['Hausaufgabe','Lernen'],['Lineal','Material'],['Zeugnis','Bewertung'],['Turnhalle','Sport'],['Klassenfahrt','Reise'],['Füller','Schreiben'],['Referat','Vortrag'],['Stundenplan','Organisation']],technik:[['Router','Netzwerk'],['Sensor','Messung'],['Batterie','Energie'],['Kabel','Verbindung'],['Tastatur','Eingabe'],['Satellit','Signal'],['Mikrochip','Elektronik'],['Drohne','Fluggerät'],['Server','Daten'],['Roboter','Automatisierung']],essen:[['Pizza','Gericht'],['Mango','Obst'],['Nudeln','Gericht'],['Joghurt','Kühlregal'],['Popcorn','Snack'],['Zimt','Gewürz'],['Sushi','Reis'],['Pfannkuchen','Frühstück'],['Avocado','Obst'],['Lasagne','Ofengericht']],reisen:[['Flughafen','Reise'],['Koffer','Gepäck'],['Hotel','Unterkunft'],['Reisepass','Dokument'],['Strand','Urlaub'],['U-Bahn','Verkehr'],['Campingplatz','Natur'],['Bergbahn','Höhe'],['Souvenir','Andenken'],['Wanderkarte','Orientierung']],filme:[['Kino','Leinwand'],['Regisseur','Film'],['Trailer','Vorschau'],['Oscar','Preis'],['Stunt','Action'],['Drehbuch','Geschichte'],['Popcorn','Snack'],['Animation','Zeichnung'],['Komödie','Humor'],['Thriller','Spannung']]};
-const LABELS={alltag:'Alltag',schule:'Schule',technik:'Technik',essen:'Essen',reisen:'Reisen',filme:'Filme'};
+const WORDS=CONTENT.words;
+const LABELS=CONTENT.labels;
 const $=(selector,root=document)=>root.querySelector(selector),$$=(selector,root=document)=>[...root.querySelectorAll(selector)];
 let game=null,timer=null,cardVisible=false,installPrompt=null,custom=read(KEYS.custom,[]),history=read(KEYS.history,[]),voteIndex=0;
 function read(key,fallback){try{const value=JSON.parse(localStorage.getItem(key));return value??fallback}catch{return fallback}}
