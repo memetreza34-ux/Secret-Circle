@@ -8,7 +8,7 @@ Secret Circle ist ein lokales Imposter-Partyspiel für drei bis zwanzig Personen
 python -m http.server 8080
 ```
 
-Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App über den Service Worker offline verwendet und auf unterstützten Geräten installiert werden.
+Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App offline verwendet und auf unterstützten Geräten installiert werden.
 
 ## Funktionen
 
@@ -16,28 +16,39 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - ein bis mehrere Imposter
 - fünf integrierte Kategorien und gemischter Modus
 - eigene Kategorien im Format `Begriff | Hilfswort`
-- optionales neutrales Hilfswort
+- ein, drei, fünf oder zehn Runden pro Match
 - geheime Kartenübergabe
-- konfigurierbarer Timer von einer bis zehn Minuten
-- Rollen- und Begriffsauflösung
-- Wiederaufnahme einer unterbrochenen Runde
-- lokale Speicherung von Einstellungen und zehn abgeschlossenen Runden
-- Online-/Offline-Anzeige
+- konfigurierbarer Diskussionstimer
+- geheime Einzelabstimmung am selben Gerät
+- Schutz vor Selbststimmen
+- automatische Auswertung von Mehrheit und Stimmengleichstand
+- Punktesystem für Zivilpersonen und Imposter
+- Rangliste nach jeder Runde
+- Matchgewinner nach der letzten Runde
+- Wiederaufnahme während Kartenverteilung, Diskussion oder Abstimmung
+- lokaler Verlauf der letzten zwanzig Runden
 - installierbare PWA mit Offline-Cache
 - keine Anmeldung und keine Serverübertragung
 
+## Punktelogik
+
+- Wird ein Imposter eindeutig gewählt, erhalten alle Zivilpersonen einen Punkt.
+- Weitere nicht gewählte Imposter erhalten ebenfalls einen Punkt.
+- Wird kein Imposter eindeutig gewählt, erhalten alle Imposter zwei Punkte.
+- Bei Gleichstand wird niemand eindeutig beschuldigt.
+
 ## Getestete Spielengine
 
-Die unabhängige Engine in `game-engine.js` übernimmt:
+`game-engine.js` übernimmt:
 
-- Normalisierung und Prüfung der Spielernamen
-- Sperre doppelter Namen
-- deterministische Zufallsverteilung über einen Seed
-- Imposter- und Begriffsverteilung
-- Rollenanzeige
-- Phasenwechsel und Restzeit
+- validierte Spieler-, Runden- und Imposter-Konfiguration
+- deterministische Rollen- und Begriffsverteilung
+- Match-ID, Rundennummer und fortlaufende Punktestände
+- Diskussion, Abstimmung und Auswertung
+- Mehrheits- und Gleichstandsberechnung
+- Rangliste und nächste Runde
 - sichere Wiederherstellung gespeicherter Spielstände
-- Rundenverlauf
+- Manipulationsprüfung von Stimmen und Punkten
 
 Test:
 
@@ -51,7 +62,7 @@ python scripts/validate_project.py
 
 ## Status
 
-- deterministische Engine und Strukturtest: `GO`
+- Mehr-Runden-, Abstimmungs- und Punkteengine: `GO`
 - installierbare lokale Offline-PWA: `GO_WITH_CONDITIONS`
 - kontrollierter Party-Beta-Test: `GO_WITH_CONDITIONS`
 - öffentliche Store- oder Produktveröffentlichung: `NO_GO`
