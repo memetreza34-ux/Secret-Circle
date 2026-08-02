@@ -1,8 +1,9 @@
 'use strict';
-const E=window.SecretCircleEngine;
+const E=window.SecretCircleEngine,C=window.SecretCircleContent;
+if(!C)throw Error('Secret-Circle-Wortpakete konnten nicht geladen werden.');
+C.validatePacks();
 const KEYS={active:'secret-circle-active-v3',custom:'secret-circle-custom-v2',history:'secret-circle-history-v3',settings:'secret-circle-settings-v3'};
-const WORDS={alltag:[['Schlüssel','Gegenstand'],['Regenschirm','Wetter'],['Kissen','Wohnung'],['Fahrstuhl','Gebäude'],['Zahnbürste','Bad'],['Einkaufswagen','Geschäft']],schule:[['Tafel','Unterricht'],['Pausenhof','Schule'],['Hausaufgabe','Lernen'],['Lineal','Material'],['Zeugnis','Bewertung'],['Turnhalle','Sport']],technik:[['Router','Netzwerk'],['Sensor','Messung'],['Batterie','Energie'],['Kabel','Verbindung'],['Tastatur','Eingabe'],['Satellit','Signal']],essen:[['Pizza','Gericht'],['Mango','Obst'],['Nudeln','Gericht'],['Joghurt','Kühlregal'],['Popcorn','Snack'],['Zimt','Gewürz']],reisen:[['Flughafen','Reise'],['Koffer','Gepäck'],['Hotel','Unterkunft'],['Reisepass','Dokument'],['Strand','Urlaub'],['U-Bahn','Verkehr']]};
-const LABELS={alltag:'Alltag',schule:'Schule',technik:'Technik',essen:'Essen',reisen:'Reisen'};
+const WORDS=C.PACKS,LABELS=C.LABELS;
 const $=(selector,root=document)=>root.querySelector(selector),$$=(selector,root=document)=>[...root.querySelectorAll(selector)];
 let game=null,timer=null,cardVisible=false,installPrompt=null,voteLocked=false,custom=read(KEYS.custom,[]),history=read(KEYS.history,[]);
 function read(key,fallback){try{const value=JSON.parse(localStorage.getItem(key));return value??fallback}catch{return fallback}}
@@ -10,7 +11,7 @@ function write(key,value){localStorage.setItem(key,JSON.stringify(value))}functi
 function esc(value){return String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]))}
 function screen(id){$$('[data-screen]').forEach(node=>node.hidden=node.id!==id)}
 function setStatus(message='',error=false){const node=$('#status');node.textContent=message;node.classList.toggle('error',error)}
-function categoryEntries(id){if(id==='all')return Object.values(WORDS).flat().concat(custom.flatMap(item=>item.entries));if(id.startsWith('custom:')){const item=custom.find(entry=>entry.id===id.slice(7));if(!item)throw Error('Eigene Kategorie wurde nicht gefunden.');return item.entries}if(!WORDS[id])throw Error('Kategorie wurde nicht gefunden.');return WORDS[id]}
+function categoryEntries(id){if(id==='all')return C.allEntries().concat(custom.flatMap(item=>item.entries));if(id.startsWith('custom:')){const item=custom.find(entry=>entry.id===id.slice(7));if(!item)throw Error('Eigene Kategorie wurde nicht gefunden.');return item.entries}if(!WORDS[id])throw Error('Kategorie wurde nicht gefunden.');return WORDS[id]}
 function categoryName(id){if(id==='all')return'Gemischt';if(id.startsWith('custom:'))return custom.find(item=>item.id===id.slice(7))?.name||'Eigene Kategorie';return LABELS[id]||id}
 function renderCategories(){const select=$('#category'),current=select.value;select.innerHTML='<option value="all">Gemischt</option>'+Object.keys(WORDS).map(id=>`<option value="${id}">${esc(LABELS[id])}</option>`).join('')+(custom.length?'<optgroup label="Eigene Kategorien">'+custom.map(item=>`<option value="custom:${esc(item.id)}">${esc(item.name)}</option>`).join('')+'</optgroup>':'');if([...select.options].some(option=>option.value===current))select.value=current;renderCustomList()}
 function renderCustomList(){$('#custom-list').innerHTML=custom.map(item=>`<div class="custom-row"><div><strong>${esc(item.name)}</strong><span>${item.entries.length} Begriffe</span></div><button type="button" class="secondary compact" data-delete-category="${esc(item.id)}">Löschen</button></div>`).join('')||'<p class="muted">Noch keine eigenen Kategorien.</p>'}
