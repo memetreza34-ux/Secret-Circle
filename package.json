@@ -11,6 +11,6 @@
     "ci": "npm run check && npm test && npm run validate && npm run test:e2e"
   },
   "devDependencies": {
-    "@playwright/test": "^1.54.2"
+    "@playwright/test": "1.54.2"
   }
 }
