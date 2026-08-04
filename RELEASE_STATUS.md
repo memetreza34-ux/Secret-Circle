@@ -11,9 +11,9 @@ Zielbranch: `main`
 |---|---:|---|
 | Kernspiel und Regeln | 98 % | Funktionsumfang vollständig für die lokale Partyspiel-Beta |
 | Speicherung und Migration | 98 % | versioniert, streng validiert, migrierbar, sicherbar und vollständig löschbar |
-| PWA und Offline-Struktur | 98 % | Cache-Version 15, vollständiger Offline-Core, Installationsicons, Manifest und Updateschutz |
-| Accessibility und mobile Bedienung | 97 % | Live-Einrichtung, Safe Areas, automatische Kartenverdeckung und Accessibility-Gates; reale Screenreader- und Gerätetests fehlen |
-| Automatisierte Testabdeckung | 98 % | Engine, Speicherung, Inhalte, Fuzz-Szenarien, E2E, Privatsphäre, Sicherheit und Cross-Browser-Smoke |
+| PWA und Offline-Struktur | 98 % | Cache-Version 16, vollständiger Offline-Core, Installationsicons, Manifest und Updateschutz |
+| Accessibility und mobile Bedienung | 97 % | Live-Einrichtung, Safe Areas, Karten-Sichtschutz, optionaler Wake Lock und Accessibility-Gates; reale Gerätetests fehlen |
+| Automatisierte Testabdeckung | 98 % | Engine, Speicherung, Inhalte, Fuzz-Szenarien, E2E, Privatsphäre, Wake Lock, Sicherheit und Cross-Browser-Smoke |
 | Dokumentation und Release-Prozess | 98 % | Checkliste, Status, Testplan, Changelog, Sicherheit, Deployment und Rollback vorhanden |
 | Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert auf echten Geräten und mit echten Gruppen durchgeführt |
 | Öffentliche rechtliche Freigabe | 45 % | Datenschutzgrundlage vorhanden; Verantwortliche-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
@@ -48,13 +48,16 @@ Die Prozentwerte sind eine technische Projektbewertung. Sie sind kein Beweis fü
 - automatische Verdeckung einer sichtbaren geheimen Karte bei Fokusverlust oder App-Wechsel
 - blockierte Kartenweitergabe, solange eine automatisch verdeckte Karte nicht erneut geöffnet wurde
 - Wiederherstellung des sicheren Fokus nach Rückkehr zur App
-- Offline-PWA mit Cache-Version 15
+- optionaler Bildschirm-Wake-Lock während der Diskussionsrunde
+- automatische Freigabe des Wake Locks beim Wechsel zur Abstimmung, bei Hintergrundbetrieb oder beim Verlassen der Seite
+- funktionsfähiger Fallback auf Geräten ohne Wake-Lock-API
+- Offline-PWA mit Cache-Version 16
 - 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
 - Laufzeit-Fehlerschutz, sichtbare Ressourcenausfälle und sicherer PWA-Update-Neustart
 - Content Security Policy, Datenschutzseite und Eingabe-Escaping
 - Grenzwerttests mit 3 bis 20 Personen und mehreren Impostern
 - deterministische Fuzz-Szenarien mit Engine-Invarianten
-- Desktop-/Mobile-E2E-, Privatsphäre-, Sicherheits-, Accessibility- und Cross-Browser-Suiten
+- Desktop-/Mobile-E2E-, Privatsphäre-, Wake-Lock-, Sicherheits-, Accessibility- und Cross-Browser-Suiten
 - Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
 - Repository-Hygiene und Offline-Core-Performancebudget
 - strukturierter HTML-, Manifest-, Service-Worker- und Asset-Validator
@@ -65,7 +68,7 @@ Die Prozentwerte sind eine technische Projektbewertung. Sie sind kein Beweis fü
 
 ### 1. GitHub Actions startet keinen ersten Schritt
 
-Der Workflow endet weiterhin vor `actions/checkout`. Es existieren keine Schrittdaten und keine normalen Job-Logs. Deshalb gibt es noch keinen grünen CI-Nachweis für den endgültigen Commit. Details: `CI_TROUBLESHOOTING.md`.
+Der Workflow endet weiterhin vor `actions/checkout`. Es existieren keine Schrittdaten und keine normalen Job-Logs. Deshalb gibt es noch keinen grünen CI-Nachweis für den endgültigen Commit. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
 
 ### 2. Vollständiger lokaler Testlauf muss protokolliert werden
 
@@ -93,6 +96,7 @@ Mindestens prüfen:
 - Installation, Offline-Start und App-Update,
 - Timer bei Hintergrund, Sperrbildschirm und Energiesparmodus,
 - automatische Kartenverdeckung und blockierte Weitergabe bei App-Wechsel,
+- Wake Lock während der Diskussion und Freigabe danach,
 - Bildschirmrotation und sichere Bildschirmränder.
 
 ### 4. Reale Partytests fehlen
@@ -123,6 +127,6 @@ Die App kann als **Release Candidate** bezeichnet werden, sobald:
 1. `npm run ci` lokal vollständig erfolgreich ist,
 2. der Cross-Browser-Smoke-Test erfolgreich ist,
 3. GitHub Actions wieder echte Schritte ausführt und grün endet,
-4. Android- und iOS-Smoke-Tests bestanden sind,
+4. Android- und iOS-Smoke-Tests inklusive Karten-Sichtschutz und Wake Lock bestanden sind,
 5. mindestens ein kleiner und ein großer Partytest bestanden sind,
 6. keine kritischen oder hohen Fehler offen sind.
