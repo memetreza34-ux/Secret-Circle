@@ -15,6 +15,7 @@ imposter_content = read('word-packs.js')
 base_catalog = read('party-catalog.js')
 expansion = read('party-expansion.js')
 routing = read('party-routing.js')
+custom_packs = read('party-custom-packs.js')
 advanced_modes = read('party-advanced.js')
 advanced_runner = read('party-advanced-runner.js')
 hub_plus = read('party-hub-plus.js')
@@ -37,31 +38,40 @@ checks = {
     'independent_role_seed': 'independent-roles-v1' in roles,
     'expanded_catalog_v2': 'version: 2' in expansion,
     'advanced_routing_v3': 'version: 3' in routing and 'advanced.html?game=' in routing,
+    'custom_packs_v2': all(marker in custom_packs for marker in (
+        'version: 2', 'secret-circle-party-custom-packs-v1',
+        'MAX_PACKS = 20', 'MAX_ITEMS = 100', 'applyPacks'
+    )),
     'advanced_modes_v1': all(marker in advanced_modes for marker in (
         'renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy', 'renderMafia', 'version: 1'
     )),
     'resumable_advanced_sessions': all(marker in advanced_runner for marker in (
-        'secret-circle-party-active-v1', 'loadActive', 'persistActive', 'renderSessionSummary', 'MAX_SESSION_ROUNDS = 20'
+        'secret-circle-party-active-v1', 'loadActive', 'persistActive',
+        'renderSessionSummary', 'MAX_SESSION_ROUNDS = 20'
     )),
     'complete_local_backup': all(marker in data_tools for marker in (
         'secret-circle-complete-backup', 'collectEntries', 'validateBackup', 'Import abgebrochen'
     )),
-    'age_preferences_and_achievements': all(marker in hub_plus for marker in (
-        'gameAllowed', 'achievement-grid', 'settings-age-level', 'beforeinstallprompt', 'version: 4'
+    'age_preferences_achievements_and_stats': all(marker in hub_plus for marker in (
+        'gameAllowed', 'achievement-grid', 'repairStatsFromHistory',
+        'settings-age-level', 'beforeinstallprompt', 'version: 4'
     )),
     'party_hub_navigation': all(marker in party for marker in (
-        'game-search', 'group-filter', 'mood-filter', 'player-filter', 'age-filter', 'status-filter',
-        'hub-players', 'preset-name', 'favorites-grid', 'achievement-grid', 'hub-export-data'
+        'game-search', 'group-filter', 'mood-filter', 'player-filter',
+        'age-filter', 'status-filter', 'hub-players', 'preset-name',
+        'favorites-grid', 'achievement-grid', 'hub-export-data',
+        'party-custom-packs.js'
     )),
     'advanced_setup_and_play': all(marker in advanced for marker in (
         'advanced-pack', 'advanced-length', 'advanced-start', 'advanced-play-layer'
     )),
-    'pwa_cache_v21': "const CACHE='secret-circle-v21'" in sw,
+    'pwa_cache_v22': "const CACHE='secret-circle-v22'" in sw,
     'all_party_modules_cached': all(asset in sw for asset in (
         './party.html', './advanced.html', './party.css', './party-extra.css',
         './party-catalog.js', './party-expansion.js', './party-routing.js',
-        './party-hub.js', './party-hub-plus.js', './party-data-tools.js',
-        './party-advanced.js', './party-advanced-runner.js', './party-advanced-preferences.js'
+        './party-custom-packs.js', './party-hub.js', './party-hub-plus.js',
+        './party-data-tools.js', './party-advanced.js',
+        './party-advanced-runner.js', './party-advanced-preferences.js'
     )),
     'safe_cache_writes': 'await cache.put' in sw,
     'manifest_opens_hub': manifest.get('id') == './' and manifest.get('start_url') == './party.html' and manifest.get('scope') == './',
@@ -75,10 +85,14 @@ checks = {
     ),
     'hub_link_from_imposter': 'href="party.html"' in index,
     'imposter_link_from_hub': 'href="index.html"' in party,
-    'expanded_unit_gate': 'tests/party-expansion.test.js' in package.get('scripts', {}).get('test', ''),
+    'expanded_unit_gates': all(marker in package.get('scripts', {}).get('test', '') for marker in (
+        'tests/party-catalog.test.js', 'tests/party-expansion.test.js',
+        'tests/party-custom-packs.test.js'
+    )),
     'expanded_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
-        'party-expansion.js', 'party-routing.js', 'party-advanced.js',
-        'party-advanced-runner.js', 'party-hub-plus.js', 'party-data-tools.js'
+        'party-expansion.js', 'party-routing.js', 'party-custom-packs.js',
+        'party-advanced.js', 'party-advanced-runner.js',
+        'party-hub-plus.js', 'party-data-tools.js'
     )),
     'main_ci_commands': all(command in workflow for command in (
         'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e'
@@ -107,14 +121,18 @@ if (base_game_count, added_game_count) != (18, 4):
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_browser_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 7 or len(e2e_suites) < 17 or not cross_browser_suites:
+if len(unit_tests) < 8 or len(e2e_suites) < 18 or not cross_browser_suites:
     raise SystemExit('Automated test matrix is incomplete for the expanded Party Hub.')
-for required in ['role-assignment.test.js', 'party-catalog.test.js', 'party-expansion.test.js']:
+for required in [
+    'role-assignment.test.js', 'party-catalog.test.js',
+    'party-expansion.test.js', 'party-custom-packs.test.js'
+]:
     if required not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required}')
 for required in [
     'role-assignment.spec.js', 'party-hub.spec.js', 'party-advanced.spec.js',
-    'party-data.spec.js', 'offline.spec.js', 'privacy-guard.spec.js', 'wake-lock.spec.js'
+    'party-custom-packs.spec.js', 'party-data.spec.js', 'offline.spec.js',
+    'privacy-guard.spec.js', 'wake-lock.spec.js'
 ]:
     if required not in e2e_suites:
         raise SystemExit(f'Critical E2E suite missing: {required}')
@@ -140,7 +158,10 @@ print(json.dumps({
     'party_games_playable': 18,
     'party_games_planned': 4,
     'advanced_playable_games': 4,
-    'pwa_cache': 'secret-circle-v21',
+    'custom_pack_builder': True,
+    'custom_pack_limit': 20,
+    'custom_cards_per_pack_limit': 100,
+    'pwa_cache': 'secret-circle-v22',
     'manifest_start_url': manifest['start_url'],
     'imposter_categories': category_count,
     'imposter_terms': term_count,
