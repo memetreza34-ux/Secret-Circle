@@ -15,19 +15,18 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] Testausgaben und Commit-SHA sind dokumentiert
 - [ ] keine offenen kritischen oder hohen Fehler
 
-## 2. Party-Hub-Struktur
+## 2. Party Hub und Spiele
 
 - [ ] installierte PWA startet auf `party.html`
-- [ ] Start, Spiele, Spieler, Favoriten, Verlauf und Daten sind verständlich
 - [ ] Katalog zeigt 22 Einträge
 - [ ] 18 Spiele sind spielbar
 - [ ] 4 Roadmap-Spiele sind sichtbar und technisch gesperrt
-- [ ] Suche funktioniert mit Titel, Beschreibung und Kategorien
-- [ ] Filter für Art, Stimmung, Gruppe, Altersstufe und Status funktionieren gemeinsam
+- [ ] Suche und alle Filter funktionieren kombiniert
 - [ ] Spielerzahl, Dauer, Kategorien und Regeln sind vor dem Start sichtbar
 - [ ] Navigation zwischen Hub, komplexen Spielen und Word Imposter funktioniert
+- [ ] alle 18 spielbaren Spiele wurden mindestens einmal vollständig geprüft
 
-## 3. Spieler und Presets
+## 3. Spieler, Presets und Einstellungen
 
 - [ ] 1–20 eindeutige Hub-Spieler können gespeichert werden
 - [ ] Leerzeilen und doppelte Namen werden bereinigt
@@ -35,64 +34,12 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] Host-Presets können gespeichert, geladen und gelöscht werden
 - [ ] Favoriten bleiben nach Neuladen erhalten
 - [ ] Altersstufe und Standard-Sessionlänge bleiben erhalten
-- [ ] Verlauf, Statistik und Erfolge werden korrekt aktualisiert
+- [ ] simulierter Präferenz-Speicherfehler wird sichtbar gemeldet
+- [ ] aktuelle Auswahl bleibt bei Speicherfehler bis zum Neuladen nutzbar
 
-## 4. Einfache Hub-Spiele
+## 4. Spieler-Snapshot und komplexe Sessions
 
-- [ ] Wahrheit oder Pflicht
-- [ ] Ich habe noch nie
-- [ ] Wer würde eher?
-- [ ] Entweder oder
-- [ ] Hot Takes
-- [ ] Nur falsche Antworten
-- [ ] Paranoia
-- [ ] Scharade
-- [ ] Nicht sagen! / Tabu
-- [ ] Heiße Kartoffel
-- [ ] Wortkette
-- [ ] Flaschendrehen
-- [ ] Würfel & Münze
-- [ ] Word Imposter öffnet korrekt
-- [ ] Karten wiederholen sich nicht unmittelbar
-- [ ] aktive Person rotiert korrekt
-- [ ] Timer, Zufall und Vibration blockieren das Spiel nicht
-
-## 5. Komplexe Spiele
-
-### Zwei Wahrheiten, eine Lüge
-
-- [ ] drei unterschiedliche Aussagen werden validiert
-- [ ] private Eingabe bleibt verborgen
-- [ ] Aussagen werden gemischt
-- [ ] Wahl und Auflösung stimmen überein
-- [ ] nächste Person und Punktestand funktionieren
-
-### Question Imposter
-
-- [ ] genau eine Person erhält die andere Frage
-- [ ] Fragen werden einzeln angezeigt und wieder verdeckt
-- [ ] Diskussion und Abstimmung funktionieren
-- [ ] beide Fragen und der Imposter werden korrekt aufgelöst
-
-### Location Spy
-
-- [ ] genau eine Person ist Spion
-- [ ] alle anderen sehen denselben Ort
-- [ ] Verdächtigenwahl funktioniert
-- [ ] Ortsratechance zeigt sechs Optionen
-- [ ] Sieg und Punkte stimmen
-
-### Mafia
-
-- [ ] Rollen werden privat und eindeutig verteilt
-- [ ] Moderatoransicht verlangt Bestätigung
-- [ ] Nachtziel, Schutz und Untersuchung funktionieren
-- [ ] eliminierte Personen verschwinden aus späteren Wahlen
-- [ ] Mafia- und Dorf-Siegbedingungen enden das Spiel
-
-## 6. Spieler-Snapshot und Wiederaufnahme
-
-- [ ] neue komplexe Session speichert Session-Schema Version 2
+- [ ] neue Session speichert Schema Version 2
 - [ ] Session besitzt eindeutige ID
 - [ ] Session speichert eigene Spielergruppe
 - [ ] gemeinsame Lobby wird nach Sessionstart verändert
@@ -100,36 +47,59 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] Rollen, Fragen, Spion und aktive Person gehören weiter zum Spieler-Snapshot
 - [ ] neue Session verwendet dagegen die aktuelle Lobby
 - [ ] alte Session ohne Snapshot wird kontrolliert migriert
-- [ ] ungültige Spielergruppe wird verworfen
-- [ ] ungültiges oder gelöschtes Pack verwirft die Session
+- [ ] ungültige Spielergruppe oder Packzuordnung wird verworfen
 - [ ] 3-, 5-, 10- und 20-Runden-Sessions funktionieren
 - [ ] mehr als 20 Runden sind unmöglich
-- [ ] abgeschlossene Session öffnet nach Neuladen die Zusammenfassung
 
-## 7. Transaktionssicherer Sessionabschluss
+## 5. Transaktionssicherer Sessionabschluss
 
 - [ ] normaler Abschluss erzeugt genau einen Verlaufseintrag
 - [ ] Runden und Bestwert werden korrekt addiert
 - [ ] eindeutige Historien-ID verhindert Duplikate
-- [ ] simuliertes Scheitern der Hub-Speicherung lässt die Session aktiv
-- [ ] nach Speicherfehler bleibt die Zusammenfassung sichtbar
+- [ ] simulierter Fehler beim Hub-Speichern lässt Session aktiv
+- [ ] nach Fehler bleibt Zusammenfassung sichtbar
 - [ ] erneuter erfolgreicher Versuch speichert genau einmal
-- [ ] aktiver Session-Marker wird erst nach erfolgreicher Verlaufsspeicherung entfernt
-- [ ] beschädigte aktive Daten werden verständlich verworfen
+- [ ] aktiver Marker wird erst nach erfolgreicher Verlaufsspeicherung entfernt
 
-## 8. Eigene Hub-Kategorien
+## 6. Eigene Hub-Kategorien
 
 - [ ] Editor ist im Datenbereich sichtbar
 - [ ] nur kompatible Spiele sind auswählbar
 - [ ] mindestens drei Karten sind erforderlich
-- [ ] doppelte Karten werden entfernt
+- [ ] Unicode-, Groß-/Kleinschreibungs- und direkte Duplikate werden entfernt
 - [ ] maximal 100 Karten pro Pack
 - [ ] maximal 20 Packs
-- [ ] doppelte Packnamen pro Spiel werden blockiert
+- [ ] doppelte Packnamen und IDs werden bereinigt oder blockiert
 - [ ] HTML- und Skripttexte werden nur als Text ausgegeben
 - [ ] Pack erscheint in Spieldetail und Auswahl
-- [ ] Pack kann gespielt werden
-- [ ] Pack kann vollständig gelöscht werden
+- [ ] Pack kann gespielt und gelöscht werden
+- [ ] simulierter Schreibfehler beim Hinzufügen verändert weder Speicher noch Katalog
+- [ ] simulierter Schreibfehler beim Löschen erhält Pack und Katalog
+
+## 7. Gesamtsicherung
+
+- [ ] Export enthält Hub-, Pack-, Session- und Word-Imposter-Daten
+- [ ] Dateiname und JSON-Format sind korrekt
+- [ ] gültiger Import stellt alle Bereiche wieder her
+- [ ] ungültiges JSON und falsches Format werden abgelehnt
+- [ ] Byte-Grenze von 1,5 MB wird anhand tatsächlicher UTF-8-Bytes geprüft
+- [ ] Mehrbyte-Datei über dem Limit wird vor Datenänderung abgelehnt
+- [ ] mehr als 100 Datensätze werden abgelehnt
+- [ ] einzelner Wert über der Byte-Grenze wird abgelehnt
+- [ ] simulierter Import-Schreibfehler stellt vorherige Daten vollständig wieder her
+- [ ] fehlgeschlagener Rollback wird eindeutig gemeldet
+- [ ] simulierter Löschfehler stellt vorherige Daten wieder her
+- [ ] normale vollständige Löschung entfernt alle `secret-circle-*`-Schlüssel
+
+## 8. Statistik und Erfolge
+
+- [ ] Verlauf, Statistik und acht Erfolge werden korrekt aktualisiert
+- [ ] ältere zu niedrige Statistikwerte werden aus dem Verlauf repariert
+- [ ] höhere neuere Werte werden nicht reduziert
+- [ ] negative und ungültige Werte werden normalisiert
+- [ ] unbekannte Spiel-IDs werden ignoriert
+- [ ] simulierter Statistik-Speicherfehler wird sichtbar gemeldet
+- [ ] Hub bleibt bei Statistik-Speicherfehler bedienbar
 
 ## 9. Word Imposter
 
@@ -144,36 +114,21 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] Selbstwahl und doppelte Stimmen werden verhindert
 - [ ] Punkte, Rangliste, Verlauf und nächste Runde sind korrekt
 
-## 10. Gesamtsicherung und Datenschutz
-
-- [ ] Export enthält Hub-, Pack-, Session- und Word-Imposter-Daten
-- [ ] Dateiname und JSON-Format sind korrekt
-- [ ] gültiger Import stellt alle Bereiche wieder her
-- [ ] ungültiges JSON wird abgelehnt
-- [ ] falsches Format wird abgelehnt
-- [ ] Datei über 1,5 MB wird abgelehnt
-- [ ] mehr als 100 Datensätze werden abgelehnt
-- [ ] fehlgeschlagener Import besitzt Rollback
-- [ ] vollständige Löschung entfernt alle `secret-circle-*`-Schlüssel
-- [ ] keine Analyse-, Tracking- oder Werbedienste
-- [ ] keine Secrets oder `.env`-Dateien im Repository
-
-## 11. PWA und Offline
+## 10. PWA und Offline
 
 - [ ] Manifest heißt „Secret Circle – Party Hub“
 - [ ] `start_url` ist `./party.html`
 - [ ] `id` und `scope` sind relativ
 - [ ] Icons sind gültige 192- und 512-Pixel-PNGs
-- [ ] Cache `secret-circle-v23` enthält alle Kernressourcen
-- [ ] nur Cache `secret-circle-v23` bleibt bestehen
+- [ ] Cache `secret-circle-v24` enthält alle Kernressourcen
+- [ ] nur Cache `secret-circle-v24` bleibt bestehen
 - [ ] Hub, Pack-Editor, komplexe Spiele, Word Imposter und Datenschutz starten offline
-- [ ] aktive Session übersteht PWA-Update
-- [ ] Spieler-Snapshot übersteht PWA-Update
-- [ ] Eigene Hub-Kategorien überstehen PWA-Update
+- [ ] aktive Session und Spieler-Snapshot überstehen PWA-Update
+- [ ] eigene Packs und Einstellungen überstehen PWA-Update
 - [ ] Android-Installation und Update erfolgreich
 - [ ] iPhone-/iPad-Installation und Update erfolgreich
 
-## 12. Browser, Mobile und Accessibility
+## 11. Browser, Mobile und Accessibility
 
 - [ ] Chrome Android
 - [ ] Safari iOS
@@ -189,43 +144,20 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] reduzierte Bewegung und ausreichender Kontrast
 - [ ] Touchflächen mindestens 44 × 44 Pixel
 
-## 13. Inhalte und Sicherheit
+## 12. Inhalte, Partytests und Recht
 
 - [ ] mindestens 384 Hub-Inhalte redaktionell geprüft
 - [ ] alle 168 Imposter-Begriffe geprüft
-- [ ] keine problematischen Dopplungen
-- [ ] keine diskriminierenden oder ungeeigneten Inhalte
+- [ ] keine problematischen Dopplungen oder ungeeigneten Inhalte
 - [ ] Altersstufen sind nachvollziehbar
-- [ ] dynamische Inhalte werden als Text gerendert
-- [ ] Content Security Policy blockiert fremde Skripte
-- [ ] keine unnötigen externen Ressourcen
-- [ ] geheime Rollen und Fragen bleiben bei Übergabe geschützt
-
-## 14. Realer Party-Betatest
-
-- [ ] Gruppe mit 3–4 Personen
-- [ ] Gruppe mit mindestens 8 Personen
-- [ ] Word Imposter mit mehreren Impostern
-- [ ] Question Imposter
-- [ ] Location Spy
-- [ ] Mafia
-- [ ] Scharade
-- [ ] Heiße Kartoffel
-- [ ] eigenes Hub-Pack
-- [ ] mindestens eine 10-Runden-Session
+- [ ] Gruppe mit 3–4 Personen hat vollständigen Test durchgeführt
+- [ ] Gruppe mit mindestens 8 Personen hat vollständigen Test durchgeführt
+- [ ] eigenes Hub-Pack wurde real getestet
+- [ ] mindestens eine 10-Runden-Session wurde real gespielt
 - [ ] Einrichtung wird ohne Entwicklerhilfe verstanden
-- [ ] keine Blockade oder unklare Sackgasse
-- [ ] Feedback und Fehler dokumentiert
-
-## 15. Release-Dokumentation und Recht
-
 - [ ] Version und Release-Commit festgelegt
-- [ ] Changelog aktuell
-- [ ] bekannte Einschränkungen aktuell
-- [ ] Deployment und Rollback geprüft
 - [ ] Datenschutz an endgültiges Hosting angepasst
 - [ ] Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt
-- [ ] Testpersonen und Testdatum eingetragen
 
 ## Freigabe
 
