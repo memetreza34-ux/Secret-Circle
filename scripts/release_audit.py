@@ -33,6 +33,7 @@ app = read('app.js')
 engine = read('game-engine.js')
 word_packs = read('word-packs.js')
 data_store = read('data-store.js')
+content_tests = read('tests/content.test.js')
 fuzz_tests = read('tests/fuzz.test.js')
 service_worker = read('sw.js')
 workflow = read('.github/workflows/ci.yml')
@@ -61,6 +62,13 @@ category_count = word_packs.count('entries:[')
 term_count = len(re.findall(r"\['(?:[^'\\]|\\.)*','(?:[^'\\]|\\.)*'\]", word_packs))
 if category_count != 14 or term_count != 168:
     raise SystemExit(f'Unexpected built-in content size: {category_count} categories, {term_count} terms.')
+for marker in [
+    'contentVersion', 'categories', 'totalTerms', 'termsPerCategory',
+    'uniqueWithinCategories', 'safeTextOnlyContent',
+    'exactWordHintDuplicates', 'crossCategoryDuplicates'
+]:
+    if marker not in content_tests:
+        raise SystemExit(f'Editorial content test marker missing: {marker}')
 
 png_dimensions = {}
 for relative, expected_size in [('icon-192.png', 192), ('icon-512.png', 512)]:
@@ -78,8 +86,8 @@ if manifest.get('display') != 'standalone' or manifest.get('lang') != 'de':
     raise SystemExit('Manifest display or language is invalid.')
 
 cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
-if not cache_match or cache_match.group(1) != 'secret-circle-v10':
-    raise SystemExit('Service worker cache version must be secret-circle-v10.')
+if not cache_match or cache_match.group(1) != 'secret-circle-v11':
+    raise SystemExit('Service worker cache version must be secret-circle-v11.')
 for marker in ['fetchAndCache', 'await cache.put', 'handleNavigation', 'handleAsset', './runtime-guard.js']:
     if marker not in service_worker:
         raise SystemExit(f'Service worker reliability marker missing: {marker}')
@@ -94,10 +102,16 @@ if not re.fullmatch(r'\d+\.\d+\.\d+', playwright_version):
 for script in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
     if script not in package.get('scripts', {}):
         raise SystemExit(f'Package script missing: {script}')
-for marker in ['tests/engine.test.js', 'tests/storage.test.js', 'tests/fuzz.test.js']:
+for marker in [
+    'tests/engine.test.js', 'tests/storage.test.js',
+    'tests/content.test.js', 'tests/fuzz.test.js'
+]:
     if marker not in package['scripts']['test']:
         raise SystemExit(f'Unit test gate missing: {marker}')
-for marker in ['scripts/repo_hygiene.py', 'scripts/validate_project.py', 'scripts/performance_budget.py', 'scripts/release_audit.py']:
+for marker in [
+    'scripts/repo_hygiene.py', 'scripts/validate_project.py',
+    'scripts/performance_budget.py', 'scripts/release_audit.py'
+]:
     if marker not in package['scripts']['validate']:
         raise SystemExit(f'Validation gate missing: {marker}')
 
@@ -144,7 +158,7 @@ production_docs = {
     'security': (security, ['Sicherheitsproblem melden', 'Security Advisory', 'Sicherheitsmodell der App']),
     'manual test plan': (manual_plan, ['Grundlegender Smoke-Test', 'PWA und Offline', 'Realer Partytest']),
     'CI troubleshooting': (ci_help, ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits']),
-    'deployment': (deployment, ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v10'])
+    'deployment': (deployment, ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v11'])
 }
 for document, (source, markers) in production_docs.items():
     for marker in markers:
@@ -172,6 +186,7 @@ print(json.dumps({
     'pwa_icons': png_dimensions,
     'built_in_categories': category_count,
     'built_in_terms': term_count,
+    'editorial_content_tests': True,
     'deterministic_fuzz_scenarios': 120,
     'e2e_suites': e2e_suites,
     'cross_browser_suites': cross_browser_suites,
