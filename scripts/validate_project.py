@@ -25,12 +25,13 @@ REQUIRED = {
     'tests/party-catalog.test.js', 'tests/party-expansion.test.js',
     'tests/party-custom-packs.test.js', 'tests/e2e/party-hub.spec.js',
     'tests/e2e/party-advanced.spec.js', 'tests/e2e/party-custom-packs.spec.js',
-    'tests/e2e/party-data.spec.js', 'tests/e2e/offline.spec.js',
-    'tests/e2e/pwa-install.spec.js', 'tests/e2e/runtime-guard.spec.js',
-    'tests/cross-browser/smoke.spec.js', 'scripts/repo_hygiene.py',
-    'scripts/performance_budget.py', 'scripts/release_audit.py',
-    '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
-    'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
+    'tests/e2e/party-data.spec.js', 'tests/e2e/party-stats.spec.js',
+    'tests/e2e/offline.spec.js', 'tests/e2e/pwa-install.spec.js',
+    'tests/e2e/runtime-guard.spec.js', 'tests/cross-browser/smoke.spec.js',
+    'scripts/repo_hygiene.py', 'scripts/performance_budget.py',
+    'scripts/release_audit.py', '.github/workflows/ci.yml',
+    '.github/workflows/cross-browser.yml', 'README.md',
+    'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
     'KNOWN_LIMITATIONS.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md',
     'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
 }
@@ -38,10 +39,7 @@ missing = sorted(path for path in REQUIRED if not (ROOT / path).is_file())
 if missing:
     raise SystemExit(f'Missing required files: {", ".join(missing)}')
 
-for obsolete in [
-    'match.css', 'accessibility.js', 'accessibility.css',
-    'ACCESSIBILITY_VALIDATION.md', 'tests/accessibility.test.js'
-]:
+for obsolete in ['match.css', 'accessibility.js', 'accessibility.css', 'ACCESSIBILITY_VALIDATION.md', 'tests/accessibility.test.js']:
     if (ROOT / obsolete).exists():
         raise SystemExit(f'Obsolete file remains: {obsolete}')
 
@@ -113,7 +111,7 @@ advanced = audit_html('advanced.html', [
 
 for marker in ['href="party.html"', 'role-assignment.js', 'data-store.js']:
     if marker not in index:
-        raise SystemExit(f'Word Imposter page marker missing: {marker}')
+        raise SystemExit(f'Word Imposter marker missing: {marker}')
 for marker in [
     'Der ganze Spieleabend in einer App', 'game-search', 'group-filter',
     'mood-filter', 'player-filter', 'age-filter', 'status-filter',
@@ -126,76 +124,49 @@ for marker in ['advanced-pack', 'advanced-length', 'advanced-start', 'advanced-p
     if marker not in advanced:
         raise SystemExit(f'Advanced screen marker missing: {marker}')
 
-engine = read('game-engine.js')
-store = read('data-store.js')
-roles = read('role-assignment.js')
-base_catalog = read('party-catalog.js')
-expansion = read('party-expansion.js')
-routing = read('party-routing.js')
-custom_packs = read('party-custom-packs.js')
-advanced_modes = read('party-advanced.js')
-advanced_runner = read('party-advanced-runner.js')
-hub_plus = read('party-hub-plus.js')
-data_tools = read('party-data-tools.js')
+sources = {
+    'engine': read('game-engine.js'),
+    'store': read('data-store.js'),
+    'roles': read('role-assignment.js'),
+    'base_catalog': read('party-catalog.js'),
+    'expansion': read('party-expansion.js'),
+    'routing': read('party-routing.js'),
+    'custom_packs': read('party-custom-packs.js'),
+    'advanced_modes': read('party-advanced.js'),
+    'advanced_runner': read('party-advanced-runner.js'),
+    'hub_plus': read('party-hub-plus.js'),
+    'data_tools': read('party-data-tools.js')
+}
 
-if not re.search(r'\bVERSION\s*=\s*7\b', engine):
+if not re.search(r'\bVERSION\s*=\s*7\b', sources['engine']):
     raise SystemExit('Game engine version must be 7.')
-if not re.search(r'\bKEY_VERSION\s*=\s*7\b', store) or not re.search(r'\bENGINE_VERSION\s*=\s*7\b', store):
+if not re.search(r'\bKEY_VERSION\s*=\s*7\b', sources['store']) or not re.search(r'\bENGINE_VERSION\s*=\s*7\b', sources['store']):
     raise SystemExit('Storage schema must be version 7.')
-for marker in [
-    'MAX_IMPOSTERS = 6', 'independent-roles-v1', 'assignIndependentRoles',
-    'validateGameRoles', 'engine.restoreGame', 'engine.createGame', 'version: 2'
-]:
-    if marker not in roles:
-        raise SystemExit(f'Role-assignment marker missing: {marker}')
-for marker in [
-    "'two-truths': 'two-truths'", "'question-imposter': 'question-imposter'",
-    "'location-spy': 'location-spy'", "mafia: 'mafia'",
-    "id: 'wavelength'", "id: 'draw-guess'", "id: 'rapid-fire'",
-    "id: 'sound-imitation'", 'version: 2'
-]:
-    if marker not in expansion:
-        raise SystemExit(f'Expansion marker missing: {marker}')
-for marker in ['advancedMode', 'advanced.html?game=', 'version: 3']:
-    if marker not in routing:
-        raise SystemExit(f'Routing marker missing: {marker}')
-for marker in [
-    'secret-circle-party-custom-packs-v1', 'MAX_PACKS = 20', 'MAX_ITEMS = 100',
-    'supportedModes', 'parseItems', 'normalizePack', 'applyPacks', 'version: 2'
-]:
-    if marker not in custom_packs:
-        raise SystemExit(f'Custom-pack marker missing: {marker}')
-for marker in [
-    'renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy',
-    'renderMafia', 'assignMafiaRoles', 'mafiaWinner', 'version: 1'
-]:
-    if marker not in advanced_modes:
-        raise SystemExit(f'Advanced-mode marker missing: {marker}')
-for marker in [
-    'secret-circle-party-active-v1', 'MAX_SESSION_ROUNDS = 20',
-    'loadActive', 'persistActive', 'renderSessionSummary', 'party.html?view=stats'
-]:
-    if marker not in advanced_runner:
-        raise SystemExit(f'Advanced-runner marker missing: {marker}')
-for marker in ['gameAllowed', 'achievement-grid', 'settings-age-level', 'beforeinstallprompt', 'version: 4']:
-    if marker not in hub_plus:
-        raise SystemExit(f'Hub-plus marker missing: {marker}')
-for marker in [
-    'secret-circle-complete-backup', 'MAX_BYTES = 1_500_000',
-    'validateBackup', 'collectEntries', 'Import abgebrochen'
-]:
-    if marker not in data_tools:
-        raise SystemExit(f'Data-tool marker missing: {marker}')
 
-base_games = len(re.findall(r"\bid:\s*'[^']+'", base_catalog.split('const content =', 1)[0]))
-added_games = len(re.findall(r"\bid:\s*'[^']+'", expansion.split('const advancedContent =', 1)[0]))
+module_markers = {
+    'roles': ['MAX_IMPOSTERS = 6', 'independent-roles-v1', 'assignIndependentRoles', 'engine.restoreGame', 'engine.createGame', 'version: 2'],
+    'expansion': ["'two-truths': 'two-truths'", "'question-imposter': 'question-imposter'", "'location-spy': 'location-spy'", "mafia: 'mafia'", "id: 'wavelength'", 'version: 2'],
+    'routing': ['advancedMode', 'advanced.html?game=', 'version: 3'],
+    'custom_packs': ['secret-circle-party-custom-packs-v1', 'MAX_PACKS = 20', 'MAX_ITEMS = 100', 'parseItems', 'normalizePack', 'applyPacks', 'version: 2'],
+    'advanced_modes': ['renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy', 'renderMafia', 'assignMafiaRoles', 'mafiaWinner', 'version: 1'],
+    'advanced_runner': ['ACTIVE_VERSION = 2', 'session.players', 'sessionPlayers', 'historyId', 'saveHubState(nextHubState)', 'Session bleibt aktiv', 'MAX_SESSION_ROUNDS = 20'],
+    'hub_plus': ['gameAllowed', 'achievement-grid', 'settings-age-level', 'beforeinstallprompt', 'repairStatsFromHistory', 'version: 4'],
+    'data_tools': ['secret-circle-complete-backup', 'MAX_BYTES = 1_500_000', 'validateBackup', 'collectEntries', 'Import abgebrochen']
+}
+for source_name, markers in module_markers.items():
+    for marker in markers:
+        if marker not in sources[source_name]:
+            raise SystemExit(f'Module marker missing in {source_name}: {marker}')
+
+base_games = len(re.findall(r"\bid:\s*'[^']+'", sources['base_catalog'].split('const content =', 1)[0]))
+added_games = len(re.findall(r"\bid:\s*'[^']+'", sources['expansion'].split('const advancedContent =', 1)[0]))
 if (base_games, added_games) != (18, 4):
     raise SystemExit(f'Unexpected catalog structure: {base_games} base and {added_games} added games.')
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='([^']+)'", sw)
-if not cache or cache.group(1) != 'secret-circle-v22':
-    raise SystemExit('Service worker cache must be secret-circle-v22.')
+if not cache or cache.group(1) != 'secret-circle-v23':
+    raise SystemExit('Service worker cache must be secret-circle-v23.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', sw)
 if not core_match:
     raise SystemExit('Service worker CORE list missing.')
@@ -212,7 +183,7 @@ expected_core = [
     './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
 ]
 if core != expected_core:
-    raise SystemExit('Service worker CORE is not synchronized with cache v22.')
+    raise SystemExit('Service worker CORE is not synchronized with cache v23.')
 for marker in ['cache.addAll', 'await cache.put', 'self.clients.claim', 'handleNavigation', 'handleAsset']:
     if marker not in sw:
         raise SystemExit(f'Service worker marker missing: {marker}')
@@ -227,10 +198,8 @@ for source, size in [('icon-192.png', 192), ('icon-512.png', 512)]:
     if not icon or icon.get('sizes') != f'{size}x{size}' or icon.get('type') != 'image/png':
         raise SystemExit(f'Manifest icon invalid: {source}')
     data = (ROOT / source).read_bytes()
-    if data[:8] != b'\x89PNG\r\n\x1a\n' or data[12:16] != b'IHDR':
-        raise SystemExit(f'PNG signature invalid: {source}')
-    if struct.unpack('>II', data[16:24]) != (size, size):
-        raise SystemExit(f'PNG dimensions invalid: {source}')
+    if data[:8] != b'\x89PNG\r\n\x1a\n' or data[12:16] != b'IHDR' or struct.unpack('>II', data[16:24]) != (size, size):
+        raise SystemExit(f'PNG file invalid: {source}')
 
 package = json.loads(read('package.json'))
 if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('node') != '>=20':
@@ -238,36 +207,47 @@ if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('n
 for name in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
     if not package.get('scripts', {}).get(name):
         raise SystemExit(f'Package script missing: {name}')
-for marker in [
-    'party-expansion.js', 'party-routing.js', 'party-custom-packs.js',
-    'party-advanced.js', 'party-advanced-runner.js',
-    'party-hub-plus.js', 'party-data-tools.js'
-]:
+for marker in ['party-expansion.js', 'party-routing.js', 'party-custom-packs.js', 'party-advanced.js', 'party-advanced-runner.js', 'party-hub-plus.js', 'party-data-tools.js']:
     if marker not in package['scripts']['check']:
         raise SystemExit(f'Syntax gate missing: {marker}')
-for marker in [
-    'tests/party-catalog.test.js', 'tests/party-expansion.test.js',
-    'tests/party-custom-packs.test.js'
-]:
+for marker in ['tests/party-catalog.test.js', 'tests/party-expansion.test.js', 'tests/party-custom-packs.test.js']:
     if marker not in package['scripts']['test']:
         raise SystemExit(f'Unit gate missing: {marker}')
 
-for relative, markers in {
+required_test_markers = {
     'tests/party-expansion.test.js': ['playableGames', 'advancedPlayableGames', 'totalItems'],
     'tests/party-custom-packs.test.js': ['customPackVersion', 'catalogInjectionAndRemoval'],
     'tests/e2e/party-hub.spec.js': ['playable catalog and roadmap', 'age preference', 'advanced games are playable'],
-    'tests/e2e/party-advanced.spec.js': ['two truths and a lie', 'question imposter', 'location spy', 'mafia', 'survive a reload'],
+    'tests/e2e/party-advanced.spec.js': ['survive a reload', 'original player snapshot', 'failed history write'],
     'tests/e2e/party-custom-packs.spec.js': ['custom pack editor validates', 'duplicate pack names', 'custom packs can be deleted'],
     'tests/e2e/party-data.spec.js': ['custom packs and Word Imposter', 'complete backup import', 'invalid import', 'complete deletion'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v22', 'custom packs', 'advanced Question Imposter'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v22'],
+    'tests/e2e/party-stats.spec.js': ['history repairs cumulative', 'never reduces newer aggregate'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v23', 'custom packs', 'advanced Question Imposter'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v23'],
     'tests/e2e/pwa-install.spec.js': ['./party.html', 'Party Hub'],
     'tests/cross-browser/smoke.spec.js': ['Party Hub catalog', 'Question Imposter']
-}.items():
+}
+for relative, markers in required_test_markers.items():
     source = read(relative).lower()
     for marker in markers:
         if marker.lower() not in source:
             raise SystemExit(f'Missing test marker {marker} in {relative}')
+
+required_doc_markers = {
+    'README.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', '18 spielbare Spiele'],
+    'RELEASE_STATUS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Gesamte gewünschte Party-Hub-Vision'],
+    'CHANGELOG.md': ['secret-circle-v23', 'eigene Hub-Kategorien', 'Spielergruppe'],
+    'DEPLOYMENT.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Spielergruppe'],
+    'RELEASE_CHECKLIST.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spieler-Snapshot'],
+    'MANUAL_TEST_PLAN.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spielergruppe'],
+    'KNOWN_LIMITATIONS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Online-Mehrspielermodus'],
+    'CI_TROUBLESHOOTING.md': ['secret-circle-v23', 'eigene Hub-Packs', 'GitHub Actions']
+}
+for relative, markers in required_doc_markers.items():
+    source = read(relative).lower()
+    for marker in markers:
+        if marker.lower() not in source:
+            raise SystemExit(f'Missing documentation marker {marker} in {relative}')
 
 print(json.dumps({
     'structure_validation': 'PASS',
@@ -280,8 +260,10 @@ print(json.dumps({
     'party_games_playable': 18,
     'party_games_planned': 4,
     'advanced_playable_games': 4,
+    'advanced_active_schema': ACTIVE_VERSION if False else 2,
     'custom_pack_builder': True,
-    'custom_pack_supported_games': 8,
+    'player_snapshot_sessions': True,
+    'transaction_safe_history': True,
     'pwa_cache': cache.group(1),
     'offline_core_assets': len(core),
     'manifest_start_url': manifest.get('start_url')
