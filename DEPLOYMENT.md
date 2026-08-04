@@ -1,118 +1,148 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Secret Circle besteht ausschließlich aus statischen Dateien. Eine veröffentlichte PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
+Secret Circle besteht aus statischen Dateien. Eine installierbare PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
 
-## Aktueller Umfang
+## Aktueller Deployment-Umfang
 
-- `party.html`: neuer Party Hub mit Spielekatalog und vierzehn spielbaren Spielen
-- `index.html`: bestehendes Word-Imposter-Spiel
+- `party.html`: installierter Startpunkt und Party-Hub-Navigation
+- `advanced.html`: komplexe Spiele
+- `index.html`: vollständiges Word-Imposter-Modul
 - `privacy.html`: Datenschutzinformationen
-- Service-Worker-Cache: `secret-circle-v19`
+- Manifest-Start: `./party.html`
+- Service-Worker-Cache: `secret-circle-v21`
+- 22 sichtbare Spiele, 18 spielbar, 4 gesperrt geplant
 
 ## Voraussetzungen
 
-Vor einem öffentlichen Deployment müssen folgende Punkte erfüllt sein:
+Vor einem öffentlichen Deployment:
 
 - `npm run ci` lokal erfolgreich
 - `npm run test:cross-browser` erfolgreich
 - GitHub Actions auf dem endgültigen Commit grün
-- Party-Hub-Navigation und mindestens fünf Hub-Spiele auf realen Geräten geprüft
-- Word Imposter vollständig geprüft
-- Offline- und Update-Test dokumentiert
+- Android- und iOS-Installation geprüft
+- Offline-Start und Update auf Cache `secret-circle-v21` geprüft
+- alle 18 Spiele mindestens einmal real getestet
+- kleiner und großer Partytest dokumentiert
+- vollständiger Backup-/Import-/Löschtest bestanden
 - keine offenen kritischen oder hohen Fehler
+- öffentliche Anbieter- und Kontaktangaben vorhanden
 
 ## GitHub Pages
 
-1. Expansionsbranch erst nach erfolgreicher Prüfung zusammenführen.
-2. `Settings → Pages` öffnen.
-3. `Deploy from a branch` wählen.
-4. Branch `main`, Ordner `/ (root)` auswählen.
-5. HTTPS-Adresse abwarten und den vollständigen Smoke-Test durchführen.
+1. Draft-PR #11 erst nach erfolgreicher Prüfung zusammenführen.
+2. Basierenden Word-Imposter-PR ebenfalls geordnet in `main` übernehmen.
+3. `Settings → Pages` öffnen.
+4. `Deploy from a branch` wählen.
+5. Branch `main`, Ordner `/ (root)` auswählen.
+6. HTTPS-Adresse abwarten.
+7. Deployment-Smoke-Test vollständig ausführen.
 
 ## Prüfung nach dem Deployment
 
 ### Seiten und Assets
 
-1. `party.html`, `index.html`, `privacy.html` und `manifest.webmanifest` liefern Status 200.
-2. `party.css`, `party-catalog.js` und `party-hub.js` werden ohne Fehler geladen.
-3. Manifest, 192- und 512-Pixel-Icons werden korrekt erkannt.
-4. Content Security Policy blockiert keine eigenen benötigten Dateien.
+1. `party.html`, `advanced.html`, `index.html`, `privacy.html` und `manifest.webmanifest` liefern Status 200.
+2. Manifest installiert „Secret Circle – Party Hub“ und verwendet `./party.html` als Start-URL.
+3. 192- und 512-Pixel-Icons werden erkannt.
+4. Browserkonsole und Netzwerkansicht zeigen keine Fehler.
+5. Content Security Policy blockiert keine eigenen benötigten Dateien.
 
 ### Party Hub
 
-5. Startseite zeigt vierzehn spielbare und vier geplante Spiele.
-6. Suche und alle Filter funktionieren.
-7. geplante Spiele sind sichtbar, aber nicht startbar.
-8. Spieler, Host-Presets und Favoriten bleiben nach Neuladen erhalten.
-9. Wahrheit oder Pflicht, Entweder oder, Scharade, Nicht sagen!, Heiße Kartoffel und Zufallswerkzeuge starten korrekt.
-10. beendete Sessions erscheinen im lokalen Hub-Verlauf.
-11. `party.html` verlinkt zu Word Imposter und `index.html` zurück zum Party Hub.
+6. Startseite zeigt 18 spielbare und 4 geplante Spiele.
+7. Suche sowie Filter für Art, Stimmung, Gruppengröße, Altersstufe und Status funktionieren.
+8. geplante Spiele sind sichtbar, aber nicht startbar.
+9. Spieler, Presets, Favoriten, Altersstufe und Standardlänge bleiben nach Neuladen erhalten.
+10. Verlauf, Statistik und Erfolge werden nach abgeschlossenen Sessions aktualisiert.
+11. Installationsschaltfläche erscheint in unterstützten Browsern.
+
+### Komplexe Spiele
+
+12. Zwei Wahrheiten, eine Lüge unterstützt private Eingabe, Mischung, Abstimmung und Auflösung.
+13. Question Imposter verteilt geheime ähnliche Fragen und löst die Wahl auf.
+14. Location Spy verteilt Ort und Spion, erlaubt Wahl sowie Ortsraten.
+15. Mafia verteilt Rollen, schützt die Moderatoransicht und verarbeitet Nacht, Tag und Sieg.
+16. aktive komplexe Sessions werden nach Neuladen korrekt fortgesetzt.
+17. 3-, 5-, 10- und 20-Runden-Sessions funktionieren; mehr als 20 Runden sind gesperrt.
 
 ### Word Imposter
 
-12. Rollenverteilung ist unabhängig von der Aufdeckreihenfolge.
-13. maximal sechs Imposter werden auch bei wiederhergestellten Spielen erzwungen.
-14. Karten-Sichtschutz, Timer, geheime Wahl, Stichwahl, Punkte und nächste Runde funktionieren.
-15. Backup-Export, Import und vollständige Imposter-Datenlöschung funktionieren.
+18. Rollenverteilung ist unabhängig von der Aufdeckreihenfolge.
+19. maximal sechs Imposter werden auch bei wiederhergestellten Spielen erzwungen.
+20. Karten-Sichtschutz, Timer, Wahl, Stichwahl, Punkte und nächste Runde funktionieren.
+
+### Daten
+
+21. Gesamtexport enthält Hub- und Word-Imposter-Daten.
+22. gültiger Import ersetzt lokale Daten und lädt die App neu.
+23. ungültiger Import verändert vorhandene Daten nicht.
+24. fehlgeschlagener Schreibvorgang stellt den vorherigen Zustand wieder her.
+25. vollständige Löschung entfernt alle `secret-circle-*`-Datensätze.
 
 ### PWA und Offline
 
-16. Service Worker verwendet ausschließlich Cache `secret-circle-v19`.
-17. Party Hub, Word Imposter und Datenschutzseite starten nach einem vollständigen Online-Aufruf offline.
-18. folgende Hub-Dateien sind offline verfügbar:
-    - `party.html`
-    - `party.css`
-    - `party-catalog.js`
-    - `party-hub.js`
-19. alle bisherigen Imposter- und Schutzmodule sind offline verfügbar.
-20. nach einem Update bleibt nur Cache `secret-circle-v19` bestehen.
-21. Android- und iOS-Installation funktionieren.
+26. nur Cache `secret-circle-v21` bleibt aktiv.
+27. Party Hub, komplexe Spiele, Word Imposter und Datenschutz starten offline.
+28. Question Imposter kann vollständig offline begonnen werden.
+29. Update von einer älteren installierten Cache-Version lädt nur die neue Dateiversion.
+30. lokale Spielstände bleiben nach dem PWA-Update erhalten.
 
-## Lokaler Smoke-Test
+## Lokaler Test
 
 ```bash
 python -m http.server 8080
 ```
 
-Danach prüfen:
+Danach öffnen:
 
 - `http://localhost:8080/party.html`
+- `http://localhost:8080/advanced.html?game=question-imposter`
 - `http://localhost:8080/index.html`
-- Browserkonsole ohne Fehler
-- Responsive-Modus für kleines Smartphone, großes Smartphone und Tablet
+
+Automatisierte Prüfung:
+
+```bash
+npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+npx playwright install --with-deps chromium
+npm run ci
+
+npx playwright install --with-deps chromium firefox webkit
+npm run test:cross-browser
+```
 
 ## Release markieren
 
-Die aktuelle Expansionsarbeit ist noch kein stabiler Release. Erst nach erfolgreicher Freigabe eine neue Beta-Version festlegen und markieren.
-
-Beispiel nach der Freigabe:
+Die Expansion ist noch kein freigegebener stabiler Release. Nach vollständiger Beta-Freigabe kann eine neue Version markiert werden:
 
 ```bash
 git tag -a v1.0.0-beta.4 -m "Secret Circle Party Hub beta 4"
 git push origin v1.0.0-beta.4
 ```
 
-Eine stabile Version `v1.0.0` darf erst nach allen automatisierten, realen und rechtlichen Freigabeprüfungen erstellt werden.
+`v1.0.0` darf erst nach allen automatisierten, realen und rechtlichen Prüfungen erstellt werden.
 
 ## Update-Regeln
 
-Bei Änderungen an offline benötigten Dateien:
+Bei Änderungen an einer offline benötigten Datei:
 
 1. Cache-Version in `sw.js` erhöhen.
-2. `CORE`, Offline-Test, Strukturvalidator, Performancebudget und Release-Audit synchronisieren.
-3. ältere installierte Version öffnen und Update testen.
-4. prüfen, dass keine Mischung aus alten und neuen Laufzeitdateien entsteht.
-5. lokale Hub- und Imposter-Daten getrennt auf Kompatibilität prüfen.
-6. Changelog und Release-Status aktualisieren.
+2. `CORE`, Offline-Test, Runtime-Test, Validator, Release-Audit und Dokumentation synchronisieren.
+3. Manifest-Start und alle HTML-Scriptreihenfolgen prüfen.
+4. alte installierte Version öffnen.
+5. neue Version online laden.
+6. kontrollieren, dass nur der neue Cache bestehen bleibt.
+7. Hub-, aktive Session- und Imposter-Daten auf Kompatibilität prüfen.
 
 ## Datenkompatibilität
 
-Aktuell existieren zwei lokale Datenbereiche:
+Relevante Bereiche:
 
 - versionierter Word-Imposter-Speicher
-- Party-Hub-Speicher `secret-circle-party-hub-v1`
+- Hub-Speicher `secret-circle-party-hub-v1`
+- aktive komplexe Session `secret-circle-party-active-v1`
+- Hub-Präferenzen `secret-circle-party-preferences-v1`
 
-Ein Rollback darf keinen dieser Speicherbereiche unkontrolliert löschen. Vor einem stabilen Release soll das gemeinsame Backup beide Bereiche abdecken.
+Der Gesamtexport sammelt alle Schlüssel mit Präfix `secret-circle-`. Ein Rollback darf diese Daten nicht unkontrolliert löschen oder in ein inkompatibles Format zurücksetzen.
 
 ## Rollback
 
@@ -120,11 +150,12 @@ Bei einem kritischen Fehler:
 
 1. Veröffentlichung stoppen.
 2. gezielten Revert auf den letzten funktionierenden Commit erstellen.
-3. Service-Worker-Cache erneut erhöhen, damit installierte Apps den Rollback beziehen.
-4. Speicherschemata nicht ohne kompatible Migration zurücksetzen.
-5. Party Hub und Word Imposter getrennt smoke-testen.
-6. vollständige CI- und manuelle Kernprüfungen erneut ausführen.
-7. Rollback im Changelog dokumentieren.
+3. Service-Worker-Cache erneut erhöhen, damit installierte Apps den Rollback laden.
+4. Speicherschemata nur mit kompatibler Migration zurücksetzen.
+5. Party Hub, komplexe Spiele und Word Imposter getrennt smoke-testen.
+6. Export und Wiederherstellung einer vor dem Rollback erzeugten Sicherung prüfen.
+7. vollständige CI- und manuelle Kernprüfungen erneut ausführen.
+8. Rollback im Changelog dokumentieren.
 
 Keinen Force-Push auf `main` verwenden.
 
@@ -135,9 +166,10 @@ Zusätzlich prüfen:
 - gültiges HTTPS-Zertifikat
 - keine Weiterleitungsschleife
 - Manifest-Scope innerhalb derselben Origin
+- korrekte Cache- und Content-Type-Header
 - Hosting-Anbieter und Kontaktinformationen im Datenschutz
 - erforderliche Anbieter- und Impressumsangaben
 
 ## Produktionsfreigabe
 
-GitHub Pages ist für eine kontrollierte Web-PWA-Beta geeignet. Der öffentliche Produktionsrelease bleibt blockiert, bis CI, Party Hub, Word Imposter, Android/iOS, Offline-Modus, reale Gruppen und rechtliche Angaben vollständig bestätigt sind.
+GitHub Pages eignet sich für eine kontrollierte Web-PWA-Beta. Ein öffentlicher Produktionsrelease bleibt blockiert, bis CI, alle Spielarten, Android/iOS, Offline-Update, reale Gruppen, Inhalte und rechtliche Angaben vollständig bestätigt sind.
