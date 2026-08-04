@@ -9,7 +9,7 @@ required={
  'data-store.js':['secret-circle-backup','KEY_VERSION = 7','ENGINE_VERSION = 7','legacyVersions','upgradeActiveSnapshot','removeLegacyKind','loadAll','exportBackup','importBackup','beschädigte lokale Daten','neue App-Version'],
  'word-packs.js':['SecretCircleContent','Anime','Gaming','Internet & Social Media','Elektroniker'],
  'game-engine.js':['VERSION = 7','createGame','restoreGame','advanceReveal','startTimer','pauseTimer','syncTimer','startVoting','castVote','resolveVote','submitImposterGuess','nextRound','leaderboard','normalizeUsedWords','usedWords','timerDeadline','Doppelter Spielername','tie_break'],
- 'tests/engine.test.js':['deterministic','persistence','validation','voting','scoring','matches','nonRepeatingWords','exhaustedPoolReset','deadlineTimer'],
+ 'tests/engine.test.js':['deterministic','persistence','deadlineTimer','backgroundResume','voting','finiteTieBreak','duplicateVoteProtection','scoring','matches','noRepeatedWords','validation','history'],
  'tests/storage.test.js':['storageMigration','realLegacyGameUpgrade','corruptedDataRecovery','backupExportImport','legacyBackupImport','atomicImportRollback'],
  'tests/e2e/game-flow.spec.js':['secret-circle-active-v7','exports and restores a complete local backup','recovers safely from corrupted persisted data'],
  'tests/e2e/timer.spec.js':['deadline timer counts accurately','survives a reload','legacy active game and settings migrate'],
