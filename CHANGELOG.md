@@ -4,83 +4,80 @@
 
 ### Hinzugefügt
 
-- neue Party-Hub-Seite `party.html` mit klarer Hauptnavigation
-- Startseite mit Empfehlungen, Quick Picks, Schnellstart und zuletzt gestarteten Spielen
-- vollständiger Katalog mit Suche und Filtern nach Art, Stimmung, Gruppengröße und Status
-- Spieldetails mit Regeln, Spielerzahl, Dauer, Kategorien und Kartenanzahl
-- gemeinsame lokale Spielerliste
-- Host-Presets für wiederkehrende Gruppen
-- Favoriten, zuletzt gespielt, Verlauf und lokale Statistik
-- vierzehn spielbare Spiele:
-  - Word Imposter
-  - Wahrheit oder Pflicht
-  - Ich habe noch nie
-  - Wer würde eher?
-  - Entweder oder
-  - Hot Takes
-  - Nur falsche Antworten
-  - Paranoia
-  - Scharade
-  - Nicht sagen!
-  - Heiße Kartoffel
-  - Wortkette
-  - Flaschendrehen
-  - Würfel & Münze
-- vier sichtbar geplante und technisch gesperrte Spiele:
+- installierter PWA-Einstieg öffnet jetzt den Party Hub
+- Party-Hub-Seite mit Start, Spiele, Spieler, Favoriten, Verlauf und Daten
+- Katalogsuche und Filter nach Art, Stimmung, Gruppengröße, Altersstufe und Status
+- klare Spieldetails mit Regeln, Spielerzahl, Dauer, Kategorien und Inhaltsmenge
+- gemeinsame lokale Spielerliste und Host-Presets
+- Favoriten, zuletzt gespielt, Verlauf, Statistik und acht Erfolge
+- Standard-Sessionlänge und gespeicherte Alterspräferenz
+- Installationsschaltfläche für unterstützte Browser
+- 22 sichtbare Spiele, davon 18 spielbar und 4 eindeutig gesperrt
+- neu vollständig spielbar:
   - Zwei Wahrheiten, eine Lüge
   - Question Imposter
   - Location Spy
   - Mafia
-- mehr als 300 neue eigenständige Fragen, Entscheidungen, Begriffe und Aufgaben
-- Vollbild-Spielabläufe für Karten-, Wahl-, Timer-, Erklär- und Zufallsspiele
-- zufällige Kartenauswahl ohne unmittelbare Wiederholung innerhalb einer Session
-- rotierende aktive Person
-- 60-Sekunden-Scharade mit Trefferzählung
-- Tabu-Karten mit jeweils drei verbotenen Wörtern
-- zufälliger Hot-Potato-Timer
-- Wortketten-Timer
-- digitale Zufallsauswahl, Münze, W6, W20 und Zufallszahl
-- Katalog-Unit-Test und Party-Hub-End-to-End-Suite
-- eigener Party-Hub-Performancebereich
-- vollständiger Offline-Core `secret-circle-v19`
+- neue sichtbare Roadmap-Spiele:
+  - Wellenlänge
+  - Zeichnen & Raten
+  - Schnellfeuer
+  - Geräusche erraten
+- mehr als 390 eigenständige Hub-Fragen, Entscheidungen, Begriffe und Aufgaben
+- private Eingabe, Mischung und Gruppenabstimmung für Zwei Wahrheiten, eine Lüge
+- geheime ähnliche Fragen, Imposter-Verteilung und Abstimmung für Question Imposter
+- geheime Orte, Spionrollen, Verdächtigenwahl und Ortsraten für Location Spy
+- private Mafia-Rollen, Moderatoransicht, Nachtaktionen, Tageswahl und Siegprüfung
+- wiederaufnehmbare komplexe Sessions
+- Sessionlängen mit 3, 5, 10 oder 20 Runden
+- vollständiger gemeinsamer Export für Hub und Word Imposter
+- gemeinsamer Import mit Formatprüfung, Größenlimit und Rollback
+- vollständige Löschung aller `secret-circle-*`-Daten
+- Expansionskatalog-Unit-Test
+- E2E-Suiten für alle vier komplexen Spiele
+- E2E-Suiten für Export, Import, ungültige Sicherungen und vollständige Löschung
+- Cross-Browser-Smoke-Test für Hub und komplexe Spiele
+- vollständiger Offline-Core `secret-circle-v21`
 
 ### Verbessert
 
-- Word Imposter verlinkt direkt zum Party Hub
+- Word Imposter und Party Hub sind gegenseitig klar verlinkt
 - Inhalte und Entwicklungsstatus sind vor dem Start sichtbar
-- geplante Spiele können nicht versehentlich als fertige Funktionen gestartet werden
+- geplante Spiele können nicht wie fertige Funktionen gestartet werden
+- Altersfilter wird zwischen Katalog und Einstellungen synchronisiert
+- fortgesetzte komplexe Sessions werden strenger validiert
+- abgeschlossene Sessions öffnen nach Neuladen direkt die Zusammenfassung
+- maximal 20 Runden werden auch beim Verlängern einer Session eingehalten
+- Runtime-Fehler werden auf Imposter-, Hub- und erweiterten Spielseiten sichtbar
+- Manifest, Offline-Test, PWA-Installationstest, Validator, Release-Audit und Performancebudget berücksichtigen den erweiterten Hub
 - responsive Darstellung für Desktop, Smartphone, Safe Areas und installierte PWA
-- Party-Hub-Daten bleiben in einem getrennten lokalen Speicherbereich
-- Syntax-, Struktur-, Offline- und Performanceprüfungen berücksichtigen die neuen Hub-Dateien
 
 ### Noch offen
 
-- gemeinsames Backup und vollständige gemeinsame Datenlöschung für Hub und Word Imposter
-- mehr Packs und deutlich mehr Karten pro Hub-Spiel
-- redaktionelle Alters- und Inhaltsprüfung
-- echte Android-, iOS- und Gruppenprüfungen
-- vollständige Implementierung von Two Truths, Question Imposter, Location Spy und Mafia
-- erfolgreicher protokollierter Gesamt-Testlauf
+- vollständig erfolgreicher lokaler Testlauf
+- grüner GitHub-Actions-Lauf auf dem endgültigen Commit
+- echte Android-, iOS- und PWA-Update-Prüfung
+- reale Partytests mit kleinen und großen Gruppen
+- mehr Packs und Karten für besonders häufige Spiele
+- redaktionelle Alters-, Schwierigkeits- und Inhaltsprüfung
+- öffentliche Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben
 
 ## 1.0.0-beta.3 – 2026-08-04
 
 ### Hinzugefügt
 
-- vollständiger Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
+- vollständiger Word-Imposter-Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
 - Punkte, Rangliste, Mehr-Runden-Matches und begrenzte Stichwahl
 - maximal sechs Imposter
-- unabhängige deterministische Rollenverteilung in `role-assignment.js`
+- unabhängige deterministische Rollenverteilung
 - 14 Kategorien mit 168 Begriff-Hinweis-Paaren
 - deadline-basierter Timer mit Hintergrund- und Neulade-Wiederherstellung
 - Live-Gruppengröße und dynamische Imposter-Grenzen
 - automatische Kartenverdeckung mit blockierter Weitergabe
 - optionaler Wake Lock während der Diskussion
-- Verlauf, Datenmigration, Backup-Export/-Import und vollständige lokale Löschung
+- Verlauf, Migration, Sicherung und vollständige lokale Löschung
 - Datenschutzseite, Content Security Policy und Laufzeit-Fehlerschutz
 - 192- und 512-Pixel-PNG-Icons
-- vollständiger Offline-Core der ursprünglichen Imposter-Beta
-- Unit-, Fuzz-, E2E- und Cross-Browser-Struktur
-- Repository-Hygiene, Performancebudget, Strukturvalidator und Release-Audit
 
 ### Behoben
 
