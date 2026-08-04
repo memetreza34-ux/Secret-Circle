@@ -15,12 +15,14 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 ## Funktionen
 
 - drei bis zwanzig eindeutige Spielernamen
+- Live-Anzeige der erkannten Personen und des gültigen Imposter-Bereichs
 - ein bis mehrere Imposter
 - vierzehn integrierte Kategorien mit 168 Begriffen
 - gemischter Modus und eigene Kategorien im Format `Begriff | Hilfswort`
 - optionales neutrales Hilfswort
 - keine Begriffswiederholung, bis der gewählte Pool aufgebraucht ist
 - geheime Kartenübergabe
+- automatische Verdeckung einer sichtbaren geheimen Karte bei App-Wechsel oder Fokusverlust
 - deadline-basierter Timer von einer bis zehn Minuten, der Pause, Hintergrund und Neuladen korrekt übersteht
 - geheime Abstimmung durch alle Personen
 - Schutz vor Selbstwahl und doppelten Stimmen
@@ -34,7 +36,7 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - Export und Import einer vollständigen JSON-Sicherung
 - vollständiges Löschen aller lokalen Daten
 - installierbare PWA mit 192- und 512-Pixel-PNG-Icons
-- vollständiger Offline-Cache für App, Datenschutz, Inhalte, Laufzeitschutz und Icons
+- vollständiger Offline-Cache `secret-circle-v14` für App, Datenschutz, Inhalte, Setup- und Privatsphärenschutz sowie Icons
 - globaler Laufzeit-Fehlerschutz und kontrollierter PWA-Update-Neustart
 - Datenschutzseite und restriktive Content Security Policy
 - keine Anmeldung, kein Tracking und keine Serverübertragung von Spieldaten
@@ -44,6 +46,8 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - `game-engine.js`: deterministische Spielregeln, Timer, Rollen, Abstimmung, Punkte und Matches
 - `word-packs.js`: integrierte Kategorien und Begriffe
 - `data-store.js`: versionierte Speicherung, Migration, Backup und Wiederherstellung
+- `setup-ux.js`: Live-Validierung von Gruppengröße und Imposter-Limit
+- `privacy-guard.js`: automatische Verdeckung geheimer Karten bei Fokusverlust
 - `runtime-guard.js`: globale Fehleranzeige und sicherer Wechsel auf aktualisierte PWA-Dateien
 - `app.js`: Benutzeroberfläche, Timer-Synchronisierung und Ablaufsteuerung
 - `sw.js`: Offline-Cache und PWA-Betrieb
@@ -80,6 +84,8 @@ Die Prüfungen umfassen:
 - Repository-Hygiene und Offline-Core-Performancebudget
 - vollständige Desktop- und Mobilspielabläufe
 - Grenzwerte mit 3 und 20 Personen sowie mehreren Impostern
+- Live-Setup-Hinweise und dynamische Imposter-Grenzen
+- automatische Kartenverdeckung und sicheres erneutes Öffnen
 - Mehr-Runden-Matches und nicht wiederholte Begriffe
 - Timer-Pause, Hintergrund, Ablauf und Wiederaufnahme nach Neuladen
 - Verlauf abgeschlossener Runden
@@ -94,8 +100,10 @@ Die Prüfungen umfassen:
 - `CHANGELOG.md` – Änderungen des aktuellen Beta-Stands
 - `KNOWN_LIMITATIONS.md` – bewusst dokumentierte Grenzen
 - `RELEASE_CHECKLIST.md` – verbindliche Freigabekriterien
+- `RELEASE_STATUS.md` – objektiver Fortschritt und offene Blocker
 - `MANUAL_TEST_PLAN.md` – reale Geräte- und Partytests
 - `DEPLOYMENT.md` – GitHub Pages, Update und Rollback
+- `SECURITY.md` – Sicherheitsmodell und Meldeweg
 - `CI_TROUBLESHOOTING.md` – Diagnose des aktuellen GitHub-Actions-Problems
 - `privacy.html` – Datenschutzinformationen für Nutzerinnen und Nutzer
 
@@ -107,9 +115,10 @@ Ein öffentlicher Release ist nur vorgesehen, wenn:
 2. GitHub Actions auf dem endgültigen Release-Commit grün ist,
 3. die PWA auf aktuellen Android- und iOS-Geräten getestet wurde,
 4. Offline-Start, Installation, Update, Wiederaufnahme, Backup und vollständiges Datenlöschen geprüft wurden,
-5. Accessibility und Spielablauf mit echten Testpersonen validiert wurden,
-6. alle Begriffe redaktionell geprüft wurden,
-7. erforderliche Anbieter-, Kontakt- und Impressumsangaben ergänzt wurden.
+5. automatische Kartenverdeckung bei App-Wechsel auf realen Geräten geprüft wurde,
+6. Accessibility und Spielablauf mit echten Testpersonen validiert wurden,
+7. alle Begriffe redaktionell geprüft wurden,
+8. erforderliche Anbieter-, Kontakt- und Impressumsangaben ergänzt wurden.
 
 ## Status
 
