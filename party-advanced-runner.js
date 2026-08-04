@@ -8,6 +8,7 @@
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const ACTIVE_KEY = 'secret-circle-party-active-v1';
   const MAX_HISTORY = 50;
+  const MAX_SESSION_ROUNDS = 20;
   const $ = selector => document.querySelector(selector);
   const gameId = new URLSearchParams(window.location.search).get('game') || '';
   const game = C.getGame(gameId);
@@ -125,9 +126,13 @@
       if (!value || value.version !== 1 || value.gameId !== gameId || !value.session) return null;
       const candidate = value.session;
       if (!Number.isInteger(candidate.rounds) || candidate.rounds < 0 || !Number.isInteger(candidate.score) || candidate.score < 0) return null;
-      if (!Number.isInteger(candidate.playerIndex) || candidate.playerIndex < 0 || !Number.isInteger(candidate.targetRounds) || candidate.targetRounds < 1 || candidate.targetRounds > 20) return null;
+      if (!Number.isInteger(candidate.playerIndex) || candidate.playerIndex < 0) return null;
+      if (!Number.isInteger(candidate.targetRounds) || candidate.targetRounds < 1 || candidate.targetRounds > MAX_SESSION_ROUNDS) return null;
+      if (candidate.rounds > candidate.targetRounds) return null;
       if (!C.getPackNames(gameId).includes(candidate.pack)) return null;
-      candidate.used = Array.isArray(candidate.used) ? candidate.used.filter(Number.isInteger) : [];
+      if (candidate.advanced !== null && (typeof candidate.advanced !== 'object' || Array.isArray(candidate.advanced))) return null;
+      candidate.used = Array.isArray(candidate.used) ? candidate.used.filter(index => Number.isInteger(index) && index >= 0).slice(0, 500) : [];
+      candidate.playerIndex %= Math.max(1, hubState.players.length);
       return candidate;
     } catch {
       return null;
@@ -163,18 +168,22 @@
     const summary = makeElement('div', 'session-summary');
     summary.append(makeElement('strong', '', String(session.score)), makeElement('span', '', 'Punkte'));
     nodes.content.append(summary);
-    nodes.actions.append(
-      actionButton('Weitere 5 Runden', () => {
-        session.targetRounds += 5;
+    if (session.targetRounds < MAX_SESSION_ROUNDS) {
+      nodes.actions.append(actionButton('Weitere 5 Runden', () => {
+        session.targetRounds = Math.min(MAX_SESSION_ROUNDS, session.targetRounds + 5);
         persistActive();
         render();
-      }),
-      actionButton('Session speichern und beenden', finishSession, 'secondary')
-    );
+      }));
+    }
+    nodes.actions.append(actionButton('Session speichern und beenden', finishSession, 'secondary'));
   }
 
   function render() {
     if (!session) return;
+    if (session.rounds >= session.targetRounds) {
+      renderSessionSummary();
+      return;
+    }
     resetPlayCard();
     persistActive();
     const modeGame = { ...game, mode: game.advancedMode };
@@ -235,10 +244,15 @@
       setStatus(`${game.title} benötigt ${game.minPlayers}–${game.maxPlayers} Personen.`, true);
       return;
     }
+    const targetRounds = Number($('#advanced-length').value);
+    if (![3, 5, 10, 20].includes(targetRounds)) {
+      setStatus('Ungültige Rundenlänge.', true);
+      return;
+    }
     session = {
       gameId: game.id,
       pack: $('#advanced-pack').value,
-      targetRounds: Number($('#advanced-length').value),
+      targetRounds,
       rounds: 0,
       score: 0,
       playerIndex: 0,
@@ -256,7 +270,8 @@
     session = active;
     $('#advanced-setup').hidden = true;
     $('#advanced-play-layer').hidden = false;
-    render();
+    if (session.rounds >= session.targetRounds) renderSessionSummary();
+    else render();
   }
 
   function renderSetup() {
@@ -283,7 +298,10 @@
 
     const active = loadActive();
     if (active && valid) {
-      $('#advanced-start').textContent = `Session fortsetzen · Runde ${active.rounds + 1}`;
+      const labelRound = Math.min(active.rounds + 1, active.targetRounds);
+      $('#advanced-start').textContent = active.rounds >= active.targetRounds
+        ? 'Abgeschlossene Session ansehen'
+        : `Session fortsetzen · Runde ${labelRound}`;
       $('#advanced-start').addEventListener('click', () => resumeSession(active), { once: true });
       const fresh = actionButton('Neue Session beginnen', () => {
         localStorage.removeItem(ACTIVE_KEY);
