@@ -38,6 +38,15 @@ Lina</textarea><small id="players-help" class="muted">Mindestens drei eindeutige
       <div class="grid three"><label for="category">Kategorie<select id="category"></select></label><label for="imposters">Imposter<input id="imposters" type="number" min="1" max="6" value="1"></label><label for="duration">Rundenzeit<select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select></label></div>
       <div class="grid three"><label for="match-rounds">Match-Runden<select id="match-rounds"><option value="1">1 Runde</option><option value="3">3 Runden</option><option value="5" selected>5 Runden</option><option value="10">10 Runden</option></select></label><label class="check" for="hint"><input id="hint" type="checkbox" checked><span>Hilfswort</span></label></div>
       <div class="actions"><button id="start" type="button">Spiel starten</button><button id="toggle-custom" class="secondary" type="button" aria-expanded="false" aria-controls="custom-panel">Eigene Kategorien</button></div>
+
+      <details class="help-panel">
+        <summary>Spielregeln und Punkte</summary>
+        <div class="help-grid">
+          <section aria-labelledby="flow-help-title"><h3 id="flow-help-title">Ablauf</h3><ol><li>Jede Person sieht ihre geheime Karte allein.</li><li>Alle geben nacheinander einen kurzen Hinweis.</li><li>Danach stimmt jede Person geheim ab.</li><li>Ein gefundener Imposter darf den Begriff einmal erraten.</li></ol></section>
+          <section aria-labelledby="score-help-title"><h3 id="score-help-title">Punkte</h3><ul><li>Imposter gefunden und Begriff falsch geraten: jede unschuldige Person erhält 1 Punkt.</li><li>Unschuldige Person gewählt: jeder Imposter erhält 2 Punkte.</li><li>Imposter errät den Begriff oder die Stichwahl bleibt unentschieden: jeder Imposter erhält 2 Punkte.</li></ul></section>
+        </div>
+      </details>
+
       <section id="custom-panel" class="subpanel" hidden aria-labelledby="custom-title"><h3 id="custom-title">Eigene Kategorie erstellen</h3><form id="custom-form"><label for="custom-name">Name<input id="custom-name" maxlength="50" required placeholder="z. B. Anime"></label><label for="custom-words">Begriffe<textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea></label><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
       <section class="history" aria-labelledby="history-title"><div class="section-heading"><h3 id="history-title">Letzte Runden</h3><button id="clear-history" class="secondary compact" type="button">Verlauf löschen</button></div><div id="history-list"></div></section>
       <section class="data-controls" aria-labelledby="data-title">
