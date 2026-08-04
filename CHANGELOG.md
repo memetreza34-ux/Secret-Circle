@@ -16,24 +16,30 @@ Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentie
 - versionierter Datenspeicher mit Migration älterer Spielstände
 - Sicherungsexport und -import als JSON-Datei
 - vollständige lokale Datenlöschung
+- Live-Erkennung der Gruppengröße und dynamischer gültiger Imposter-Bereich
+- automatische Verdeckung sichtbarer geheimer Karten bei App-Wechsel oder Fokusverlust
+- Schutz vor Kartenweitergabe, solange eine automatisch verdeckte Karte nicht erneut geöffnet wurde
 - Datenschutzseite und Content Security Policy
 - 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
 - globaler Laufzeit-Fehlerschutz und kontrollierter PWA-Update-Neustart
-- Desktop- und Mobile-End-to-End-Tests für Spielablauf, Timer, Verlauf, Speicherung, Inhalte, Offline-Modus, Accessibility, Sicherheit und PWA-Installation
+- vollständiger Offline-Core `secret-circle-v15`
+- Desktop- und Mobile-End-to-End-Tests für Spielablauf, Timer, Verlauf, Speicherung, Inhalte, Offline-Modus, Privatsphäre, Accessibility, Sicherheit und PWA-Installation
 - Grenzwerttests für 3–20 Personen und mehrere Imposter
 - deterministische Fuzz-Tests über 120 Spielszenarien mit Engine-Invarianten
 - optionaler Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Test
 - Repository-Hygieneprüfung und Performancebudget für den vollständigen Offline-Core
-- Produktionsvalidator, Release-Audit und ausführliche Release-Checkliste
+- strukturierter HTML-, Asset-, Manifest- und Service-Worker-Validator
+- Release-Audit und ausführliche Release-Checkliste
 - manueller Gerätetestplan, Deployment-/Rollback-Anleitung, Sicherheitsrichtlinie und objektiver Release-Status
 
 ### Verbessert
 
 - Fokusführung, Tastaturbedienung und Screenreader-Struktur
-- Touchflächen und mobile Darstellung
+- Touchflächen, iPhone-Safe-Areas, dynamische Viewport-Höhe und mobile Darstellung
 - Offline-Cache und Service-Worker-Aktualisierung
 - Validierung manipulierter oder beschädigter Spielstände
 - verständliche Spiel- und Punktregeln direkt in der App
+- sichere Fokuswiederherstellung nach automatischer Kartenverdeckung
 - CI-Installation verändert keine Repository-Dateien und prüft getrackte Dateien statt lokaler Installationsordner
 - Release-Validierung bleibt auch nach einer lokalen `npm install`-Ausführung verwendbar
 
@@ -44,7 +50,8 @@ Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentie
 - Timerabweichungen nach Hintergrundbetrieb oder Neuladen
 - fehlender Verlauf bei Runden, die direkt durch die Abstimmung enden
 - unvollständige Migration älterer lokaler Spielstände
-- unvollständiger Offline-Cache für Datenspeicher, Laufzeitschutz und Installationsicons
+- unvollständiger Offline-Cache für Datenspeicher, Laufzeit-, Setup- und Privatsphärenschutz sowie Installationsicons
+- versehentliche Weitergabe einer automatisch verdeckten Karte über programmatische oder schnelle Eingaben
 - fehlerhafte Release-Gates, die einen lokalen `node_modules`-Ordner irrtümlich als eingecheckten Fehler bewerteten
 - nicht abgewartete dynamische Service-Worker-Cache-Schreibvorgänge
 
@@ -56,6 +63,7 @@ Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentie
 - lokale Prüfung und Größenbegrenzung importierter Sicherungsdateien
 - Rollback bei fehlgeschlagenem Sicherungsimport
 - Browsertests gegen HTML-/Skript-Injektion durch Namen und eigene Kategorien
+- automatischer Sichtschutz für geheime Rollen und Begriffe
 - dokumentierter Weg für private Sicherheitsmeldungen
 
 ## Frühere Beta-Stände
