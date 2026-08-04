@@ -12,6 +12,7 @@
   const BACKUP_FORMAT = 'secret-circle-backup';
   const BACKUP_VERSION = 1;
   const KEY_VERSION = 7;
+  const ENGINE_VERSION = 7;
   const MAX_BACKUP_BYTES = 2_000_000;
   const IMPORT_PROBE_KEY = '__secret_circle_import_probe__';
   const keys = {
@@ -67,6 +68,10 @@
     function parse(raw) {
       if (raw === null || raw === undefined || raw === '') return null;
       try { return JSON.parse(raw); } catch { return null; }
+    }
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
     }
 
     function text(value, maximum) {
@@ -138,10 +143,61 @@
       return result;
     }
 
+    function upgradeActiveSnapshot(value) {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+      const upgraded = clone(value);
+      if (upgraded.version === ENGINE_VERSION) return upgraded;
+      if (!legacyVersions.includes(Number(upgraded.version))) return upgraded;
+      if (!Array.isArray(upgraded.players) || !upgraded.players.length) return upgraded;
+
+      upgraded.version = ENGINE_VERSION;
+      upgraded.useHint = upgraded.useHint !== false;
+      upgraded.usedWords = Array.isArray(upgraded.usedWords) && upgraded.usedWords.length
+        ? [...new Set(upgraded.usedWords.map(word => text(word, 60)).filter(Boolean))]
+        : [text(upgraded.word, 60)].filter(Boolean);
+      if (upgraded.word && !upgraded.usedWords.some(word => word.toLocaleLowerCase('de-DE') === text(upgraded.word, 60).toLocaleLowerCase('de-DE'))) {
+        upgraded.usedWords.push(text(upgraded.word, 60));
+      }
+
+      upgraded.matchRounds = Number.isInteger(upgraded.matchRounds) && upgraded.matchRounds >= 1 && upgraded.matchRounds <= 20 ? upgraded.matchRounds : 1;
+      upgraded.currentRound = Number.isInteger(upgraded.currentRound) && upgraded.currentRound >= 1 && upgraded.currentRound <= upgraded.matchRounds ? upgraded.currentRound : 1;
+      const previousScores = upgraded.scores && typeof upgraded.scores === 'object' && !Array.isArray(upgraded.scores) ? upgraded.scores : {};
+      upgraded.scores = Object.fromEntries(upgraded.players.map(name => [name, Number.isInteger(previousScores[name]) && previousScores[name] >= 0 ? previousScores[name] : 0]));
+
+      upgraded.votes = upgraded.votes && typeof upgraded.votes === 'object' && !Array.isArray(upgraded.votes) ? upgraded.votes : {};
+      upgraded.voteLeaders = Array.isArray(upgraded.voteLeaders) ? upgraded.voteLeaders : [];
+      upgraded.tieBreakCount = Number.isInteger(upgraded.tieBreakCount) ? Math.max(0, Math.min(1, upgraded.tieBreakCount)) : 0;
+      upgraded.eliminatedPlayer = upgraded.eliminatedPlayer ?? null;
+      upgraded.imposterGuess = upgraded.imposterGuess ?? null;
+      upgraded.winner = upgraded.winner ?? null;
+      upgraded.completedAt = upgraded.completedAt ?? null;
+      upgraded.timerRunning = false;
+      upgraded.timerDeadline = null;
+
+      if (upgraded.phase === 'round') upgraded.phase = 'discussion';
+      if (!['reveal', 'discussion', 'voting', 'tie_break', 'guess', 'completed'].includes(upgraded.phase)) upgraded.phase = 'reveal';
+      if (upgraded.phase === 'reveal') {
+        if (!Number.isInteger(upgraded.revealIndex) || upgraded.revealIndex < 0) upgraded.revealIndex = 0;
+        if (upgraded.revealIndex >= upgraded.players.length) {
+          upgraded.revealIndex = upgraded.players.length;
+          upgraded.phase = 'discussion';
+        }
+      } else {
+        upgraded.revealIndex = upgraded.players.length;
+      }
+      if (upgraded.phase === 'completed') {
+        if (!upgraded.completedAt && upgraded.winner) upgraded.completedAt = upgraded.createdAt;
+      } else {
+        upgraded.completedAt = null;
+        upgraded.winner = null;
+      }
+      return upgraded;
+    }
+
     function normalize(kind, value, engine) {
       if (kind === 'active') {
         if (value === null) return null;
-        try { return engine.restoreGame(value); } catch { return null; }
+        try { return engine.restoreGame(upgradeActiveSnapshot(value)); } catch { return null; }
       }
       if (kind === 'custom') return normalizeCustom(value, engine);
       if (kind === 'history') return normalizeHistory(value);
@@ -153,11 +209,22 @@
       return `secret-circle-${kind}-v${version}`;
     }
 
+    function removeLegacyKind(kind) {
+      for (const version of legacyVersions) rawRemove(legacyKey(kind, version));
+    }
+
     function readKind(kind, fallback, engine) {
       const currentRaw = rawGet(keys[kind]);
       if (currentRaw !== null) {
-        const normalized = normalize(kind, parse(currentRaw), engine);
-        if (normalized !== null) return normalized;
+        const parsed = parse(currentRaw);
+        const normalized = normalize(kind, parsed, engine);
+        if (normalized !== null) {
+          if (kind === 'active' && parsed?.version !== ENGINE_VERSION) {
+            const result = rawSet(keys[kind], JSON.stringify(normalized));
+            if (result.ok) warnings.push(`${kind}: Spielstand wurde auf die neue App-Version aktualisiert.`);
+          }
+          return normalized;
+        }
         rawRemove(keys[kind]);
         warnings.push(`${kind}: beschädigte lokale Daten wurden entfernt.`);
       }
@@ -169,7 +236,10 @@
         const normalized = normalize(kind, parse(oldRaw), engine);
         if (normalized === null) continue;
         const result = rawSet(keys[kind], JSON.stringify(normalized));
-        if (result.ok) warnings.push(`${kind}: lokale Daten wurden auf Version ${KEY_VERSION} migriert.`);
+        if (result.ok) {
+          removeLegacyKind(kind);
+          warnings.push(`${kind}: lokale Daten wurden auf die neue App-Version aktualisiert.`);
+        }
         return normalized;
       }
       return fallback;
@@ -266,6 +336,10 @@
             if (!result.ok) throw Error(result.error);
           }
         }
+        removeLegacyKind('active');
+        removeLegacyKind('custom');
+        removeLegacyKind('history');
+        removeLegacyKind('settings');
         return { ok: true, data: normalized };
       } catch (error) {
         for (const [kind, key] of Object.entries(keys)) {
@@ -280,6 +354,7 @@
     return {
       keys,
       keyVersion: KEY_VERSION,
+      engineVersion: ENGINE_VERSION,
       backupFormat: BACKUP_FORMAT,
       backupVersion: BACKUP_VERSION,
       available,
@@ -293,5 +368,5 @@
     };
   }
 
-  return { createStore, keys, KEY_VERSION, BACKUP_FORMAT, BACKUP_VERSION };
+  return { createStore, keys, KEY_VERSION, ENGINE_VERSION, BACKUP_FORMAT, BACKUP_VERSION };
 });
