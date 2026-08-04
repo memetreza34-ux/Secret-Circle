@@ -1,5 +1,5 @@
 'use strict';
-const CACHE='secret-circle-v17';
+const CACHE='secret-circle-v18';
 const CORE=['./','./index.html','./privacy.html','./styles.css','./pwa.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
