@@ -1,8 +1,8 @@
 # Secret Circle Party Hub
 
-Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät. Der installierte PWA-Einstieg öffnet den Party Hub; das vollständige Word-Imposter-Spiel bleibt als separates stabiles Modul erhalten.
+Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät. Der installierte PWA-Einstieg öffnet den Party Hub; Word Imposter bleibt als separates stabiles Modul erhalten.
 
-**Aktueller Stand:** `1.0.0-beta.3` auf `codex/party-hub-foundation` – 22 sichtbare Spiele, davon **18 spielbare Spiele** und 4 eindeutig gesperrte Roadmap-Spiele.
+**Aktueller Stand:** `1.0.0-beta.3` auf `codex/party-hub-foundation` – 22 sichtbare Spiele, davon **18 spielbar** und 4 eindeutig gesperrte Roadmap-Spiele.
 
 ## Lokal starten
 
@@ -14,9 +14,9 @@ python -m http.server 8080
 - Word Imposter: `http://localhost:8080/index.html`
 - erweitertes Beispiel: `http://localhost:8080/advanced.html?game=question-imposter`
 
-Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-Cache `secret-circle-v23` ohne Internet zur Verfügung.
+Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-Cache `secret-circle-v24` ohne Internet zur Verfügung.
 
-## Spielbarer Katalog
+## 18 spielbare Spiele
 
 ### Täuschung und Rollen
 
@@ -56,10 +56,8 @@ Geplant, sichtbar und technisch nicht startbar: Wellenlänge, Zeichnen & Raten, 
 - Suche und kombinierbare Filter
 - Spielerzahl, Dauer, Altersstufe, Kategorien und Inhaltsmenge vor dem Start
 - gemeinsame lokale Spielerliste
-- Host-Presets
-- Favoriten
-- Verlauf und Statistiken
-- acht lokale Erfolge
+- Host-Presets und Favoriten
+- Verlauf, Statistiken und acht Erfolge
 - Alterspräferenz und Standard-Sessionlänge
 - installierbare Offline-PWA
 - vollständiger lokaler Export, Import und Datenlöschung
@@ -71,12 +69,13 @@ Im Datenbereich können eigene Packs für kompatible Frage-, Darstellungs- und S
 - maximal 20 Packs
 - maximal 100 eindeutige Karten pro Pack
 - mindestens drei Karten erforderlich
-- Duplikate werden unabhängig von Groß- und Kleinschreibung entfernt
-- Nutzertexte werden als Text ausgegeben und nicht als HTML ausgeführt
+- Unicode-Normalisierung und Duplikaterkennung
+- Nutzertexte werden als Text und nicht als HTML ausgegeben
 - Packs erscheinen direkt in Spieldetails und Pack-Auswahl
+- Speichern und Löschen sind transaktionssicher: Schlägt der Browser-Speicher fehl, bleiben vorherige Packs und Katalogzustand erhalten
 - Packs sind Bestandteil von Gesamtexport, Import und vollständiger Löschung
 
-Strukturierte Inhalte wie Mafia-Rollen, Question-Imposter-Fragenpaare, Entweder-oder-Paare und Tabu-Karten benötigen spezielle Datenformen und sind deshalb bewusst nicht im allgemeinen Editor freigeschaltet.
+Strukturierte Inhalte wie Mafia-Rollen, Question-Imposter-Fragenpaare, Entweder-oder-Paare und Tabu-Karten benötigen spezielle Datenformen und sind deshalb nicht im allgemeinen Editor freigeschaltet.
 
 ## Sichere erweiterte Sessions
 
@@ -86,11 +85,33 @@ Zwei Wahrheiten, Question Imposter, Location Spy und Mafia verwenden wiederaufne
 - 3, 5, 10 oder 20 Runden
 - maximal 20 Runden
 - eindeutige Session-ID
-- **Spieler-Snapshot:** Eine gestartete Session behält ihre ursprüngliche Spielergruppe, selbst wenn die gemeinsame Lobby später verändert wird
-- beschädigte aktive Daten werden verworfen
-- abgeschlossene Sessions werden mit einer eindeutigen Historien-ID gespeichert
+- Spieler-Snapshot: Eine gestartete Session behält ihre ursprüngliche Spielergruppe, auch wenn die gemeinsame Lobby später verändert wird
+- beschädigte oder widersprüchliche aktive Daten werden verworfen
+- abgeschlossene Sessions verwenden eindeutige Historien-IDs
 - ein Speicherfehler löscht die aktive Session nicht
 - ein erneuter Abschluss erzeugt keinen doppelten Verlaufseintrag
+
+## Transaktionssichere Datensicherung
+
+Der Gesamtexport umfasst Hub, Eigene Hub-Kategorien, aktive Sessions und Word Imposter.
+
+- maximale Sicherungsgröße: 1,5 MB
+- **Byte-Grenze** wird über die tatsächliche UTF-8-Größe geprüft, nicht nur über die Zeichenanzahl
+- Mehrbyte-Texte können das Limit deshalb nicht umgehen
+- maximal 100 lokale Datensätze
+- einzelne Werte werden ebenfalls nach Byte-Größe begrenzt
+- Import ersetzt alle Secret-Circle-Daten nur als vollständige Transaktion
+- bei einem Schreibfehler wird der vorherige Zustand wiederhergestellt
+- schlägt auch der Rollback fehl, erscheint eine eindeutige Warnung
+- vollständige Löschung verwendet dieselbe Rollback-Logik und hinterlässt keinen bewusst akzeptierten Teilzustand
+
+## Robuste Einstellungen und Statistiken
+
+- Altersfilter und Sessionlänge bleiben bei erfolgreichem Speichern erhalten
+- bei einem Speicherfehler bleibt die aktuelle Auswahl nutzbar und wird als nur vorübergehend gekennzeichnet
+- Statistikreparatur normalisiert negative oder ungültige Werte
+- unbekannte Spiele werden nicht in Erfolge und Reparatur einbezogen
+- fehlgeschlagene Statistik-Speicherung wird sichtbar gemeldet, ohne den Hub zu blockieren
 
 ## Inhalte
 
@@ -102,18 +123,9 @@ Zwei Wahrheiten, Question Imposter, Location Spy und Mafia verwenden wiederaufne
 
 ## Lokale Daten und Datenschutz
 
-Secret Circle benötigt kein Konto und sendet Spieldaten nicht an einen eigenen Server.
+Secret Circle benötigt kein Konto und sendet Spieldaten nicht an einen eigenen Server. Alle Spiel-, Pack-, Einstellungs- und Verlaufsdaten liegen im lokalen Browser-Speicher.
 
-Gesichert werden können:
-
-- Hub-Spieler und Presets
-- Favoriten und zuletzt gespielt
-- Verlauf, Statistik und Erfolge
-- eigene Hub-Packs
-- aktive erweiterte Sessions
-- Word-Imposter-Spielstände, Einstellungen und eigene Kategorien
-
-Der Gesamtsicherungsimport besitzt Format-, JSON-, Schlüssel- und Größenprüfung sowie Rollback. „Alle lokalen Daten löschen“ entfernt alle Schlüssel mit dem Präfix `secret-circle-`.
+Der Gesamtsicherungsimport besitzt Format-, JSON-, Schlüssel-, Anzahl- und Byte-Prüfung sowie Rollback. „Alle lokalen Daten löschen“ entfernt alle Schlüssel mit dem Präfix `secret-circle-`.
 
 ## Word Imposter
 
@@ -129,16 +141,15 @@ Der Gesamtsicherungsimport besitzt Format-, JSON-, Schlüssel- und Größenprüf
 ## Architektur
 
 - `party.html`, `party.css`, `party-extra.css`: Hub-Oberfläche
-- `party-catalog.js`: Basiskatalog und Inhalte
-- `party-expansion.js`: erweiterter 22-Spiele-Katalog
+- `party-catalog.js`, `party-expansion.js`: Katalog und Inhalte
 - `party-routing.js`: Routing komplexer Spiele
-- `party-custom-packs.js`: eigene Hub-Packs
-- `party-hub.js`, `party-hub-plus.js`: Katalog, Spieler, Statistik, Erfolge und Installation
+- `party-custom-packs.js`: eigene Hub-Packs mit Transaktionsschutz
+- `party-hub.js`, `party-hub-plus.js`: Hub, Statistik, Einstellungen und Installation
 - `advanced.html`, `party-advanced.js`, `party-advanced-runner.js`: komplexe Spielabläufe und Wiederaufnahme
-- `party-data-tools.js`: Gesamtsicherung und Löschung
+- `party-data-tools.js`: byte-sichere Gesamtsicherung und Löschung
 - `game-engine.js`, `role-assignment.js`: Word-Imposter-Regeln
 - `data-store.js`: versionierter Imposter-Speicher
-- `sw.js`: Offline-Core `secret-circle-v23`
+- `sw.js`: Offline-Core `secret-circle-v24`
 
 ## Automatisierte Prüfung
 
@@ -158,13 +169,14 @@ npm run test:cross-browser
 Abgedeckt werden unter anderem:
 
 - Engine, Speicherung, Inhalte, Rollenverteilung und Fuzz-Szenarien
-- Katalog und eigene Packs
-- alle vier komplexen Spiele
-- Player-Snapshot nach Lobbyänderung
+- Katalog und Eigene Hub-Kategorien
+- Rollback bei fehlgeschlagenem Pack-Speichern und -Löschen
+- alle vier komplexen Spiele und Spieler-Snapshot
 - sichere Reaktion auf fehlgeschlagene Verlaufsspeicherung
-- Export, Import, Rollback und vollständige Löschung
-- Offline-Start und PWA-Cache
-- CSP, Eingabesicherheit, Accessibility und mobile Layouts
+- Mehrbyte-Dateien über der Byte-Grenze
+- Import- und Lösch-Rollback
+- Einstellungs- und Statistik-Speicherfehler
+- Offline-Start, CSP, Accessibility und mobile Layouts
 - Chromium, Firefox, WebKit, Android- und iPhone-Simulation
 
 ## Freigabestatus
