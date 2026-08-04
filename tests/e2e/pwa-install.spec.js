@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
-test('manifest exposes installable mobile metadata and valid PNG icons', async ({ page }) => {
-  await page.goto('/');
+test('manifest opens the Party Hub and exposes installable mobile metadata with valid PNG icons', async ({ page }) => {
+  await page.goto('/party.html');
 
   const result = await page.evaluate(async () => {
     const manifestLink = document.querySelector('link[rel="manifest"]');
@@ -36,7 +36,8 @@ test('manifest exposes installable mobile metadata and valid PNG icons', async (
   });
 
   expect(result.manifest.id).toBe('./');
-  expect(result.manifest.start_url).toBe('./');
+  expect(result.manifest.name).toBe('Secret Circle – Party Hub');
+  expect(result.manifest.start_url).toBe('./party.html');
   expect(result.manifest.scope).toBe('./');
   expect(result.manifest.display).toBe('standalone');
   expect(result.manifest.lang).toBe('de');
@@ -46,7 +47,7 @@ test('manifest exposes installable mobile metadata and valid PNG icons', async (
   expect(result.mobileCapable).toBe('yes');
   expect(result.appleCapable).toBe('yes');
   expect(result.appleTitle).toBe('Secret Circle');
-  expect(result.themeColor).toBe('#7c3aed');
+  expect(result.themeColor).toBe('#0f172a');
   expect(result.csp).toContain("default-src 'self'");
   expect(result.csp).toContain("object-src 'none'");
 });
