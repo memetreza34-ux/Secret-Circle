@@ -1,6 +1,6 @@
 # Secret Circle – Manueller Testplan
 
-Dieser Testplan ergänzt die automatisierten Prüfungen. Er muss vor einer öffentlichen Freigabe auf echten Geräten und mit echten Testpersonen durchgeführt werden.
+Dieser Plan ergänzt die automatisierten Prüfungen. Er muss vor einer öffentlichen Freigabe auf echten Geräten und mit echten Testpersonen durchgeführt werden.
 
 ## Testprotokoll
 
@@ -16,237 +16,257 @@ Vor jedem Durchlauf ausfüllen:
 - Installiert als PWA: Ja / Nein
 - Online / Offline:
 
-Für jeden Fall gilt:
+Bewertung:
 
-- `BESTANDEN`: Verhalten entspricht vollständig dem erwarteten Ergebnis.
-- `FEHLER`: Abweichung mit Screenshot, Video, Gerät, Browser und genauen Schritten dokumentieren.
-- `BLOCKIERT`: Test konnte wegen eines externen Problems nicht ausgeführt werden.
+- `BESTANDEN`: vollständig wie erwartet
+- `FEHLER`: Abweichung mit Gerät, Browser, Schritten und Beleg dokumentieren
+- `BLOCKIERT`: wegen eines externen Problems nicht ausführbar
 
 ## A. Grundlegender Smoke-Test
 
 ### A1 – Start mit drei Personen
 
-1. Browserdaten der App löschen.
+1. Browserdaten löschen.
 2. Drei unterschiedliche Namen eingeben.
-3. Einen Imposter und eine Runde auswählen.
+3. Einen Imposter und eine Runde wählen.
 4. Spiel starten.
 
 Erwartet:
 
-- Spiel startet ohne Fehlermeldung.
-- Genau drei Karten werden nacheinander angezeigt.
-- Jede Karte ist nach dem Weitergeben vollständig verborgen.
+- Start ohne Fehler,
+- genau drei Karten,
+- jede Karte nach Weitergabe vollständig verborgen.
 
 ### A2 – Start mit zwanzig Personen
 
-1. Zwanzig unterschiedliche Namen eingeben.
-2. Sechs Imposter auswählen.
-3. Spiel starten und den gespeicherten Zustand nach einem Neuladen fortsetzen.
+1. Zwanzig Namen eingeben.
+2. Sechs Imposter wählen.
+3. Spiel starten und nach Neuladen fortsetzen.
 
 Erwartet:
 
-- Alle zwanzig Personen erscheinen genau einmal.
-- Keine Karte oder Abstimmungsoption fehlt.
-- Bedienung bleibt auf dem Smartphone flüssig und ohne horizontales Scrollen.
+- jede Person erscheint genau einmal,
+- sechs unterschiedliche Imposter,
+- keine fehlenden Karten oder Abstimmungsoptionen,
+- keine horizontale Überbreite.
 
-### A3 – Live-Einrichtung und ungültige Werte
+### A3 – Live-Einrichtung und Grenzen
 
-Jeweils prüfen:
+Prüfen:
 
-- nur zwei Personen,
-- doppelte Namen mit unterschiedlicher Großschreibung,
+- zwei Personen,
+- doppelte Namen mit anderer Großschreibung,
 - einundzwanzig Personen,
 - genauso viele Imposter wie Personen,
-- Gruppengröße nach einer zuvor höheren Imposter-Auswahl verkleinern.
+- Gruppe nach hoher Imposter-Auswahl verkleinern.
 
 Erwartet:
 
-- erkannte eindeutige Personen werden live angezeigt,
-- doppelte Namen werden ausdrücklich genannt,
-- gültiger Imposter-Bereich passt sich an,
-- zu hohe Imposter-Zahl wird sicher begrenzt,
-- verständliche Fehlermeldung bei ungültigem Start,
-- kein beschädigter Spielstand.
+- eindeutige Personenzahl wird live angezeigt,
+- doppelte Namen werden genannt,
+- zulässiger Imposter-Bereich passt sich an,
+- zu hoher Wert wird sicher begrenzt,
+- ungültiger Start erzeugt keinen Spielstand.
 
 ## B. Kartenübergabe und Rollen
 
 ### B1 – Vertrauliche Kartenübergabe
 
-1. Gerät an jede Person weitergeben.
-2. Karte anzeigen, merken und schließen.
-3. Aus mehreren Blickwinkeln prüfen, ob vorherige Inhalte sichtbar bleiben.
+1. Gerät nacheinander weitergeben.
+2. Karte öffnen, merken und schließen.
+3. Aus mehreren Blickwinkeln prüfen.
 
 Erwartet:
 
-- Vor dem Öffnen ist weder Rolle noch Begriff sichtbar.
-- Nach dem Schließen bleiben keine geheimen Inhalte auf dem Bildschirm.
-- Fokus liegt auf der richtigen nächsten Aktion.
+- vor Öffnung keine Rolle und kein Begriff,
+- nach Schließen keine geheimen Inhalte,
+- Fokus auf der richtigen Folgeaktion.
 
 ### B2 – Automatische Kartenverdeckung
 
-1. Eine geheime Karte öffnen.
-2. App in den Hintergrund schicken oder zu einer anderen App wechseln.
+1. Geheime Karte öffnen.
+2. App wechseln, Browser minimieren oder Bildschirm kurz sperren.
 3. Zurückkehren.
-4. Versuchen, ohne erneutes Öffnen zur nächsten Person weiterzugehen.
-5. Karte erneut öffnen und normal weitergeben.
+4. Ohne erneutes Öffnen eine Weitergabe versuchen.
+5. Karte erneut öffnen und normal fortfahren.
 
 Erwartet:
 
-- Rolle und Begriff werden sofort verdeckt,
-- Hinweis erklärt die automatische Verdeckung,
-- „Karte schließen und weitergeben“ ist verborgen,
-- auch eine schnelle oder programmatische Auslösung kann nicht weitergehen,
-- Fokus landet nach Rückkehr auf „Geheime Karte anzeigen“,
-- nach erneutem Öffnen kann die Runde normal fortgesetzt werden.
+- Karte wird automatisch verdeckt,
+- verständlicher Hinweis erscheint,
+- Weitergabe ist verborgen und technisch blockiert,
+- Fokus kehrt zum Öffnen-Button zurück,
+- Runde kann danach normal fortgesetzt werden.
 
 ### B3 – Mehrere Imposter
 
-1. Mindestens sechs Personen und zwei Imposter verwenden.
-2. Alle Karten kontrolliert aufdecken.
+Mit mindestens sechs Personen und zwei Impostern alle Karten kontrolliert prüfen.
 
 Erwartet:
 
-- exakt zwei unterschiedliche Personen sind Imposter,
-- unschuldige Personen sehen denselben Begriff,
-- Imposter sehen nur das konfigurierte Hilfswort beziehungsweise „Kein Begriff“.
+- exakt zwei unterschiedliche Imposter,
+- alle Unschuldigen sehen denselben Begriff,
+- Imposter sehen nur Hilfswort oder „Kein Begriff“.
 
-## C. Timer
+## C. Timer und Bildschirmaktivität
 
 ### C1 – Start, Pause und Fortsetzen
 
-1. Eine Minute auswählen.
-2. Timer starten und mindestens drei Sekunden warten.
-3. Timer pausieren, fünf Sekunden warten und fortsetzen.
+1. Eine Minute wählen.
+2. Timer starten.
+3. Nach einigen Sekunden pausieren.
+4. Fünf Sekunden warten und fortsetzen.
 
 Erwartet:
 
-- laufende Zeit nimmt korrekt ab,
-- pausierte Zeit bleibt unverändert,
-- Fortsetzen verwendet die verbleibende Zeit.
+- reale Zeit nimmt korrekt ab,
+- Pause friert die Restzeit ein,
+- Fortsetzen nutzt die gespeicherte Restzeit.
 
 ### C2 – Hintergrund und Gerätesperre
 
 1. Timer starten.
-2. App für mindestens zehn Sekunden in den Hintergrund schicken.
+2. App mindestens zehn Sekunden in den Hintergrund schicken.
 3. Optional Bildschirm sperren.
-4. Zur App zurückkehren.
+4. Zurückkehren.
 
 Erwartet:
 
-- die vergangene reale Zeit wurde berücksichtigt,
+- reale vergangene Zeit ist berücksichtigt,
 - Timer springt nicht zurück,
-- abgelaufener Timer zeigt `00:00` und eine verständliche Statusmeldung.
+- abgelaufener Timer zeigt `00:00`.
 
 ### C3 – Neuladen bei laufendem Timer
 
 1. Timer starten.
-2. Seite neu laden oder installierte App vollständig schließen.
+2. Seite neu laden oder PWA schließen.
 3. Runde fortsetzen.
 
 Erwartet:
 
-- Timer wird anhand der gespeicherten Frist korrekt wiederhergestellt,
+- Deadline wird korrekt wiederhergestellt,
 - laufender Timer läuft weiter,
 - abgelaufener Timer bleibt abgelaufen.
 
+### C4 – Wake Lock
+
+Auf einem unterstützten Gerät:
+
+1. Diskussion erreichen.
+2. Gerät länger als die normale Display-Abschaltzeit liegen lassen.
+3. Abstimmung starten.
+4. App in den Hintergrund schicken.
+
+Erwartet:
+
+- Bildschirm bleibt während der sichtbaren Diskussion aktiv,
+- Wake Lock endet beim Wechsel zur Abstimmung,
+- Wake Lock endet im Hintergrund,
+- bei Rückkehr in eine aktive Diskussion wird er erneut angefordert.
+
+Auf einem Gerät oder Browser ohne Wake-Lock-API:
+
+- Spiel bleibt vollständig nutzbar,
+- keine Fehlermeldung oder Blockade.
+
 ## D. Abstimmung, Stichwahl und Punkte
 
-### D1 – Unschuldige Person wird gewählt
+### D1 – Unschuldige Person gewählt
 
 Erwartet:
 
 - Runde endet direkt,
 - Imposter gewinnen,
 - jeder Imposter erhält zwei Punkte,
-- Runde erscheint genau einmal im Verlauf.
+- Verlauf enthält genau einen Eintrag.
 
-### D2 – Imposter wird gewählt und rät falsch
+### D2 – Imposter gewählt und falsch geraten
 
 Erwartet:
 
-- nur die ausgeschiedene Imposter-Person erhält die letzte Ratechance,
+- ausgeschiedener Imposter erhält eine Ratechance,
 - Gruppe gewinnt,
 - jede unschuldige Person erhält einen Punkt.
 
-### D3 – Imposter wird gewählt und rät richtig
+### D3 – Imposter gewählt und richtig geraten
 
 Erwartet:
 
 - Imposter gewinnen,
 - jeder Imposter erhält zwei Punkte,
-- Groß-/Kleinschreibung und äußere Leerzeichen führen nicht zu einer falschen Bewertung.
+- Groß-/Kleinschreibung und äußere Leerzeichen werden toleriert.
 
 ### D4 – Stichwahl
 
-1. Erste Abstimmung absichtlich unentschieden gestalten.
-2. Prüfen, dass nur führende Personen auswählbar sind.
-3. Stichwahl erneut unentschieden gestalten.
+1. Erste Wahl absichtlich unentschieden.
+2. Prüfen, dass nur Führende auswählbar sind.
+3. Stichwahl erneut unentschieden.
 
 Erwartet:
 
 - genau eine Stichwahl,
 - keine Selbstwahl,
-- keine Stimme außerhalb der führenden Personen,
-- danach eindeutiges Rundenende zugunsten der Imposter.
+- keine Stimme außerhalb der Führenden,
+- garantiertes Rundenende zugunsten der Imposter.
 
 ### D5 – Geheime Abstimmungsübergabe
 
 Erwartet:
 
-- jede Person stimmt genau einmal ab,
-- vorherige Stimme wird nicht angezeigt,
-- der Name der aktuell abstimmenden Person ist eindeutig,
+- jede Person genau eine Stimme,
+- vorherige Stimme unsichtbar,
+- aktuell abstimmende Person eindeutig,
 - Doppelklick erzeugt keine zweite Stimme.
 
-## E. Mehr-Runden-Match
+## E. Mehr-Runden-Match und Verlauf
 
 ### E1 – Drei Runden
 
-1. Drei Runden vollständig spielen.
-2. Zwischen Runde eins und zwei neu laden.
+Drei Runden spielen und zwischen zwei Runden neu laden.
 
 Erwartet:
 
 - Punktestand bleibt erhalten,
-- Rundennummer ist korrekt,
-- Begriffe wiederholen sich nicht, solange unbenutzte Begriffe verfügbar sind,
-- nach der letzten Runde ist „Nächste Runde“ nicht mehr verfügbar.
+- Rundennummer korrekt,
+- keine Wiederholung bei verfügbaren unbenutzten Begriffen,
+- nach letzter Runde keine weitere Runde.
 
 ### E2 – Verlauf
 
 Erwartet:
 
-- jede beendete Runde erscheint genau einmal,
-- Begriff, Kategorie, Runde und Sieger sind korrekt,
-- maximal zwanzig Einträge werden gespeichert,
-- Verlauf kann separat gelöscht werden.
+- jede beendete Runde genau einmal,
+- Begriff, Kategorie, Runde und Sieger korrekt,
+- maximal zwanzig Einträge,
+- separates Löschen funktioniert.
 
-## F. Eigene Kategorien und Inhalte
+## F. Eigene Kategorien und Eingabesicherheit
 
-### F1 – Gültige eigene Kategorie
+### F1 – Gültige Kategorie
 
-1. Kategorie mit mindestens zwei Zeilen im Format `Begriff | Hilfswort` erstellen.
-2. Kategorie auswählen und mehrere Runden spielen.
+Kategorie mit mindestens zwei Zeilen `Begriff | Hilfswort` erstellen und spielen.
 
 Erwartet:
 
-- Kategorie bleibt nach Neuladen erhalten,
-- Begriffe und Hilfswörter werden korrekt verwendet,
-- HTML-Zeichen werden nur als Text angezeigt.
+- bleibt nach Neuladen erhalten,
+- Inhalte korrekt verwendet,
+- HTML-Zeichen nur als Text.
 
-### F2 – Ungültige eigene Kategorie
+### F2 – Ungültige Kategorie
 
 Prüfen:
 
 - nur ein Begriff,
 - leere Zeilen,
 - doppelte Begriffe,
-- sehr lange Eingaben.
+- sehr lange Eingaben,
+- HTML- und Skriptzeichen.
 
 Erwartet:
 
 - keine beschädigte Kategorie,
 - verständliche Validierung,
+- keine Skriptausführung,
 - App bleibt bedienbar.
 
 ## G. Speicherung, Backup und Löschung
@@ -255,31 +275,31 @@ Erwartet:
 
 Erwartet:
 
-- JSON-Datei wird lokal heruntergeladen,
-- Datei enthält Format, Version, Exportzeit und lokale Daten,
-- App sendet keine Spieldaten an einen externen Server.
+- lokale JSON-Datei,
+- Format, Version, Exportzeit und lokale Daten vorhanden,
+- keine Übertragung an externe Server.
 
 ### G2 – Sicherung importieren
 
 1. Eigene Kategorie und aktiven Spielstand sichern.
-2. Alle lokalen Daten löschen.
+2. Daten löschen.
 3. Sicherung importieren.
 
 Erwartet:
 
-- Kategorie, Einstellungen, Verlauf und aktiver Spielstand werden wiederhergestellt,
-- Live-Einrichtung aktualisiert sich nach dem Import,
-- Import verlangt eine Bestätigung,
-- fehlerhafte, fremde oder zu große Datei wird abgelehnt.
+- Spielstand, Einstellungen, Verlauf und Kategorien wiederhergestellt,
+- Live-Einrichtung aktualisiert,
+- Bestätigung vor Import,
+- fehlerhafte, fremde oder zu große Datei abgelehnt,
+- fehlgeschlagener Import verändert keine bestehenden Daten.
 
 ### G3 – Vollständige Datenlöschung
 
 Erwartet:
 
-- aktive Runde, Einstellungen, Verlauf, eigene Kategorien und alte Speicherschlüssel sind entfernt,
-- App startet mit Standardwerten,
-- Live-Einrichtung zeigt wieder vier Standardpersonen,
-- Offline-App-Dateien dürfen im Service-Worker-Cache bleiben.
+- aktive Runde, Einstellungen, Verlauf, Kategorien und alte Schlüssel entfernt,
+- Standardwerte erscheinen,
+- Offline-App-Dateien dürfen im Cache bleiben.
 
 ## H. PWA und Offline
 
@@ -287,50 +307,48 @@ Erwartet:
 
 Erwartet:
 
-- Browser erkennt die App als installierbar,
-- Icon ist scharf,
-- Name lautet „Secret Circle“,
-- App startet ohne Browserleiste im Standalone-Modus.
+- App installierbar,
+- scharfes Icon,
+- Name „Secret Circle“,
+- Start im Standalone-Modus.
 
 ### H2 – iPhone-/iPad-Installation
 
-1. In Safari über Teilen → „Zum Home-Bildschirm“ installieren.
+In Safari über Teilen → „Zum Home-Bildschirm“ installieren.
 
 Erwartet:
 
-- korrektes Touch-Icon,
-- korrekter App-Name,
-- sichere Bereiche um Notch und Home-Indikator werden nicht überdeckt,
-- Eingabefelder verursachen keinen unerwarteten Seitenzoom.
+- korrektes Touch-Icon und App-Name,
+- Notch und Home-Indikator überdecken nichts,
+- Eingabefelder verursachen keinen unerwarteten Zoom.
 
 ### H3 – Vollständig offline
 
 1. App einmal vollständig online laden.
 2. Flugmodus aktivieren.
-3. App schließen und erneut starten.
-4. Datenschutzseite öffnen und ein Match spielen.
-5. Kartenverdeckung im Offline-Modus prüfen.
+3. App neu starten.
+4. Datenschutzseite öffnen und Match spielen.
+5. Setup, Karten-Sichtschutz und Diskussion prüfen.
 
 Erwartet:
 
-- alle Kernseiten und Spielinhalte funktionieren,
-- Offline-Anzeige ist sichtbar,
-- Setup- und Privatsphärenschutz funktionieren,
-- Spielstand bleibt lokal erhalten.
+- Kernseiten und Spiel funktionieren,
+- Offline-Anzeige sichtbar,
+- `setup-ux.js`, `privacy-guard.js` und `wake-lock.js` geladen,
+- Spielstand bleibt erhalten.
 
 ### H4 – App-Update
 
-1. Eine ältere installierte Beta öffnen.
+1. Ältere installierte Beta öffnen.
 2. Neue Version online laden.
 3. App neu starten.
 
 Erwartet:
 
-- alter Cache wird entfernt,
-- nur `secret-circle-v15` bleibt bestehen,
-- neue App-Dateien und Icons werden verwendet,
-- bestehende kompatible lokale Daten werden migriert,
-- keine Mischung aus alter Oberfläche und neuer Engine.
+- alter Cache entfernt,
+- nur `secret-circle-v16` bleibt,
+- keine Mischung aus alter Oberfläche und neuer Engine,
+- kompatible lokale Daten bleiben erhalten.
 
 ## I. Accessibility
 
@@ -338,19 +356,18 @@ Erwartet:
 
 Erwartet:
 
-- alle Aktionen sind per Tab, Umschalt+Tab, Enter und Leertaste erreichbar,
-- Fokus ist sichtbar,
-- Reihenfolge ist logisch,
-- Spielregeln lassen sich per Tastatur öffnen und schließen,
-- Fokus kehrt nach automatischer Kartenverdeckung zum sicheren Öffnen-Button zurück.
+- alle Aktionen mit Tab, Umschalt+Tab, Enter und Leertaste erreichbar,
+- Fokus sichtbar und logisch,
+- Regeln per Tastatur aufklappbar,
+- Fokus kehrt nach Kartenverdeckung sicher zurück.
 
 ### I2 – Screenreader und Vergrößerung
 
 Prüfen:
 
-- Überschriftenstruktur,
-- Feldbeschriftungen,
-- Live-Hinweise zur Gruppengröße,
+- Überschriften,
+- Labels,
+- Live-Gruppenhinweise,
 - Status- und Fehlermeldungen,
 - 200-Prozent-Vergrößerung,
 - reduzierte Bewegung,
@@ -358,35 +375,35 @@ Prüfen:
 
 Erwartet:
 
-- keine unbeschrifteten Bedienelemente,
+- keine unbeschrifteten Elemente,
 - keine abgeschnittenen Inhalte,
-- keine reine Farbcodierung wichtiger Informationen.
+- keine wichtige reine Farbcodierung.
 
 ## J. Realer Partytest
 
-Mindestens zwei Gruppen testen:
+Mindestens testen:
 
-- eine Gruppe mit drei bis vier Personen,
-- eine Gruppe mit acht oder mehr Personen,
-- mindestens ein Match mit mehreren Impostern.
+- Gruppe mit 3–4 Personen,
+- Gruppe mit mindestens 8 Personen,
+- Match mit mehreren Impostern.
 
-Beobachten und dokumentieren:
+Beobachten:
 
-- Verstehen alle Personen die Kartenübergabe ohne Erklärung?
-- Wird automatische Kartenverdeckung verstanden?
-- Ist klar, wer gerade abstimmt?
+- Wird Einrichtung ohne Hilfe verstanden?
+- Wird Kartenübergabe verstanden?
+- Wird automatische Verdeckung verstanden?
+- Bleibt der Bildschirm während Diskussionen aktiv?
+- Ist die abstimmende Person klar?
 - Werden Punkte und Stichwahl verstanden?
-- Gibt es versehentliche Rollenenthüllungen?
-- Wie lange dauert die Einrichtung?
-- Wo stockt oder zögert die Gruppe?
+- Gibt es Rollenenthüllungen, Blockaden oder Zögern?
 
 ## Freigaberegel
 
-Ein `GO` ist nur zulässig, wenn:
+`GO` nur, wenn:
 
-- alle automatisierten Prüfungen erfolgreich sind,
-- alle kritischen manuellen Fälle bestanden sind,
-- keine reproduzierbaren kritischen oder hohen Fehler offen sind,
-- Android und iOS geprüft wurden,
-- mindestens zwei reale Partytests dokumentiert sind,
-- rechtliche Anbieterinformationen für die geplante Veröffentlichung vollständig sind.
+- alle automatisierten Prüfungen erfolgreich,
+- alle kritischen manuellen Fälle bestanden,
+- keine kritischen oder hohen Fehler offen,
+- Android und iOS geprüft,
+- mindestens zwei Partytests dokumentiert,
+- rechtliche Anbieterinformationen vollständig.
