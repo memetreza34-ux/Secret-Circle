@@ -7,16 +7,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 required_text = {
     'index.html': [
-        'manifest.webmanifest', 'game-engine.js', 'word-packs.js', 'data-store.js',
-        'Content-Security-Policy', 'apple-mobile-web-app-capable', 'apple-touch-icon',
-        'icon-192.png', 'Aktive Runde fortsetzen', 'Eigene Kategorien',
-        'App installieren', 'Spielregeln und Punkte', 'vote-screen', 'guess-screen',
-        'leaderboard', 'clear-all-data', 'export-data', 'import-data', 'privacy.html'
+        'manifest.webmanifest', 'runtime-guard.js', 'game-engine.js',
+        'word-packs.js', 'data-store.js', 'Content-Security-Policy',
+        'apple-mobile-web-app-capable', 'apple-touch-icon', 'icon-192.png',
+        'Aktive Runde fortsetzen', 'Eigene Kategorien', 'App installieren',
+        'Spielregeln und Punkte', 'Version 1.0.0-beta.3', 'vote-screen',
+        'guess-screen', 'leaderboard', 'clear-all-data', 'export-data',
+        'import-data', 'privacy.html'
     ],
     'privacy.html': [
         'Deine Daten bleiben auf deinem Gerät',
         'keine Analyse-, Werbe- oder Tracking-Dienste',
         'Sicherung exportieren und importieren', 'Zurück zum Spiel'
+    ],
+    'runtime-guard.js': [
+        '1.0.0-beta.3', 'unhandledrejection', 'controllerchange',
+        'controlledAtStartup', 'SecretCircleRuntime', 'gespeicherter Spielstand bleibt erhalten'
     ],
     'app.js': [
         'SecretCircleContent', 'SecretCircleStore', 'serviceWorker',
@@ -67,11 +73,16 @@ required_text = {
         'legacy active game and settings migrate'
     ],
     'tests/e2e/offline.spec.js': [
-        'secret-circle-v9', 'icon-192.png', 'icon-512.png', 'offline'
+        'secret-circle-v10', 'runtime-guard.js', 'icon-192.png',
+        'icon-512.png', 'offline'
     ],
     'tests/e2e/pwa-install.spec.js': [
         'installable mobile metadata', 'createImageBitmap',
         '192x192', '512x512', 'apple-mobile-web-app-capable'
+    ],
+    'tests/e2e/runtime-guard.spec.js': [
+        'runtime version matches', 'unexpected runtime errors',
+        'secret-circle-v10', 'runtime-guard.js'
     ],
     'tests/e2e/content.spec.js': ['categoryCount', 'totalTerms', 'deterministic game'],
     'tests/e2e/history.spec.js': ['stored exactly once'],
@@ -80,6 +91,17 @@ required_text = {
         'structural accessibility gates', 'rules and scoring guide is keyboard accessible',
         'retain focus', 'large touch targets', 'reduced motion'
     ],
+    'tests/cross-browser/smoke.spec.js': [
+        'loads setup, content and privacy', 'starts a three-player game',
+        'persists and restores an interrupted game'
+    ],
+    'playwright.cross-browser.config.js': [
+        'Desktop Chrome', 'Desktop Firefox', 'Desktop Safari',
+        'Pixel 7', 'iPhone 13'
+    ],
+    '.github/workflows/cross-browser.yml': [
+        'workflow_dispatch', 'chromium firefox webkit', 'test:cross-browser'
+    ],
     'manifest.webmanifest': [
         '"id": "./"', '"display": "standalone"',
         'icon-192.png', '192x192', 'icon-512.png', '512x512',
@@ -87,19 +109,21 @@ required_text = {
     ],
     'sw.js': [
         'cache.addAll', 'fetchAndCache', 'await cache.put', 'self.clients.claim',
-        'secret-circle-v9', 'pwa.css', 'privacy.html', 'word-packs.js',
-        'data-store.js', 'icon-192.png', 'icon-512.png'
+        'secret-circle-v10', 'pwa.css', 'privacy.html', 'runtime-guard.js',
+        'word-packs.js', 'data-store.js', 'icon-192.png', 'icon-512.png'
     ],
     'pwa.css': [
         '.resume', '.connection.offline', '.help-panel', '.help-grid',
-        '.result-word', '.vote-grid', '.leaderboard', '.data-controls', '.legal-card'
+        '.app-footer', '.result-word', '.vote-grid', '.leaderboard',
+        '.data-controls', '.legal-card'
     ],
     'styles.css': [
         '@media(max-width:560px)', 'card-button', 'touch-action:manipulation'
     ],
     'package.json': [
         '"version": "1.0.0-beta.3"', '"node": ">=20"',
-        'tests/storage.test.js', 'node --check data-store.js', 'playwright test'
+        'node --check runtime-guard.js', 'tests/storage.test.js',
+        'playwright test', 'test:cross-browser'
     ],
     'CHANGELOG.md': ['1.0.0-beta.3', 'deadline-basierter Timer', 'Sicherungsexport'],
     'KNOWN_LIMITATIONS.md': ['lokales Pass-and-Play-Spiel', 'Android', 'iPhone', 'GitHub Actions'],
