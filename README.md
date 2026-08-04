@@ -86,6 +86,52 @@ Die Kennzeichnung ist keine externe Altersfreigabe oder pädagogische Zertifizie
 - sichere Wiederherstellung gespeicherter Spielstände
 - Manipulationsprüfung von Stimmen und Punkten
 
+## Historisches Archiv
+
+Das frühere Projekt-Hub-Repository enthält weiterhin `secret-circle.zip` als potenziell einzigartige Backfill-Quelle.
+
+Bekannter Quellstand:
+
+- Repository: `memetreza34-ux/autonomous-project-hub`
+- Pfad: `secret-circle.zip`
+- Git-Blob-SHA-1: `0bda8a341c6167d83f3a10c2f62fb4efacbd42d7`
+- Löschstatus: `DO_NOT_DELETE`
+
+Das echte ZIP konnte in der aktuellen Ausführungsumgebung noch nicht als lokale Binärdatei bereitgestellt werden. Seine Dateianzahl und Inhalte sind deshalb weiterhin unbekannt und werden nicht geschätzt.
+
+### Sicheres Inventarwerkzeug
+
+`tools/inventory_legacy_archive.py` liest und hasht ein lokal bereitgestelltes ZIP ohne Extraktion oder Ausführung.
+
+```bash
+python tools/inventory_legacy_archive.py /sicherer/pfad/secret-circle.zip \
+  --expected-git-blob 0bda8a341c6167d83f3a10c2f62fb4efacbd42d7 \
+  --json docs/generated/legacy-inventory.json \
+  --markdown docs/generated/legacy-inventory.md
+```
+
+Das Werkzeug prüft vor der Dekompression:
+
+- Anzahl der Einträge
+- maximale Datei- und Gesamtgröße
+- Kompressionsrate
+- Pfad-Traversal und absolute Pfade
+- Windows-Laufwerkspfade
+- Symlinks
+- Verschlüsselung
+- doppelte Pfade und Case-Kollisionen
+- erwarteten Git-Blob
+
+Danach werden Einträge kontrolliert gestreamt, per SHA-256 inventarisiert und auf Größen-/CRC-/ZIP-Fehler geprüft. Nichts wird extrahiert.
+
+Dokumentation:
+
+- `docs/LEGACY_ARCHIVE_INVENTORY.md`
+- `docs/legacy-archive-source.json`
+- `docs/ARCHIVE_TOOL_VALIDATION.md`
+
+Die synthetische Sicherheitssuite ist bestanden. Die tatsächliche Archivinventur bleibt `BLOCKED`, bis exakt die Binärdatei mit dem erwarteten Git-Blob lokal verfügbar ist.
+
 ## Technische Prüfung
 
 ```bash
@@ -94,9 +140,16 @@ node --check game-engine.js
 node --check word-packs.js
 node --check accessibility.js
 node --check sw.js
+python -m py_compile \
+  tools/inventory_legacy_archive.py \
+  tests/archive-inventory.test.py \
+  scripts/validate_archive_tool.py \
+  scripts/validate_project.py
 node tests/engine.test.js
 node tests/content.test.js
 node tests/accessibility.test.js
+python tests/archive-inventory.test.py
+python scripts/validate_archive_tool.py
 python scripts/validate_project.py
 ```
 
@@ -106,10 +159,13 @@ python scripts/validate_project.py
 - kuratierte interne Wortpakete: `GO_WITH_CONDITIONS`
 - tastatur- und screenreaderfreundliches lokales Test-Staging: `GO_WITH_CONDITIONS`
 - installierbare lokale Offline-PWA: `GO_WITH_CONDITIONS`
+- sicheres Legacy-Archiv-Inventarwerkzeug: `GO`
+- tatsächliche Inventur von `secret-circle.zip`: `BLOCKED`
+- Löschung des Hub-Archivs: `NO_GO`
 - öffentliche Store- oder Produktveröffentlichung: `NO_GO`
 
-Gate: `LOCAL_ACCESSIBLE_PARTY_PWA_GO / PUBLIC_RELEASE_NO_GO`.
+Gate: `LEGACY_ARCHIVE_TOOLING_GO / ACTUAL_ARCHIVE_INVENTORY_BLOCKED / HUB_ARCHIVE_DO_NOT_DELETE / LOCAL_ACCESSIBLE_PARTY_PWA_GO / PUBLIC_RELEASE_NO_GO`.
 
 Vor einer öffentlichen Veröffentlichung fehlen reale Tests auf mehreren iOS-/Android-Geräten, Browser- und PWA-Installationsprüfungen, Tests mit Screenreadern und Tastaturnutzenden, vollständige WCAG-Prüfung, externe redaktionelle und Altersprüfung, Datenschutzbewertung sowie ein dokumentierter Releaseprozess.
 
-Das frühere Archiv im Projekt-Hub bleibt als historische Backfill-Quelle erhalten. Dieses öffentliche Repository enthält keine Secrets, Konten oder `.env`-Dateien.
+Das öffentliche Zielrepository enthält keine Secrets, Konten, `.env`-Dateien oder das historische ZIP-Archiv.
