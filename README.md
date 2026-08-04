@@ -16,37 +16,35 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 
 - drei bis zwanzig eindeutige Spielernamen
 - Live-Anzeige der erkannten Personen und des gültigen Imposter-Bereichs
-- ein bis maximal sechs Imposter
+- ein bis maximal sechs Imposter, auch bei wiederhergestellten Spielständen
 - unabhängige Rollenverteilung: Die Imposter werden getrennt von der Aufdeckreihenfolge ausgelost
 - vierzehn integrierte Kategorien mit 168 Begriffen
 - gemischter Modus und eigene Kategorien im Format `Begriff | Hilfswort`
 - optionales neutrales Hilfswort
 - keine Begriffswiederholung, bis der gewählte Pool aufgebraucht ist
-- geheime Kartenübergabe
-- automatische Verdeckung einer sichtbaren geheimen Karte bei App-Wechsel oder Fokusverlust
+- geheime Kartenübergabe mit automatischer Verdeckung bei App-Wechsel
 - blockierte Weitergabe, bis eine automatisch verdeckte Karte erneut geöffnet wurde
 - optionaler Bildschirm-Wake-Lock während der Diskussionsrunde
-- deadline-basierter Timer von einer bis zehn Minuten mit Pause, Hintergrund- und Neulade-Wiederherstellung
-- geheime Abstimmung, Schutz vor Selbstwahl und doppelten Stimmen
+- deadline-basierter Timer mit Pause, Hintergrund- und Neulade-Wiederherstellung
+- geheime Abstimmung, Selbstwahl- und Doppelstimmenschutz
 - begrenzte Stichwahl, Imposter-Ratechance, Punkte, Rangliste und Mehr-Runden-Matches
-- lokaler Verlauf jeder abgeschlossenen Runde
-- Wiederaufnahme unterbrochener Spiele
+- lokaler Verlauf und Wiederaufnahme unterbrochener Spiele
 - versionierte Migration, beschädigte-Daten-Wiederherstellung und vollständige JSON-Sicherung
 - vollständiges Löschen aller lokalen Daten
 - installierbare PWA mit 192- und 512-Pixel-PNG-Icons
-- vollständiger Offline-Cache `secret-circle-v17` für App, Rollenverteilung, Datenschutz, Inhalte und Schutzmodule
+- vollständiger Offline-Cache `secret-circle-v18` für App, Rollenverteilung, Datenschutz, Inhalte und Schutzmodule
 - restriktive Content Security Policy, keine Anmeldung, kein Tracking und keine Serverübertragung von Spieldaten
 
 ## Architektur
 
 - `game-engine.js`: deterministische Spielregeln, Timer, Abstimmung, Punkte und Matches
-- `role-assignment.js`: unabhängige deterministische Rollenverteilung mit maximal sechs Impostern
+- `role-assignment.js`: unabhängige Rollenverteilung und globale Grenze von sechs Impostern
 - `word-packs.js`: integrierte Kategorien und Begriffe
 - `data-store.js`: versionierte Speicherung, Migration, Backup und Wiederherstellung
-- `setup-ux.js`: Live-Validierung von Gruppengröße und Imposter-Limit
-- `privacy-guard.js`: automatische Verdeckung geheimer Karten und Schutz vor versehentlicher Weitergabe
+- `setup-ux.js`: Live-Validierung und Synchronisierung gespeicherter Einstellungen
+- `privacy-guard.js`: automatische Verdeckung geheimer Karten
 - `wake-lock.js`: optionaler Bildschirmschutz während der Diskussion
-- `runtime-guard.js`: globale Fehleranzeige und sicherer Wechsel auf aktualisierte PWA-Dateien
+- `runtime-guard.js`: globale Fehleranzeige und sicherer PWA-Update-Wechsel
 - `app.js`: Benutzeroberfläche und Ablaufsteuerung
 - `sw.js`: Offline-Cache und PWA-Betrieb
 
@@ -69,7 +67,8 @@ Die Prüfungen umfassen unter anderem:
 
 - Engine-, Speicher-, Inhalts-, Rollenverteilungs- und Fuzz-Tests
 - unabhängige Rollenverteilung ohne Kopplung an die Aufdeckreihenfolge
-- Grenzwerte mit 3–20 Personen und maximal sechs Impostern
+- Ablehnung von mehr als sechs Impostern bei neuen und wiederhergestellten Spielen
+- Grenzwerte mit 3–20 Personen
 - vollständige Desktop- und Mobilspielabläufe
 - Timer, Verlauf, Backup, Migration und beschädigte Daten
 - Karten-Sichtschutz, Wake Lock, Accessibility und Eingabesicherheit
@@ -94,7 +93,7 @@ Ein öffentlicher Release ist erst vorgesehen, wenn:
 
 1. `npm run ci` vollständig erfolgreich läuft,
 2. GitHub Actions auf dem endgültigen Commit grün ist,
-3. die Rollenverteilung über mehrere reale Runden keine Verbindung zur Aufdeckreihenfolge zeigt,
+3. die Rollenverteilung über reale Runden keine Verbindung zur Aufdeckreihenfolge zeigt,
 4. Android- und iOS-Installation, Offline-Start und Update getestet wurden,
 5. Karten-Sichtschutz, Timer und Wake Lock auf realen Geräten geprüft wurden,
 6. mindestens ein kleiner und ein großer Partytest bestanden sind,
