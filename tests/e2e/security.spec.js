@@ -4,13 +4,14 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => {
     localStorage.clear();
+    delete window.__x;
     delete window.__secretCircleInjected;
   });
   await page.reload();
 });
 
 test('custom category markup is rendered only as text', async ({ page }) => {
-  const maliciousName = '<img src=x onerror="window.__secretCircleInjected=1">';
+  const maliciousName = '<img src=x onerror=window.__x=1>';
   const maliciousWord = '<script>window.__secretCircleInjected=2</script>';
   const maliciousHint = '<b onclick="window.__secretCircleInjected=3">Hinweis</b>';
 
@@ -23,11 +24,12 @@ test('custom category markup is rendered only as text', async ({ page }) => {
   await expect(page.locator('#custom-list img')).toHaveCount(0);
   await expect(page.locator('#custom-list script')).toHaveCount(0);
   await expect(page.locator('#category option').last()).toHaveText(maliciousName);
-  expect(await page.evaluate(() => window.__secretCircleInjected)).toBeUndefined();
+  const globals = await page.evaluate(() => ({ x: window.__x, injected: window.__secretCircleInjected }));
+  expect(globals).toEqual({ x: undefined, injected: undefined });
 });
 
 test('malicious-looking player names stay text through reveal and voting', async ({ page }) => {
-  const maliciousPlayer = '<img src=x onerror="window.__secretCircleInjected=4">';
+  const maliciousPlayer = '<img src=x onerror=window.__x=4>';
   const players = [maliciousPlayer, 'Sam', 'Mika'];
   await page.locator('#players').fill(players.join('\n'));
   await page.locator('#match-rounds').selectOption('1');
@@ -43,7 +45,7 @@ test('malicious-looking player names stay text through reveal and voting', async
   await page.getByRole('button', { name: 'Abstimmung starten' }).click();
   await expect(page.locator('#vote-options img')).toHaveCount(0);
   await expect(page.locator('#vote-options script')).toHaveCount(0);
-  expect(await page.evaluate(() => window.__secretCircleInjected)).toBeUndefined();
+  expect(await page.evaluate(() => window.__x)).toBeUndefined();
 });
 
 test('content security policy excludes unsafe script and object sources', async ({ page }) => {
