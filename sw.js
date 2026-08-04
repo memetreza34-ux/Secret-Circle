@@ -1,6 +1,6 @@
 'use strict';
-const CACHE='secret-circle-v9';
-const CORE=['./','./index.html','./privacy.html','./styles.css','./pwa.css','./app.js','./game-engine.js','./word-packs.js','./data-store.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const CACHE='secret-circle-v10';
+const CORE=['./','./index.html','./privacy.html','./styles.css','./pwa.css','./runtime-guard.js','./app.js','./game-engine.js','./word-packs.js','./data-store.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
