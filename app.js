@@ -15,6 +15,7 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 let game = null;
 let timer = null;
+let lastPersistedTimerSecond = null;
 let cardVisible = false;
 let installPrompt = null;
 let custom = persisted.custom;
@@ -161,6 +162,7 @@ function startGame() {
     game = E.createGame(createRoundOptions(values));
     cardVisible = false;
     voteIndex = 0;
+    lastPersistedTimerSecond = null;
     saveSettings();
     saveGame();
     showGame();
@@ -174,7 +176,7 @@ function showGame() {
     screen('setup-screen');
     return;
   }
-  clearTimer();
+  clearTimerLoop();
   if (game.phase === 'reveal') renderReveal();
   else if (game.phase === 'discussion') renderDiscussion();
   else if (game.phase === 'voting' || game.phase === 'tie_break') renderVoting();
@@ -216,12 +218,51 @@ function nextPlayer() {
   showGame();
 }
 
+function timerExpired(announce = true) {
+  clearTimerLoop();
+  updateTime();
+  updateTimerControl();
+  saveGame();
+  if (announce) {
+    setStatus('Die Diskussionszeit ist abgelaufen.');
+    navigator.vibrate?.([180, 100, 180]);
+  }
+}
+
+function syncTimerState({ persist = false, announce = true } = {}) {
+  if (!game || game.phase !== 'discussion') return;
+  const wasRunning = game.timerRunning;
+  game = E.syncTimer(game, Date.now());
+  updateTime();
+  updateTimerControl();
+  if (persist && lastPersistedTimerSecond !== game.remainingSeconds) {
+    lastPersistedTimerSecond = game.remainingSeconds;
+    saveGame();
+  }
+  if (wasRunning && !game.timerRunning && game.remainingSeconds === 0) timerExpired(announce);
+}
+
+function startTimerLoop() {
+  clearTimerLoop();
+  if (!game?.timerRunning) return;
+  timer = setInterval(() => syncTimerState({ persist: true, announce: true }), 250);
+}
+
 function renderDiscussion() {
+  const wasRunning = game.timerRunning;
+  game = E.syncTimer(game, Date.now());
   screen('round-screen');
   $('#round-number').textContent = `${game.currentRound}/${game.matchRounds}`;
   $('#round-category').textContent = game.category;
   $('#round-players').textContent = `${game.players.length} Personen · ${game.imposters.length} Imposter`;
   updateTime();
+  updateTimerControl();
+  if (wasRunning && !game.timerRunning && game.remainingSeconds === 0) {
+    timerExpired(true);
+    return;
+  }
+  if (game.timerRunning) startTimerLoop();
+  saveGame();
 }
 
 function updateTime() {
@@ -231,34 +272,45 @@ function updateTime() {
   $('#time').textContent = `${minutes}:${seconds}`;
 }
 
-function toggleTimer() {
-  if (timer) {
-    clearTimer();
-    $('#timer-toggle').textContent = 'Timer fortsetzen';
+function updateTimerControl() {
+  const button = $('#timer-toggle');
+  if (!game || game.remainingSeconds <= 0) {
+    button.textContent = 'Zeit abgelaufen';
+    button.disabled = true;
     return;
   }
-  if (!game || game.remainingSeconds <= 0) return;
-  $('#timer-toggle').textContent = 'Timer pausieren';
-  timer = setInterval(() => {
-    game = E.setRemaining(game, Math.max(0, game.remainingSeconds - 1));
-    updateTime();
-    saveGame();
-    if (game.remainingSeconds === 0) {
-      clearTimer();
-      $('#timer-toggle').textContent = 'Zeit abgelaufen';
-      setStatus('Die Diskussionszeit ist abgelaufen.');
-      navigator.vibrate?.([180, 100, 180]);
-    }
-  }, 1000);
+  button.disabled = false;
+  if (game.timerRunning) button.textContent = 'Timer pausieren';
+  else if (game.remainingSeconds < game.roundSeconds) button.textContent = 'Timer fortsetzen';
+  else button.textContent = 'Timer starten';
 }
 
-function clearTimer() {
+function toggleTimer() {
+  if (!game || game.phase !== 'discussion') return;
+  try {
+    if (game.timerRunning) {
+      game = E.pauseTimer(game, Date.now());
+      clearTimerLoop();
+    } else {
+      game = E.startTimer(game, Date.now());
+      startTimerLoop();
+    }
+    lastPersistedTimerSecond = game.remainingSeconds;
+    updateTime();
+    updateTimerControl();
+    saveGame();
+  } catch (error) {
+    setStatus(error.message, true);
+  }
+}
+
+function clearTimerLoop() {
   if (timer) clearInterval(timer);
   timer = null;
 }
 
 function beginVoting() {
-  clearTimer();
+  clearTimerLoop();
   game = E.startVoting(game);
   voteIndex = 0;
   saveGame();
@@ -294,6 +346,10 @@ function castVote(target) {
       return;
     }
     game = E.resolveVote(game);
+    if (game.phase === 'completed') {
+      completeRound();
+      return;
+    }
     saveGame();
     showGame();
   } catch (error) {
@@ -318,14 +374,20 @@ function submitGuess() {
   }
 }
 
-function completeRound() {
+function recordRoundHistory() {
+  if (!game || game.phase !== 'completed') return;
   history = [E.historyEntry(game), ...history.filter(item => item.id !== game.id)].slice(0, 20);
   write(KEYS.history, history);
+}
+
+function completeRound() {
+  recordRoundHistory();
   saveGame();
   renderResult();
 }
 
 function renderResult() {
+  recordRoundHistory();
   screen('result-screen');
   $('#result-heading').textContent = game.winner === 'innocents' ? 'Die Gruppe gewinnt' : 'Die Imposter gewinnen';
   $('#result-word').textContent = game.word;
@@ -344,6 +406,7 @@ function startNextRound() {
     const values = setupValues();
     game = E.nextRound(game, createRoundOptions(values));
     voteIndex = 0;
+    lastPersistedTimerSecond = null;
     saveGame();
     showGame();
   } catch (error) {
@@ -370,11 +433,12 @@ function resumeGame() {
   }
   game = active;
   voteIndex = Object.keys(game.votes || {}).length;
+  lastPersistedTimerSecond = game.remainingSeconds;
   showGame();
 }
 
 function newGame() {
-  clearTimer();
+  clearTimerLoop();
   if (game && game.phase !== 'completed' && !confirm('Aktuelle Runde verwerfen und neu beginnen?')) return;
   game = null;
   remove(KEYS.active);
@@ -409,13 +473,14 @@ function deleteCategory(id) {
 
 function clearAllData() {
   if (!confirm('Wirklich alle lokalen Secret-Circle-Daten löschen? Aktive Runde, Verlauf, Einstellungen und eigene Kategorien werden dauerhaft entfernt.')) return;
-  clearTimer();
+  clearTimerLoop();
   STORE.clearAll();
   game = null;
   custom = [];
   history = [];
   voteIndex = 0;
   cardVisible = false;
+  lastPersistedTimerSecond = null;
   $('#players').value = 'Alex\nSam\nMika\nLina';
   $('#imposters').value = '1';
   $('#duration').value = '3';
@@ -462,7 +527,7 @@ async function importData(event) {
   try {
     const result = STORE.importBackup(await file.text(), E);
     if (!result.ok) throw Error(result.error);
-    clearTimer();
+    clearTimerLoop();
     game = null;
     custom = result.data.custom;
     history = result.data.history;
@@ -549,6 +614,16 @@ $('#export-data').addEventListener('click', exportData);
 $('#import-data-trigger').addEventListener('click', chooseImportFile);
 $('#import-data').addEventListener('change', importData);
 
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && game?.phase === 'discussion' && game.timerRunning) syncTimerState({ persist: true, announce: true });
+});
+window.addEventListener('pagehide', () => {
+  if (game?.phase === 'discussion' && game.timerRunning) {
+    game = E.syncTimer(game, Date.now());
+    write(KEYS.active, game);
+  }
+});
+
 renderCategories();
 restoreSettings();
 updateResume();
@@ -557,4 +632,4 @@ registerPwa();
 screen('setup-screen');
 
 if (!persisted.available) setStatus('Lokaler Speicher ist nicht verfügbar. Das Spiel kann laufen, aber Daten werden nicht dauerhaft gespeichert.', true);
-else if (persisted.warnings.length) setStatus('Lokale Daten wurden geprüft und auf das aktuelle Format aktualisiert.');
+else if (persisted.warnings.length) setStatus('Lokale Daten wurden auf die neue App-Version aktualisiert.');
