@@ -14,9 +14,10 @@ required_files = [
     'tests/engine.test.js', 'tests/storage.test.js',
     'tests/e2e/game-flow.spec.js', 'tests/e2e/accessibility.spec.js',
     'tests/e2e/timer.spec.js', 'tests/e2e/offline.spec.js',
-    'tests/e2e/content.spec.js', 'tests/e2e/history.spec.js',
-    'tests/e2e/storage-safety.spec.js', 'scripts/validate_project.py',
-    '.github/workflows/ci.yml', 'README.md', 'RELEASE_CHECKLIST.md'
+    'tests/e2e/pwa-install.spec.js', 'tests/e2e/content.spec.js',
+    'tests/e2e/history.spec.js', 'tests/e2e/storage-safety.spec.js',
+    'scripts/validate_project.py', '.github/workflows/ci.yml',
+    'README.md', 'RELEASE_CHECKLIST.md'
 ]
 missing = [path for path in required_files if not (ROOT / path).is_file()]
 if missing:
@@ -34,6 +35,7 @@ storage_tests = read('tests/storage.test.js')
 e2e_game = read('tests/e2e/game-flow.spec.js')
 e2e_timer = read('tests/e2e/timer.spec.js')
 e2e_offline = read('tests/e2e/offline.spec.js')
+e2e_pwa = read('tests/e2e/pwa-install.spec.js')
 e2e_content = read('tests/e2e/content.spec.js')
 e2e_history = read('tests/e2e/history.spec.js')
 e2e_storage = read('tests/e2e/storage-safety.spec.js')
@@ -117,6 +119,10 @@ browser_requirements = {
     ]),
     'offline': (e2e_offline, [
         'secret-circle-v9', 'service worker', 'icon-192.png', 'icon-512.png'
+    ]),
+    'pwa-install': (e2e_pwa, [
+        'installable mobile metadata', 'createImageBitmap',
+        '192x192', '512x512', 'apple-mobile-web-app-capable'
     ]),
     'content': (e2e_content, ['category']),
     'history': (e2e_history, ['stored exactly once']),
@@ -219,6 +225,7 @@ print(json.dumps({
     'duplicate_vote_protection': True,
     'non_repeating_match_words': True,
     'browser_test_suites': len(browser_requirements),
+    'pwa_install_metadata_tested': True,
     'accessibility_gates': True,
     'mobile_quality_gates': True,
     'pinned_playwright': playwright_version
