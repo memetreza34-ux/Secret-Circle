@@ -12,12 +12,14 @@ required_files = [
     'manifest.webmanifest', 'sw.js', 'icon.svg', 'icon-192.png',
     'icon-512.png', 'package.json', 'playwright.config.js',
     'tests/engine.test.js', 'tests/storage.test.js',
-    'tests/e2e/game-flow.spec.js', 'tests/e2e/accessibility.spec.js',
-    'tests/e2e/timer.spec.js', 'tests/e2e/offline.spec.js',
-    'tests/e2e/pwa-install.spec.js', 'tests/e2e/content.spec.js',
-    'tests/e2e/history.spec.js', 'tests/e2e/storage-safety.spec.js',
-    'scripts/validate_project.py', '.github/workflows/ci.yml',
-    'README.md', 'RELEASE_CHECKLIST.md'
+    'tests/e2e/game-flow.spec.js', 'tests/e2e/setup-limits.spec.js',
+    'tests/e2e/accessibility.spec.js', 'tests/e2e/timer.spec.js',
+    'tests/e2e/offline.spec.js', 'tests/e2e/pwa-install.spec.js',
+    'tests/e2e/content.spec.js', 'tests/e2e/history.spec.js',
+    'tests/e2e/storage-safety.spec.js', 'scripts/validate_project.py',
+    '.github/workflows/ci.yml', 'README.md', 'RELEASE_CHECKLIST.md',
+    'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'MANUAL_TEST_PLAN.md',
+    'CI_TROUBLESHOOTING.md'
 ]
 missing = [path for path in required_files if not (ROOT / path).is_file()]
 if missing:
@@ -33,6 +35,7 @@ data_store = read('data-store.js')
 engine_tests = read('tests/engine.test.js')
 storage_tests = read('tests/storage.test.js')
 e2e_game = read('tests/e2e/game-flow.spec.js')
+e2e_setup = read('tests/e2e/setup-limits.spec.js')
 e2e_timer = read('tests/e2e/timer.spec.js')
 e2e_offline = read('tests/e2e/offline.spec.js')
 e2e_pwa = read('tests/e2e/pwa-install.spec.js')
@@ -42,14 +45,21 @@ e2e_storage = read('tests/e2e/storage-safety.spec.js')
 a11y_tests = read('tests/e2e/accessibility.spec.js')
 service_worker = read('sw.js')
 workflow = read('.github/workflows/ci.yml')
+readme = read('README.md')
+checklist = read('RELEASE_CHECKLIST.md')
+changelog = read('CHANGELOG.md')
+limitations = read('KNOWN_LIMITATIONS.md')
+manual_plan = read('MANUAL_TEST_PLAN.md')
+ci_help = read('CI_TROUBLESHOOTING.md')
 package = json.loads(read('package.json'))
 manifest = json.loads(read('manifest.webmanifest'))
 
 for marker in [
     'lang="de"', 'viewport-fit=cover', 'aria-live="polite"',
     'Content-Security-Policy', 'referrer', 'apple-mobile-web-app-capable',
-    'apple-touch-icon', 'privacy.html', 'delete-all-data',
-    'word-packs.js', 'data-store.js', 'export-data', 'import-data'
+    'apple-touch-icon', 'Spielregeln und Punkte', 'privacy.html',
+    'delete-all-data', 'word-packs.js', 'data-store.js',
+    'export-data', 'import-data'
 ]:
     if marker not in index:
         raise SystemExit(f'Release marker missing in index.html: {marker}')
@@ -113,6 +123,10 @@ browser_requirements = {
         'full match round', 'multiple match rounds', 'interrupted round',
         'complete local backup', 'corrupted persisted data'
     ]),
+    'setup-limits': (e2e_setup, [
+        'three players and two imposters', 'twenty players and six imposters',
+        'more than twenty players', 'below the player count'
+    ]),
     'timer': (e2e_timer, [
         'deadline timer counts accurately', 'survives a reload',
         'elapsed background deadline', 'legacy active game'
@@ -124,12 +138,12 @@ browser_requirements = {
         'installable mobile metadata', 'createImageBitmap',
         '192x192', '512x512', 'apple-mobile-web-app-capable'
     ]),
-    'content': (e2e_content, ['category']),
+    'content': (e2e_content, ['categoryCount', 'totalTerms', 'deterministic game']),
     'history': (e2e_history, ['stored exactly once']),
     'storage-safety': (e2e_storage, ['storage']),
     'accessibility': (a11y_tests, [
-        'structural accessibility gates', 'retain focus',
-        'large touch targets', 'reduced motion'
+        'structural accessibility gates', 'rules and scoring guide is keyboard accessible',
+        'retain focus', 'large touch targets', 'reduced motion'
     ])
 }
 for suite, (source, markers) in browser_requirements.items():
@@ -179,10 +193,15 @@ for asset in [
 ]:
     if asset not in service_worker:
         raise SystemExit(f'Offline core asset missing from service worker: {asset}')
-if 'event.waitUntil' not in service_worker:
-    raise SystemExit('Runtime cache writes must be attached to fetch event lifetime.')
+for marker in ['fetchAndCache', 'await cache.put', 'handleNavigation', 'handleAsset']:
+    if marker not in service_worker:
+        raise SystemExit(f'Service worker reliability marker missing: {marker}')
 
 scripts = package.get('scripts', {})
+if package.get('version') != '1.0.0-beta.3':
+    raise SystemExit('Package version must be 1.0.0-beta.3.')
+if package.get('engines', {}).get('node') != '>=20':
+    raise SystemExit('Node engine support must be declared as >=20.')
 for marker in ['tests/engine.test.js', 'tests/storage.test.js']:
     if marker not in scripts.get('test', ''):
         raise SystemExit(f'Unit test command missing: {marker}')
@@ -196,6 +215,18 @@ for command in ['npm run check', 'npm test', 'npm run validate', 'npm run test:e
     if command not in workflow:
         raise SystemExit(f'CI command missing: {command}')
 
+for source, markers in [
+    (readme, ['deadline-basierter Timer', '192- und 512-Pixel', 'PWA-Manifest']),
+    (checklist, ['Realer Party-Betatest', 'Timer läuft nach App-Wechsel', '512 × 512']),
+    (changelog, ['1.0.0-beta.3', 'Hinzugefügt', 'Behoben', 'Sicherheit und Datenschutz']),
+    (limitations, ['lokales Pass-and-Play-Spiel', 'iPhone', 'öffentlichen Release']),
+    (manual_plan, ['Grundlegender Smoke-Test', 'Timer', 'PWA und Offline', 'Realer Partytest']),
+    (ci_help, ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits'])
+]:
+    for marker in markers:
+        if marker.lower() not in source.lower():
+            raise SystemExit(f'Production documentation marker missing: {marker}')
+
 for forbidden in ['eval(', 'new Function(', 'document.write(', 'innerHTML = location', 'http://']:
     if any(forbidden in source for source in [app, engine, word_packs, data_store]):
         raise SystemExit(f'Forbidden release pattern detected: {forbidden}')
@@ -206,6 +237,7 @@ for forbidden_path in ['.env', 'node_modules', 'dist', 'build']:
 print(json.dumps({
     'release_audit': 'PASS',
     'required_files': len(required_files),
+    'package_version': package.get('version'),
     'pwa_cache': cache_match.group(1),
     'pwa_icons': png_dimensions,
     'privacy': True,
@@ -225,8 +257,10 @@ print(json.dumps({
     'duplicate_vote_protection': True,
     'non_repeating_match_words': True,
     'browser_test_suites': len(browser_requirements),
+    'setup_boundary_tests': True,
     'pwa_install_metadata_tested': True,
     'accessibility_gates': True,
     'mobile_quality_gates': True,
+    'production_docs': True,
     'pinned_playwright': playwright_version
 }, ensure_ascii=False, indent=2))
