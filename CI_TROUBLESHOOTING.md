@@ -6,10 +6,10 @@ Die Workflow-Läufe von `Secret Circle CI` werden als fehlgeschlagen beendet, be
 
 Zuletzt bestätigt:
 
-- Workflow-Lauf: `#250`
-- Run-ID: `30896066020`
-- Job-ID: `91949131193`
-- Commit zum Prüfzeitpunkt: `cad857851525af2702c141277a1dd5d0700d54ff`
+- Workflow-Lauf: `#384`
+- Run-ID: `30902981127`
+- Job-ID: `91971379782`
+- Commit zum Prüfzeitpunkt: `058b68f4e1125f5d9dbb211066324c9a79a9c538`
 - Jobname: `validate`
 - Status: `completed`
 - Ergebnis: `failure`
@@ -109,7 +109,7 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Die Validierung prüft inzwischen ausdrücklich Repository-Hygiene, statische Dateigrößen, Syntax, Engine, Speicherung, PWA-Struktur, Datenschutz, Sicherheit und Browserabläufe. Ein lokaler erfolgreicher Lauf ist deshalb ein starkes technisches Signal, ersetzt für den öffentlichen Release aber nicht den erfolgreichen Lauf auf dem endgültigen GitHub-Commit.
+Die Validierung prüft Repository-Hygiene, statische Dateigrößen, Syntax, Engine, Speicherung, PWA-Struktur, vollständigen Cache `secret-circle-v15`, Live-Einrichtung, Karten-Sichtschutz, Datenschutz, Sicherheit und Browserabläufe. Ein lokaler erfolgreicher Lauf ist deshalb ein starkes technisches Signal, ersetzt für den öffentlichen Release aber nicht den erfolgreichen Lauf auf dem endgültigen GitHub-Commit.
 
 ## Freigabeentscheidung
 
