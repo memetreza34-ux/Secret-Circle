@@ -68,7 +68,7 @@ test('location spy distributes secret roles and provides a location guess resolu
 
   for (let index = 0; index < 4; index += 1) {
     await page.getByRole('button', { name: 'Karte anzeigen' }).click();
-    await expect(page.locator('#play-content')).toMatchAriaSnapshot(`- text: /Spion|Geheimer Ort/`);
+    await expect(page.locator('#play-content')).toHaveText(/Spion|Geheimer Ort/);
     await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
   }
   await page.getByRole('button', { name: 'Spion versucht den Ort' }).click();
