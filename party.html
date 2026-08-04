@@ -148,14 +148,14 @@
           <section class="data-panel" aria-labelledby="content-settings-title">
             <h2 id="content-settings-title">Standardwerte</h2>
             <div class="settings-grid">
-              <label for="default-session-length">Standardlänge für erweiterte Spiele<select id="default-session-length"><option value="3">3 Runden</option><option value="5">5 Runden</option><option value="10">10 Runden</option><option value="20">20 Runden</option></select></label>
+              <label for="default-session-length">Standardlänge für erweiterte Spiele<select id="default-session-length"><option value="3">3 Runden</option><option value="5" selected>5 Runden</option><option value="10">10 Runden</option><option value="20">20 Runden</option></select></label>
               <label for="settings-age-level">Bevorzugte Altersstufe<select id="settings-age-level"><option value="all">Alle Inhalte</option><option value="family">Nur familienfreundlich</option><option value="teen">Bis ab 12</option></select></label>
             </div>
             <p class="muted">Die Altersstufe wird mit dem Filter im Spielekatalog synchronisiert. Geplante spätere Erwachsenen-Packs bleiben standardmäßig ausgeblendet.</p>
           </section>
           <section class="data-panel" aria-labelledby="backup-title">
             <h2 id="backup-title">Vollständige lokale Sicherung</h2>
-            <p class="muted">Exportiert Hub-Spieler, Presets, Favoriten, Verlauf, Statistiken, aktive Sessions, eigene Imposter-Kategorien, Einstellungen und Spielstände in eine JSON-Datei.</p>
+            <p class="muted">Exportiert Hub-Spieler, Presets, Favoriten, Verlauf, Statistiken, aktive Sessions, eigene Hub- und Imposter-Kategorien, Einstellungen und Spielstände in eine JSON-Datei.</p>
             <div class="data-actions">
               <button id="hub-export-data" type="button">Alles exportieren</button>
               <button id="hub-import-trigger" class="secondary" type="button">Sicherung importieren</button>
@@ -206,6 +206,7 @@
   <script src="party-catalog.js"></script>
   <script src="party-expansion.js"></script>
   <script src="party-routing.js"></script>
+  <script src="party-custom-packs.js"></script>
   <script src="party-hub.js"></script>
   <script src="party-hub-plus.js"></script>
   <script src="party-data-tools.js"></script>
