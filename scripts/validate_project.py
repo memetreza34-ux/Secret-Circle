@@ -10,8 +10,8 @@ required_text = {
         'manifest.webmanifest', 'game-engine.js', 'word-packs.js', 'data-store.js',
         'Content-Security-Policy', 'apple-mobile-web-app-capable', 'apple-touch-icon',
         'icon-192.png', 'Aktive Runde fortsetzen', 'Eigene Kategorien',
-        'App installieren', 'vote-screen', 'guess-screen', 'leaderboard',
-        'clear-all-data', 'export-data', 'import-data', 'privacy.html'
+        'App installieren', 'Spielregeln und Punkte', 'vote-screen', 'guess-screen',
+        'leaderboard', 'clear-all-data', 'export-data', 'import-data', 'privacy.html'
     ],
     'privacy.html': [
         'Deine Daten bleiben auf deinem Gerät',
@@ -56,6 +56,12 @@ required_text = {
         'secret-circle-active-v7', 'exports and restores a complete local backup',
         'recovers safely from corrupted persisted data'
     ],
+    'tests/e2e/setup-limits.spec.js': [
+        'minimum setup supports three players and two imposters',
+        'maximum setup supports twenty players and six imposters',
+        'more than twenty players is rejected',
+        'imposter count must remain below the player count'
+    ],
     'tests/e2e/timer.spec.js': [
         'deadline timer counts accurately', 'survives a reload',
         'legacy active game and settings migrate'
@@ -67,12 +73,12 @@ required_text = {
         'installable mobile metadata', 'createImageBitmap',
         '192x192', '512x512', 'apple-mobile-web-app-capable'
     ],
-    'tests/e2e/content.spec.js': ['category'],
-    'tests/e2e/history.spec.js': ['history'],
+    'tests/e2e/content.spec.js': ['categoryCount', 'totalTerms', 'deterministic game'],
+    'tests/e2e/history.spec.js': ['stored exactly once'],
     'tests/e2e/storage-safety.spec.js': ['storage'],
     'tests/e2e/accessibility.spec.js': [
-        'structural accessibility gates', 'retain focus',
-        'large touch targets', 'reduced motion'
+        'structural accessibility gates', 'rules and scoring guide is keyboard accessible',
+        'retain focus', 'large touch targets', 'reduced motion'
     ],
     'manifest.webmanifest': [
         '"id": "./"', '"display": "standalone"',
@@ -80,20 +86,25 @@ required_text = {
         'icon.svg', 'Secret Circle'
     ],
     'sw.js': [
-        'cache.addAll', 'event.waitUntil', 'self.clients.claim',
+        'cache.addAll', 'fetchAndCache', 'await cache.put', 'self.clients.claim',
         'secret-circle-v9', 'pwa.css', 'privacy.html', 'word-packs.js',
         'data-store.js', 'icon-192.png', 'icon-512.png'
     ],
     'pwa.css': [
-        '.resume', '.connection.offline', '.result-word', '.vote-grid',
-        '.leaderboard', '.data-controls', '.legal-card'
+        '.resume', '.connection.offline', '.help-panel', '.help-grid',
+        '.result-word', '.vote-grid', '.leaderboard', '.data-controls', '.legal-card'
     ],
     'styles.css': [
         '@media(max-width:560px)', 'card-button', 'touch-action:manipulation'
     ],
     'package.json': [
+        '"version": "1.0.0-beta.3"', '"node": ">=20"',
         'tests/storage.test.js', 'node --check data-store.js', 'playwright test'
-    ]
+    ],
+    'CHANGELOG.md': ['1.0.0-beta.3', 'deadline-basierter Timer', 'Sicherungsexport'],
+    'KNOWN_LIMITATIONS.md': ['lokales Pass-and-Play-Spiel', 'Android', 'iPhone', 'GitHub Actions'],
+    'MANUAL_TEST_PLAN.md': ['Grundlegender Smoke-Test', 'Timer', 'PWA und Offline', 'Realer Partytest'],
+    'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits']
 }
 
 for relative, markers in required_text.items():
