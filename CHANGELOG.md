@@ -1,75 +1,62 @@
 # Änderungsverlauf
 
-Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentiert.
-
 ## 1.0.0-beta.3 – 2026-08-04
 
 ### Hinzugefügt
 
-- vollständige geheime Abstimmung mit Selbstwahl- und Doppelstimmenschutz
-- begrenzte Stichwahl und eindeutiges Rundenende
-- Imposter-Rateschritt, Punktesystem, Rangliste und Mehr-Runden-Matches
-- 14 integrierte Kategorien mit insgesamt 168 Begriffen
-- Vermeidung wiederholter Begriffe bis zum Ende des jeweiligen Pools
-- deadline-basierter Timer mit Pause, Hintergrund- und Neulade-Wiederherstellung
-- optionaler Bildschirm-Wake-Lock während der Diskussionsrunde
-- lokaler Verlauf für jede abgeschlossene Runde
-- versionierter Datenspeicher mit Migration älterer Spielstände
-- Sicherungsexport und -import als JSON-Datei
-- vollständige lokale Datenlöschung
-- Live-Erkennung der Gruppengröße und dynamischer gültiger Imposter-Bereich
-- automatische Verdeckung sichtbarer geheimer Karten bei App-Wechsel oder Fokusverlust
-- Schutz vor Kartenweitergabe, solange eine automatisch verdeckte Karte nicht erneut geöffnet wurde
-- Datenschutzseite und Content Security Policy
-- 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
-- globaler Laufzeit-Fehlerschutz und kontrollierter PWA-Update-Neustart
-- vollständiger Offline-Core `secret-circle-v16`
-- Desktop- und Mobile-End-to-End-Tests für Spielablauf, Timer, Verlauf, Speicherung, Inhalte, Offline-Modus, Privatsphäre, Wake Lock, Accessibility, Sicherheit und PWA-Installation
-- Grenzwerttests für 3–20 Personen und mehrere Imposter
-- deterministische Fuzz-Tests über 120 Spielszenarien mit Engine-Invarianten
-- optionaler Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Test
-- Repository-Hygieneprüfung und Performancebudget für den vollständigen Offline-Core
-- strukturierter HTML-, Asset-, Manifest- und Service-Worker-Validator
-- Release-Audit und ausführliche Release-Checkliste
-- manueller Gerätetestplan, Deployment-/Rollback-Anleitung, Sicherheitsrichtlinie und objektiver Release-Status
+- vollständiger Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
+- Punkte, Rangliste, Mehr-Runden-Matches und begrenzte Stichwahl
+- maximal sechs Imposter
+- unabhängige deterministische Rollenverteilung in `role-assignment.js`
+- 14 Kategorien mit 168 Begriff-Hinweis-Paaren
+- deadline-basierter Timer mit Hintergrund- und Neulade-Wiederherstellung
+- Live-Gruppengröße und dynamische Imposter-Grenzen
+- automatische Kartenverdeckung mit blockierter Weitergabe
+- optionaler Wake Lock während der Diskussion
+- Verlauf, Datenmigration, Backup-Export/-Import und vollständige lokale Löschung
+- Datenschutzseite, Content Security Policy und Laufzeit-Fehlerschutz
+- 192- und 512-Pixel-PNG-Icons
+- vollständiger Offline-Core `secret-circle-v17`
+- fünf Unit-Testdateien einschließlich Rollenverteilung und 120 Fuzz-Szenarien
+- vierzehn E2E-Suiten einschließlich Rollenverteilung, Privatsphäre, Wake Lock und Sicherheit
+- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
+- Repository-Hygiene, Performancebudget, Strukturvalidator und Release-Audit
+- Release-Checkliste, Testplan, Sicherheits-, Deployment- und Rollback-Dokumentation
 
 ### Verbessert
 
-- Fokusführung, Tastaturbedienung und Screenreader-Struktur
-- Touchflächen, iPhone-Safe-Areas, dynamische Viewport-Höhe und mobile Darstellung
-- Bildschirm bleibt auf unterstützten Geräten während der Diskussion aktiv
-- Wake Lock wird bei Abstimmung, Hintergrundbetrieb und Seitenwechsel sicher freigegeben
-- Geräte ohne Wake-Lock-API verwenden einen fehlerfreien Fallback
-- Offline-Cache und Service-Worker-Aktualisierung
-- Validierung manipulierter oder beschädigter Spielstände
-- verständliche Spiel- und Punktregeln direkt in der App
-- sichere Fokuswiederherstellung nach automatischer Kartenverdeckung
-- CI-Installation verändert keine Repository-Dateien und prüft getrackte Dateien statt lokaler Installationsordner
-- Release-Validierung bleibt auch nach einer lokalen `npm install`-Ausführung verwendbar
+- mobile Safe Areas, dynamische Viewport-Höhe und zoomsichere Formulare
+- Tastatur-, Fokus- und Screenreader-Struktur
+- Wake-Lock-Fallback auf nicht unterstützten Geräten
+- sichere Service-Worker-Cache-Schreibvorgänge und Update-Bereinigung
+- strengere Validierung gespeicherter und importierter Daten
+- reproduzierbare Tests der Rollenverteilung über 200 Unit- und 120 Browser-Samples
 
 ### Behoben
 
+- **kritischer Rollenfehler:** Imposter waren zuvor an die ersten Positionen der Aufdeckreihenfolge gekoppelt
+- Aufdeckreihenfolge verrät die Rollen nicht mehr systematisch
+- mehr als sechs Imposter werden zuverlässig abgelehnt
 - endlose Stichwahlen
-- zufällige Begriffswiederholungen innerhalb eines Matches
+- doppelte Stimmen und Selbstwahl
+- Begriffswiederholungen innerhalb eines noch nicht erschöpften Pools
 - Timerabweichungen nach Hintergrundbetrieb oder Neuladen
-- fehlender Verlauf bei Runden, die direkt durch die Abstimmung enden
-- unvollständige Migration älterer lokaler Spielstände
-- unvollständiger Offline-Cache für Datenspeicher, Laufzeit-, Setup-, Privatsphäre- und Wake-Lock-Schutz sowie Installationsicons
-- versehentliche Weitergabe einer automatisch verdeckten Karte über programmatische oder schnelle Eingaben
-- fehlerhafte Release-Gates, die einen lokalen `node_modules`-Ordner irrtümlich als eingecheckten Fehler bewerteten
-- nicht abgewartete dynamische Service-Worker-Cache-Schreibvorgänge
+- fehlende Verlaufseinträge bei direkt beendeten Runden
+- unvollständige Migration älterer Spielstände
+- versehentliche Weitergabe automatisch verdeckter Karten
+- unvollständiger Offline-Cache und nicht abgewartete Cache-Schreibvorgänge
+- veraltete, nicht mehr geladene Match- und Accessibility-Dateien
 
 ### Sicherheit und Datenschutz
 
-- keine Analyse-, Werbe- oder Tracking-Dienste
-- keine Anmeldung und keine appgesteuerte Übertragung von Spieldaten
-- restriktive Richtlinie für Skripte, Ressourcen und Formulare
-- lokale Prüfung und Größenbegrenzung importierter Sicherungsdateien
-- Rollback bei fehlgeschlagenem Sicherungsimport
-- Browsertests gegen HTML-/Skript-Injektion durch Namen und eigene Kategorien
-- automatischer Sichtschutz für geheime Rollen und Begriffe
-- dokumentierter Weg für private Sicherheitsmeldungen
+- keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste
+- keine appgesteuerte Übertragung von Spieldaten
+- restriktive Ressourcen- und Skriptrichtlinie
+- escaped Namen und Kategorien
+- Größenbegrenzung und Rollback für Sicherungsimporte
+- automatischer Sichtschutz geheimer Rollen und Begriffe
+- dokumentierter privater Meldeweg für Sicherheitsprobleme
 
 ## Frühere Beta-Stände
 
-Frühere Entwicklungsstände enthielten den grundlegenden Offline-Spielablauf, die deterministische Engine, benutzerdefinierte Kategorien und die erste PWA-Struktur. Beta.3 fasst diese Arbeiten zu einer testbaren Produktionsbeta zusammen.
+Frühere Entwicklungsstände enthielten den grundlegenden Offline-Spielablauf, eigene Kategorien und die erste PWA-Struktur. Beta.3 bündelt diese Arbeiten zu einer testbaren Produktionsbeta.
