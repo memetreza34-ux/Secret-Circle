@@ -41,6 +41,7 @@ test('custom pack editor validates saves and exposes cards in the selected game'
   await page.locator('#pack-select').selectOption('Eigene · Unsere Gruppe');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
   await expect(page.locator('#play-layer')).toBeVisible();
+  await page.getByRole('button', { name: 'Runde starten' }).click();
   await expect(page.locator('#play-content')).toHaveText(/Pinguin|Raumstation|Kaffeetasse/);
 });
 
@@ -115,7 +116,9 @@ test('custom pack markup stays text in editor details and gameplay', async ({ pa
   await expect(ownOption).toHaveCount(1);
   await page.locator('#pack-select').selectOption({ label: await ownOption.textContent() });
   await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.getByRole('button', { name: 'Runde starten' }).click();
   await expect(page.locator('#play-content img, #play-content script, #play-content svg')).toHaveCount(0);
+  await expect(page.locator('#play-content')).toContainText(/<script>|<b|<svg/);
   expect(await page.evaluate(() => window.__customPackInjected)).toBeUndefined();
 });
 
