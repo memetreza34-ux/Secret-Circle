@@ -65,7 +65,7 @@ markers = {
         'Internet & Social Media', 'Elektroniker'
     ],
     'sw.js': [
-        'secret-circle-v10', 'runtime-guard.js', 'fetchAndCache',
+        'secret-circle-v11', 'runtime-guard.js', 'fetchAndCache',
         'await cache.put', 'handleNavigation', 'handleAsset',
         'icon-192.png', 'icon-512.png'
     ],
@@ -102,7 +102,7 @@ markers = {
     ],
     'tests/e2e/runtime-guard.spec.js': [
         'runtime version matches', 'unexpected runtime errors',
-        'secret-circle-v10'
+        'secret-circle-v11'
     ],
     'tests/e2e/setup-limits.spec.js': [
         'three players and two imposters', 'twenty players and six imposters',
@@ -113,7 +113,7 @@ markers = {
         '192x192', '512x512'
     ],
     'tests/e2e/offline.spec.js': [
-        'secret-circle-v10', 'runtime-guard.js', 'icon-192.png', 'icon-512.png'
+        'secret-circle-v11', 'runtime-guard.js', 'icon-192.png', 'icon-512.png'
     ],
     'tests/e2e/accessibility.spec.js': [
         'rules and scoring guide is keyboard accessible',
@@ -142,7 +142,7 @@ markers = {
     'SECURITY.md': ['Sicherheitsproblem melden', 'Security Advisory', 'Sicherheitsmodell der App'],
     'MANUAL_TEST_PLAN.md': ['Grundlegender Smoke-Test', 'PWA und Offline', 'Realer Partytest'],
     'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits'],
-    'DEPLOYMENT.md': ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v10'],
+    'DEPLOYMENT.md': ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v11'],
     'RELEASE_STATUS.md': ['Technische Produktbeta', 'öffentlichen Produktionsrelease', 'Aktuelle Blocker']
 }
 
