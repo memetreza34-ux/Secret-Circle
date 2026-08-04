@@ -25,6 +25,18 @@ test('unexpected runtime errors produce a recoverable user message', async ({ pa
   await expect(page.locator('#status')).toContainText('gespeicherter Spielstand bleibt erhalten');
 });
 
+test('critical resource errors are surfaced instead of leaving a silent broken screen', async ({ page }) => {
+  await page.evaluate(() => {
+    const script = document.createElement('script');
+    document.body.append(script);
+    script.dispatchEvent(new Event('error'));
+    script.remove();
+  });
+
+  await expect(page.locator('#status')).toHaveClass(/error/);
+  await expect(page.locator('#status')).toContainText('unerwarteter Fehler');
+});
+
 test('runtime guard is available from the complete offline cache', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
