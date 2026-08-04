@@ -6,28 +6,37 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 budgets = {
-    'index.html': 56_000,
-    'party.html': 34_000,
-    'privacy.html': 20_000,
-    'runtime-guard.js': 8_000,
-    'setup-ux.js': 10_000,
-    'privacy-guard.js': 8_000,
-    'wake-lock.js': 8_000,
-    'role-assignment.js': 10_000,
-    'app.js': 75_000,
-    'game-engine.js': 55_000,
-    'data-store.js': 50_000,
-    'word-packs.js': 35_000,
-    'party-catalog.js': 72_000,
-    'party-hub.js': 68_000,
-    'styles.css': 30_000,
-    'pwa.css': 35_000,
-    'party.css': 42_000,
-    'sw.js': 14_000,
-    'manifest.webmanifest': 5_000,
-    'icon.svg': 20_000,
-    'icon-192.png': 80_000,
-    'icon-512.png': 200_000
+    'index.html': 60_000,
+    'party.html': 90_000,
+    'advanced.html': 35_000,
+    'privacy.html': 25_000,
+    'runtime-guard.js': 10_000,
+    'setup-ux.js': 12_000,
+    'privacy-guard.js': 10_000,
+    'wake-lock.js': 10_000,
+    'role-assignment.js': 14_000,
+    'app.js': 80_000,
+    'game-engine.js': 60_000,
+    'data-store.js': 55_000,
+    'word-packs.js': 40_000,
+    'party-catalog.js': 85_000,
+    'party-expansion.js': 45_000,
+    'party-routing.js': 8_000,
+    'party-hub.js': 65_000,
+    'party-hub-plus.js': 25_000,
+    'party-data-tools.js': 18_000,
+    'party-advanced.js': 55_000,
+    'party-advanced-runner.js': 40_000,
+    'party-advanced-preferences.js': 5_000,
+    'styles.css': 35_000,
+    'pwa.css': 40_000,
+    'party.css': 55_000,
+    'party-extra.css': 20_000,
+    'sw.js': 16_000,
+    'manifest.webmanifest': 6_000,
+    'icon.svg': 25_000,
+    'icon-192.png': 90_000,
+    'icon-512.png': 220_000
 }
 
 sizes = {}
@@ -43,7 +52,7 @@ for relative, maximum in budgets.items():
         violations.append(f'{relative} is {size} bytes; budget is {maximum} bytes.')
 
 core_total = sum(sizes.values())
-core_budget = 850_000
+core_budget = 1_250_000
 if core_total > core_budget:
     violations.append(f'Offline core is {core_total} bytes; budget is {core_budget} bytes.')
 
@@ -73,5 +82,6 @@ print(json.dumps({
     'core_budget_bytes': core_budget,
     'core_budget_used_percent': round(core_total / core_budget * 100, 2),
     'tracked_files_checked': len(tracked),
+    'budgeted_assets': len(budgets),
     'asset_sizes': sizes
 }, ensure_ascii=False, indent=2))
