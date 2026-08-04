@@ -38,8 +38,11 @@ test('two truths and a lie supports private entry group voting and round persist
   await expect(page.locator('#play-progress')).toContainText('Runde 2 von 3');
 
   const active = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-active-v1')));
+  expect(active.version).toBe(2);
   expect(active.gameId).toBe('two-truths');
   expect(active.session.rounds).toBe(1);
+  expect(active.session.players).toEqual(['Alex', 'Sam', 'Mika']);
+  expect(active.session.id).toBeTruthy();
 });
 
 test('question imposter privately distributes similar questions and resolves a vote', async ({ page }) => {
@@ -104,4 +107,59 @@ test('advanced sessions survive a reload and can be resumed', async ({ page }) =
   await page.getByRole('button', { name: /Session fortsetzen/ }).click();
   await expect(page.locator('#advanced-play-layer')).toBeVisible();
   await expect(page.locator('#play-player')).toContainText('Alex');
+});
+
+test('resumed sessions keep their original player snapshot after the shared lobby changes', async ({ page }) => {
+  const originalPlayers = ['Alex', 'Sam', 'Mika', 'Lina'];
+  await configurePlayers(page, originalPlayers);
+  await page.goto('/advanced.html?game=question-imposter');
+  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await expect(page.locator('#play-player')).toContainText('Alex');
+
+  await page.evaluate(() => {
+    const hub = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    hub.players = ['Nora', 'Omar', 'Pia', 'Rami'];
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify(hub));
+  });
+  await page.reload();
+  await expect(page.getByRole('button', { name: /Session fortsetzen/ })).toBeVisible();
+  await expect(page.locator('#advanced-player-help')).toContainText('Gespeicherte Session mit 4 Personen');
+  await page.getByRole('button', { name: /Session fortsetzen/ }).click();
+  await expect(page.locator('#play-player')).toContainText('Alex');
+  await expect(page.locator('#play-eyebrow')).toContainText('von 4');
+
+  const activePlayers = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-active-v1')).session.players);
+  expect(activePlayers).toEqual(originalPlayers);
+});
+
+test('a failed history write keeps the completed session active and recoverable', async ({ page }) => {
+  await configurePlayers(page, ['Alex', 'Sam', 'Mika']);
+  await page.goto('/advanced.html?game=two-truths');
+  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.evaluate(() => {
+    const active = JSON.parse(localStorage.getItem('secret-circle-party-active-v1'));
+    active.session.rounds = active.session.targetRounds;
+    active.session.advanced = null;
+    localStorage.setItem('secret-circle-party-active-v1', JSON.stringify(active));
+  });
+  await page.reload();
+  await page.getByRole('button', { name: 'Abgeschlossene Session ansehen' }).click();
+  await expect(page.getByRole('button', { name: 'Session speichern und beenden' })).toBeVisible();
+
+  await page.evaluate(() => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = function setItem(key, value) {
+      if (key === 'secret-circle-party-hub-v1') throw new DOMException('quota test', 'QuotaExceededError');
+      return original.call(this, key, value);
+    };
+  });
+  await page.getByRole('button', { name: 'Session speichern und beenden' }).click();
+
+  await expect(page).toHaveURL(/advanced\.html\?game=two-truths/);
+  await expect(page.locator('#advanced-status')).toContainText('Session bleibt aktiv');
+  const result = await page.evaluate(() => ({
+    active: Boolean(localStorage.getItem('secret-circle-party-active-v1')),
+    history: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).history.length
+  }));
+  expect(result).toEqual({ active: true, history: 0 });
 });
