@@ -39,8 +39,8 @@ checks = {
     'expanded_catalog_v2': 'version: 2' in expansion,
     'advanced_routing_v3': 'version: 3' in routing and 'advanced.html?game=' in routing,
     'custom_packs_v2': all(marker in custom_packs for marker in (
-        'version: 2', 'secret-circle-party-custom-packs-v1',
-        'MAX_PACKS = 20', 'MAX_ITEMS = 100', 'applyPacks'
+        'version: 2', 'createManager', 'commit(nextState)', 'restoreStorage',
+        'MAX_PACKS = 20', 'MAX_ITEMS = 100'
     )),
     'advanced_modes_v1': all(marker in advanced_modes for marker in (
         'renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy', 'renderMafia', 'version: 1'
@@ -51,16 +51,14 @@ checks = {
     'transaction_safe_advanced_history': all(marker in advanced_runner for marker in (
         'saveHubState(nextHubState)', 'Session bleibt aktiv', 'clearActive'
     )),
-    'resumable_advanced_sessions': all(marker in advanced_runner for marker in (
-        'secret-circle-party-active-v1', 'loadActive', 'persistActive',
-        'renderSessionSummary', 'MAX_SESSION_ROUNDS = 20'
+    'data_tools_v2': all(marker in data_tools for marker in (
+        'VERSION = 2', 'byteLength', 'replaceEntries', 'Import und Rollback', 'Datenlöschung abgebrochen'
+    )),
+    'hub_plus_v5': all(marker in hub_plus for marker in (
+        'VERSION = 5', 'savePreferences', 'repairStatsFromHistory', 'escapeSelector'
     )),
     'complete_local_backup': all(marker in data_tools for marker in (
-        'secret-circle-complete-backup', 'collectEntries', 'validateBackup', 'Import abgebrochen'
-    )),
-    'age_preferences_achievements_and_stats': all(marker in hub_plus for marker in (
-        'gameAllowed', 'achievement-grid', 'repairStatsFromHistory',
-        'settings-age-level', 'beforeinstallprompt', 'version: 4'
+        'secret-circle-complete-backup', 'MAX_BYTES = 1_500_000', 'MAX_ENTRIES = 100'
     )),
     'party_hub_navigation': all(marker in party for marker in (
         'game-search', 'group-filter', 'mood-filter', 'player-filter',
@@ -70,7 +68,7 @@ checks = {
     'advanced_setup_and_play': all(marker in advanced for marker in (
         'advanced-pack', 'advanced-length', 'advanced-start', 'advanced-play-layer'
     )),
-    'pwa_cache_v23': "const CACHE='secret-circle-v23'" in sw,
+    'pwa_cache_v24': "const CACHE='secret-circle-v24'" in sw,
     'all_party_modules_cached': all(asset in sw for asset in (
         './party.html', './advanced.html', './party.css', './party-extra.css',
         './party-catalog.js', './party-expansion.js', './party-routing.js',
@@ -91,13 +89,11 @@ checks = {
     'hub_link_from_imposter': 'href="party.html"' in index,
     'imposter_link_from_hub': 'href="index.html"' in party,
     'expanded_unit_gates': all(marker in package.get('scripts', {}).get('test', '') for marker in (
-        'tests/party-catalog.test.js', 'tests/party-expansion.test.js',
-        'tests/party-custom-packs.test.js'
+        'tests/party-catalog.test.js', 'tests/party-expansion.test.js', 'tests/party-custom-packs.test.js'
     )),
     'expanded_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
         'party-expansion.js', 'party-routing.js', 'party-custom-packs.js',
-        'party-advanced.js', 'party-advanced-runner.js',
-        'party-hub-plus.js', 'party-data-tools.js'
+        'party-advanced.js', 'party-advanced-runner.js', 'party-hub-plus.js', 'party-data-tools.js'
     )),
     'main_ci_commands': all(command in workflow for command in (
         'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e'
@@ -139,10 +135,19 @@ for required in [
     if required not in e2e_suites:
         raise SystemExit(f'Critical E2E suite missing: {required}')
 
-advanced_tests = read('tests/e2e/party-advanced.spec.js').lower()
-for marker in ['original player snapshot', 'failed history write', 'session bleibt aktiv']:
-    if marker not in advanced_tests:
-        raise SystemExit(f'Advanced-session regression marker missing: {marker}')
+regression_markers = {
+    'tests/party-custom-packs.test.js': ['transactionRollback', 'failedRemovalPreservesPack'],
+    'tests/e2e/party-advanced.spec.js': ['original player snapshot', 'failed history write'],
+    'tests/e2e/party-data.spec.js': ['multibyte backup over the byte limit', 'failed import write rolls back', 'failed deletion rolls back'],
+    'tests/e2e/party-stats.spec.js': ['statistics storage failure', 'preference storage failure'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v24'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v24']
+}
+for relative, markers in regression_markers.items():
+    source = read(relative).lower()
+    for marker in markers:
+        if marker.lower() not in source:
+            raise SystemExit(f'Regression marker missing in {relative}: {marker}')
 
 required_docs = [
     'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
@@ -155,14 +160,14 @@ for relative in required_docs:
         raise SystemExit(f'Missing or incomplete production document: {relative}')
 
 doc_markers = {
-    'README.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spieler-Snapshot'],
-    'RELEASE_STATUS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Gesamte gewünschte Party-Hub-Vision'],
-    'CHANGELOG.md': ['secret-circle-v23', 'eigene Hub-Kategorien', 'Spielergruppe'],
-    'DEPLOYMENT.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Spielergruppe'],
-    'RELEASE_CHECKLIST.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spieler-Snapshot'],
-    'MANUAL_TEST_PLAN.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spielergruppe'],
-    'KNOWN_LIMITATIONS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Online-Mehrspielermodus'],
-    'CI_TROUBLESHOOTING.md': ['secret-circle-v23', 'eigene Hub-Packs', 'GitHub Actions']
+    'README.md': ['secret-circle-v24', 'Byte-Grenze', 'transaktionssicher'],
+    'RELEASE_STATUS.md': ['secret-circle-v24', 'transaktionssichere Datensicherung', 'Gesamte gewünschte Party-Hub-Vision'],
+    'CHANGELOG.md': ['secret-circle-v24', 'Mehrbyte', 'Präferenz'],
+    'DEPLOYMENT.md': ['secret-circle-v24', 'Rollback', 'Spielergruppe'],
+    'RELEASE_CHECKLIST.md': ['secret-circle-v24', 'Byte-Grenze', 'Spieler-Snapshot'],
+    'MANUAL_TEST_PLAN.md': ['secret-circle-v24', 'Mehrbyte', 'Spielergruppe'],
+    'KNOWN_LIMITATIONS.md': ['secret-circle-v24', 'Eigene Hub-Packs', 'Online-Mehrspielermodus'],
+    'CI_TROUBLESHOOTING.md': ['secret-circle-v24', 'eigene Hub-Packs', 'GitHub Actions']
 }
 for relative, markers in doc_markers.items():
     text = read(relative).lower()
@@ -182,12 +187,16 @@ print(json.dumps({
     'party_games_planned': 4,
     'advanced_playable_games': 4,
     'advanced_active_schema': 2,
+    'hub_plus_version': 5,
+    'data_tools_version': 2,
     'player_snapshot_sessions': True,
     'transaction_safe_history': True,
-    'custom_pack_builder': True,
+    'transactional_custom_packs': True,
+    'byte_safe_backup': True,
+    'transactional_import_delete': True,
     'custom_pack_limit': 20,
     'custom_cards_per_pack_limit': 100,
-    'pwa_cache': 'secret-circle-v23',
+    'pwa_cache': 'secret-circle-v24',
     'manifest_start_url': manifest['start_url'],
     'imposter_categories': category_count,
     'imposter_terms': term_count,
