@@ -11,13 +11,13 @@ test('service worker caches the complete offline core', async ({ page, context }
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v16');
+    const cache = await caches.open('secret-circle-v17');
     const expected = [
       './index.html', './privacy.html', './styles.css', './pwa.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
-      './wake-lock.js', './app.js', './game-engine.js', './word-packs.js',
-      './data-store.js', './manifest.webmanifest', './icon.svg',
-      './icon-192.png', './icon-512.png'
+      './wake-lock.js', './app.js', './game-engine.js',
+      './role-assignment.js', './word-packs.js', './data-store.js',
+      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
     ];
     const missing = [];
     for (const path of expected) {
@@ -26,8 +26,8 @@ test('service worker caches the complete offline core', async ({ page, context }
     }
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v16');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v16']);
+  expect(cacheState.names).toContain('secret-circle-v17');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v17']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
