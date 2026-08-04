@@ -30,7 +30,7 @@ test('browser role assignment is deterministic and independent from reveal order
       }
     }
 
-    let limitMessage = '';
+    let createLimitMessage = '';
     try {
       E.createGame({
         players: Array.from({ length: 8 }, (_, index) => `P${index + 1}`),
@@ -41,7 +41,24 @@ test('browser role assignment is deterministic and independent from reveal order
         seed: 'invalid-seven-imposters'
       });
     } catch (error) {
-      limitMessage = error.message;
+      createLimitMessage = error.message;
+    }
+
+    const validSix = E.createGame({
+      players: Array.from({ length: 8 }, (_, index) => `R${index + 1}`),
+      entries,
+      imposterCount: 6,
+      roundSeconds: 60,
+      matchRounds: 1,
+      seed: 'browser-restore-six'
+    });
+    const forgedSeven = JSON.parse(JSON.stringify(validSix));
+    forgedSeven.imposters = forgedSeven.players.slice(0, 7);
+    let restoreLimitMessage = '';
+    try {
+      E.restoreGame(forgedSeven);
+    } catch (error) {
+      restoreLimitMessage = error.message;
     }
 
     return {
@@ -50,14 +67,16 @@ test('browser role assignment is deterministic and independent from reveal order
       firstRevealStates: [...firstRevealStates].sort(),
       prefixMatches,
       sampledGames: 120,
-      limitMessage
+      createLimitMessage,
+      restoreLimitMessage
     };
   });
 
-  expect(result.apiVersion).toBe(1);
+  expect(result.apiVersion).toBe(2);
   expect(result.maximumImposters).toBe(6);
   expect(result.firstRevealStates).toEqual([false, true]);
   expect(result.prefixMatches).toBeGreaterThan(0);
   expect(result.prefixMatches).toBeLessThan(result.sampledGames);
-  expect(result.limitMessage).toContain('zwischen 1 und 6');
+  expect(result.createLimitMessage).toContain('zwischen 1 und 6');
+  expect(result.restoreLimitMessage).toContain('zwischen 1 und 6');
 });
