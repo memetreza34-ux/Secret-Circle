@@ -6,22 +6,25 @@ Die Workflow-Läufe von `Secret Circle CI` werden als fehlgeschlagen beendet, be
 
 Zuletzt bestätigt:
 
-- Workflow-Lauf: `#384`
-- Run-ID: `30902981127`
-- Job-ID: `91971379782`
-- Commit zum Prüfzeitpunkt: `058b68f4e1125f5d9dbb211066324c9a79a9c538`
+- Workflow-Lauf: `#420`
+- Run-ID: `30903841947`
+- erster Job-ID: `91974191883`
+- erneuter Job-ID: `91974334081`
+- Commit zum Prüfzeitpunkt: `3217d826f428402d079ef458e2147d880ad94e92`
 - Jobname: `validate`
 - Status: `completed`
 - Ergebnis: `failure`
-- Schrittliste: leer
+- Schrittliste bei beiden Versuchen: leer
 - Job-Log: nicht vorhanden
+
+Der API-Aufruf zum erneuten Ausführen der fehlgeschlagenen Jobs wurde erfolgreich angenommen. Auch der erneute Versuch endete jedoch vor dem ersten Schritt.
 
 Typische Merkmale des Problems:
 
 - der Job endet, bevor `Check out repository` erscheint,
 - keine GitHub-Actions-Schritte werden protokolliert,
 - der Log-Download liefert keinen normalen Workflow-Log,
-- neue Commits erzeugen dasselbe Verhalten.
+- neue Commits und erneute Versuche erzeugen dasselbe Verhalten.
 
 Das unterscheidet sich von einem Syntax-, Test-, Validator- oder Playwright-Fehler. Bei einem Repository-Fehler wären mindestens Checkout, Setup oder der fehlerhafte Befehl in der Schrittliste sichtbar.
 
@@ -113,7 +116,7 @@ Die Validierung prüft Repository-Hygiene, Dateigrößen, Syntax, Engine, Speich
 
 ## Tracking
 
-Das externe Problem wird zusätzlich in Issue #7 verfolgt.
+Das externe Problem wird zusätzlich in Issue #7 verfolgt. Reale Geräte- und Partytests werden in Issue #8 verfolgt.
 
 ## Freigabeentscheidung
 
