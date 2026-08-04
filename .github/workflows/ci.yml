@@ -31,6 +31,7 @@ jobs:
           python -m py_compile \
             tools/inventory_legacy_archive.py \
             tests/archive-inventory.test.py \
+            scripts/validate_archive_tool.py \
             scripts/validate_project.py
       - name: Run deterministic engine tests
         run: node tests/engine.test.js
@@ -40,5 +41,7 @@ jobs:
         run: node tests/accessibility.test.js
       - name: Validate safe legacy archive inventory tooling
         run: python tests/archive-inventory.test.py
-      - name: Validate offline PWA and archive-tool structure
+      - name: Validate legacy source and deletion boundary
+        run: python scripts/validate_archive_tool.py
+      - name: Validate offline PWA structure
         run: python scripts/validate_project.py
