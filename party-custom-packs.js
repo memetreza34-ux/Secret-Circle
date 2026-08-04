@@ -2,10 +2,10 @@
   const catalog = typeof module === 'object' && module.exports
     ? require('./party-routing.js')
     : root.SecretCirclePartyCatalog;
-  const api = factory(catalog, typeof localStorage === 'undefined' ? null : localStorage, typeof document === 'undefined' ? null : document);
+  const api = factory(root, catalog, typeof localStorage === 'undefined' ? null : localStorage, typeof document === 'undefined' ? null : document);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.SecretCirclePartyCustomPacks = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (catalog, storage, documentRef) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function createManager(root, catalog, storage, documentRef) {
   'use strict';
   if (!catalog) throw new Error('Party-Katalog für eigene Packs fehlt.');
 
@@ -16,7 +16,16 @@
   const supportedGames = catalog.games.filter(game => game.status === 'playable' && supportedModes.has(game.mode));
 
   function cleanText(value, maximum) {
-    return String(value ?? '').trim().replace(/\s+/g, ' ').slice(0, maximum);
+    return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
+  }
+
+  function keyText(value) {
+    return cleanText(value, 200).toLocaleLowerCase('de-DE');
+  }
+
+  function createId() {
+    if (root.crypto?.randomUUID) return root.crypto.randomUUID();
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
   function parseItems(value) {
@@ -27,7 +36,7 @@
     const unique = [];
     const seen = new Set();
     for (const item of items) {
-      const key = item.toLocaleLowerCase('de-DE');
+      const key = keyText(item);
       if (seen.has(key)) continue;
       seen.add(key);
       unique.push(item);
@@ -37,14 +46,14 @@
   }
 
   function normalizePack(value) {
-    if (!value || typeof value !== 'object') return null;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
     const gameId = cleanText(value.gameId, 60);
     if (!supportedGames.some(game => game.id === gameId)) return null;
     const name = cleanText(value.name, 40);
     const items = Array.isArray(value.items) ? parseItems(value.items.join('\n')) : parseItems(value.items);
     if (name.length < 2 || items.length < 3) return null;
     return {
-      id: cleanText(value.id, 100) || `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      id: cleanText(value.id, 100) || createId(),
       gameId,
       name,
       items,
@@ -52,12 +61,28 @@
     };
   }
 
+  function normalizeState(value) {
+    if (!value || value.version !== 1 || !Array.isArray(value.packs)) return { version: 1, packs: [] };
+    const packs = [];
+    const ids = new Set();
+    const names = new Set();
+    for (const raw of value.packs) {
+      const pack = normalizePack(raw);
+      if (!pack) continue;
+      const nameKey = `${pack.gameId}\u0000${keyText(pack.name)}`;
+      if (ids.has(pack.id) || names.has(nameKey)) continue;
+      ids.add(pack.id);
+      names.add(nameKey);
+      packs.push(pack);
+      if (packs.length >= MAX_PACKS) break;
+    }
+    return { version: 1, packs };
+  }
+
   function loadState() {
     if (!storage) return { version: 1, packs: [] };
     try {
-      const parsed = JSON.parse(storage.getItem(KEY));
-      if (!parsed || parsed.version !== 1 || !Array.isArray(parsed.packs)) throw new Error('invalid');
-      return { version: 1, packs: parsed.packs.map(normalizePack).filter(Boolean).slice(0, MAX_PACKS) };
+      return normalizeState(JSON.parse(storage.getItem(KEY)));
     } catch {
       return { version: 1, packs: [] };
     }
@@ -84,29 +109,49 @@
     }
   }
 
-  function saveState() {
+  function restoreStorage(raw) {
     if (!storage) return;
-    storage.setItem(KEY, JSON.stringify(state));
+    if (raw === null || raw === undefined) storage.removeItem(KEY);
+    else storage.setItem(KEY, raw);
+  }
+
+  function commit(nextState) {
+    const normalized = normalizeState(nextState);
+    const previousState = state;
+    let previousRaw = null;
+    try {
+      if (storage) {
+        previousRaw = storage.getItem(KEY);
+        storage.setItem(KEY, JSON.stringify(normalized));
+      }
+      state = normalized;
+      applyPacks();
+      return true;
+    } catch (error) {
+      state = previousState;
+      try {
+        restoreStorage(previousRaw);
+        applyPacks();
+      } catch {}
+      throw new Error(`Eigene Hub-Packs konnten nicht gespeichert werden: ${error?.message || 'lokaler Speicherfehler'}`);
+    }
   }
 
   function addPack(value) {
     const pack = normalizePack(value);
     if (!pack) throw new Error('Packname, unterstütztes Spiel und mindestens drei unterschiedliche Karten sind erforderlich.');
-    const duplicate = state.packs.some(item => item.gameId === pack.gameId && item.name.toLocaleLowerCase('de-DE') === pack.name.toLocaleLowerCase('de-DE'));
+    const duplicate = state.packs.some(item => item.gameId === pack.gameId && keyText(item.name) === keyText(pack.name));
     if (duplicate) throw new Error('Für dieses Spiel existiert bereits ein eigenes Pack mit diesem Namen.');
     if (state.packs.length >= MAX_PACKS) throw new Error(`Höchstens ${MAX_PACKS} eigene Packs sind möglich.`);
-    state.packs.push(pack);
-    saveState();
-    applyPacks();
-    return pack;
+    commit({ version: 1, packs: [...state.packs, pack] });
+    return { ...pack, items: [...pack.items] };
   }
 
   function removePack(id) {
-    const before = state.packs.length;
-    state.packs = state.packs.filter(pack => pack.id !== id);
-    if (state.packs.length === before) return false;
-    saveState();
-    applyPacks();
+    const cleanId = cleanText(id, 100);
+    const nextPacks = state.packs.filter(pack => pack.id !== cleanId);
+    if (nextPacks.length === state.packs.length) return false;
+    commit({ version: 1, packs: nextPacks });
     return true;
   }
 
@@ -144,6 +189,7 @@
     const status = documentRef.querySelector('#hub-status');
     if (!gameSelect || !nameInput || !itemsInput || !saveButton || !list) return;
 
+    gameSelect.replaceChildren();
     supportedGames.forEach(game => gameSelect.add(new Option(game.title, game.id)));
 
     function setStatus(message, error = false) {
@@ -175,10 +221,14 @@
         remove.textContent = 'Löschen';
         remove.addEventListener('click', () => {
           if (!root.confirm(`Eigenes Pack „${pack.name}“ löschen?`)) return;
-          removePack(pack.id);
-          renderList();
-          setStatus('Eigenes Hub-Pack gelöscht. Katalog wird aktualisiert.');
-          root.setTimeout(() => root.location.reload(), 250);
+          try {
+            removePack(pack.id);
+            renderList();
+            setStatus('Eigenes Hub-Pack gelöscht. Katalog wird aktualisiert.');
+            root.setTimeout(() => root.location.reload(), 250);
+          } catch (error) {
+            setStatus(error.message || 'Eigenes Hub-Pack konnte nicht gelöscht werden.', true);
+          }
         });
         row.append(text, remove);
         list.append(row);
@@ -215,6 +265,7 @@
     getPacks: () => state.packs.map(pack => ({ ...pack, items: [...pack.items] })),
     addPack,
     removePack,
-    applyPacks
+    applyPacks,
+    createManager: (nextStorage, nextDocument = null) => createManager(root, catalog, nextStorage, nextDocument)
   });
 });
