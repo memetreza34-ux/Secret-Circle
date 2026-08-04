@@ -15,9 +15,15 @@
   }
 
   root.addEventListener('error', event => {
-    if (event.target && event.target !== root) return;
+    const target = event.target;
+    if (target && target !== root) {
+      const criticalResource = target instanceof HTMLScriptElement
+        || (target instanceof HTMLLinkElement && target.rel === 'stylesheet');
+      if (criticalResource) showRuntimeError();
+      return;
+    }
     showRuntimeError();
-  });
+  }, true);
 
   root.addEventListener('unhandledrejection', () => {
     showRuntimeError();
