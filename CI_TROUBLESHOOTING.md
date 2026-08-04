@@ -4,27 +4,29 @@
 
 `Secret Circle CI` wird beendet, bevor ein einziger Workflow-Schritt ausgeführt wird.
 
-Aktuell bestätigt:
+Aktuellster bestätigter Lauf:
 
-- Workflow-Lauf `#648`
-- Run-ID `30930748182`
-- ursprünglicher Job `92064498410`
-- erneut ausgeführter Job `92077185391`
+- Workflow-Lauf `#718`
+- Run-ID `30937503573`
+- Job-ID `92087237250`
 - Jobname `validate`
-- Ergebnis jeweils `failure`
-- bei beiden Versuchen leere Schrittliste
+- Ergebnis `failure`
+- leere Schrittliste
 - kein normaler Job-Log
 - selbst `actions/checkout` wurde nicht gestartet
+- Commit `9fad10128e7b2036465f89925bb21eab412e1098`
 
-Der fehlgeschlagene Job wurde am 4. August 2026 erneut über die GitHub-API angestoßen. GitHub akzeptierte die Wiederholung, beendete aber auch den neuen Job vor dem ersten Schritt. Das unterscheidet sich von einem Syntax-, Unit-, Validator- oder Playwright-Fehler, bei dem mindestens ein konkreter Workflow-Schritt und normalerweise ein Log sichtbar wäre.
+Zuvor wurden auch Run `30930748182` und dessen Wiederholungsjob ohne einen einzigen Schritt beendet. Die Wiederholung wurde von GitHub angenommen, änderte das Verhalten aber nicht.
+
+Das unterscheidet sich von einem Syntax-, Unit-, Validator- oder Playwright-Fehler. Bei einem Repositoryfehler wäre mindestens der betroffene Workflow-Schritt mit Log sichtbar.
 
 ## Wahrscheinliche externe Ursachen
 
 1. GitHub Actions ist für das Repository deaktiviert oder eingeschränkt.
 2. Kontolimit, Budget oder Abrechnung blockiert gehostete Runner.
 3. Konto- oder Organisationsrichtlinie verhindert die Runner-Bereitstellung.
-4. Eine Sicherheits- oder Nutzungsbeschränkung betrifft das Konto.
-5. Vorübergehende GitHub-Actions-Störung.
+4. eine Sicherheits- oder Nutzungsbeschränkung betrifft das Konto.
+5. vorübergehende GitHub-Actions-Störung.
 
 ## Repositoryseitiger Stand
 
@@ -38,17 +40,18 @@ Die Workflow-Konfiguration verlangt:
 - mindestens 19 Playwright-E2E-Suiten
 - Cross-Browser-Lauf für Chromium, Firefox und WebKit
 
-Der aktuelle Offline-Core ist `secret-circle-v23`. Zusätzlich geprüft werden sollen:
+Der aktuelle Offline-Core ist `secret-circle-v24`. Zusätzlich geprüft werden sollen:
 
 - 18 spielbare Spiele und 4 gesperrte Roadmap-Spiele
-- Eigene Hub-Packs
-- aktive Session Version 2
-- Spieler-Snapshot bei späterer Lobbyänderung
-- transaktionssicherer Abschluss ohne Fortschrittsverlust
-- Gesamtexport, Import, Rollback und Löschung
+- Eigene Hub-Packs mit transaktionssicherem Speichern und Löschen
+- aktive Session Version 2 und Spieler-Snapshot
+- transaktionssicherer Sessionabschluss
+- tatsächliche UTF-8-Byte-Grenze für Sicherungen
+- Import- und Lösch-Rollback
+- Präferenz- und Statistik-Speicherfehler
 - Manifest, Icons, CSP, Accessibility und Offline-Start
 
-Diese Prüfungen sind im Repository definiert, aber durch den Runner-Blocker noch nicht auf GitHub ausgeführt worden.
+Diese Prüfungen sind im Repository definiert, wurden wegen des Runner-Blockers aber nicht auf GitHub ausgeführt.
 
 ## Actions-Berechtigungen prüfen
 
@@ -75,7 +78,7 @@ Verwendete offizielle Actions:
 - Ausgabenlimit
 - Zahlungsmethode
 - deaktivierte Actions-Nutzung
-- Organisationsbudget, falls das Repository einer Organisation gehört
+- Organisationsbudget, falls zutreffend
 - mögliche Konto- oder Zahlungsbeschränkung
 
 ## GitHub-Status und Konto prüfen
@@ -88,10 +91,10 @@ Verwendete offizielle Actions:
 Hilfreiche Angaben für Support:
 
 - Repository: `memetreza34-ux/Secret-Circle`
-- Workflow-Run: `30930748182`
-- erster Job: `92064498410`
-- Wiederholungsjob: `92077185391`
-- beide Jobs ohne Schritte und Logs
+- aktueller Workflow-Run: `30937503573`
+- aktueller Job: `92087237250`
+- ältere Wiederholung: Run `30930748182`, Jobs `92064498410` und `92077185391`
+- alle Jobs ohne Schritte und Logs
 
 ## Erneut ausführen
 
@@ -113,7 +116,7 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Ein erfolgreicher lokaler Lauf ist ein starkes technisches Signal. Er ersetzt jedoch nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit.
+Ein erfolgreicher lokaler Lauf ist ein starkes technisches Signal. Er ersetzt nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit.
 
 ## Erwartete lokale Prüfergebnisse
 
@@ -122,13 +125,14 @@ Der Lauf muss unter anderem bestätigen:
 - Engine und Speicher Version 7
 - faire Rollenverteilung und maximal sechs Imposter
 - 22 Katalogeinträge, 18 spielbar und 4 geplant
-- mindestens 384 Hub-Inhalte
-- Eigene Hub-Packs mit Limits und sicherer Textausgabe
+- Eigene Hub-Packs mit Unicode-Normalisierung und Rollback
 - Spieler-Snapshot in komplexen Sessions
 - aktive Session bleibt bei fehlgeschlagener Verlaufsspeicherung erhalten
-- Cache `secret-circle-v23` ist vollständig und exklusiv
+- Mehrbyte-Datei über 1,5 MB wird anhand tatsächlicher Bytes abgelehnt
+- Import- und Löschfehler stellen alte Daten wieder her
+- Präferenz- und Statistikfehler bleiben beherrschbar
+- Cache `secret-circle-v24` ist vollständig und exklusiv
 - Hub, komplexe Spiele, Word Imposter und Datenschutz starten offline
-- Browser- und mobile Gates bestehen
 
 ## Tracking
 
@@ -140,6 +144,6 @@ Der Lauf muss unter anderem bestätigen:
 ## Freigabeentscheidung
 
 - lokaler Entwickler-Test nach erfolgreichem `npm run ci`: möglich
-- Merge ohne grüne CI: nur als bewusste Ausnahme, nicht als Produktionsfreigabe
+- Merge ohne grüne CI: nur bewusste Ausnahme, nicht als Produktionsfreigabe
 - realer Beta-Test: erst nach erfolgreichem lokalen Gesamt- und Browserlauf
 - öffentlicher Release: blockiert, bis der endgültige Commit sichtbare erfolgreiche Workflow-Schritte besitzt
