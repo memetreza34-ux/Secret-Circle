@@ -4,16 +4,26 @@
 
 Die Workflow-Läufe von `Secret Circle CI` werden als fehlgeschlagen beendet, bevor ein einziger Schritt ausgeführt wird.
 
-Typische Merkmale des aktuellen Problems:
+Zuletzt bestätigt:
 
-- Jobname `validate`
-- Status `completed`
-- Ergebnis `failure`
-- leere Schrittliste
-- kein Job-Log verfügbar
-- Log-Download endet mit `404 BlobNotFound`
+- Workflow-Lauf: `#250`
+- Run-ID: `30896066020`
+- Job-ID: `91949131193`
+- Commit zum Prüfzeitpunkt: `cad857851525af2702c141277a1dd5d0700d54ff`
+- Jobname: `validate`
+- Status: `completed`
+- Ergebnis: `failure`
+- Schrittliste: leer
+- Job-Log: nicht vorhanden
 
-Das unterscheidet sich von einem normalen Syntax-, Test- oder Playwright-Fehler. Bei einem Repository-Fehler wären mindestens Checkout, Setup oder der fehlerhafte Befehl in der Schrittliste sichtbar.
+Typische Merkmale des Problems:
+
+- der Job endet, bevor `Check out repository` erscheint,
+- keine GitHub-Actions-Schritte werden protokolliert,
+- der Log-Download liefert keinen normalen Workflow-Log,
+- neue Commits erzeugen dasselbe Verhalten.
+
+Das unterscheidet sich von einem Syntax-, Test-, Validator- oder Playwright-Fehler. Bei einem Repository-Fehler wären mindestens Checkout, Setup oder der fehlerhafte Befehl in der Schrittliste sichtbar.
 
 ## Wahrscheinliche externe Ursachen
 
@@ -21,9 +31,9 @@ In dieser Reihenfolge prüfen:
 
 1. **Actions ist für das Repository deaktiviert oder eingeschränkt.**
 2. **Kontolimit, Budget oder Abrechnung blockiert neue gehostete Runner.**
-3. **GitHub-App-/Organisationsrichtlinie verhindert die Runner-Bereitstellung.**
+3. **GitHub-App- oder Organisationsrichtlinie verhindert die Runner-Bereitstellung.**
 4. **Vorübergehende GitHub-Actions-Störung.**
-5. **Workflow wartet intern auf eine nicht bereitgestellte Runner-Umgebung und wird von GitHub sofort beendet.**
+5. **Das Konto oder Repository besitzt eine externe Nutzungsbeschränkung.**
 
 ## Prüfung im Repository
 
@@ -87,24 +97,22 @@ Sobald Schritte sichtbar sind, normale Fehler anhand des ersten roten Schritts b
 Bis GitHub Actions wieder Runner startet:
 
 ```bash
-npm install --ignore-scripts --no-audit --no-fund
+npm install --ignore-scripts --no-audit --no-fund --package-lock=false
 npx playwright install --with-deps chromium
-npm run check
-npm test
-npm run validate
-npm run test:e2e
-```
-
-Oder vollständig:
-
-```bash
 npm run ci
 ```
 
-Ein lokaler erfolgreicher Lauf ist ein wichtiges Signal, ersetzt aber für den öffentlichen Release nicht den erfolgreichen Lauf auf dem endgültigen GitHub-Commit.
+Optionaler Browser-Smoke-Test:
+
+```bash
+npx playwright install --with-deps chromium firefox webkit
+npm run test:cross-browser
+```
+
+Die Validierung prüft inzwischen ausdrücklich Repository-Hygiene, statische Dateigrößen, Syntax, Engine, Speicherung, PWA-Struktur, Datenschutz, Sicherheit und Browserabläufe. Ein lokaler erfolgreicher Lauf ist deshalb ein starkes technisches Signal, ersetzt für den öffentlichen Release aber nicht den erfolgreichen Lauf auf dem endgültigen GitHub-Commit.
 
 ## Freigabeentscheidung
 
-- **Code-Review oder lokaler Betatest:** möglich, wenn lokale Prüfungen erfolgreich sind.
+- **Code-Review oder lokaler Betatest:** möglich, wenn `npm run ci` erfolgreich ist.
 - **Merge ohne grüne CI:** nur als bewusste Ausnahme und nicht als Produktionsfreigabe.
 - **Öffentlicher Release:** blockiert, bis der Workflow auf dem endgültigen Commit Schritte ausführt und vollständig grün ist.
