@@ -103,6 +103,14 @@
     if (count) count.textContent = String(achievements.filter(item => item[3]).length);
   }
 
+  function fixDetailAction(gameId) {
+    const game = C.getGame(gameId);
+    const button = $('#start-selected-game');
+    if (!game || !button) return;
+    if (game.advancedMode) button.textContent = `${game.title} öffnen`;
+    else if (game.id === 'imposter') button.textContent = 'Word Imposter öffnen';
+  }
+
   function openRequestedView() {
     const view = new URLSearchParams(window.location.search).get('view');
     if (!view) return;
@@ -149,6 +157,8 @@
   document.addEventListener('click', event => {
     if (event.target.closest('[data-view-target="stats"]')) window.setTimeout(renderAchievements, 0);
     if (event.target.closest('[data-view-target="games"]')) window.setTimeout(applyAgeFilter, 0);
+    const open = event.target.closest('[data-open-game]');
+    if (open) window.setTimeout(() => fixDetailAction(open.dataset.openGame), 0);
   });
 
   installSupport();
@@ -157,10 +167,11 @@
   window.setTimeout(applyAgeFilter, 0);
 
   window.SecretCirclePartyHubPlus = Object.freeze({
-    version: 2,
+    version: 3,
     gameAllowed,
     renderAchievements,
     preferences,
-    setAgeLevel
+    setAgeLevel,
+    fixDetailAction
   });
 })();
