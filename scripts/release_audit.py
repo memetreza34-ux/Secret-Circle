@@ -22,9 +22,10 @@ checks = {
     'engine_version': bool(re.search(r'\bVERSION\s*=\s*7\b', engine)),
     'storage_schema': bool(re.search(r'\bKEY_VERSION\s*=\s*7\b', store)),
     'storage_migration_engine': bool(re.search(r'\bENGINE_VERSION\s*=\s*7\b', store)),
-    'pwa_cache_v15': "const CACHE='secret-circle-v15'" in service_worker,
+    'pwa_cache_v16': "const CACHE='secret-circle-v16'" in service_worker,
     'setup_ux_cached': './setup-ux.js' in service_worker,
     'privacy_guard_cached': './privacy-guard.js' in service_worker,
+    'wake_lock_cached': './wake-lock.js' in service_worker,
     'runtime_guard_cached': './runtime-guard.js' in service_worker,
     'safe_cache_writes': 'await cache.put' in service_worker,
     'stable_manifest_scope': all(manifest.get(key) == './' for key in ('id', 'start_url', 'scope')),
@@ -36,6 +37,7 @@ checks = {
     )),
     'live_setup_guidance_loaded': '<script src="setup-ux.js"></script>' in index,
     'privacy_guard_loaded': '<script src="privacy-guard.js"></script>' in index,
+    'wake_lock_loaded': '<script src="wake-lock.js"></script>' in index,
     'main_ci_commands': all(command in workflow for command in (
         'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e'
     )),
@@ -58,7 +60,7 @@ if (category_count, term_count) != (14, 168):
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_browser_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 4 or len(e2e_suites) < 12 or not cross_browser_suites:
+if len(unit_tests) < 4 or len(e2e_suites) < 13 or not cross_browser_suites:
     raise SystemExit('Automated test matrix is incomplete.')
 
 required_docs = [
@@ -72,8 +74,8 @@ for relative in required_docs:
         raise SystemExit(f'Missing or incomplete production document: {relative}')
 
 for relative, markers in {
-    'RELEASE_STATUS.md': ['Cache-Version 15', 'Aktuelle Blocker'],
-    'DEPLOYMENT.md': ['secret-circle-v15', 'Rollback'],
+    'RELEASE_STATUS.md': ['Cache-Version 16', 'Aktuelle Blocker'],
+    'DEPLOYMENT.md': ['secret-circle-v16', 'Rollback'],
     'RELEASE_CHECKLIST.md': ['Realer Party-Betatest', 'GitHub Actions'],
     'SECURITY.md': ['Sicherheitsproblem melden', 'Sicherheitsmodell der App'],
     'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Abrechnung'],
@@ -89,7 +91,7 @@ print(json.dumps({
     'package_version': package['version'],
     'engine_version': 7,
     'storage_version': 7,
-    'pwa_cache': 'secret-circle-v15',
+    'pwa_cache': 'secret-circle-v16',
     'built_in_categories': category_count,
     'built_in_terms': term_count,
     'unit_test_files': unit_tests,
@@ -97,6 +99,7 @@ print(json.dumps({
     'cross_browser_suites': cross_browser_suites,
     'cross_browser_projects': 5,
     'secret_card_privacy_guard': True,
+    'discussion_wake_lock': True,
     'critical_checks': checks,
     'production_docs': required_docs
 }, ensure_ascii=False, indent=2))
