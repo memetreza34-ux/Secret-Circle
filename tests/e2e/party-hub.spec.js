@@ -101,7 +101,7 @@ test('advanced games are playable and remaining roadmap games stay blocked', asy
   await page.locator('#game-search').fill('Mafia');
   await page.locator('[data-open-game="mafia"]').click();
   await expect(page.locator('#detail-badges')).toContainText('Jetzt spielbar');
-  await page.getByRole('button', { name: 'Word Imposter öffnen' }).click();
+  await page.getByRole('button', { name: 'Mafia öffnen' }).click();
   await expect(page).toHaveURL(/advanced\.html\?game=mafia/);
 
   await page.goto('/party.html');
