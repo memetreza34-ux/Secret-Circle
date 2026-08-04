@@ -9,11 +9,11 @@ Zielbranch: `main`
 
 | Bereich | Stand | Bewertung |
 |---|---:|---|
-| Kernspiel und Regeln | 99 % | vollständiger lokaler Partyspiel-Ablauf; unabhängige Rollenverteilung ergänzt |
-| Speicherung und Migration | 98 % | versioniert, validiert, migrierbar, sicherbar und vollständig löschbar |
-| PWA und Offline-Struktur | 98 % | Cache-Version 17 mit vollständigem Offline-Core und Installationsmetadaten |
-| Accessibility und mobile Bedienung | 97 % | Live-Setup, Safe Areas, Karten-Sichtschutz, Wake Lock und Accessibility-Gates |
-| Automatisierte Testabdeckung | 98 % | fünf Unit-Suiten, vierzehn E2E-Suiten, Fuzz- und Cross-Browser-Struktur |
+| Kernspiel und Regeln | 99 % | vollständiger lokaler Ablauf; unabhängige Rollenverteilung Version 2 |
+| Speicherung und Migration | 99 % | maximal sechs Imposter werden auch bei wiederhergestellten Spielen erzwungen |
+| PWA und Offline-Struktur | 98 % | Cache-Version 18 mit vollständigem Offline-Core |
+| Accessibility und mobile Bedienung | 97 % | Live-Setup, Safe Areas, Karten-Sichtschutz und Wake Lock |
+| Automatisierte Testabdeckung | 98 % | fünf Unit- und vierzehn E2E-Suiten plus Fuzz- und Cross-Browser-Struktur |
 | Dokumentation und Release-Prozess | 98 % | Checkliste, Testplan, Sicherheit, Deployment und Rollback vorhanden |
 | Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert durchgeführt |
 | Öffentliche rechtliche Freigabe | 45 % | Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
@@ -31,19 +31,19 @@ Die Prozentwerte sind eine technische Projektbewertung und kein Nachweis für Fe
 
 - vollständiger Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
 - Punkte, Rangliste, Stichwahl und Mehr-Runden-Matches
-- maximal sechs Imposter
-- **unabhängige Rollenverteilung:** Imposter sind nicht mehr automatisch die ersten Personen der Aufdeckreihenfolge
+- unabhängige Rollenverteilung ohne Kopplung an die Aufdeckreihenfolge
+- maximal sechs Imposter bei neuen, fortgesetzten und importierten aktiven Spielen
 - deterministische Wiederholbarkeit ohne sichtbares Rollen-Muster
-- 14 Kategorien und 168 geprüfte Begriff-Hinweis-Paare
+- 14 Kategorien und 168 Begriff-Hinweis-Paare
 - Timer mit Hintergrund- und Neulade-Wiederherstellung
-- Live-Gruppengröße und dynamische Imposter-Grenzen
-- automatische Kartenverdeckung und blockierte Weitergabe nach App-Wechsel
+- Live-Gruppengröße synchronisiert sich auch nach geladenen Einstellungen und Importen
+- automatische Kartenverdeckung und blockierte Weitergabe
 - optionaler Wake Lock mit sicherem Fallback
-- Speicherungsversion 7, Migration, beschädigte-Daten-Wiederherstellung und Backup-Rollback
+- Speicherungsversion 7, Migration, Datenkorruptionsschutz und Backup-Rollback
 - vollständige lokale Datenlöschung
-- Offline-PWA mit Cache-Version 17
+- Offline-PWA mit Cache-Version 18
 - CSP, Eingabe-Escaping, Datenschutzseite und Laufzeit-Fehlerschutz
-- fünf Unit-Testdateien einschließlich Rollenverteilungs- und Fuzz-Tests
+- fünf Unit-Testdateien einschließlich Rollenverteilung und Fuzz-Tests
 - vierzehn E2E-Suiten einschließlich Rollenverteilung, Privatsphäre und Wake Lock
 - Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
 - struktureller HTML-, Asset-, Manifest- und Service-Worker-Validator
@@ -52,7 +52,7 @@ Die Prozentwerte sind eine technische Projektbewertung und kein Nachweis für Fe
 
 ### 1. GitHub Actions startet keinen ersten Schritt
 
-Der Workflow endet weiterhin vor `actions/checkout` und liefert weder Schritte noch normale Logs. Ein erneuter Workflow-Versuch zeigte dasselbe Verhalten. Das externe Problem wird in Issue #7 verfolgt.
+Der Workflow endet weiterhin vor `actions/checkout` und liefert weder Schritte noch normale Logs. Ein erneuter Workflow-Versuch zeigte dasselbe Verhalten. Issue #7 verfolgt den externen Blocker.
 
 ### 2. Vollständiger lokaler Testlauf ist noch nicht protokolliert
 
@@ -70,7 +70,7 @@ npm run test:cross-browser
 Issue #8 verfolgt:
 
 - Android- und iPhone-/iPad-Installation
-- Offline-Start und Update auf `secret-circle-v17`
+- Offline-Start und Update auf `secret-circle-v18`
 - Timer, Karten-Sichtschutz und Wake Lock
 - wiederholte Prüfung, dass die Aufdeckreihenfolge keinen Imposter verrät
 - Partytest mit 3–4 Personen
@@ -95,6 +95,6 @@ Die App wird erst als Release Candidate bezeichnet, wenn:
 1. `npm run ci` erfolgreich ist,
 2. `npm run test:cross-browser` erfolgreich ist,
 3. GitHub Actions sichtbare Schritte ausführt und grün endet,
-4. unabhängige Rollenverteilung, Installation, Offline-Modus, Sichtschutz und Wake Lock auf realen Geräten geprüft sind,
+4. Rollenverteilung, Installation, Offline-Modus, Sichtschutz und Wake Lock auf realen Geräten geprüft sind,
 5. ein kleiner und ein großer Partytest bestanden sind,
 6. keine kritischen oder hohen Fehler offen sind.
