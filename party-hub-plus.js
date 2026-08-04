@@ -57,7 +57,16 @@
       message.textContent = 'Für diese Altersstufe sind mit den aktuellen Filtern keine Spiele sichtbar.';
       grid.append(message);
     } else if (visible && empty) empty.remove();
-    savePreferences({ ageLevel: level });
+  }
+
+  function setAgeLevel(level) {
+    const normalized = ['family', 'teen', 'all'].includes(level) ? level : 'all';
+    const catalogSelect = $('#age-filter');
+    const settingsSelect = $('#settings-age-level');
+    if (catalogSelect) catalogSelect.value = normalized;
+    if (settingsSelect) settingsSelect.value = normalized;
+    savePreferences({ ageLevel: normalized });
+    applyAgeFilter();
   }
 
   function renderAchievements() {
@@ -124,10 +133,11 @@
 
   const pref = preferences();
   const ageSelect = $('#age-filter');
-  if (ageSelect) {
-    ageSelect.value = pref.ageLevel;
-    ageSelect.addEventListener('change', applyAgeFilter);
-  }
+  const settingsAge = $('#settings-age-level');
+  if (ageSelect) ageSelect.addEventListener('change', () => setAgeLevel(ageSelect.value));
+  if (settingsAge) settingsAge.addEventListener('change', () => setAgeLevel(settingsAge.value));
+  setAgeLevel(pref.ageLevel);
+
   const defaultLength = $('#default-session-length');
   if (defaultLength) {
     defaultLength.value = String(pref.sessionLength);
@@ -147,9 +157,10 @@
   window.setTimeout(applyAgeFilter, 0);
 
   window.SecretCirclePartyHubPlus = Object.freeze({
-    version: 1,
+    version: 2,
     gameAllowed,
     renderAchievements,
-    preferences
+    preferences,
+    setAgeLevel
   });
 })();
