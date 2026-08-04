@@ -2,32 +2,31 @@
 
 ## Unterstützte Versionen
 
-Während der Beta wird ausschließlich der aktuelle Stand von `1.0.0-beta.3` beziehungsweise der neueste Commit des aktiven Expansionsbranches gepflegt. Frühere Entwicklungsstände erhalten keine separaten Sicherheitskorrekturen.
+Während der Beta wird ausschließlich der neueste Commit des aktiven Release-Branches gepflegt. Frühere Entwicklungsstände erhalten keine separaten Sicherheitskorrekturen.
 
 ## Sicherheitsproblem melden
 
-Sicherheitsprobleme nicht mit vollständigen Ausnutzungsdetails in einer öffentlichen Diskussion melden.
+Sicherheitsprobleme sollten nicht öffentlich mit vollständigen Ausnutzungsdetails veröffentlicht werden.
 
 Bevorzugter Weg:
 
 1. Repository auf GitHub öffnen.
 2. Tab `Security` öffnen.
-3. `Report a vulnerability` oder eine private Security Advisory verwenden, sofern aktiviert.
-4. betroffene Version, Commit, reproduzierbare Schritte und Auswirkungen angeben.
+3. `Report a vulnerability` beziehungsweise eine private Security Advisory verwenden, sofern aktiviert.
+4. Problem, betroffene Version, Reproduktionsschritte, erwartetes Verhalten und mögliche Auswirkungen angeben.
 
-Vor einem öffentlichen Release muss zusätzlich eine verantwortliche Kontaktmöglichkeit dokumentiert sein.
+Falls keine private Meldefunktion verfügbar ist, muss vor öffentlichem Release eine verantwortliche Kontaktmöglichkeit ergänzt werden.
 
 ## Hilfreiche Angaben
 
 - App-Version und Commit
-- betroffener Bereich: Party Hub, komplexes Spiel oder Word Imposter
 - Gerät, Betriebssystem und Browser
 - installierte PWA oder Browser-Tab
 - Online- oder Offline-Zustand
 - betroffene lokale Daten oder Sicherungsdatei
 - minimale reproduzierbare Schritte
-- Screenshot oder Video ohne fremde geheime Rollen, Fragen oder Aussagen
-- mögliche Auswirkung: Datenverlust, Rollenenthüllung, Skriptausführung, fremder Netzwerkzugriff oder Spielblockade
+- Screenshot oder Video ohne fremde geheime Spielinhalte
+- mögliche Auswirkungen: Datenverlust, Rollenenthüllung, Skriptausführung, unbemerkte Datenmischung oder Spielblockade
 
 ## Sicherheitsmodell
 
@@ -36,77 +35,74 @@ Secret Circle ist eine statische lokale Pass-and-Play-PWA:
 - kein Benutzerkonto,
 - keine eigene Server-API,
 - keine Analyse-, Werbe- oder Tracking-Dienste,
-- Daten im lokalen Browser-Speicher,
+- Spieldaten im lokalen Browser-Speicher,
+- Sicherungsexport und -import ausschließlich lokal,
 - restriktive Content Security Policy,
-- Service Worker verarbeitet nur GET-Anfragen derselben Origin,
-- dynamische Namen, Aussagen, Kategorien und Ergebnisse werden über Textknoten ausgegeben,
-- geplante Spiele sind technisch nicht startbar,
-- importierte Gesamtsicherungen besitzen Format-, Schlüssel-, Größen- und JSON-Prüfung,
-- fehlgeschlagene Imports stellen den vorherigen Zustand wieder her,
-- vollständige Löschung entfernt alle Schlüssel mit Präfix `secret-circle-`,
-- komplexe aktive Sessions werden vor Wiederaufnahme grundlegend validiert.
+- dynamische Namen, Kategorien, Packtexte und Ergebnisse werden als Text ausgegeben,
+- importierte Daten werden nach Format, Schlüssel, Anzahl und tatsächlicher UTF-8-Byte-Größe validiert,
+- Service Worker verarbeitet nur GET-Anfragen derselben Origin.
 
-## Geheime Inhalte
+## Schutz lokaler Transaktionen
 
-Die App reduziert versehentliche Enthüllungen, kann physische Privatsphäre aber nicht erzwingen:
+### Komplexe Sessions
 
-- Word-Imposter-Karten werden bei Fokusverlust verdeckt.
-- Question-Imposter-Fragen und Location-Spy-Rollen werden einzeln angezeigt und bewusst weitergegeben.
-- Zwei-Wahrheiten-Eingaben besitzen eine verdeckte Übergabestufe.
-- Mafia besitzt eine bestätigungspflichtige Moderatoransicht.
+- eine gestartete Session besitzt eine eindeutige ID und einen Spieler-Snapshot,
+- Verlauf und Statistik werden vor dem Entfernen des aktiven Session-Markers gespeichert,
+- bei einem Schreibfehler bleibt die Session aktiv,
+- eindeutige Historien-IDs verhindern doppelte Abschlüsse.
 
-Testpersonen müssen das Gerät bei geheimen Inhalten abschirmen. Eine Person mit physischem Zugriff auf das entsperrte Gerät kann lokale Daten oder aktive Sessions untersuchen.
+### Eigene Hub-Packs
 
-## Gesamtsicherungen
+- Texte werden Unicode-normalisiert,
+- Duplikate werden bereinigt,
+- Speichern und Löschen aktualisieren lokalen Speicher und Katalog gemeinsam,
+- bei einem Fehler wird der vorherige Zustand wiederhergestellt.
 
-Die exportierte JSON-Datei ist **nicht verschlüsselt**. Sie kann enthalten:
+### Gesamtsicherung und Löschung
 
-- Spielernamen,
-- Preset-Namen,
-- Favoriten und Verlauf,
-- Statistiken,
-- eigene Kategorien,
-- aktive Hub- und Imposter-Sessions,
-- lokale Einstellungen.
+- die 1,5-MB-Grenze basiert auf tatsächlichen UTF-8-Bytes,
+- Mehrbyte-Zeichen können die Grenze nicht umgehen,
+- Import und vollständige Löschung arbeiten als lokale Transaktion,
+- bei einem Fehler wird der vorherige Zustand wiederhergestellt,
+- ein fehlgeschlagener Rollback erzeugt eine gesonderte kritische Meldung.
 
-Sicherungsdateien nur bewusst weitergeben und nach Verwendung sicher aufbewahren oder löschen. Der Import darf ausschließlich aus vertrauenswürdigen Quellen erfolgen, obwohl Skriptausführung durch die Daten nicht vorgesehen ist.
+Diese Maßnahmen reduzieren unbeabsichtigten lokalen Datenverlust. Sie ersetzen keine verschlüsselte Datenbank und keinen Schutz vor einer Person, die das eigene Gerät und den Browser-Speicher bewusst manipuliert.
 
 ## Nicht als Sicherheitslücke eingestuft
 
-- Personen in derselben Runde besitzen physischen Zugriff auf dasselbe Gerät.
-- Nutzer können ihre eigenen Browserdaten oder exportierten JSON-Dateien verändern.
+- Personen derselben Runde besitzen physischen Zugriff auf dasselbe Gerät.
+- Nutzer können ihre eigenen Browserdaten oder Sicherungsdateien verändern.
 - Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck entfernen.
-- absichtlich weitergegebene Sicherungen legen ihre gespeicherten Inhalte offen.
-- die App verhindert kein absichtliches Beobachten des Bildschirms.
-- der Mafia-Moderator sieht konstruktionsbedingt alle Rollen.
+- eine absichtlich weitergegebene Sicherungsdatei enthält lokale Namen und Spielinformationen im Klartext.
+- das Spiel kann absichtliches Beobachten des Bildschirms nicht verhindern.
+- es gibt keinen Schutz gegen einen Gerätebesitzer, der Entwicklerwerkzeuge zur Rollenanzeige verwendet.
 
-Manipulierte lokale Daten dürfen jedoch nicht zu Skriptausführung, fremden Netzwerkzugriffen, dauerhaftem Datenverlust oder einem nicht behebbaren App-Zustand führen.
+Manipulierte lokale Daten dürfen jedoch keine Skriptausführung, fremde Netzwerkzugriffe oder einen nicht behebbaren App-Zustand verursachen.
 
-## Sicherheitsrelevante Prüfungen
+## Besonders relevante Testfälle
 
-Vor Release mindestens:
+Vor einer Sicherheitsfreigabe müssen mindestens bestehen:
 
-- CSP auf `index.html`, `party.html` und `advanced.html`,
-- Namen, eigene Kategorien und Zwei-Wahrheiten-Aussagen mit Markup-Zeichen,
-- manipulierte aktive Sessions,
-- ungültige, zu große und fremde Sicherungsdateien,
-- Import-Rollback,
-- vollständige Datenlöschung,
-- Offline-Cache ohne fremde Origins,
-- Karten- und Rollenübergabe auf realen Geräten,
-- Moderatoransicht in Mafia,
-- Abhängigkeiten und GitHub-Actions-Workflow.
+- HTML-/Skripttexte in Namen, Imposter-Kategorien und eigenen Hub-Packs,
+- ungültige und übergroße Sicherungsdatei,
+- Mehrbyte-Datei über der Byte-Grenze,
+- simulierter Fehler während Import und Löschung,
+- simulierter Fehler während Pack-Speichern und -Löschen,
+- simulierter Fehler beim Sessionabschluss,
+- beschädigter aktiver Sessiondatensatz,
+- Content Security Policy ohne `unsafe-inline` und `unsafe-eval`,
+- vollständiger Offline-Start ohne externe Ressourcen.
 
-## Bearbeitung
+## Bearbeitung einer Meldung
 
-Nach einer nachvollziehbaren Meldung:
+Nach Eingang einer nachvollziehbaren Meldung:
 
-1. Eingang bestätigen.
-2. Schweregrad und Reproduzierbarkeit prüfen.
-3. Korrektur auf separatem Branch entwickeln.
-4. Engine-, Speicher-, Daten-, Sicherheits- und Browserprüfungen ausführen.
-5. Cache-Version bei geänderten Offline-Dateien erhöhen.
-6. Changelog und bekannte Einschränkungen aktualisieren.
+1. Empfang bestätigen,
+2. Schweregrad und Reproduzierbarkeit prüfen,
+3. Korrektur auf separatem Branch erstellen,
+4. Engine-, Speicher-, Sicherheits- und Browserprüfungen ausführen,
+5. Cache-Version bei geänderten PWA-Dateien erhöhen,
+6. Korrektur im `CHANGELOG.md` dokumentieren,
 7. betroffene Beta-Version ersetzen oder zurückziehen.
 
 Eine öffentliche Produktionsfreigabe ist blockiert, solange ein bestätigter kritischer oder hoher Sicherheitsfehler offen ist.
