@@ -109,7 +109,11 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Die Validierung prüft Repository-Hygiene, statische Dateigrößen, Syntax, Engine, Speicherung, PWA-Struktur, vollständigen Cache `secret-circle-v15`, Live-Einrichtung, Karten-Sichtschutz, Datenschutz, Sicherheit und Browserabläufe. Ein lokaler erfolgreicher Lauf ist deshalb ein starkes technisches Signal, ersetzt für den öffentlichen Release aber nicht den erfolgreichen Lauf auf dem endgültigen GitHub-Commit.
+Die Validierung prüft Repository-Hygiene, Dateigrößen, Syntax, Engine, Speicherung, PWA-Struktur, vollständigen Cache `secret-circle-v16`, Live-Einrichtung, Karten-Sichtschutz, Wake Lock, Datenschutz, Sicherheit und Browserabläufe. Ein lokaler erfolgreicher Lauf ist deshalb ein starkes technisches Signal, ersetzt für den öffentlichen Release aber nicht den erfolgreichen Lauf auf dem endgültigen GitHub-Commit.
+
+## Tracking
+
+Das externe Problem wird zusätzlich in Issue #7 verfolgt.
 
 ## Freigabeentscheidung
 
