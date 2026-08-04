@@ -1,0 +1,115 @@
+# Secret Circle – Release-Status
+
+Stand: 4. August 2026  
+Version: `1.0.0-beta.3`  
+Pull Request: `#3`  
+Zielbranch: `main`
+
+## Gesamtbewertung
+
+| Bereich | Stand | Bewertung |
+|---|---:|---|
+| Kernspiel und Regeln | 98 % | Funktionsumfang vollständig für die lokale Partyspiel-Beta |
+| Speicherung und Migration | 97 % | Versioniert, validiert, migrierbar, sicherbar und löschbar |
+| PWA und Offline-Struktur | 96 % | vollständiger Cache, Icons, Manifest und Updateschutz vorhanden |
+| Accessibility und mobile Bedienung | 94 % | umfangreiche automatische Gates; reale Screenreader-/Gerätetests fehlen |
+| Automatisierte Testabdeckung | 95 % | Engine-, Speicher-, E2E-, Sicherheits- und Cross-Browser-Suiten vorhanden |
+| Dokumentation und Release-Prozess | 96 % | Checkliste, Testplan, Changelog, Deployment und Rollback vorhanden |
+| Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert durchgeführt |
+| Öffentliche rechtliche Freigabe | 45 % | Datenschutzgrundlage vorhanden; Anbieter-/Kontakt-/Impressumsangaben fehlen |
+
+## Gewichteter Fortschritt
+
+- **Technische Produktbeta:** etwa **96 %**
+- **Bereit für einen kontrollierten lokalen Browser-Test:** etwa **95 %**
+- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **91 %**
+- **Bereit für einen öffentlichen Produktionsrelease:** etwa **87 %**
+
+Die Prozentwerte sind eine technische Projektbewertung, kein Beweis für Fehlerfreiheit.
+
+## Abgeschlossene Release-Blöcke
+
+- vollständiger Karten-, Diskussions-, Abstimmungs- und Ergebnisablauf
+- mehrere Imposter, Punkte, Rangliste und Mehr-Runden-Matches
+- begrenzte Stichwahl, Selbstwahl- und Doppelstimmenschutz
+- 14 Kategorien und 168 Begriffe
+- keine Begriffswiederholung bis zum erschöpften Pool
+- realzeitbasierter Timer mit Pause, Hintergrund- und Neulade-Wiederherstellung
+- Wiederaufnahme aktiver Spiele
+- Verlauf jeder abgeschlossenen Runde
+- Speicherungsversion 7 und Migration älterer Daten
+- beschädigte Daten werden kontrolliert verworfen
+- vollständiger Backup-Export und -Import mit Rollback
+- vollständige lokale Datenlöschung
+- Offline-PWA mit Cache-Version 10
+- 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
+- Laufzeit-Fehlerschutz und sicherer PWA-Update-Neustart
+- Content Security Policy, Datenschutzseite und Eingabe-Escaping
+- Desktop-/Mobile-E2E-, Sicherheits-, Accessibility- und Cross-Browser-Suiten
+- Repository-Hygiene und Performancebudget
+- Release-Checkliste, manueller Testplan, Changelog, Einschränkungen, Deployment und Rollback
+
+## Aktuelle Blocker
+
+### 1. GitHub Actions startet keinen ersten Schritt
+
+Der Workflow endet weiterhin vor `actions/checkout`. Es existieren keine Schrittdaten und keine normalen Job-Logs. Deshalb gibt es noch keinen grünen CI-Nachweis für den endgültigen Commit. Details: `CI_TROUBLESHOOTING.md`.
+
+### 2. Vollständiger lokaler Testlauf muss protokolliert werden
+
+Erforderlich:
+
+```bash
+npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+npx playwright install --with-deps chromium
+npm run ci
+```
+
+Zusätzlich:
+
+```bash
+npx playwright install --with-deps chromium firefox webkit
+npm run test:cross-browser
+```
+
+### 3. Reale Geräte fehlen
+
+Mindestens prüfen:
+
+- aktuelles Android-Gerät mit Chrome,
+- aktuelles iPhone oder iPad mit Safari,
+- Installation, Offline-Start und App-Update,
+- Timer bei Hintergrund, Sperrbildschirm und Energiesparmodus,
+- Bildschirmrotation und sichere Bildschirmränder.
+
+### 4. Reale Partytests fehlen
+
+Mindestens zwei dokumentierte Gruppen:
+
+- 3–4 Personen,
+- 8 oder mehr Personen,
+- mindestens ein Match mit mehreren Impostern.
+
+### 5. Öffentliche Anbieterinformationen fehlen
+
+Vor einer öffentlichen oder kommerziellen Veröffentlichung müssen die für das konkrete Hosting und Angebot erforderlichen Verantwortlichen-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt werden.
+
+## Freigabestatus
+
+- **Weiterentwicklung auf dem PR-Branch:** `GO`
+- **Code-Review:** `GO`
+- **Kontrollierter lokaler Browser-Betatest:** `GO_WITH_CONDITIONS`
+- **Realer Geräte- und Party-Betatest:** `GO_WITH_CONDITIONS`
+- **Merge in `main`:** `NO_GO`, bis mindestens ein vollständiger lokaler CI-Lauf erfolgreich protokolliert und die Branch-Differenz final geprüft ist
+- **Öffentlicher Produktionsrelease:** `NO_GO`
+
+## Nächste Freigabeschwelle
+
+Die App kann als **Release Candidate** bezeichnet werden, sobald:
+
+1. `npm run ci` lokal vollständig erfolgreich ist,
+2. der Cross-Browser-Smoke-Test erfolgreich ist,
+3. GitHub Actions wieder echte Schritte ausführt und grün endet,
+4. Android- und iOS-Smoke-Tests bestanden sind,
+5. mindestens ein kleiner und ein großer Partytest bestanden sind,
+6. keine kritischen oder hohen Fehler offen sind.
