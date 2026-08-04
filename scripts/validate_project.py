@@ -14,15 +14,17 @@ REQUIRED = {
     'styles.css', 'pwa.css', 'party.css', 'party-extra.css',
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
-    'party-catalog.js', 'party-expansion.js', 'party-routing.js', 'party-hub.js',
-    'party-hub-plus.js', 'party-data-tools.js', 'party-advanced.js',
-    'party-advanced-runner.js', 'party-advanced-preferences.js',
-    'sw.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
-    'package.json', 'playwright.config.js', 'playwright.cross-browser.config.js',
+    'party-catalog.js', 'party-expansion.js', 'party-routing.js',
+    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js',
+    'party-data-tools.js', 'party-advanced.js', 'party-advanced-runner.js',
+    'party-advanced-preferences.js', 'sw.js', 'manifest.webmanifest',
+    'icon.svg', 'icon-192.png', 'icon-512.png', 'package.json',
+    'playwright.config.js', 'playwright.cross-browser.config.js',
     'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
     'tests/role-assignment.test.js', 'tests/fuzz.test.js',
     'tests/party-catalog.test.js', 'tests/party-expansion.test.js',
-    'tests/e2e/party-hub.spec.js', 'tests/e2e/party-advanced.spec.js',
+    'tests/party-custom-packs.test.js', 'tests/e2e/party-hub.spec.js',
+    'tests/e2e/party-advanced.spec.js', 'tests/e2e/party-custom-packs.spec.js',
     'tests/e2e/party-data.spec.js', 'tests/e2e/offline.spec.js',
     'tests/e2e/pwa-install.spec.js', 'tests/e2e/runtime-guard.spec.js',
     'tests/cross-browser/smoke.spec.js', 'scripts/repo_hygiene.py',
@@ -102,7 +104,7 @@ index = audit_html('index.html', [
 ])
 party = audit_html('party.html', [
     'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
-    'party-hub.js', 'party-hub-plus.js', 'party-data-tools.js'
+    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-data-tools.js'
 ])
 advanced = audit_html('advanced.html', [
     'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
@@ -113,9 +115,10 @@ for marker in ['href="party.html"', 'role-assignment.js', 'data-store.js']:
     if marker not in index:
         raise SystemExit(f'Word Imposter page marker missing: {marker}')
 for marker in [
-    'Der ganze Spieleabend in einer App', 'game-search', 'group-filter', 'mood-filter',
-    'player-filter', 'age-filter', 'status-filter', 'Host-Presets',
-    'achievement-grid', 'hub-export-data', 'game-detail', 'play-layer'
+    'Der ganze Spieleabend in einer App', 'game-search', 'group-filter',
+    'mood-filter', 'player-filter', 'age-filter', 'status-filter',
+    'Host-Presets', 'achievement-grid', 'hub-export-data',
+    'party-custom-packs.js', 'game-detail', 'play-layer'
 ]:
     if marker not in party:
         raise SystemExit(f'Party Hub marker missing: {marker}')
@@ -129,6 +132,7 @@ roles = read('role-assignment.js')
 base_catalog = read('party-catalog.js')
 expansion = read('party-expansion.js')
 routing = read('party-routing.js')
+custom_packs = read('party-custom-packs.js')
 advanced_modes = read('party-advanced.js')
 advanced_runner = read('party-advanced-runner.js')
 hub_plus = read('party-hub-plus.js')
@@ -156,6 +160,12 @@ for marker in ['advancedMode', 'advanced.html?game=', 'version: 3']:
     if marker not in routing:
         raise SystemExit(f'Routing marker missing: {marker}')
 for marker in [
+    'secret-circle-party-custom-packs-v1', 'MAX_PACKS = 20', 'MAX_ITEMS = 100',
+    'supportedModes', 'parseItems', 'normalizePack', 'applyPacks', 'version: 2'
+]:
+    if marker not in custom_packs:
+        raise SystemExit(f'Custom-pack marker missing: {marker}')
+for marker in [
     'renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy',
     'renderMafia', 'assignMafiaRoles', 'mafiaWinner', 'version: 1'
 ]:
@@ -170,7 +180,10 @@ for marker in [
 for marker in ['gameAllowed', 'achievement-grid', 'settings-age-level', 'beforeinstallprompt', 'version: 4']:
     if marker not in hub_plus:
         raise SystemExit(f'Hub-plus marker missing: {marker}')
-for marker in ['secret-circle-complete-backup', 'MAX_BYTES = 1_500_000', 'validateBackup', 'collectEntries', 'Import abgebrochen']:
+for marker in [
+    'secret-circle-complete-backup', 'MAX_BYTES = 1_500_000',
+    'validateBackup', 'collectEntries', 'Import abgebrochen'
+]:
     if marker not in data_tools:
         raise SystemExit(f'Data-tool marker missing: {marker}')
 
@@ -181,8 +194,8 @@ if (base_games, added_games) != (18, 4):
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='([^']+)'", sw)
-if not cache or cache.group(1) != 'secret-circle-v21':
-    raise SystemExit('Service worker cache must be secret-circle-v21.')
+if not cache or cache.group(1) != 'secret-circle-v22':
+    raise SystemExit('Service worker cache must be secret-circle-v22.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', sw)
 if not core_match:
     raise SystemExit('Service worker CORE list missing.')
@@ -193,13 +206,13 @@ expected_core = [
     './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
     './app.js', './game-engine.js', './role-assignment.js', './word-packs.js',
     './data-store.js', './party-catalog.js', './party-expansion.js',
-    './party-routing.js', './party-hub.js', './party-hub-plus.js',
-    './party-data-tools.js', './party-advanced.js', './party-advanced-runner.js',
-    './party-advanced-preferences.js', './manifest.webmanifest', './icon.svg',
-    './icon-192.png', './icon-512.png'
+    './party-routing.js', './party-custom-packs.js', './party-hub.js',
+    './party-hub-plus.js', './party-data-tools.js', './party-advanced.js',
+    './party-advanced-runner.js', './party-advanced-preferences.js',
+    './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
 ]
 if core != expected_core:
-    raise SystemExit('Service worker CORE is not synchronized with cache v21.')
+    raise SystemExit('Service worker CORE is not synchronized with cache v22.')
 for marker in ['cache.addAll', 'await cache.put', 'self.clients.claim', 'handleNavigation', 'handleAsset']:
     if marker not in sw:
         raise SystemExit(f'Service worker marker missing: {marker}')
@@ -226,22 +239,28 @@ for name in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci'
     if not package.get('scripts', {}).get(name):
         raise SystemExit(f'Package script missing: {name}')
 for marker in [
-    'party-expansion.js', 'party-routing.js', 'party-advanced.js',
-    'party-advanced-runner.js', 'party-hub-plus.js', 'party-data-tools.js'
+    'party-expansion.js', 'party-routing.js', 'party-custom-packs.js',
+    'party-advanced.js', 'party-advanced-runner.js',
+    'party-hub-plus.js', 'party-data-tools.js'
 ]:
     if marker not in package['scripts']['check']:
         raise SystemExit(f'Syntax gate missing: {marker}')
-for marker in ['tests/party-catalog.test.js', 'tests/party-expansion.test.js']:
+for marker in [
+    'tests/party-catalog.test.js', 'tests/party-expansion.test.js',
+    'tests/party-custom-packs.test.js'
+]:
     if marker not in package['scripts']['test']:
         raise SystemExit(f'Unit gate missing: {marker}')
 
 for relative, markers in {
     'tests/party-expansion.test.js': ['playableGames', 'advancedPlayableGames', 'totalItems'],
+    'tests/party-custom-packs.test.js': ['customPackVersion', 'catalogInjectionAndRemoval'],
     'tests/e2e/party-hub.spec.js': ['playable catalog and roadmap', 'age preference', 'advanced games are playable'],
     'tests/e2e/party-advanced.spec.js': ['two truths and a lie', 'question imposter', 'location spy', 'mafia', 'survive a reload'],
-    'tests/e2e/party-data.spec.js': ['complete backup exports', 'complete backup import', 'invalid import', 'complete deletion'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v21', 'advanced Question Imposter'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v21'],
+    'tests/e2e/party-custom-packs.spec.js': ['custom pack editor validates', 'duplicate pack names', 'custom packs can be deleted'],
+    'tests/e2e/party-data.spec.js': ['custom packs and Word Imposter', 'complete backup import', 'invalid import', 'complete deletion'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v22', 'custom packs', 'advanced Question Imposter'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v22'],
     'tests/e2e/pwa-install.spec.js': ['./party.html', 'Party Hub'],
     'tests/cross-browser/smoke.spec.js': ['Party Hub catalog', 'Question Imposter']
 }.items():
@@ -261,6 +280,8 @@ print(json.dumps({
     'party_games_playable': 18,
     'party_games_planned': 4,
     'advanced_playable_games': 4,
+    'custom_pack_builder': True,
+    'custom_pack_supported_games': 8,
     'pwa_cache': cache.group(1),
     'offline_core_assets': len(core),
     'manifest_start_url': manifest.get('start_url')
