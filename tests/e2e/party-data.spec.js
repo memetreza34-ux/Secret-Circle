@@ -21,13 +21,23 @@ test.beforeEach(async ({ page }) => {
       history: [],
       stats: {}
     }));
+    localStorage.setItem('secret-circle-party-custom-packs-v1', JSON.stringify({
+      version: 1,
+      packs: [{
+        id: 'test-pack',
+        gameId: 'charades',
+        name: 'Eigene Runde',
+        items: ['Pinguin', 'Raumstation', 'Kaffeetasse'],
+        createdAt: new Date().toISOString()
+      }]
+    }));
     localStorage.setItem('secret-circle-settings-v7', JSON.stringify({ duration: 3 }));
   });
   await page.reload();
   await page.getByRole('button', { name: 'Daten' }).click();
 });
 
-test('complete backup exports Hub and Word Imposter local data together', async ({ page }) => {
+test('complete backup exports Hub custom packs and Word Imposter local data together', async ({ page }) => {
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Alles exportieren' }).click();
   const download = await downloadPromise;
@@ -39,6 +49,7 @@ test('complete backup exports Hub and Word Imposter local data together', async 
   expect(payload.format).toBe('secret-circle-complete-backup');
   expect(payload.version).toBe(1);
   expect(payload.entries['secret-circle-party-hub-v1']).toContain('charades');
+  expect(payload.entries['secret-circle-party-custom-packs-v1']).toContain('Eigene Runde');
   expect(payload.entries['secret-circle-settings-v7']).toContain('duration');
 });
 
@@ -57,7 +68,17 @@ test('complete backup import replaces Secret Circle data and reloads safely', as
         history: [],
         stats: {}
       }),
-      'secret-circle-party-preferences-v1': JSON.stringify({ version: 1, ageLevel: 'family', sessionLength: 10 })
+      'secret-circle-party-preferences-v1': JSON.stringify({ version: 1, ageLevel: 'family', sessionLength: 10 }),
+      'secret-circle-party-custom-packs-v1': JSON.stringify({
+        version: 1,
+        packs: [{
+          id: 'imported-pack',
+          gameId: 'word-chain',
+          name: 'Importiert',
+          items: ['Solar', 'Rakete', 'Energie'],
+          createdAt: new Date().toISOString()
+        }]
+      })
     }
   };
 
@@ -77,6 +98,8 @@ test('complete backup import replaces Secret Circle data and reloads safely', as
   await page.getByRole('button', { name: 'Daten' }).click();
   await expect(page.locator('#default-session-length')).toHaveValue('10');
   await expect(page.locator('#settings-age-level')).toHaveValue('family');
+  await expect(page.locator('#custom-pack-list')).toContainText('Importiert');
+  await expect(page.locator('#custom-pack-list')).toContainText('Wortkette');
 });
 
 test('invalid import is rejected without destroying existing local data', async ({ page }) => {
@@ -86,11 +109,15 @@ test('invalid import is rejected without destroying existing local data', async 
     buffer: Buffer.from(JSON.stringify({ format: 'unknown', entries: {} }))
   });
   await expect(page.locator('#hub-status')).toContainText('keine unterstützte');
-  const players = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players);
-  expect(players).toEqual(['Alex', 'Sam', 'Mika']);
+  const snapshot = await page.evaluate(() => ({
+    players: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players,
+    custom: JSON.parse(localStorage.getItem('secret-circle-party-custom-packs-v1')).packs[0].name
+  }));
+  expect(snapshot.players).toEqual(['Alex', 'Sam', 'Mika']);
+  expect(snapshot.custom).toBe('Eigene Runde');
 });
 
-test('complete deletion removes Hub Imposter preferences and active sessions', async ({ page }) => {
+test('complete deletion removes Hub custom packs Imposter preferences and active sessions', async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem('secret-circle-party-active-v1', JSON.stringify({ version: 1 }));
     localStorage.setItem('secret-circle-custom-v7', JSON.stringify([{ name: 'Test' }]));
