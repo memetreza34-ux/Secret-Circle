@@ -45,6 +45,12 @@ checks = {
     'advanced_modes_v1': all(marker in advanced_modes for marker in (
         'renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy', 'renderMafia', 'version: 1'
     )),
+    'advanced_active_schema_v2': all(marker in advanced_runner for marker in (
+        'ACTIVE_VERSION = 2', 'session.players', 'sessionPlayers', 'historyId'
+    )),
+    'transaction_safe_advanced_history': all(marker in advanced_runner for marker in (
+        'saveHubState(nextHubState)', 'Session bleibt aktiv', 'clearActive'
+    )),
     'resumable_advanced_sessions': all(marker in advanced_runner for marker in (
         'secret-circle-party-active-v1', 'loadActive', 'persistActive',
         'renderSessionSummary', 'MAX_SESSION_ROUNDS = 20'
@@ -59,13 +65,12 @@ checks = {
     'party_hub_navigation': all(marker in party for marker in (
         'game-search', 'group-filter', 'mood-filter', 'player-filter',
         'age-filter', 'status-filter', 'hub-players', 'preset-name',
-        'favorites-grid', 'achievement-grid', 'hub-export-data',
-        'party-custom-packs.js'
+        'favorites-grid', 'achievement-grid', 'hub-export-data', 'party-custom-packs.js'
     )),
     'advanced_setup_and_play': all(marker in advanced for marker in (
         'advanced-pack', 'advanced-length', 'advanced-start', 'advanced-play-layer'
     )),
-    'pwa_cache_v22': "const CACHE='secret-circle-v22'" in sw,
+    'pwa_cache_v23': "const CACHE='secret-circle-v23'" in sw,
     'all_party_modules_cached': all(asset in sw for asset in (
         './party.html', './advanced.html', './party.css', './party-extra.css',
         './party-catalog.js', './party-expansion.js', './party-routing.js',
@@ -121,21 +126,23 @@ if (base_game_count, added_game_count) != (18, 4):
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_browser_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 8 or len(e2e_suites) < 18 or not cross_browser_suites:
+if len(unit_tests) < 8 or len(e2e_suites) < 19 or not cross_browser_suites:
     raise SystemExit('Automated test matrix is incomplete for the expanded Party Hub.')
-for required in [
-    'role-assignment.test.js', 'party-catalog.test.js',
-    'party-expansion.test.js', 'party-custom-packs.test.js'
-]:
+for required in ['role-assignment.test.js', 'party-catalog.test.js', 'party-expansion.test.js', 'party-custom-packs.test.js']:
     if required not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required}')
 for required in [
     'role-assignment.spec.js', 'party-hub.spec.js', 'party-advanced.spec.js',
-    'party-custom-packs.spec.js', 'party-data.spec.js', 'offline.spec.js',
-    'privacy-guard.spec.js', 'wake-lock.spec.js'
+    'party-custom-packs.spec.js', 'party-data.spec.js', 'party-stats.spec.js',
+    'offline.spec.js', 'privacy-guard.spec.js', 'wake-lock.spec.js'
 ]:
     if required not in e2e_suites:
         raise SystemExit(f'Critical E2E suite missing: {required}')
+
+advanced_tests = read('tests/e2e/party-advanced.spec.js').lower()
+for marker in ['original player snapshot', 'failed history write', 'session bleibt aktiv']:
+    if marker not in advanced_tests:
+        raise SystemExit(f'Advanced-session regression marker missing: {marker}')
 
 required_docs = [
     'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
@@ -146,6 +153,22 @@ for relative in required_docs:
     path = ROOT / relative
     if not path.is_file() or path.stat().st_size < 300:
         raise SystemExit(f'Missing or incomplete production document: {relative}')
+
+doc_markers = {
+    'README.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spieler-Snapshot'],
+    'RELEASE_STATUS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Gesamte gewünschte Party-Hub-Vision'],
+    'CHANGELOG.md': ['secret-circle-v23', 'eigene Hub-Kategorien', 'Spielergruppe'],
+    'DEPLOYMENT.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Spielergruppe'],
+    'RELEASE_CHECKLIST.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spieler-Snapshot'],
+    'MANUAL_TEST_PLAN.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spielergruppe'],
+    'KNOWN_LIMITATIONS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Online-Mehrspielermodus'],
+    'CI_TROUBLESHOOTING.md': ['secret-circle-v23', 'eigene Hub-Packs', 'GitHub Actions']
+}
+for relative, markers in doc_markers.items():
+    text = read(relative).lower()
+    for marker in markers:
+        if marker.lower() not in text:
+            raise SystemExit(f'Missing documentation marker {marker} in {relative}')
 
 print(json.dumps({
     'release_audit': 'PASS',
@@ -158,10 +181,13 @@ print(json.dumps({
     'party_games_playable': 18,
     'party_games_planned': 4,
     'advanced_playable_games': 4,
+    'advanced_active_schema': 2,
+    'player_snapshot_sessions': True,
+    'transaction_safe_history': True,
     'custom_pack_builder': True,
     'custom_pack_limit': 20,
     'custom_cards_per_pack_limit': 100,
-    'pwa_cache': 'secret-circle-v22',
+    'pwa_cache': 'secret-circle-v23',
     'manifest_start_url': manifest['start_url'],
     'imposter_categories': category_count,
     'imposter_terms': term_count,
