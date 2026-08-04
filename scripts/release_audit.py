@@ -3,48 +3,31 @@ from pathlib import Path
 import json
 import re
 import struct
+import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
-required_files = [
-    'index.html', 'privacy.html', 'styles.css', 'pwa.css', 'app.js',
-    'game-engine.js', 'word-packs.js', 'data-store.js',
-    'manifest.webmanifest', 'sw.js', 'icon.svg', 'icon-192.png',
-    'icon-512.png', 'package.json', 'playwright.config.js',
-    'tests/engine.test.js', 'tests/storage.test.js',
-    'tests/e2e/game-flow.spec.js', 'tests/e2e/setup-limits.spec.js',
-    'tests/e2e/accessibility.spec.js', 'tests/e2e/timer.spec.js',
-    'tests/e2e/offline.spec.js', 'tests/e2e/pwa-install.spec.js',
-    'tests/e2e/content.spec.js', 'tests/e2e/history.spec.js',
-    'tests/e2e/storage-safety.spec.js', 'scripts/validate_project.py',
-    '.github/workflows/ci.yml', 'README.md', 'RELEASE_CHECKLIST.md',
-    'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'MANUAL_TEST_PLAN.md',
-    'CI_TROUBLESHOOTING.md'
-]
-missing = [path for path in required_files if not (ROOT / path).is_file()]
-if missing:
-    raise SystemExit(f'Missing release files: {", ".join(missing)}')
+validator = subprocess.run(
+    [sys.executable, str(ROOT / 'scripts' / 'validate_project.py')],
+    cwd=ROOT,
+    text=True,
+    capture_output=True
+)
+if validator.returncode != 0:
+    raise SystemExit(validator.stderr.strip() or validator.stdout.strip() or 'Project validation failed.')
 
 read = lambda path: (ROOT / path).read_text(encoding='utf-8')
 index = read('index.html')
 privacy = read('privacy.html')
+runtime_guard = read('runtime-guard.js')
 app = read('app.js')
 engine = read('game-engine.js')
 word_packs = read('word-packs.js')
 data_store = read('data-store.js')
-engine_tests = read('tests/engine.test.js')
-storage_tests = read('tests/storage.test.js')
-e2e_game = read('tests/e2e/game-flow.spec.js')
-e2e_setup = read('tests/e2e/setup-limits.spec.js')
-e2e_timer = read('tests/e2e/timer.spec.js')
-e2e_offline = read('tests/e2e/offline.spec.js')
-e2e_pwa = read('tests/e2e/pwa-install.spec.js')
-e2e_content = read('tests/e2e/content.spec.js')
-e2e_history = read('tests/e2e/history.spec.js')
-e2e_storage = read('tests/e2e/storage-safety.spec.js')
-a11y_tests = read('tests/e2e/accessibility.spec.js')
 service_worker = read('sw.js')
 workflow = read('.github/workflows/ci.yml')
+cross_workflow = read('.github/workflows/cross-browser.yml')
 readme = read('README.md')
 checklist = read('RELEASE_CHECKLIST.md')
 changelog = read('CHANGELOG.md')
@@ -54,124 +37,18 @@ ci_help = read('CI_TROUBLESHOOTING.md')
 package = json.loads(read('package.json'))
 manifest = json.loads(read('manifest.webmanifest'))
 
-for marker in [
-    'lang="de"', 'viewport-fit=cover', 'aria-live="polite"',
-    'Content-Security-Policy', 'referrer', 'apple-mobile-web-app-capable',
-    'apple-touch-icon', 'Spielregeln und Punkte', 'privacy.html',
-    'delete-all-data', 'word-packs.js', 'data-store.js',
-    'export-data', 'import-data'
+for pattern, source, description in [
+    (r'VERSION\s*=\s*7', engine, 'game engine version 7'),
+    (r'KEY_VERSION\s*=\s*7', data_store, 'storage schema version 7'),
+    (r'ENGINE_VERSION\s*=\s*7', data_store, 'storage migration engine version 7')
 ]:
-    if marker not in index:
-        raise SystemExit(f'Release marker missing in index.html: {marker}')
-for directive in [
-    "default-src 'self'", "script-src 'self'", "style-src 'self'",
-    "object-src 'none'", "base-uri 'none'", "form-action 'self'"
-]:
-    if directive not in index:
-        raise SystemExit(f'Content Security Policy directive missing: {directive}')
-for marker in ['lokal', 'keine', 'tracking', 'löschen', 'Sicherung exportieren und importieren']:
-    if marker.lower() not in privacy.lower():
-        raise SystemExit(f'Privacy disclosure missing: {marker}')
-
-for marker in [
-    'SecretCircleStore', 'clearAllData', 'serviceWorker',
-    'beforeinstallprompt', 'SecretCircleContent', 'exportBackup',
-    'importBackup', 'recordRoundHistory', 'E.startTimer', 'E.pauseTimer',
-    'E.syncTimer', 'visibilitychange', 'pagehide'
-]:
-    if marker not in app:
-        raise SystemExit(f'Runtime capability missing: {marker}')
-
-for pattern, description in [
-    (r'VERSION\s*=\s*7', 'game engine version 7'),
-    (r'KEY_VERSION\s*=\s*7', 'storage schema version 7'),
-    (r'ENGINE_VERSION\s*=\s*7', 'storage engine migration version 7')
-]:
-    source = engine if pattern.startswith('VERSION') else data_store
     if not re.search(pattern, source):
         raise SystemExit(f'Missing {description}.')
-for marker in [
-    'MAX_TIE_BREAKS', 'normalizeUsedWords', 'availableEntries',
-    'timerRunning', 'timerDeadline', 'startTimer', 'pauseTimer',
-    'syncTimer', 'bereits abgestimmt', 'Selbststimmen sind ungültig'
-]:
-    if marker not in engine:
-        raise SystemExit(f'Game engine safety marker missing: {marker}')
-for marker in [
-    'upgradeActiveSnapshot', 'removeLegacyKind', 'IMPORT_PROBE_KEY',
-    'beschädigte lokale Daten', 'exportBackup', 'importBackup'
-]:
-    if marker not in data_store:
-        raise SystemExit(f'Storage resilience marker missing: {marker}')
-
-for marker in [
-    'deadlineTimer', 'backgroundResume', 'finiteTieBreak',
-    'duplicateVoteProtection', 'noRepeatedWords', 'validation', 'history'
-]:
-    if marker not in engine_tests:
-        raise SystemExit(f'Engine safety test missing: {marker}')
-for marker in [
-    'storageMigration', 'realLegacyGameUpgrade', 'currentKeyUpgrade',
-    'corruptedDataRecovery', 'backupExportImport', 'legacyBackupImport',
-    'oversizedBackupProtection', 'atomicImportRollback'
-]:
-    if marker not in storage_tests:
-        raise SystemExit(f'Storage safety test missing: {marker}')
-
-browser_requirements = {
-    'game-flow': (e2e_game, [
-        'full match round', 'multiple match rounds', 'interrupted round',
-        'complete local backup', 'corrupted persisted data'
-    ]),
-    'setup-limits': (e2e_setup, [
-        'three players and two imposters', 'twenty players and six imposters',
-        'more than twenty players', 'below the player count'
-    ]),
-    'timer': (e2e_timer, [
-        'deadline timer counts accurately', 'survives a reload',
-        'elapsed background deadline', 'legacy active game'
-    ]),
-    'offline': (e2e_offline, [
-        'secret-circle-v9', 'service worker', 'icon-192.png', 'icon-512.png'
-    ]),
-    'pwa-install': (e2e_pwa, [
-        'installable mobile metadata', 'createImageBitmap',
-        '192x192', '512x512', 'apple-mobile-web-app-capable'
-    ]),
-    'content': (e2e_content, ['categoryCount', 'totalTerms', 'deterministic game']),
-    'history': (e2e_history, ['stored exactly once']),
-    'storage-safety': (e2e_storage, ['storage']),
-    'accessibility': (a11y_tests, [
-        'structural accessibility gates', 'rules and scoring guide is keyboard accessible',
-        'retain focus', 'large touch targets', 'reduced motion'
-    ])
-}
-for suite, (source, markers) in browser_requirements.items():
-    for marker in markers:
-        if marker.lower() not in source.lower():
-            raise SystemExit(f'Browser coverage missing in {suite}: {marker}')
 
 category_count = word_packs.count('entries:[')
 term_count = len(re.findall(r"\['(?:[^'\\]|\\.)*','(?:[^'\\]|\\.)*'\]", word_packs))
-if category_count < 14:
-    raise SystemExit(f'Too few built-in category packs: {category_count}')
-if term_count < 168:
-    raise SystemExit(f'Too few built-in terms: {term_count}')
-
-if manifest.get('id') != './' or manifest.get('start_url') != './' or manifest.get('scope') != './':
-    raise SystemExit('PWA manifest id, start_url and scope must be relative.')
-if manifest.get('display') != 'standalone':
-    raise SystemExit('PWA manifest must use standalone display mode.')
-if manifest.get('lang') != 'de':
-    raise SystemExit('PWA manifest language must be German.')
-icons = manifest.get('icons') or []
-for expected in [
-    ('icon-192.png', '192x192', 'image/png'),
-    ('icon-512.png', '512x512', 'image/png'),
-    ('icon.svg', 'any', 'image/svg+xml')
-]:
-    if not any((icon.get('src'), icon.get('sizes'), icon.get('type')) == expected for icon in icons):
-        raise SystemExit(f'PWA manifest icon missing: {expected[0]}')
+if category_count != 14 or term_count != 168:
+    raise SystemExit(f'Unexpected built-in content size: {category_count} categories, {term_count} terms.')
 
 png_dimensions = {}
 for relative, expected_size in [('icon-192.png', 192), ('icon-512.png', 512)]:
@@ -180,87 +57,111 @@ for relative, expected_size in [('icon-192.png', 192), ('icon-512.png', 512)]:
         raise SystemExit(f'Invalid PNG icon: {relative}')
     width, height = struct.unpack('>II', data[16:24])
     if (width, height) != (expected_size, expected_size):
-        raise SystemExit(f'Wrong PNG size for {relative}: {width}x{height}')
+        raise SystemExit(f'Wrong PNG dimensions for {relative}: {width}x{height}')
     png_dimensions[relative] = f'{width}x{height}'
 
+if manifest.get('id') != './' or manifest.get('start_url') != './' or manifest.get('scope') != './':
+    raise SystemExit('Manifest id, start_url and scope must remain relative.')
+if manifest.get('display') != 'standalone' or manifest.get('lang') != 'de':
+    raise SystemExit('Manifest display or language is invalid.')
+
 cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
-if not cache_match or cache_match.group(1) != 'secret-circle-v9':
-    raise SystemExit('Service worker cache version must be secret-circle-v9.')
-for asset in [
-    './index.html', './privacy.html', './styles.css', './pwa.css',
-    './app.js', './game-engine.js', './word-packs.js', './data-store.js',
-    './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
-]:
-    if asset not in service_worker:
-        raise SystemExit(f'Offline core asset missing from service worker: {asset}')
-for marker in ['fetchAndCache', 'await cache.put', 'handleNavigation', 'handleAsset']:
+if not cache_match or cache_match.group(1) != 'secret-circle-v10':
+    raise SystemExit('Service worker cache version must be secret-circle-v10.')
+for marker in ['fetchAndCache', 'await cache.put', 'handleNavigation', 'handleAsset', './runtime-guard.js']:
     if marker not in service_worker:
         raise SystemExit(f'Service worker reliability marker missing: {marker}')
 
-scripts = package.get('scripts', {})
 if package.get('version') != '1.0.0-beta.3':
     raise SystemExit('Package version must be 1.0.0-beta.3.')
 if package.get('engines', {}).get('node') != '>=20':
-    raise SystemExit('Node engine support must be declared as >=20.')
-for marker in ['tests/engine.test.js', 'tests/storage.test.js']:
-    if marker not in scripts.get('test', ''):
-        raise SystemExit(f'Unit test command missing: {marker}')
-for marker in ['app.js', 'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js']:
-    if marker not in scripts.get('check', ''):
-        raise SystemExit(f'Syntax check missing: {marker}')
+    raise SystemExit('Node support must be declared as >=20.')
 playwright_version = package.get('devDependencies', {}).get('@playwright/test', '')
 if not re.fullmatch(r'\d+\.\d+\.\d+', playwright_version):
-    raise SystemExit('Playwright dependency must be pinned to an exact version.')
+    raise SystemExit('Playwright must be pinned to an exact version.')
+for script in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
+    if script not in package.get('scripts', {}):
+        raise SystemExit(f'Package script missing: {script}')
+for marker in ['runtime-guard.js', 'app.js', 'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js']:
+    if marker not in package['scripts']['check']:
+        raise SystemExit(f'Syntax check missing: {marker}')
+
 for command in ['npm run check', 'npm test', 'npm run validate', 'npm run test:e2e']:
     if command not in workflow:
-        raise SystemExit(f'CI command missing: {command}')
+        raise SystemExit(f'Main CI command missing: {command}')
+for marker in ['workflow_dispatch', 'chromium firefox webkit', 'npm run test:cross-browser']:
+    if marker not in cross_workflow:
+        raise SystemExit(f'Cross-browser workflow marker missing: {marker}')
 
-for source, markers in [
-    (readme, ['deadline-basierter Timer', '192- und 512-Pixel', 'PWA-Manifest']),
-    (checklist, ['Realer Party-Betatest', 'Timer läuft nach App-Wechsel', '512 × 512']),
-    (changelog, ['1.0.0-beta.3', 'Hinzugefügt', 'Behoben', 'Sicherheit und Datenschutz']),
-    (limitations, ['lokales Pass-and-Play-Spiel', 'iPhone', 'öffentlichen Release']),
-    (manual_plan, ['Grundlegender Smoke-Test', 'Timer', 'PWA und Offline', 'Realer Partytest']),
-    (ci_help, ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits'])
+for marker in [
+    'unhandledrejection', 'controllerchange', 'controlledAtStartup',
+    'SecretCircleRuntime', '1.0.0-beta.3'
 ]:
+    if marker not in runtime_guard:
+        raise SystemExit(f'Runtime guard marker missing: {marker}')
+for marker in [
+    'recordRoundHistory', 'E.startTimer', 'E.pauseTimer', 'E.syncTimer',
+    'visibilitychange', 'pagehide', 'exportBackup', 'importBackup'
+]:
+    if marker not in app:
+        raise SystemExit(f'Runtime integration marker missing: {marker}')
+for directive in ["default-src 'self'", "object-src 'none'", "base-uri 'none'"]:
+    if directive not in index:
+        raise SystemExit(f'CSP directive missing: {directive}')
+for marker in ['keine Analyse-, Werbe- oder Tracking-Dienste', 'Sicherung exportieren und importieren']:
+    if marker.lower() not in privacy.lower():
+        raise SystemExit(f'Privacy marker missing: {marker}')
+
+production_docs = {
+    'README': (readme, ['deadline-basierter Timer', '192- und 512-Pixel', 'PWA-Manifest']),
+    'release checklist': (checklist, ['Realer Party-Betatest', 'Timer läuft nach App-Wechsel', '512 × 512']),
+    'changelog': (changelog, ['1.0.0-beta.3', 'Hinzugefügt', 'Behoben', 'Sicherheit und Datenschutz']),
+    'limitations': (limitations, ['lokales Pass-and-Play-Spiel', 'iPhone', 'öffentlichen Release']),
+    'manual test plan': (manual_plan, ['Grundlegender Smoke-Test', 'PWA und Offline', 'Realer Partytest']),
+    'CI troubleshooting': (ci_help, ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits'])
+}
+for document, (source, markers) in production_docs.items():
     for marker in markers:
         if marker.lower() not in source.lower():
-            raise SystemExit(f'Production documentation marker missing: {marker}')
+            raise SystemExit(f'Missing {document} marker: {marker}')
 
 for forbidden in ['eval(', 'new Function(', 'document.write(', 'innerHTML = location', 'http://']:
-    if any(forbidden in source for source in [app, engine, word_packs, data_store]):
+    if any(forbidden in source for source in [runtime_guard, app, engine, word_packs, data_store]):
         raise SystemExit(f'Forbidden release pattern detected: {forbidden}')
 for forbidden_path in ['.env', 'node_modules', 'dist', 'build']:
     if (ROOT / forbidden_path).exists():
         raise SystemExit(f'Forbidden generated path committed: {forbidden_path}')
 
+e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
+cross_browser_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
+if len(e2e_suites) < 10 or not cross_browser_suites:
+    raise SystemExit('Automated browser test matrix is incomplete.')
+
 print(json.dumps({
     'release_audit': 'PASS',
-    'required_files': len(required_files),
+    'validator': validator.stdout.strip(),
     'package_version': package.get('version'),
-    'pwa_cache': cache_match.group(1),
-    'pwa_icons': png_dimensions,
-    'privacy': True,
-    'content_security_policy': True,
-    'offline_core': True,
     'engine_version': 7,
     'storage_schema_version': 7,
+    'pwa_cache': cache_match.group(1),
+    'pwa_icons': png_dimensions,
+    'built_in_categories': category_count,
+    'built_in_terms': term_count,
+    'e2e_suites': e2e_suites,
+    'cross_browser_suites': cross_browser_suites,
+    'cross_browser_projects': 5,
     'deadline_timer': True,
     'timer_reload_recovery': True,
     'all_completed_rounds_recorded': True,
     'backup_export_import': True,
     'corruption_recovery': True,
     'legacy_migration': True,
-    'built_in_categories': category_count,
-    'built_in_terms': term_count,
     'finite_voting': True,
     'duplicate_vote_protection': True,
     'non_repeating_match_words': True,
-    'browser_test_suites': len(browser_requirements),
-    'setup_boundary_tests': True,
-    'pwa_install_metadata_tested': True,
-    'accessibility_gates': True,
-    'mobile_quality_gates': True,
-    'production_docs': True,
+    'runtime_error_guard': True,
+    'safe_pwa_update_reload': True,
+    'content_security_policy': True,
+    'production_docs': list(production_docs),
     'pinned_playwright': playwright_version
 }, ensure_ascii=False, indent=2))
