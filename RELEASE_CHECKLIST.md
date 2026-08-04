@@ -1,6 +1,6 @@
 # Secret Circle – Release-Checkliste
 
-Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt werden. Nicht bestätigte Punkte blockieren den Release.
+Nicht bestätigte Punkte blockieren den öffentlichen Release.
 
 ## 1. Automatisierte Prüfungen
 
@@ -10,145 +10,107 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] `npm run test:e2e`
 - [ ] `npm run ci`
 - [ ] `npm run test:cross-browser`
-- [ ] GitHub Actions auf dem Release-Commit erfolgreich
-- [ ] Playwright-Bericht ohne fehlgeschlagene Desktop- oder Mobile-Tests
+- [ ] GitHub Actions auf dem endgültigen Commit erfolgreich
 - [ ] Keine offenen kritischen oder hohen Fehler
 
-## 2. Kernspiel
+## 2. Rollen und Kernspiel
 
-- [ ] Spielstart mit 3 Personen
-- [ ] Spielstart mit 20 Personen
-- [ ] Live-Anzeige erkennt Gruppengröße und doppelte Namen korrekt
-- [ ] Gültiger Imposter-Bereich passt sich an die Gruppengröße an
-- [ ] Mehrere Imposter korrekt verteilt
-- [ ] Doppelte Namen werden blockiert
+- [ ] Spielstart mit 3 und 20 Personen
+- [ ] maximal sechs Imposter möglich
+- [ ] doppelte Namen und ungültige Imposter-Werte werden blockiert
+- [ ] Rollenverteilung ist unabhängig von der Aufdeckreihenfolge
+- [ ] über wiederholte Runden ist die zuerst aufdeckende Person nicht systematisch Imposter
+- [ ] gleiche Seeds erzeugen reproduzierbare Rollen und Aufdeckreihenfolge
+- [ ] mehrere Imposter sind eindeutig und korrekt verteilt
 - [ ] Kartenübergabe zeigt nur die aktuelle Rolle
-- [ ] Sichtbare Karte wird bei App-Wechsel oder Fokusverlust automatisch verdeckt
-- [ ] Automatisch verdeckte Karte kann nicht ohne erneutes Öffnen weitergegeben werden
-- [ ] Sichere Fokusposition wird nach Rückkehr wiederhergestellt
-- [ ] Diskussion und Timer funktionieren
-- [ ] Wake Lock wird während der Diskussion auf unterstützten Geräten angefordert
-- [ ] Wake Lock wird vor Abstimmung, im Hintergrund und beim Verlassen freigegeben
-- [ ] Spiel funktioniert auf Geräten ohne Wake-Lock-API unverändert
-- [ ] Timer pausieren und fortsetzen funktioniert
-- [ ] Timer läuft nach App-Wechsel und Neuladen korrekt weiter
-- [ ] Abgelaufener Timer wird nach Rückkehr korrekt angezeigt
-- [ ] Abstimmung aller Personen funktioniert
+- [ ] sichtbare Karte wird bei Fokusverlust automatisch verdeckt
+- [ ] verdeckte Karte kann nicht ohne erneutes Öffnen weitergegeben werden
+- [ ] Diskussion, Timer, Abstimmung, Stichwahl und Ratechance funktionieren
 - [ ] Selbstwahl und doppelte Stimmen werden verhindert
-- [ ] Stichwahl bei Gleichstand funktioniert und endet garantiert
-- [ ] Gefundener Imposter kann den Begriff raten
-- [ ] Punkte werden korrekt vergeben
-- [ ] Rangliste ist korrekt sortiert
-- [ ] Jede abgeschlossene Runde erscheint genau einmal im Verlauf
-- [ ] Nächste Runde übernimmt den Punktestand
+- [ ] Punkte, Rangliste, Verlauf und nächste Runde sind korrekt
 - [ ] Begriffe wiederholen sich erst nach erschöpftem Pool
 - [ ] Match endet nach der gewählten Rundenzahl
 
-## 3. Speicherung, Sicherung und Datenschutz
+## 3. Timer und Geräteverhalten
 
-- [ ] Aktive Runde kann nach Neuladen fortgesetzt werden
-- [ ] Alte Engine-Spielstände werden auf Version 7 migriert
-- [ ] Alte Speicherschlüssel werden nach erfolgreicher Migration entfernt
-- [ ] Beschädigte lokale Daten werden sicher verworfen
-- [ ] Einstellungen bleiben lokal erhalten
-- [ ] Eigene Kategorien bleiben lokal erhalten
-- [ ] Rundenverlauf bleibt lokal erhalten
-- [ ] Vollständige JSON-Sicherung kann exportiert werden
-- [ ] Exportierte Sicherung enthält Spielstand, Einstellungen, Verlauf und Kategorien
-- [ ] Gültige aktuelle und ältere Sicherung kann importiert werden
-- [ ] Ungültige oder zu große Sicherung wird abgelehnt
-- [ ] Fehlgeschlagener Import beschädigt keine bestehenden Daten
-- [ ] Alle lokalen Daten können vollständig gelöscht werden
-- [ ] Nach vollständigem Löschen startet die App sauber
-- [ ] Datenschutzseite erklärt lokale Sicherungsdateien
-- [ ] Keine Analyse-, Tracking- oder Werbedienste eingebunden
-- [ ] Keine Secrets oder `.env`-Dateien im Repository
+- [ ] Timer startet, pausiert und setzt korrekt fort
+- [ ] Timer übersteht App-Wechsel, Hintergrund und Neuladen
+- [ ] abgelaufener Timer bleibt bei Rückkehr abgelaufen
+- [ ] Wake Lock wird während der Diskussion angefordert
+- [ ] Wake Lock wird vor Abstimmung und im Hintergrund freigegeben
+- [ ] Spiel funktioniert ohne Wake-Lock-API
+- [ ] Bildschirmrotation und Energiesparmodus geprüft
 
-## 4. PWA und Offline
+## 4. Speicherung und Datenschutz
 
-- [ ] Manifest enthält stabile relative Werte für `id`, `start_url` und `scope`
-- [ ] PNG-Icon mit 192 × 192 Pixeln vorhanden und gültig
-- [ ] PNG-Icon mit 512 × 512 Pixeln vorhanden und gültig
-- [ ] Apple-Touch-Icon und mobile App-Metadaten vorhanden
-- [ ] Erstaufruf online erfolgreich
-- [ ] App danach vollständig offline startbar
-- [ ] `index.html` und `privacy.html` offline verfügbar
-- [ ] CSS, JavaScript, Manifest und alle Icons offline verfügbar
-- [ ] `setup-ux.js`, `privacy-guard.js`, `wake-lock.js`, `word-packs.js` und `data-store.js` offline verfügbar
-- [ ] Cache `secret-circle-v16` enthält alle Kernressourcen
-- [ ] Nur die aktuelle Service-Worker-Cache-Version bleibt bestehen
-- [ ] Installation auf Android erfolgreich
-- [ ] Installation auf iOS zum Home-Bildschirm erfolgreich
-- [ ] Start aus installiertem Modus erfolgreich
-- [ ] Aktualisierung einer installierten Version geprüft
+- [ ] aktives Spiel kann nach Neuladen fortgesetzt werden
+- [ ] alte Daten werden auf Version 7 migriert
+- [ ] beschädigte Daten werden sicher verworfen
+- [ ] Einstellungen, Verlauf und eigene Kategorien bleiben lokal erhalten
+- [ ] vollständige JSON-Sicherung kann exportiert und importiert werden
+- [ ] ungültige oder zu große Sicherung wird abgelehnt
+- [ ] fehlgeschlagener Import besitzt Rollback
+- [ ] alle lokalen Daten können vollständig gelöscht werden
+- [ ] keine Analyse-, Tracking- oder Werbedienste
+- [ ] keine Secrets oder `.env`-Dateien im Repository
 
-## 5. Browser und Geräte
+## 5. PWA und Offline
 
-- [ ] Chrome Android aktuell
-- [ ] Safari iOS aktuell
-- [ ] Chrome Desktop aktuell
-- [ ] Safari Desktop aktuell
-- [ ] Firefox Desktop aktuell
-- [ ] Kleine Smartphone-Breite geprüft
-- [ ] Großes Smartphone geprüft
-- [ ] Tablet geprüft
-- [ ] Bildschirmrotation geprüft
-- [ ] iPhone-Safe-Areas geprüft
-- [ ] App-Wechsel während laufendem Timer geprüft
-- [ ] App-Wechsel während sichtbarer geheimer Karte geprüft
-- [ ] Wake Lock auf mindestens einem unterstützten Gerät geprüft
-- [ ] Fallback ohne Wake-Lock-Unterstützung geprüft
-- [ ] Energiesparmodus beziehungsweise gesperrter Bildschirm geprüft
+- [ ] Manifest besitzt stabile relative Werte für `id`, `start_url` und `scope`
+- [ ] 192- und 512-Pixel-PNG-Icons sind gültig
+- [ ] Android- und Apple-Installationsmetadaten vorhanden
+- [ ] Cache `secret-circle-v17` enthält alle Kernressourcen
+- [ ] `role-assignment.js`, `setup-ux.js`, `privacy-guard.js` und `wake-lock.js` sind offline verfügbar
+- [ ] nur der aktuelle Cache bleibt bestehen
+- [ ] App startet nach erstem Online-Aufruf vollständig offline
+- [ ] Installation und Update auf Android erfolgreich
+- [ ] Installation und Update auf iOS erfolgreich
 
-## 6. Accessibility und Bedienung
+## 6. Browser und Accessibility
 
-- [ ] Vollständig per Tastatur bedienbar
-- [ ] Fokus bleibt bei Bildschirmwechseln nachvollziehbar
-- [ ] Fokus ist sichtbar
-- [ ] Formulare besitzen verständliche Labels
-- [ ] Statusmeldungen werden angekündigt
-- [ ] Live-Setup-Hinweise werden verständlich angekündigt
-- [ ] Farbkontrast manuell geprüft
-- [ ] Vergrößerung auf 200 % geprüft
-- [ ] `prefers-reduced-motion` geprüft
-- [ ] Screenreader-Kurztest durchgeführt
-- [ ] Touchflächen sind mindestens 44 × 44 Pixel groß
+- [ ] aktuelles Chrome Android
+- [ ] aktuelles Safari iOS
+- [ ] Chrome, Firefox und Safari Desktop
+- [ ] kleine und große Smartphone-Breite
+- [ ] iPhone-Safe-Areas
+- [ ] vollständige Tastaturbedienung
+- [ ] sichtbarer und logischer Fokus
+- [ ] verständliche Labels und Statusmeldungen
+- [ ] 200-Prozent-Vergrößerung
+- [ ] Screenreader-Kurztest
+- [ ] reduzierte Bewegung und ausreichender Kontrast
+- [ ] Touchflächen mindestens 44 × 44 Pixel
 
 ## 7. Inhalt und Sicherheit
 
-- [ ] Alle 14 eingebauten Kategorien redaktionell geprüft
-- [ ] Alle 168 eingebauten Begriffe redaktionell geprüft
-- [ ] Keine diskriminierenden oder ungeeigneten Inhalte
-- [ ] Hilfswörter verraten den Begriff nicht direkt
-- [ ] Eigene Kategorien behandeln Eingaben sicher
-- [ ] Dynamische Inhalte werden vor HTML-Ausgabe escaped
-- [ ] Content Security Policy ist aktiv und blockiert fremde Skripte
-- [ ] Keine externen Ressourcen ohne klare Notwendigkeit
-- [ ] Geheime Rollen bleiben bei Fokusverlust verdeckt
+- [ ] alle 14 Kategorien redaktionell geprüft
+- [ ] alle 168 Begriffe und Hilfswörter redaktionell geprüft
+- [ ] keine ungeeigneten oder diskriminierenden Inhalte
+- [ ] dynamische Inhalte werden escaped
+- [ ] eigene Kategorien führen keinen HTML- oder Skriptcode aus
+- [ ] Content Security Policy blockiert fremde Skripte
+- [ ] keine unnötigen externen Ressourcen
+- [ ] Rollen können nicht aus der Aufdeckreihenfolge abgeleitet werden
 
 ## 8. Realer Party-Betatest
 
-- [ ] Mindestens ein vollständiges Match mit 3–4 Personen
-- [ ] Mindestens ein vollständiges Match mit 8 oder mehr Personen
-- [ ] Mindestens ein Match mit mehreren Impostern
-- [ ] Kartenübergabe ist verständlich und verrät keine Rolle
-- [ ] Automatische Kartenverdeckung wird von Testpersonen verstanden
-- [ ] Bildschirm bleibt während längerer Diskussionen zuverlässig aktiv
-- [ ] Abstimmungsübergabe ist verständlich
-- [ ] Punktesystem wird von Testpersonen verstanden
-- [ ] Keine Blockade oder unklare Sackgasse im Ablauf
-- [ ] Feedback und beobachtete Probleme dokumentiert
+- [ ] vollständiges Match mit 3–4 Personen
+- [ ] vollständiges Match mit mindestens 8 Personen
+- [ ] mindestens ein Match mit mehreren Impostern
+- [ ] Einrichtung und Kartenübergabe werden ohne Erklärung verstanden
+- [ ] automatische Kartenverdeckung wird verstanden
+- [ ] Aufdeckreihenfolge erzeugt keinen Rollenverdacht
+- [ ] Abstimmung, Punkte und Stichwahl werden verstanden
+- [ ] keine Blockade oder unklare Sackgasse
+- [ ] Feedback und Fehler dokumentiert
 
 ## 9. Release-Dokumentation
 
-- [ ] Versionsnummer festgelegt
-- [ ] Release-Commit dokumentiert
-- [ ] Änderungen seit vorheriger Version beschrieben
-- [ ] Bekannte Einschränkungen dokumentiert
-- [ ] Rollback-Möglichkeit festgelegt
-- [ ] Backup-Kompatibilität dokumentiert
-- [ ] Verantwortliche Testperson und Testdatum eingetragen
-- [ ] Impressum beziehungsweise Anbieterinformationen vor öffentlicher kommerzieller Nutzung ergänzt
+- [ ] Version und Release-Commit festgelegt
+- [ ] Changelog und bekannte Einschränkungen aktuell
+- [ ] Rollback und Backup-Kompatibilität dokumentiert
+- [ ] Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt
+- [ ] Testperson und Testdatum eingetragen
 
 ## Freigabe
 
