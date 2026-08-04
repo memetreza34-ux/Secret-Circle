@@ -26,11 +26,19 @@ jobs:
           node --check word-packs.js
           node --check accessibility.js
           node --check sw.js
+      - name: Compile archive inventory tooling
+        run: |
+          python -m py_compile \
+            tools/inventory_legacy_archive.py \
+            tests/archive-inventory.test.py \
+            scripts/validate_project.py
       - name: Run deterministic engine tests
         run: node tests/engine.test.js
       - name: Validate curated word packs
         run: node tests/content.test.js
       - name: Validate accessibility and offline shell
         run: node tests/accessibility.test.js
-      - name: Validate offline PWA structure
+      - name: Validate safe legacy archive inventory tooling
+        run: python tests/archive-inventory.test.py
+      - name: Validate offline PWA and archive-tool structure
         run: python scripts/validate_project.py
