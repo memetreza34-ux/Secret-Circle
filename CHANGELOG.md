@@ -11,47 +11,74 @@
 - Verlauf, Statistik und acht Erfolge
 - komplexe Spielabläufe für Zwei Wahrheiten, Question Imposter, Location Spy und Mafia
 - wiederaufnehmbare Sessions mit 3, 5, 10 oder 20 Runden
-- eigene Hub-Kategorien für kompatible Frage-, Darstellungs- und Schnellspiele
-- maximal 20 eigene Packs mit maximal 100 eindeutigen Karten
-- Gesamtexport für Hub, eigene Packs und Word Imposter
-- Import mit Formatprüfung, Größenlimit und Rollback
-- vollständige Löschung aller `secret-circle-*`-Daten
-- Offline-Core `secret-circle-v23`
-- Regressionstests für unveränderliche Spielergruppen und fehlgeschlagene Verlaufsspeicherung
+- Eigene Hub-Kategorien für kompatible Frage-, Darstellungs- und Schnellspiele
+- Gesamtexport für Hub, eigene Packs, aktive Sessions und Word Imposter
+- Offline-Core `secret-circle-v24`
+- Regressionstests für Spieler-Snapshot, Speicherfehler, Mehrbyte-Dateien und Rollback
 
-### Verbessert
+### Verbesserte Session-Sicherheit
 
 - aktives erweitertes Session-Schema auf Version 2 gehärtet
-- jede gestartete komplexe Session speichert ihre eigene Spielergruppe als Snapshot
-- Änderungen an der gemeinsamen Lobby verändern keine bereits laufende Session mehr
+- jede gestartete komplexe Session speichert ihre eigene Spielergruppe
+- Änderungen an der gemeinsamen Lobby verändern keine laufende Session
 - alte aktive Sessions werden kontrolliert migriert
-- aktive Daten mit ungültiger Spielerzahl, Packzuordnung oder Rundenzahl werden sicher verworfen
-- abgeschlossene Sessions verwenden eindeutige, idempotente Historien-IDs
+- ungültige Spielerzahl, Packzuordnung oder Rundenzahl wird abgelehnt
+- eindeutige Session- und Historien-ID verhindert doppelte Abschlüsse
 - Verlauf und Statistik werden vor dem Schließen transaktionssicher gespeichert
-- ein lokaler Speicherfehler lässt die Session aktiv und erneut speicherbar
-- Statistikwerte älterer Sessions werden aus dem Verlauf repariert, ohne höhere neuere Werte zu reduzieren
-- mobile Navigation, Filter, Touchflächen, Safe Areas und reduzierte Bewegung werden automatisch geprüft
-- PR-Beschreibung, Validator und Release-Audit spiegeln den tatsächlichen Stand wider
+- ein Speicherfehler lässt die Session aktiv und erneut speicherbar
+
+### Verbesserte Eigene Hub-Kategorien
+
+- Unicode-Normalisierung verhindert visuell gleiche Duplikate
+- doppelte Karten, Packnamen und gespeicherte IDs werden bereinigt
+- Speichern und Löschen verwenden eine lokale Transaktion
+- In-Memory-Katalog und lokaler Speicher bleiben bei Fehlern synchron
+- simulierbare Speicheradapter ermöglichen Unit-Tests für Rollback
+- maximal 20 Packs und 100 Karten bleiben erzwungen
+
+### Verbesserte Datensicherung
+
+- Datenwerkzeug auf Version 2 erhöht
+- Sicherungsgröße wird als tatsächliche UTF-8-Byte-Größe geprüft
+- Mehrbyte-Zeichen können die 1,5-MB-Grenze nicht umgehen
+- `File.size` wird vor dem vollständigen Einlesen geprüft
+- einzelne Werte besitzen eine eigene Byte-Grenze
+- Import schreibt alle Datensätze vollständig oder stellt den vorherigen Zustand wieder her
+- ein fehlgeschlagener Rollback wird gesondert gemeldet
+- vollständige Löschung nutzt dieselbe Transaktions- und Rollback-Logik
+- Objekt für exportierte Einträge besitzt keinen geerbten Prototyp
+- Objekt-URL eines Exports wird verzögert freigegeben, damit Downloads zuverlässig beginnen
+
+### Verbesserte Einstellungen und Statistiken
+
+- Hub-Plus auf Version 5 erhöht
+- fehlgeschlagene Präferenz-Speicherung wird abgefangen und sichtbar gemeldet
+- aktuelle Altersauswahl bleibt trotz Speicherfehler nutzbar
+- negative, ungültige und unbekannte Statistikwerte werden sicher normalisiert
+- fehlgeschlagene Statistikreparatur blockiert die App nicht
+- Fallback für Browser ohne `CSS.escape`
 
 ### Behoben
 
-- laufende Question-Imposter-, Location-Spy-, Mafia- und Zwei-Wahrheiten-Sessions wechseln nach einer Lobbyänderung nicht mehr unbemerkt die Personen
+- laufende komplexe Sessions wechseln nach einer Lobbyänderung nicht mehr unbemerkt die Personen
 - Rollen, Fragen und aktive Person bleiben an die ursprüngliche Spielergruppe gebunden
-- fehlgeschlagene Hub-Speicherung löscht keinen abgeschlossenen Sessionfortschritt mehr
+- fehlgeschlagene Hub-Speicherung löscht keinen abgeschlossenen Sessionfortschritt
 - wiederholter Abschluss erzeugt keinen doppelten Verlaufseintrag
-- beschädigte aktive Sessions bleiben nicht dauerhaft als unsichtbarer Fehler gespeichert
-- eigene Hub-Packs werden vor dem Katalogrendern geladen
-- doppelte Karten und doppelte Packnamen werden zuverlässig abgelehnt
-- vollständige Datenlöschung umfasst eigene Packs und aktive Sessions
+- ein fehlgeschlagenes eigenes Pack verändert den Katalog nicht mehr teilweise
+- ein fehlgeschlagenes Löschen eines Packs entfernt es nicht mehr nur aus dem Arbeitsspeicher
+- Importfehler hinterlassen keine absichtlich akzeptierten gemischten alten und neuen Daten
+- Löschfehler stellen vorherige lokale Daten wieder her
+- falsche Zeichenzählung bei Sicherungen mit Umlauten oder anderen Mehrbyte-Zeichen
+- Präferenz- und Statistik-Speicherfehler erzeugen keinen unbehandelten Laufzeitfehler
 
 ### Qualität
 
 - 8 Unit-Testdateien
 - mindestens 19 Playwright-E2E-Suiten
 - Chromium-, Firefox-, WebKit-, Android- und iPhone-Projekte
-- Strukturvalidator prüft HTML, CSP, Assets, Scriptreihenfolge, Manifest, Icons, Cache, Katalog und Session-Sicherheit
-- Release-Audit prüft Player-Snapshot, transaktionssicheren Abschluss, Backup und Dokumentation
-- GitHub-Actions-Wiederholung erneut angestoßen; der externe Runner-Blocker endet weiterhin vor dem ersten Schritt
+- Strukturvalidator prüft HTML, CSP, Assets, Scriptreihenfolge, Manifest, Icons, Cache, Katalog und Speichertransaktionen
+- Release-Audit prüft Player-Snapshot, Pack-Rollback, byte-sicheren Import und Dokumentation
+- GitHub Actions bleibt durch einen externen Fehler vor dem ersten Schritt blockiert
 
 ### Noch offen
 
