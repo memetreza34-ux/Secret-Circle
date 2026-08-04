@@ -74,7 +74,7 @@ for relative, markers in {
     'DEPLOYMENT.md': ['secret-circle-v13', 'Rollback'],
     'RELEASE_CHECKLIST.md': ['Realer Party-Betatest', 'GitHub Actions'],
     'SECURITY.md': ['Sicherheitsproblem melden', 'Sicherheitsmodell der App'],
-    'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Billing'],
+    'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Abrechnung'],
     'MANUAL_TEST_PLAN.md': ['Android-Installation', 'iPhone-/iPad-Installation', 'Realer Partytest']
 }.items():
     text = read(relative)
