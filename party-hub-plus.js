@@ -5,16 +5,29 @@
   if (!C) return;
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const PREF_KEY = 'secret-circle-party-preferences-v1';
+  const VERSION = 5;
   const $ = selector => document.querySelector(selector);
   let installPrompt = null;
+
+  function setStatus(message, error = false) {
+    const node = $('#hub-status');
+    if (!node) return;
+    node.textContent = message || '';
+    node.classList.toggle('error', error);
+  }
 
   function readJson(key, fallback) {
     try {
       const value = JSON.parse(localStorage.getItem(key));
-      return value && typeof value === 'object' ? value : fallback;
+      return value && typeof value === 'object' && !Array.isArray(value) ? value : fallback;
     } catch {
       return fallback;
     }
+  }
+
+  function safeInteger(value) {
+    const number = Number(value);
+    return Number.isInteger(number) && number >= 0 ? number : 0;
   }
 
   function preferences() {
@@ -27,7 +40,16 @@
   }
 
   function savePreferences(next) {
-    localStorage.setItem(PREF_KEY, JSON.stringify({ ...preferences(), ...next, version: 1 }));
+    const value = { ...preferences(), ...next, version: 1 };
+    if (!['family', 'teen', 'all'].includes(value.ageLevel)) value.ageLevel = 'all';
+    if (![3, 5, 10, 20].includes(value.sessionLength)) value.sessionLength = 5;
+    try {
+      localStorage.setItem(PREF_KEY, JSON.stringify(value));
+      return true;
+    } catch (error) {
+      setStatus(`Einstellung gilt nur bis zum Neuladen, weil sie nicht gespeichert werden konnte: ${error?.message || 'lokaler Speicherfehler'}`, true);
+      return false;
+    }
   }
 
   function gameAllowed(game, level) {
@@ -73,30 +95,37 @@
     const state = readJson(HUB_KEY, null);
     if (!state || state.version !== 1 || !Array.isArray(state.history)) return false;
     if (!state.stats || typeof state.stats !== 'object' || Array.isArray(state.stats)) state.stats = {};
-    const observed = {};
+    const observed = Object.create(null);
     for (const item of state.history) {
-      if (!item || typeof item.gameId !== 'string') continue;
+      if (!item || typeof item.gameId !== 'string' || !C.getGame(item.gameId)) continue;
       const entry = observed[item.gameId] || { plays: 0, rounds: 0, best: 0 };
       entry.plays += 1;
-      entry.rounds += Number.isInteger(item.rounds) && item.rounds > 0 ? item.rounds : 0;
-      entry.best = Math.max(entry.best, Number.isFinite(item.score) ? item.score : 0);
+      entry.rounds += safeInteger(item.rounds);
+      entry.best = Math.max(entry.best, safeInteger(item.score));
       observed[item.gameId] = entry;
     }
     let changed = false;
     for (const [gameId, entry] of Object.entries(observed)) {
-      const current = state.stats[gameId] || { plays: 0, rounds: 0, best: 0 };
+      const raw = state.stats[gameId];
+      const current = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
       const repaired = {
-        plays: Math.max(Number(current.plays) || 0, entry.plays),
-        rounds: Math.max(Number(current.rounds) || 0, entry.rounds),
-        best: Math.max(Number(current.best) || 0, entry.best)
+        plays: Math.max(safeInteger(current.plays), entry.plays),
+        rounds: Math.max(safeInteger(current.rounds), entry.rounds),
+        best: Math.max(safeInteger(current.best), entry.best)
       };
       if (repaired.plays !== current.plays || repaired.rounds !== current.rounds || repaired.best !== current.best) {
         state.stats[gameId] = repaired;
         changed = true;
       }
     }
-    if (changed) localStorage.setItem(HUB_KEY, JSON.stringify(state));
-    return changed;
+    if (!changed) return false;
+    try {
+      localStorage.setItem(HUB_KEY, JSON.stringify(state));
+      return true;
+    } catch (error) {
+      setStatus(`Statistik konnte nicht repariert und gespeichert werden: ${error?.message || 'lokaler Speicherfehler'}`, true);
+      return false;
+    }
   }
 
   function renderAchievements() {
@@ -104,20 +133,20 @@
     const grid = $('#achievement-grid');
     if (!grid) return;
     const state = readJson(HUB_KEY, { history: [], stats: {}, favorites: [], presets: [] });
-    const history = Array.isArray(state.history) ? state.history : [];
-    const totalRounds = history.reduce((sum, item) => sum + (Number(item.rounds) || 0), 0);
+    const history = Array.isArray(state.history) ? state.history.filter(item => item && C.getGame(item.gameId)) : [];
+    const totalRounds = history.reduce((sum, item) => sum + safeInteger(item.rounds), 0);
     const uniqueGames = new Set(history.map(item => item.gameId)).size;
-    const bestScore = Math.max(0, ...history.map(item => Number(item.score) || 0));
+    const bestScore = Math.max(0, ...history.map(item => safeInteger(item.score)));
     const advanced = new Set(['two-truths', 'question-imposter', 'location-spy', 'mafia']);
     const achievements = [
       ['🎉', 'Erster Spieleabend', 'Eine Session abschließen', history.length >= 1],
       ['🔟', 'Zehn Runden', 'Insgesamt zehn Runden spielen', totalRounds >= 10],
       ['🧭', 'Entdecker', 'Fünf verschiedene Spiele ausprobieren', uniqueGames >= 5],
       ['🏆', 'Punktejäger', 'Mindestens zehn Punkte in einer Session', bestScore >= 10],
-      ['⭐', 'Kurator', 'Fünf Favoriten speichern', (state.favorites?.length || 0) >= 5],
-      ['👥', 'Gastgeber', 'Drei Gruppen-Presets speichern', (state.presets?.length || 0) >= 3],
+      ['⭐', 'Kurator', 'Fünf Favoriten speichern', (Array.isArray(state.favorites) ? state.favorites.length : 0) >= 5],
+      ['👥', 'Gastgeber', 'Drei Gruppen-Presets speichern', (Array.isArray(state.presets) ? state.presets.length : 0) >= 3],
       ['🕵️', 'Täuschungsprofi', 'Ein erweitertes Täuschungsspiel beenden', history.some(item => advanced.has(item.gameId))],
-      ['🏃', 'Marathon', 'Eine Session mit mindestens zehn Runden', history.some(item => (item.rounds || 0) >= 10)]
+      ['🏃', 'Marathon', 'Eine Session mit mindestens zehn Runden', history.some(item => safeInteger(item.rounds) >= 10)]
     ];
     grid.replaceChildren();
     achievements.forEach(([icon, title, description, unlocked]) => {
@@ -142,10 +171,15 @@
     else if (game.id === 'imposter') button.textContent = 'Word Imposter öffnen';
   }
 
+  function escapeSelector(value) {
+    if (window.CSS?.escape) return window.CSS.escape(value);
+    return String(value).replace(/[^a-zA-Z0-9_-]/g, character => `\\${character.codePointAt(0).toString(16)} `);
+  }
+
   function openRequestedView() {
     const view = new URLSearchParams(window.location.search).get('view');
     if (!view) return;
-    const button = document.querySelector(`[data-view-target="${CSS.escape(view)}"]`);
+    const button = document.querySelector(`[data-view-target="${escapeSelector(view)}"]`);
     button?.click();
   }
 
@@ -159,10 +193,13 @@
     });
     button.addEventListener('click', async () => {
       if (!installPrompt) return;
-      installPrompt.prompt();
-      await installPrompt.userChoice;
-      installPrompt = null;
-      button.hidden = true;
+      try {
+        installPrompt.prompt();
+        await installPrompt.userChoice;
+      } finally {
+        installPrompt = null;
+        button.hidden = true;
+      }
     });
     window.addEventListener('appinstalled', () => {
       installPrompt = null;
@@ -203,12 +240,14 @@
   window.setTimeout(applyAgeFilter, 0);
 
   window.SecretCirclePartyHubPlus = Object.freeze({
-    version: 4,
+    version: VERSION,
     gameAllowed,
     renderAchievements,
     preferences,
+    savePreferences,
     setAgeLevel,
     fixDetailAction,
-    repairStatsFromHistory
+    repairStatsFromHistory,
+    escapeSelector
   });
 })();
