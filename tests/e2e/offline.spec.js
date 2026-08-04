@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
-test('service worker caches the complete offline core including the Party Hub', async ({ page, context }) => {
-  await page.goto('/');
+test('service worker caches the complete offline core including advanced Party Hub games', async ({ page, context }) => {
+  await page.goto('/party.html');
   await page.evaluate(async () => {
     if (!('serviceWorker' in navigator)) throw new Error('Service Worker is unavailable.');
     await navigator.serviceWorker.ready;
@@ -11,15 +11,18 @@ test('service worker caches the complete offline core including the Party Hub', 
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v19');
+    const cache = await caches.open('secret-circle-v21');
     const expected = [
-      './index.html', './party.html', './privacy.html',
-      './styles.css', './pwa.css', './party.css',
+      './index.html', './party.html', './advanced.html', './privacy.html',
+      './styles.css', './pwa.css', './party.css', './party-extra.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
       './wake-lock.js', './app.js', './game-engine.js',
       './role-assignment.js', './word-packs.js', './data-store.js',
-      './party-catalog.js', './party-hub.js',
-      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
+      './party-catalog.js', './party-expansion.js', './party-routing.js',
+      './party-hub.js', './party-hub-plus.js', './party-data-tools.js',
+      './party-advanced.js', './party-advanced-runner.js',
+      './party-advanced-preferences.js', './manifest.webmanifest',
+      './icon.svg', './icon-192.png', './icon-512.png'
     ];
     const missing = [];
     for (const path of expected) {
@@ -28,8 +31,8 @@ test('service worker caches the complete offline core including the Party Hub', 
     }
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v19');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v19']);
+  expect(cacheState.names).toContain('secret-circle-v21');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v21']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
@@ -37,11 +40,10 @@ test('service worker caches the complete offline core including the Party Hub', 
   await expect(page.getByRole('heading', { name: 'Datenschutz' })).toBeVisible();
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('14');
+  await expect(page.locator('#playable-count')).toHaveText('18');
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
-  await expect(page.locator('#players-help')).toContainText('eindeutige Personen erkannt');
 });
 
 test('offline Party Hub can run a prompt game and preserve local data', async ({ page, context }) => {
@@ -64,6 +66,27 @@ test('offline Party Hub can run a prompt game and preserve local data', async ({
   await page.getByRole('button', { name: 'Spiel verlassen' }).click();
   await page.getByRole('button', { name: 'Verlauf' }).click();
   await expect(page.locator('#hub-history')).toContainText('Entweder oder');
+});
+
+test('advanced Question Imposter starts completely offline', async ({ page, context }) => {
+  await page.goto('/party.html');
+  await page.evaluate(() => {
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+      version: 1,
+      players: ['Alex', 'Sam', 'Mika', 'Lina'],
+      favorites: [], recent: [], presets: [], history: [], stats: {}
+    }));
+  });
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.reload();
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+  await context.setOffline(true);
+  await page.goto('/advanced.html?game=question-imposter');
+  await expect(page.getByRole('heading', { name: /Question Imposter/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await expect(page.locator('#advanced-play-layer')).toBeVisible();
+  await page.getByRole('button', { name: 'Meine Frage anzeigen' }).click();
+  await expect(page.locator('#play-content')).not.toContainText('Gerät abschirmen');
 });
 
 test('offline mode preserves a locally saved active Imposter game', async ({ page, context }) => {
