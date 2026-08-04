@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "node tests/engine.test.js && node tests/storage.test.js && node tests/content.test.js && node tests/fuzz.test.js",
-    "check": "node --check runtime-guard.js && node --check setup-ux.js && node --check app.js && node --check game-engine.js && node --check data-store.js && node --check word-packs.js && node --check sw.js",
+    "check": "node --check runtime-guard.js && node --check setup-ux.js && node --check privacy-guard.js && node --check app.js && node --check game-engine.js && node --check data-store.js && node --check word-packs.js && node --check sw.js",
     "validate": "python scripts/repo_hygiene.py && python scripts/validate_project.py && python scripts/performance_budget.py && python scripts/release_audit.py",
     "test:e2e": "playwright test",
     "test:cross-browser": "playwright test --config=playwright.cross-browser.config.js",
