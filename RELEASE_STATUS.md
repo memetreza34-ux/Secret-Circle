@@ -10,44 +10,49 @@ Zielbranch: `main`
 | Bereich | Stand | Bewertung |
 |---|---:|---|
 | Kernspiel und Regeln | 98 % | Funktionsumfang vollständig für die lokale Partyspiel-Beta |
-| Speicherung und Migration | 97 % | Versioniert, validiert, migrierbar, sicherbar und löschbar |
-| PWA und Offline-Struktur | 96 % | vollständiger Cache, Icons, Manifest und Updateschutz vorhanden |
-| Accessibility und mobile Bedienung | 94 % | umfangreiche automatische Gates; reale Screenreader-/Gerätetests fehlen |
-| Automatisierte Testabdeckung | 95 % | Engine-, Speicher-, E2E-, Sicherheits- und Cross-Browser-Suiten vorhanden |
-| Dokumentation und Release-Prozess | 96 % | Checkliste, Testplan, Changelog, Deployment und Rollback vorhanden |
-| Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert durchgeführt |
-| Öffentliche rechtliche Freigabe | 45 % | Datenschutzgrundlage vorhanden; Anbieter-/Kontakt-/Impressumsangaben fehlen |
+| Speicherung und Migration | 98 % | versioniert, streng validiert, migrierbar, sicherbar und vollständig löschbar |
+| PWA und Offline-Struktur | 97 % | Cache-Version 11, vollständiger Offline-Core, Installationsicons, Manifest und Updateschutz |
+| Accessibility und mobile Bedienung | 95 % | umfangreiche automatische Gates; reale Screenreader- und Gerätetests fehlen |
+| Automatisierte Testabdeckung | 97 % | Engine, Speicherung, Inhalte, 120 Fuzz-Szenarien, E2E, Sicherheit und Cross-Browser-Smoke |
+| Dokumentation und Release-Prozess | 98 % | Checkliste, Status, Testplan, Changelog, Sicherheit, Deployment und Rollback vorhanden |
+| Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert auf echten Geräten und mit echten Gruppen durchgeführt |
+| Öffentliche rechtliche Freigabe | 45 % | Datenschutzgrundlage vorhanden; Verantwortliche-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
 
 ## Gewichteter Fortschritt
 
-- **Technische Produktbeta:** etwa **96 %**
-- **Bereit für einen kontrollierten lokalen Browser-Test:** etwa **95 %**
-- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **91 %**
-- **Bereit für einen öffentlichen Produktionsrelease:** etwa **87 %**
+- **Technische Produktbeta:** etwa **97 %**
+- **Bereit für einen kontrollierten lokalen Browser-Test:** etwa **96 %**
+- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **92 %**
+- **Bereit für einen öffentlichen Produktionsrelease:** etwa **88 %**
 
-Die Prozentwerte sind eine technische Projektbewertung, kein Beweis für Fehlerfreiheit.
+Die Prozentwerte sind eine technische Projektbewertung. Sie sind kein Beweis für Fehlerfreiheit und ersetzen keine erfolgreich ausgeführten Prüfungen.
 
 ## Abgeschlossene Release-Blöcke
 
 - vollständiger Karten-, Diskussions-, Abstimmungs- und Ergebnisablauf
 - mehrere Imposter, Punkte, Rangliste und Mehr-Runden-Matches
 - begrenzte Stichwahl, Selbstwahl- und Doppelstimmenschutz
-- 14 Kategorien und 168 Begriffe
+- 14 Kategorien und 168 redaktionell strukturierte Begriffe
+- automatisierte Integritätsprüfung aller integrierten Begriffe und Hilfswörter
 - keine Begriffswiederholung bis zum erschöpften Pool
 - realzeitbasierter Timer mit Pause, Hintergrund- und Neulade-Wiederherstellung
 - Wiederaufnahme aktiver Spiele
 - Verlauf jeder abgeschlossenen Runde
-- Speicherungsversion 7 und Migration älterer Daten
+- Speicherungsversion 7 und Migration älterer Daten und Spielstände
 - beschädigte Daten werden kontrolliert verworfen
-- vollständiger Backup-Export und -Import mit Rollback
+- vollständiger Backup-Export und -Import mit Größenlimit und Rollback
 - vollständige lokale Datenlöschung
-- Offline-PWA mit Cache-Version 10
+- Offline-PWA mit Cache-Version 11
 - 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
-- Laufzeit-Fehlerschutz und sicherer PWA-Update-Neustart
+- Laufzeit-Fehlerschutz, sichtbare Ressourcenausfälle und sicherer PWA-Update-Neustart
 - Content Security Policy, Datenschutzseite und Eingabe-Escaping
+- Grenzwerttests mit 3 bis 20 Personen und mehreren Impostern
+- 120 deterministische Fuzz-Szenarien mit Engine-Invarianten
 - Desktop-/Mobile-E2E-, Sicherheits-, Accessibility- und Cross-Browser-Suiten
-- Repository-Hygiene und Performancebudget
-- Release-Checkliste, manueller Testplan, Changelog, Einschränkungen, Deployment und Rollback
+- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
+- Repository-Hygiene und Offline-Core-Performancebudget
+- veraltete, nicht mehr geladene Accessibility- und Match-Dateien entfernt
+- Release-Checkliste, manueller Testplan, Changelog, Einschränkungen, Sicherheitsrichtlinie, Deployment und Rollback
 
 ## Aktuelle Blocker
 
