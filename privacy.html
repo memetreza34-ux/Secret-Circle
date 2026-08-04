@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#7c3aed">
-  <meta name="description" content="Datenschutzinformationen für Secret Circle.">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Datenschutzinformationen für den Secret Circle Party Hub.">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'self'">
-  <title>Datenschutz – Secret Circle</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Datenschutz – Secret Circle Party Hub</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="pwa.css">
@@ -17,31 +17,42 @@
     <article class="card legal-card">
       <p class="eyebrow">Datenschutz</p>
       <h1>Deine Daten bleiben auf deinem Gerät</h1>
-      <p>Secret Circle funktioniert ohne Benutzerkonto, ohne Tracking und ohne eigenen Server.</p>
+      <p>Secret Circle funktioniert ohne Benutzerkonto, ohne Tracking und ohne eigenen Spielserver.</p>
 
-      <h2>Welche Daten werden gespeichert?</h2>
-      <p>Die App speichert Spielnamen, Einstellungen, eigene Kategorien, aktive Spielstände und den lokalen Rundenverlauf im Browser-Speicher deines Geräts.</p>
+      <h2>Welche Daten werden lokal gespeichert?</h2>
+      <p>Je nach Nutzung speichert die App Spielernamen, Gruppen-Presets, Favoriten, Alters- und Sessioneinstellungen, eigene Word-Imposter-Kategorien, aktive Spielstände, komplexe Hub-Sessions, Verlauf, Punkte und lokale Statistiken im Browser-Speicher des Geräts.</p>
 
-      <h2>Sicherung exportieren und importieren</h2>
-      <p>Du kannst diese lokalen Daten als JSON-Sicherungsdatei exportieren. Die Datei wird ausschließlich über die Download-Funktion deines Browsers auf deinem Gerät gespeichert. Beim Import wird die ausgewählte Datei lokal geprüft und verarbeitet; ihr Inhalt wird nicht an einen Server von Secret Circle übertragen.</p>
-      <p>Eine Sicherungsdatei kann Spielernamen, eigene Kategorien, Einstellungen, Verlauf und einen aktiven Spielstand enthalten. Bewahre sie deshalb nur an einem Ort auf, dem du vertraust.</p>
+      <h2>Geheime Spielinhalte</h2>
+      <p>Rollen, Fragen, Orte und persönliche Aussagen werden während Pass-and-Play-Runden auf dem gemeinsam genutzten Gerät angezeigt. Die App besitzt Übergabe- und Verdeckungsstufen, kann aber nicht verhindern, dass eine anwesende Person bewusst auf den Bildschirm oder in den lokalen Browser-Speicher schaut.</p>
+      <p>Die Mafia-Moderatoransicht zeigt konstruktionsbedingt alle Rollen und darf nur von der neutralen Erzählerperson geöffnet werden.</p>
 
-      <h2>Werden Daten übertragen?</h2>
-      <p>Nein. Die Spielinhalte werden nicht an einen Server des App-Betreibers übertragen. Beim ersten Laden und bei Aktualisierungen ruft dein Browser lediglich die statischen App-Dateien vom Hosting-Anbieter ab.</p>
+      <h2>Gesamtsicherung exportieren und importieren</h2>
+      <p>Im Party Hub kann eine vollständige JSON-Sicherung aller Secret-Circle-Daten erstellt werden. Die Datei wird ausschließlich über die Download-Funktion des Browsers auf dem Gerät gespeichert. Beim Import wird sie lokal geprüft und nicht an einen Server von Secret Circle übertragen.</p>
+      <p>Eine Gesamtsicherung kann Spielernamen, Presets, Favoriten, Verlauf, Statistiken, eigene Kategorien, Einstellungen und aktive Sessions enthalten. Die Datei ist nicht verschlüsselt. Bewahre sie nur an einem vertrauenswürdigen Ort auf und gib sie nicht unbedacht weiter.</p>
+      <p>Der Import prüft Format, Schlüssel, Dateigröße und JSON-Struktur. Falls das Schreiben fehlschlägt, versucht die App, den vorherigen lokalen Zustand wiederherzustellen.</p>
+
+      <h2>Werden Spieldaten übertragen?</h2>
+      <p>Nein. Die App sendet Spieldaten nicht an einen eigenen Server. Beim ersten Laden und bei Aktualisierungen ruft der Browser lediglich die statischen App-Dateien vom gewählten Hosting-Anbieter ab.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Ein Service Worker speichert notwendige App-Dateien lokal, damit Secret Circle nach dem ersten vollständigen Laden offline genutzt werden kann.</p>
+      <p>Ein Service Worker speichert die notwendigen App-Dateien lokal. Dadurch können Party Hub, komplexe Spiele, Word Imposter und die Datenschutzseite nach dem ersten vollständigen Laden offline genutzt werden.</p>
 
       <h2>Daten löschen</h2>
-      <p>Alle von Secret Circle gespeicherten Daten können direkt in der App über „Alle lokalen Daten löschen“ entfernt werden. Alternativ kannst du die Website-Daten in den Browser-Einstellungen löschen. Bereits exportierte Sicherungsdateien müssen separat im Dateisystem deines Geräts gelöscht werden.</p>
+      <p>„Alle lokalen Daten löschen“ im Party Hub entfernt sämtliche von Secret Circle verwendeten Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>. Alternativ können die Website-Daten in den Browser-Einstellungen gelöscht werden. Bereits exportierte Dateien müssen separat im Dateisystem entfernt werden.</p>
 
-      <h2>Analyse und Werbung</h2>
-      <p>Secret Circle verwendet keine Analyse-, Werbe- oder Tracking-Dienste.</p>
+      <h2>Browser- und Betriebssystemgrenzen</h2>
+      <p>Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck, manuellem Löschen oder einer Neuinstallation entfernen. Für wichtige eigene Inhalte sollte regelmäßig eine Sicherung exportiert werden.</p>
 
-      <h2>Hinweis zur Veröffentlichung</h2>
-      <p>Vor einer öffentlichen kommerziellen Veröffentlichung müssen Verantwortlicher, Kontaktmöglichkeit, Hosting-Anbieter und gegebenenfalls ein vollständiges Impressum ergänzt werden.</p>
+      <h2>Analyse, Werbung und externe Inhalte</h2>
+      <p>Secret Circle verwendet keine Analyse-, Werbe- oder Tracking-Dienste und lädt keine externen Spielskripte, Schriftarten oder Werbeinhalte.</p>
 
-      <p><a class="button-link" href="./">Zurück zum Spiel</a></p>
+      <h2>Hinweis vor öffentlicher Veröffentlichung</h2>
+      <p>Vor einer öffentlichen oder kommerziellen Veröffentlichung müssen verantwortliche Person, Kontaktmöglichkeit, Hosting-Anbieter und gegebenenfalls ein vollständiges Impressum sowie die endgültigen rechtlichen Angaben ergänzt werden.</p>
+
+      <div class="actions">
+        <a class="button-link" href="party.html">Zurück zum Party Hub</a>
+        <a class="button-link secondary-link" href="index.html">Zu Word Imposter</a>
+      </div>
     </article>
   </main>
 </body>
