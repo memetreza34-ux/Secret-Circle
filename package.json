@@ -11,6 +11,7 @@
     "check": "node --check app.js && node --check game-engine.js && node --check data-store.js && node --check word-packs.js && node --check sw.js",
     "validate": "python scripts/validate_project.py && python scripts/release_audit.py",
     "test:e2e": "playwright test",
+    "test:cross-browser": "playwright test --config=playwright.cross-browser.config.js",
     "ci": "npm run check && npm test && npm run validate && npm run test:e2e"
   },
   "devDependencies": {
