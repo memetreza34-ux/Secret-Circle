@@ -34,14 +34,14 @@ test('critical resource errors are surfaced instead of leaving a silent broken s
   });
 
   await expect(page.locator('#status')).toHaveClass(/error/);
-  await expect(page.locator('#status')).toContainText('unerwarteter Fehler');
+  await expect(page.locator('#status')).toContainText('benötigte App-Datei');
 });
 
 test('runtime guard is available from the complete offline cache', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v21');
+    const cache = await caches.open('secret-circle-v22');
     return Boolean(await cache.match('./runtime-guard.js'));
   });
   expect(cached).toBe(true);
