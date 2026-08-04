@@ -12,6 +12,7 @@ Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentie
 - 14 integrierte Kategorien mit insgesamt 168 Begriffen
 - Vermeidung wiederholter Begriffe bis zum Ende des jeweiligen Pools
 - deadline-basierter Timer mit Pause, Hintergrund- und Neulade-Wiederherstellung
+- optionaler Bildschirm-Wake-Lock während der Diskussionsrunde
 - lokaler Verlauf für jede abgeschlossene Runde
 - versionierter Datenspeicher mit Migration älterer Spielstände
 - Sicherungsexport und -import als JSON-Datei
@@ -22,8 +23,8 @@ Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentie
 - Datenschutzseite und Content Security Policy
 - 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
 - globaler Laufzeit-Fehlerschutz und kontrollierter PWA-Update-Neustart
-- vollständiger Offline-Core `secret-circle-v15`
-- Desktop- und Mobile-End-to-End-Tests für Spielablauf, Timer, Verlauf, Speicherung, Inhalte, Offline-Modus, Privatsphäre, Accessibility, Sicherheit und PWA-Installation
+- vollständiger Offline-Core `secret-circle-v16`
+- Desktop- und Mobile-End-to-End-Tests für Spielablauf, Timer, Verlauf, Speicherung, Inhalte, Offline-Modus, Privatsphäre, Wake Lock, Accessibility, Sicherheit und PWA-Installation
 - Grenzwerttests für 3–20 Personen und mehrere Imposter
 - deterministische Fuzz-Tests über 120 Spielszenarien mit Engine-Invarianten
 - optionaler Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Test
@@ -36,6 +37,9 @@ Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentie
 
 - Fokusführung, Tastaturbedienung und Screenreader-Struktur
 - Touchflächen, iPhone-Safe-Areas, dynamische Viewport-Höhe und mobile Darstellung
+- Bildschirm bleibt auf unterstützten Geräten während der Diskussion aktiv
+- Wake Lock wird bei Abstimmung, Hintergrundbetrieb und Seitenwechsel sicher freigegeben
+- Geräte ohne Wake-Lock-API verwenden einen fehlerfreien Fallback
 - Offline-Cache und Service-Worker-Aktualisierung
 - Validierung manipulierter oder beschädigter Spielstände
 - verständliche Spiel- und Punktregeln direkt in der App
@@ -50,7 +54,7 @@ Alle wesentlichen Änderungen an Secret Circle werden in dieser Datei dokumentie
 - Timerabweichungen nach Hintergrundbetrieb oder Neuladen
 - fehlender Verlauf bei Runden, die direkt durch die Abstimmung enden
 - unvollständige Migration älterer lokaler Spielstände
-- unvollständiger Offline-Cache für Datenspeicher, Laufzeit-, Setup- und Privatsphärenschutz sowie Installationsicons
+- unvollständiger Offline-Cache für Datenspeicher, Laufzeit-, Setup-, Privatsphäre- und Wake-Lock-Schutz sowie Installationsicons
 - versehentliche Weitergabe einer automatisch verdeckten Karte über programmatische oder schnelle Eingaben
 - fehlerhafte Release-Gates, die einen lokalen `node_modules`-Ordner irrtümlich als eingecheckten Fehler bewerteten
 - nicht abgewartete dynamische Service-Worker-Cache-Schreibvorgänge
