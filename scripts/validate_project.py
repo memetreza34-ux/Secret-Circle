@@ -105,7 +105,7 @@ index, index_audit = audit_html('index.html', [
     'game-engine.js', 'role-assignment.js', 'word-packs.js',
     'data-store.js', 'app.js'
 ])
-party, party_audit = audit_html('party.html', ['party-catalog.js', 'party-hub.js'])
+party, party_audit = audit_html('party.html', ['runtime-guard.js', 'party-catalog.js', 'party-hub.js'])
 if 'href="party.html"' not in index:
     raise SystemExit('Word Imposter does not link to the Party Hub.')
 for marker in ['Der ganze Spieleabend in einer App', 'game-search', 'group-filter', 'mood-filter', 'player-filter', 'status-filter', 'Host-Presets', 'game-detail', 'play-layer']:
@@ -197,7 +197,7 @@ if 'tests/party-catalog.test.js' not in scripts['test']:
 MARKERS = {
     'tests/party-catalog.test.js': ['playableGames', 'totalCards', 'Choice pair'],
     'tests/e2e/party-hub.spec.js': ['clear playable catalog', 'shared players', 'planned games'],
-    'tests/e2e/offline.spec.js': ['role-assignment.js'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v19', 'party.html', 'role-assignment.js'],
     'README.md': ['Party Hub', '14 spielbare', 'secret-circle-v19'],
     'RELEASE_STATUS.md': ['Party Hub', 'Cache-Version 19'],
     'CHANGELOG.md': ['Party Hub', 'secret-circle-v19'],
