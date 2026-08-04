@@ -10,6 +10,7 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] `npm run test:e2e`
 - [ ] `npm run ci`
 - [ ] GitHub Actions auf dem Release-Commit erfolgreich
+- [ ] Playwright-Bericht ohne fehlgeschlagene Desktop- oder Mobile-Tests
 - [ ] Keine offenen kritischen oder hohen Fehler
 
 ## 2. Kernspiel
@@ -21,12 +22,15 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Kartenübergabe zeigt nur die aktuelle Rolle
 - [ ] Diskussion und Timer funktionieren
 - [ ] Timer pausieren und fortsetzen funktioniert
+- [ ] Timer läuft nach App-Wechsel und Neuladen korrekt weiter
+- [ ] Abgelaufener Timer wird nach Rückkehr korrekt angezeigt
 - [ ] Abstimmung aller Personen funktioniert
-- [ ] Selbstwahl wird verhindert
+- [ ] Selbstwahl und doppelte Stimmen werden verhindert
 - [ ] Stichwahl bei Gleichstand funktioniert und endet garantiert
 - [ ] Gefundener Imposter kann den Begriff raten
 - [ ] Punkte werden korrekt vergeben
 - [ ] Rangliste ist korrekt sortiert
+- [ ] Jede abgeschlossene Runde erscheint genau einmal im Verlauf
 - [ ] Nächste Runde übernimmt den Punktestand
 - [ ] Begriffe wiederholen sich erst nach erschöpftem Pool
 - [ ] Match endet nach der gewählten Rundenzahl
@@ -34,31 +38,35 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 ## 3. Speicherung, Sicherung und Datenschutz
 
 - [ ] Aktive Runde kann nach Neuladen fortgesetzt werden
-- [ ] Ältere lokale Daten werden korrekt migriert
+- [ ] Alte Engine-Spielstände werden auf Version 7 migriert
+- [ ] Alte Speicherschlüssel werden nach erfolgreicher Migration entfernt
 - [ ] Beschädigte lokale Daten werden sicher verworfen
 - [ ] Einstellungen bleiben lokal erhalten
 - [ ] Eigene Kategorien bleiben lokal erhalten
 - [ ] Rundenverlauf bleibt lokal erhalten
 - [ ] Vollständige JSON-Sicherung kann exportiert werden
 - [ ] Exportierte Sicherung enthält Spielstand, Einstellungen, Verlauf und Kategorien
-- [ ] Gültige Sicherung kann vollständig importiert werden
+- [ ] Gültige aktuelle und ältere Sicherung kann importiert werden
 - [ ] Ungültige oder zu große Sicherung wird abgelehnt
 - [ ] Fehlgeschlagener Import beschädigt keine bestehenden Daten
 - [ ] Alle lokalen Daten können vollständig gelöscht werden
 - [ ] Nach vollständigem Löschen startet die App sauber
-- [ ] Datenschutzseite ist erreichbar und verständlich
+- [ ] Datenschutzseite erklärt lokale Sicherungsdateien
 - [ ] Keine Analyse-, Tracking- oder Werbedienste eingebunden
 - [ ] Keine Secrets oder `.env`-Dateien im Repository
 
 ## 4. PWA und Offline
 
+- [ ] Manifest enthält stabile relative Werte für `id`, `start_url` und `scope`
+- [ ] PNG-Icon mit 192 × 192 Pixeln vorhanden und gültig
+- [ ] PNG-Icon mit 512 × 512 Pixeln vorhanden und gültig
+- [ ] Apple-Touch-Icon und mobile App-Metadaten vorhanden
 - [ ] Erstaufruf online erfolgreich
 - [ ] App danach vollständig offline startbar
-- [ ] `index.html` offline verfügbar
-- [ ] `privacy.html` offline verfügbar
-- [ ] CSS, JavaScript, Manifest und Icon offline verfügbar
+- [ ] `index.html` und `privacy.html` offline verfügbar
+- [ ] CSS, JavaScript, Manifest und alle Icons offline verfügbar
 - [ ] `word-packs.js` und `data-store.js` offline verfügbar
-- [ ] Service-Worker-Update ersetzt alte Cache-Version
+- [ ] Nur die aktuelle Service-Worker-Cache-Version bleibt bestehen
 - [ ] Installation auf Android erfolgreich
 - [ ] Installation auf iOS zum Home-Bildschirm erfolgreich
 - [ ] Start aus installiertem Modus erfolgreich
@@ -75,6 +83,8 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Großes Smartphone geprüft
 - [ ] Tablet geprüft
 - [ ] Bildschirmrotation geprüft
+- [ ] App-Wechsel während laufendem Timer geprüft
+- [ ] Energiesparmodus beziehungsweise gesperrter Bildschirm geprüft
 
 ## 6. Accessibility und Bedienung
 
@@ -87,7 +97,7 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Vergrößerung auf 200 % geprüft
 - [ ] `prefers-reduced-motion` geprüft
 - [ ] Screenreader-Kurztest durchgeführt
-- [ ] Touchflächen sind groß genug
+- [ ] Touchflächen sind mindestens 44 × 44 Pixel groß
 
 ## 7. Inhalt und Sicherheit
 
@@ -100,7 +110,18 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Content Security Policy ist aktiv und blockiert fremde Skripte
 - [ ] Keine externen Ressourcen ohne klare Notwendigkeit
 
-## 8. Release-Dokumentation
+## 8. Realer Party-Betatest
+
+- [ ] Mindestens ein vollständiges Match mit 3–4 Personen
+- [ ] Mindestens ein vollständiges Match mit 8 oder mehr Personen
+- [ ] Mindestens ein Match mit mehreren Impostern
+- [ ] Kartenübergabe ist verständlich und verrät keine Rolle
+- [ ] Abstimmungsübergabe ist verständlich
+- [ ] Punktesystem wird von Testpersonen verstanden
+- [ ] Keine Blockade oder unklare Sackgasse im Ablauf
+- [ ] Feedback und beobachtete Probleme dokumentiert
+
+## 9. Release-Dokumentation
 
 - [ ] Versionsnummer festgelegt
 - [ ] Release-Commit dokumentiert
@@ -109,6 +130,7 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Rollback-Möglichkeit festgelegt
 - [ ] Backup-Kompatibilität dokumentiert
 - [ ] Verantwortliche Testperson und Testdatum eingetragen
+- [ ] Impressum beziehungsweise Anbieterinformationen vor öffentlicher kommerzieller Nutzung ergänzt
 
 ## Freigabe
 
