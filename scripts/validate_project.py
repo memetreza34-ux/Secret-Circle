@@ -11,7 +11,7 @@ required_files = [
     'word-packs.js', 'sw.js', 'manifest.webmanifest', 'icon.svg',
     'icon-192.png', 'icon-512.png', 'package.json',
     'playwright.config.js', 'playwright.cross-browser.config.js',
-    'tests/engine.test.js', 'tests/storage.test.js',
+    'tests/engine.test.js', 'tests/storage.test.js', 'tests/fuzz.test.js',
     'tests/e2e/game-flow.spec.js', 'tests/e2e/setup-limits.spec.js',
     'tests/e2e/timer.spec.js', 'tests/e2e/offline.spec.js',
     'tests/e2e/pwa-install.spec.js', 'tests/e2e/runtime-guard.spec.js',
@@ -21,8 +21,9 @@ required_files = [
     'scripts/repo_hygiene.py', 'scripts/performance_budget.py',
     'scripts/release_audit.py', '.github/workflows/ci.yml',
     '.github/workflows/cross-browser.yml', 'README.md',
-    'RELEASE_CHECKLIST.md', 'CHANGELOG.md', 'KNOWN_LIMITATIONS.md',
-    'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
+    'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
+    'KNOWN_LIMITATIONS.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md',
+    'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
 ]
 missing = [relative for relative in required_files if not (ROOT / relative).is_file()]
 if missing:
@@ -74,8 +75,9 @@ markers = {
     ],
     'package.json': [
         '"version": "1.0.0-beta.3"', '"node": ">=20"',
-        'node --check runtime-guard.js', 'scripts/repo_hygiene.py',
-        'scripts/performance_budget.py', 'test:cross-browser'
+        'node --check runtime-guard.js', 'tests/fuzz.test.js',
+        'scripts/repo_hygiene.py', 'scripts/performance_budget.py',
+        'test:cross-browser'
     ],
     'tests/engine.test.js': [
         'deadlineTimer', 'backgroundResume', 'finiteTieBreak',
@@ -84,6 +86,10 @@ markers = {
     'tests/storage.test.js': [
         'realLegacyGameUpgrade', 'currentKeyUpgrade', 'corruptedDataRecovery',
         'legacyBackupImport', 'oversizedBackupProtection', 'atomicImportRollback'
+    ],
+    'tests/fuzz.test.js': [
+        'deterministicFuzzScenarios', 'completedRounds', 'playerRange',
+        'multipleImposters', 'votingAndTieBreaks', 'corruptionMutationsRejected'
     ],
     'tests/e2e/security.spec.js': [
         'rendered only as text', 'malicious-looking player names',
@@ -117,18 +123,22 @@ markers = {
         'Pixel 7', 'iPhone 13'
     ],
     '.github/workflows/ci.yml': [
-        'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e'
+        'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e',
+        '--package-lock=false'
     ],
     '.github/workflows/cross-browser.yml': [
-        'workflow_dispatch', 'chromium firefox webkit', 'test:cross-browser'
+        'workflow_dispatch', 'chromium firefox webkit', 'test:cross-browser',
+        '--package-lock=false'
     ],
     'scripts/repo_hygiene.py': ['git', 'ls-files', 'node_modules', 'environment_files_tracked'],
-    'scripts/performance_budget.py': ['core_budget', '500_000', 'performance_budget'],
+    'scripts/performance_budget.py': ['git', 'ls-files', 'core_budget', '550_000', 'performance_budget'],
     'CHANGELOG.md': ['1.0.0-beta.3', 'deadline-basierter Timer', 'Sicherheit und Datenschutz'],
     'KNOWN_LIMITATIONS.md': ['lokales Pass-and-Play-Spiel', 'iPhone', 'GitHub Actions'],
+    'SECURITY.md': ['Sicherheitsproblem melden', 'Security Advisory', 'Sicherheitsmodell der App'],
     'MANUAL_TEST_PLAN.md': ['Grundlegender Smoke-Test', 'PWA und Offline', 'Realer Partytest'],
     'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits'],
-    'DEPLOYMENT.md': ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v10']
+    'DEPLOYMENT.md': ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v10'],
+    'RELEASE_STATUS.md': ['Technische Produktbeta', 'öffentlichen Produktionsrelease', 'Aktuelle Blocker']
 }
 
 for relative, expected in markers.items():
