@@ -10,6 +10,25 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
+test('setup explains live player count and valid imposter range', async ({ page }) => {
+  await expect(page.locator('#players-help')).toContainText('4 eindeutige Personen erkannt');
+  await expect(page.locator('#imposters-help')).toContainText('1 bis 3 Imposter');
+  await expect(page.locator('#imposters')).toHaveAttribute('max', '3');
+
+  await page.locator('#players').fill('Alex\nSam\nMika');
+  await expect(page.locator('#players-help')).toContainText('3 eindeutige Personen erkannt');
+  await expect(page.locator('#imposters-help')).toContainText('1 bis 2 Imposter');
+  await expect(page.locator('#imposters')).toHaveAttribute('max', '2');
+
+  await page.locator('#imposters').fill('2');
+  await page.locator('#players').fill('Alex\nSam');
+  await expect(page.locator('#players-help')).toContainText('2 von mindestens 3 Personen');
+  await expect(page.locator('#imposters')).toHaveValue('1');
+
+  await page.locator('#players').fill('Alex\nAlex\nSam');
+  await expect(page.locator('#players-help')).toContainText('1 doppelter Name');
+});
+
 test('minimum setup supports three players and two imposters', async ({ page }) => {
   await page.locator('#players').fill(playerNames(3).join('\n'));
   await page.locator('#imposters').fill('2');
@@ -39,6 +58,7 @@ test('maximum setup supports twenty players and six imposters', async ({ page })
 
 test('more than twenty players is rejected without persisting a game', async ({ page }) => {
   await page.locator('#players').fill(playerNames(21).join('\n'));
+  await expect(page.locator('#players-help')).toContainText('Höchstens 20');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
 
   await expect(page.locator('#setup-screen')).toBeVisible();
