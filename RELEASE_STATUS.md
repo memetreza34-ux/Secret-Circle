@@ -9,124 +9,92 @@ Zielbranch: `main`
 
 | Bereich | Stand | Bewertung |
 |---|---:|---|
-| Kernspiel und Regeln | 98 % | Funktionsumfang vollständig für die lokale Partyspiel-Beta |
-| Speicherung und Migration | 98 % | versioniert, streng validiert, migrierbar, sicherbar und vollständig löschbar |
-| PWA und Offline-Struktur | 98 % | Cache-Version 16, vollständiger Offline-Core, Installationsicons, Manifest und Updateschutz |
-| Accessibility und mobile Bedienung | 97 % | Live-Einrichtung, Safe Areas, Karten-Sichtschutz, optionaler Wake Lock und Accessibility-Gates; reale Gerätetests fehlen |
-| Automatisierte Testabdeckung | 98 % | Engine, Speicherung, Inhalte, Fuzz-Szenarien, E2E, Privatsphäre, Wake Lock, Sicherheit und Cross-Browser-Smoke |
-| Dokumentation und Release-Prozess | 98 % | Checkliste, Status, Testplan, Changelog, Sicherheit, Deployment und Rollback vorhanden |
-| Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert auf echten Geräten und mit echten Gruppen durchgeführt |
-| Öffentliche rechtliche Freigabe | 45 % | Datenschutzgrundlage vorhanden; Verantwortliche-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
+| Kernspiel und Regeln | 99 % | vollständiger lokaler Partyspiel-Ablauf; unabhängige Rollenverteilung ergänzt |
+| Speicherung und Migration | 98 % | versioniert, validiert, migrierbar, sicherbar und vollständig löschbar |
+| PWA und Offline-Struktur | 98 % | Cache-Version 17 mit vollständigem Offline-Core und Installationsmetadaten |
+| Accessibility und mobile Bedienung | 97 % | Live-Setup, Safe Areas, Karten-Sichtschutz, Wake Lock und Accessibility-Gates |
+| Automatisierte Testabdeckung | 98 % | fünf Unit-Suiten, vierzehn E2E-Suiten, Fuzz- und Cross-Browser-Struktur |
+| Dokumentation und Release-Prozess | 98 % | Checkliste, Testplan, Sicherheit, Deployment und Rollback vorhanden |
+| Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert durchgeführt |
+| Öffentliche rechtliche Freigabe | 45 % | Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
 
 ## Gewichteter Fortschritt
 
 - **Technische Produktbeta:** etwa **98 %**
-- **Bereit für einen kontrollierten lokalen Browser-Test:** etwa **97 %**
-- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **94 %**
-- **Bereit für einen öffentlichen Produktionsrelease:** etwa **89 %**
+- **Bereit für den vollständigen lokalen Testlauf:** etwa **98 %**
+- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **95 %**
+- **Bereit für einen öffentlichen Produktionsrelease:** etwa **90 %**
 
-Die Prozentwerte sind eine technische Projektbewertung. Sie sind kein Beweis für Fehlerfreiheit und ersetzen keine erfolgreich ausgeführten Prüfungen.
+Die Prozentwerte sind eine technische Projektbewertung und kein Nachweis für Fehlerfreiheit.
 
-## Abgeschlossene Release-Blöcke
+## Kritische abgeschlossene Verbesserungen
 
-- vollständiger Karten-, Diskussions-, Abstimmungs- und Ergebnisablauf
-- mehrere Imposter, Punkte, Rangliste und Mehr-Runden-Matches
-- begrenzte Stichwahl, Selbstwahl- und Doppelstimmenschutz
-- 14 Kategorien und 168 redaktionell strukturierte Begriffe
-- automatisierte Integritätsprüfung aller integrierten Begriffe und Hilfswörter
-- keine Begriffswiederholung bis zum erschöpften Pool
-- realzeitbasierter Timer mit Pause, Hintergrund- und Neulade-Wiederherstellung
-- Wiederaufnahme aktiver Spiele
-- Verlauf jeder abgeschlossenen Runde
-- Speicherungsversion 7 und Migration älterer Daten und Spielstände
-- beschädigte Daten werden kontrolliert verworfen
-- vollständiger Backup-Export und -Import mit Größenlimit und Rollback
+- vollständiger Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
+- Punkte, Rangliste, Stichwahl und Mehr-Runden-Matches
+- maximal sechs Imposter
+- **unabhängige Rollenverteilung:** Imposter sind nicht mehr automatisch die ersten Personen der Aufdeckreihenfolge
+- deterministische Wiederholbarkeit ohne sichtbares Rollen-Muster
+- 14 Kategorien und 168 geprüfte Begriff-Hinweis-Paare
+- Timer mit Hintergrund- und Neulade-Wiederherstellung
+- Live-Gruppengröße und dynamische Imposter-Grenzen
+- automatische Kartenverdeckung und blockierte Weitergabe nach App-Wechsel
+- optionaler Wake Lock mit sicherem Fallback
+- Speicherungsversion 7, Migration, beschädigte-Daten-Wiederherstellung und Backup-Rollback
 - vollständige lokale Datenlöschung
-- Live-Anzeige erkannter Personen und des gültigen Imposter-Bereichs
-- automatische Korrektur einer zu hohen Imposter-Zahl bei kleinerer Gruppe
-- iPhone-Safe-Areas, dynamische Viewport-Höhe und zoomsichere Formulare
-- automatische Verdeckung einer sichtbaren geheimen Karte bei Fokusverlust oder App-Wechsel
-- blockierte Kartenweitergabe, solange eine automatisch verdeckte Karte nicht erneut geöffnet wurde
-- Wiederherstellung des sicheren Fokus nach Rückkehr zur App
-- optionaler Bildschirm-Wake-Lock während der Diskussionsrunde
-- automatische Freigabe des Wake Locks beim Wechsel zur Abstimmung, bei Hintergrundbetrieb oder beim Verlassen der Seite
-- funktionsfähiger Fallback auf Geräten ohne Wake-Lock-API
-- Offline-PWA mit Cache-Version 16
-- 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
-- Laufzeit-Fehlerschutz, sichtbare Ressourcenausfälle und sicherer PWA-Update-Neustart
-- Content Security Policy, Datenschutzseite und Eingabe-Escaping
-- Grenzwerttests mit 3 bis 20 Personen und mehreren Impostern
-- deterministische Fuzz-Szenarien mit Engine-Invarianten
-- Desktop-/Mobile-E2E-, Privatsphäre-, Wake-Lock-, Sicherheits-, Accessibility- und Cross-Browser-Suiten
+- Offline-PWA mit Cache-Version 17
+- CSP, Eingabe-Escaping, Datenschutzseite und Laufzeit-Fehlerschutz
+- fünf Unit-Testdateien einschließlich Rollenverteilungs- und Fuzz-Tests
+- vierzehn E2E-Suiten einschließlich Rollenverteilung, Privatsphäre und Wake Lock
 - Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
-- Repository-Hygiene und Offline-Core-Performancebudget
-- strukturierter HTML-, Manifest-, Service-Worker- und Asset-Validator
-- veraltete, nicht mehr geladene Accessibility- und Match-Dateien entfernt
-- Release-Checkliste, manueller Testplan, Changelog, Einschränkungen, Sicherheitsrichtlinie, Deployment und Rollback
+- struktureller HTML-, Asset-, Manifest- und Service-Worker-Validator
 
 ## Aktuelle Blocker
 
 ### 1. GitHub Actions startet keinen ersten Schritt
 
-Der Workflow endet weiterhin vor `actions/checkout`. Es existieren keine Schrittdaten und keine normalen Job-Logs. Deshalb gibt es noch keinen grünen CI-Nachweis für den endgültigen Commit. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
+Der Workflow endet weiterhin vor `actions/checkout` und liefert weder Schritte noch normale Logs. Ein erneuter Workflow-Versuch zeigte dasselbe Verhalten. Das externe Problem wird in Issue #7 verfolgt.
 
-### 2. Vollständiger lokaler Testlauf muss protokolliert werden
-
-Erforderlich:
+### 2. Vollständiger lokaler Testlauf ist noch nicht protokolliert
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
 npx playwright install --with-deps chromium
 npm run ci
-```
 
-Zusätzlich:
-
-```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-### 3. Reale Geräte fehlen
+### 3. Reale Geräte- und Partytests fehlen
 
-Mindestens prüfen:
+Issue #8 verfolgt:
 
-- aktuelles Android-Gerät mit Chrome,
-- aktuelles iPhone oder iPad mit Safari,
-- Installation, Offline-Start und App-Update,
-- Timer bei Hintergrund, Sperrbildschirm und Energiesparmodus,
-- automatische Kartenverdeckung und blockierte Weitergabe bei App-Wechsel,
-- Wake Lock während der Diskussion und Freigabe danach,
-- Bildschirmrotation und sichere Bildschirmränder.
+- Android- und iPhone-/iPad-Installation
+- Offline-Start und Update auf `secret-circle-v17`
+- Timer, Karten-Sichtschutz und Wake Lock
+- wiederholte Prüfung, dass die Aufdeckreihenfolge keinen Imposter verrät
+- Partytest mit 3–4 Personen
+- Partytest mit mindestens 8 Personen und mehreren Impostern
 
-### 4. Reale Partytests fehlen
+### 4. Öffentliche Anbieterinformationen fehlen
 
-Mindestens zwei dokumentierte Gruppen:
-
-- 3–4 Personen,
-- 8 oder mehr Personen,
-- mindestens ein Match mit mehreren Impostern.
-
-### 5. Öffentliche Anbieterinformationen fehlen
-
-Vor einer öffentlichen oder kommerziellen Veröffentlichung müssen die für das konkrete Hosting und Angebot erforderlichen Verantwortlichen-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt werden.
+Vor einer öffentlichen oder kommerziellen Veröffentlichung müssen die erforderlichen Verantwortlichen-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt werden.
 
 ## Freigabestatus
 
-- **Weiterentwicklung auf dem PR-Branch:** `GO`
-- **Code-Review:** `GO`
-- **Kontrollierter lokaler Browser-Betatest:** `GO_WITH_CONDITIONS`
+- **Code für vollständigen lokalen Testlauf:** `GO`
+- **Kontrollierter Browser-Betatest:** `GO_WITH_CONDITIONS`
 - **Realer Geräte- und Party-Betatest:** `GO_WITH_CONDITIONS`
-- **Merge in `main`:** `NO_GO`, bis mindestens ein vollständiger lokaler CI-Lauf erfolgreich protokolliert und die Branch-Differenz final geprüft ist
+- **Merge in `main`:** `NO_GO`, bis ein vollständiger Testlauf erfolgreich protokolliert ist
 - **Öffentlicher Produktionsrelease:** `NO_GO`
 
-## Nächste Freigabeschwelle
+## Release-Candidate-Schwelle
 
-Die App kann als **Release Candidate** bezeichnet werden, sobald:
+Die App wird erst als Release Candidate bezeichnet, wenn:
 
-1. `npm run ci` lokal vollständig erfolgreich ist,
-2. der Cross-Browser-Smoke-Test erfolgreich ist,
-3. GitHub Actions wieder echte Schritte ausführt und grün endet,
-4. Android- und iOS-Smoke-Tests inklusive Karten-Sichtschutz und Wake Lock bestanden sind,
-5. mindestens ein kleiner und ein großer Partytest bestanden sind,
+1. `npm run ci` erfolgreich ist,
+2. `npm run test:cross-browser` erfolgreich ist,
+3. GitHub Actions sichtbare Schritte ausführt und grün endet,
+4. unabhängige Rollenverteilung, Installation, Offline-Modus, Sichtschutz und Wake Lock auf realen Geräten geprüft sind,
+5. ein kleiner und ein großer Partytest bestanden sind,
 6. keine kritischen oder hohen Fehler offen sind.
