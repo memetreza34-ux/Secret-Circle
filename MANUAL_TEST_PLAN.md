@@ -2,43 +2,43 @@
 
 Dieser Plan ergänzt die automatisierten Prüfungen. Für jeden Durchlauf dokumentieren: Version, Commit, Datum, Testperson, Gerät, Betriebssystem, Browser, Installationsmodus, Gruppengröße und Online-/Offline-Zustand.
 
-Bewertung: `BESTANDEN`, `FEHLER` oder `BLOCKIERT`.
+Bewertung je Test: `BESTANDEN`, `FEHLER` oder `BLOCKIERT`.
 
 ## A. Party-Hub-Navigation
 
 ### A1 – Erster Eindruck
 
-Eine Testperson ohne Erklärung öffnet `party.html`.
+Eine Person ohne Erklärung öffnet `party.html`.
 
 Erwartet:
 
 - Start, Spiele, Spieler, Favoriten, Verlauf und Daten werden verstanden,
 - „Spielbar“ und „In Arbeit“ werden nicht verwechselt,
 - Spielerzahl, Dauer und Kategorien sind schnell auffindbar,
-- Word Imposter ist eindeutig erreichbar.
+- Word Imposter und komplexe Spiele sind eindeutig erreichbar.
 
 ### A2 – Katalog
 
 - Suche nach Titel, Beschreibung und Kategorie
 - Filter nach Art, Stimmung, Gruppe, Altersstufe und Status kombinieren
 - Filter zurücksetzen
-- Katalog mit 22 Spielen prüfen
+- 22 Katalogeinträge zählen
 
-Erwartet: 18 spielbare und 4 gesperrte Spiele; keine leere oder falsche Karte.
+Erwartet: 18 spielbare und 4 gesperrte Spiele; keine falsche oder leere Karte.
 
 ## B. Spieler und Presets
 
 - 1, 3, 8 und 20 Namen speichern
-- Leerzeilen und doppelte Namen eingeben
+- Leerzeilen, Sonderzeichen und doppelte Namen eingeben
 - drei Presets erstellen, laden und löschen
 - Favoriten setzen und entfernen
 - Browser neu laden
 
-Erwartet: eindeutige lokale Daten, korrekte Mindestspielerblockade und vollständige Wiederherstellung.
+Erwartet: eindeutige lokale Daten, verständliche Mindestspielerblockade und vollständige Wiederherstellung.
 
 ## C. Einfache Hub-Spiele
 
-Mindestens je eine vollständige Session:
+Mindestens eine Session je Spiel:
 
 - Wahrheit oder Pflicht
 - Ich habe noch nie
@@ -64,21 +64,16 @@ Prüfen:
 
 ## D. Zwei Wahrheiten, eine Lüge
 
-1. Drei Personen speichern.
-2. 3-Runden-Session starten.
-3. Drei unterschiedliche Aussagen eingeben.
-4. eine Lüge markieren.
-5. Gerät weitergeben.
-6. Gruppe abstimmen lassen.
-7. nächste Person starten.
-8. während Runde 2 neu laden und fortsetzen.
+1. drei Personen speichern,
+2. Session starten,
+3. drei unterschiedliche Aussagen eingeben,
+4. Lüge markieren,
+5. Gerät weitergeben,
+6. Gruppe abstimmen lassen,
+7. nächste Person starten,
+8. neu laden und fortsetzen.
 
-Erwartet:
-
-- private Eingabe bleibt verborgen,
-- Reihenfolge wird gemischt,
-- Auflösung zeigt die richtige Lüge,
-- Punktestand und Rundenzahl bleiben erhalten.
+Erwartet: private Eingabe bleibt verborgen, Reihenfolge wird gemischt, Auflösung stimmt und Punktestand bleibt erhalten.
 
 ## E. Question Imposter
 
@@ -86,12 +81,11 @@ Mit 4 und 8 Personen testen.
 
 Erwartet:
 
-- genau eine Person erhält eine abweichende Frage,
-- jede Frage wird nur einzeln angezeigt,
+- genau eine Person erhält die andere Frage,
+- jede Frage wird einzeln angezeigt,
 - Übergabe verdeckt die Frage,
-- Diskussion und Wahl sind ohne zusätzliche Erklärung verständlich,
-- Auflösung zeigt beide Fragen und den Imposter,
-- Verteilung wirkt über mehrere Runden zufällig.
+- Diskussion und Wahl sind verständlich,
+- Auflösung zeigt beide Fragen und den Imposter.
 
 ## F. Location Spy
 
@@ -101,31 +95,61 @@ Mit mindestens vier Personen:
 - Fragenrunde durchführen,
 - einmal Verdächtigen wählen,
 - einmal den Spion den Ort raten lassen,
-- mehrere Kategorien testen.
+- mehrere Packs testen.
 
 Erwartet: genau ein Spion, ein gemeinsamer Ort, sechs Ortsoptionen und korrekte Auflösung.
 
 ## G. Mafia
 
-Mit 6, 8 und 12 Personen testen.
+Mit 6, 8 und 12 Personen:
 
-- Rollen privat öffnen
-- Moderatorbestätigung
-- Nachtziel eintragen
-- mit Arzt eine Person retten
-- Detektivergebnis prüfen
-- Tageswahl eintragen
-- bis Mafia- oder Dorfsieg spielen
+- Rollen privat öffnen,
+- Moderatorbestätigung,
+- Nachtziel eintragen,
+- Schutz und Untersuchung prüfen,
+- Tageswahl eintragen,
+- bis Mafia- oder Dorfsieg spielen.
+
+Erwartet: Rollen bleiben geschützt, eliminierte Personen werden nicht erneut angeboten und Siegbedingungen enden das Spiel zuverlässig.
+
+## H. Spielergruppe und Session-Snapshot
+
+### H1 – Lobbyänderung während Question Imposter
+
+1. Spielergruppe `Alex, Sam, Mika, Lina` speichern.
+2. Question Imposter starten.
+3. erste private Karte anzeigen und wieder verdecken.
+4. zum Party Hub wechseln.
+5. gemeinsame Lobby auf `Nora, Omar, Pia, Rami` ändern.
+6. gespeicherte Session erneut öffnen.
 
 Erwartet:
 
-- Rollen bleiben vor der Gruppe verborgen,
-- Moderatoransicht ist klar gekennzeichnet,
-- eliminierte Personen werden nicht erneut angeboten,
-- Nacht- und Tagestexte sind verständlich,
-- Siegbedingung beendet das Spiel zuverlässig.
+- Fortsetzen zeigt vier gespeicherte Personen,
+- erste und folgende Karten verwenden weiterhin Alex, Sam, Mika und Lina,
+- der Imposter gehört zur ursprünglichen Spielergruppe,
+- neue Lobby-Namen tauchen in der laufenden Session nicht auf.
 
-## H. Sessionlängen und Wiederaufnahme
+### H2 – Mafia-Snapshot
+
+1. Mafia mit sechs Personen starten.
+2. alle Rollen verteilen.
+3. Lobby im Hub vollständig ändern.
+4. Mafia fortsetzen.
+
+Erwartet:
+
+- Rollenübersicht besitzt weiterhin genau die ursprünglichen sechs Personen,
+- Nacht- und Tagesauswahl verwenden dieselbe Spielergruppe,
+- keine Rolle fehlt und keine neue Person wird eingefügt.
+
+### H3 – Neue Session nach Lobbyänderung
+
+Nach Abschluss oder bewusstem Verwerfen eine neue Session starten.
+
+Erwartet: Die neue Session verwendet die aktuelle Lobby. Nur die alte Session bleibt an ihren Spieler-Snapshot gebunden.
+
+## I. Sessionlängen und Wiederaufnahme
 
 Je eine komplexe Session mit 3, 5, 10 und 20 Runden starten.
 
@@ -134,25 +158,66 @@ Prüfen:
 - Neuladen vor der ersten Aktion,
 - Neuladen mitten in einer Runde,
 - Neuladen auf der Zusammenfassung,
-- „Weitere 5 Runden“ bei 5 und 15 Runden,
+- Verlängerung um fünf Runden,
 - keine Verlängerung über 20 Runden,
-- neue Session verwirft die vorherige nur nach bewusster Aktion.
+- beschädigten lokalen Sessiondatensatz simulieren.
 
-## I. Word Imposter
+Erwartet: gültige Sessions werden fortgesetzt; ungültige werden verständlich verworfen.
 
-### I1 – Grenzen
+## J. Transaktionssicherer Abschluss
 
-- 3 Personen, 1 und 2 Imposter
-- 20 Personen, 6 Imposter
-- doppelte Namen, 21 Personen, 7 Imposter
+1. komplexe Session bis zur Zusammenfassung bringen.
+2. normalen Abschluss durchführen.
+3. Verlauf und Statistik prüfen.
+4. denselben Abschluss durch einen simulierten Speicherfehler blockieren.
+5. kontrollieren, dass die Session sichtbar und aktiv bleibt.
+6. Speicherfehler entfernen und erneut abschließen.
 
-### I2 – Faire Rollen
+Erwartet:
+
+- bei Erfolg genau ein Verlaufseintrag,
+- bei Fehler kein Verlaufseintrag und kein Fortschrittsverlust,
+- erneuter Versuch speichert genau einmal,
+- aktiver Marker wird erst nach erfolgreichem Speichern entfernt,
+- Runden, Sessions und Bestwert stimmen.
+
+## K. Eigene Hub-Kategorien
+
+1. Datenbereich öffnen.
+2. kompatibles Spiel auswählen.
+3. Pack mit zwei Karten versuchen.
+4. Pack mit mindestens drei Karten speichern.
+5. doppelte Karte in anderer Großschreibung hinzufügen.
+6. gleichnamiges Pack erneut versuchen.
+7. Pack im Spieldetail auswählen und spielen.
+8. Pack löschen.
+
+Erwartet:
+
+- zu kurzes Pack wird abgelehnt,
+- Duplikate werden entfernt,
+- doppelter Packname wird blockiert,
+- Pack erscheint nach Neuladen,
+- ausschließlich eigene Karten werden genutzt,
+- Löschen entfernt es vollständig.
+
+Zusätzlich HTML-, Skript- und sehr lange Texte eingeben. Erwartet: reine Textausgabe ohne Skriptausführung.
+
+## L. Word Imposter
+
+### L1 – Grenzen
+
+- 3 Personen mit 1 und 2 Impostern
+- 20 Personen mit 6 Impostern
+- doppelte Namen, 21 Personen und 7 Imposter
+
+### L2 – Faire Rollen
 
 Mindestens 20 Runden mit denselben sechs Personen protokollieren.
 
 Erwartet: Aufdeckreihenfolge verrät die Rollen nicht; verschiedene Personen können Imposter sein.
 
-### I3 – vollständiger Ablauf
+### L3 – Vollständiger Ablauf
 
 - Kartenübergabe und Fokusverlust
 - Timer, Pause, Hintergrund und Neuladen
@@ -163,30 +228,28 @@ Erwartet: Aufdeckreihenfolge verrät die Rollen nicht; verschiedene Personen kö
 
 Erwartet: korrekte Punkte, genau ein Verlaufseintrag pro Runde und keine Sackgasse.
 
-## J. Gesamtsicherung
+## M. Gesamtsicherung
 
-1. Hub-Spieler, Preset und Favorit erstellen.
-2. Hub-Session beenden.
-3. komplexe Session starten und pausieren.
-4. eigene Imposter-Kategorie speichern.
-5. aktives Imposter-Spiel erstellen.
+1. Spieler, Preset und Favorit erstellen.
+2. einfaches Hub-Spiel beenden.
+3. eigenes Hub-Pack erstellen.
+4. komplexe Session starten.
+5. eigene Imposter-Kategorie und aktives Imposter-Spiel anlegen.
 6. Gesamtsicherung exportieren.
 7. alle lokalen Daten löschen.
 8. Sicherung importieren.
 
-Erwartet: Hub, Präferenzen, Verlauf, aktive Session und Imposter-Daten werden wiederhergestellt.
+Erwartet: Hub, Eigene Hub-Kategorien, Präferenzen, Verlauf, aktive Session und Imposter-Daten werden wiederhergestellt.
 
 Zusätzlich testen:
 
 - ungültiges JSON,
-- falsches Sicherungsformat,
+- falsches Format,
 - Datei über 1,5 MB,
 - mehr als 100 Schlüssel,
 - simulierten Speicherfehler.
 
-Erwartet: Ablehnung ohne Datenverlust beziehungsweise vollständiger Rollback.
-
-## K. Android-Installation
+## N. Android-Installation
 
 - aktuelles Android und Chrome
 - Installation über Browser
@@ -194,12 +257,13 @@ Erwartet: Ablehnung ohne Datenverlust beziehungsweise vollständiger Rollback.
 - Start direkt im Party Hub
 - Offline-Start
 - Question Imposter offline
+- eigenes Pack offline
 - Word Imposter offline
-- Update einer älteren Installation auf Cache `secret-circle-v21`
-- Hintergrundtimer und Vibration
-- Portrait und Landscape
+- Update einer älteren Installation auf Cache `secret-circle-v23`
+- aktive Session und Spieler-Snapshot nach Update
+- Hintergrundtimer, Vibration, Portrait und Landscape
 
-## L. iPhone-/iPad-Installation
+## O. iPhone-/iPad-Installation
 
 - aktuelles Safari
 - Teilen → „Zum Home-Bildschirm“
@@ -208,10 +272,12 @@ Erwartet: Ablehnung ohne Datenverlust beziehungsweise vollständiger Rollback.
 - Tastatur und Eingabefeld-Zoom
 - Offline-Start
 - komplexe Kartenübergabe
-- Fallback ohne Wake-Lock-Unterstützung
-- Update auf Cache `secret-circle-v21`
+- eigenes Pack offline
+- Fallback ohne Wake Lock
+- Update auf Cache `secret-circle-v23`
+- aktive Spielergruppe nach Update unverändert
 
-## M. Browser und Accessibility
+## P. Browser und Accessibility
 
 Auf Chrome, Firefox und Safari/WebKit:
 
@@ -226,25 +292,19 @@ Auf Chrome, Firefox und Safari/WebKit:
 - keine abgeschnittenen Modale oder Aktionen
 - Touchflächen mindestens 44 × 44 Pixel
 
-## N. Inhalt und Altersfilter
+## Q. Inhalt und Altersfilter
 
 - familienfreundlicher Filter
 - „bis ab 12“-Filter
 - alle Inhalte
-- mindestens 50 zufällige Karten aus verschiedenen Spielen
+- mindestens 50 zufällige Karten
 - alle Question-Imposter-Paare
 - alle Location-Spy-Orte
 - Mafia-Regeltexte
 
-Dokumentieren:
+Dokumentieren: unklare Formulierungen, Dopplungen, ungeeignete Altersstufe, Schwierigkeit und falsche Dauerangaben.
 
-- unklare Formulierungen,
-- Dopplungen,
-- ungeeignete Altersstufe,
-- zu leichte oder zu schwere Karten,
-- falsche Dauer- oder Gruppengrößenangabe.
-
-## O. Realer Partytest
+## R. Realer Partytest
 
 Mindestens zwei Gruppen:
 
@@ -259,15 +319,10 @@ Pflichtspiele:
 - Mafia
 - Scharade
 - Heiße Kartoffel
+- ein eigenes Hub-Pack
 
-Dokumentieren:
-
-- Zeit bis zum ersten Spielstart,
-- benötigte Erklärungen,
-- Missverständnisse bei Übergabe oder Moderatoransicht,
-- Spaß, Länge und Wiederholungswunsch,
-- Blockaden, Verzögerungen und Fehler.
+Dokumentieren: Zeit bis zum Start, benötigte Erklärungen, Übergabeprobleme, Spaß, Länge, Wiederholungswunsch, Blockaden und Fehler.
 
 ## Freigaberegel
 
-`GO` nur, wenn alle automatisierten Prüfungen erfolgreich sind, Android und iOS bestanden haben, ein kleiner und ein großer Partytest dokumentiert sind, alle 18 Spiele mindestens einmal real geprüft wurden, keine kritischen oder hohen Fehler offen sind und die erforderlichen Anbieterinformationen vorliegen.
+`GO` nur, wenn alle automatisierten Prüfungen erfolgreich sind, Android und iOS bestanden haben, ein kleiner und ein großer Partytest dokumentiert sind, alle 18 Spiele mindestens einmal real geprüft wurden, keine kritischen oder hohen Fehler offen sind und erforderliche Betreiberinformationen vorliegen.
