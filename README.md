@@ -1,8 +1,8 @@
 # Secret Circle Party Hub
 
-Secret Circle entwickelt sich von einem einzelnen Imposter-Spiel zu einem übersichtlichen, offline nutzbaren Party-Game-Hub für gemeinsame Spiele auf einem Gerät.
+Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät. Der installierte PWA-Einstieg öffnet den übersichtlichen Party Hub; das vollständige Word-Imposter-Spiel bleibt als eigenes stabiles Modul erhalten.
 
-**Aktueller Stand:** `1.0.0-beta.3` auf dem Expansionsbranch – Word Imposter bleibt vollständig spielbar, zusätzlich ist die erste Party-Hub-Version mit vierzehn spielbaren Spielen und vier klar markierten zukünftigen Spielen vorhanden.
+**Aktueller Stand:** `1.0.0-beta.3` auf dem Expansionsbranch – 22 sichtbare Spiele, davon 18 spielbar und 4 eindeutig als zukünftige Spiele gesperrt.
 
 ## Start
 
@@ -12,82 +12,125 @@ python -m http.server 8080
 
 - Party Hub: `http://localhost:8080/party.html`
 - Word Imposter: `http://localhost:8080/index.html`
+- erweiterte Spiele: `http://localhost:8080/advanced.html?game=question-imposter`
 
-Nach dem ersten vollständigen Laden stehen beide Bereiche über den Offline-Cache `secret-circle-v19` ohne Internet zur Verfügung.
+Nach dem ersten vollständigen Laden stehen alle spielbaren Bereiche über den Offline-Cache `secret-circle-v21` ohne Internet zur Verfügung.
 
-## Party Hub
+## 18 spielbare Spiele
 
-### Vierzehn spielbare Spiele
+### Täuschung und Rollen
 
 1. Word Imposter
-2. Wahrheit oder Pflicht
-3. Ich habe noch nie
-4. Wer würde eher?
-5. Entweder oder
-6. Hot Takes
-7. Nur falsche Antworten
-8. Paranoia
-9. Scharade
-10. Nicht sagen!
-11. Heiße Kartoffel
-12. Wortkette
-13. Flaschendrehen
-14. Würfel & Münze
+2. Zwei Wahrheiten, eine Lüge
+3. Question Imposter
+4. Location Spy
+5. Mafia
 
-### Klar markierte nächste Spiele
+### Fragen und Abstimmen
 
-- Zwei Wahrheiten, eine Lüge
-- Question Imposter
-- Location Spy
-- Mafia
+6. Wahrheit oder Pflicht
+7. Ich habe noch nie
+8. Wer würde eher?
+9. Entweder oder
+10. Hot Takes
+11. Nur falsche Antworten
+12. Paranoia
 
-Diese Spiele sind sichtbar, aber technisch eindeutig als `In Arbeit` markiert und können nicht versehentlich gestartet werden.
+### Darstellen und Zeitdruck
 
-### Hub-Funktionen
+13. Scharade
+14. Nicht sagen! / Tabu
+15. Heiße Kartoffel
+16. Wortkette
 
-- Startseite mit Empfehlungen, Quick Picks und zuletzt gestarteten Spielen
-- vollständiger Spielekatalog mit Suche
-- Filter nach Spielart, Stimmung, Gruppengröße und Status
-- klare Anzeige von Spielerzahl, geschätzter Dauer, Kartenanzahl und Kategorien
-- gemeinsame lokale Spielerliste für alle Hub-Spiele
-- Host-Presets für häufige Gruppen
+### Zufall und Werkzeuge
+
+17. Flaschendrehen
+18. Würfel & Münze
+
+## Sichtbare Roadmap
+
+Vier weitere Spiele werden bereits transparent im Katalog gezeigt, bleiben aber technisch gesperrt:
+
+- Wellenlänge
+- Zeichnen & Raten
+- Schnellfeuer
+- Geräusche erraten
+
+Ein geplantes Spiel kann nicht versehentlich wie ein fertiges Spiel gestartet werden.
+
+## Übersichtlicher Aufbau
+
+- Startseite mit Empfehlungen, Quick Picks, Schnellstart und zuletzt gespielt
+- vollständiger Katalog mit Suche
+- Filter nach Spielart, Stimmung, Gruppengröße, Altersstufe und Entwicklungsstatus
+- klare Spielkarten mit Spielerzahl, Dauer, Kartenanzahl und Status
+- Detailansicht mit Regeln, Kategorien und Inhaltsmenge
+- gemeinsame lokale Spielerliste
+- wiederverwendbare Host-Presets
+- Favoriten
+- Verlauf und lokale Statistiken
+- acht lokale Erfolge
+- installierbare PWA
+- eigener Bereich für Daten, Einstellungen und Datenschutz
+
+## Erweiterte Spielabläufe
+
+- **Zwei Wahrheiten, eine Lüge:** private Eingabe, zufällige Mischung, Gruppenabstimmung und Auflösung
+- **Question Imposter:** geheime ähnliche Fragen, zufälliger Imposter, Diskussion und Abstimmung
+- **Location Spy:** geheimer Ort, zufälliger Spion, Verdächtigenwahl oder Ortsraten
+- **Mafia:** private Rollen, geschützte Moderatoransicht, Nachtaktionen, Tageswahl und Siegprüfung
+- aktive erweiterte Sessions werden nach Neuladen fortgesetzt
+- Sessionlängen mit 3, 5, 10 oder 20 Runden
+- abgeschlossene Sessions fließen in Verlauf, Statistik und Erfolge ein
+
+## Inhalte
+
+- mehr als 390 eigene Hub-Inhalte
+- zusätzlich 168 geprüfte Word-Imposter-Begriffe in 14 Kategorien
+- Kategorien und Inhaltsmengen vor dem Start sichtbar
+- keine unmittelbare Kartenwiederholung innerhalb einer Session
+- Altersfilter für familienfreundliche und ab 12 empfohlene Spiele
+- keine kopierten proprietären Karten oder Designs anderer Partyspiel-Apps
+
+## Lokale Daten
+
+Secret Circle benötigt kein Konto und überträgt Spieldaten nicht an einen eigenen Server.
+
+Gemeinsam gesichert werden können:
+
+- Hub-Spieler und Presets
 - Favoriten und zuletzt gespielt
-- lokaler Verlauf und Spielstatistik
-- zufälliger Schnellstart passend zur gespeicherten Gruppengröße
-- eigene Vollbild-Spielabläufe für Karten-, Wahl-, Timer- und Zufallsspiele
-- zufällige Karten ohne unmittelbare Wiederholung innerhalb einer Session
-- Vibration auf unterstützten Geräten bei Timern und Zufallsergebnissen
-- keine Anmeldung, kein Tracking und keine Serverübertragung
+- Verlauf, Statistik und Erfolge
+- aktive erweiterte Sessions
+- Word-Imposter-Spielstände und Einstellungen
+- eigene Imposter-Kategorien
 
-Der Party Hub enthält mehr als 300 eigenständig erstellte Karten, Fragen, Begriffe, Entscheidungen und Aufgaben. Der Katalog ist modular aufgebaut, damit weitere Spiele und Packs ergänzt werden können, ohne die bestehende Imposter-Engine zu gefährden.
+Der vollständige JSON-Import besitzt Größenlimit, Formatprüfung und Rollback. „Alle lokalen Daten löschen“ entfernt sämtliche `secret-circle-*`-Datensätze.
 
 ## Word Imposter
 
-Der bestehende Imposter-Bereich bleibt als separates, stabiles Spielmodul erhalten:
-
 - 3–20 eindeutige Personen
-- maximal sechs Imposter, auch bei wiederhergestellten Spielständen
-- unabhängige Rollenverteilung ohne Kopplung an die Aufdeckreihenfolge
-- 14 Kategorien und 168 Begriffe
-- eigene Kategorien
+- maximal sechs Imposter
+- Rollenverteilung unabhängig von der Aufdeckreihenfolge
 - Karten-Sichtschutz bei App-Wechsel
-- deadline-basierter Timer
-- geheime Abstimmung, Stichwahl und Imposter-Ratechance
+- deadline-basierter Timer mit Wiederherstellung
+- geheime Abstimmung, Stichwahl und Ratechance
 - Punkte, Rangliste und Mehr-Runden-Matches
-- Verlauf, Wiederaufnahme, Backup und vollständige Datenlöschung
+- Verlauf, Migration, Backup und Datenlöschung
 
-## Aufbau
+## Architektur
 
-- `party.html`: übersichtliche Party-Hub-Oberfläche
-- `party.css`: responsives Hub-Design für Desktop, Smartphone und installierte PWA
-- `party-catalog.js`: Spielekatalog, Kategorien und eigene Inhalte
-- `party-hub.js`: Navigation, Filter, Spieler, Presets, Favoriten, Verlauf und Spielabläufe
-- `index.html` + `app.js`: bestehender Word-Imposter-Ablauf
-- `game-engine.js`: deterministische Imposter-Regeln
-- `role-assignment.js`: unabhängige Rollenverteilung und Grenze von sechs Impostern
-- `word-packs.js`: Imposter-Begriffe
-- `data-store.js`: versionierte Imposter-Speicherung und Sicherung
-- `sw.js`: Offline-Core für Party Hub und Word Imposter
+- `party.html`, `party.css`: Hub, Navigation und Katalog
+- `party-catalog.js`: bestehende 18 Katalogeinträge und Basisinhalte
+- `party-expansion.js`: erweiterter 22-Spiele-Katalog und neue Inhalte
+- `party-routing.js`: sichere Weiterleitung komplexer Spiele
+- `party-hub.js`, `party-hub-plus.js`: Hub-Abläufe, Filter, Erfolge und Installation
+- `advanced.html`, `party-advanced.js`, `party-advanced-runner.js`: komplexe Spielabläufe und Wiederaufnahme
+- `party-data-tools.js`: vollständiger lokaler Export, Import und Löschung
+- `game-engine.js`, `role-assignment.js`: Word-Imposter-Regeln und faire Rollen
+- `data-store.js`: versionierte Imposter-Speicherung
+- `sw.js`: vollständiger Offline-Core `secret-circle-v21`
 
 ## Automatisierte Prüfung
 
@@ -97,38 +140,30 @@ npx playwright install --with-deps chromium
 npm run ci
 ```
 
-Zusätzlicher Browser-Smoke-Test:
+Zusätzliche Browsermatrix:
 
 ```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Die Prüfungen umfassen jetzt zusätzlich:
+Die Gates umfassen:
 
-- Integrität aller 18 Katalogeinträge
-- genau 14 spielbare und 4 geplante Spiele
-- mindestens 300 sichere Party-Karten
-- Paarstruktur für Entweder-oder-Karten
-- verbotene Wörter für Nicht-sagen-Karten
-- Party-Hub-Suche und Filter
-- spielbaren Wahrheit-oder-Pflicht-Ablauf
-- gemeinsame Spieler, Host-Presets und Favoriten
-- lokalen Hub-Verlauf
-- eindeutige Sperre geplanter Spiele
-- Navigation zwischen Party Hub und Word Imposter
-- vollständigen Offline-Core `secret-circle-v19`
+- Engine, Speicherung, Inhalte, Rollenverteilung und Fuzz-Szenarien
+- Basis- und Expansionskatalog
+- alle vier erweiterten Spiele
+- Wiederaufnahme aktiver Sessions
+- Altersfilter, Favoriten, Presets, Verlauf und Erfolge
+- vollständigen Backup-Export, Import, ungültige Dateien und Datenlöschung
+- Offline-Start von Hub, Word Imposter und Question Imposter
+- Manifest, Icons, CSP, Accessibility und Laufzeitfehler
+- Chromium, Firefox, WebKit, Android- und iPhone-Simulation
 
-## Datenschutz
+## Freigabestatus
 
-Hub-Spieler, Presets, Favoriten, Verlauf und Statistik liegen ausschließlich im lokalen Browser-Speicher unter einem eigenen Hub-Schlüssel. Word-Imposter-Daten bleiben weiterhin im versionierten Imposter-Speicher. Es werden keine Analyse-, Werbe- oder Tracking-Dienste verwendet.
+- Word-Imposter-Kernspiel: `GO` für den vollständigen Testlauf
+- Party-Hub-Code und 18 Spiele: `GO` für den vollständigen automatisierten Testlauf
+- reale Geräte- und Party-Beta: `NO_GO`, bis die automatisierten Tests erfolgreich protokolliert sind
+- öffentlicher Produktionsrelease: `NO_GO`, bis CI, echte Android-/iOS-Tests, Gruppen-Betatests, Inhaltsprüfung und rechtliche Angaben abgeschlossen sind
 
-## Status
-
-- Word-Imposter-Kernspiel: `GO` für automatisierte und kontrollierte Tests
-- Party-Hub-Grundlage: `IMPLEMENTIERT`, automatischer Gesamttest noch ausstehend
-- vierzehn Hub-Spiele: `IMPLEMENTIERT`, realer Bedien- und Gruppentest ausstehend
-- vier zukünftige Spiele: `GEPLANT`
-- öffentlicher Produktionsrelease: `NO_GO`, bis CI, echte Geräte, Partytests und rechtliche Angaben vollständig bestätigt sind
-
-Die weitere Expansion wird in Issue #10 verfolgt.
+Die Expansion wird in Issue #10 und Draft-PR #11 verfolgt.
