@@ -3,100 +3,84 @@
 Stand: 4. August 2026  
 Version: `1.0.0-beta.3`  
 Expansionsbranch: `codex/party-hub-foundation`  
-Planung: Issue #10
-
-## Neue Produktdefinition
-
-Der Umfang wurde bewusst erweitert. Secret Circle ist nicht mehr nur ein Word-Imposter-Spiel, sondern soll ein klar strukturierter Party-Game-Hub mit vielen lokalen Gruppenspielen werden. Dadurch sinkt der prozentuale Gesamtfortschritt gegenüber der früheren reinen Imposter-Bewertung, obwohl das bestehende Kernspiel fast vollständig ist.
+Draft-PR: `#11`  
+Planung: Issue `#10`
 
 ## Gesamtbewertung
 
 | Bereich | Stand | Bewertung |
 |---|---:|---|
-| Word Imposter | 98 % | stabiles Kernspiel mit Rollen, Timer, Wahl, Punkten, Speicherung und Offline-PWA |
-| Party-Hub-Grundstruktur | 90 % | Start, Katalog, Filter, Details, Spieler, Presets, Favoriten, Verlauf und Vollbild-Spielmodus vorhanden |
-| Spielbarer Hub-Katalog | 78 % | 14 Spiele technisch spielbar; weitere Inhaltstiefe, Balancing und reale Tests fehlen |
-| Geplante komplexe Spiele | 15 % | Two Truths, Question Imposter, Location Spy und Mafia sind transparent geplant, aber noch gesperrt |
-| Inhalte und Kategorien | 72 % | mehr als 300 neue Karten plus 168 Imposter-Begriffe; deutlich mehr Packs und redaktionelle Prüfung nötig |
-| Speicherung | 82 % | Hub-Spieler, Presets, Favoriten, Verlauf und Statistik lokal; gemeinsames Backup noch nicht integriert |
-| PWA und Offline | 90 % | Cache-Version 19 enthält Party Hub und Word Imposter; echter Update-Test fehlt |
-| Accessibility und Mobile | 75 % | responsive Struktur und Fokusgrundlagen vorhanden; reale Screenreader- und Gerätetests fehlen |
-| Automatisierte Abdeckung | 78 % | Katalog-Unit-Test und Party-Hub-E2E ergänzt; vollständiger erfolgreicher Lauf noch nicht protokolliert |
-| Reale Geräte- und Gruppentests | 20 % | neue Hub-Spiele noch nicht mit echten Gruppen dokumentiert getestet |
+| Word Imposter | 98 % | vollständiger Kernablauf mit fairer Rollenverteilung, Timer, Wahl, Punkten, Speicherung und Offline-PWA |
+| Party-Hub-Struktur | 96 % | Start, Katalog, Suche, Filter, Details, Spieler, Presets, Favoriten, Verlauf, Daten und Installation vorhanden |
+| Spielbarer Katalog | 88 % | 18 Spiele technisch umgesetzt; reale Balance-, Verständlichkeits- und Langzeittests fehlen |
+| Komplexe Spiele | 82 % | Zwei Wahrheiten, Question Imposter, Location Spy und Mafia vollständig als lokale Abläufe implementiert |
+| Inhalte und Kategorien | 80 % | mehr als 390 Hub-Inhalte plus 168 Imposter-Begriffe; mehr Tiefe und redaktionelle Prüfung nötig |
+| Speicherung und Datensicherung | 94 % | Hub-Daten, aktive Sessions, vollständiger Export/Import, Rollback und komplette Löschung vorhanden |
+| PWA und Offline | 94 % | Party Hub als Installationsstart und vollständiger Cache `secret-circle-v21`; echter Update-Test fehlt |
+| Accessibility und Mobile | 84 % | responsive Struktur, Fokusgrundlagen und automatische Tests; reale Screenreader- und Gerätetests fehlen |
+| Automatisierte Abdeckung | 90 % | sieben Unit-Dateien, mindestens 17 E2E-Suiten und fünf Cross-Browser-Projekte vorbereitet; Gesamtlauf nicht protokolliert |
+| Reale Geräte- und Gruppentests | 20 % | noch nicht dokumentiert mit echten Android-/iOS-Geräten und Gruppen durchgeführt |
 | Öffentliche rechtliche Freigabe | 45 % | Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
 
 ## Gewichteter Fortschritt
 
-- **Bestehendes Word-Imposter-Spiel:** etwa **98 %**
-- **Party-Hub-Phase 1:** etwa **90 %**
-- **Gesamte gewünschte Party-Hub-Vision:** etwa **68 %**
-- **Bereit für einen kontrollierten lokalen Browser-Test:** etwa **82 %**
-- **Bereit für einen öffentlichen Produktionsrelease:** etwa **65 %**
+- **Word-Imposter-Modul:** etwa **98 %**
+- **Party-Hub-Grundlage:** etwa **96 %**
+- **18 spielbare Spiele als technische Beta:** etwa **88 %**
+- **Gesamte gewünschte Party-Hub-Vision:** etwa **80 %**
+- **Bereit für den vollständigen lokalen automatisierten Testlauf:** etwa **96 %**
+- **Bereit für reale Android-/iOS- und Partytests:** etwa **86 %**
+- **Bereit für einen öffentlichen Produktionsrelease:** etwa **73 %**
 
-Diese Werte sind technische Schätzungen. Sie ersetzen keine erfolgreich ausgeführten Tests.
+Die Prozentwerte bewerten den implementierten Projektstand. Sie sind kein Nachweis für Fehlerfreiheit und ersetzen keine ausgeführten Tests.
 
-## Neu umgesetzt
+## Neu abgeschlossen
 
-### Übersichtlicher Aufbau
+### Katalog und Navigation
 
-- eigene Party-Hub-Seite `party.html`
-- Startseite mit Empfehlungen, Schnellstart, Quick Picks und zuletzt gespielt
-- Spielekatalog mit Suche
-- Filter nach Art, Stimmung, Gruppengröße und Status
-- klare Karten mit Spielerzahl, Dauer, Inhalt und Entwicklungsstatus
-- Detailansicht mit Regeln und Kategorien
-- geplante Spiele sind sichtbar, aber eindeutig gesperrt
+- 22 sichtbare Spiele
+- 18 spielbare Spiele
+- 4 eindeutig gesperrte Roadmap-Spiele
+- Suche und Filter nach Art, Stimmung, Gruppengröße, Altersstufe und Status
+- klare Spielerzahl, Dauer, Kategorien und Inhaltsmenge
+- Party Hub ist der neue installierte PWA-Startpunkt
 
-### Gemeinsame Funktionen
+### Vier neue komplexe Spiele
 
-- lokale Spielerliste
+- Zwei Wahrheiten, eine Lüge
+- Question Imposter
+- Location Spy
+- Mafia mit Moderatoransicht, Nachtaktionen, Tageswahl und Siegprüfung
+
+### Plattformfunktionen
+
+- gemeinsame lokale Spielerliste
 - Host-Presets
-- Favoriten
-- zuletzt gestartet
-- lokaler Verlauf
-- Spielstatistik
-- zufälliger Schnellstart passend zur Gruppe
-- keine Anmeldung oder Serverübertragung
+- Favoriten und zuletzt gespielt
+- Verlauf und Statistik
+- acht Erfolge
+- Standard-Sessionlänge
+- Alterspräferenzen
+- installierbare PWA
+- Wiederaufnahme aktiver komplexer Sessions
 
-### Vierzehn spielbare Spiele
+### Daten und Datenschutz
 
-- Word Imposter
-- Wahrheit oder Pflicht
-- Ich habe noch nie
-- Wer würde eher?
-- Entweder oder
-- Hot Takes
-- Nur falsche Antworten
-- Paranoia
-- Scharade
-- Nicht sagen!
-- Heiße Kartoffel
-- Wortkette
-- Flaschendrehen
-- Würfel & Münze
-
-### Spielmechaniken
-
-- Karten ohne unmittelbare Wiederholung
-- rotierende aktive Person
-- Wahrheit-/Pflicht-Auswahl
-- Zwei-Optionen-Entscheidungen
-- geheime Paranoia-Fragen mit Zufallsauflösung
-- 60-Sekunden-Scharade mit Punkten
-- Tabu-Karten mit verbotenen Wörtern
-- zufälliger Hot-Potato-Timer
-- Wortketten-Timer
-- Zufallsauswahl, Münze und Würfel
-- Vibration auf unterstützten Geräten
+- gemeinsame Gesamtsicherung für Hub und Word Imposter
+- Importformat- und Größenprüfung
+- Rollback bei fehlgeschlagenem Import
+- vollständige Löschung aller `secret-circle-*`-Daten
+- keine Anmeldung, kein Tracking und keine appgesteuerte Serverübertragung
 
 ### Qualität
 
-- neuer Katalog-Integritätstest
-- neuer Party-Hub-End-to-End-Test
-- Syntaxprüfung für Hub-Dateien
-- Performancebudget für den erweiterten Offline-Core
-- Service-Worker-Cache `secret-circle-v19`
-- Word Imposter verlinkt sichtbar zum Party Hub
+- Offline-Core `secret-circle-v21`
+- 22-Spiele-Katalogtest
+- E2E-Suiten für alle vier komplexen Spiele
+- E2E-Suiten für Backup, Import, ungültige Dateien und Datenlöschung
+- Offline-Test für Question Imposter
+- Cross-Browser-Smoke-Test für Hub und komplexe Spiele
+- aktualisierte Struktur-, Release- und Performance-Gates
 
 ## Aktuelle Blocker
 
@@ -111,56 +95,63 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Bis diese Befehle erfolgreich protokolliert sind, kann der neue Hub nicht als vollständig getestet gelten.
+Bis beide Befehle erfolgreich protokolliert sind, ist der Hub nicht als getestet bestätigt.
 
 ### 2. GitHub Actions
 
-Der bekannte externe Runner-Blocker aus Issue #7 muss erneut geprüft werden. Workflows müssen sichtbare Schritte ausführen und auf dem endgültigen Commit grün sein.
+Der bekannte externe Runner-Blocker aus Issue #7 muss erneut geprüft werden. Ein öffentlicher Release benötigt sichtbare Workflow-Schritte und einen grünen Lauf auf dem endgültigen Commit.
 
-### 3. Reale Hub-Tests
+### 3. Reale Geräte
 
-Erforderlich sind mindestens:
+Erforderlich:
 
-- Smartphone-Test für Navigation, Filter und Vollbildmodus
-- kleine Gruppe mit 3–4 Personen
-- große Gruppe mit mindestens 8 Personen
-- je eine vollständige Session mit Wahrheit oder Pflicht, Scharade, Nicht sagen!, Heiße Kartoffel und Word Imposter
-- Hintergrund-, Sperrbildschirm- und Offline-Test
-- Verständlichkeit der Kennzeichnung `Spielbar` und `In Arbeit`
+- aktuelles Android-Gerät mit Chrome
+- aktuelles iPhone oder iPad mit Safari
+- Installation und Start über `party.html`
+- Offline-Start aller Spielarten
+- Update von einer älteren Cache-Version auf `secret-circle-v21`
+- Hintergrund, Sperrbildschirm, Safe Areas, Tastatur und Rotation
 
-### 4. Inhaltstiefe
+### 4. Reale Partytests
 
-Die vorhandenen Karten reichen für den ersten Test. Vor einem öffentlichen Release werden mehr Packs, mehr Karten pro Pack, redaktionelle Prüfung und Altersfilter benötigt.
+Mindestens:
 
-### 5. Gemeinsame Datensicherung
+- Gruppe mit 3–4 Personen
+- Gruppe mit mindestens 8 Personen
+- vollständige Sessions in Word Imposter, Question Imposter, Location Spy, Mafia, Scharade und Heiße Kartoffel
+- Prüfung der Regelverständlichkeit ohne Entwicklerhilfe
 
-Das bestehende Word-Imposter-Backup umfasst noch nicht automatisch Hub-Spieler, Presets, Favoriten, Verlauf und Statistik.
+### 5. Inhalte
 
-### 6. Komplexe Spiele
+Vor öffentlicher Veröffentlichung:
 
-Noch zu entwickeln:
+- mehr Karten pro besonders häufigem Spiel
+- redaktionelle Prüfung auf Dopplungen und unklare Formulierungen
+- systematische Altersprüfung
+- reale Bewertung von Schwierigkeit, Länge und Gruppengröße
 
-- Zwei Wahrheiten, eine Lüge
-- Question Imposter
-- Location Spy
-- Mafia
-- später optional Wavelength, Draw & Guess und Multi-Device-Räume
+### 6. Rechtliche Angaben
+
+Verantwortliche Person, Kontakt, Hosting-Anbieter und gegebenenfalls Impressum müssen für das konkrete öffentliche Angebot ergänzt werden.
 
 ## Freigabestatus
 
-- **Weiterentwicklung des Party Hubs:** `GO`
-- **Lokaler technischer Test:** `GO_WITH_CONDITIONS`
-- **Realer Party-Betatest:** `NO_GO`, bis der komplette automatisierte Testlauf erfolgreich ist
-- **Merge in `main`:** `NO_GO`, da der neue Umfang noch nicht vollständig getestet ist
+- **Weiterentwicklung:** `GO`
+- **Vollständiger lokaler automatisierter Testlauf:** `GO`
+- **Kontrollierter Entwickler-Browsertest:** `GO_WITH_CONDITIONS`
+- **Realer Geräte- und Party-Betatest:** `NO_GO`, bis der automatisierte Gesamtlauf erfolgreich ist
+- **Merge von Draft-PR #11:** `NO_GO`, bis Unit-, Validator- und Chromium-E2E-Lauf grün dokumentiert sind
 - **Öffentlicher Produktionsrelease:** `NO_GO`
 
-## Nächste Schwelle
+## Release-Candidate-Schwelle
 
-Der Party Hub erreicht einen echten Beta-Kandidaten, sobald:
+Der Party Hub wird erst als Release Candidate bezeichnet, wenn:
 
-1. alle Unit-, Validator- und E2E-Tests grün sind,
-2. Cache-Version 19 offline und beim Update geprüft wurde,
-3. mindestens fünf unterschiedliche Hub-Spiele mit echten Gruppen getestet wurden,
-4. gemeinsame Hub-Daten in Export, Import und vollständige Löschung integriert sind,
-5. mindestens zwei zusätzliche komplexe Spiele vollständig implementiert sind,
-6. keine kritischen oder hohen Fehler offen sind.
+1. `npm run ci` vollständig erfolgreich ist,
+2. `npm run test:cross-browser` erfolgreich ist,
+3. GitHub Actions auf dem endgültigen Commit grün ist,
+4. Android- und iOS-Installation sowie Offline-Update bestanden sind,
+5. ein kleiner und ein großer Partytest bestanden sind,
+6. alle 18 Spiele mindestens einmal real getestet wurden,
+7. keine kritischen oder hohen Fehler offen sind,
+8. erforderliche öffentliche Anbieterinformationen vorhanden sind.
