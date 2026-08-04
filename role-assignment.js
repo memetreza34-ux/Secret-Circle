@@ -12,17 +12,23 @@
   const INSTALL_FLAG = '__secretCircleIndependentRoles';
 
   function requireEngine(engine) {
-    if (!engine || typeof engine.createGame !== 'function' || typeof engine.nextRound !== 'function' || typeof engine.createRng !== 'function' || typeof engine.shuffle !== 'function' || typeof engine.assertGame !== 'function') {
+    if (!engine || typeof engine.createGame !== 'function' || typeof engine.nextRound !== 'function' || typeof engine.restoreGame !== 'function' || typeof engine.createRng !== 'function' || typeof engine.shuffle !== 'function' || typeof engine.assertGame !== 'function') {
       throw Error('Secret-Circle-Engine für Rollenverteilung fehlt.');
     }
   }
 
   function validateCount(value, playerCount) {
     const count = Number(value);
-    if (!Number.isInteger(count) || count < 1 || count > MAX_IMPOSTERS || count >= playerCount) {
-      throw Error(`Die Imposter-Zahl muss zwischen 1 und ${Math.min(MAX_IMPOSTERS, playerCount - 1)} liegen.`);
+    const maximum = Math.min(MAX_IMPOSTERS, Math.max(0, Number(playerCount) - 1));
+    if (!Number.isInteger(count) || count < 1 || count > maximum) {
+      throw Error(`Die Imposter-Zahl muss zwischen 1 und ${maximum} liegen.`);
     }
     return count;
+  }
+
+  function validateGameRoles(game) {
+    validateCount(game?.imposters?.length, game?.players?.length);
+    return game;
   }
 
   function assignIndependentRoles(game, engine) {
@@ -38,19 +44,30 @@
     requireEngine(engine);
     if (engine[INSTALL_FLAG]) return engine;
 
-    const createGame = engine.createGame.bind(engine);
-    const nextRound = engine.nextRound.bind(engine);
+    const originalAssertGame = engine.assertGame.bind(engine);
+    const originalRestoreGame = engine.restoreGame.bind(engine);
+    const originalCreateGame = engine.createGame.bind(engine);
+    const originalNextRound = engine.nextRound.bind(engine);
+
+    engine.assertGame = game => {
+      originalAssertGame(game);
+      validateGameRoles(game);
+      return true;
+    };
+
+    engine.restoreGame = raw => validateGameRoles(originalRestoreGame(raw));
 
     engine.createGame = options => {
       const players = engine.normalizePlayers(options?.players);
       validateCount(options?.imposterCount ?? 1, players.length);
-      return assignIndependentRoles(createGame(options), engine);
+      return assignIndependentRoles(originalCreateGame(options), engine);
     };
 
     engine.nextRound = (game, options) => {
-      const count = options?.imposterCount ?? game?.imposters?.length;
-      validateCount(count, game?.players?.length ?? 0);
-      return assignIndependentRoles(nextRound(game, options), engine);
+      engine.assertGame(game);
+      const count = options?.imposterCount ?? game.imposters.length;
+      validateCount(count, game.players.length);
+      return assignIndependentRoles(originalNextRound(game, options), engine);
     };
 
     Object.defineProperty(engine, 'MAX_IMPOSTERS', {
@@ -72,6 +89,7 @@
     MAX_IMPOSTERS,
     assignIndependentRoles,
     install,
-    version: 1
+    validateCount,
+    version: 2
   });
 });
