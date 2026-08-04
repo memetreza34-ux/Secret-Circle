@@ -6,7 +6,7 @@
   let fatalMessageShown = false;
 
   function statusElement() {
-    return document.querySelector('#status, #hub-status');
+    return document.querySelector('#status, #hub-status, #advanced-status');
   }
 
   function showRuntimeError(message) {
