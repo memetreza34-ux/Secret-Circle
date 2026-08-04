@@ -11,7 +11,7 @@ test('service worker caches the complete offline core', async ({ page, context }
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v10');
+    const cache = await caches.open('secret-circle-v11');
     const expected = [
       './index.html', './privacy.html', './styles.css', './pwa.css',
       './runtime-guard.js', './app.js', './game-engine.js',
@@ -25,8 +25,8 @@ test('service worker caches the complete offline core', async ({ page, context }
     }
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v10');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v10']);
+  expect(cacheState.names).toContain('secret-circle-v11');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v11']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
