@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 from pathlib import Path
+from html.parser import HTMLParser
+import ast
 import json
+import re
 import struct
 
 ROOT = Path(__file__).resolve().parents[1]
 
-required_files = [
+REQUIRED_FILES = {
     'index.html', 'privacy.html', 'styles.css', 'pwa.css',
-    'runtime-guard.js', 'app.js', 'game-engine.js', 'data-store.js',
-    'word-packs.js', 'sw.js', 'manifest.webmanifest', 'icon.svg',
-    'icon-192.png', 'icon-512.png', 'package.json',
+    'runtime-guard.js', 'setup-ux.js', 'app.js', 'game-engine.js',
+    'data-store.js', 'word-packs.js', 'sw.js', 'manifest.webmanifest',
+    'icon.svg', 'icon-192.png', 'icon-512.png', 'package.json',
     'playwright.config.js', 'playwright.cross-browser.config.js',
     'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
     'tests/fuzz.test.js', 'tests/e2e/game-flow.spec.js',
@@ -24,139 +27,129 @@ required_files = [
     'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md',
     'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'SECURITY.md',
     'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
-]
-missing = [relative for relative in required_files if not (ROOT / relative).is_file()]
+}
+
+missing = sorted(path for path in REQUIRED_FILES if not (ROOT / path).is_file())
 if missing:
     raise SystemExit(f'Missing required files: {", ".join(missing)}')
 
+obsolete = [
+    'match.css', 'accessibility.js', 'accessibility.css',
+    'ACCESSIBILITY_VALIDATION.md', 'tests/accessibility.test.js'
+]
+remaining_obsolete = [path for path in obsolete if (ROOT / path).exists()]
+if remaining_obsolete:
+    raise SystemExit(f'Obsolete files remain tracked: {", ".join(remaining_obsolete)}')
+
 read = lambda path: (ROOT / path).read_text(encoding='utf-8')
-markers = {
-    'index.html': [
-        'Content-Security-Policy', 'runtime-guard.js', 'apple-touch-icon',
-        'Spielregeln und Punkte', 'Version 1.0.0-beta.3', 'clear-all-data',
-        'export-data', 'import-data', 'vote-screen', 'guess-screen', 'leaderboard'
-    ],
-    'privacy.html': [
-        'Deine Daten bleiben auf deinem Gerät',
-        'Sicherung exportieren und importieren',
-        'keine Analyse-, Werbe- oder Tracking-Dienste'
-    ],
-    'runtime-guard.js': [
-        '1.0.0-beta.3', 'unhandledrejection', 'controllerchange',
-        'controlledAtStartup', 'SecretCircleRuntime'
-    ],
-    'app.js': [
-        'SecretCircleStore', 'recordRoundHistory', 'E.startTimer',
-        'E.pauseTimer', 'E.syncTimer', 'visibilitychange', 'pagehide',
-        'exportBackup', 'importBackup', 'clearAllData'
-    ],
-    'game-engine.js': [
-        'VERSION = 7', 'timerRunning', 'timerDeadline', 'startTimer',
-        'pauseTimer', 'syncTimer', 'startVoting', 'castVote',
-        'resolveVote', 'submitImposterGuess', 'nextRound', 'leaderboard',
-        'normalizeUsedWords', 'tie_break'
-    ],
-    'data-store.js': [
-        'KEY_VERSION = 7', 'ENGINE_VERSION = 7', 'upgradeActiveSnapshot',
-        'removeLegacyKind', 'IMPORT_PROBE_KEY', 'exportBackup', 'importBackup'
-    ],
-    'word-packs.js': [
-        'SecretCircleContent', 'Anime', 'Gaming',
-        'Internet & Social Media', 'Elektroniker'
-    ],
-    'sw.js': [
-        'secret-circle-v11', 'runtime-guard.js', 'fetchAndCache',
-        'await cache.put', 'handleNavigation', 'handleAsset',
-        'icon-192.png', 'icon-512.png'
-    ],
-    'manifest.webmanifest': [
-        '"id": "./"', '"display": "standalone"',
-        'icon-192.png', '192x192', 'icon-512.png', '512x512'
-    ],
-    'package.json': [
-        '"version": "1.0.0-beta.3"', '"node": ">=20"',
-        'node --check runtime-guard.js', 'tests/content.test.js',
-        'tests/fuzz.test.js', 'scripts/repo_hygiene.py',
-        'scripts/performance_budget.py', 'test:cross-browser'
-    ],
-    'tests/engine.test.js': [
-        'deadlineTimer', 'backgroundResume', 'finiteTieBreak',
-        'duplicateVoteProtection', 'noRepeatedWords'
-    ],
-    'tests/storage.test.js': [
-        'realLegacyGameUpgrade', 'currentKeyUpgrade', 'corruptedDataRecovery',
-        'legacyBackupImport', 'oversizedBackupProtection', 'atomicImportRollback'
-    ],
-    'tests/content.test.js': [
-        'contentVersion', 'categories', 'totalTerms', 'termsPerCategory',
-        'uniqueWithinCategories', 'safeTextOnlyContent',
-        'exactWordHintDuplicates', 'crossCategoryDuplicates'
-    ],
-    'tests/fuzz.test.js': [
-        'deterministicFuzzScenarios', 'completedRounds', 'playerRange',
-        'multipleImposters', 'votingAndTieBreaks', 'corruptionMutationsRejected'
-    ],
-    'tests/e2e/security.spec.js': [
-        'rendered only as text', 'malicious-looking player names',
-        'unsafe-inline', 'unsafe-eval'
-    ],
-    'tests/e2e/runtime-guard.spec.js': [
-        'runtime version matches', 'unexpected runtime errors',
-        'secret-circle-v11'
-    ],
-    'tests/e2e/setup-limits.spec.js': [
-        'three players and two imposters', 'twenty players and six imposters',
-        'more than twenty players', 'below the player count'
-    ],
-    'tests/e2e/pwa-install.spec.js': [
-        'installable mobile metadata', 'createImageBitmap',
-        '192x192', '512x512'
-    ],
-    'tests/e2e/offline.spec.js': [
-        'secret-circle-v11', 'runtime-guard.js', 'icon-192.png', 'icon-512.png'
-    ],
-    'tests/e2e/accessibility.spec.js': [
-        'rules and scoring guide is keyboard accessible',
-        'large touch targets', 'reduced motion'
-    ],
-    'tests/cross-browser/smoke.spec.js': [
-        'loads setup, content and privacy', 'starts a three-player game',
-        'persists and restores an interrupted game'
-    ],
-    'playwright.cross-browser.config.js': [
-        'Desktop Chrome', 'Desktop Firefox', 'Desktop Safari',
-        'Pixel 7', 'iPhone 13'
-    ],
-    '.github/workflows/ci.yml': [
-        'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e',
-        '--package-lock=false'
-    ],
-    '.github/workflows/cross-browser.yml': [
-        'workflow_dispatch', 'chromium firefox webkit', 'test:cross-browser',
-        '--package-lock=false'
-    ],
-    'scripts/repo_hygiene.py': ['git', 'ls-files', 'node_modules', 'environment_files_tracked'],
-    'scripts/performance_budget.py': ['git', 'ls-files', 'core_budget', '550_000', 'performance_budget'],
-    'CHANGELOG.md': ['1.0.0-beta.3', 'deadline-basierter Timer', 'Sicherheit und Datenschutz'],
-    'KNOWN_LIMITATIONS.md': ['lokales Pass-and-Play-Spiel', 'iPhone', 'GitHub Actions'],
-    'SECURITY.md': ['Sicherheitsproblem melden', 'Security Advisory', 'Sicherheitsmodell der App'],
-    'MANUAL_TEST_PLAN.md': ['Grundlegender Smoke-Test', 'PWA und Offline', 'Realer Partytest'],
-    'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits'],
-    'DEPLOYMENT.md': ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v11'],
-    'RELEASE_STATUS.md': ['Technische Produktbeta', 'öffentlichen Produktionsrelease', 'Aktuelle Blocker']
-}
-
-for relative, expected in markers.items():
-    text = read(relative)
-    if len(text) < 100:
-        raise SystemExit(f'Unexpectedly small text file: {relative}')
-    for marker in expected:
-        if marker.lower() not in text.lower():
-            raise SystemExit(f'Missing marker {marker} in {relative}')
-
+index = read('index.html')
+service_worker = read('sw.js')
+engine = read('game-engine.js')
+store = read('data-store.js')
+content = read('word-packs.js')
+package = json.loads(read('package.json'))
 manifest = json.loads(read('manifest.webmanifest'))
+
+
+class IndexAudit(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.ids = []
+        self.labels_for = set()
+        self.controls = []
+        self.local_assets = set()
+        self.meta = {}
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        if values.get('id'):
+            self.ids.append(values['id'])
+        if tag == 'label' and values.get('for'):
+            self.labels_for.add(values['for'])
+        if tag in {'input', 'select', 'textarea'}:
+            self.controls.append((tag, values))
+        if tag == 'script' and values.get('src'):
+            self.local_assets.add(values['src'])
+        if tag == 'link' and values.get('href') and values.get('rel') in {'stylesheet', 'manifest', 'icon', 'apple-touch-icon'}:
+            self.local_assets.add(values['href'])
+        if tag == 'meta':
+            key = values.get('name') or values.get('http-equiv')
+            if key:
+                self.meta[key.lower()] = values.get('content', '')
+
+
+audit = IndexAudit()
+audit.feed(index)
+duplicate_ids = sorted({value for value in audit.ids if audit.ids.count(value) > 1})
+if duplicate_ids:
+    raise SystemExit(f'Duplicate HTML ids: {", ".join(duplicate_ids)}')
+
+for tag, attrs in audit.controls:
+    control_id = attrs.get('id')
+    labelled = control_id in audit.labels_for or attrs.get('aria-label') or attrs.get('aria-labelledby')
+    if not labelled:
+        raise SystemExit(f'Unlabelled form control: {tag}#{control_id or "unknown"}')
+
+for asset in audit.local_assets:
+    if asset.startswith(('http:', 'https:', 'data:')):
+        raise SystemExit(f'Unexpected external page asset: {asset}')
+    if not (ROOT / asset.lstrip('./')).is_file():
+        raise SystemExit(f'HTML references missing asset: {asset}')
+
+required_scripts = {'runtime-guard.js', 'setup-ux.js', 'game-engine.js', 'word-packs.js', 'data-store.js', 'app.js'}
+if not required_scripts.issubset(audit.local_assets):
+    raise SystemExit(f'HTML script set incomplete: {sorted(required_scripts - audit.local_assets)}')
+
+csp = audit.meta.get('content-security-policy', '')
+for directive in [
+    "default-src 'self'", "script-src 'self'", "style-src 'self'",
+    "object-src 'none'", "base-uri 'none'", "form-action 'self'"
+]:
+    if directive not in csp:
+        raise SystemExit(f'Content Security Policy directive missing: {directive}')
+
+for marker in [
+    'players-help', 'imposters-help', 'Spielregeln und Punkte',
+    'clear-all-data', 'export-data', 'import-data', 'vote-screen',
+    'guess-screen', 'leaderboard', 'Version 1.0.0-beta.3'
+]:
+    if marker not in index:
+        raise SystemExit(f'Index capability marker missing: {marker}')
+
+if not re.search(r'\bVERSION\s*=\s*7\b', engine):
+    raise SystemExit('Game engine version must be 7.')
+if not re.search(r'\bKEY_VERSION\s*=\s*7\b', store) or not re.search(r'\bENGINE_VERSION\s*=\s*7\b', store):
+    raise SystemExit('Storage schema and migration engine must be version 7.')
+
+category_count = content.count('entries:[')
+term_count = len(re.findall(r"\['(?:[^'\\]|\\.)*','(?:[^'\\]|\\.)*'\]", content))
+if (category_count, term_count) != (14, 168):
+    raise SystemExit(f'Unexpected built-in content: {category_count} categories, {term_count} terms.')
+
+cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
+if not cache_match or cache_match.group(1) != 'secret-circle-v13':
+    raise SystemExit('Service worker cache must be secret-circle-v13.')
+core_match = re.search(r'const CORE=(\[[^;]+\]);', service_worker)
+if not core_match:
+    raise SystemExit('Service worker CORE list is missing or unparsable.')
+try:
+    core_assets = ast.literal_eval(core_match.group(1))
+except (SyntaxError, ValueError) as error:
+    raise SystemExit(f'Unable to parse service worker CORE list: {error}')
+expected_core = [
+    './', './index.html', './privacy.html', './styles.css', './pwa.css',
+    './runtime-guard.js', './setup-ux.js', './app.js', './game-engine.js',
+    './word-packs.js', './data-store.js', './manifest.webmanifest',
+    './icon.svg', './icon-192.png', './icon-512.png'
+]
+if core_assets != expected_core:
+    raise SystemExit('Service worker CORE list differs from the validated production asset order.')
+for marker in ['cache.addAll', 'await cache.put', 'self.clients.claim', 'handleNavigation', 'handleAsset']:
+    if marker not in service_worker:
+        raise SystemExit(f'Service worker reliability marker missing: {marker}')
+
 if manifest.get('id') != './' or manifest.get('start_url') != './' or manifest.get('scope') != './':
-    raise SystemExit('Manifest id, start_url and scope must be relative and stable.')
+    raise SystemExit('Manifest id, start_url and scope must be stable relative paths.')
 if manifest.get('display') != 'standalone' or manifest.get('lang') != 'de':
     raise SystemExit('Manifest display or language is invalid.')
 icons = manifest.get('icons') or []
@@ -172,4 +165,44 @@ for relative, expected_size in [('icon-192.png', 192), ('icon-512.png', 512)]:
     if (width, height) != (expected_size, expected_size):
         raise SystemExit(f'Unexpected PNG dimensions for {relative}: {width}x{height}')
 
-print('Secret Circle offline PWA structure valid.')
+if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('node') != '>=20':
+    raise SystemExit('Package version or Node support declaration is invalid.')
+scripts = package.get('scripts', {})
+for name in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
+    if not scripts.get(name):
+        raise SystemExit(f'Package script missing: {name}')
+for marker in ['runtime-guard.js', 'setup-ux.js', 'app.js', 'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js']:
+    if marker not in scripts['check']:
+        raise SystemExit(f'Syntax gate missing: {marker}')
+for marker in ['tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js', 'tests/fuzz.test.js']:
+    if marker not in scripts['test']:
+        raise SystemExit(f'Unit test gate missing: {marker}')
+
+for relative, markers in {
+    'setup-ux.js': ['maximumImposters', 'Höchstens 20', 'SecretCircleSetupUx'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v13', 'setup-ux.js'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v13'],
+    'tests/e2e/setup-limits.spec.js': ['live player count and valid imposter range'],
+    'tests/fuzz.test.js': ['deterministicFuzzScenarios', 'corruptionMutationsRejected'],
+    'tests/content.test.js': ['totalTerms', 'safeTextOnlyContent'],
+    'DEPLOYMENT.md': ['secret-circle-v13'],
+    'RELEASE_STATUS.md': ['Cache-Version 13']
+}.items():
+    text = read(relative)
+    for marker in markers:
+        if marker.lower() not in text.lower():
+            raise SystemExit(f'Missing release marker {marker} in {relative}')
+
+print(json.dumps({
+    'structure_validation': 'PASS',
+    'required_files': len(REQUIRED_FILES),
+    'html_ids': len(audit.ids),
+    'local_page_assets': sorted(audit.local_assets),
+    'engine_version': 7,
+    'storage_version': 7,
+    'pwa_cache': cache_match.group(1),
+    'offline_core_assets': len(core_assets),
+    'built_in_categories': category_count,
+    'built_in_terms': term_count,
+    'obsolete_files_removed': obsolete
+}, ensure_ascii=False, indent=2))
