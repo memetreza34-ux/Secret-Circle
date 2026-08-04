@@ -21,6 +21,10 @@ async function auditDocument(page) {
       if (!name) issues.push('Schaltfläche ohne zugänglichen Namen.');
     }
 
+    for (const summary of document.querySelectorAll('summary')) {
+      if (!summary.textContent.trim()) issues.push('Aufklappbereich ohne zugänglichen Namen.');
+    }
+
     const headings = [...document.querySelectorAll('h1, h2, h3')].filter(node => !node.closest('[hidden]'));
     if (!headings.some(node => node.tagName === 'H1')) issues.push('Sichtbare Seite ohne H1.');
 
@@ -44,6 +48,18 @@ test('setup screen satisfies structural accessibility gates', async ({ page }) =
   await page.keyboard.press('Tab');
   const focused = await page.evaluate(() => document.activeElement?.tagName);
   expect(focused).not.toBe('BODY');
+});
+
+test('rules and scoring guide is keyboard accessible', async ({ page }) => {
+  const summary = page.getByText('Spielregeln und Punkte', { exact: true });
+  await summary.focus();
+  await expect(summary).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.help-panel')).toHaveAttribute('open', '');
+  await expect(page.getByRole('heading', { name: 'Ablauf' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Punkte' })).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.help-panel')).not.toHaveAttribute('open', '');
 });
 
 test('all game phases retain focus and accessible controls', async ({ page }) => {
@@ -73,7 +89,7 @@ test('all game phases retain focus and accessible controls', async ({ page }) =>
 test('mobile layout has large touch targets and no horizontal overflow', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'Nur für das mobile Playwright-Projekt relevant.');
   const result = await page.evaluate(() => {
-    const undersized = [...document.querySelectorAll('button, a, input, select')]
+    const undersized = [...document.querySelectorAll('button, a, input, select, summary')]
       .filter(node => {
         const style = getComputedStyle(node);
         if (style.display === 'none' || style.visibility === 'hidden' || node.closest('[hidden]')) return false;
