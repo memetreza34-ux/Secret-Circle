@@ -19,7 +19,7 @@ Secret Circle besteht ausschließlich aus statischen Dateien. Für die PWA-Insta
 4. Branch `main` und Ordner `/ (root)` auswählen.
 5. Speichern und auf die bereitgestellte HTTPS-Adresse warten.
 
-Alternativ kann später ein eigener Pages-Workflow verwendet werden. Für den ersten kontrollierten Betatest ist die Branch-Bereitstellung ausreichend, weil die App keinen Build-Schritt benötigt.
+Für den ersten kontrollierten Betatest ist die Branch-Bereitstellung ausreichend, weil die App keinen Build-Schritt benötigt.
 
 ## Prüfung nach dem Deployment
 
@@ -28,13 +28,14 @@ Die veröffentlichte URL in einem privaten Browserfenster öffnen und prüfen:
 1. `index.html`, `privacy.html` und `manifest.webmanifest` liefern Status 200.
 2. Browser-Entwicklertools erkennen ein gültiges Manifest.
 3. 192- und 512-Pixel-Icons werden ohne Fehler geladen.
-4. Service Worker wird registriert und verwendet Cache `secret-circle-v10`.
+4. Service Worker wird registriert und verwendet Cache `secret-circle-v13`.
 5. App ist nach einem vollständigen Online-Aufruf im Flugmodus erneut startbar.
 6. Installation auf Android beziehungsweise „Zum Home-Bildschirm“ auf iOS funktioniert.
 7. Keine Fehler in Konsole oder Netzwerkansicht.
 8. Aktiver Spielstand bleibt nach Neuladen erhalten.
 9. Sicherungsexport und -import funktionieren.
-10. Datenschutzseite ist auch offline erreichbar.
+10. Datenschutzseite und Live-Einrichtungslogik sind offline erreichbar.
+11. Nach einer Aktualisierung bleibt nur Cache `secret-circle-v13` bestehen.
 
 ## Release-Version markieren
 
@@ -53,7 +54,7 @@ Bei jeder Änderung an offline benötigten Dateien:
 
 1. Cache-Version in `sw.js` erhöhen.
 2. neue oder entfernte Kerndateien in `CORE` anpassen.
-3. Offline-Test und Release-Audit aktualisieren.
+3. Offline-Test, Strukturvalidator und Release-Audit aktualisieren.
 4. installierte ältere Version online öffnen.
 5. automatische Aktualisierung und einmaliges Neuladen prüfen.
 6. kontrollieren, dass nur der neue Cache erhalten bleibt.
