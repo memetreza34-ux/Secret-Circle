@@ -131,8 +131,8 @@ if (category_count, term_count) != (14, 168):
     raise SystemExit(f'Unexpected built-in content: {category_count} categories, {term_count} terms.')
 
 cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
-if not cache_match or cache_match.group(1) != 'secret-circle-v14':
-    raise SystemExit('Service worker cache must be secret-circle-v14.')
+if not cache_match or cache_match.group(1) != 'secret-circle-v15':
+    raise SystemExit('Service worker cache must be secret-circle-v15.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', service_worker)
 if not core_match:
     raise SystemExit('Service worker CORE list is missing or unparsable.')
@@ -188,14 +188,14 @@ for marker in ['tests/engine.test.js', 'tests/storage.test.js', 'tests/content.t
 for relative, markers in {
     'setup-ux.js': ['maximumImposters', 'Höchstens 20', 'SecretCircleSetupUx'],
     'privacy-guard.js': ['concealSecret', 'automatisch verdeckt', 'SecretCirclePrivacyGuard'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v14', 'privacy-guard.js'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v14'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v15', 'privacy-guard.js'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v15'],
     'tests/e2e/privacy-guard.spec.js': ['secret card is concealed', 'continues normally'],
     'tests/e2e/setup-limits.spec.js': ['live player count and valid imposter range'],
     'tests/fuzz.test.js': ['deterministicFuzzScenarios', 'corruptionMutationsRejected'],
     'tests/content.test.js': ['totalTerms', 'safeTextOnlyContent'],
-    'DEPLOYMENT.md': ['secret-circle-v14'],
-    'RELEASE_STATUS.md': ['Cache-Version 14']
+    'DEPLOYMENT.md': ['secret-circle-v15'],
+    'RELEASE_STATUS.md': ['Cache-Version 15']
 }.items():
     text = read(relative)
     for marker in markers:
