@@ -11,19 +11,19 @@ required_files = [
     'word-packs.js', 'sw.js', 'manifest.webmanifest', 'icon.svg',
     'icon-192.png', 'icon-512.png', 'package.json',
     'playwright.config.js', 'playwright.cross-browser.config.js',
-    'tests/engine.test.js', 'tests/storage.test.js', 'tests/fuzz.test.js',
-    'tests/e2e/game-flow.spec.js', 'tests/e2e/setup-limits.spec.js',
-    'tests/e2e/timer.spec.js', 'tests/e2e/offline.spec.js',
-    'tests/e2e/pwa-install.spec.js', 'tests/e2e/runtime-guard.spec.js',
-    'tests/e2e/content.spec.js', 'tests/e2e/history.spec.js',
-    'tests/e2e/storage-safety.spec.js', 'tests/e2e/security.spec.js',
-    'tests/e2e/accessibility.spec.js', 'tests/cross-browser/smoke.spec.js',
-    'scripts/repo_hygiene.py', 'scripts/performance_budget.py',
-    'scripts/release_audit.py', '.github/workflows/ci.yml',
-    '.github/workflows/cross-browser.yml', 'README.md',
-    'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
-    'KNOWN_LIMITATIONS.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md',
-    'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
+    'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
+    'tests/fuzz.test.js', 'tests/e2e/game-flow.spec.js',
+    'tests/e2e/setup-limits.spec.js', 'tests/e2e/timer.spec.js',
+    'tests/e2e/offline.spec.js', 'tests/e2e/pwa-install.spec.js',
+    'tests/e2e/runtime-guard.spec.js', 'tests/e2e/content.spec.js',
+    'tests/e2e/history.spec.js', 'tests/e2e/storage-safety.spec.js',
+    'tests/e2e/security.spec.js', 'tests/e2e/accessibility.spec.js',
+    'tests/cross-browser/smoke.spec.js', 'scripts/repo_hygiene.py',
+    'scripts/performance_budget.py', 'scripts/release_audit.py',
+    '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
+    'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md',
+    'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'SECURITY.md',
+    'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
 ]
 missing = [relative for relative in required_files if not (ROOT / relative).is_file()]
 if missing:
@@ -75,9 +75,9 @@ markers = {
     ],
     'package.json': [
         '"version": "1.0.0-beta.3"', '"node": ">=20"',
-        'node --check runtime-guard.js', 'tests/fuzz.test.js',
-        'scripts/repo_hygiene.py', 'scripts/performance_budget.py',
-        'test:cross-browser'
+        'node --check runtime-guard.js', 'tests/content.test.js',
+        'tests/fuzz.test.js', 'scripts/repo_hygiene.py',
+        'scripts/performance_budget.py', 'test:cross-browser'
     ],
     'tests/engine.test.js': [
         'deadlineTimer', 'backgroundResume', 'finiteTieBreak',
@@ -86,6 +86,11 @@ markers = {
     'tests/storage.test.js': [
         'realLegacyGameUpgrade', 'currentKeyUpgrade', 'corruptedDataRecovery',
         'legacyBackupImport', 'oversizedBackupProtection', 'atomicImportRollback'
+    ],
+    'tests/content.test.js': [
+        'contentVersion', 'categories', 'totalTerms', 'termsPerCategory',
+        'uniqueWithinCategories', 'safeTextOnlyContent',
+        'exactWordHintDuplicates', 'crossCategoryDuplicates'
     ],
     'tests/fuzz.test.js': [
         'deterministicFuzzScenarios', 'completedRounds', 'playerRange',
