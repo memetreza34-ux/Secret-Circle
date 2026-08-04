@@ -25,7 +25,7 @@ test('loads Imposter setup content and privacy without browser errors', async ({
 
   await page.getByRole('link', { name: 'Datenschutz ansehen' }).click();
   await expect(page.getByRole('heading', { name: 'Deine Daten bleiben auf deinem Gerät' })).toBeVisible();
-  await page.getByRole('link', { name: 'Zurück zum Spiel' }).click();
+  await page.getByRole('link', { name: 'Zu Word Imposter' }).click();
   await expect(page.locator('#setup-screen')).toBeVisible();
   expect(errors).toEqual([]);
 });
