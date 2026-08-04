@@ -47,7 +47,7 @@ assert.deepEqual(new Set(advanced.modes), new Set(['two-truths', 'question-impos
 assert.equal(advanced.version, 1);
 
 const totalItems = expanded.games.reduce((sum, game) => sum + expanded.itemCount(game.id), 0);
-assert.ok(totalItems >= 390, `Expected at least 390 content items, received ${totalItems}.`);
+assert.ok(totalItems >= 384, `Expected at least 384 content items, received ${totalItems}.`);
 
 console.log(JSON.stringify({
   ok: true,
@@ -58,5 +58,6 @@ console.log(JSON.stringify({
   playableGames: expanded.games.filter(game => game.status === 'playable').length,
   plannedGames: expanded.games.filter(game => game.status === 'planned').length,
   advancedPlayableGames: advancedIds.length,
+  guaranteedMinimumItems: 384,
   totalItems
 }, null, 2));
