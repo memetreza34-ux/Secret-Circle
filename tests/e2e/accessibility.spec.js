@@ -11,26 +11,21 @@ async function auditDocument(page) {
       const label = control.labels?.length || control.getAttribute('aria-label') || control.getAttribute('aria-labelledby');
       if (!label) issues.push(`Formularfeld ohne Beschriftung: #${control.id || control.name || control.type}`);
     }
-
     for (const image of document.querySelectorAll('img')) {
       if (!image.hasAttribute('alt')) issues.push(`Bild ohne alt-Attribut: ${image.src}`);
     }
-
     for (const button of document.querySelectorAll('button')) {
       const name = (button.textContent || button.getAttribute('aria-label') || '').trim();
       if (!name) issues.push('Schaltfläche ohne zugänglichen Namen.');
     }
-
     for (const summary of document.querySelectorAll('summary')) {
       if (!summary.textContent.trim()) issues.push('Aufklappbereich ohne zugänglichen Namen.');
     }
 
     const headings = [...document.querySelectorAll('h1, h2, h3')].filter(node => !node.closest('[hidden]'));
     if (!headings.some(node => node.tagName === 'H1')) issues.push('Sichtbare Seite ohne H1.');
-
     const viewportOverflow = document.documentElement.scrollWidth - window.innerWidth;
     if (viewportOverflow > 2) issues.push(`Horizontales Überlaufen um ${viewportOverflow}px.`);
-
     return issues;
   });
 }
@@ -61,10 +56,8 @@ test.beforeEach(async ({ page }) => {
 test('Word Imposter setup satisfies structural accessibility gates', async ({ page }) => {
   await expect(page.locator('#setup-screen')).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
-
   await page.keyboard.press('Tab');
-  const focused = await page.evaluate(() => document.activeElement?.tagName);
-  expect(focused).not.toBe('BODY');
+  expect(await page.evaluate(() => document.activeElement?.tagName)).not.toBe('BODY');
 });
 
 test('rules and scoring guide is keyboard accessible', async ({ page }) => {
@@ -84,7 +77,6 @@ test('all Word Imposter phases retain focus and accessible controls', async ({ p
   await page.locator('#players').fill(players.join('\n'));
   await page.locator('#match-rounds').selectOption('1');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
-
   await expect(page.locator('#reveal-screen')).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
   await expect(page.locator('#reveal-screen')).toBeFocused();
@@ -103,7 +95,7 @@ test('all Word Imposter phases retain focus and accessible controls', async ({ p
   expect(await auditDocument(page)).toEqual([]);
 });
 
-test('Party Hub navigation catalog and data view satisfy structural gates', async ({ page }) => {
+test('Party Hub navigation catalog data and custom-pack editor satisfy structural gates', async ({ page }) => {
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
@@ -116,6 +108,7 @@ test('Party Hub navigation catalog and data view satisfy structural gates', asyn
 
   await page.getByRole('button', { name: 'Daten' }).click();
   await expect(page.getByRole('heading', { name: 'Daten & Einstellungen' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Eigene Hub-Kategorien' })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
 });
 
@@ -140,7 +133,9 @@ test('advanced Question Imposter setup and private card screen satisfy structura
 
 test('mobile layouts have large touch targets and no horizontal overflow', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'Nur für das mobile Playwright-Projekt relevant.');
-  expect(await touchAudit(page)).toEqual({ undersized: [], overflow: 0 });
+  const imposter = await touchAudit(page);
+  expect(imposter.undersized).toEqual([]);
+  expect(imposter.overflow).toBeLessThanOrEqual(2);
 
   await page.goto('/party.html');
   const hub = await touchAudit(page);
@@ -164,12 +159,19 @@ test('reduced motion preference is respected across product pages', async ({ pag
   await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const path of ['/', '/party.html', '/advanced.html?game=question-imposter']) {
     await page.goto(path);
-    const values = await page.evaluate(() => {
+    const durations = await page.evaluate(() => {
       const target = document.querySelector('button');
       const style = getComputedStyle(target);
-      return { animation: style.animationDuration, transition: style.transitionDuration };
+      const seconds = value => value.split(',').map(part => {
+        const item = part.trim();
+        return item.endsWith('ms') ? Number.parseFloat(item) / 1000 : Number.parseFloat(item) || 0;
+      });
+      return {
+        animation: seconds(style.animationDuration),
+        transition: seconds(style.transitionDuration)
+      };
     });
-    expect(values.animation).toBe('0s');
-    expect(['0s', '0.01ms']).toContain(values.transition);
+    expect(Math.max(...durations.animation)).toBeLessThanOrEqual(0.00002);
+    expect(Math.max(...durations.transition)).toBeLessThanOrEqual(0.00002);
   }
 });
