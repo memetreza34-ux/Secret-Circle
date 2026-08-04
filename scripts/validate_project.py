@@ -147,11 +147,11 @@ module_markers = {
     'roles': ['MAX_IMPOSTERS = 6', 'independent-roles-v1', 'assignIndependentRoles', 'engine.restoreGame', 'engine.createGame', 'version: 2'],
     'expansion': ["'two-truths': 'two-truths'", "'question-imposter': 'question-imposter'", "'location-spy': 'location-spy'", "mafia: 'mafia'", "id: 'wavelength'", 'version: 2'],
     'routing': ['advancedMode', 'advanced.html?game=', 'version: 3'],
-    'custom_packs': ['secret-circle-party-custom-packs-v1', 'MAX_PACKS = 20', 'MAX_ITEMS = 100', 'parseItems', 'normalizePack', 'applyPacks', 'version: 2'],
+    'custom_packs': ['secret-circle-party-custom-packs-v1', 'MAX_PACKS = 20', 'MAX_ITEMS = 100', 'createManager', 'commit(nextState)', 'restoreStorage', 'version: 2'],
     'advanced_modes': ['renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy', 'renderMafia', 'assignMafiaRoles', 'mafiaWinner', 'version: 1'],
     'advanced_runner': ['ACTIVE_VERSION = 2', 'session.players', 'sessionPlayers', 'historyId', 'saveHubState(nextHubState)', 'Session bleibt aktiv', 'MAX_SESSION_ROUNDS = 20'],
-    'hub_plus': ['gameAllowed', 'achievement-grid', 'settings-age-level', 'beforeinstallprompt', 'repairStatsFromHistory', 'version: 4'],
-    'data_tools': ['secret-circle-complete-backup', 'MAX_BYTES = 1_500_000', 'validateBackup', 'collectEntries', 'Import abgebrochen']
+    'hub_plus': ['VERSION = 5', 'savePreferences', 'repairStatsFromHistory', 'escapeSelector', 'Statistik konnte nicht repariert'],
+    'data_tools': ['VERSION = 2', 'MAX_BYTES = 1_500_000', 'byteLength', 'replaceEntries', 'Import und Rollback', 'Datenlöschung abgebrochen']
 }
 for source_name, markers in module_markers.items():
     for marker in markers:
@@ -165,8 +165,8 @@ if (base_games, added_games) != (18, 4):
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='([^']+)'", sw)
-if not cache or cache.group(1) != 'secret-circle-v23':
-    raise SystemExit('Service worker cache must be secret-circle-v23.')
+if not cache or cache.group(1) != 'secret-circle-v24':
+    raise SystemExit('Service worker cache must be secret-circle-v24.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', sw)
 if not core_match:
     raise SystemExit('Service worker CORE list missing.')
@@ -183,7 +183,7 @@ expected_core = [
     './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
 ]
 if core != expected_core:
-    raise SystemExit('Service worker CORE is not synchronized with cache v23.')
+    raise SystemExit('Service worker CORE is not synchronized with cache v24.')
 for marker in ['cache.addAll', 'await cache.put', 'self.clients.claim', 'handleNavigation', 'handleAsset']:
     if marker not in sw:
         raise SystemExit(f'Service worker marker missing: {marker}')
@@ -216,14 +216,14 @@ for marker in ['tests/party-catalog.test.js', 'tests/party-expansion.test.js', '
 
 required_test_markers = {
     'tests/party-expansion.test.js': ['playableGames', 'advancedPlayableGames', 'totalItems'],
-    'tests/party-custom-packs.test.js': ['customPackVersion', 'catalogInjectionAndRemoval'],
+    'tests/party-custom-packs.test.js': ['transactionRollback', 'failedRemovalPreservesPack', 'unicodeDuplicatesRemoved'],
     'tests/e2e/party-hub.spec.js': ['playable catalog and roadmap', 'age preference', 'advanced games are playable'],
     'tests/e2e/party-advanced.spec.js': ['survive a reload', 'original player snapshot', 'failed history write'],
     'tests/e2e/party-custom-packs.spec.js': ['custom pack editor validates', 'duplicate pack names', 'custom packs can be deleted'],
-    'tests/e2e/party-data.spec.js': ['custom packs and Word Imposter', 'complete backup import', 'invalid import', 'complete deletion'],
-    'tests/e2e/party-stats.spec.js': ['history repairs cumulative', 'never reduces newer aggregate'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v23', 'custom packs', 'advanced Question Imposter'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v23'],
+    'tests/e2e/party-data.spec.js': ['multibyte backup over the byte limit', 'failed import write rolls back', 'failed deletion rolls back'],
+    'tests/e2e/party-stats.spec.js': ['statistics storage failure', 'preference storage failure', 'non-finite history values'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v24', 'custom packs', 'advanced Question Imposter'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v24'],
     'tests/e2e/pwa-install.spec.js': ['./party.html', 'Party Hub'],
     'tests/cross-browser/smoke.spec.js': ['Party Hub catalog', 'Question Imposter']
 }
@@ -234,14 +234,14 @@ for relative, markers in required_test_markers.items():
             raise SystemExit(f'Missing test marker {marker} in {relative}')
 
 required_doc_markers = {
-    'README.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', '18 spielbare Spiele'],
-    'RELEASE_STATUS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Gesamte gewünschte Party-Hub-Vision'],
-    'CHANGELOG.md': ['secret-circle-v23', 'eigene Hub-Kategorien', 'Spielergruppe'],
-    'DEPLOYMENT.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Spielergruppe'],
-    'RELEASE_CHECKLIST.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spieler-Snapshot'],
-    'MANUAL_TEST_PLAN.md': ['secret-circle-v23', 'Eigene Hub-Kategorien', 'Spielergruppe'],
-    'KNOWN_LIMITATIONS.md': ['secret-circle-v23', 'Eigene Hub-Packs', 'Online-Mehrspielermodus'],
-    'CI_TROUBLESHOOTING.md': ['secret-circle-v23', 'eigene Hub-Packs', 'GitHub Actions']
+    'README.md': ['secret-circle-v24', 'Eigene Hub-Kategorien', 'Byte-Grenze'],
+    'RELEASE_STATUS.md': ['secret-circle-v24', 'transaktionssichere Datensicherung', 'Gesamte gewünschte Party-Hub-Vision'],
+    'CHANGELOG.md': ['secret-circle-v24', 'Mehrbyte', 'Präferenz'],
+    'DEPLOYMENT.md': ['secret-circle-v24', 'Rollback', 'Spielergruppe'],
+    'RELEASE_CHECKLIST.md': ['secret-circle-v24', 'Byte-Grenze', 'Spieler-Snapshot'],
+    'MANUAL_TEST_PLAN.md': ['secret-circle-v24', 'Mehrbyte', 'Spielergruppe'],
+    'KNOWN_LIMITATIONS.md': ['secret-circle-v24', 'Eigene Hub-Packs', 'Online-Mehrspielermodus'],
+    'CI_TROUBLESHOOTING.md': ['secret-circle-v24', 'eigene Hub-Packs', 'GitHub Actions']
 }
 for relative, markers in required_doc_markers.items():
     source = read(relative).lower()
@@ -260,10 +260,15 @@ print(json.dumps({
     'party_games_playable': 18,
     'party_games_planned': 4,
     'advanced_playable_games': 4,
-    'advanced_active_schema': ACTIVE_VERSION if False else 2,
+    'advanced_active_schema': 2,
+    'hub_plus_version': 5,
+    'data_tools_version': 2,
     'custom_pack_builder': True,
+    'transactional_custom_packs': True,
     'player_snapshot_sessions': True,
     'transaction_safe_history': True,
+    'byte_safe_backup': True,
+    'transactional_import_delete': True,
     'pwa_cache': cache.group(1),
     'offline_core_assets': len(core),
     'manifest_start_url': manifest.get('start_url')
