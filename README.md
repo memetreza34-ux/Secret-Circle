@@ -23,6 +23,7 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - keine Begriffswiederholung, bis der gewählte Pool aufgebraucht ist
 - geheime Kartenübergabe
 - automatische Verdeckung einer sichtbaren geheimen Karte bei App-Wechsel oder Fokusverlust
+- blockierte Weitergabe, bis eine automatisch verdeckte Karte erneut geöffnet wurde
 - deadline-basierter Timer von einer bis zehn Minuten, der Pause, Hintergrund und Neuladen korrekt übersteht
 - geheime Abstimmung durch alle Personen
 - Schutz vor Selbstwahl und doppelten Stimmen
@@ -36,7 +37,7 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - Export und Import einer vollständigen JSON-Sicherung
 - vollständiges Löschen aller lokalen Daten
 - installierbare PWA mit 192- und 512-Pixel-PNG-Icons
-- vollständiger Offline-Cache `secret-circle-v14` für App, Datenschutz, Inhalte, Setup- und Privatsphärenschutz sowie Icons
+- vollständiger Offline-Cache `secret-circle-v15` für App, Datenschutz, Inhalte, Setup- und Privatsphärenschutz sowie Icons
 - globaler Laufzeit-Fehlerschutz und kontrollierter PWA-Update-Neustart
 - Datenschutzseite und restriktive Content Security Policy
 - keine Anmeldung, kein Tracking und keine Serverübertragung von Spieldaten
@@ -47,7 +48,7 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - `word-packs.js`: integrierte Kategorien und Begriffe
 - `data-store.js`: versionierte Speicherung, Migration, Backup und Wiederherstellung
 - `setup-ux.js`: Live-Validierung von Gruppengröße und Imposter-Limit
-- `privacy-guard.js`: automatische Verdeckung geheimer Karten bei Fokusverlust
+- `privacy-guard.js`: automatische Verdeckung geheimer Karten und Schutz vor versehentlicher Weitergabe
 - `runtime-guard.js`: globale Fehleranzeige und sicherer Wechsel auf aktualisierte PWA-Dateien
 - `app.js`: Benutzeroberfläche, Timer-Synchronisierung und Ablaufsteuerung
 - `sw.js`: Offline-Cache und PWA-Betrieb
@@ -82,10 +83,11 @@ Die Prüfungen umfassen:
 - echte Migration älterer Spielstände
 - Datenkorruption, Backup-Import und Rollback
 - Repository-Hygiene und Offline-Core-Performancebudget
+- strukturelle Prüfung von HTML, lokalen Assets, Manifest und Service Worker
 - vollständige Desktop- und Mobilspielabläufe
 - Grenzwerte mit 3 und 20 Personen sowie mehreren Impostern
 - Live-Setup-Hinweise und dynamische Imposter-Grenzen
-- automatische Kartenverdeckung und sicheres erneutes Öffnen
+- automatische Kartenverdeckung, blockierte Weitergabe und sicheres erneutes Öffnen
 - Mehr-Runden-Matches und nicht wiederholte Begriffe
 - Timer-Pause, Hintergrund, Ablauf und Wiederaufnahme nach Neuladen
 - Verlauf abgeschlossener Runden
@@ -115,7 +117,7 @@ Ein öffentlicher Release ist nur vorgesehen, wenn:
 2. GitHub Actions auf dem endgültigen Release-Commit grün ist,
 3. die PWA auf aktuellen Android- und iOS-Geräten getestet wurde,
 4. Offline-Start, Installation, Update, Wiederaufnahme, Backup und vollständiges Datenlöschen geprüft wurden,
-5. automatische Kartenverdeckung bei App-Wechsel auf realen Geräten geprüft wurde,
+5. automatische Kartenverdeckung und blockierte Weitergabe bei App-Wechsel auf realen Geräten geprüft wurden,
 6. Accessibility und Spielablauf mit echten Testpersonen validiert wurden,
 7. alle Begriffe redaktionell geprüft wurden,
 8. erforderliche Anbieter-, Kontakt- und Impressumsangaben ergänzt wurden.
