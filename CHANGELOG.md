@@ -4,63 +4,64 @@
 
 ### Hinzugefügt
 
-- installierter PWA-Einstieg öffnet jetzt den Party Hub
-- Party-Hub-Seite mit Start, Spiele, Spieler, Favoriten, Verlauf und Daten
-- Katalogsuche und Filter nach Art, Stimmung, Gruppengröße, Altersstufe und Status
-- klare Spieldetails mit Regeln, Spielerzahl, Dauer, Kategorien und Inhaltsmenge
-- gemeinsame lokale Spielerliste und Host-Presets
-- Favoriten, zuletzt gespielt, Verlauf, Statistik und acht Erfolge
-- Standard-Sessionlänge und gespeicherte Alterspräferenz
-- Installationsschaltfläche für unterstützte Browser
-- 22 sichtbare Spiele, davon 18 spielbar und 4 eindeutig gesperrt
-- neu vollständig spielbar:
-  - Zwei Wahrheiten, eine Lüge
-  - Question Imposter
-  - Location Spy
-  - Mafia
-- neue sichtbare Roadmap-Spiele:
-  - Wellenlänge
-  - Zeichnen & Raten
-  - Schnellfeuer
-  - Geräusche erraten
-- mehr als 390 eigenständige Hub-Fragen, Entscheidungen, Begriffe und Aufgaben
-- private Eingabe, Mischung und Gruppenabstimmung für Zwei Wahrheiten, eine Lüge
-- geheime ähnliche Fragen, Imposter-Verteilung und Abstimmung für Question Imposter
-- geheime Orte, Spionrollen, Verdächtigenwahl und Ortsraten für Location Spy
-- private Mafia-Rollen, Moderatoransicht, Nachtaktionen, Tageswahl und Siegprüfung
-- wiederaufnehmbare komplexe Sessions
-- Sessionlängen mit 3, 5, 10 oder 20 Runden
-- vollständiger gemeinsamer Export für Hub und Word Imposter
-- gemeinsamer Import mit Formatprüfung, Größenlimit und Rollback
+- installierter PWA-Einstieg öffnet den Party Hub
+- 22 sichtbare Spiele, davon 18 spielbar und 4 gesperrt geplant
+- Suche und Filter nach Art, Stimmung, Gruppengröße, Altersstufe und Status
+- gemeinsame lokale Spieler, Host-Presets, Favoriten und zuletzt gespielt
+- Verlauf, Statistik und acht Erfolge
+- komplexe Spielabläufe für Zwei Wahrheiten, Question Imposter, Location Spy und Mafia
+- wiederaufnehmbare Sessions mit 3, 5, 10 oder 20 Runden
+- eigene Hub-Kategorien für kompatible Frage-, Darstellungs- und Schnellspiele
+- maximal 20 eigene Packs mit maximal 100 eindeutigen Karten
+- Gesamtexport für Hub, eigene Packs und Word Imposter
+- Import mit Formatprüfung, Größenlimit und Rollback
 - vollständige Löschung aller `secret-circle-*`-Daten
-- Expansionskatalog-Unit-Test
-- E2E-Suiten für alle vier komplexen Spiele
-- E2E-Suiten für Export, Import, ungültige Sicherungen und vollständige Löschung
-- Cross-Browser-Smoke-Test für Hub und komplexe Spiele
-- vollständiger Offline-Core `secret-circle-v21`
+- Offline-Core `secret-circle-v23`
+- Regressionstests für unveränderliche Spielergruppen und fehlgeschlagene Verlaufsspeicherung
 
 ### Verbessert
 
-- Word Imposter und Party Hub sind gegenseitig klar verlinkt
-- Inhalte und Entwicklungsstatus sind vor dem Start sichtbar
-- geplante Spiele können nicht wie fertige Funktionen gestartet werden
-- Altersfilter wird zwischen Katalog und Einstellungen synchronisiert
-- fortgesetzte komplexe Sessions werden strenger validiert
-- abgeschlossene Sessions öffnen nach Neuladen direkt die Zusammenfassung
-- maximal 20 Runden werden auch beim Verlängern einer Session eingehalten
-- Runtime-Fehler werden auf Imposter-, Hub- und erweiterten Spielseiten sichtbar
-- Manifest, Offline-Test, PWA-Installationstest, Validator, Release-Audit und Performancebudget berücksichtigen den erweiterten Hub
-- responsive Darstellung für Desktop, Smartphone, Safe Areas und installierte PWA
+- aktives erweitertes Session-Schema auf Version 2 gehärtet
+- jede gestartete komplexe Session speichert ihre eigene Spielergruppe als Snapshot
+- Änderungen an der gemeinsamen Lobby verändern keine bereits laufende Session mehr
+- alte aktive Sessions werden kontrolliert migriert
+- aktive Daten mit ungültiger Spielerzahl, Packzuordnung oder Rundenzahl werden sicher verworfen
+- abgeschlossene Sessions verwenden eindeutige, idempotente Historien-IDs
+- Verlauf und Statistik werden vor dem Schließen transaktionssicher gespeichert
+- ein lokaler Speicherfehler lässt die Session aktiv und erneut speicherbar
+- Statistikwerte älterer Sessions werden aus dem Verlauf repariert, ohne höhere neuere Werte zu reduzieren
+- mobile Navigation, Filter, Touchflächen, Safe Areas und reduzierte Bewegung werden automatisch geprüft
+- PR-Beschreibung, Validator und Release-Audit spiegeln den tatsächlichen Stand wider
+
+### Behoben
+
+- laufende Question-Imposter-, Location-Spy-, Mafia- und Zwei-Wahrheiten-Sessions wechseln nach einer Lobbyänderung nicht mehr unbemerkt die Personen
+- Rollen, Fragen und aktive Person bleiben an die ursprüngliche Spielergruppe gebunden
+- fehlgeschlagene Hub-Speicherung löscht keinen abgeschlossenen Sessionfortschritt mehr
+- wiederholter Abschluss erzeugt keinen doppelten Verlaufseintrag
+- beschädigte aktive Sessions bleiben nicht dauerhaft als unsichtbarer Fehler gespeichert
+- eigene Hub-Packs werden vor dem Katalogrendern geladen
+- doppelte Karten und doppelte Packnamen werden zuverlässig abgelehnt
+- vollständige Datenlöschung umfasst eigene Packs und aktive Sessions
+
+### Qualität
+
+- 8 Unit-Testdateien
+- mindestens 19 Playwright-E2E-Suiten
+- Chromium-, Firefox-, WebKit-, Android- und iPhone-Projekte
+- Strukturvalidator prüft HTML, CSP, Assets, Scriptreihenfolge, Manifest, Icons, Cache, Katalog und Session-Sicherheit
+- Release-Audit prüft Player-Snapshot, transaktionssicheren Abschluss, Backup und Dokumentation
+- GitHub-Actions-Wiederholung erneut angestoßen; der externe Runner-Blocker endet weiterhin vor dem ersten Schritt
 
 ### Noch offen
 
 - vollständig erfolgreicher lokaler Testlauf
-- grüner GitHub-Actions-Lauf auf dem endgültigen Commit
-- echte Android-, iOS- und PWA-Update-Prüfung
+- grüner GitHub-Actions-Lauf
+- reale Android-, iPhone-/iPad- und PWA-Update-Prüfung
 - reale Partytests mit kleinen und großen Gruppen
-- mehr Packs und Karten für besonders häufige Spiele
+- Test aller 18 Spiele und eines eigenen Packs
 - redaktionelle Alters-, Schwierigkeits- und Inhaltsprüfung
-- öffentliche Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben
+- öffentliche Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben
 
 ## 1.0.0-beta.3 – 2026-08-04
 
@@ -72,30 +73,25 @@
 - unabhängige deterministische Rollenverteilung
 - 14 Kategorien mit 168 Begriff-Hinweis-Paaren
 - deadline-basierter Timer mit Hintergrund- und Neulade-Wiederherstellung
-- Live-Gruppengröße und dynamische Imposter-Grenzen
-- automatische Kartenverdeckung mit blockierter Weitergabe
-- optionaler Wake Lock während der Diskussion
-- Verlauf, Migration, Sicherung und vollständige lokale Löschung
-- Datenschutzseite, Content Security Policy und Laufzeit-Fehlerschutz
-- 192- und 512-Pixel-PNG-Icons
+- automatische Kartenverdeckung und Wake Lock
+- versionierte Speicherung, Migration, Sicherung und lokale Löschung
+- Content Security Policy, Laufzeit-Fehlerschutz und PWA-Icons
 
 ### Behoben
 
-- kritische Kopplung der Imposter an die ersten Positionen der Aufdeckreihenfolge
-- mehr als sechs Imposter werden zuverlässig abgelehnt
+- Kopplung der Imposter an die ersten Positionen der Aufdeckreihenfolge
+- mehr als sechs Imposter
 - endlose Stichwahlen
 - doppelte Stimmen und Selbstwahl
-- Begriffswiederholungen innerhalb eines noch nicht erschöpften Pools
 - Timerabweichungen nach Hintergrundbetrieb oder Neuladen
 - fehlende Verlaufseinträge bei direkt beendeten Runden
 - unvollständige Migration älterer Spielstände
-- versehentliche Weitergabe automatisch verdeckter Karten
 
 ### Sicherheit und Datenschutz
 
 - keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste
 - keine appgesteuerte Übertragung von Spieldaten
 - restriktive Ressourcen- und Skriptrichtlinie
-- escaped Namen und Kategorien
+- sichere Textausgabe dynamischer Inhalte
 - Größenbegrenzung und Rollback für Sicherungsimporte
 - automatischer Sichtschutz geheimer Rollen und Begriffe
