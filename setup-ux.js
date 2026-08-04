@@ -49,7 +49,9 @@
   document.querySelector('#clear-all-data')?.addEventListener('click', refreshAfterAsyncAction);
   document.querySelector('#import-data')?.addEventListener('change', refreshAfterAsyncAction);
   root.addEventListener('pageshow', update);
-  update();
 
-  root.SecretCircleSetupUx = Object.freeze({ update, version: 2 });
+  update();
+  refreshAfterAsyncAction();
+
+  root.SecretCircleSetupUx = Object.freeze({ update, version: 3 });
 })(window);
