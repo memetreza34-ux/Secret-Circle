@@ -1,6 +1,6 @@
 {
   "name": "secret-circle",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.3",
   "private": true,
   "description": "Offline-first Party Hub mit Imposter und lokalen Gruppenspielen als installierbare PWA.",
   "engines": {
