@@ -4,19 +4,19 @@
 
 `Secret Circle CI` wird beendet, bevor ein einziger Workflow-Schritt ausgeführt wird.
 
-Aktuellster bestätigter Lauf:
+Ein erneut bestätigter Lauf:
 
-- Workflow-Lauf `#718`
-- Run-ID `30937503573`
-- Job-ID `92087237250`
+- Workflow-Lauf `#726`
+- Run-ID `30938065841`
+- Job-ID `92089123745`
 - Jobname `validate`
 - Ergebnis `failure`
 - leere Schrittliste
 - kein normaler Job-Log
 - selbst `actions/checkout` wurde nicht gestartet
-- Commit `9fad10128e7b2036465f89925bb21eab412e1098`
+- Commit `47f5b4b45420fd137eba2a996e55255a499b8172`
 
-Zuvor wurden auch Run `30930748182` und dessen Wiederholungsjob ohne einen einzigen Schritt beendet. Die Wiederholung wurde von GitHub angenommen, änderte das Verhalten aber nicht.
+Zuvor wurden auch die Runs `30937503573` und `30930748182` einschließlich eines manuell erneut ausgeführten Jobs ohne einen einzigen Schritt beendet. Die Wiederholung wurde von GitHub angenommen, änderte das Verhalten aber nicht.
 
 Das unterscheidet sich von einem Syntax-, Unit-, Validator- oder Playwright-Fehler. Bei einem Repositoryfehler wäre mindestens der betroffene Workflow-Schritt mit Log sichtbar.
 
@@ -91,10 +91,11 @@ Verwendete offizielle Actions:
 Hilfreiche Angaben für Support:
 
 - Repository: `memetreza34-ux/Secret-Circle`
-- aktueller Workflow-Run: `30937503573`
-- aktueller Job: `92087237250`
+- bestätigter Workflow-Run: `30938065841`
+- bestätigter Job: `92089123745`
+- weiterer Run: `30937503573`, Job `92087237250`
 - ältere Wiederholung: Run `30930748182`, Jobs `92064498410` und `92077185391`
-- alle Jobs ohne Schritte und Logs
+- alle genannten Jobs ohne Schritte und Logs
 
 ## Erneut ausführen
 
