@@ -49,20 +49,24 @@ Erwartet:
 - Keine Karte oder Abstimmungsoption fehlt.
 - Bedienung bleibt auf dem Smartphone flüssig und ohne horizontales Scrollen.
 
-### A3 – Ungültige Einrichtung
+### A3 – Live-Einrichtung und ungültige Werte
 
 Jeweils prüfen:
 
 - nur zwei Personen,
 - doppelte Namen mit unterschiedlicher Großschreibung,
 - einundzwanzig Personen,
-- genauso viele Imposter wie Personen.
+- genauso viele Imposter wie Personen,
+- Gruppengröße nach einer zuvor höheren Imposter-Auswahl verkleinern.
 
 Erwartet:
 
-- verständliche Fehlermeldung,
-- kein neuer Spielstand,
-- Einrichtung bleibt erhalten und kann korrigiert werden.
+- erkannte eindeutige Personen werden live angezeigt,
+- doppelte Namen werden ausdrücklich genannt,
+- gültiger Imposter-Bereich passt sich an,
+- zu hohe Imposter-Zahl wird sicher begrenzt,
+- verständliche Fehlermeldung bei ungültigem Start,
+- kein beschädigter Spielstand.
 
 ## B. Kartenübergabe und Rollen
 
@@ -78,7 +82,24 @@ Erwartet:
 - Nach dem Schließen bleiben keine geheimen Inhalte auf dem Bildschirm.
 - Fokus liegt auf der richtigen nächsten Aktion.
 
-### B2 – Mehrere Imposter
+### B2 – Automatische Kartenverdeckung
+
+1. Eine geheime Karte öffnen.
+2. App in den Hintergrund schicken oder zu einer anderen App wechseln.
+3. Zurückkehren.
+4. Versuchen, ohne erneutes Öffnen zur nächsten Person weiterzugehen.
+5. Karte erneut öffnen und normal weitergeben.
+
+Erwartet:
+
+- Rolle und Begriff werden sofort verdeckt,
+- Hinweis erklärt die automatische Verdeckung,
+- „Karte schließen und weitergeben“ ist verborgen,
+- auch eine schnelle oder programmatische Auslösung kann nicht weitergehen,
+- Fokus landet nach Rückkehr auf „Geheime Karte anzeigen“,
+- nach erneutem Öffnen kann die Runde normal fortgesetzt werden.
+
+### B3 – Mehrere Imposter
 
 1. Mindestens sechs Personen und zwei Imposter verwenden.
 2. Alle Karten kontrolliert aufdecken.
@@ -247,6 +268,7 @@ Erwartet:
 Erwartet:
 
 - Kategorie, Einstellungen, Verlauf und aktiver Spielstand werden wiederhergestellt,
+- Live-Einrichtung aktualisiert sich nach dem Import,
 - Import verlangt eine Bestätigung,
 - fehlerhafte, fremde oder zu große Datei wird abgelehnt.
 
@@ -256,6 +278,7 @@ Erwartet:
 
 - aktive Runde, Einstellungen, Verlauf, eigene Kategorien und alte Speicherschlüssel sind entfernt,
 - App startet mit Standardwerten,
+- Live-Einrichtung zeigt wieder vier Standardpersonen,
 - Offline-App-Dateien dürfen im Service-Worker-Cache bleiben.
 
 ## H. PWA und Offline
@@ -277,7 +300,8 @@ Erwartet:
 
 - korrektes Touch-Icon,
 - korrekter App-Name,
-- sichere Bereiche um Notch und Home-Indikator werden nicht überdeckt.
+- sichere Bereiche um Notch und Home-Indikator werden nicht überdeckt,
+- Eingabefelder verursachen keinen unerwarteten Seitenzoom.
 
 ### H3 – Vollständig offline
 
@@ -285,11 +309,13 @@ Erwartet:
 2. Flugmodus aktivieren.
 3. App schließen und erneut starten.
 4. Datenschutzseite öffnen und ein Match spielen.
+5. Kartenverdeckung im Offline-Modus prüfen.
 
 Erwartet:
 
 - alle Kernseiten und Spielinhalte funktionieren,
 - Offline-Anzeige ist sichtbar,
+- Setup- und Privatsphärenschutz funktionieren,
 - Spielstand bleibt lokal erhalten.
 
 ### H4 – App-Update
@@ -301,6 +327,7 @@ Erwartet:
 Erwartet:
 
 - alter Cache wird entfernt,
+- nur `secret-circle-v15` bleibt bestehen,
 - neue App-Dateien und Icons werden verwendet,
 - bestehende kompatible lokale Daten werden migriert,
 - keine Mischung aus alter Oberfläche und neuer Engine.
@@ -314,7 +341,8 @@ Erwartet:
 - alle Aktionen sind per Tab, Umschalt+Tab, Enter und Leertaste erreichbar,
 - Fokus ist sichtbar,
 - Reihenfolge ist logisch,
-- Spielregeln lassen sich per Tastatur öffnen und schließen.
+- Spielregeln lassen sich per Tastatur öffnen und schließen,
+- Fokus kehrt nach automatischer Kartenverdeckung zum sicheren Öffnen-Button zurück.
 
 ### I2 – Screenreader und Vergrößerung
 
@@ -322,6 +350,7 @@ Prüfen:
 
 - Überschriftenstruktur,
 - Feldbeschriftungen,
+- Live-Hinweise zur Gruppengröße,
 - Status- und Fehlermeldungen,
 - 200-Prozent-Vergrößerung,
 - reduzierte Bewegung,
@@ -344,6 +373,7 @@ Mindestens zwei Gruppen testen:
 Beobachten und dokumentieren:
 
 - Verstehen alle Personen die Kartenübergabe ohne Erklärung?
+- Wird automatische Kartenverdeckung verstanden?
 - Ist klar, wer gerade abstimmt?
 - Werden Punkte und Stichwahl verstanden?
 - Gibt es versehentliche Rollenenthüllungen?
