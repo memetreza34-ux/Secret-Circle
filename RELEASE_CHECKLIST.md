@@ -9,6 +9,7 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] `npm run validate`
 - [ ] `npm run test:e2e`
 - [ ] `npm run ci`
+- [ ] `npm run test:cross-browser`
 - [ ] GitHub Actions auf dem Release-Commit erfolgreich
 - [ ] Playwright-Bericht ohne fehlgeschlagene Desktop- oder Mobile-Tests
 - [ ] Keine offenen kritischen oder hohen Fehler
@@ -17,9 +18,14 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 
 - [ ] Spielstart mit 3 Personen
 - [ ] Spielstart mit 20 Personen
+- [ ] Live-Anzeige erkennt Gruppengröße und doppelte Namen korrekt
+- [ ] Gültiger Imposter-Bereich passt sich an die Gruppengröße an
 - [ ] Mehrere Imposter korrekt verteilt
 - [ ] Doppelte Namen werden blockiert
 - [ ] Kartenübergabe zeigt nur die aktuelle Rolle
+- [ ] Sichtbare Karte wird bei App-Wechsel oder Fokusverlust automatisch verdeckt
+- [ ] Automatisch verdeckte Karte kann nicht ohne erneutes Öffnen weitergegeben werden
+- [ ] Sichere Fokusposition wird nach Rückkehr wiederhergestellt
 - [ ] Diskussion und Timer funktionieren
 - [ ] Timer pausieren und fortsetzen funktioniert
 - [ ] Timer läuft nach App-Wechsel und Neuladen korrekt weiter
@@ -65,7 +71,8 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] App danach vollständig offline startbar
 - [ ] `index.html` und `privacy.html` offline verfügbar
 - [ ] CSS, JavaScript, Manifest und alle Icons offline verfügbar
-- [ ] `word-packs.js` und `data-store.js` offline verfügbar
+- [ ] `setup-ux.js`, `privacy-guard.js`, `word-packs.js` und `data-store.js` offline verfügbar
+- [ ] Cache `secret-circle-v15` enthält alle Kernressourcen
 - [ ] Nur die aktuelle Service-Worker-Cache-Version bleibt bestehen
 - [ ] Installation auf Android erfolgreich
 - [ ] Installation auf iOS zum Home-Bildschirm erfolgreich
@@ -83,7 +90,9 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Großes Smartphone geprüft
 - [ ] Tablet geprüft
 - [ ] Bildschirmrotation geprüft
+- [ ] iPhone-Safe-Areas geprüft
 - [ ] App-Wechsel während laufendem Timer geprüft
+- [ ] App-Wechsel während sichtbarer geheimer Karte geprüft
 - [ ] Energiesparmodus beziehungsweise gesperrter Bildschirm geprüft
 
 ## 6. Accessibility und Bedienung
@@ -93,6 +102,7 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Fokus ist sichtbar
 - [ ] Formulare besitzen verständliche Labels
 - [ ] Statusmeldungen werden angekündigt
+- [ ] Live-Setup-Hinweise werden verständlich angekündigt
 - [ ] Farbkontrast manuell geprüft
 - [ ] Vergrößerung auf 200 % geprüft
 - [ ] `prefers-reduced-motion` geprüft
@@ -109,6 +119,7 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Dynamische Inhalte werden vor HTML-Ausgabe escaped
 - [ ] Content Security Policy ist aktiv und blockiert fremde Skripte
 - [ ] Keine externen Ressourcen ohne klare Notwendigkeit
+- [ ] Geheime Rollen bleiben bei Fokusverlust verdeckt
 
 ## 8. Realer Party-Betatest
 
@@ -116,6 +127,7 @@ Diese Checkliste muss für jeden öffentlichen Release vollständig ausgefüllt 
 - [ ] Mindestens ein vollständiges Match mit 8 oder mehr Personen
 - [ ] Mindestens ein Match mit mehreren Impostern
 - [ ] Kartenübergabe ist verständlich und verrät keine Rolle
+- [ ] Automatische Kartenverdeckung wird von Testpersonen verstanden
 - [ ] Abstimmungsübergabe ist verständlich
 - [ ] Punktesystem wird von Testpersonen verstanden
 - [ ] Keine Blockade oder unklare Sackgasse im Ablauf
