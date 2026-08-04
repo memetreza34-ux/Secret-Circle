@@ -28,15 +28,15 @@ Die veröffentlichte URL in einem privaten Browserfenster öffnen und prüfen:
 1. `index.html`, `privacy.html` und `manifest.webmanifest` liefern Status 200.
 2. Browser-Entwicklertools erkennen ein gültiges Manifest.
 3. 192- und 512-Pixel-Icons werden ohne Fehler geladen.
-4. Service Worker wird registriert und verwendet Cache `secret-circle-v14`.
+4. Service Worker wird registriert und verwendet Cache `secret-circle-v15`.
 5. App ist nach einem vollständigen Online-Aufruf im Flugmodus erneut startbar.
 6. Installation auf Android beziehungsweise „Zum Home-Bildschirm“ auf iOS funktioniert.
 7. Keine Fehler in Konsole oder Netzwerkansicht.
 8. Aktiver Spielstand bleibt nach Neuladen erhalten.
 9. Sicherungsexport und -import funktionieren.
 10. Datenschutzseite, Live-Einrichtungslogik und Karten-Sichtschutz sind offline erreichbar.
-11. Eine sichtbare geheime Karte wird bei App-Wechsel oder Fokusverlust automatisch verdeckt.
-12. Nach einer Aktualisierung bleibt nur Cache `secret-circle-v14` bestehen.
+11. Eine sichtbare geheime Karte wird bei App-Wechsel oder Fokusverlust automatisch verdeckt und kann erst nach erneutem Öffnen weitergegeben werden.
+12. Nach einer Aktualisierung bleibt nur Cache `secret-circle-v15` bestehen.
 
 ## Release-Version markieren
 
