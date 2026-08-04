@@ -59,13 +59,13 @@
     } else if (visible && empty) empty.remove();
   }
 
-  function setAgeLevel(level) {
+  function setAgeLevel(level, persist = true) {
     const normalized = ['family', 'teen', 'all'].includes(level) ? level : 'all';
     const catalogSelect = $('#age-filter');
     const settingsSelect = $('#settings-age-level');
     if (catalogSelect) catalogSelect.value = normalized;
     if (settingsSelect) settingsSelect.value = normalized;
-    savePreferences({ ageLevel: normalized });
+    if (persist) savePreferences({ ageLevel: normalized });
     applyAgeFilter();
   }
 
@@ -144,7 +144,7 @@
   const settingsAge = $('#settings-age-level');
   if (ageSelect) ageSelect.addEventListener('change', () => setAgeLevel(ageSelect.value));
   if (settingsAge) settingsAge.addEventListener('change', () => setAgeLevel(settingsAge.value));
-  setAgeLevel(pref.ageLevel);
+  setAgeLevel(pref.ageLevel, false);
 
   const defaultLength = $('#default-session-length');
   if (defaultLength) {
@@ -167,7 +167,7 @@
   window.setTimeout(applyAgeFilter, 0);
 
   window.SecretCirclePartyHubPlus = Object.freeze({
-    version: 3,
+    version: 4,
     gameAllowed,
     renderAchievements,
     preferences,
