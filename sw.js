@@ -1,6 +1,6 @@
 'use strict';
-const CACHE='secret-circle-v18';
-const CORE=['./','./index.html','./privacy.html','./styles.css','./pwa.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const CACHE='secret-circle-v19';
+const CORE=['./','./index.html','./party.html','./privacy.html','./styles.css','./pwa.css','./party.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-hub.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
@@ -25,7 +25,7 @@ async function handleNavigation(request){
   try{
     return await fetchAndCache(request);
   }catch{
-    return await caches.match(request)||await caches.match('./index.html')||new Response('Offline',{status:503,statusText:'Offline'});
+    return await caches.match(request)||await caches.match('./party.html')||await caches.match('./index.html')||new Response('Offline',{status:503,statusText:'Offline'});
   }
 }
 
