@@ -12,12 +12,12 @@ Draft-PR: `#11`
 | Word Imposter | 98 % | Kernspiel vollständig für den Testlauf vorbereitet |
 | Party-Hub-Struktur | 97 % | Navigation, Katalog, Filter, Spieler, Presets, Favoriten, Verlauf und Daten vorhanden |
 | 18 spielbare Spiele | 90 % | technisch umgesetzt, reale Balance- und Verständlichkeitstests fehlen |
-| Vier komplexe Spiele | 87 % | vollständige lokale Abläufe und sichere Wiederaufnahme vorhanden |
-| Eigene Hub-Packs | 93 % | Editor, Validierung, Spielintegration, Backup und Löschung vorhanden |
-| Speicherung und Datenschutz | 96 % | Gesamtsicherung, Rollback, lokale Löschung und transaktionssicherer Sessionabschluss |
-| PWA und Offline | 96 % | vollständiger Core `secret-circle-v23`, echter Geräte-Update-Test fehlt |
+| Vier komplexe Spiele | 88 % | vollständige lokale Abläufe und sichere Wiederaufnahme vorhanden |
+| Eigene Hub-Packs | 96 % | Editor, Normalisierung, transaktionssicheres Speichern/Löschen, Backup und Spielintegration vorhanden |
+| Speicherung und Datenschutz | 98 % | byte-sichere Gesamtsicherung, Import-/Lösch-Rollback und transaktionssicherer Sessionabschluss |
+| PWA und Offline | 97 % | vollständiger Core `secret-circle-v24`, echter Geräte-Update-Test fehlt |
 | Accessibility und Mobile | 87 % | automatische Fokus-, Touch-, Overflow- und Reduced-Motion-Gates vorbereitet |
-| Automatisierte Testabdeckung | 94 % | 8 Unit-Dateien, mindestens 19 E2E-Suiten und 5 Browser-/Geräteprojekte vorbereitet |
+| Automatisierte Testabdeckung | 96 % | 8 Unit-Dateien, mindestens 19 E2E-Suiten und 5 Browser-/Geräteprojekte vorbereitet |
 | Reale Geräte- und Partytests | 20 % | noch nicht erfolgreich dokumentiert |
 | Rechtliche Produktionsfreigabe | 45 % | Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
 
@@ -25,62 +25,69 @@ Draft-PR: `#11`
 
 - **Word-Imposter-Modul:** etwa **98 %**
 - **Party-Hub-Grundlage:** etwa **97 %**
-- **18 Spiele als technische Beta:** etwa **90 %**
-- **Gesamte gewünschte Party-Hub-Vision:** etwa **84 %**
-- **Bereit für den vollständigen automatisierten Testlauf:** etwa **98 %**
-- **Bereit für reale Android-/iOS- und Partytests:** etwa **90 %**
-- **Bereit für öffentlichen Produktionsrelease:** etwa **77 %**
+- **18 Spiele als technische Beta:** etwa **91 %**
+- **Gesamte gewünschte Party-Hub-Vision:** etwa **86 %**
+- **Bereit für den vollständigen automatisierten Testlauf:** etwa **99 %**
+- **Bereit für reale Android-/iOS- und Partytests:** etwa **92 %**
+- **Bereit für öffentlichen Produktionsrelease:** etwa **79 %**
 
 Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie sind kein Nachweis für erfolgreich ausgeführte Tests.
 
 ## Neu abgeschlossen
 
-### Sichere erweiterte Sessions
+### Transaktionssichere Datensicherung
 
-- aktives Session-Schema Version 2
-- unveränderlicher Spieler-Snapshot pro gestarteter Session
-- eine spätere Änderung der gemeinsamen Lobby verändert keine laufende Runde
-- alte Sessions ohne Snapshot werden kontrolliert migriert oder verworfen
-- ungültige Rundenzahl, Spielergruppe oder Packzuordnung wird abgelehnt
-- eindeutige Session-ID und idempotente Historien-ID
-- der Sessionabschluss schreibt Verlauf und Statistik als gemeinsamen lokalen Datensatz
-- bei einem Speicherfehler bleibt die abgeschlossene Session aktiv und wiederherstellbar
-- kein stiller Fortschrittsverlust beim Speichern
-
-### Party Hub
-
-- 22 sichtbare Spiele
-- 18 spielbare Spiele
-- 4 technisch gesperrte Roadmap-Spiele
-- Suche und Filter nach Art, Stimmung, Gruppengröße, Altersstufe und Status
-- gemeinsame Spieler, Presets, Favoriten und zuletzt gespielt
-- Verlauf, Statistik und acht Erfolge
-- Reparatur älterer unvollständiger Statistikwerte
+- Datenwerkzeug Version 2
+- tatsächliche UTF-8-Byte-Grenze von 1,5 MB
+- Mehrbyte-Dateien können das Größenlimit nicht über die Zeichenanzahl umgehen
+- frühe Prüfung von `File.size` vor dem vollständigen Einlesen
+- einzelne Werte besitzen ebenfalls eine Byte-Grenze
+- Import ersetzt lokale Daten vollständig oder stellt den vorherigen Zustand wieder her
+- fehlgeschlagener Rollback wird gesondert und deutlich gemeldet
+- vollständige Löschung verwendet dieselbe Transaktions- und Rollback-Logik
+- Teilzustände nach einem simulierten Löschfehler werden vermieden
 
 ### Eigene Hub-Packs
 
-- lokaler Editor für kompatible Spiele
-- maximal 20 Packs
-- maximal 100 eindeutige Karten pro Pack
-- sichere Textausgabe
-- Integration in Spieldetail und Pack-Auswahl
-- Bestandteil von Export, Import und vollständiger Löschung
+- NFKC-Normalisierung für Unicode-Texte
+- doppelte Karten, Packnamen und gespeicherte Pack-IDs werden bereinigt
+- Speichern und Löschen verändern den Katalog erst nach erfolgreichem Browser-Speichervorgang
+- fehlgeschlagene Schreib- oder Löschvorgänge stellen Speicher und Katalog wieder her
+- injizierbarer Manager ermöglicht gezielte Unit-Tests mit simuliertem Speicherfehler
+
+### Sichere erweiterte Sessions
+
+- aktives Session-Schema Version 2
+- unveränderlicher Spieler-Snapshot
+- eindeutige Session- und Historien-IDs
+- transaktionssicherer Sessionabschluss
+- bei einem Speicherfehler bleibt die Session aktiv und wiederherstellbar
+
+### Einstellungen und Statistiken
+
+- Hub-Plus Version 5
+- Einstellungsfehler werden abgefangen und sichtbar gemeldet
+- aktuelle Auswahl bleibt nutzbar, auch wenn sie nicht dauerhaft gespeichert werden konnte
+- Statistikreparatur normalisiert negative und ungültige Werte
+- unbekannte Spiele werden ignoriert
+- fehlgeschlagene Statistik-Speicherung blockiert den Hub nicht
+- CSS-Selektor-Fallback für Browser ohne `CSS.escape`
 
 ### Qualität und Offline
 
-- Offline-Core `secret-circle-v23`
-- Regressionstests für Spieler-Snapshot und fehlgeschlagene Verlaufsspeicherung
-- Validator und Release-Audit prüfen die neuen Sicherheitsmerkmale
-- PR-Beschreibung auf den tatsächlichen Produktstand aktualisiert
-- erneuter GitHub-Actions-Versuch durchgeführt; der Job endete weiterhin vor dem ersten Schritt
+- Offline-Core `secret-circle-v24`
+- Unit-Tests für Custom-Pack-Rollback und Unicode-Duplikate
+- E2E-Tests für Mehrbyte-Größenlimit, Import-Rollback und Lösch-Rollback
+- E2E-Tests für Einstellungs- und Statistik-Speicherfehler
+- Validator und Release-Audit prüfen alle neuen Schutzmechanismen
 
 ## Aktuelle Blocker
 
-1. `npm run ci` wurde auf dem endgültigen Commit noch nicht erfolgreich protokolliert.
+1. `npm run ci` wurde auf dem endgültigen Stand noch nicht erfolgreich protokolliert.
 2. `npm run test:cross-browser` wurde noch nicht erfolgreich protokolliert.
 3. GitHub Actions endet weiterhin vor `actions/checkout` mit leerer Schrittliste.
 4. Android- und iPhone-/iPad-Installation fehlen als reale Tests.
-5. Update einer älteren PWA auf `secret-circle-v23` fehlt.
+5. Update einer älteren PWA auf `secret-circle-v24` fehlt.
 6. kleiner Partytest mit 3–4 Personen fehlt.
 7. großer Partytest mit mindestens 8 Personen fehlt.
 8. alle 18 Spiele und mindestens ein eigenes Pack müssen real geprüft werden.
@@ -104,7 +111,7 @@ npm run test:cross-browser
 - vollständiger lokaler automatisierter Testlauf: `GO`
 - kontrollierter Entwickler-Browsertest: `GO_WITH_CONDITIONS`
 - realer Geräte- und Party-Betatest: `NO_GO`, bis der automatische Gesamtlauf grün ist
-- Merge von Draft-PR #11: `NO_GO`, bis mindestens Syntax, Unit, Validator und Chromium-E2E erfolgreich sind
+- Merge von Draft-PR #11: `NO_GO`, bis Syntax, Unit, Validator und Chromium-E2E erfolgreich sind
 - öffentlicher Produktionsrelease: `NO_GO`
 
 ## Release-Candidate-Schwelle
