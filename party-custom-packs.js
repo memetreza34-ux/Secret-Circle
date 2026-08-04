@@ -110,8 +110,32 @@
     return true;
   }
 
+  function createUi() {
+    if (!documentRef) return null;
+    const stack = documentRef.querySelector('#view-settings .settings-stack');
+    if (!stack) return null;
+    const section = documentRef.createElement('section');
+    section.className = 'data-panel';
+    section.setAttribute('aria-labelledby', 'custom-pack-title');
+    section.innerHTML = `
+      <h2 id="custom-pack-title">Eigene Hub-Kategorien</h2>
+      <p class="muted">Erstelle eigene Kartenpacks für Frage-, Darstellungs- und Schnellspiele. Mindestens drei unterschiedliche Zeilen sind erforderlich.</p>
+      <div class="settings-grid">
+        <label for="custom-pack-game">Spiel<select id="custom-pack-game"></select></label>
+        <label for="custom-pack-name">Packname<input id="custom-pack-name" maxlength="40" placeholder="z. B. Unsere Gruppe"></label>
+      </div>
+      <label for="custom-pack-items">Eine Karte pro Zeile<textarea id="custom-pack-items" rows="7" maxlength="18000" placeholder="Erste eigene Karte&#10;Zweite eigene Karte&#10;Dritte eigene Karte"></textarea></label>
+      <button id="save-custom-pack" type="button">Eigenes Pack speichern</button>
+      <div id="custom-pack-list" class="compact-list empty-state">Noch kein eigenes Hub-Pack gespeichert.</div>`;
+    const backup = documentRef.querySelector('#backup-title')?.closest('.data-panel');
+    if (backup) stack.insertBefore(section, backup);
+    else stack.append(section);
+    return section;
+  }
+
   function initializeUi() {
     if (!documentRef || !storage) return;
+    if (!documentRef.querySelector('#custom-pack-game')) createUi();
     const gameSelect = documentRef.querySelector('#custom-pack-game');
     const nameInput = documentRef.querySelector('#custom-pack-name');
     const itemsInput = documentRef.querySelector('#custom-pack-items');
@@ -181,7 +205,7 @@
   initializeUi();
 
   return Object.freeze({
-    version: 1,
+    version: 2,
     storageKey: KEY,
     maxPacks: MAX_PACKS,
     maxItems: MAX_ITEMS,
