@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('service worker caches the complete offline core including advanced Party Hub games', async ({ page, context }) => {
+test('service worker caches the complete offline core including advanced games and custom packs', async ({ page, context }) => {
   await page.goto('/party.html');
   await page.evaluate(async () => {
     if (!('serviceWorker' in navigator)) throw new Error('Service Worker is unavailable.');
@@ -11,7 +11,7 @@ test('service worker caches the complete offline core including advanced Party H
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v21');
+    const cache = await caches.open('secret-circle-v22');
     const expected = [
       './index.html', './party.html', './advanced.html', './privacy.html',
       './styles.css', './pwa.css', './party.css', './party-extra.css',
@@ -19,10 +19,10 @@ test('service worker caches the complete offline core including advanced Party H
       './wake-lock.js', './app.js', './game-engine.js',
       './role-assignment.js', './word-packs.js', './data-store.js',
       './party-catalog.js', './party-expansion.js', './party-routing.js',
-      './party-hub.js', './party-hub-plus.js', './party-data-tools.js',
-      './party-advanced.js', './party-advanced-runner.js',
-      './party-advanced-preferences.js', './manifest.webmanifest',
-      './icon.svg', './icon-192.png', './icon-512.png'
+      './party-custom-packs.js', './party-hub.js', './party-hub-plus.js',
+      './party-data-tools.js', './party-advanced.js',
+      './party-advanced-runner.js', './party-advanced-preferences.js',
+      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
     ];
     const missing = [];
     for (const path of expected) {
@@ -31,8 +31,8 @@ test('service worker caches the complete offline core including advanced Party H
     }
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v21');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v21']);
+  expect(cacheState.names).toContain('secret-circle-v22');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v22']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
@@ -41,6 +41,8 @@ test('service worker caches the complete offline core including advanced Party H
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
   await expect(page.locator('#playable-count')).toHaveText('18');
+  await page.getByRole('button', { name: 'Daten' }).click();
+  await expect(page.getByRole('heading', { name: 'Eigene Hub-Kategorien' })).toBeVisible();
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
