@@ -33,13 +33,16 @@ app = read('app.js')
 engine = read('game-engine.js')
 word_packs = read('word-packs.js')
 data_store = read('data-store.js')
+fuzz_tests = read('tests/fuzz.test.js')
 service_worker = read('sw.js')
 workflow = read('.github/workflows/ci.yml')
 cross_workflow = read('.github/workflows/cross-browser.yml')
 readme = read('README.md')
 checklist = read('RELEASE_CHECKLIST.md')
+release_status = read('RELEASE_STATUS.md')
 changelog = read('CHANGELOG.md')
 limitations = read('KNOWN_LIMITATIONS.md')
+security = read('SECURITY.md')
 manual_plan = read('MANUAL_TEST_PLAN.md')
 ci_help = read('CI_TROUBLESHOOTING.md')
 deployment = read('DEPLOYMENT.md')
@@ -91,6 +94,9 @@ if not re.fullmatch(r'\d+\.\d+\.\d+', playwright_version):
 for script in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
     if script not in package.get('scripts', {}):
         raise SystemExit(f'Package script missing: {script}')
+for marker in ['tests/engine.test.js', 'tests/storage.test.js', 'tests/fuzz.test.js']:
+    if marker not in package['scripts']['test']:
+        raise SystemExit(f'Unit test gate missing: {marker}')
 for marker in ['scripts/repo_hygiene.py', 'scripts/validate_project.py', 'scripts/performance_budget.py', 'scripts/release_audit.py']:
     if marker not in package['scripts']['validate']:
         raise SystemExit(f'Validation gate missing: {marker}')
@@ -121,11 +127,21 @@ for marker in ['keine Analyse-, Werbe- oder Tracking-Dienste', 'Sicherung export
     if marker.lower() not in privacy.lower():
         raise SystemExit(f'Privacy marker missing: {marker}')
 
+for marker in [
+    'deterministicFuzzScenarios', 'completedRounds', 'playerRange',
+    'multipleImposters', 'timerTransitions', 'votingAndTieBreaks',
+    'matchProgression', 'corruptionMutationsRejected'
+]:
+    if marker not in fuzz_tests:
+        raise SystemExit(f'Fuzz invariant marker missing: {marker}')
+
 production_docs = {
     'README': (readme, ['deadline-basierter Timer', '192- und 512-Pixel', 'PWA-Manifest']),
     'release checklist': (checklist, ['Realer Party-Betatest', 'Timer läuft nach App-Wechsel', '512 × 512']),
+    'release status': (release_status, ['Technische Produktbeta', 'Aktuelle Blocker', 'öffentlichen Produktionsrelease']),
     'changelog': (changelog, ['1.0.0-beta.3', 'Hinzugefügt', 'Behoben', 'Sicherheit und Datenschutz']),
     'limitations': (limitations, ['lokales Pass-and-Play-Spiel', 'iPhone', 'öffentlichen Release']),
+    'security': (security, ['Sicherheitsproblem melden', 'Security Advisory', 'Sicherheitsmodell der App']),
     'manual test plan': (manual_plan, ['Grundlegender Smoke-Test', 'PWA und Offline', 'Realer Partytest']),
     'CI troubleshooting': (ci_help, ['Fehler vor dem ersten Schritt', 'Actions-Berechtigungen', 'Abrechnung und Nutzungslimits']),
     'deployment': (deployment, ['GitHub Pages', 'HTTPS', 'Rollback', 'secret-circle-v10'])
@@ -156,6 +172,7 @@ print(json.dumps({
     'pwa_icons': png_dimensions,
     'built_in_categories': category_count,
     'built_in_terms': term_count,
+    'deterministic_fuzz_scenarios': 120,
     'e2e_suites': e2e_suites,
     'cross_browser_suites': cross_browser_suites,
     'cross_browser_projects': 5,
