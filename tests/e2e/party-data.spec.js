@@ -32,7 +32,9 @@ test('complete backup exports Hub and Word Imposter local data together', async 
   await page.getByRole('button', { name: 'Alles exportieren' }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toMatch(/^secret-circle-backup-\d{4}-\d{2}-\d{2}\.json$/);
-  const text = await streamText(await download.createReadStream());
+  const stream = await download.createReadStream();
+  expect(stream).not.toBeNull();
+  const text = await streamText(stream);
   const payload = JSON.parse(text);
   expect(payload.format).toBe('secret-circle-complete-backup');
   expect(payload.version).toBe(1);
@@ -59,12 +61,15 @@ test('complete backup import replaces Secret Circle data and reloads safely', as
     }
   };
 
+  const reloaded = page.waitForEvent('load');
   await page.locator('#hub-import-data').setInputFiles({
     name: 'secret-circle-backup.json',
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(replacement))
   });
-  await page.waitForLoadState('load');
+  await reloaded;
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players.join(',')))
+    .toBe('Aylin,Ben,Cem,Daria');
   await page.getByRole('button', { name: 'Spieler' }).click();
   await expect(page.locator('#hub-players')).toHaveValue('Aylin\nBen\nCem\nDaria');
   await page.getByRole('button', { name: 'Favoriten' }).click();
@@ -91,8 +96,8 @@ test('complete deletion removes Hub Imposter preferences and active sessions', a
     localStorage.setItem('secret-circle-custom-v7', JSON.stringify([{ name: 'Test' }]));
   });
   page.once('dialog', dialog => dialog.accept());
+  const reloaded = page.waitForEvent('load');
   await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
-  await page.waitForLoadState('load');
-  const keys = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('secret-circle-')));
-  expect(keys).toEqual([]);
+  await reloaded;
+  await expect.poll(() => page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('secret-circle-')).length)).toBe(0);
 });
