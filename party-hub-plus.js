@@ -203,7 +203,7 @@
   window.setTimeout(applyAgeFilter, 0);
 
   window.SecretCirclePartyHubPlus = Object.freeze({
-    version: 5,
+    version: 4,
     gameAllowed,
     renderAchievements,
     preferences,
