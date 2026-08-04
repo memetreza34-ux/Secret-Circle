@@ -6,6 +6,36 @@ async function streamText(stream) {
   return Buffer.concat(chunks).toString('utf8');
 }
 
+function replacementBackup(players = ['Aylin', 'Ben', 'Cem', 'Daria']) {
+  return {
+    format: 'secret-circle-complete-backup',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    entries: {
+      'secret-circle-party-hub-v1': JSON.stringify({
+        version: 1,
+        players,
+        favorites: ['mafia'],
+        recent: ['mafia'],
+        presets: [],
+        history: [],
+        stats: {}
+      }),
+      'secret-circle-party-preferences-v1': JSON.stringify({ version: 1, ageLevel: 'family', sessionLength: 10 }),
+      'secret-circle-party-custom-packs-v1': JSON.stringify({
+        version: 1,
+        packs: [{
+          id: 'imported-pack',
+          gameId: 'word-chain',
+          name: 'Importiert',
+          items: ['Solar', 'Rakete', 'Energie'],
+          createdAt: new Date().toISOString()
+        }]
+      })
+    }
+  };
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/party.html');
   await page.evaluate(() => {
@@ -38,6 +68,12 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('complete backup exports Hub custom packs and Word Imposter local data together', async ({ page }) => {
+  const api = await page.evaluate(() => ({
+    version: window.SecretCirclePartyDataTools?.version,
+    bytes: window.SecretCirclePartyDataTools?.byteLength('ä')
+  }));
+  expect(api).toEqual({ version: 2, bytes: 2 });
+
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Alles exportieren' }).click();
   const download = await downloadPromise;
@@ -54,39 +90,11 @@ test('complete backup exports Hub custom packs and Word Imposter local data toge
 });
 
 test('complete backup import replaces Secret Circle data and reloads safely', async ({ page }) => {
-  const replacement = {
-    format: 'secret-circle-complete-backup',
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    entries: {
-      'secret-circle-party-hub-v1': JSON.stringify({
-        version: 1,
-        players: ['Aylin', 'Ben', 'Cem', 'Daria'],
-        favorites: ['mafia'],
-        recent: ['mafia'],
-        presets: [],
-        history: [],
-        stats: {}
-      }),
-      'secret-circle-party-preferences-v1': JSON.stringify({ version: 1, ageLevel: 'family', sessionLength: 10 }),
-      'secret-circle-party-custom-packs-v1': JSON.stringify({
-        version: 1,
-        packs: [{
-          id: 'imported-pack',
-          gameId: 'word-chain',
-          name: 'Importiert',
-          items: ['Solar', 'Rakete', 'Energie'],
-          createdAt: new Date().toISOString()
-        }]
-      })
-    }
-  };
-
   const reloaded = page.waitForEvent('load');
   await page.locator('#hub-import-data').setInputFiles({
     name: 'secret-circle-backup.json',
     mimeType: 'application/json',
-    buffer: Buffer.from(JSON.stringify(replacement))
+    buffer: Buffer.from(JSON.stringify(replacementBackup()))
   });
   await reloaded;
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players.join(',')))
@@ -117,9 +125,81 @@ test('invalid import is rejected without destroying existing local data', async 
   expect(snapshot.custom).toBe('Eigene Runde');
 });
 
+test('multibyte backup over the byte limit is rejected before changing data', async ({ page }) => {
+  const oversized = {
+    format: 'secret-circle-complete-backup',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    entries: {
+      'secret-circle-oversized-v1': 'ä'.repeat(760_000)
+    }
+  };
+  const buffer = Buffer.from(JSON.stringify(oversized));
+  expect(buffer.byteLength).toBeGreaterThan(1_500_000);
+
+  await page.locator('#hub-import-data').setInputFiles({
+    name: 'oversized.json',
+    mimeType: 'application/json',
+    buffer
+  });
+  await expect(page.locator('#hub-status')).toContainText('größer als 1,5 MB');
+  const players = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players);
+  expect(players).toEqual(['Alex', 'Sam', 'Mika']);
+});
+
+test('failed import write rolls back every previous local entry', async ({ page }) => {
+  await page.evaluate(() => {
+    const original = Storage.prototype.setItem;
+    let failed = false;
+    Storage.prototype.setItem = function setItem(key, value) {
+      if (!failed && key === 'secret-circle-party-hub-v1' && String(value).includes('NeuImport')) {
+        failed = true;
+        throw new DOMException('simulierter Importfehler', 'QuotaExceededError');
+      }
+      return original.call(this, key, value);
+    };
+  });
+
+  await page.locator('#hub-import-data').setInputFiles({
+    name: 'rollback.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(replacementBackup(['NeuImport', 'Ben', 'Cem'])))
+  });
+  await expect(page.locator('#hub-status')).toContainText('alte Daten wiederhergestellt');
+  const snapshot = await page.evaluate(() => ({
+    players: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players,
+    custom: JSON.parse(localStorage.getItem('secret-circle-party-custom-packs-v1')).packs[0].name,
+    settings: JSON.parse(localStorage.getItem('secret-circle-settings-v7')).duration
+  }));
+  expect(snapshot).toEqual({ players: ['Alex', 'Sam', 'Mika'], custom: 'Eigene Runde', settings: 3 });
+});
+
+test('failed deletion rolls back instead of leaving partial local data', async ({ page }) => {
+  await page.evaluate(() => {
+    const original = Storage.prototype.removeItem;
+    let failed = false;
+    Storage.prototype.removeItem = function removeItem(key) {
+      if (!failed && key === 'secret-circle-party-custom-packs-v1') {
+        failed = true;
+        throw new DOMException('simulierter Löschfehler', 'InvalidStateError');
+      }
+      return original.call(this, key);
+    };
+  });
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
+  await expect(page.locator('#hub-status')).toContainText('Datenlöschung abgebrochen');
+  const snapshot = await page.evaluate(() => ({
+    hub: Boolean(localStorage.getItem('secret-circle-party-hub-v1')),
+    custom: Boolean(localStorage.getItem('secret-circle-party-custom-packs-v1')),
+    settings: Boolean(localStorage.getItem('secret-circle-settings-v7'))
+  }));
+  expect(snapshot).toEqual({ hub: true, custom: true, settings: true });
+});
+
 test('complete deletion removes Hub custom packs Imposter preferences and active sessions', async ({ page }) => {
   await page.evaluate(() => {
-    localStorage.setItem('secret-circle-party-active-v1', JSON.stringify({ version: 1 }));
+    localStorage.setItem('secret-circle-party-active-v1', JSON.stringify({ version: 2 }));
     localStorage.setItem('secret-circle-custom-v7', JSON.stringify([{ name: 'Test' }]));
   });
   page.once('dialog', dialog => dialog.accept());
