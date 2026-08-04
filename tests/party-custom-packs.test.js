@@ -3,10 +3,33 @@ const assert = require('node:assert/strict');
 const catalog = require('../party-routing.js');
 const packs = require('../party-custom-packs.js');
 
+function createMemoryStorage(initial = {}) {
+  const values = new Map(Object.entries(initial));
+  return {
+    failWrites: false,
+    failRemoves: false,
+    getItem(key) {
+      return values.has(key) ? values.get(key) : null;
+    },
+    setItem(key, value) {
+      if (this.failWrites) throw new Error('simulierter Speicherfehler');
+      values.set(String(key), String(value));
+    },
+    removeItem(key) {
+      if (this.failRemoves) throw new Error('simulierter Löschfehler');
+      values.delete(String(key));
+    },
+    snapshot() {
+      return Object.fromEntries(values);
+    }
+  };
+}
+
 assert.equal(packs.version, 2);
 assert.equal(packs.storageKey, 'secret-circle-party-custom-packs-v1');
 assert.equal(packs.maxPacks, 20);
 assert.equal(packs.maxItems, 100);
+assert.equal(typeof packs.createManager, 'function');
 assert.ok(packs.supportedGameIds.includes('charades'));
 assert.ok(packs.supportedGameIds.includes('hot-potato'));
 assert.ok(packs.supportedGameIds.includes('word-chain'));
@@ -16,6 +39,7 @@ assert.ok(!packs.supportedGameIds.includes('mafia'));
 const parsed = packs.parseItems('  Erste Karte  \nzweite Karte\nERSTE KARTE\n\nDritte Karte  ');
 assert.deepEqual(parsed, ['Erste Karte', 'zweite Karte', 'Dritte Karte']);
 assert.equal(packs.parseItems(Array.from({ length: 140 }, (_, index) => `Karte ${index + 1}`).join('\n')).length, 100);
+assert.deepEqual(packs.parseItems('Cafe\u0301\nCAFÉ\nRakete\nSonne'), ['Café', 'Rakete', 'Sonne']);
 
 assert.equal(packs.normalizePack({ gameId: 'mafia', name: 'Nicht erlaubt', items: ['A', 'B', 'C'] }), null);
 assert.equal(packs.normalizePack({ gameId: 'charades', name: 'Zu kurz', items: ['A', 'B'] }), null);
@@ -44,6 +68,51 @@ assert.equal(packs.removePack(created.id), true);
 assert.equal(packs.removePack(created.id), false);
 assert.deepEqual(catalog.getItems('charades', 'Eigene · Unsere Runde'), []);
 
+const storage = createMemoryStorage();
+const transactional = packs.createManager(storage);
+const stable = transactional.addPack({
+  gameId: 'charades',
+  name: 'Transaktion',
+  items: ['Rakete', 'Satellit', 'Raumanzug']
+});
+assert.equal(transactional.getPacks().length, 1);
+assert.deepEqual(catalog.getItems('charades', 'Eigene · Transaktion'), stable.items);
+const beforeFailure = storage.snapshot();
+
+storage.failWrites = true;
+assert.throws(() => transactional.addPack({
+  gameId: 'charades',
+  name: 'Darf nicht erscheinen',
+  items: ['Eins', 'Zwei', 'Drei']
+}), /konnten nicht gespeichert werden/);
+assert.deepEqual(storage.snapshot(), beforeFailure);
+assert.equal(transactional.getPacks().length, 1);
+assert.deepEqual(catalog.getItems('charades', 'Eigene · Darf nicht erscheinen'), []);
+
+assert.throws(() => transactional.removePack(stable.id), /konnten nicht gespeichert werden/);
+assert.equal(transactional.getPacks().length, 1);
+assert.deepEqual(catalog.getItems('charades', 'Eigene · Transaktion'), stable.items);
+
+storage.failWrites = false;
+assert.equal(transactional.removePack(stable.id), true);
+assert.deepEqual(catalog.getItems('charades', 'Eigene · Transaktion'), []);
+
+const duplicateStorage = createMemoryStorage({
+  'secret-circle-party-custom-packs-v1': JSON.stringify({
+    version: 1,
+    packs: [
+      { id: 'eins', gameId: 'word-chain', name: 'Doppelt', items: ['A', 'B', 'C'], createdAt: '2026-08-04T00:00:00Z' },
+      { id: 'zwei', gameId: 'word-chain', name: 'DOPPELT', items: ['D', 'E', 'F'], createdAt: '2026-08-04T00:00:01Z' },
+      { id: 'eins', gameId: 'word-chain', name: 'Andere ID-Kopie', items: ['G', 'H', 'I'], createdAt: '2026-08-04T00:00:02Z' }
+    ]
+  })
+});
+const normalized = packs.createManager(duplicateStorage);
+assert.equal(normalized.getPacks().length, 1);
+assert.equal(normalized.getPacks()[0].name, 'Doppelt');
+assert.deepEqual(catalog.getItems('word-chain', 'Eigene · Doppelt'), ['A', 'B', 'C']);
+assert.equal(normalized.removePack('eins'), true);
+
 console.log(JSON.stringify({
   ok: true,
   customPackVersion: packs.version,
@@ -51,6 +120,10 @@ console.log(JSON.stringify({
   maximumPacks: packs.maxPacks,
   maximumItemsPerPack: packs.maxItems,
   duplicateCardsRemoved: true,
+  unicodeDuplicatesRemoved: true,
   unsupportedStructuredModesBlocked: true,
-  catalogInjectionAndRemoval: true
+  catalogInjectionAndRemoval: true,
+  duplicateStoredPacksNormalized: true,
+  transactionRollback: true,
+  failedRemovalPreservesPack: true
 }, null, 2));
