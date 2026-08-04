@@ -10,13 +10,14 @@ Secret Circle ist ein lokales Imposter-Partyspiel für drei bis zwanzig Personen
 python -m http.server 8080
 ```
 
-Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App über den Service Worker offline verwendet und auf unterstützten Geräten installiert werden.
+Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App offline verwendet und auf unterstützten Geräten installiert werden.
 
 ## Funktionen
 
 - drei bis zwanzig eindeutige Spielernamen
 - Live-Anzeige der erkannten Personen und des gültigen Imposter-Bereichs
-- ein bis mehrere Imposter
+- ein bis maximal sechs Imposter
+- unabhängige Rollenverteilung: Die Imposter werden getrennt von der Aufdeckreihenfolge ausgelost
 - vierzehn integrierte Kategorien mit 168 Begriffen
 - gemischter Modus und eigene Kategorien im Format `Begriff | Hilfswort`
 - optionales neutrales Hilfswort
@@ -25,106 +26,80 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - automatische Verdeckung einer sichtbaren geheimen Karte bei App-Wechsel oder Fokusverlust
 - blockierte Weitergabe, bis eine automatisch verdeckte Karte erneut geöffnet wurde
 - optionaler Bildschirm-Wake-Lock während der Diskussionsrunde
-- deadline-basierter Timer von einer bis zehn Minuten, der Pause, Hintergrund und Neuladen korrekt übersteht
-- geheime Abstimmung durch alle Personen
-- Schutz vor Selbstwahl und doppelten Stimmen
-- begrenzte Stichwahl bei Gleichstand
-- Imposter-Raterunde nach erfolgreicher Entdeckung
-- Punktesystem, Rangliste und Matches mit 1, 3, 5 oder 10 Runden
+- deadline-basierter Timer von einer bis zehn Minuten mit Pause, Hintergrund- und Neulade-Wiederherstellung
+- geheime Abstimmung, Schutz vor Selbstwahl und doppelten Stimmen
+- begrenzte Stichwahl, Imposter-Ratechance, Punkte, Rangliste und Mehr-Runden-Matches
 - lokaler Verlauf jeder abgeschlossenen Runde
-- Wiederaufnahme einer unterbrochenen Runde
-- automatische Migration älterer lokaler Daten und Spielstände
-- sichere Wiederherstellung nach beschädigten lokalen Daten
-- Export und Import einer vollständigen JSON-Sicherung
+- Wiederaufnahme unterbrochener Spiele
+- versionierte Migration, beschädigte-Daten-Wiederherstellung und vollständige JSON-Sicherung
 - vollständiges Löschen aller lokalen Daten
 - installierbare PWA mit 192- und 512-Pixel-PNG-Icons
-- vollständiger Offline-Cache `secret-circle-v16` für App, Datenschutz, Inhalte, Setup-, Privatsphäre- und Wake-Lock-Schutz sowie Icons
-- globaler Laufzeit-Fehlerschutz und kontrollierter PWA-Update-Neustart
-- Datenschutzseite und restriktive Content Security Policy
-- keine Anmeldung, kein Tracking und keine Serverübertragung von Spieldaten
+- vollständiger Offline-Cache `secret-circle-v17` für App, Rollenverteilung, Datenschutz, Inhalte und Schutzmodule
+- restriktive Content Security Policy, keine Anmeldung, kein Tracking und keine Serverübertragung von Spieldaten
 
 ## Architektur
 
-- `game-engine.js`: deterministische Spielregeln, Timer, Rollen, Abstimmung, Punkte und Matches
+- `game-engine.js`: deterministische Spielregeln, Timer, Abstimmung, Punkte und Matches
+- `role-assignment.js`: unabhängige deterministische Rollenverteilung mit maximal sechs Impostern
 - `word-packs.js`: integrierte Kategorien und Begriffe
 - `data-store.js`: versionierte Speicherung, Migration, Backup und Wiederherstellung
 - `setup-ux.js`: Live-Validierung von Gruppengröße und Imposter-Limit
 - `privacy-guard.js`: automatische Verdeckung geheimer Karten und Schutz vor versehentlicher Weitergabe
-- `wake-lock.js`: optionaler Bildschirmschutz gegen Einschlafen während der Diskussion
+- `wake-lock.js`: optionaler Bildschirmschutz während der Diskussion
 - `runtime-guard.js`: globale Fehleranzeige und sicherer Wechsel auf aktualisierte PWA-Dateien
-- `app.js`: Benutzeroberfläche, Timer-Synchronisierung und Ablaufsteuerung
+- `app.js`: Benutzeroberfläche und Ablaufsteuerung
 - `sw.js`: Offline-Cache und PWA-Betrieb
 
 ## Automatisierte Prüfung
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npm run check
-npm test
-npm run validate
-npm run test:e2e
-```
-
-Oder vollständig:
-
-```bash
+npx playwright install --with-deps chromium
 npm run ci
 ```
 
-Zusätzlicher Browser-Smoke-Test mit Chromium, Firefox und WebKit:
+Zusätzlicher Browser-Smoke-Test:
 
 ```bash
-npx playwright install chromium firefox webkit
+npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Die Prüfungen umfassen:
+Die Prüfungen umfassen unter anderem:
 
-- Syntaxprüfung aller Laufzeitdateien
-- deterministische Engine-, Timer- und Punktetests
-- echte Migration älterer Spielstände
-- Datenkorruption, Backup-Import und Rollback
-- Repository-Hygiene und Offline-Core-Performancebudget
-- strukturelle Prüfung von HTML, lokalen Assets, Manifest und Service Worker
+- Engine-, Speicher-, Inhalts-, Rollenverteilungs- und Fuzz-Tests
+- unabhängige Rollenverteilung ohne Kopplung an die Aufdeckreihenfolge
+- Grenzwerte mit 3–20 Personen und maximal sechs Impostern
 - vollständige Desktop- und Mobilspielabläufe
-- Grenzwerte mit 3 und 20 Personen sowie mehreren Impostern
-- Live-Setup-Hinweise und dynamische Imposter-Grenzen
-- automatische Kartenverdeckung, blockierte Weitergabe und sicheres erneutes Öffnen
-- Wake-Lock-Anforderung während der Diskussion, Freigabe vor der Abstimmung und sicherer Fallback ohne API
-- Mehr-Runden-Matches und nicht wiederholte Begriffe
-- Timer-Pause, Hintergrund, Ablauf und Wiederaufnahme nach Neuladen
-- Verlauf abgeschlossener Runden
-- Offline-Start und vollständigen Service-Worker-Cache
-- PWA-Manifest, Installationsmetadaten und reale PNG-Abmessungen
-- Tastatur, Fokus, Touchflächen, reduzierte Bewegung und Laufzeitfehler
-- Schutz vor HTML-/Skript-Injektion und unsicheren CSP-Einstellungen
-- fokussierte Smoke-Tests in Chromium, Firefox, WebKit, Android- und iPhone-Simulation
+- Timer, Verlauf, Backup, Migration und beschädigte Daten
+- Karten-Sichtschutz, Wake Lock, Accessibility und Eingabesicherheit
+- Offline-Core, Manifest, Installationsicons und Service-Worker-Aktualisierung
+- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
 
 ## Dokumentation
 
-- `CHANGELOG.md` – Änderungen des aktuellen Beta-Stands
-- `KNOWN_LIMITATIONS.md` – bewusst dokumentierte Grenzen
+- `RELEASE_STATUS.md` – Fortschritt und offene Blocker
 - `RELEASE_CHECKLIST.md` – verbindliche Freigabekriterien
-- `RELEASE_STATUS.md` – objektiver Fortschritt und offene Blocker
 - `MANUAL_TEST_PLAN.md` – reale Geräte- und Partytests
 - `DEPLOYMENT.md` – GitHub Pages, Update und Rollback
+- `CHANGELOG.md` – Änderungen des Beta-Stands
+- `KNOWN_LIMITATIONS.md` – bekannte Grenzen
 - `SECURITY.md` – Sicherheitsmodell und Meldeweg
-- `CI_TROUBLESHOOTING.md` – Diagnose des aktuellen GitHub-Actions-Problems
-- `privacy.html` – Datenschutzinformationen für Nutzerinnen und Nutzer
+- `CI_TROUBLESHOOTING.md` – Diagnose des GitHub-Actions-Problems
+- `privacy.html` – Datenschutzinformationen
 
 ## Release-Gate
 
-Ein öffentlicher Release ist nur vorgesehen, wenn:
+Ein öffentlicher Release ist erst vorgesehen, wenn:
 
 1. `npm run ci` vollständig erfolgreich läuft,
-2. GitHub Actions auf dem endgültigen Release-Commit grün ist,
-3. die PWA auf aktuellen Android- und iOS-Geräten getestet wurde,
-4. Offline-Start, Installation, Update, Wiederaufnahme, Backup und vollständiges Datenlöschen geprüft wurden,
-5. automatische Kartenverdeckung und blockierte Weitergabe bei App-Wechsel auf realen Geräten geprüft wurden,
-6. Wake Lock und Fallback auf mindestens einem unterstützten und einem nicht unterstützten Gerät geprüft wurden,
-7. Accessibility und Spielablauf mit echten Testpersonen validiert wurden,
-8. alle Begriffe redaktionell geprüft wurden,
-9. erforderliche Anbieter-, Kontakt- und Impressumsangaben ergänzt wurden.
+2. GitHub Actions auf dem endgültigen Commit grün ist,
+3. die Rollenverteilung über mehrere reale Runden keine Verbindung zur Aufdeckreihenfolge zeigt,
+4. Android- und iOS-Installation, Offline-Start und Update getestet wurden,
+5. Karten-Sichtschutz, Timer und Wake Lock auf realen Geräten geprüft wurden,
+6. mindestens ein kleiner und ein großer Partytest bestanden sind,
+7. keine kritischen oder hohen Fehler offen sind,
+8. erforderliche Anbieter-, Kontakt- und Impressumsangaben ergänzt wurden.
 
 ## Status
 
@@ -132,4 +107,4 @@ Ein öffentlicher Release ist nur vorgesehen, wenn:
 - automatisierter Testumfang: `GO_WITH_EXTERNAL_CI_BLOCKER`
 - kontrollierter lokaler Browser-Betatest: `GO_WITH_CONDITIONS`
 - reale Android-/iOS- und Partytests: `AUSSTEHEND`
-- öffentliche produktive Veröffentlichung: `NO_GO`, bis CI, reale Geräteprüfungen und rechtliche Angaben dokumentiert erfolgreich sind
+- öffentliche produktive Veröffentlichung: `NO_GO`
