@@ -22,7 +22,7 @@ checks = {
     'engine_version': bool(re.search(r'\bVERSION\s*=\s*7\b', engine)),
     'storage_schema': bool(re.search(r'\bKEY_VERSION\s*=\s*7\b', store)),
     'storage_migration_engine': bool(re.search(r'\bENGINE_VERSION\s*=\s*7\b', store)),
-    'pwa_cache_v14': "const CACHE='secret-circle-v14'" in service_worker,
+    'pwa_cache_v15': "const CACHE='secret-circle-v15'" in service_worker,
     'setup_ux_cached': './setup-ux.js' in service_worker,
     'privacy_guard_cached': './privacy-guard.js' in service_worker,
     'runtime_guard_cached': './runtime-guard.js' in service_worker,
@@ -72,8 +72,8 @@ for relative in required_docs:
         raise SystemExit(f'Missing or incomplete production document: {relative}')
 
 for relative, markers in {
-    'RELEASE_STATUS.md': ['Cache-Version 14', 'Aktuelle Blocker'],
-    'DEPLOYMENT.md': ['secret-circle-v14', 'Rollback'],
+    'RELEASE_STATUS.md': ['Cache-Version 15', 'Aktuelle Blocker'],
+    'DEPLOYMENT.md': ['secret-circle-v15', 'Rollback'],
     'RELEASE_CHECKLIST.md': ['Realer Party-Betatest', 'GitHub Actions'],
     'SECURITY.md': ['Sicherheitsproblem melden', 'Sicherheitsmodell der App'],
     'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Abrechnung'],
@@ -89,7 +89,7 @@ print(json.dumps({
     'package_version': package['version'],
     'engine_version': 7,
     'storage_version': 7,
-    'pwa_cache': 'secret-circle-v14',
+    'pwa_cache': 'secret-circle-v15',
     'built_in_categories': category_count,
     'built_in_terms': term_count,
     'unit_test_files': unit_tests,
