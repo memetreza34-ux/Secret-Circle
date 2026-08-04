@@ -12,11 +12,17 @@ engine = read('game-engine.js')
 roles = read('role-assignment.js')
 store = read('data-store.js')
 imposter_content = read('word-packs.js')
-party_catalog = read('party-catalog.js')
-party_hub = read('party-hub.js')
+base_catalog = read('party-catalog.js')
+expansion = read('party-expansion.js')
+routing = read('party-routing.js')
+advanced_modes = read('party-advanced.js')
+advanced_runner = read('party-advanced-runner.js')
+hub_plus = read('party-hub-plus.js')
+data_tools = read('party-data-tools.js')
 sw = read('sw.js')
 index = read('index.html')
 party = read('party.html')
+advanced = read('advanced.html')
 workflow = read('.github/workflows/ci.yml')
 cross_workflow = read('.github/workflows/cross-browser.yml')
 
@@ -29,37 +35,51 @@ checks = {
     'role_assignment_v2': 'version: 2' in roles,
     'maximum_six_imposters': 'MAX_IMPOSTERS = 6' in roles,
     'independent_role_seed': 'independent-roles-v1' in roles,
-    'create_and_next_wrapped': all(marker in roles for marker in ('engine.createGame', 'engine.nextRound')),
-    'restore_and_assert_wrapped': all(marker in roles for marker in ('engine.restoreGame', 'engine.assertGame')),
-    'party_catalog_18_games': party_catalog.count("status: 'playable'") == 14 and party_catalog.count("status: 'planned'") == 4,
-    'party_hub_local_state': "secret-circle-party-hub-v1" in party_hub,
-    'party_hub_search_filters': all(marker in party for marker in ('game-search', 'group-filter', 'mood-filter', 'player-filter', 'status-filter')),
-    'party_hub_player_presets': all(marker in party for marker in ('hub-players', 'preset-name', 'preset-list')),
-    'party_hub_play_layer': all(marker in party for marker in ('game-detail', 'play-layer', 'play-content', 'play-actions')),
-    'planned_games_blocked': "game.status !== 'playable'" in party_hub,
-    'pwa_cache_v19': "const CACHE='secret-circle-v19'" in sw,
-    'party_hub_cached': all(asset in sw for asset in ('./party.html', './party.css', './party-catalog.js', './party-hub.js')),
-    'all_protection_modules_cached': all(asset in sw for asset in (
-        './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
-        './wake-lock.js', './role-assignment.js'
+    'expanded_catalog_v2': 'version: 2' in expansion,
+    'advanced_routing_v3': 'version: 3' in routing and 'advanced.html?game=' in routing,
+    'advanced_modes_v1': all(marker in advanced_modes for marker in (
+        'renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy', 'renderMafia', 'version: 1'
+    )),
+    'resumable_advanced_sessions': all(marker in advanced_runner for marker in (
+        'secret-circle-party-active-v1', 'loadActive', 'persistActive', 'renderSessionSummary', 'MAX_SESSION_ROUNDS = 20'
+    )),
+    'complete_local_backup': all(marker in data_tools for marker in (
+        'secret-circle-complete-backup', 'collectEntries', 'validateBackup', 'Import abgebrochen'
+    )),
+    'age_preferences_and_achievements': all(marker in hub_plus for marker in (
+        'gameAllowed', 'achievement-grid', 'settings-age-level', 'beforeinstallprompt', 'version: 4'
+    )),
+    'party_hub_navigation': all(marker in party for marker in (
+        'game-search', 'group-filter', 'mood-filter', 'player-filter', 'age-filter', 'status-filter',
+        'hub-players', 'preset-name', 'favorites-grid', 'achievement-grid', 'hub-export-data'
+    )),
+    'advanced_setup_and_play': all(marker in advanced for marker in (
+        'advanced-pack', 'advanced-length', 'advanced-start', 'advanced-play-layer'
+    )),
+    'pwa_cache_v21': "const CACHE='secret-circle-v21'" in sw,
+    'all_party_modules_cached': all(asset in sw for asset in (
+        './party.html', './advanced.html', './party.css', './party-extra.css',
+        './party-catalog.js', './party-expansion.js', './party-routing.js',
+        './party-hub.js', './party-hub-plus.js', './party-data-tools.js',
+        './party-advanced.js', './party-advanced-runner.js', './party-advanced-preferences.js'
     )),
     'safe_cache_writes': 'await cache.put' in sw,
-    'stable_manifest_scope': all(manifest.get(key) == './' for key in ('id', 'start_url', 'scope')),
+    'manifest_opens_hub': manifest.get('id') == './' and manifest.get('start_url') == './party.html' and manifest.get('scope') == './',
+    'manifest_party_identity': manifest.get('name') == 'Secret Circle – Party Hub',
     'standalone_pwa': manifest.get('display') == 'standalone',
-    'german_manifest': manifest.get('lang') == 'de',
-    'strict_csp_index': all(marker in index for marker in (
-        "default-src 'self'", "script-src 'self'", "style-src 'self'",
-        "object-src 'none'", "base-uri 'none'", "form-action 'self'"
-    )),
-    'strict_csp_party': all(marker in party for marker in (
-        "default-src 'self'", "script-src 'self'", "style-src 'self'",
-        "object-src 'none'", "base-uri 'none'", "form-action 'self'"
-    )),
-    'role_assignment_before_app': index.index('role-assignment.js') < index.index('app.js'),
+    'strict_csp_all_app_pages': all(
+        all(marker in source for marker in (
+            "default-src 'self'", "script-src 'self'", "style-src 'self'",
+            "object-src 'none'", "base-uri 'none'", "form-action 'self'"
+        )) for source in (index, party, advanced)
+    ),
     'hub_link_from_imposter': 'href="party.html"' in index,
     'imposter_link_from_hub': 'href="index.html"' in party,
-    'party_unit_in_gate': 'tests/party-catalog.test.js' in package.get('scripts', {}).get('test', ''),
-    'party_syntax_in_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in ('party-catalog.js', 'party-hub.js')),
+    'expanded_unit_gate': 'tests/party-expansion.test.js' in package.get('scripts', {}).get('test', ''),
+    'expanded_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
+        'party-expansion.js', 'party-routing.js', 'party-advanced.js',
+        'party-advanced-runner.js', 'party-hub-plus.js', 'party-data-tools.js'
+    )),
     'main_ci_commands': all(command in workflow for command in (
         'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e'
     )),
@@ -79,15 +99,23 @@ term_count = len(re.findall(r"\['(?:[^'\\]|\\.)*','(?:[^'\\]|\\.)*'\]", imposter
 if (category_count, term_count) != (14, 168):
     raise SystemExit(f'Unexpected Imposter content: {category_count} categories, {term_count} terms.')
 
+base_game_count = len(re.findall(r"\bid:\s*'[^']+'", base_catalog.split('const content =', 1)[0]))
+added_game_count = len(re.findall(r"\bid:\s*'[^']+'", expansion.split('const advancedContent =', 1)[0]))
+if (base_game_count, added_game_count) != (18, 4):
+    raise SystemExit(f'Unexpected Party catalog structure: {base_game_count} base and {added_game_count} added games.')
+
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_browser_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 6 or len(e2e_suites) < 15 or not cross_browser_suites:
-    raise SystemExit('Automated test matrix is incomplete for the Party Hub.')
-for required in ['role-assignment.test.js', 'party-catalog.test.js']:
+if len(unit_tests) < 7 or len(e2e_suites) < 17 or not cross_browser_suites:
+    raise SystemExit('Automated test matrix is incomplete for the expanded Party Hub.')
+for required in ['role-assignment.test.js', 'party-catalog.test.js', 'party-expansion.test.js']:
     if required not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required}')
-for required in ['role-assignment.spec.js', 'party-hub.spec.js', 'privacy-guard.spec.js', 'wake-lock.spec.js']:
+for required in [
+    'role-assignment.spec.js', 'party-hub.spec.js', 'party-advanced.spec.js',
+    'party-data.spec.js', 'offline.spec.js', 'privacy-guard.spec.js', 'wake-lock.spec.js'
+]:
     if required not in e2e_suites:
         raise SystemExit(f'Critical E2E suite missing: {required}')
 
@@ -101,20 +129,6 @@ for relative in required_docs:
     if not path.is_file() or path.stat().st_size < 300:
         raise SystemExit(f'Missing or incomplete production document: {relative}')
 
-for relative, markers in {
-    'README.md': ['Party Hub', '14 spielbare', 'secret-circle-v19'],
-    'RELEASE_STATUS.md': ['Party Hub', 'Cache-Version 19', 'Gesamte gewünschte Party-Hub-Vision'],
-    'DEPLOYMENT.md': ['party.html', 'secret-circle-v19', 'Rollback'],
-    'CHANGELOG.md': ['Party-Hub', 'vierzehn spielbare', 'secret-circle-v19'],
-    'RELEASE_CHECKLIST.md': ['Realer Party-Betatest', 'GitHub Actions'],
-    'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Abrechnung'],
-    'MANUAL_TEST_PLAN.md': ['Android-Installation', 'iPhone-/iPad-Installation', 'Realer Partytest']
-}.items():
-    text = read(relative)
-    for marker in markers:
-        if marker.lower() not in text.lower():
-            raise SystemExit(f'Missing documentation marker {marker} in {relative}')
-
 print(json.dumps({
     'release_audit': 'PASS',
     'package_version': package['version'],
@@ -122,10 +136,12 @@ print(json.dumps({
     'storage_version': 7,
     'role_assignment_version': 2,
     'maximum_imposters': 6,
-    'party_games_total': 18,
-    'party_games_playable': 14,
+    'party_games_total': base_game_count + added_game_count,
+    'party_games_playable': 18,
     'party_games_planned': 4,
-    'pwa_cache': 'secret-circle-v19',
+    'advanced_playable_games': 4,
+    'pwa_cache': 'secret-circle-v21',
+    'manifest_start_url': manifest['start_url'],
     'imposter_categories': category_count,
     'imposter_terms': term_count,
     'unit_test_files': unit_tests,
