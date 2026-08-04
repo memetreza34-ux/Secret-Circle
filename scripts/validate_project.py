@@ -11,15 +11,17 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = {
     'index.html', 'privacy.html', 'styles.css', 'pwa.css',
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'app.js', 'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js',
-    'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
-    'package.json', 'playwright.config.js', 'playwright.cross-browser.config.js',
-    'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
-    'tests/fuzz.test.js', 'tests/e2e/game-flow.spec.js',
-    'tests/e2e/setup-limits.spec.js', 'tests/e2e/timer.spec.js',
-    'tests/e2e/offline.spec.js', 'tests/e2e/pwa-install.spec.js',
-    'tests/e2e/runtime-guard.spec.js', 'tests/e2e/privacy-guard.spec.js',
-    'tests/e2e/wake-lock.spec.js', 'tests/e2e/content.spec.js',
+    'role-assignment.js', 'app.js', 'game-engine.js', 'data-store.js',
+    'word-packs.js', 'sw.js', 'manifest.webmanifest', 'icon.svg',
+    'icon-192.png', 'icon-512.png', 'package.json', 'playwright.config.js',
+    'playwright.cross-browser.config.js', 'tests/engine.test.js',
+    'tests/storage.test.js', 'tests/content.test.js',
+    'tests/role-assignment.test.js', 'tests/fuzz.test.js',
+    'tests/e2e/game-flow.spec.js', 'tests/e2e/setup-limits.spec.js',
+    'tests/e2e/timer.spec.js', 'tests/e2e/offline.spec.js',
+    'tests/e2e/pwa-install.spec.js', 'tests/e2e/runtime-guard.spec.js',
+    'tests/e2e/privacy-guard.spec.js', 'tests/e2e/wake-lock.spec.js',
+    'tests/e2e/role-assignment.spec.js', 'tests/e2e/content.spec.js',
     'tests/e2e/history.spec.js', 'tests/e2e/storage-safety.spec.js',
     'tests/e2e/security.spec.js', 'tests/e2e/accessibility.spec.js',
     'tests/cross-browser/smoke.spec.js', 'scripts/repo_hygiene.py',
@@ -46,6 +48,7 @@ read = lambda path: (ROOT / path).read_text(encoding='utf-8')
 index = read('index.html')
 service_worker = read('sw.js')
 engine = read('game-engine.js')
+role_assignment = read('role-assignment.js')
 store = read('data-store.js')
 content = read('word-packs.js')
 package = json.loads(read('package.json'))
@@ -59,6 +62,7 @@ class IndexAudit(HTMLParser):
         self.labels_for = set()
         self.controls = []
         self.local_assets = set()
+        self.script_order = []
         self.meta = {}
 
     def handle_starttag(self, tag, attrs):
@@ -71,6 +75,7 @@ class IndexAudit(HTMLParser):
             self.controls.append((tag, values))
         if tag == 'script' and values.get('src'):
             self.local_assets.add(values['src'])
+            self.script_order.append(values['src'])
         if tag == 'link' and values.get('href') and values.get('rel') in {'stylesheet', 'manifest', 'icon', 'apple-touch-icon'}:
             self.local_assets.add(values['href'])
         if tag == 'meta':
@@ -97,12 +102,13 @@ for asset in audit.local_assets:
     if not (ROOT / asset.lstrip('./')).is_file():
         raise SystemExit(f'HTML references missing asset: {asset}')
 
-required_scripts = {
+expected_script_order = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'game-engine.js', 'word-packs.js', 'data-store.js', 'app.js'
-}
-if not required_scripts.issubset(audit.local_assets):
-    raise SystemExit(f'HTML script set incomplete: {sorted(required_scripts - audit.local_assets)}')
+    'game-engine.js', 'role-assignment.js', 'word-packs.js',
+    'data-store.js', 'app.js'
+]
+if audit.script_order != expected_script_order:
+    raise SystemExit(f'Unexpected runtime script order: {audit.script_order}')
 
 csp = audit.meta.get('content-security-policy', '')
 for directive in [
@@ -124,6 +130,12 @@ if not re.search(r'\bVERSION\s*=\s*7\b', engine):
     raise SystemExit('Game engine version must be 7.')
 if not re.search(r'\bKEY_VERSION\s*=\s*7\b', store) or not re.search(r'\bENGINE_VERSION\s*=\s*7\b', store):
     raise SystemExit('Storage schema and migration engine must be version 7.')
+for marker in [
+    'MAX_IMPOSTERS = 6', 'independent-roles-v1', 'assignIndependentRoles',
+    'engine.createGame', 'engine.nextRound', 'SecretCircleRoleAssignment'
+]:
+    if marker not in role_assignment:
+        raise SystemExit(f'Independent role-assignment marker missing: {marker}')
 
 category_count = content.count('entries:[')
 term_count = len(re.findall(r"\['(?:[^'\\]|\\.)*','(?:[^'\\]|\\.)*'\]", content))
@@ -131,8 +143,8 @@ if (category_count, term_count) != (14, 168):
     raise SystemExit(f'Unexpected built-in content: {category_count} categories, {term_count} terms.')
 
 cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
-if not cache_match or cache_match.group(1) != 'secret-circle-v16':
-    raise SystemExit('Service worker cache must be secret-circle-v16.')
+if not cache_match or cache_match.group(1) != 'secret-circle-v17':
+    raise SystemExit('Service worker cache must be secret-circle-v17.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', service_worker)
 if not core_match:
     raise SystemExit('Service worker CORE list is missing or unparsable.')
@@ -143,9 +155,9 @@ except (SyntaxError, ValueError) as error:
 expected_core = [
     './', './index.html', './privacy.html', './styles.css', './pwa.css',
     './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
-    './wake-lock.js', './app.js', './game-engine.js', './word-packs.js',
-    './data-store.js', './manifest.webmanifest', './icon.svg',
-    './icon-192.png', './icon-512.png'
+    './wake-lock.js', './app.js', './game-engine.js',
+    './role-assignment.js', './word-packs.js', './data-store.js',
+    './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
 ]
 if core_assets != expected_core:
     raise SystemExit('Service worker CORE list differs from the validated production asset order.')
@@ -178,11 +190,15 @@ for name in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci'
         raise SystemExit(f'Package script missing: {name}')
 for marker in [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'app.js', 'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js'
+    'role-assignment.js', 'app.js', 'game-engine.js', 'data-store.js',
+    'word-packs.js', 'sw.js'
 ]:
     if marker not in scripts['check']:
         raise SystemExit(f'Syntax gate missing: {marker}')
-for marker in ['tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js', 'tests/fuzz.test.js']:
+for marker in [
+    'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
+    'tests/role-assignment.test.js', 'tests/fuzz.test.js'
+]:
     if marker not in scripts['test']:
         raise SystemExit(f'Unit test gate missing: {marker}')
 
@@ -190,15 +206,18 @@ for relative, markers in {
     'setup-ux.js': ['maximumImposters', 'Höchstens 20', 'SecretCircleSetupUx'],
     'privacy-guard.js': ['concealSecret', 'automatisch verdeckt', 'SecretCirclePrivacyGuard'],
     'wake-lock.js': ['wakeLock.request', 'discussionIsActive', 'SecretCircleWakeLock'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v16', 'wake-lock.js'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v16'],
+    'role-assignment.js': ['independent-roles-v1', 'MAX_IMPOSTERS', 'assignIndependentRoles'],
+    'tests/role-assignment.test.js': ['firstRevealRoleVaries', 'sampledGames', 'maximumImposters'],
+    'tests/e2e/role-assignment.spec.js': ['independent from reveal order', 'sampledGames'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v17', 'role-assignment.js'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v17'],
     'tests/e2e/privacy-guard.spec.js': ['secret card is concealed', 'continues normally'],
     'tests/e2e/wake-lock.spec.js': ['requests a screen wake lock', 'optional enhancement'],
     'tests/e2e/setup-limits.spec.js': ['live player count and valid imposter range'],
     'tests/fuzz.test.js': ['deterministicFuzzScenarios', 'corruptionMutationsRejected'],
     'tests/content.test.js': ['totalTerms', 'safeTextOnlyContent'],
-    'DEPLOYMENT.md': ['secret-circle-v16'],
-    'RELEASE_STATUS.md': ['Cache-Version 16']
+    'DEPLOYMENT.md': ['secret-circle-v17'],
+    'RELEASE_STATUS.md': ['Cache-Version 17']
 }.items():
     text = read(relative)
     for marker in markers:
@@ -209,9 +228,12 @@ print(json.dumps({
     'structure_validation': 'PASS',
     'required_files': len(REQUIRED_FILES),
     'html_ids': len(audit.ids),
+    'runtime_script_order': audit.script_order,
     'local_page_assets': sorted(audit.local_assets),
     'engine_version': 7,
     'storage_version': 7,
+    'maximum_imposters': 6,
+    'independent_role_assignment': True,
     'pwa_cache': cache_match.group(1),
     'offline_core_assets': len(core_assets),
     'built_in_categories': category_count,
