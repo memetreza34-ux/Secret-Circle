@@ -2,124 +2,101 @@
 
 ## Beobachtetes Verhalten
 
-Die Workflow-Läufe von `Secret Circle CI` werden als fehlgeschlagen beendet, bevor ein einziger Schritt ausgeführt wird.
+`Secret Circle CI` wird beendet, bevor ein einziger Workflow-Schritt ausgeführt wird.
 
 Zuletzt bestätigt:
 
-- Workflow-Lauf: `#420`
-- Run-ID: `30903841947`
-- erster Job-ID: `91974191883`
-- erneuter Job-ID: `91974334081`
-- Commit zum Prüfzeitpunkt: `3217d826f428402d079ef458e2147d880ad94e92`
-- Jobname: `validate`
-- Status: `completed`
-- Ergebnis: `failure`
-- Schrittliste bei beiden Versuchen: leer
-- Job-Log: nicht vorhanden
+- Workflow-Lauf `#420`
+- Run-ID `30903841947`
+- erster Job `91974191883`
+- erneuter Job `91974334081`
+- Commit `3217d826f428402d079ef458e2147d880ad94e92`
+- Job `validate`
+- Ergebnis `failure`
+- bei beiden Versuchen leere Schrittliste und kein normales Job-Log
 
-Der API-Aufruf zum erneuten Ausführen der fehlgeschlagenen Jobs wurde erfolgreich angenommen. Auch der erneute Versuch endete jedoch vor dem ersten Schritt.
-
-Typische Merkmale des Problems:
-
-- der Job endet, bevor `Check out repository` erscheint,
-- keine GitHub-Actions-Schritte werden protokolliert,
-- der Log-Download liefert keinen normalen Workflow-Log,
-- neue Commits und erneute Versuche erzeugen dasselbe Verhalten.
-
-Das unterscheidet sich von einem Syntax-, Test-, Validator- oder Playwright-Fehler. Bei einem Repository-Fehler wären mindestens Checkout, Setup oder der fehlerhafte Befehl in der Schrittliste sichtbar.
+Der erneute Workflow-Versuch wurde von GitHub angenommen, endete aber erneut vor `actions/checkout`. Das unterscheidet sich von einem Syntax-, Test- oder Playwright-Fehler, bei dem mindestens der fehlerhafte Schritt sichtbar wäre.
 
 ## Wahrscheinliche externe Ursachen
 
-In dieser Reihenfolge prüfen:
+1. Actions ist für das Repository deaktiviert oder eingeschränkt.
+2. Kontolimit, Budget oder Abrechnung blockiert gehostete Runner.
+3. Konto- oder Organisationsrichtlinie verhindert die Runner-Bereitstellung.
+4. Vorübergehende GitHub-Actions-Störung.
+5. Externe Einschränkung des Kontos oder Repositorys.
 
-1. **Actions ist für das Repository deaktiviert oder eingeschränkt.**
-2. **Kontolimit, Budget oder Abrechnung blockiert neue gehostete Runner.**
-3. **GitHub-App- oder Organisationsrichtlinie verhindert die Runner-Bereitstellung.**
-4. **Vorübergehende GitHub-Actions-Störung.**
-5. **Das Konto oder Repository besitzt eine externe Nutzungsbeschränkung.**
+## Prüfung
 
-## Prüfung im Repository
-
-### 1. Actions-Berechtigungen
-
-Im Repository öffnen:
+### Actions-Berechtigungen
 
 `Settings → Actions → General`
 
-Prüfen:
+- Actions erlauben
+- offizielle `actions/*`-Workflows erlauben
+- mindestens Leseberechtigung für Repository-Inhalte aktivieren
 
-- Actions ist erlaubt.
-- `Allow all actions and reusable workflows` ist aktiv oder die verwendeten offiziellen Actions sind ausdrücklich erlaubt.
-- `Workflow permissions` besitzt mindestens `Read repository contents permission`.
-- Änderungen speichern.
-
-Verwendete offizielle Actions:
+Verwendete Actions:
 
 - `actions/checkout@v4`
 - `actions/setup-node@v4`
 - `actions/setup-python@v5`
 - `actions/upload-artifact@v4`
 
-### 2. Abrechnung und Nutzungslimits
-
-Im persönlichen GitHub-Konto öffnen:
+### Abrechnung und Nutzungslimits
 
 `Settings → Billing and licensing`
 
-Prüfen:
+- Actions-Ausgabenlimit
+- verfügbare Minuten
+- Zahlungsmethode
+- deaktivierte Actions-Nutzung
+- Organisations-Billing, falls zutreffend
 
-- kein erreichtes Actions-Ausgabenlimit,
-- keine abgelehnte oder abgelaufene Zahlungsmethode,
-- keine deaktivierte Actions-Nutzung,
-- ausreichend Actions-Minuten beziehungsweise zulässige Nutzung für private Repositories.
+### Repository und Konto
 
-Bei Organisationsbesitz zusätzlich die Billing- und Actions-Einstellungen der Organisation prüfen.
+- Repository nicht archiviert
+- Schreibzugriff vorhanden
+- keine Konto- oder Organisationsbeschränkung
+- GitHub-Statusseite ohne aktuelle Actions-Störung
 
-### 3. Repository- und Kontostatus
-
-Prüfen:
-
-- Repository ist nicht archiviert.
-- Konto besitzt weiterhin Schreibzugriff.
-- Keine Sicherheits- oder Nutzungsbeschränkung im Konto.
-- GitHub-Statusseite meldet keine aktuelle Actions-Störung.
-
-## Workflow erneut auslösen
-
-Nach Korrektur der Einstellungen:
+## Erneut ausführen
 
 1. Pull Request #3 öffnen.
-2. Tab `Checks` oder `Actions` öffnen.
-3. Fehlgeschlagenen Lauf erneut ausführen oder `Secret Circle CI` über `Run workflow` starten.
-4. Kontrollieren, dass mindestens der Schritt `Check out repository` erscheint.
-
-Sobald Schritte sichtbar sind, normale Fehler anhand des ersten roten Schritts bearbeiten.
+2. `Checks` oder `Actions` öffnen.
+3. Workflow erneut starten.
+4. Prüfen, ob `Check out repository` erscheint.
+5. Erst ab dann den ersten roten Schritt als Repository-Fehler behandeln.
 
 ## Lokale Ersatzprüfung
-
-Bis GitHub Actions wieder Runner startet:
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
 npx playwright install --with-deps chromium
 npm run ci
-```
 
-Optionaler Browser-Smoke-Test:
-
-```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Die Validierung prüft Repository-Hygiene, Dateigrößen, Syntax, Engine, Speicherung, PWA-Struktur, vollständigen Cache `secret-circle-v16`, Live-Einrichtung, Karten-Sichtschutz, Wake Lock, Datenschutz, Sicherheit und Browserabläufe. Ein lokaler erfolgreicher Lauf ist deshalb ein starkes technisches Signal, ersetzt für den öffentlichen Release aber nicht den erfolgreichen Lauf auf dem endgültigen GitHub-Commit.
+Die aktuelle Validierung prüft unter anderem:
+
+- Engine und Speicherung Version 7
+- unabhängige Rollenverteilung und maximale Anzahl von sechs Impostern
+- keine Kopplung der Rollen an die Aufdeckreihenfolge
+- vollständigen Offline-Cache `secret-circle-v17`
+- Live-Einrichtung, Karten-Sichtschutz und Wake Lock
+- Datenschutz, Eingabesicherheit und Browserabläufe
+- Rollen-, Inhalts- und Fuzz-Tests
+
+Ein erfolgreicher lokaler Lauf ist ein starkes technisches Signal, ersetzt aber nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit.
 
 ## Tracking
 
-Das externe Problem wird zusätzlich in Issue #7 verfolgt. Reale Geräte- und Partytests werden in Issue #8 verfolgt.
+- Issue #7: externer GitHub-Actions-Blocker
+- Issue #8: reale Geräte-, Rollen- und Partytests
 
 ## Freigabeentscheidung
 
-- **Code-Review oder lokaler Betatest:** möglich, wenn `npm run ci` erfolgreich ist.
-- **Merge ohne grüne CI:** nur als bewusste Ausnahme und nicht als Produktionsfreigabe.
-- **Öffentlicher Release:** blockiert, bis der Workflow auf dem endgültigen Commit Schritte ausführt und vollständig grün ist.
+- lokaler Betatest nach erfolgreichem `npm run ci`: möglich
+- Merge ohne grüne CI: nur bewusste Ausnahme, keine Produktionsfreigabe
+- öffentlicher Release: blockiert, bis der endgültige Commit sichtbare und erfolgreiche Workflow-Schritte besitzt
