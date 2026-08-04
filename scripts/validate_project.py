@@ -10,14 +10,14 @@ ROOT = Path(__file__).resolve().parents[1]
 read = lambda path: (ROOT / path).read_text(encoding='utf-8')
 
 REQUIRED = {
-    'index.html', 'privacy.html', 'styles.css', 'pwa.css',
+    'index.html', 'party.html', 'privacy.html', 'styles.css', 'pwa.css', 'party.css',
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js',
-    'app.js', 'sw.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png',
-    'icon-512.png', 'package.json', 'playwright.config.js',
-    'playwright.cross-browser.config.js', 'tests/engine.test.js',
-    'tests/storage.test.js', 'tests/content.test.js',
-    'tests/role-assignment.test.js', 'tests/fuzz.test.js',
+    'party-catalog.js', 'party-hub.js', 'app.js', 'sw.js',
+    'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
+    'package.json', 'playwright.config.js', 'playwright.cross-browser.config.js',
+    'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
+    'tests/role-assignment.test.js', 'tests/fuzz.test.js', 'tests/party-catalog.test.js',
     'tests/e2e/game-flow.spec.js', 'tests/e2e/setup-limits.spec.js',
     'tests/e2e/timer.spec.js', 'tests/e2e/offline.spec.js',
     'tests/e2e/pwa-install.spec.js', 'tests/e2e/runtime-guard.spec.js',
@@ -25,11 +25,11 @@ REQUIRED = {
     'tests/e2e/role-assignment.spec.js', 'tests/e2e/content.spec.js',
     'tests/e2e/history.spec.js', 'tests/e2e/storage-safety.spec.js',
     'tests/e2e/security.spec.js', 'tests/e2e/accessibility.spec.js',
-    'tests/cross-browser/smoke.spec.js', 'scripts/repo_hygiene.py',
-    'scripts/performance_budget.py', 'scripts/release_audit.py',
-    '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
-    'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md',
-    'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'SECURITY.md',
+    'tests/e2e/party-hub.spec.js', 'tests/cross-browser/smoke.spec.js',
+    'scripts/repo_hygiene.py', 'scripts/performance_budget.py',
+    'scripts/release_audit.py', '.github/workflows/ci.yml',
+    '.github/workflows/cross-browser.yml', 'README.md', 'RELEASE_CHECKLIST.md',
+    'RELEASE_STATUS.md', 'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'SECURITY.md',
     'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
 }
 missing = sorted(path for path in REQUIRED if not (ROOT / path).is_file())
@@ -74,40 +74,50 @@ class HtmlAudit(HTMLParser):
                 self.meta[key.lower()] = values.get('content', '')
 
 
-index = read('index.html')
-html = HtmlAudit()
-html.feed(index)
-duplicates = sorted({item for item in html.ids if html.ids.count(item) > 1})
-if duplicates:
-    raise SystemExit(f'Duplicate HTML ids: {", ".join(duplicates)}')
-for tag, attrs in html.controls:
-    control_id = attrs.get('id')
-    if not (control_id in html.labels or attrs.get('aria-label') or attrs.get('aria-labelledby')):
-        raise SystemExit(f'Unlabelled control: {tag}#{control_id or "unknown"}')
-for asset in html.assets:
-    if asset.startswith(('http:', 'https:', 'data:')) or not (ROOT / asset.lstrip('./')).is_file():
-        raise SystemExit(f'Invalid HTML asset: {asset}')
+def audit_html(relative, expected_scripts):
+    source = read(relative)
+    audit = HtmlAudit()
+    audit.feed(source)
+    duplicates = sorted({item for item in audit.ids if audit.ids.count(item) > 1})
+    if duplicates:
+        raise SystemExit(f'Duplicate ids in {relative}: {", ".join(duplicates)}')
+    for tag, attrs in audit.controls:
+        control_id = attrs.get('id')
+        if not (control_id in audit.labels or attrs.get('aria-label') or attrs.get('aria-labelledby')):
+            raise SystemExit(f'Unlabelled control in {relative}: {tag}#{control_id or "unknown"}')
+    for asset in audit.assets:
+        if asset.startswith(('http:', 'https:', 'data:')) or not (ROOT / asset.lstrip('./')).is_file():
+            raise SystemExit(f'Invalid asset in {relative}: {asset}')
+    if audit.scripts != expected_scripts:
+        raise SystemExit(f'Unexpected script order in {relative}: {audit.scripts}')
+    csp = audit.meta.get('content-security-policy', '')
+    for directive in [
+        "default-src 'self'", "script-src 'self'", "style-src 'self'",
+        "object-src 'none'", "base-uri 'none'", "form-action 'self'"
+    ]:
+        if directive not in csp:
+            raise SystemExit(f'CSP directive missing in {relative}: {directive}')
+    return source, audit
 
-EXPECTED_SCRIPTS = [
+
+index, index_audit = audit_html('index.html', [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js',
     'data-store.js', 'app.js'
-]
-if html.scripts != EXPECTED_SCRIPTS:
-    raise SystemExit(f'Unexpected runtime script order: {html.scripts}')
-
-csp = html.meta.get('content-security-policy', '')
-for directive in [
-    "default-src 'self'", "script-src 'self'", "style-src 'self'",
-    "object-src 'none'", "base-uri 'none'", "form-action 'self'"
-]:
-    if directive not in csp:
-        raise SystemExit(f'CSP directive missing: {directive}')
+])
+party, party_audit = audit_html('party.html', ['party-catalog.js', 'party-hub.js'])
+if 'href="party.html"' not in index:
+    raise SystemExit('Word Imposter does not link to the Party Hub.')
+for marker in ['Der ganze Spieleabend in einer App', 'game-search', 'group-filter', 'mood-filter', 'player-filter', 'status-filter', 'Host-Presets', 'game-detail', 'play-layer']:
+    if marker not in party:
+        raise SystemExit(f'Party Hub marker missing: {marker}')
 
 engine = read('game-engine.js')
 store = read('data-store.js')
 roles = read('role-assignment.js')
 content = read('word-packs.js')
+party_catalog = read('party-catalog.js')
+party_hub = read('party-hub.js')
 if not re.search(r'\bVERSION\s*=\s*7\b', engine):
     raise SystemExit('Game engine version must be 7.')
 if not re.search(r'\bKEY_VERSION\s*=\s*7\b', store) or not re.search(r'\bENGINE_VERSION\s*=\s*7\b', store):
@@ -123,25 +133,34 @@ for marker in [
 category_count = content.count('entries:[')
 term_count = len(re.findall(r"\['(?:[^'\\]|\\.)*','(?:[^'\\]|\\.)*'\]", content))
 if (category_count, term_count) != (14, 168):
-    raise SystemExit(f'Unexpected content size: {category_count} categories, {term_count} terms.')
+    raise SystemExit(f'Unexpected Imposter content size: {category_count} categories, {term_count} terms.')
+if party_catalog.count("status: 'playable'") != 14 or party_catalog.count("status: 'planned'") != 4:
+    raise SystemExit('Party catalog must contain 14 playable and 4 clearly planned games.')
+for marker in ['truth-dare', 'never-have', 'most-likely', 'would-rather', 'charades', 'taboo', 'hot-potato', 'word-chain', 'spin-bottle', 'dice-coin']:
+    if marker not in party_catalog:
+        raise SystemExit(f'Party catalog game missing: {marker}')
+for marker in ['STORAGE_KEY', 'renderCatalog', 'toggleFavorite', 'savePreset', 'startSelectedGame', 'finishSession', 'startCharades', 'startHotPotato', 'renderUtility']:
+    if marker not in party_hub:
+        raise SystemExit(f'Party Hub runtime marker missing: {marker}')
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='([^']+)'", sw)
-if not cache or cache.group(1) != 'secret-circle-v18':
-    raise SystemExit('Service worker cache must be secret-circle-v18.')
+if not cache or cache.group(1) != 'secret-circle-v19':
+    raise SystemExit('Service worker cache must be secret-circle-v19.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', sw)
 if not core_match:
     raise SystemExit('Service worker CORE list missing.')
 core = ast.literal_eval(core_match.group(1))
 EXPECTED_CORE = [
-    './', './index.html', './privacy.html', './styles.css', './pwa.css',
-    './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
-    './wake-lock.js', './app.js', './game-engine.js',
-    './role-assignment.js', './word-packs.js', './data-store.js',
+    './', './index.html', './party.html', './privacy.html',
+    './styles.css', './pwa.css', './party.css', './runtime-guard.js',
+    './setup-ux.js', './privacy-guard.js', './wake-lock.js', './app.js',
+    './game-engine.js', './role-assignment.js', './word-packs.js',
+    './data-store.js', './party-catalog.js', './party-hub.js',
     './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
 ]
 if core != EXPECTED_CORE:
-    raise SystemExit('Service worker CORE list is not synchronized.')
+    raise SystemExit('Service worker CORE list is not synchronized with the Party Hub.')
 for marker in ['cache.addAll', 'await cache.put', 'self.clients.claim', 'handleNavigation', 'handleAsset']:
     if marker not in sw:
         raise SystemExit(f'Service-worker marker missing: {marker}')
@@ -169,32 +188,20 @@ scripts = package.get('scripts', {})
 for name in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
     if not scripts.get(name):
         raise SystemExit(f'Package script missing: {name}')
-for marker in [
-    'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'role-assignment.js', 'app.js', 'game-engine.js', 'data-store.js',
-    'word-packs.js', 'sw.js'
-]:
+for marker in ['party-catalog.js', 'party-hub.js']:
     if marker not in scripts['check']:
-        raise SystemExit(f'Syntax gate missing: {marker}')
-for marker in [
-    'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
-    'tests/role-assignment.test.js', 'tests/fuzz.test.js'
-]:
-    if marker not in scripts['test']:
-        raise SystemExit(f'Unit gate missing: {marker}')
+        raise SystemExit(f'Party syntax gate missing: {marker}')
+if 'tests/party-catalog.test.js' not in scripts['test']:
+    raise SystemExit('Party catalog unit test is not in the unit gate.')
 
 MARKERS = {
-    'setup-ux.js': ['refreshAfterAsyncAction', 'version: 3'],
-    'tests/role-assignment.test.js': ['restoredSevenImpostersRejected', 'sampledGames'],
-    'tests/e2e/role-assignment.spec.js': ['restoreLimitMessage', 'independent from reveal order'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v18', 'role-assignment.js'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v18'],
-    'DEPLOYMENT.md': ['secret-circle-v18', 'Aufdeckreihenfolge'],
-    'RELEASE_STATUS.md': ['Cache-Version 18', 'unabhängige Rollenverteilung'],
-    'README.md': ['secret-circle-v18', 'Aufdeckreihenfolge'],
-    'CHANGELOG.md': ['secret-circle-v18', 'Aufdeckreihenfolge'],
-    'RELEASE_CHECKLIST.md': ['Aufdeckreihenfolge'],
-    'MANUAL_TEST_PLAN.md': ['Aufdeckreihenfolge']
+    'tests/party-catalog.test.js': ['playableGames', 'totalCards', 'Choice pair'],
+    'tests/e2e/party-hub.spec.js': ['clear playable catalog', 'shared players', 'planned games'],
+    'tests/e2e/offline.spec.js': ['role-assignment.js'],
+    'README.md': ['Party Hub', '14 spielbare', 'secret-circle-v19'],
+    'RELEASE_STATUS.md': ['Party Hub', 'Cache-Version 19'],
+    'CHANGELOG.md': ['Party Hub', 'secret-circle-v19'],
+    'DEPLOYMENT.md': ['party.html', 'secret-circle-v19']
 }
 for relative, markers in MARKERS.items():
     text = read(relative)
@@ -205,14 +212,17 @@ for relative, markers in MARKERS.items():
 print(json.dumps({
     'structure_validation': 'PASS',
     'required_files': len(REQUIRED),
-    'runtime_script_order': html.scripts,
+    'imposter_runtime_scripts': index_audit.scripts,
+    'party_runtime_scripts': party_audit.scripts,
     'engine_version': 7,
     'storage_version': 7,
     'role_assignment_version': 2,
     'maximum_imposters': 6,
-    'independent_role_assignment': True,
+    'party_games_total': 18,
+    'party_games_playable': 14,
+    'party_games_planned': 4,
     'pwa_cache': cache.group(1),
     'offline_core_assets': len(core),
-    'built_in_categories': category_count,
-    'built_in_terms': term_count
+    'imposter_categories': category_count,
+    'imposter_terms': term_count
 }, ensure_ascii=False, indent=2))
