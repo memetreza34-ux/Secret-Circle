@@ -11,9 +11,9 @@ Zielbranch: `main`
 |---|---:|---|
 | Kernspiel und Regeln | 98 % | Funktionsumfang vollständig für die lokale Partyspiel-Beta |
 | Speicherung und Migration | 98 % | versioniert, streng validiert, migrierbar, sicherbar und vollständig löschbar |
-| PWA und Offline-Struktur | 98 % | Cache-Version 13, vollständiger Offline-Core, Installationsicons, Manifest und Updateschutz |
-| Accessibility und mobile Bedienung | 96 % | Live-Einrichtung, Safe Areas, große Touchflächen und automatische Gates; reale Screenreader- und Gerätetests fehlen |
-| Automatisierte Testabdeckung | 97 % | Engine, Speicherung, Inhalte, Fuzz-Szenarien, E2E, Sicherheit und Cross-Browser-Smoke |
+| PWA und Offline-Struktur | 98 % | Cache-Version 14, vollständiger Offline-Core, Installationsicons, Manifest und Updateschutz |
+| Accessibility und mobile Bedienung | 97 % | Live-Einrichtung, Safe Areas, automatische Kartenverdeckung und Accessibility-Gates; reale Screenreader- und Gerätetests fehlen |
+| Automatisierte Testabdeckung | 98 % | Engine, Speicherung, Inhalte, Fuzz-Szenarien, E2E, Privatsphäre, Sicherheit und Cross-Browser-Smoke |
 | Dokumentation und Release-Prozess | 98 % | Checkliste, Status, Testplan, Changelog, Sicherheit, Deployment und Rollback vorhanden |
 | Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert auf echten Geräten und mit echten Gruppen durchgeführt |
 | Öffentliche rechtliche Freigabe | 45 % | Datenschutzgrundlage vorhanden; Verantwortliche-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
@@ -22,7 +22,7 @@ Zielbranch: `main`
 
 - **Technische Produktbeta:** etwa **98 %**
 - **Bereit für einen kontrollierten lokalen Browser-Test:** etwa **97 %**
-- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **93 %**
+- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **94 %**
 - **Bereit für einen öffentlichen Produktionsrelease:** etwa **89 %**
 
 Die Prozentwerte sind eine technische Projektbewertung. Sie sind kein Beweis für Fehlerfreiheit und ersetzen keine erfolgreich ausgeführten Prüfungen.
@@ -45,13 +45,15 @@ Die Prozentwerte sind eine technische Projektbewertung. Sie sind kein Beweis fü
 - Live-Anzeige erkannter Personen und des gültigen Imposter-Bereichs
 - automatische Korrektur einer zu hohen Imposter-Zahl bei kleinerer Gruppe
 - iPhone-Safe-Areas, dynamische Viewport-Höhe und zoomsichere Formulare
-- Offline-PWA mit Cache-Version 13
+- automatische Verdeckung einer sichtbaren geheimen Karte bei Fokusverlust oder App-Wechsel
+- erneutes sicheres Öffnen einer automatisch verdeckten Karte ohne Verlust des Rundenfortschritts
+- Offline-PWA mit Cache-Version 14
 - 192- und 512-Pixel-PNG-Icons sowie mobile Installationsmetadaten
 - Laufzeit-Fehlerschutz, sichtbare Ressourcenausfälle und sicherer PWA-Update-Neustart
 - Content Security Policy, Datenschutzseite und Eingabe-Escaping
 - Grenzwerttests mit 3 bis 20 Personen und mehreren Impostern
 - deterministische Fuzz-Szenarien mit Engine-Invarianten
-- Desktop-/Mobile-E2E-, Sicherheits-, Accessibility- und Cross-Browser-Suiten
+- Desktop-/Mobile-E2E-, Privatsphäre-, Sicherheits-, Accessibility- und Cross-Browser-Suiten
 - Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
 - Repository-Hygiene und Offline-Core-Performancebudget
 - strukturierter HTML-, Manifest-, Service-Worker- und Asset-Validator
@@ -89,6 +91,7 @@ Mindestens prüfen:
 - aktuelles iPhone oder iPad mit Safari,
 - Installation, Offline-Start und App-Update,
 - Timer bei Hintergrund, Sperrbildschirm und Energiesparmodus,
+- automatische Kartenverdeckung bei App-Wechsel,
 - Bildschirmrotation und sichere Bildschirmränder.
 
 ### 4. Reale Partytests fehlen
