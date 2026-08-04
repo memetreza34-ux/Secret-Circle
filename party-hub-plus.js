@@ -69,7 +69,38 @@
     applyAgeFilter();
   }
 
+  function repairStatsFromHistory() {
+    const state = readJson(HUB_KEY, null);
+    if (!state || state.version !== 1 || !Array.isArray(state.history)) return false;
+    if (!state.stats || typeof state.stats !== 'object' || Array.isArray(state.stats)) state.stats = {};
+    const observed = {};
+    for (const item of state.history) {
+      if (!item || typeof item.gameId !== 'string') continue;
+      const entry = observed[item.gameId] || { plays: 0, rounds: 0, best: 0 };
+      entry.plays += 1;
+      entry.rounds += Number.isInteger(item.rounds) && item.rounds > 0 ? item.rounds : 0;
+      entry.best = Math.max(entry.best, Number.isFinite(item.score) ? item.score : 0);
+      observed[item.gameId] = entry;
+    }
+    let changed = false;
+    for (const [gameId, entry] of Object.entries(observed)) {
+      const current = state.stats[gameId] || { plays: 0, rounds: 0, best: 0 };
+      const repaired = {
+        plays: Math.max(Number(current.plays) || 0, entry.plays),
+        rounds: Math.max(Number(current.rounds) || 0, entry.rounds),
+        best: Math.max(Number(current.best) || 0, entry.best)
+      };
+      if (repaired.plays !== current.plays || repaired.rounds !== current.rounds || repaired.best !== current.best) {
+        state.stats[gameId] = repaired;
+        changed = true;
+      }
+    }
+    if (changed) localStorage.setItem(HUB_KEY, JSON.stringify(state));
+    return changed;
+  }
+
   function renderAchievements() {
+    repairStatsFromHistory();
     const grid = $('#achievement-grid');
     if (!grid) return;
     const state = readJson(HUB_KEY, { history: [], stats: {}, favorites: [], presets: [] });
@@ -155,23 +186,29 @@
   const gameGrid = $('#game-grid');
   if (gameGrid) new MutationObserver(applyAgeFilter).observe(gameGrid, { childList: true });
   document.addEventListener('click', event => {
-    if (event.target.closest('[data-view-target="stats"]')) window.setTimeout(renderAchievements, 0);
+    if (event.target.closest('[data-view-target="stats"]')) window.setTimeout(() => {
+      repairStatsFromHistory();
+      renderAchievements();
+    }, 0);
     if (event.target.closest('[data-view-target="games"]')) window.setTimeout(applyAgeFilter, 0);
+    if (event.target.closest('#exit-game')) window.setTimeout(repairStatsFromHistory, 0);
     const open = event.target.closest('[data-open-game]');
     if (open) window.setTimeout(() => fixDetailAction(open.dataset.openGame), 0);
   });
 
   installSupport();
+  repairStatsFromHistory();
   renderAchievements();
   openRequestedView();
   window.setTimeout(applyAgeFilter, 0);
 
   window.SecretCirclePartyHubPlus = Object.freeze({
-    version: 4,
+    version: 5,
     gameAllowed,
     renderAchievements,
     preferences,
     setAgeLevel,
-    fixDetailAction
+    fixDetailAction,
+    repairStatsFromHistory
   });
 })();
