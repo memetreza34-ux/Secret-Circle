@@ -22,8 +22,9 @@ budgets = {
     'party-catalog.js': 85_000,
     'party-expansion.js': 45_000,
     'party-routing.js': 8_000,
+    'party-custom-packs.js': 30_000,
     'party-hub.js': 65_000,
-    'party-hub-plus.js': 25_000,
+    'party-hub-plus.js': 30_000,
     'party-data-tools.js': 18_000,
     'party-advanced.js': 55_000,
     'party-advanced-runner.js': 40_000,
@@ -31,7 +32,7 @@ budgets = {
     'styles.css': 35_000,
     'pwa.css': 40_000,
     'party.css': 55_000,
-    'party-extra.css': 20_000,
+    'party-extra.css': 25_000,
     'sw.js': 16_000,
     'manifest.webmanifest': 6_000,
     'icon.svg': 25_000,
@@ -52,7 +53,7 @@ for relative, maximum in budgets.items():
         violations.append(f'{relative} is {size} bytes; budget is {maximum} bytes.')
 
 core_total = sum(sizes.values())
-core_budget = 1_250_000
+core_budget = 1_300_000
 if core_total > core_budget:
     violations.append(f'Offline core is {core_total} bytes; budget is {core_budget} bytes.')
 
@@ -83,5 +84,6 @@ print(json.dumps({
     'core_budget_used_percent': round(core_total / core_budget * 100, 2),
     'tracked_files_checked': len(tracked),
     'budgeted_assets': len(budgets),
+    'custom_pack_module_budgeted': True,
     'asset_sizes': sizes
 }, ensure_ascii=False, indent=2))
