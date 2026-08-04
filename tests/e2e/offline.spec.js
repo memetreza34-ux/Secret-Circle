@@ -11,10 +11,10 @@ test('service worker caches the complete offline core', async ({ page, context }
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v11');
+    const cache = await caches.open('secret-circle-v13');
     const expected = [
       './index.html', './privacy.html', './styles.css', './pwa.css',
-      './runtime-guard.js', './app.js', './game-engine.js',
+      './runtime-guard.js', './setup-ux.js', './app.js', './game-engine.js',
       './word-packs.js', './data-store.js', './manifest.webmanifest',
       './icon.svg', './icon-192.png', './icon-512.png'
     ];
@@ -25,8 +25,8 @@ test('service worker caches the complete offline core', async ({ page, context }
     }
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v11');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v11']);
+  expect(cacheState.names).toContain('secret-circle-v13');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v13']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
@@ -35,6 +35,7 @@ test('service worker caches the complete offline core', async ({ page, context }
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
+  await expect(page.locator('#players-help')).toContainText('eindeutige Personen erkannt');
 });
 
 test('offline mode preserves a locally saved active game', async ({ page, context }) => {
