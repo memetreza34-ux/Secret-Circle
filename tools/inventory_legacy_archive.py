@@ -38,20 +38,8 @@ APP_MARKERS = {
     "src/main.js": 4,
 }
 TEXT_EXTENSIONS = {
-    ".css",
-    ".html",
-    ".js",
-    ".json",
-    ".jsx",
-    ".md",
-    ".mjs",
-    ".svg",
-    ".ts",
-    ".tsx",
-    ".txt",
-    ".webmanifest",
-    ".yml",
-    ".yaml",
+    ".css", ".html", ".js", ".json", ".jsx", ".md", ".mjs",
+    ".svg", ".ts", ".tsx", ".txt", ".webmanifest", ".yml", ".yaml",
 }
 
 
@@ -66,9 +54,19 @@ class Limits:
     max_total_bytes: int = DEFAULT_MAX_TOTAL_BYTES
     max_compression_ratio: float = DEFAULT_MAX_COMPRESSION_RATIO
 
+    def validate(self) -> None:
+        if self.max_files < 1:
+            raise InventoryError("max_files must be positive")
+        if self.max_file_bytes < 1 or self.max_total_bytes < 1:
+            raise InventoryError("size limits must be positive")
+        if self.max_file_bytes > self.max_total_bytes:
+            raise InventoryError("per-file limit must not exceed total-size limit")
+        if self.max_compression_ratio < 1:
+            raise InventoryError("compression-ratio limit must be at least 1")
 
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
+
+def digest_file(path: Path, algorithm: str) -> str:
+    digest = hashlib.new(algorithm)
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(CHUNK_SIZE), b""):
             digest.update(chunk)
@@ -92,7 +90,7 @@ def normalized_member_path(raw_name: str) -> str:
     if name.startswith("/") or re.match(r"^[A-Za-z]:/", name):
         raise InventoryError(f"Absolute ZIP path rejected: {raw_name!r}")
     parts = PurePosixPath(name).parts
-    if any(part in {"..", ""} for part in parts):
+    if any(part == ".." for part in parts):
         raise InventoryError(f"Traversal ZIP path rejected: {raw_name!r}")
     canonical = str(PurePosixPath(name))
     if canonical in {"", "."}:
@@ -101,11 +99,10 @@ def normalized_member_path(raw_name: str) -> str:
 
 
 def is_symlink(info: zipfile.ZipInfo) -> bool:
-    unix_mode = (info.external_attr >> 16) & 0xFFFF
-    return stat.S_ISLNK(unix_mode)
+    return stat.S_ISLNK((info.external_attr >> 16) & 0xFFFF)
 
 
-def member_ratio(info: zipfile.ZipInfo) -> float:
+def compression_ratio(info: zipfile.ZipInfo) -> float:
     if info.file_size == 0:
         return 0.0
     return info.file_size / max(info.compress_size, 1)
@@ -125,7 +122,7 @@ def validate_member(info: zipfile.ZipInfo, limits: Limits) -> str:
         raise InventoryError(
             f"ZIP member exceeds per-file limit: {info.filename!r} ({info.file_size} bytes)"
         )
-    ratio = member_ratio(info)
+    ratio = compression_ratio(info)
     if not info.is_dir() and ratio > limits.max_compression_ratio:
         raise InventoryError(
             f"Suspicious compression ratio {ratio:.1f}:1: {info.filename!r}"
@@ -133,17 +130,17 @@ def validate_member(info: zipfile.ZipInfo, limits: Limits) -> str:
     return canonical
 
 
-def hash_stream(handle: BinaryIO, expected_size: int) -> tuple[str, int]:
+def hash_member(handle: BinaryIO, expected_size: int) -> tuple[str, int]:
     digest = hashlib.sha256()
     total = 0
     while True:
         chunk = handle.read(CHUNK_SIZE)
         if not chunk:
             break
-        digest.update(chunk)
         total += len(chunk)
         if total > expected_size:
             raise InventoryError("Decompressed ZIP member exceeded declared size")
+        digest.update(chunk)
     if total != expected_size:
         raise InventoryError(
             f"Decompressed size mismatch: expected {expected_size}, received {total}"
@@ -176,6 +173,7 @@ def inventory_archive(
     limits: Limits = Limits(),
     expected_git_blob: str | None = None,
 ) -> dict:
+    limits.validate()
     archive = archive.resolve()
     if not archive.is_file():
         raise InventoryError(f"Archive not found: {archive}")
@@ -188,7 +186,6 @@ def inventory_archive(
             f"Git blob mismatch: expected {expected_git_blob.lower()}, got {actual_git_blob}"
         )
 
-    archive_size = archive.stat().st_size
     entries: list[dict] = []
     file_paths: list[str] = []
     seen_exact: set[str] = set()
@@ -205,10 +202,19 @@ def inventory_archive(
                 raise InventoryError(
                     f"Archive contains {len(infos)} entries; limit is {limits.max_files}"
                 )
-            bad_crc = bundle.testzip()
-            if bad_crc:
-                raise InventoryError(f"ZIP CRC validation failed for {bad_crc!r}")
 
+            # Metadata limits are checked before any member is decompressed.
+            for info in infos:
+                validate_member(info, limits)
+                if not info.is_dir():
+                    total_uncompressed += info.file_size
+                    if total_uncompressed > limits.max_total_bytes:
+                        raise InventoryError(
+                            "Archive exceeds total uncompressed-size limit: "
+                            f"{total_uncompressed} > {limits.max_total_bytes}"
+                        )
+
+            total_uncompressed = 0
             for info in infos:
                 canonical = validate_member(info, limits)
                 if canonical in seen_exact:
@@ -221,8 +227,8 @@ def inventory_archive(
                         f"Case-colliding ZIP paths rejected: {previous!r} and {canonical!r}"
                     )
                 seen_casefold[folded] = canonical
-
                 top_level_counts[PurePosixPath(canonical).parts[0]] += 1
+
                 if info.is_dir():
                     entries.append(
                         {
@@ -236,13 +242,13 @@ def inventory_archive(
 
                 total_uncompressed += info.file_size
                 total_compressed += info.compress_size
-                if total_uncompressed > limits.max_total_bytes:
+                try:
+                    with bundle.open(info, "r") as handle:
+                        digest, bytes_read = hash_member(handle, info.file_size)
+                except zipfile.BadZipFile as exc:
                     raise InventoryError(
-                        "Archive exceeds total uncompressed-size limit: "
-                        f"{total_uncompressed} > {limits.max_total_bytes}"
-                    )
-                with bundle.open(info, "r") as handle:
-                    digest, bytes_read = hash_stream(handle, info.file_size)
+                        f"ZIP CRC or structure validation failed for {canonical!r}: {exc}"
+                    ) from exc
 
                 suffix = PurePosixPath(canonical).suffix.lower() or "[no-extension]"
                 extension_counts[suffix] += 1
@@ -254,7 +260,7 @@ def inventory_archive(
                         "extension": suffix,
                         "compressedBytes": info.compress_size,
                         "uncompressedBytes": bytes_read,
-                        "compressionRatio": round(member_ratio(info), 3),
+                        "compressionRatio": round(compression_ratio(info), 3),
                         "sha256": digest,
                         "textCandidate": suffix in TEXT_EXTENSIONS,
                     }
@@ -264,13 +270,12 @@ def inventory_archive(
     except RuntimeError as exc:
         raise InventoryError(f"ZIP member could not be read: {exc}") from exc
 
-    roots = candidate_roots(file_paths)
     result = {
         "schemaVersion": 1,
         "archive": {
             "fileName": archive.name,
-            "byteSize": archive_size,
-            "sha256": sha256_file(archive),
+            "byteSize": archive.stat().st_size,
+            "sha256": digest_file(archive, "sha256"),
             "gitBlobSha1": actual_git_blob,
             "expectedGitBlobMatched": expected_git_blob is None
             or actual_git_blob == expected_git_blob.lower(),
@@ -304,7 +309,7 @@ def inventory_archive(
             {"extension": extension, "files": count}
             for extension, count in sorted(extension_counts.items())
         ],
-        "candidateAppRoots": roots,
+        "candidateAppRoots": candidate_roots(file_paths),
         "entries": sorted(entries, key=lambda item: item["path"]),
         "status": "SAFE_INVENTORY_COMPLETE_NO_EXTRACTION",
     }
@@ -315,31 +320,19 @@ def markdown_report(inventory: dict) -> str:
     archive = inventory["archive"]
     summary = inventory["summary"]
     lines = [
-        "# Legacy-Archiv-Inventar",
-        "",
-        f"Archiv: `{archive['fileName']}`",
-        "",
-        "## Prüfsummen",
-        "",
-        f"- Größe: `{archive['byteSize']}` Bytes",
+        "# Legacy-Archiv-Inventar", "", f"Archiv: `{archive['fileName']}`", "",
+        "## Prüfsummen", "", f"- Größe: `{archive['byteSize']}` Bytes",
         f"- SHA-256: `{archive['sha256']}`",
         f"- Git-Blob-SHA-1: `{archive['gitBlobSha1']}`",
         f"- erwarteter Git-Blob bestätigt: `{str(archive['expectedGitBlobMatched']).lower()}`",
-        "",
-        "## Sicherheitsprüfung",
-        "",
-        f"- Einträge: `{summary['entries']}`",
+        "", "## Sicherheitsprüfung", "", f"- Einträge: `{summary['entries']}`",
         f"- Dateien: `{summary['files']}`",
         f"- Verzeichnisse: `{summary['directories']}`",
         f"- unkomprimiert: `{summary['uncompressedBytes']}` Bytes",
         f"- Pfade sicher: `{str(summary['safePaths']).lower()}`",
-        "- Symlinks: `0`",
-        "- verschlüsselte Einträge: `0`",
-        "- doppelte Pfade: `0`",
-        "- Groß-/Kleinschreibungs-Kollisionen: `0`",
-        "",
-        "## Kandidaten für App-Wurzeln",
-        "",
+        "- Symlinks: `0`", "- verschlüsselte Einträge: `0`",
+        "- doppelte Pfade: `0`", "- Groß-/Kleinschreibungs-Kollisionen: `0`",
+        "", "## Kandidaten für App-Wurzeln", "",
     ]
     roots = inventory.get("candidateAppRoots") or []
     if roots:
@@ -355,13 +348,9 @@ def markdown_report(inventory: dict) -> str:
         lines.append(f"- `{item['extension']}`: {item['files']}")
     lines.extend(
         [
-            "",
-            "## Grenze",
-            "",
+            "", "## Grenze", "",
             "Das Archiv wurde ausschließlich gelesen und gehasht. Es wurde nichts extrahiert oder ausgeführt.",
-            "",
-            f"Status: `{inventory['status']}`.",
-            "",
+            "", f"Status: `{inventory['status']}`.", "",
         ]
     )
     return "\n".join(lines)
@@ -379,25 +368,22 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--max-file-bytes", type=int, default=DEFAULT_MAX_FILE_BYTES)
     parser.add_argument("--max-total-bytes", type=int, default=DEFAULT_MAX_TOTAL_BYTES)
     parser.add_argument(
-        "--max-compression-ratio",
-        type=float,
-        default=DEFAULT_MAX_COMPRESSION_RATIO,
+        "--max-compression-ratio", type=float, default=DEFAULT_MAX_COMPRESSION_RATIO
     )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
-    limits = Limits(
-        max_files=args.max_files,
-        max_file_bytes=args.max_file_bytes,
-        max_total_bytes=args.max_total_bytes,
-        max_compression_ratio=args.max_compression_ratio,
-    )
     try:
         inventory = inventory_archive(
             args.archive,
-            limits=limits,
+            limits=Limits(
+                max_files=args.max_files,
+                max_file_bytes=args.max_file_bytes,
+                max_total_bytes=args.max_total_bytes,
+                max_compression_ratio=args.max_compression_ratio,
+            ),
             expected_git_blob=args.expected_git_blob,
         )
     except InventoryError as exc:
