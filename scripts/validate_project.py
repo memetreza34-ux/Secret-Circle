@@ -63,6 +63,10 @@ required_text = {
     'tests/e2e/offline.spec.js': [
         'secret-circle-v9', 'icon-192.png', 'icon-512.png', 'offline'
     ],
+    'tests/e2e/pwa-install.spec.js': [
+        'installable mobile metadata', 'createImageBitmap',
+        '192x192', '512x512', 'apple-mobile-web-app-capable'
+    ],
     'tests/e2e/content.spec.js': ['category'],
     'tests/e2e/history.spec.js': ['history'],
     'tests/e2e/storage-safety.spec.js': ['storage'],
