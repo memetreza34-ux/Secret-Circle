@@ -10,23 +10,24 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = {
     'index.html', 'privacy.html', 'styles.css', 'pwa.css',
-    'runtime-guard.js', 'setup-ux.js', 'app.js', 'game-engine.js',
-    'data-store.js', 'word-packs.js', 'sw.js', 'manifest.webmanifest',
-    'icon.svg', 'icon-192.png', 'icon-512.png', 'package.json',
-    'playwright.config.js', 'playwright.cross-browser.config.js',
+    'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'app.js',
+    'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js',
+    'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
+    'package.json', 'playwright.config.js', 'playwright.cross-browser.config.js',
     'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
     'tests/fuzz.test.js', 'tests/e2e/game-flow.spec.js',
     'tests/e2e/setup-limits.spec.js', 'tests/e2e/timer.spec.js',
     'tests/e2e/offline.spec.js', 'tests/e2e/pwa-install.spec.js',
-    'tests/e2e/runtime-guard.spec.js', 'tests/e2e/content.spec.js',
-    'tests/e2e/history.spec.js', 'tests/e2e/storage-safety.spec.js',
-    'tests/e2e/security.spec.js', 'tests/e2e/accessibility.spec.js',
-    'tests/cross-browser/smoke.spec.js', 'scripts/repo_hygiene.py',
-    'scripts/performance_budget.py', 'scripts/release_audit.py',
-    '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
-    'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md',
-    'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'SECURITY.md',
-    'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
+    'tests/e2e/runtime-guard.spec.js', 'tests/e2e/privacy-guard.spec.js',
+    'tests/e2e/content.spec.js', 'tests/e2e/history.spec.js',
+    'tests/e2e/storage-safety.spec.js', 'tests/e2e/security.spec.js',
+    'tests/e2e/accessibility.spec.js', 'tests/cross-browser/smoke.spec.js',
+    'scripts/repo_hygiene.py', 'scripts/performance_budget.py',
+    'scripts/release_audit.py', '.github/workflows/ci.yml',
+    '.github/workflows/cross-browser.yml', 'README.md',
+    'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
+    'KNOWN_LIMITATIONS.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md',
+    'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
 }
 
 missing = sorted(path for path in REQUIRED_FILES if not (ROOT / path).is_file())
@@ -96,7 +97,10 @@ for asset in audit.local_assets:
     if not (ROOT / asset.lstrip('./')).is_file():
         raise SystemExit(f'HTML references missing asset: {asset}')
 
-required_scripts = {'runtime-guard.js', 'setup-ux.js', 'game-engine.js', 'word-packs.js', 'data-store.js', 'app.js'}
+required_scripts = {
+    'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js',
+    'game-engine.js', 'word-packs.js', 'data-store.js', 'app.js'
+}
 if not required_scripts.issubset(audit.local_assets):
     raise SystemExit(f'HTML script set incomplete: {sorted(required_scripts - audit.local_assets)}')
 
@@ -127,8 +131,8 @@ if (category_count, term_count) != (14, 168):
     raise SystemExit(f'Unexpected built-in content: {category_count} categories, {term_count} terms.')
 
 cache_match = re.search(r"const CACHE='([^']+)'", service_worker)
-if not cache_match or cache_match.group(1) != 'secret-circle-v13':
-    raise SystemExit('Service worker cache must be secret-circle-v13.')
+if not cache_match or cache_match.group(1) != 'secret-circle-v14':
+    raise SystemExit('Service worker cache must be secret-circle-v14.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', service_worker)
 if not core_match:
     raise SystemExit('Service worker CORE list is missing or unparsable.')
@@ -138,9 +142,9 @@ except (SyntaxError, ValueError) as error:
     raise SystemExit(f'Unable to parse service worker CORE list: {error}')
 expected_core = [
     './', './index.html', './privacy.html', './styles.css', './pwa.css',
-    './runtime-guard.js', './setup-ux.js', './app.js', './game-engine.js',
-    './word-packs.js', './data-store.js', './manifest.webmanifest',
-    './icon.svg', './icon-192.png', './icon-512.png'
+    './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
+    './app.js', './game-engine.js', './word-packs.js', './data-store.js',
+    './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
 ]
 if core_assets != expected_core:
     raise SystemExit('Service worker CORE list differs from the validated production asset order.')
@@ -171,7 +175,10 @@ scripts = package.get('scripts', {})
 for name in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
     if not scripts.get(name):
         raise SystemExit(f'Package script missing: {name}')
-for marker in ['runtime-guard.js', 'setup-ux.js', 'app.js', 'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js']:
+for marker in [
+    'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'app.js',
+    'game-engine.js', 'data-store.js', 'word-packs.js', 'sw.js'
+]:
     if marker not in scripts['check']:
         raise SystemExit(f'Syntax gate missing: {marker}')
 for marker in ['tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js', 'tests/fuzz.test.js']:
@@ -180,13 +187,15 @@ for marker in ['tests/engine.test.js', 'tests/storage.test.js', 'tests/content.t
 
 for relative, markers in {
     'setup-ux.js': ['maximumImposters', 'Höchstens 20', 'SecretCircleSetupUx'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v13', 'setup-ux.js'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v13'],
+    'privacy-guard.js': ['concealSecret', 'automatisch verdeckt', 'SecretCirclePrivacyGuard'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v14', 'privacy-guard.js'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v14'],
+    'tests/e2e/privacy-guard.spec.js': ['secret card is concealed', 'continues normally'],
     'tests/e2e/setup-limits.spec.js': ['live player count and valid imposter range'],
     'tests/fuzz.test.js': ['deterministicFuzzScenarios', 'corruptionMutationsRejected'],
     'tests/content.test.js': ['totalTerms', 'safeTextOnlyContent'],
-    'DEPLOYMENT.md': ['secret-circle-v13'],
-    'RELEASE_STATUS.md': ['Cache-Version 13']
+    'DEPLOYMENT.md': ['secret-circle-v14'],
+    'RELEASE_STATUS.md': ['Cache-Version 14']
 }.items():
     text = read(relative)
     for marker in markers:
