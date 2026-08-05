@@ -32,10 +32,6 @@
     return Number.isInteger(number) && number >= 0 ? number : fallback;
   }
 
-  function clone(value) {
-    return JSON.parse(JSON.stringify(value));
-  }
-
   function normalizeConfig(value = {}) {
     const players = Math.min(20, Math.max(1, safeInteger(value.players, 4)));
     const duration = DURATIONS.includes(Number(value.duration)) ? Number(value.duration) : 45;
@@ -74,7 +70,15 @@
     })[mood] || 'gemischt';
   }
 
-  function scoreCandidate(game, config, context, selected, slot, totalSlots, randomInt) {
+  function boundedRandom(randomInt, maximum) {
+    if (!Number.isInteger(maximum) || maximum <= 0) return 0;
+    let value = 0;
+    try { value = Number(randomInt(maximum)); } catch {}
+    if (!Number.isFinite(value)) return 0;
+    return Math.abs(Math.trunc(value)) % maximum;
+  }
+
+  function scoreCandidate(game, config, context, selected, slot, totalSlots, jitter = 0) {
     const selectedGroups = new Set(selected.map(item => item.group));
     const favorites = new Set(context.favorites || []);
     const recent = new Set((context.recent || []).slice(0, 5));
@@ -89,7 +93,7 @@
     else score -= 16;
     if (slot === 0 && game.duration <= 15 && game.moods.some(mood => ['funny', 'friendly', 'chaotic'].includes(mood))) score += 18;
     if (slot === totalSlots - 1 && game.moods.some(mood => ['competitive', 'chaotic'].includes(mood))) score += 14;
-    score += Number(randomInt(7)) || 0;
+    score += Number.isFinite(jitter) ? jitter : 0;
     return score;
   }
 
@@ -116,7 +120,7 @@
     const config = normalizeConfig(configInput);
     const candidates = eligibleGames(config);
     if (!candidates.length) return null;
-    const desiredSlots = Math.min(6, Math.max(2, Math.round(config.duration / 15)));
+    const desiredSlots = Math.min(6, Math.max(1, Math.round(config.duration / 15)));
     const totalSlots = Math.min(desiredSlots, candidates.length);
     const selected = [];
     const reasons = [];
@@ -124,9 +128,10 @@
 
     for (let slot = 0; slot < totalSlots; slot += 1) {
       const previousGroups = new Set(selected.map(game => game.group));
+      const jitter = new Map(remaining.map(game => [game.id, boundedRandom(randomInt, 7)]));
       remaining.sort((left, right) => {
-        const difference = scoreCandidate(right, config, context, selected, slot, totalSlots, randomInt)
-          - scoreCandidate(left, config, context, selected, slot, totalSlots, randomInt);
+        const difference = scoreCandidate(right, config, context, selected, slot, totalSlots, jitter.get(right.id))
+          - scoreCandidate(left, config, context, selected, slot, totalSlots, jitter.get(left.id));
         return difference || left.title.localeCompare(right.title, 'de-DE');
       });
       const chosen = remaining.shift();
@@ -137,7 +142,7 @@
     const estimatedMinutes = selected.reduce((sum, game) => sum + game.duration, 0);
     return {
       version: VERSION,
-      id: `night-${Date.now()}-${defaultRandomInt(1_000_000)}`,
+      id: `night-${Date.now()}-${boundedRandom(defaultRandomInt, 1_000_000)}`,
       createdAt: new Date().toISOString(),
       config,
       estimatedMinutes,
@@ -332,8 +337,8 @@
     }
 
     function surprise() {
-      duration.value = String(DURATIONS[1 + defaultRandomInt(DURATIONS.length - 1)]);
-      mood.value = MOODS[1 + defaultRandomInt(MOODS.length - 1)];
+      duration.value = String(DURATIONS[1 + boundedRandom(defaultRandomInt, DURATIONS.length - 1)]);
+      mood.value = MOODS[1 + boundedRandom(defaultRandomInt, MOODS.length - 1)];
       createPlan();
     }
 
@@ -369,6 +374,7 @@
         if (!game) return;
         const item = documentRef.createElement('li');
         item.className = `party-night-step ${step.status}${index === activePlan.currentIndex ? ' current' : ''}`;
+        if (index === activePlan.currentIndex) item.setAttribute('aria-current', 'step');
         const number = documentRef.createElement('span');
         number.className = 'party-night-number';
         number.textContent = step.status === 'done' ? '✓' : step.status === 'skipped' ? '–' : String(index + 1);
@@ -386,10 +392,6 @@
         open.className = 'secondary';
         open.textContent = 'Öffnen';
         open.dataset.openGame = game.id;
-        open.addEventListener('click', () => {
-          activePlan.lastOpenedGameId = game.id;
-          store.save(activePlan);
-        });
         const done = documentRef.createElement('button');
         done.type = 'button';
         done.textContent = step.status === 'done' ? 'Erledigt' : 'Als erledigt';
@@ -419,6 +421,7 @@
       clear.className = 'text-link';
       clear.textContent = 'Plan löschen';
       clear.addEventListener('click', () => {
+        if (rootRef.confirm && !rootRef.confirm('Gespeicherten Partyabend-Plan wirklich löschen?')) return;
         const cleared = store.clear();
         if (!cleared.ok) return setStatus(cleared.error, true);
         activePlan = null;
@@ -433,6 +436,10 @@
 
     section.querySelector('#build-party-night').addEventListener('click', createPlan);
     section.querySelector('#surprise-party-night').addEventListener('click', surprise);
+    documentRef.addEventListener('click', event => {
+      if (event.target.closest('[data-view-target="home"]')) rootRef.setTimeout(render, 0);
+    });
+    rootRef.addEventListener('focus', render);
     rootRef.addEventListener('pageshow', render);
     rootRef.addEventListener('storage', event => {
       if ([KEY, HUB_KEY, PREF_KEY].includes(event.key)) {
