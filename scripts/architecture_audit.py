@@ -9,12 +9,13 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 production_js = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
-    'party-catalog.js', 'party-expansion.js', 'party-routing.js',
-    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js',
+    'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js', 'party-routing.js',
+    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
-    'party-advanced-runner.js', 'party-advanced-preferences.js', 'sw.js'
+    'party-advanced-runner.js', 'party-advanced-preferences.js',
+    'party-quick-modes.js', 'sw.js'
 ]
-html_pages = ['index.html', 'party.html', 'advanced.html', 'privacy.html']
+html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'privacy.html']
 violations = []
 
 architecture = ROOT / 'ARCHITECTURE.md'
@@ -75,6 +76,20 @@ for marker in ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubSta
     if marker not in advanced_runner:
         violations.append(f'Advanced-session contract missing: {marker}')
 
+quick_modes = read('party-quick-modes.js')
+for marker in [
+    "ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'validActive',
+    'saveActive', 'saveHub', 'finishSession', 'renderWavelength',
+    'renderRapidFire', 'renderCategories', 'renderCaptionBattle'
+]:
+    if marker not in quick_modes:
+        violations.append(f'Quick-mode contract missing: {marker}')
+
+trending_catalog = read('party-trending-catalog.js')
+for marker in ['trendingGameIds', 'quick-play.html?game=', 'wavelength', 'caption-battle', 'version: 3']:
+    if marker not in trending_catalog:
+        violations.append(f'Trending catalog contract missing: {marker}')
+
 custom_packs = read('party-custom-packs.js')
 for marker in ['createManager', 'commit(nextState)', 'restoreStorage']:
     if marker not in custom_packs:
@@ -89,11 +104,18 @@ sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache:
     violations.append('Versioned service-worker cache contract is missing.')
-for asset in ['./party-night.js', './party-night.css', './party-data-tools.js', './party-advanced-runner.js']:
+for asset in [
+    './party-night.js', './party-night.css', './party-data-tools.js',
+    './party-advanced-runner.js', './quick-play.html', './party-quick.css',
+    './party-trending-catalog.js', './party-quick-modes.js'
+]:
     if asset not in sw:
         violations.append(f'Offline architecture asset missing from CORE: {asset}')
 
-for relative in ['README.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md']:
+for relative in [
+    'README.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md',
+    'MANUAL_TEST_PLAN.md', 'MODE_UNIVERSE.md'
+]:
     if not (ROOT / relative).is_file() or (ROOT / relative).stat().st_size < 500:
         violations.append(f'Long-term operational document missing or incomplete: {relative}')
 
@@ -103,6 +125,7 @@ if violations:
 print(json.dumps({
     'architecture_audit': 'PASS',
     'architecture_contract': 'ARCHITECTURE.md',
+    'mode_universe': 'MODE_UNIVERSE.md',
     'production_modules_checked': len(production_js),
     'html_pages_checked': len(html_pages),
     'maximum_module_lines': 1000,
@@ -112,5 +135,6 @@ print(json.dumps({
     'versioned_storage': True,
     'transaction_contracts': True,
     'party_night_pure_logic': True,
+    'quick_mode_engine': True,
     'external_runtime_assets': 0
 }, ensure_ascii=False, indent=2))
