@@ -1,6 +1,6 @@
 'use strict';
-const CACHE='secret-circle-v24';
-const CORE=['./','./index.html','./party.html','./advanced.html','./privacy.html','./styles.css','./pwa.css','./party.css','./party-extra.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-expansion.js','./party-routing.js','./party-custom-packs.js','./party-hub.js','./party-hub-plus.js','./party-data-tools.js','./party-advanced.js','./party-advanced-runner.js','./party-advanced-preferences.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const CACHE='secret-circle-v25';
+const CORE=['./','./index.html','./party.html','./advanced.html','./privacy.html','./styles.css','./pwa.css','./party.css','./party-extra.css','./party-night.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-expansion.js','./party-routing.js','./party-custom-packs.js','./party-hub.js','./party-hub-plus.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./party-advanced-runner.js','./party-advanced-preferences.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
