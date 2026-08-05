@@ -8,12 +8,4 @@
 
 **Blocker:** lokaler CI-Lauf, Cross-Browser, GitHub Actions, Android/iOS, PWA-Update, reale Gruppen, Prüfung aller 28 Spiele, Inhalte, Alter und Recht.
 
-```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npx playwright install --with-deps chromium
-npm run ci
-npx playwright install --with-deps chromium firefox webkit
-npm run test:cross-browser
-```
-
 Automatisierter Gesamttest: `GO`. Realer Betatest, Merge und öffentlicher Release: `NO_GO` bis die jeweiligen Gates grün sind.
