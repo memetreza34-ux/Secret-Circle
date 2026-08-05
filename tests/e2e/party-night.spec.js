@@ -1,0 +1,77 @@
+const { test, expect } = require('@playwright/test');
+
+test.beforeEach(async ({ page }) => {
+  await page.goto('/party.html');
+  await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+      version: 1,
+      players: ['Alex', 'Sam', 'Mika', 'Lina'],
+      favorites: ['charades'],
+      recent: ['truth-dare'],
+      presets: [],
+      history: [],
+      stats: {}
+    }));
+  });
+  await page.reload();
+});
+
+test('Party Night creates a varied persistent plan and opens every selected game safely', async ({ page }) => {
+  await expect(page.getByRole('heading', { name: 'Euren ganzen Partyabend planen' })).toBeVisible();
+  await expect(page.locator('#party-night-player-count')).toHaveText('4');
+  await page.locator('#party-night-duration').selectOption('45');
+  await page.locator('#party-night-mood').selectOption('funny');
+  await page.locator('#party-night-age').selectOption('all');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+
+  await expect(page.locator('.party-night-step')).toHaveCount(3);
+  await expect(page.locator('.party-night-step.current')).toHaveCount(1);
+  await expect(page.locator('#party-night-status')).toContainText('3 Spiele');
+
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-night-v1')));
+  expect(stored.version).toBe(1);
+  expect(stored.steps).toHaveLength(3);
+  expect(new Set(stored.steps.map(step => step.gameId)).size).toBe(3);
+
+  await page.locator('.party-night-step').first().getByRole('button', { name: 'Öffnen' }).click();
+  await expect(page.locator('#game-detail')).toBeVisible();
+  await expect(page.locator('#detail-title')).not.toHaveText('');
+  await page.getByRole('button', { name: 'Spieldetails schließen' }).click();
+
+  await page.locator('.party-night-step').first().getByRole('button', { name: 'Als erledigt' }).click();
+  await expect(page.locator('.party-night-step.done')).toHaveCount(1);
+  await expect(page.locator('.party-night-step.current')).toHaveCount(1);
+
+  await page.reload();
+  await expect(page.locator('.party-night-step')).toHaveCount(3);
+  await expect(page.locator('.party-night-step.done')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Partyabend fortsetzen' })).toBeVisible();
+});
+
+test('Party Night respects family and player filters and can be completed or cleared', async ({ page }) => {
+  await page.locator('#party-night-duration').selectOption('30');
+  await page.locator('#party-night-mood').selectOption('all');
+  await page.locator('#party-night-age').selectOption('family');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+
+  const checks = await page.evaluate(() => {
+    const plan = JSON.parse(localStorage.getItem('secret-circle-party-night-v1'));
+    return plan.steps.map(step => {
+      const game = window.SecretCirclePartyCatalog.getGame(step.gameId);
+      return { age: game.age, min: game.minPlayers, max: game.maxPlayers, mode: game.mode };
+    });
+  });
+  expect(checks.length).toBe(2);
+  expect(checks.every(item => item.age === 'all')).toBe(true);
+  expect(checks.every(item => item.min <= 4 && item.max >= 4)).toBe(true);
+  expect(checks.every(item => !['utility', 'random-player'].includes(item.mode))).toBe(true);
+
+  while (await page.locator('.party-night-step').getByRole('button', { name: 'Als erledigt' }).count()) {
+    await page.locator('.party-night-step').getByRole('button', { name: 'Als erledigt' }).first().click();
+  }
+  await expect(page.locator('.party-night-summary')).toContainText('Abend abgeschlossen');
+  await page.getByRole('button', { name: 'Plan löschen' }).click();
+  await expect(page.locator('.party-night-empty')).toContainText('Noch kein Ablauf geplant');
+  expect(await page.evaluate(() => localStorage.getItem('secret-circle-party-night-v1'))).toBeNull();
+});
