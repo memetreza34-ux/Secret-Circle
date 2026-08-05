@@ -5,146 +5,65 @@
 ### Hinzugefügt
 
 - installierter PWA-Einstieg öffnet den Party Hub
-- 22 sichtbare Spiele, davon 18 spielbar und 4 gesperrt geplant
 - Suche und Filter nach Art, Stimmung, Gruppengröße, Altersstufe und Status
-- gemeinsame lokale Spieler, Host-Presets, Favoriten und zuletzt gespielt
-- Verlauf, Statistik und acht Erfolge
-- komplexe Spielabläufe für Zwei Wahrheiten, Question Imposter, Location Spy und Mafia
-- wiederaufnehmbare Sessions mit 3, 5, 10 oder 20 Runden
-- eigene Hub-Kategorien für kompatible Frage-, Darstellungs- und Schnellspiele
-- Gesamtexport für Hub, Party Night, eigene Packs, aktive Sessions und Word Imposter
-- Offline-Core `secret-circle-v25`
-- Regressionstests für Spieler-Snapshot, Speicherfehler, Mehrbyte-Dateien, Party Night und Rollback
-- `ARCHITECTURE.md` als langfristiger Vertrag für stabile IDs, Versionierung, Module, Migration, Datenschutz, Accessibility und Rollback
-- `scripts/architecture_audit.py` als automatisch ausgeführtes Architektur-Gate
+- gemeinsame lokale Spieler, Host-Presets, Favoriten, Verlauf, Statistik und Erfolge
+- Smart Party Night mit 15-, 30-, 45-, 60- und 90-Minuten-Plänen
+- vollständige Word-Imposter-, Advanced- und Quick-Session-Wiederaufnahme
+- 28 technisch spielbare Spiele
+- neue Quick-Mode-Engine für zehn besonders starke Mechaniken
+- Wellenlänge mit geheimem Zielwert und abstandsbasierter Punktewertung
+- Zeichnen & Raten
+- Schnellfeuer mit variablen Anforderungen und Zeitlimits
+- Geräusche erraten
+- Stirn-Raten
+- Buchstaben-Kategorien
+- Nicht lachen!
+- Melodie summen
+- Gegenstandsjagd
+- Caption Battle
+- 3, 5, 10 oder 20 Quick-Mode-Runden
+- Quick-Mode-Spieler-Snapshot, Punkte, Rangliste, Verlauf und Statistik
+- eigene originale Packs für alle neuen Quick Modes
+- eigene Hub-Kategorien für kompatible Spiele
+- vollständiger gemeinsamer Export, Import und Datenlöschung
+- langfristiges 122-Modi-Universum mit 94 zusätzlichen Roadmap-Modi
+- Architekturvertrag und automatischer Architektur-Audit
+- Offline-Core `secret-circle-v26`
 
-### Smart Party Night
+### Verbessert
 
-- lokaler Partyabend-Planer Version 1
-- Zeitbudgets mit 15, 30, 45, 60 und 90 Minuten
-- Stimmungen: gemischt, lustig, Wettkampf, tiefer, Chaos, clever und locker
-- automatische Filterung nach gespeicherter Gruppengröße und Altersstufe
-- Favoriten werden bevorzugt
-- zuletzt gespielte Titel werden nach Möglichkeit vermieden
-- unterschiedliche Spielarten werden für mehr Abwechslung kombiniert
-- kurze Spiele werden als Einstieg priorisiert
-- Wettkampf- und Chaosspiele können als Abschluss priorisiert werden
-- 15 Minuten erzeugt einen fokussierten Ein-Spiel-Plan
-- längere Pläne enthalten maximal sechs eindeutige Hauptspiele
-- Zufallsgewichtungen werden vor der Sortierung stabil berechnet
-- jede Station zeigt Grund, Spielart und ungefähre Dauer
-- Stationen können geöffnet, erledigt oder übersprungen werden
-- Ablauf und Fortschritt bleiben nach Neuladen erhalten
-- abgeschlossene Hub-Spiele werden über den Verlauf automatisch erkannt
-- abgeschlossene Word-Imposter-Runden können den Imposter-Schritt automatisch erfüllen
-- Plan kann fortgesetzt, neu erzeugt oder nach Bestätigung gelöscht werden
-- Party-Night-Daten verwenden den lokalen Schlüssel `secret-circle-party-night-v1`
-
-### Design und Informationsarchitektur
-
-- Party-Night-Bereich direkt unter dem Startseiten-Hero
-- Hero erhält eine kontextabhängige Aktion zum Planen oder Fortsetzen
-- sechs Navigationspunkte werden auf Desktop korrekt als sechs Spalten dargestellt
-- responsive Timeline mit aktuellem, erledigtem und übersprungenem Zustand
-- aktueller Schritt verwendet `aria-current="step"`
-- sichtbarer Fortschrittsbalken
-- mobil optimierte Einspaltensteuerung
-- Planner-Touchziele besitzen mindestens 44 × 44 Pixel
-- stärkere Fokuszustände für Spielkarten und kompakte Zeilen
-- Reduced-Motion-Unterstützung
-- Design und Logik bleiben in `party-night.css` und `party-night.js` getrennt wartbar
-
-### Verbesserte Session-Sicherheit
-
-- aktives erweitertes Session-Schema auf Version 2 gehärtet
-- jede gestartete komplexe Session speichert ihre eigene Spielergruppe
-- Änderungen an der gemeinsamen Lobby verändern keine laufende Session
-- alte aktive Sessions werden kontrolliert migriert
-- ungültige Spielerzahl, Packzuordnung oder Rundenzahl wird abgelehnt
-- eindeutige Session- und Historien-ID verhindert doppelte Abschlüsse
-- Verlauf und Statistik werden vor dem Schließen transaktionssicher gespeichert
-- ein Speicherfehler lässt die Session aktiv und erneut speicherbar
-
-### Verbesserte eigene Hub-Kategorien
-
-- Unicode-Normalisierung verhindert visuell gleiche Duplikate
-- doppelte Karten, Packnamen und gespeicherte IDs werden bereinigt
-- Speichern und Löschen verwenden eine lokale Transaktion
-- In-Memory-Katalog und lokaler Speicher bleiben bei Fehlern synchron
-- simulierbare Speicheradapter ermöglichen Unit-Tests für Rollback
-- maximal 20 Packs und 100 Karten bleiben erzwungen
-
-### Verbesserte Datensicherung
-
-- Datenwerkzeug auf Version 2 erhöht
-- Sicherungsgröße wird als tatsächliche UTF-8-Byte-Größe geprüft
-- Mehrbyte-Zeichen können die 1,5-MB-Grenze nicht umgehen
-- `File.size` wird vor dem vollständigen Einlesen geprüft
-- einzelne Werte besitzen eine eigene Byte-Grenze
-- Import schreibt alle Datensätze vollständig oder stellt den vorherigen Zustand wieder her
-- ein fehlgeschlagener Rollback wird gesondert gemeldet
-- vollständige Löschung nutzt dieselbe Transaktions- und Rollback-Logik
-- Party-Night-Fortschritt wird automatisch mitgesichert und gelöscht
-
-### Verbesserte Einstellungen und Statistiken
-
-- Hub-Plus auf Version 5 erhöht
-- fehlgeschlagene Präferenz-Speicherung wird abgefangen und sichtbar gemeldet
-- aktuelle Altersauswahl bleibt trotz Speicherfehler nutzbar
-- negative, ungültige und unbekannte Statistikwerte werden sicher normalisiert
-- fehlgeschlagene Statistikreparatur blockiert die App nicht
-- Fallback für Browser ohne `CSS.escape`
-
-### Langfristige Architektur
-
-- Produktionsmodule werden auf höchstens 1000 Zeilen und 100 KB begrenzt
-- Runtime-NPM-Abhängigkeiten bleiben ohne ausdrückliche Architekturentscheidung verboten
-- Playwright bleibt exakt gepinnt
-- externe Laufzeitassets und Inline-Skripte werden blockiert
-- Party-Night-, Session-, Pack- und Backup-Verträge werden automatisch geprüft
-- Offline-Core und zentrale Betriebsdokumente sind Teil des Architektur-Audits
+- Hub-Schaltflächen unterscheiden jetzt Quick Mode, Advanced-Spiel und Word Imposter eindeutig
+- alle 28 sichtbaren Katalogeinträge sind technisch startbar
+- Party Night kann aus einem deutlich vielfältigeren Katalog auswählen
+- Quick-Sessions bleiben nach Neuladen erhalten
+- korrupte Quick-Snapshots werden verworfen
+- Quick-Timer verwenden reale Deadlines während einer laufenden Seite
+- mobile Quick-Ansicht berücksichtigt Safe Areas, Touchflächen und Überlauf
+- Nutzertexte werden als Text ausgegeben
+- Statistikwerte älterer Sessions werden aus dem Verlauf repariert
+- Backup-Grenzen verwenden tatsächliche UTF-8-Byte-Größen
+- Package-, Struktur-, Release-, Architektur- und Performance-Gates berücksichtigen alle Quick-Dateien
+- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Matrix umfasst den 28-Spiel-Katalog
 
 ### Behoben
 
-- Desktop-Navigation verwendete fünf Spalten für sechs Navigationspunkte
-- zufällige Werte innerhalb des Sortiervergleichs konnten Party-Night-Rangfolgen widersprüchlich machen
-- 15-Minuten-Plan erzeugte unnötig mindestens zwei Spiele
-- Party-Night-Spielerzahl aktualisierte sich nach einer Lobbyänderung nicht sofort beim Zurückkehren
-- laufende komplexe Sessions wechseln nach einer Lobbyänderung nicht mehr unbemerkt die Personen
-- Rollen, Fragen und aktive Person bleiben an die ursprüngliche Spielergruppe gebunden
-- fehlgeschlagene Hub-Speicherung löscht keinen abgeschlossenen Sessionfortschritt
-- wiederholter Abschluss erzeugt keinen doppelten Verlaufseintrag
-- ein fehlgeschlagenes eigenes Pack verändert den Katalog nicht mehr teilweise
-- ein fehlgeschlagenes Löschen eines Packs entfernt es nicht mehr nur aus dem Arbeitsspeicher
-- Importfehler hinterlassen keine absichtlich akzeptierten gemischten alten und neuen Daten
-- Löschfehler stellen vorherige lokale Daten wieder her
-- falsche Zeichenzählung bei Sicherungen mit Umlauten oder anderen Mehrbyte-Zeichen
-- Präferenz- und Statistik-Speicherfehler erzeugen keinen unbehandelten Laufzeitfehler
-
-### Qualität
-
-- 9 Unit-Testdateien
-- mindestens 21 Playwright-E2E-Suiten
-- Unit-Test für Planung, Filterung, stabile Rangfolge, automatische Verlaufssynchronisierung und Speicherfehler
-- E2E-Suiten für Party-Night-Erstellung, Filter, Spielöffnung, Abschluss, Löschung, Neuladen und automatische Fortschrittsübernahme
-- eigene Party-Night-Accessibility-Suite für Tastatur, 44-Pixel-Touchziele, Overflow und Reduced Motion
-- Offline- und Runtime-Tests prüfen `party-night.js` und `party-night.css`
-- Chromium-, Firefox-, WebKit-, Android- und iPhone-Projekte
-- Strukturvalidator prüft HTML, CSP, Assets, Scriptreihenfolge, Manifest, Icons, Cache, Party Night, Katalog und Speichertransaktionen
-- Release-Audit prüft Player-Snapshot, Party Night, Pack-Rollback, byte-sicheren Import und Dokumentation
-- Architektur-Audit prüft Modulgrößen, Abhängigkeiten, CSP, Offline-Verträge und langfristige Dokumentation
-- GitHub Actions bleibt durch einen externen Fehler vor dem ersten Schritt blockiert
+- vier zuvor sichtbare Roadmap-Spiele waren trotz vorhandener Produktdefinition nicht startbar
+- generische Link-Schaltflächen bezeichneten Advanced- oder Quick-Spiele fälschlich als Word Imposter
+- manipulierte Quick-Session-Daten konnten als Fortsetzungsoption erscheinen
+- bösartig aussehende Spielernamen werden in Quick-Ergebnissen nicht als HTML interpretiert
+- eigene Hub-Packs werden vor dem Katalogrendern geladen
+- doppelte eigene Karten und Packnamen werden normalisiert und abgefangen
+- fehlgeschlagene Speicher-, Import- und Löschvorgänge besitzen Rollback oder erhalten die aktive Session
 
 ### Noch offen
 
-- vollständig erfolgreicher lokaler Testlauf
-- grüner GitHub-Actions-Lauf
-- reale Android-, iPhone-/iPad- und PWA-Update-Prüfung
-- reale Party-Night-Tests mit allen Zeitbudgets
-- reale Prüfung der automatischen Fortschrittsübernahme
+- vollständig erfolgreicher lokaler `npm run ci`-Lauf
+- erfolgreicher Cross-Browser-Gesamtlauf
+- grüner GitHub-Actions-Lauf auf dem endgültigen Commit
+- echte Android-, iOS- und PWA-Update-Prüfung
 - reale Partytests mit kleinen und großen Gruppen
-- Test aller 18 Spiele und eines eigenen Packs
-- redaktionelle Alters-, Schwierigkeits- und Inhaltsprüfung
+- praktischer Test aller 28 Spiele
+- redaktionelle Inhalts- und Altersprüfung
 - öffentliche Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben
 
 ## 1.0.0-beta.3 – 2026-08-04
@@ -157,16 +76,17 @@
 - unabhängige deterministische Rollenverteilung
 - 14 Kategorien mit 168 Begriff-Hinweis-Paaren
 - deadline-basierter Timer mit Hintergrund- und Neulade-Wiederherstellung
-- automatische Kartenverdeckung und Wake Lock
-- versionierte Speicherung, Migration, Sicherung und lokale Löschung
-- Content Security Policy, Laufzeit-Fehlerschutz und PWA-Icons
+- Verlauf, Migration, Sicherung und vollständige lokale Löschung
+- Datenschutzseite, Content Security Policy und Laufzeit-Fehlerschutz
+- 192- und 512-Pixel-PNG-Icons
 
 ### Behoben
 
 - Kopplung der Imposter an die ersten Positionen der Aufdeckreihenfolge
-- mehr als sechs Imposter
+- mehr als sechs Imposter werden zuverlässig abgelehnt
 - endlose Stichwahlen
 - doppelte Stimmen und Selbstwahl
+- Begriffswiederholungen innerhalb eines noch nicht erschöpften Pools
 - Timerabweichungen nach Hintergrundbetrieb oder Neuladen
 - fehlende Verlaufseinträge bei direkt beendeten Runden
 - unvollständige Migration älterer Spielstände
@@ -176,6 +96,6 @@
 - keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste
 - keine appgesteuerte Übertragung von Spieldaten
 - restriktive Ressourcen- und Skriptrichtlinie
-- sichere Textausgabe dynamischer Inhalte
+- escaped Namen und Kategorien
 - Größenbegrenzung und Rollback für Sicherungsimporte
 - automatischer Sichtschutz geheimer Rollen und Begriffe
