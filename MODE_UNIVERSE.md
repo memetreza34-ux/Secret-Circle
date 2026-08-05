@@ -1,45 +1,43 @@
 # Secret Circle – Mode Universe
 
-Produktlandkarte für eine langfristig wartbare, offline nutzbare und rechtlich eigenständige Partyspiel-Plattform.
-
 ## Stand
 
-- **28 sichtbare und technisch spielbare Spiele**
+- **28 technisch spielbare Spiele**
 - **10 Quick Modes**
 - **4 Advanced-Spiele**
-- **94 zusätzliche Roadmap-Modi**
+- **94 Roadmap-Modi**
 - **122 Modi insgesamt**
 
-## Aktuell spielbar
+## Aktuelle Spiele
 
 Word Imposter; Zwei Wahrheiten, eine Lüge; Question Imposter; Location Spy; Mafia; Wahrheit oder Pflicht; Ich habe noch nie; Wer würde eher?; Entweder oder; Hot Takes; Nur falsche Antworten; Paranoia; Scharade; Nicht sagen!; Zeichnen & Raten; Geräusche erraten; Stirn-Raten; Melodie summen; Heiße Kartoffel; Wortkette; Schnellfeuer; Buchstaben-Kategorien; Nicht lachen!; Gegenstandsjagd; Caption Battle; Wellenlänge; Flaschendrehen; Würfel & Münze.
 
-## Roadmap 29–122
+## Roadmap
 
-**Verdeckte Rollen:** Undercover-Wortpaar; Chamäleon-Thema; Geheime Teams; Sabotage-Missionen; Eine-Nacht-Rollen; Mordfall-Abend; Verdeckter Anführer; Infiziert; Geheime Aufgabe; Jäger und Überlebende.
+**Rollen:** Undercover-Wortpaar, Chamäleon, geheime Teams, Sabotage, Eine-Nacht-Rollen, Mordfall, versteckter Anführer, Infiziert, geheime Aufgaben, Jäger und Überlebende.
 
-**Bluff:** Bluff-Quiz; Falsche Definition; Falsche Schlagzeile; Film-Bluff; Zitat-Bluff; Fakt oder erfunden; Preis-Bluff; Umfrage-Prozent; Persönliche Wahrheit; Lügen-Rangliste.
+**Bluff:** Bluff-Quiz, falsche Definitionen, Schlagzeilen, Filmhandlungen, Zitate, Fakt oder erfunden, Preise, Umfragewerte, persönliche Wahrheiten, Lügen-Ranglisten.
 
-**Zeichnen und Ketten:** Zeichen-Stille-Post; Blind zeichnen; Zeichnung aus Erinnerung; Gemeinschaftsbild; Fremdkörper-Figur; Skizze ergänzen; Fehlendes Teil; Animationskette.
+**Zeichnen:** Zeichen-Stille-Post, blind zeichnen, Erinnerungsskizze, Gemeinschaftsbild, Fremdkörper-Figur, Skizze ergänzen, fehlendes Teil, Animationskette.
 
-**Wörter und Hinweise:** Team-Codewörter; Passwort; Nur ein Wort; Reim-Battle; Verbotener Buchstabe; Akronym-Challenge; Zwanzig Fragen; Assoziationsleiter.
+**Wörter:** Team-Codewörter, Passwort, Nur ein Wort, Reim-Battle, verbotener Buchstabe, Akronyme, Zwanzig Fragen, Assoziationsleiter.
 
-**Meinungen:** Rangliste; Tier-List; Turnier-Bracket; Geteilte Entscheidung; Red Flag oder Green Flag; Freunde-Quiz; Kompatibilitätscheck; Gerichtsdebatte; Kompliment oder Roast; Geheime Einschätzung.
+**Meinungen:** Ranglisten, Tier-Lists, Brackets, geteilte Entscheidung, Red/Green Flag, Freunde-Quiz, Kompatibilität, Gerichtsdebatte, Kompliment/Roast, geheime Einschätzung.
 
-**Reaktion und Geschick:** Reaktions-Tippen; Freeze-Challenge; Rhythmus-Pass; Letzte Person übrig; Eine-Minute-Challenges; Balance-Staffel; Muster-Memory.
+**Reaktion:** Reaktions-Tippen, Freeze, Rhythmus-Pass, letzte Person, Eine-Minute-Challenges, Balance-Staffel, Muster-Memory.
 
-**Audio und Performance:** Lippenlesen; Sprechweisen-Challenge; Tanz-Stopp; Melodie fortsetzen; Stimme verstellen; Stummfilm; Beat nachmachen; Geräuschkette.
+**Audio:** Lippenlesen, Sprechweisen, Tanz-Stopp, Melodie fortsetzen, Stimme verstellen, Stummfilm, Beat nachmachen, Geräuschkette.
 
-**Quiz und Wissen:** Allgemeinwissen; Team-Buzzer; Wahr oder falsch; Höher oder tiefer; Jahr erraten; Flaggen und Länder; Bilder-Quiz; Zitat oder Figur; Quiz-Pyramide; Trivia-Überleben.
+**Quiz:** Allgemeinwissen, Team-Buzzer, Wahr/Falsch, Höher/Tiefer, Jahr erraten, Flaggen, Bilder-Quiz, Zitat/Figur, Quiz-Pyramide, Trivia-Überleben.
 
-**Team und Kooperation:** Kooperative Wortspur; Auktionsspiel; Wetten auf Antworten; Escape-Rätsel; Puzzle-Staffel; Ressourcenhandel; Heist-Plan; Team-Kapitän; Kooperations-Ziel; Strategie-Bluff.
+**Team:** kooperative Wortspur, Auktion, Wetten, Escape-Rätsel, Puzzle-Staffel, Ressourcenhandel, Heist-Plan, Team-Kapitän, Kooperationsziel, Strategie-Bluff.
 
-**Creator und Zukunft:** Paar-Karten-Editor; Tabu-Editor; Rollen-Set-Editor; Creator-Reaktionsvideo; Tägliche Challenge; Publikumsmodus; Raumcode; KI-personalisierte Karten; AR-Aufgaben; Live-Übersetzung; TV-Hostansicht; lokales Netzwerkspiel; mehrsprachige Content-Packs.
+**Zukunft:** Paar-, Tabu- und Rollen-Editor, Creator-Video, tägliche Challenge, Publikum, Raumcodes, KI-Karten, AR, Übersetzung, TV-Host, lokales Netzwerk, mehrsprachige Packs.
 
 ## Nächste Welle
 
-Bluff-Quiz, Zeichen-Stille-Post, Team-Codewörter, Team-Buzzer, Geteilte Entscheidung, Reaktions-Tippen, Turnier-Bracket, Allgemeinwissen, Paar-Karten-Editor und tägliche lokale Challenge.
+Bluff-Quiz, Zeichen-Stille-Post, Team-Codewörter, Team-Buzzer, Geteilte Entscheidung, Reaktions-Tippen, Turnier-Bracket, Allgemeinwissen, Paar-Karten-Editor und tägliche Challenge.
 
-## Prinzip
+## Regel
 
-Gemeinsame Engine-Familien statt 122 isolierter Codebasen. Jeder Modus benötigt stabile IDs, versionierte Daten, Offline-Support, sicheren Ausstieg, Accessibility, relevante Tests, eigene oder rechtlich nutzbare Inhalte und einen realen Gruppentest vor öffentlicher Freigabe.
+Gemeinsame Engines statt 122 isolierter Codebasen. Jeder Modus benötigt stabile IDs, versionierte Daten, Offline-Support, Accessibility, Tests, eigene oder rechtlich nutzbare Inhalte und reale Gruppenprüfung.
