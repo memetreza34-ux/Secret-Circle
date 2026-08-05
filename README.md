@@ -2,15 +2,9 @@
 
 Offline Party Hub mit 28 technisch spielbaren Spielen, Smart Party Night, Word Imposter, eigenen Packs, versionierten Sessions und Offline-Core `secret-circle-v26`.
 
-## Start
+Start: `/party.html` · Imposter `/index.html` · Advanced `/advanced.html?game=question-imposter` · Quick `/quick-play.html?game=wavelength`.
 
-```bash
-python -m http.server 8080
-```
-
-Hub `/party.html` · Imposter `/index.html` · Advanced `/advanced.html?game=question-imposter` · Quick `/quick-play.html?game=wavelength`.
-
-## Tests
+Tests:
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
