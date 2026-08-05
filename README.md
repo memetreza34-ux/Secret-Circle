@@ -20,4 +20,4 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-`MODE_UNIVERSE.md` beschreibt die 122-Modi-Roadmap. Automatisierter Gesamttest: `GO`. Realer Betatest und öffentlicher Release bleiben bis zu grünen automatisierten, Geräte-, Gruppen-, Inhalts- und Rechtsprüfungen `NO_GO`.
+`MODE_UNIVERSE.md` beschreibt 122 Modi. Automatisierter Gesamttest: `GO`. Realer Betatest und öffentlicher Release bleiben bis zu grünen automatisierten, Geräte-, Gruppen-, Inhalts- und Rechtsprüfungen `NO_GO`.
