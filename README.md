@@ -18,7 +18,7 @@ Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-
 
 ## Smart Party Night
 
-Der Party Hub kann jetzt einen vollständigen Spieleabend automatisch zusammenstellen.
+Der Party Hub kann einen vollständigen Spieleabend automatisch zusammenstellen.
 
 - Zeitbudget mit 15, 30, 45, 60 oder 90 Minuten
 - Auswahl nach Stimmung: gemischt, lustig, Wettkampf, tiefer, Chaos, clever oder locker
@@ -29,11 +29,16 @@ Der Party Hub kann jetzt einen vollständigen Spieleabend automatisch zusammenst
 - unterschiedliche Spielarten werden für mehr Abwechslung kombiniert
 - schnelle Spiele werden als Einstieg bevorzugt
 - wettkampforientierte oder chaotische Spiele eignen sich als Abschluss
+- 15 Minuten ergeben einen fokussierten Ein-Spiel-Plan
+- längere Pläne enthalten höchstens sechs eindeutige Hauptspiele
+- stabile Zufallsgewichtung verhindert widersprüchliche Sortierungen
 - Fortschritt, erledigte und übersprungene Stationen bleiben lokal gespeichert
+- abgeschlossene Hub-Spiele werden über den Verlauf automatisch als erledigt erkannt
+- abgeschlossene Word-Imposter-Runden können den Imposter-Schritt automatisch erfüllen
 - der Plan kann nach einem Neuladen oder App-Neustart fortgesetzt werden
 - der Party-Night-Plan ist Bestandteil von Export, Import und vollständiger Datenlöschung
 
-Der Planer kopiert keine Inhalte oder Designs anderer Apps. Er übernimmt nur allgemeine, bewährte Produktprinzipien wie schneller Einstieg, anpassbare Rundendauer, eigene Packs, Haptik und ein klarer Ablauf.
+Der Planer kopiert keine Inhalte oder Designs anderer Apps. Er übernimmt nur allgemeine Produktprinzipien wie schneller Einstieg, anpassbare Rundendauer, eigene Packs, Haptik und ein klarer Ablauf.
 
 ## 18 spielbare Spiele
 
@@ -123,7 +128,7 @@ Der Gesamtexport umfasst Hub, Party Night, eigene Hub-Kategorien, aktive Session
 - Import ersetzt alle Secret-Circle-Daten nur als vollständige Transaktion
 - bei einem Schreibfehler wird der vorherige Zustand wiederhergestellt
 - schlägt auch der Rollback fehl, erscheint eine eindeutige Warnung
-- vollständige Löschung verwendet dieselbe Rollback-Logik und hinterlässt keinen bewusst akzeptierten Teilzustand
+- vollständige Löschung verwendet dieselbe Rollback-Logik
 
 ## Robuste Einstellungen und Statistiken
 
@@ -172,6 +177,8 @@ Der Gesamtsicherungsimport besitzt Format-, JSON-, Schlüssel-, Anzahl- und Byte
 - `game-engine.js`, `role-assignment.js`: Word-Imposter-Regeln
 - `data-store.js`: versionierter Imposter-Speicher
 - `sw.js`: Offline-Core `secret-circle-v25`
+- `ARCHITECTURE.md`: langfristiger Vertrag für IDs, Versionierung, Module, Migration, Datenschutz, Accessibility und Rollback
+- `scripts/architecture_audit.py`: automatisch erzwungene Modul-, Größen-, Abhängigkeits- und Architekturgrenzen
 
 ## Automatisierte Prüfung
 
@@ -192,7 +199,7 @@ Abgedeckt werden unter anderem:
 
 - Engine, Speicherung, Inhalte, Rollenverteilung und Fuzz-Szenarien
 - Katalog und eigene Hub-Kategorien
-- Smart Party Night: Filter, Planvielfalt, Fortschritt, Speicherung und Neuladen
+- Smart Party Night: Filter, stabile Planung, Fortschritt, automatische Verlaufssynchronisierung, Speicherung und Neuladen
 - Rollback bei fehlgeschlagenem Pack-Speichern und -Löschen
 - alle vier komplexen Spiele und Spieler-Snapshot
 - sichere Reaktion auf fehlgeschlagene Verlaufsspeicherung
@@ -200,6 +207,8 @@ Abgedeckt werden unter anderem:
 - Import- und Lösch-Rollback
 - Einstellungs- und Statistik-Speicherfehler
 - Offline-Start, CSP, Accessibility und mobile Layouts
+- Party-Night-Tastatur, 44-Pixel-Touchziele und Reduced Motion
+- Architekturvertrag, Modulgrößen und fehlende Runtime-Abhängigkeiten
 - Chromium, Firefox, WebKit, Android- und iPhone-Simulation
 
 ## Freigabestatus
