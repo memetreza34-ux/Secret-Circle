@@ -65,6 +65,37 @@ assert.equal(normalized.steps.length, completed.steps.length);
 assert.equal(normalized.currentIndex, normalized.steps.length);
 assert.equal(planner.normalizePlan({ version: 1, steps: [] }), null);
 
+const historyPlan = planner.normalizePlan({
+  version: 1,
+  id: 'history-plan',
+  createdAt: '2026-08-05T10:00:00.000Z',
+  config: { players: 4, duration: 30, mood: 'all', ageLevel: 'all' },
+  estimatedMinutes: 30,
+  steps: [
+    { gameId: 'charades', status: 'pending', reason: 'Test' },
+    { gameId: 'imposter', status: 'pending', reason: 'Test' }
+  ]
+});
+const historySync = planner.syncPlanFromHistory(historyPlan, [
+  { gameId: 'charades', endedAt: '2026-08-05T10:05:00.000Z' },
+  { gameId: 'truth-dare', endedAt: '2026-08-05T09:59:59.000Z' },
+  { gameId: 'unknown-game', endedAt: '2026-08-05T10:06:00.000Z' }
+], [
+  { completedAt: '2026-08-05T10:10:00.000Z' }
+]);
+assert.equal(historySync.changed, true);
+assert.deepEqual(historySync.plan.steps.map(step => step.status), ['done', 'done']);
+assert.equal(historySync.plan.currentIndex, 2);
+assert.ok(historySync.completedGameIds.includes('charades'));
+assert.ok(historySync.completedGameIds.includes('imposter'));
+
+const oldHistorySync = planner.syncPlanFromHistory({
+  ...historyPlan,
+  steps: historyPlan.steps.map(step => ({ ...step, status: 'pending' }))
+}, [{ gameId: 'charades', endedAt: '2026-08-05T09:00:00.000Z' }], []);
+assert.equal(oldHistorySync.changed, false);
+assert.deepEqual(oldHistorySync.plan.steps.map(step => step.status), ['pending', 'pending']);
+
 const memory = new Map();
 const storage = {
   getItem: key => memory.has(key) ? memory.get(key) : null,
@@ -96,5 +127,6 @@ console.log(JSON.stringify({
   uniqueGames: true,
   ageAndGroupFiltering: true,
   persistentProgress: true,
+  historyProgressSync: true,
   storageFailuresHandled: true
 }, null, 2));
