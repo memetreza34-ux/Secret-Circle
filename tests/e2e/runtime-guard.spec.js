@@ -37,12 +37,16 @@ test('critical resource errors are surfaced instead of leaving a silent broken s
   await expect(page.locator('#status')).toContainText('benötigte App-Datei');
 });
 
-test('runtime guard is available from the complete offline cache', async ({ page }) => {
+test('runtime guard and Party Night planner are available from the complete offline cache', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v24');
-    return Boolean(await cache.match('./runtime-guard.js'));
+    const cache = await caches.open('secret-circle-v25');
+    return {
+      guard: Boolean(await cache.match('./runtime-guard.js')),
+      planner: Boolean(await cache.match('./party-night.js')),
+      plannerCss: Boolean(await cache.match('./party-night.css'))
+    };
   });
-  expect(cached).toBe(true);
+  expect(cached).toEqual({ guard: true, planner: true, plannerCss: true });
 });
