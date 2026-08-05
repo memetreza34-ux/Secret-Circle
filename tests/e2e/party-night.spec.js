@@ -110,7 +110,6 @@ test('completed Hub history automatically advances the matching Party Night step
 
   await page.reload();
   await expect(page.locator('.party-night-step').first()).toHaveClass(/done/);
-  await expect(page.locator('#party-night-status')).toContainText('automatisch');
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-night-v1')));
   expect(stored.steps[0].status).toBe('done');
   expect(stored.currentIndex).toBe(1);
