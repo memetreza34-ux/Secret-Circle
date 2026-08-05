@@ -11,14 +11,15 @@ Draft-PR: `#11`
 |---|---:|---|
 | Word Imposter | 98 % | Kernspiel vollständig für den Testlauf vorbereitet |
 | Party-Hub-Struktur | 98 % | Navigation, Katalog, Filter, Spieler, Presets, Favoriten, Verlauf und Daten vorhanden |
-| Smart Party Night | 93 % | Zeit-, Stimmungs-, Alters- und Gruppenplanung mit lokalem Fortschritt vorhanden; reale Ablaufprüfung fehlt |
+| Smart Party Night | 95 % | Planung, lokaler Fortschritt und automatische Erkennung abgeschlossener Spiele vorhanden; reale Ablaufprüfung fehlt |
 | 18 spielbare Spiele | 91 % | technisch umgesetzt, reale Balance- und Verständlichkeitstests fehlen |
 | Vier komplexe Spiele | 88 % | vollständige lokale Abläufe und sichere Wiederaufnahme vorhanden |
 | Eigene Hub-Packs | 96 % | Editor, Normalisierung, transaktionssicheres Speichern/Löschen, Backup und Spielintegration vorhanden |
 | Speicherung und Datenschutz | 98 % | byte-sichere Gesamtsicherung, Import-/Lösch-Rollback und transaktionssicherer Sessionabschluss |
 | PWA und Offline | 97 % | vollständiger Core `secret-circle-v25`, echter Geräte-Update-Test fehlt |
-| Accessibility und Mobile | 90 % | responsive Timeline, sechsfach Navigation, Fokus-, Touch-, Overflow- und Reduced-Motion-Gates vorbereitet |
-| Automatisierte Testabdeckung | 97 % | 9 Unit-Dateien, mindestens 20 E2E-Suiten und 5 Browser-/Geräteprojekte vorbereitet |
+| Accessibility und Mobile | 92 % | Party-Night-Tastatur-, Touch-, Overflow- und Reduced-Motion-Tests ergänzt |
+| Automatisierte Testabdeckung | 98 % | 9 Unit-Dateien, mindestens 21 E2E-Suiten und 5 Browser-/Geräteprojekte vorbereitet |
+| Langfristige Wartbarkeit | 94 % | versionierte Module, Architekturvertrag, Performancebudgets und Rollbackregeln vorhanden |
 | Reale Geräte- und Partytests | 20 % | noch nicht erfolgreich dokumentiert |
 | Rechtliche Produktionsfreigabe | 45 % | Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
 
@@ -26,12 +27,12 @@ Draft-PR: `#11`
 
 - **Word-Imposter-Modul:** etwa **98 %**
 - **Party-Hub-Grundlage:** etwa **98 %**
-- **Smart Party Night:** etwa **93 %**
+- **Smart Party Night:** etwa **95 %**
 - **18 Spiele als technische Beta:** etwa **91 %**
-- **Gesamte gewünschte Party-Hub-Vision:** etwa **88 %**
+- **Gesamte gewünschte Party-Hub-Vision:** etwa **89 %**
 - **Bereit für den vollständigen automatisierten Testlauf:** etwa **99 %**
-- **Bereit für reale Android-/iOS- und Partytests:** etwa **93 %**
-- **Bereit für öffentlichen Produktionsrelease:** etwa **81 %**
+- **Bereit für reale Android-/iOS- und Partytests:** etwa **94 %**
+- **Bereit für öffentlichen Produktionsrelease:** etwa **82 %**
 
 Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie sind kein Nachweis für erfolgreich ausgeführte Tests.
 
@@ -39,31 +40,44 @@ Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie sind kein Nachwe
 
 ### Smart Party Night
 
-- eigener lokaler Planer Version 1
+- lokaler Planer Version 1
 - Zeitbudget mit 15, 30, 45, 60 oder 90 Minuten
 - Stimmungen: gemischt, lustig, Wettkampf, tiefer, Chaos, clever und locker
 - Gruppengröße und Altersstufe werden berücksichtigt
 - Favoriten erhalten einen Empfehlungsbonus
 - zuletzt gespielte Titel werden nach Möglichkeit vermieden
 - verschiedene Spielgruppen werden bevorzugt kombiniert
-- schnelle Spiele werden als Einstieg bevorzugt
-- Wettkampf- oder Chaosspiele können als Abschluss priorisiert werden
+- 15 Minuten erzeugt einen fokussierten Ein-Spiel-Plan
+- längere Abende enthalten bis zu sechs eindeutige Hauptspiele
+- stabile, vorab berechnete Zufallsgewichtung vermeidet widersprüchliche Sortierung
 - jede Station besitzt Begründung, Dauer, Öffnen-, Erledigt- und Überspringen-Aktion
 - Fortschritt bleibt über Neuladen und App-Neustart erhalten
-- Plan kann fortgesetzt, neu erstellt oder vollständig gelöscht werden
-- Party-Night-Daten liegen unter `secret-circle-party-night-v1` und werden automatisch gesichert oder gelöscht
+- abgeschlossene Hub-Spiele werden anhand des Verlaufs automatisch als erledigt markiert
+- abgeschlossene Word-Imposter-Runden können den Imposter-Schritt automatisch erfüllen
+- Plan kann fortgesetzt, neu erstellt oder nach Bestätigung gelöscht werden
+- Party-Night-Daten werden automatisch gesichert und vollständig gelöscht
 
-### Design und Struktur
+### Design und Accessibility
 
 - sechs Navigationspunkte werden auf großen Bildschirmen korrekt als sechs Spalten dargestellt
-- neue responsive Party-Night-Timeline
-- klarer aktueller Schritt, erledigte und übersprungene Zustände
-- sichtbarer Fortschrittsbalken
+- responsive Party-Night-Timeline
+- klarer aktueller Schritt mit `aria-current="step"`
+- sichtbare erledigte und übersprungene Zustände
+- Fortschrittsbalken
 - mobile Einspaltensteuerung
+- mindestens 44 × 44 Pixel große Planner-Touchziele
+- Tastatur-, Mobile-, Overflow- und Reduced-Motion-E2E-Suite
 - stärkere Fokuszustände für Karten und interaktive Zeilen
-- Reduced-Motion-Unterstützung
-- neues separates, langfristig wartbares Modul `party-night.js`
-- neues separates Designmodul `party-night.css`
+
+### Langfristige Architektur
+
+- neues `ARCHITECTURE.md` als Zehn-Jahres-Vertrag
+- stabile Spiel- und Speicher-IDs
+- versionierte Datenschemata und Migrationsregeln
+- reine Logik getrennt von DOM-Orchestrierung
+- lokale Transaktions- und Rollbackregeln
+- Offline-, Accessibility-, Datenschutz- und Performanceverträge
+- klare Erweiterungspunkte für Lokalisierung, Sounds, strukturierte Editoren, Teams und optionalen Online-Modus
 
 ### Transaktionssichere Datensicherung
 
@@ -91,11 +105,12 @@ Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie sind kein Nachwe
 ### Qualität und Offline
 
 - Offline-Core `secret-circle-v25`
-- neuer Unit-Test für Planung, Filterung, Fortschritt und Speicherfehler
-- neue E2E-Suite für Planerstellung, Spielöffnung, Familienfilter, Abschluss, Löschung und Wiederaufnahme
+- Unit-Test für Planung, Filterung, stabile Rangfolge, automatische Verlaufssynchronisierung und Speicherfehler
+- E2E-Suiten für Planerstellung, Spielöffnung, Familienfilter, Abschluss, Löschung, Wiederaufnahme und automatische Fortschrittsübernahme
 - Offline-Test erstellt einen Party-Night-Plan ohne Netzwerk
 - Runtime-Test prüft Planner-JavaScript und Planner-CSS im Cache
-- Validator, Release-Audit und Performancebudget prüfen alle neuen Module
+- Cross-Browser-Smoke-Test erzeugt einen Party-Night-Plan
+- Validator, Release-Audit und Performancebudget prüfen die neuen Module
 
 ## Aktuelle Blocker
 
@@ -105,11 +120,12 @@ Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie sind kein Nachwe
 4. Android- und iPhone-/iPad-Installation fehlen als reale Tests.
 5. Update einer älteren PWA auf `secret-circle-v25` fehlt.
 6. Smart Party Night muss mit 15, 30, 45, 60 und 90 Minuten real geprüft werden.
-7. kleiner Partytest mit 3–4 Personen fehlt.
-8. großer Partytest mit mindestens 8 Personen fehlt.
-9. alle 18 Spiele und mindestens ein eigenes Pack müssen real geprüft werden.
-10. redaktionelle Inhalts- und Altersprüfung fehlt.
-11. öffentliche rechtliche Angaben fehlen.
+7. automatische Fortschrittsübernahme muss mit einfachen, komplexen und Word-Imposter-Spielen real geprüft werden.
+8. kleiner Partytest mit 3–4 Personen fehlt.
+9. großer Partytest mit mindestens 8 Personen fehlt.
+10. alle 18 Spiele und mindestens ein eigenes Pack müssen real geprüft werden.
+11. redaktionelle Inhalts- und Altersprüfung fehlt.
+12. öffentliche rechtliche Angaben fehlen.
 
 ## Erforderliche Testbefehle
 
@@ -140,8 +156,9 @@ Ein Release Candidate ist erst erreicht, wenn:
 3. GitHub Actions sichtbare Schritte ausführt und grün endet,
 4. Android- und iOS-PWA-Tests bestanden sind,
 5. Smart Party Night auf beiden Plattformen gespeichert und fortgesetzt wurde,
-6. ein kleiner und ein großer Partytest bestanden sind,
-7. alle 18 Spiele real geprüft wurden,
-8. ein eigenes Pack auf Android und iOS erstellt, gespielt, exportiert und importiert wurde,
-9. keine kritischen oder hohen Fehler offen sind,
-10. Inhaltsprüfung und rechtliche Angaben abgeschlossen sind.
+6. automatische Fortschrittsübernahme real funktioniert,
+7. ein kleiner und ein großer Partytest bestanden sind,
+8. alle 18 Spiele real geprüft wurden,
+9. ein eigenes Pack auf Android und iOS erstellt, gespielt, exportiert und importiert wurde,
+10. keine kritischen oder hohen Fehler offen sind,
+11. Inhaltsprüfung und rechtliche Angaben abgeschlossen sind.
