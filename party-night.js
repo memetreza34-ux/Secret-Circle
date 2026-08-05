@@ -18,6 +18,7 @@
   const KEY = 'secret-circle-party-night-v1';
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const PREF_KEY = 'secret-circle-party-preferences-v1';
+  const IMPOSTER_HISTORY_KEY = 'secret-circle-history-v7';
   const DURATIONS = Object.freeze([15, 30, 45, 60, 90]);
   const MOODS = Object.freeze(['all', 'funny', 'competitive', 'deep', 'chaotic', 'clever', 'friendly']);
   const AGE_LEVELS = Object.freeze(['all', 'family', 'teen']);
@@ -30,6 +31,11 @@
   function safeInteger(value, fallback = 0) {
     const number = Number(value);
     return Number.isInteger(number) && number >= 0 ? number : fallback;
+  }
+
+  function validIsoDate(value, fallback = new Date().toISOString()) {
+    const timestamp = Date.parse(String(value || ''));
+    return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : fallback;
   }
 
   function normalizeConfig(value = {}) {
@@ -178,10 +184,11 @@
       if (steps.length >= 6) break;
     }
     if (!steps.length) return null;
+    const createdAt = validIsoDate(value.createdAt);
     return {
       version: VERSION,
       id: cleanText(value.id, 120) || `night-${Date.now()}`,
-      createdAt: cleanText(value.createdAt, 40) || new Date().toISOString(),
+      createdAt,
       config,
       estimatedMinutes: safeInteger(value.estimatedMinutes, steps.reduce((sum, step) => sum + (catalog.getGame(step.gameId)?.duration || 0), 0)),
       currentIndex: deriveCurrentIndex(steps),
@@ -197,6 +204,33 @@
     step.status = status;
     plan.currentIndex = deriveCurrentIndex(plan.steps);
     return plan;
+  }
+
+  function syncPlanFromHistory(planInput, hubHistory = [], imposterHistory = []) {
+    const plan = normalizePlan(planInput);
+    if (!plan) return { plan: null, changed: false, completedGameIds: [] };
+    const startedAt = Date.parse(plan.createdAt);
+    const completed = new Set();
+
+    for (const item of Array.isArray(hubHistory) ? hubHistory : []) {
+      const gameId = cleanText(item?.gameId, 60);
+      const endedAt = Date.parse(String(item?.endedAt || ''));
+      if (catalog.getGame(gameId) && Number.isFinite(endedAt) && endedAt >= startedAt) completed.add(gameId);
+    }
+    for (const item of Array.isArray(imposterHistory) ? imposterHistory : []) {
+      const completedAt = Date.parse(String(item?.completedAt || ''));
+      if (Number.isFinite(completedAt) && completedAt >= startedAt) completed.add('imposter');
+    }
+
+    let changed = false;
+    for (const step of plan.steps) {
+      if (step.status === 'pending' && completed.has(step.gameId)) {
+        step.status = 'done';
+        changed = true;
+      }
+    }
+    plan.currentIndex = deriveCurrentIndex(plan.steps);
+    return { plan, changed, completedGameIds: [...completed] };
   }
 
   function createStore(storage) {
@@ -239,6 +273,16 @@
     }
   }
 
+  function readArray(storage, key) {
+    if (!storage) return [];
+    try {
+      const parsed = JSON.parse(storage.getItem(key));
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
   function mount({ rootRef, documentRef, storage }) {
     if (!rootRef || !documentRef || !storage || documentRef.querySelector('#party-night-planner')) return null;
     const hero = documentRef.querySelector('.hero-card');
@@ -246,7 +290,7 @@
     const store = createStore(storage);
     let activePlan = store.load();
 
-    const hubState = () => readJson(storage, HUB_KEY, { players: [], favorites: [], recent: [] });
+    const hubState = () => readJson(storage, HUB_KEY, { players: [], favorites: [], recent: [], history: [] });
     const preferences = () => readJson(storage, PREF_KEY, { ageLevel: 'all' });
     const playerCount = () => Array.isArray(hubState().players) ? hubState().players.length : 0;
 
@@ -296,6 +340,26 @@
       statusNode.classList.toggle('error', error);
     }
 
+    function syncActiveFromHistory(announce = false) {
+      const loaded = store.load() || activePlan;
+      if (!loaded) {
+        activePlan = null;
+        return false;
+      }
+      const state = hubState();
+      const synced = syncPlanFromHistory(loaded, state.history, readArray(storage, IMPOSTER_HISTORY_KEY));
+      activePlan = synced.plan;
+      if (!synced.changed) return false;
+      const saved = store.save(activePlan);
+      if (!saved.ok) {
+        setStatus(saved.error, true);
+        return false;
+      }
+      activePlan = saved.plan;
+      if (announce) setStatus('Abgeschlossene Spiele wurden automatisch im Partyabend markiert.');
+      return true;
+    }
+
     function saveAndRender(nextPlan, message) {
       const saved = store.save(nextPlan);
       if (!saved.ok) {
@@ -333,7 +397,8 @@
         setStatus('Für diese Kombination wurden keine passenden Spiele gefunden.', true);
         return;
       }
-      saveAndRender(plan, `${plan.steps.length} Spiele für euren Abend zusammengestellt.`);
+      const noun = plan.steps.length === 1 ? 'Spiel' : 'Spiele';
+      saveAndRender(plan, `${plan.steps.length} ${noun} für euren Abend zusammengestellt.`);
     }
 
     function surprise() {
@@ -434,21 +499,26 @@
       result.append(footer);
     }
 
+    function refresh(announce = false) {
+      activePlan = store.load();
+      syncActiveFromHistory(announce);
+      render();
+    }
+
     section.querySelector('#build-party-night').addEventListener('click', createPlan);
     section.querySelector('#surprise-party-night').addEventListener('click', surprise);
     documentRef.addEventListener('click', event => {
-      if (event.target.closest('[data-view-target="home"]')) rootRef.setTimeout(render, 0);
+      if (event.target.closest('[data-view-target="home"]')) rootRef.setTimeout(() => refresh(true), 0);
+      if (event.target.closest('#exit-game')) rootRef.setTimeout(() => refresh(true), 100);
     });
-    rootRef.addEventListener('focus', render);
-    rootRef.addEventListener('pageshow', render);
+    rootRef.addEventListener('focus', () => refresh(true));
+    rootRef.addEventListener('pageshow', () => refresh(true));
     rootRef.addEventListener('storage', event => {
-      if ([KEY, HUB_KEY, PREF_KEY].includes(event.key)) {
-        activePlan = store.load();
-        render();
-      }
+      if ([KEY, HUB_KEY, PREF_KEY, IMPOSTER_HISTORY_KEY].includes(event.key)) refresh(true);
     });
+    syncActiveFromHistory(false);
     render();
-    return Object.freeze({ render, createPlan, store });
+    return Object.freeze({ render, createPlan, refresh, store });
   }
 
   return Object.freeze({
@@ -461,6 +531,7 @@
     buildPlan,
     normalizePlan,
     updateStep,
+    syncPlanFromHistory,
     createStore,
     mount
   });
