@@ -1,49 +1,22 @@
 # Secret Circle – Mode Universe
 
-Dieses Dokument ist die verbindliche Produktlandkarte. Secret Circle soll nahezu jede wichtige Partyspiel-Mechanik abdecken, ohne Namen, Kartenbibliotheken, Designs, Grafiken, Audios oder andere geschützte Inhalte bestehender Produkte zu kopieren.
+Verbindliche Produktlandkarte für eine langfristig wartbare, offline nutzbare und rechtlich eigenständige Partyspiel-Plattform.
 
-## Aktueller Stand
+## Aktuell
 
 - **28 sichtbare und technisch spielbare Spiele**
-- **10 Quick Modes** in einer gemeinsamen Engine
-- **4 Advanced-Spiele** mit versionierten Sessions
+- **10 Quick Modes**
+- **4 Advanced-Spiele**
 - **94 zusätzliche Roadmap-Modi**
 - **122 Modi insgesamt**
 
-## Aktuell spielbar
+## 28 spielbare Spiele
 
-1. Word Imposter
-2. Zwei Wahrheiten, eine Lüge
-3. Question Imposter
-4. Location Spy
-5. Mafia
-6. Wahrheit oder Pflicht
-7. Ich habe noch nie
-8. Wer würde eher?
-9. Entweder oder
-10. Hot Takes
-11. Nur falsche Antworten
-12. Paranoia
-13. Scharade
-14. Nicht sagen! / Tabu
-15. Zeichnen & Raten
-16. Geräusche erraten
-17. Stirn-Raten
-18. Melodie summen
-19. Heiße Kartoffel
-20. Wortkette
-21. Schnellfeuer
-22. Buchstaben-Kategorien
-23. Nicht lachen!
-24. Gegenstandsjagd
-25. Caption Battle
-26. Wellenlänge
-27. Flaschendrehen
-28. Würfel & Münze
+Word Imposter; Zwei Wahrheiten, eine Lüge; Question Imposter; Location Spy; Mafia; Wahrheit oder Pflicht; Ich habe noch nie; Wer würde eher?; Entweder oder; Hot Takes; Nur falsche Antworten; Paranoia; Scharade; Nicht sagen! / Tabu; Zeichnen & Raten; Geräusche erraten; Stirn-Raten; Melodie summen; Heiße Kartoffel; Wortkette; Schnellfeuer; Buchstaben-Kategorien; Nicht lachen!; Gegenstandsjagd; Caption Battle; Wellenlänge; Flaschendrehen; Würfel & Münze.
 
 ## Roadmap 29–122
 
-### Verdeckte Rollen und Deduktion
+### Verdeckte Rollen
 
 29. Undercover-Wortpaar
 30. Chamäleon-Thema
@@ -56,7 +29,7 @@ Dieses Dokument ist die verbindliche Produktlandkarte. Secret Circle soll nahezu
 37. Geheime Aufgabe
 38. Jäger und Überlebende
 
-### Bluff und Täuschungsquiz
+### Bluff
 
 39. Bluff-Quiz
 40. Falsche Definition
@@ -69,7 +42,7 @@ Dieses Dokument ist die verbindliche Produktlandkarte. Secret Circle soll nahezu
 47. Persönliche Wahrheit
 48. Lügen-Rangliste
 
-### Zeichnen und Stille Post
+### Zeichnen und Ketten
 
 49. Zeichen-Stille-Post
 50. Blind zeichnen
@@ -91,7 +64,7 @@ Dieses Dokument ist die verbindliche Produktlandkarte. Secret Circle soll nahezu
 63. Zwanzig Fragen
 64. Assoziationsleiter
 
-### Meinungen und Freundschaft
+### Meinungen
 
 65. Rangliste
 66. Tier-List
@@ -167,35 +140,10 @@ Dieses Dokument ist die verbindliche Produktlandkarte. Secret Circle soll nahezu
 121. Lokales Netzwerkspiel
 122. Mehrsprachige Content-Packs
 
-## Nächste Engine-Welle
+## Nächste Welle
 
-1. Bluff-Quiz
-2. Zeichen-Stille-Post
-3. Team-Codewörter
-4. Team-Buzzer
-5. Geteilte Entscheidung
-6. Reaktions-Tippen
-7. Turnier-Bracket
-8. Allgemeinwissen
-9. Paar-Karten-Editor
-10. tägliche lokale Challenge
+Bluff-Quiz, Zeichen-Stille-Post, Team-Codewörter, Team-Buzzer, Geteilte Entscheidung, Reaktions-Tippen, Turnier-Bracket, Allgemeinwissen, Paar-Karten-Editor und tägliche lokale Challenge.
 
-## Architekturprinzip
+## Prinzip
 
-Die Plattform verwendet gemeinsame Engine-Familien für Karten, Wahl und Spektrum, geheime Rollen, Bluff-Antworten, Zeichnen, Stille Post, Team-Hinweise, Timer, Audio, Quiz, Kooperation, Creator-Packs und optionale Mehrgerätefunktionen. Ein neuer Name allein rechtfertigt keine neue Engine.
-
-## Qualitäts- und Rechtsregeln
-
-- eigene oder rechtlich nutzbare Inhalte
-- stabile IDs und versionierte Daten
-- Setup, aktiver Ablauf, Ergebnis, Wiederholung und sicherer Ausstieg
-- Offline-Support oder klare Kennzeichnung eines optionalen Online-Moduls
-- Transaktion oder Rollback bei kritischen lokalen Änderungen
-- Schutz geheimer Informationen
-- Tastatur, Touch, Zoom, Safe Areas und Reduced Motion
-- Unit- beziehungsweise Logiktests und kritische E2E-Abdeckung
-- realer Gruppentest vor öffentlicher Freigabe
-
-## Release-Regel
-
-Die Zahl der Modi allein bestimmt keine Freigabe. Neue Spiele gelten erst als öffentlich fertig, wenn automatisierte Tests, echte Geräte, Offline-Update, Inhaltsprüfung und reale Gruppentests bestanden sind.
+Die Plattform verwendet gemeinsame Engine-Familien für Karten, Wahl, Spektrum, geheime Rollen, Bluff, Zeichnen, Stille Post, Teams, Timer, Audio, Quiz, Creator-Packs und optionale Mehrgerätefunktionen. Jeder Modus benötigt stabile IDs, versionierte Daten, Offline-Support, sicheren Ausstieg, Accessibility, Tests und einen realen Gruppentest vor öffentlicher Freigabe.
