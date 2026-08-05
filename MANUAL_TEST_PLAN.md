@@ -11,12 +11,36 @@ Eine Person ohne Erklärung öffnet `party.html`.
 Prüfen:
 
 - Start, Spiele, Spieler, Favoriten, Verlauf und Daten werden verstanden,
+- die sechs Navigationsziele sind auf Desktop und Smartphone vollständig sichtbar,
 - „Spielbar“ und „In Arbeit“ werden nicht verwechselt,
 - Spielerzahl, Dauer und Kategorien sind schnell auffindbar,
 - Suche und Filter funktionieren gemeinsam,
 - 22 Einträge, 18 spielbare und 4 gesperrte Spiele werden korrekt angezeigt.
 
-## B. Spieler, Presets und Einstellungen
+## B. Smart Party Night
+
+Mit gespeicherter Spielergruppe von 2, 4, 8 und 12 Personen testen.
+
+Jeweils prüfen:
+
+- Zeitbudget 15, 30, 45, 60 und 90 Minuten,
+- Stimmungen gemischt, lustig, Wettkampf, tiefer, Chaos, clever und locker,
+- Altersstufen alle, familienfreundlich und bis ab 12,
+- Favoriten und zuletzt gespielte Titel,
+- Reihenfolge, Spielvielfalt und nachvollziehbare Empfehlungsgründe,
+- keine doppelten Spiele innerhalb eines Plans,
+- unpassende Gruppengrößen werden ausgeschlossen,
+- Utility- und reine Zufallswerkzeuge werden nicht als Hauptstation eingeplant,
+- „Öffnen“, „Als erledigt“ und „Überspringen“,
+- Fortschrittsbalken und aktueller Schritt,
+- Neuladen nach dem ersten und vor dem letzten Schritt,
+- PWA schließen und erneut öffnen,
+- abgeschlossenen Plan anzeigen,
+- neu zusammenstellen und vollständig löschen.
+
+Erwartet: Der Plan bleibt lokal gespeichert, wird nach Neuladen korrekt fortgesetzt und verwendet ausschließlich gültige spielbare Titel für die aktuelle Spielergruppe.
+
+## C. Spieler, Presets und Einstellungen
 
 - 1, 3, 8 und 20 Namen speichern
 - Leerzeilen, Sonderzeichen und doppelte Namen eingeben
@@ -29,7 +53,7 @@ Zusätzlich einen Browser-Speicherfehler für Präferenzen simulieren.
 
 Erwartet: Die aktuelle Auswahl bleibt nutzbar, eine Warnung erscheint und nach Neuladen gilt der letzte erfolgreich gespeicherte Wert.
 
-## C. Einfache Hub-Spiele
+## D. Einfache Hub-Spiele
 
 Mindestens eine Session je Spiel:
 
@@ -49,7 +73,7 @@ Mindestens eine Session je Spiel:
 
 Prüfen: aktive Person, Kartenwiederholung, Timer, Zufall, Punkte, Verlassen und Verlauf.
 
-## D. Vier komplexe Spiele
+## E. Vier komplexe Spiele
 
 ### Zwei Wahrheiten, eine Lüge
 
@@ -80,7 +104,7 @@ Prüfen: aktive Person, Kartenwiederholung, Timer, Zufall, Punkte, Verlassen und
 - Nachtziel, Schutz, Untersuchung und Tageswahl
 - Mafia- und Dorfsieg
 
-## E. Spielergruppe und Session-Snapshot
+## F. Spielergruppe und Session-Snapshot
 
 1. Spielergruppe `Alex, Sam, Mika, Lina` speichern.
 2. Question Imposter starten.
@@ -96,7 +120,7 @@ Erwartet:
 
 Denselben Test mit Mafia wiederholen. Rollenübersicht, Nacht- und Tagesauswahl müssen dieselbe ursprüngliche Spielergruppe verwenden.
 
-## F. Sessionlängen und Abschluss
+## G. Sessionlängen und Abschluss
 
 Je eine Session mit 3, 5, 10 und 20 Runden starten.
 
@@ -110,7 +134,7 @@ Prüfen:
 - beschädigte aktive Daten,
 - normaler Abschluss erzeugt genau einen Verlaufseintrag.
 
-## G. Speicherfehler beim Sessionabschluss
+## H. Speicherfehler beim Sessionabschluss
 
 1. komplexe Session bis zur Zusammenfassung bringen.
 2. Hub-Speicherung einmalig fehlschlagen lassen.
@@ -126,7 +150,7 @@ Erwartet:
 - beim zweiten Versuch genau ein Verlaufseintrag,
 - Runden und Bestwert stimmen.
 
-## H. Eigene Hub-Kategorien
+## I. Eigene Hub-Kategorien
 
 1. Pack mit zwei Karten versuchen.
 2. Pack mit mindestens drei Karten speichern.
@@ -146,11 +170,12 @@ Erwartet:
 
 Danach Speicherfehler beim Hinzufügen und Löschen simulieren. Erwartet: Speicher und Katalog bleiben jeweils vollständig im vorherigen Zustand.
 
-## I. Gesamtsicherung
+## J. Gesamtsicherung
 
 Vorbereitung:
 
 - Hub-Spieler, Preset und Favorit erstellen
+- Smart Party Night erstellen und mindestens einen Schritt erledigen
 - einfaches Spiel beenden
 - eigenes Hub-Pack erstellen
 - komplexe Session starten
@@ -158,7 +183,7 @@ Vorbereitung:
 
 Dann exportieren, alles löschen und importieren.
 
-Erwartet: Alle Bereiche werden wiederhergestellt.
+Erwartet: Alle Bereiche einschließlich Party-Night-Fortschritt werden wiederhergestellt.
 
 ### Mehrbyte- und Byte-Grenze
 
@@ -188,7 +213,7 @@ Erwartet: Alle alten Daten werden vollständig wiederhergestellt und eine klare 
 
 Erwartet: Vorherige Daten werden vollständig wiederhergestellt; kein gemischter Teilzustand bleibt bestehen.
 
-## J. Statistik und Erfolge
+## K. Statistik und Erfolge
 
 - zwei Verlaufseinträge desselben Spiels mit unterschiedlichen Runden und Punkten anlegen
 - zu niedrige alte Statistikwerte setzen
@@ -198,7 +223,7 @@ Erwartet: Sessions, Runden und Bestwert werden erhöht, aber bereits höhere Wer
 
 Zusätzlich negative Werte, unbekannte Spiel-ID und einen Speicherfehler bei der Reparatur testen. Erwartet: sichere Normalisierung, unbekanntes Spiel wird ignoriert und der Hub bleibt bedienbar.
 
-## K. Word Imposter
+## L. Word Imposter
 
 - 3 und 20 Personen
 - 1 bis 6 Imposter
@@ -212,33 +237,36 @@ Zusätzlich negative Werte, unbekannte Spiel-ID und einen Speicherfehler bei der
 
 Erwartet: faire Rollen, korrekte Punkte, genau ein Verlaufseintrag pro Runde und keine Sackgasse.
 
-## L. Android-Installation
+## M. Android-Installation
 
 - aktuelles Android und Chrome
 - Installation, Icon und Start im Party Hub
 - Offline-Start aller Kernbereiche
+- Smart Party Night offline erstellen und fortsetzen
 - eigenes Pack offline
-- Update einer älteren Installation auf Cache `secret-circle-v24`
-- aktive Session und Spieler-Snapshot nach Update
+- Update einer älteren Installation auf Cache `secret-circle-v25`
+- Party-Night-Fortschritt, aktive Session und Spieler-Snapshot nach Update
 - Vibration, Portrait und Landscape
 
-## M. iPhone-/iPad-Installation
+## N. iPhone-/iPad-Installation
 
 - aktuelles Safari
 - „Zum Home-Bildschirm“
 - Start im Party Hub
 - Safe Areas und Bildschirmtastatur
 - Offline-Start
+- Party Night mit 30 und 60 Minuten erstellen und fortsetzen
 - eigene Packs und komplexe Kartenübergabe
-- Update auf Cache `secret-circle-v24`
-- aktive Spielergruppe nach Update unverändert
+- Update auf Cache `secret-circle-v25`
+- Party-Night-Plan und aktive Spielergruppe nach Update unverändert
 
-## N. Browser und Accessibility
+## O. Browser und Accessibility
 
 Auf Chrome, Firefox und Safari/WebKit:
 
 - Tastaturbedienung
 - sichtbarer Fokus
+- Party-Night-Timeline vollständig per Tastatur bedienen
 - Screenreader-Kurztest
 - 200-Prozent-Vergrößerung
 - reduzierte Bewegung
@@ -248,7 +276,7 @@ Auf Chrome, Firefox und Safari/WebKit:
 - keine abgeschnittenen Aktionen
 - Touchflächen mindestens 44 × 44 Pixel
 
-## O. Realer Partytest
+## P. Realer Partytest
 
 Mindestens zwei Gruppen:
 
@@ -257,8 +285,10 @@ Mindestens zwei Gruppen:
 
 Pflichtspiele: Word Imposter, Question Imposter, Location Spy, Mafia, Scharade, Heiße Kartoffel und ein eigenes Hub-Pack.
 
-Dokumentieren: Zeit bis zum Start, benötigte Erklärungen, Übergabeprobleme, Spaß, Länge, Wiederholungswunsch, Blockaden und Fehler.
+Zusätzlich mindestens einen vollständigen Smart-Party-Night-Ablauf mit 45 oder 60 Minuten spielen.
+
+Dokumentieren: Zeit bis zum Start, benötigte Erklärungen, Qualität der Reihenfolge, Übergabeprobleme, Spaß, Länge, Wiederholungswunsch, Blockaden und Fehler.
 
 ## Freigaberegel
 
-`GO` nur, wenn alle automatisierten Prüfungen erfolgreich sind, Android und iOS bestanden haben, ein kleiner und ein großer Partytest dokumentiert sind, alle 18 Spiele mindestens einmal real geprüft wurden, keine kritischen oder hohen Fehler offen sind und erforderliche Betreiberinformationen vorliegen.
+`GO` nur, wenn alle automatisierten Prüfungen erfolgreich sind, Android und iOS bestanden haben, Smart Party Night real geprüft wurde, ein kleiner und ein großer Partytest dokumentiert sind, alle 18 Spiele mindestens einmal real geprüft wurden, keine kritischen oder hohen Fehler offen sind und erforderliche Betreiberinformationen vorliegen.
