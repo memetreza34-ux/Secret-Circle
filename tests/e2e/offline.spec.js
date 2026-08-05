@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('service worker caches the complete offline core including advanced games and custom packs', async ({ page, context }) => {
+test('service worker caches the complete offline core including Party Night advanced games and custom packs', async ({ page, context }) => {
   await page.goto('/party.html');
   await page.evaluate(async () => {
     if (!('serviceWorker' in navigator)) throw new Error('Service Worker is unavailable.');
@@ -11,16 +11,16 @@ test('service worker caches the complete offline core including advanced games a
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v24');
+    const cache = await caches.open('secret-circle-v25');
     const expected = [
       './index.html', './party.html', './advanced.html', './privacy.html',
-      './styles.css', './pwa.css', './party.css', './party-extra.css',
+      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
       './wake-lock.js', './app.js', './game-engine.js',
       './role-assignment.js', './word-packs.js', './data-store.js',
       './party-catalog.js', './party-expansion.js', './party-routing.js',
       './party-custom-packs.js', './party-hub.js', './party-hub-plus.js',
-      './party-data-tools.js', './party-advanced.js',
+      './party-night.js', './party-data-tools.js', './party-advanced.js',
       './party-advanced-runner.js', './party-advanced-preferences.js',
       './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
     ];
@@ -31,8 +31,8 @@ test('service worker caches the complete offline core including advanced games a
     }
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v24');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v24']);
+  expect(cacheState.names).toContain('secret-circle-v25');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v25']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
@@ -40,6 +40,7 @@ test('service worker caches the complete offline core including advanced games a
   await expect(page.getByRole('heading', { name: 'Datenschutz' })).toBeVisible();
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Euren ganzen Partyabend planen' })).toBeVisible();
   await expect(page.locator('#playable-count')).toHaveText('18');
   await page.getByRole('button', { name: 'Daten' }).click();
   await expect(page.getByRole('heading', { name: 'Eigene Hub-Kategorien' })).toBeVisible();
@@ -48,7 +49,7 @@ test('service worker caches the complete offline core including advanced games a
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
 });
 
-test('offline Party Hub can run a prompt game and preserve local data', async ({ page, context }) => {
+test('offline Party Hub can create a Party Night plan and run a prompt game', async ({ page, context }) => {
   await page.goto('/party.html');
   await page.evaluate(() => localStorage.removeItem('secret-circle-party-hub-v1'));
   await page.evaluate(() => navigator.serviceWorker.ready);
@@ -58,6 +59,9 @@ test('offline Party Hub can run a prompt game and preserve local data', async ({
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator('#hub-connection')).toContainText('Offline-Modus');
+  await page.locator('#party-night-duration').selectOption('30');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+  await expect(page.locator('.party-night-step')).toHaveCount(2);
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await page.locator('#game-search').fill('Entweder oder');
   await page.locator('[data-open-game="would-rather"]').click();
