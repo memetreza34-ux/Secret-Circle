@@ -4,138 +4,95 @@ Secret Circle besteht aus statischen Dateien. Eine installierbare PWA benötigt 
 
 ## Aktueller Umfang
 
-- `party.html`: installierter Startpunkt und Party-Hub-Navigation
-- `advanced.html`: komplexe Spiele
-- `index.html`: Word Imposter
-- `privacy.html`: Datenschutzinformationen
-- Manifest-Start: `./party.html`
-- Service-Worker-Cache: `secret-circle-v25`
-- 22 sichtbare Spiele, 18 spielbar, 4 geplant und gesperrt
-- Smart Party Night für gespeicherte komplette Spielabläufe
-- eigene Hub-Packs für kompatible Spiele
-- byte-sichere Gesamtsicherung und transaktionssichere Löschung
+- `party.html`: installierter Party-Hub-Startpunkt
+- `advanced.html`: vier komplexe lokale Spiele
+- `quick-play.html`: zehn wiederaufnehmbare Quick Modes
+- `index.html`: vollständiges Word-Imposter-Modul
+- `privacy.html`: Datenschutz
+- 28 technisch spielbare Spiele
+- Smart Party Night
+- eigene Hub-Packs
+- Offline-Cache `secret-circle-v26`
 
-## Voraussetzungen für ein öffentliches Deployment
+## Voraussetzungen vor öffentlichem Deployment
 
-- `npm run ci` vollständig erfolgreich
-- `npm run test:cross-browser` erfolgreich
-- GitHub Actions mit sichtbaren Schritten grün
-- keine kritischen oder hohen Fehler
+- `npm run ci` lokal vollständig erfolgreich
+- `npm run test:cross-browser` vollständig erfolgreich
+- GitHub Actions auf dem endgültigen Commit grün
 - Android- und iOS-Installation geprüft
-- Offline-Start und Update auf `secret-circle-v25` geprüft
-- Smart Party Night mit allen Zeitbudgets geprüft
-- alle 18 Spiele mindestens einmal real getestet
-- eigenes Pack erstellt, gespielt, exportiert, gelöscht und importiert
-- kleiner und großer Partytest dokumentiert
-- redaktionelle Inhaltsprüfung abgeschlossen
-- Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt
+- Offline-Start und Update auf `secret-circle-v26` geprüft
+- alle 28 Spiele mindestens einmal real getestet
+- Quick Modes mit 3, 5, 10 und 20 Runden geprüft
+- kleine und große Partygruppe dokumentiert
+- eigene Packs erstellt, gespielt, exportiert und importiert
+- Inhalts- und Altersprüfung abgeschlossen
+- Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben vorhanden
 
 ## GitHub Pages
 
-1. Draft-PR #11 erst nach erfolgreicher Prüfung freigeben.
+1. Draft-PR #11 erst nach erfolgreicher Prüfung zusammenführen.
 2. Abhängige Basisänderungen geordnet in `main` übernehmen.
 3. `Settings → Pages` öffnen.
 4. `Deploy from a branch` wählen.
-5. `main` und `/ (root)` auswählen.
+5. Branch `main` und Ordner `/ (root)` auswählen.
 6. HTTPS-Adresse abwarten.
-7. vollständigen Deployment-Smoke-Test ausführen.
+7. vollständigen Deployment-Smoke-Test durchführen.
 
-## Smoke-Test nach dem Deployment
+## Prüfung nach dem Deployment
 
-### Dateien und Browserkonsole
+### Seiten und Assets
 
-1. `party.html`, `advanced.html`, `index.html`, `privacy.html` und `manifest.webmanifest` liefern Status 200.
-2. alle CSS- und JavaScript-Dateien einschließlich `party-night.css` und `party-night.js` laden ohne Fehler.
-3. Manifest installiert „Secret Circle – Party Hub“ mit `./party.html` als Start-URL.
-4. 192- und 512-Pixel-Icons werden erkannt.
-5. Content Security Policy blockiert keine benötigten eigenen Dateien.
-6. Konsole und Netzwerkansicht enthalten keine unerwarteten Fehler.
+1. `party.html`, `advanced.html`, `quick-play.html`, `index.html`, `privacy.html` und `manifest.webmanifest` liefern Status 200.
+2. Manifest installiert „Secret Circle – Party Hub“ mit `./party.html` als Start-URL.
+3. 192- und 512-Pixel-Icons werden erkannt.
+4. Browserkonsole und Netzwerkansicht zeigen keine Fehler.
+5. Content Security Policy blockiert keine benötigten lokalen Dateien.
 
-### Party Hub
+### Katalog und Hub
 
-7. Startseite zeigt 18 spielbare und 4 geplante Spiele.
-8. Suche und alle Filter funktionieren gemeinsam.
-9. geplante Spiele sind sichtbar, aber nicht startbar.
+6. Startseite zeigt 28 spielbare und 0 geplante Spiele.
+7. Katalog enthält exakt 28 eindeutige IDs.
+8. Suche und alle Filter funktionieren.
+9. Quick-, Advanced- und Imposter-Schaltflächen sind eindeutig beschriftet.
 10. Spieler, Presets, Favoriten, Altersstufe und Standardlänge bleiben nach Neuladen erhalten.
-11. Verlauf, Statistik und Erfolge aktualisieren sich nach einer Session.
-12. die Desktop-Navigation zeigt sechs gleichwertige Ziele und bricht mobil sauber auf drei Spalten um.
-13. Tastaturfokus ist auf Spielkarten, Timeline und Aktionen sichtbar.
+11. Verlauf, Statistik und Erfolge werden aktualisiert.
+12. Smart Party Night erstellt und speichert alle Zeitbudgets.
 
-### Smart Party Night
+### Quick Modes
 
-14. Planer zeigt die gespeicherte Spielerzahl.
-15. 15, 30, 45, 60 und 90 Minuten erzeugen gültige Abläufe.
-16. Familienfilter enthält ausschließlich familienfreundliche Spiele.
-17. Gruppengröße schließt unpassende Spiele aus.
-18. ein Plan enthält keine doppelten Spiele.
-19. Favoriten und zuletzt gespielte Titel beeinflussen die Reihenfolge nachvollziehbar.
-20. „Öffnen“ zeigt die korrekten Spieldetails.
-21. „Als erledigt“ verschiebt den aktuellen Schritt.
-22. „Überspringen“ wird im Fortschritt getrennt gezählt.
-23. Plan bleibt nach Neuladen und PWA-Neustart erhalten.
-24. abgeschlossener Plan zeigt den Abschlusszustand.
-25. Plan kann neu erzeugt oder vollständig gelöscht werden.
+13. Wellenlänge verteilt ein geheimes Ziel und wertet den Abstand aus.
+14. Zeichnen & Raten zeigt private Begriffe und zählt Treffer.
+15. Schnellfeuer verwendet das jeweilige Zeitlimit und die erforderliche Antwortzahl.
+16. Geräusche erraten funktioniert ohne gesprochene Zielwörter.
+17. Stirn-Raten schützt die Karte vor der ratenden Person.
+18. Buchstaben-Kategorien erzeugt Buchstabe, Kategorien, Timer und Punkteingabe.
+19. Nicht lachen! besitzt sicheren 30-Sekunden-Ablauf.
+20. Melodie summen verwendet keine bereitgestellten geschützten Musikaufnahmen oder Liedtexte.
+21. Gegenstandsjagd verwendet sichere Eigenschaften und einen begrenzten Spielbereich.
+22. Caption Battle lässt einen Gewinner aus der aktiven Gruppe wählen.
+23. aktive Quick-Sessions werden nach Neuladen fortgesetzt.
+24. beschädigte Quick-Snapshots werden verworfen.
+25. abgeschlossene Quick-Sessions erscheinen einmalig in Verlauf und Statistik.
 
-### Eigene Hub-Packs
+### Advanced und Word Imposter
 
-26. Editor erscheint im Datenbereich.
-27. nur kompatible Spiele stehen zur Auswahl.
-28. weniger als drei Karten werden abgelehnt.
-29. Unicode- und Groß-/Kleinschreibungs-Duplikate werden entfernt.
-30. doppelte Packnamen werden blockiert.
-31. ein gespeichertes Pack erscheint in Spieldetail und Auswahl.
-32. das gewählte Pack wird tatsächlich gespielt.
-33. simulierter Speicherfehler beim Hinzufügen verändert weder Packliste noch Katalog.
-34. simulierter Speicherfehler beim Löschen erhält das Pack vollständig.
-35. normaler Löschvorgang entfernt das Pack vollständig.
+26. Zwei Wahrheiten, Question Imposter, Location Spy und Mafia laufen vollständig.
+27. aktive Advanced-Sessions behalten ihren Spieler-Snapshot.
+28. Word-Imposter-Rollen sind unabhängig von der Aufdeckreihenfolge.
+29. maximal sechs Imposter werden erzwungen.
+30. Karten-Sichtschutz, Timer, Abstimmung, Stichwahl und Punkte funktionieren.
 
-### Komplexe Sessions
+### Daten und Offline
 
-36. Zwei Wahrheiten, Question Imposter, Location Spy und Mafia starten korrekt.
-37. eine gestartete Session speichert ihre ursprüngliche Spielergruppe.
-38. die gemeinsame Lobby wird danach geändert.
-39. nach Neuladen verwendet die Session weiterhin den ursprünglichen Spieler-Snapshot.
-40. Rollen, Fragen und aktive Person passen weiter zu dieser Spielergruppe.
-41. 3-, 5-, 10- und 20-Runden-Sessions funktionieren.
-42. mehr als 20 Runden sind nicht möglich.
-43. eine beschädigte aktive Session wird sicher verworfen.
-44. simuliertes Scheitern der Verlaufsspeicherung lässt die Session aktiv.
-45. erneutes Speichern erzeugt genau einen Verlaufseintrag.
+31. Gesamtexport enthält Hub, Party Night, Quick-, Advanced- und Imposter-Daten.
+32. gültiger Import ersetzt lokale Daten vollständig.
+33. ungültiger Import verändert vorhandene Daten nicht.
+34. vollständige Löschung entfernt alle `secret-circle-*`-Datensätze.
+35. nur Cache `secret-circle-v26` bleibt aktiv.
+36. Party Hub, Quick Modes, Advanced-Spiele, Word Imposter und Datenschutz starten offline.
+37. Update von einer älteren Cache-Version übernimmt lokale Daten und lädt die neue Dateiversion.
 
-### Gesamtsicherung
-
-46. Export enthält Hub-, Party-Night-, Pack-, Session- und Word-Imposter-Daten.
-47. gültiger Import stellt alle Bereiche wieder her.
-48. ungültiger Import verändert vorhandene Daten nicht.
-49. Mehrbyte-Datei über 1,5 MB wird vor Datenänderung abgelehnt.
-50. simulierter Schreibfehler während des Imports stellt alle vorherigen Daten wieder her.
-51. simulierter Löschfehler stellt alle vorherigen Daten wieder her.
-52. fehlgeschlagener Rollback erzeugt eine eindeutige kritische Meldung.
-53. normale vollständige Löschung entfernt alle `secret-circle-*`-Schlüssel.
-
-### PWA und Offline
-
-54. nur Cache `secret-circle-v25` bleibt aktiv.
-55. Party Hub, Party Night, Pack-Editor, komplexe Spiele, Word Imposter und Datenschutz starten offline.
-56. Party Night kann offline einen Plan erzeugen und fortsetzen.
-57. Question Imposter kann offline begonnen werden.
-58. aktive Session bleibt nach PWA-Update erhalten.
-59. Spielergruppe der aktiven Session bleibt nach dem Update unverändert.
-60. eigene Hub-Packs, Party-Night-Fortschritt und Einstellungen bleiben nach dem Update erhalten.
-
-## Lokaler Test
-
-```bash
-python -m http.server 8080
-```
-
-Danach öffnen:
-
-- `http://localhost:8080/party.html`
-- `http://localhost:8080/advanced.html?game=question-imposter`
-- `http://localhost:8080/index.html`
-
-Automatisierte Prüfung:
+## Lokale Befehle
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
@@ -148,30 +105,15 @@ npm run test:cross-browser
 
 ## Update-Regeln
 
-Bei Änderungen an offline benötigten Dateien:
+Bei jeder Änderung an einer offline benötigten Datei:
 
 1. Cache-Version in `sw.js` erhöhen.
-2. CORE-Liste, Offline-Test, Runtime-Test, Validator und Release-Audit synchronisieren.
-3. Manifest und HTML-Scriptreihenfolge prüfen.
+2. `CORE`, Offline-Test, Runtime-Test, Validator, Release-Audit und Dokumentation synchronisieren.
+3. HTML-Scriptreihenfolgen prüfen.
 4. alte installierte Version öffnen.
 5. neue Version online laden.
-6. kontrollieren, dass nur der neue Cache besteht.
-7. Hub-Daten, Party Night, eigene Hub-Packs, aktive Session und Word-Imposter-Daten prüfen.
-8. Spieler-Snapshot vor und nach dem Update vergleichen.
-9. Export der alten Version in die neue Version importieren.
-
-## Datenkompatibilität
-
-Relevante Speicherbereiche:
-
-- Word-Imposter-Schlüssel der Version 7
-- `secret-circle-party-hub-v1`
-- `secret-circle-party-night-v1`
-- `secret-circle-party-custom-packs-v1`
-- `secret-circle-party-active-v1`
-- `secret-circle-party-preferences-v1`
-
-Der Gesamtexport sammelt alle Schlüssel mit Präfix `secret-circle-`. Ein Rollback darf diese Daten nicht unkontrolliert löschen oder in ein inkompatibles Format zurücksetzen.
+6. kontrollieren, dass nur der neue Cache bestehen bleibt.
+7. Hub-, Quick-, Advanced-, Pack- und Imposter-Daten auf Kompatibilität prüfen.
 
 ## Rollback
 
@@ -179,15 +121,15 @@ Bei einem kritischen Fehler:
 
 1. Veröffentlichung stoppen.
 2. gezielten Revert auf den letzten funktionierenden Commit erstellen.
-3. Cache-Version erneut erhöhen, damit installierte Apps den Rollback laden.
+3. Service-Worker-Cache erneut erhöhen.
 4. Speicherschemata nur mit kompatibler Migration zurücksetzen.
-5. Party Hub, Party Night, eigene Packs, komplexe Spiele und Word Imposter getrennt prüfen.
-6. Sicherung von vor dem Rollback importieren.
-7. vollständige CI- und manuelle Kernprüfungen wiederholen.
+5. Party Hub, Quick Modes, Advanced-Spiele und Word Imposter getrennt smoke-testen.
+6. Sicherung vor und nach dem Rollback prüfen.
+7. vollständige CI- und manuelle Kernprüfungen erneut ausführen.
 8. Rollback im Changelog dokumentieren.
 
 Keinen Force-Push auf `main` verwenden.
 
 ## Produktionsfreigabe
 
-GitHub Pages eignet sich für eine kontrollierte Web-PWA-Beta. Der öffentliche Produktionsrelease bleibt blockiert, bis CI, Browsermatrix, Android/iOS, Offline-Update, reale Gruppen, Party Night, Inhalte und rechtliche Angaben vollständig bestätigt sind.
+GitHub Pages eignet sich für eine kontrollierte Web-PWA-Beta. Ein öffentlicher Produktionsrelease bleibt blockiert, bis CI, alle 28 Spiele, Android/iOS, Offline-Update, reale Gruppen, Inhalte und rechtliche Angaben vollständig bestätigt sind.
