@@ -11,11 +11,11 @@ read = lambda path: (ROOT / path).read_text(encoding='utf-8')
 
 REQUIRED = {
     'index.html', 'party.html', 'advanced.html', 'privacy.html',
-    'styles.css', 'pwa.css', 'party.css', 'party-extra.css',
+    'styles.css', 'pwa.css', 'party.css', 'party-extra.css', 'party-night.css',
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-routing.js',
-    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js',
+    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-night.js',
     'party-data-tools.js', 'party-advanced.js', 'party-advanced-runner.js',
     'party-advanced-preferences.js', 'sw.js', 'manifest.webmanifest',
     'icon.svg', 'icon-192.png', 'icon-512.png', 'package.json',
@@ -23,7 +23,8 @@ REQUIRED = {
     'tests/engine.test.js', 'tests/storage.test.js', 'tests/content.test.js',
     'tests/role-assignment.test.js', 'tests/fuzz.test.js',
     'tests/party-catalog.test.js', 'tests/party-expansion.test.js',
-    'tests/party-custom-packs.test.js', 'tests/e2e/party-hub.spec.js',
+    'tests/party-custom-packs.test.js', 'tests/party-night.test.js',
+    'tests/e2e/party-hub.spec.js', 'tests/e2e/party-night.spec.js',
     'tests/e2e/party-advanced.spec.js', 'tests/e2e/party-custom-packs.spec.js',
     'tests/e2e/party-data.spec.js', 'tests/e2e/party-stats.spec.js',
     'tests/e2e/offline.spec.js', 'tests/e2e/pwa-install.spec.js',
@@ -102,7 +103,8 @@ index = audit_html('index.html', [
 ])
 party = audit_html('party.html', [
     'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
-    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-data-tools.js'
+    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-night.js',
+    'party-data-tools.js'
 ])
 advanced = audit_html('advanced.html', [
     'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
@@ -116,7 +118,8 @@ for marker in [
     'Der ganze Spieleabend in einer App', 'game-search', 'group-filter',
     'mood-filter', 'player-filter', 'age-filter', 'status-filter',
     'Host-Presets', 'achievement-grid', 'hub-export-data',
-    'party-custom-packs.js', 'game-detail', 'play-layer'
+    'party-custom-packs.js', 'party-night.css', 'party-night.js',
+    'game-detail', 'play-layer'
 ]:
     if marker not in party:
         raise SystemExit(f'Party Hub marker missing: {marker}')
@@ -132,6 +135,7 @@ sources = {
     'expansion': read('party-expansion.js'),
     'routing': read('party-routing.js'),
     'custom_packs': read('party-custom-packs.js'),
+    'party_night': read('party-night.js'),
     'advanced_modes': read('party-advanced.js'),
     'advanced_runner': read('party-advanced-runner.js'),
     'hub_plus': read('party-hub-plus.js'),
@@ -148,6 +152,7 @@ module_markers = {
     'expansion': ["'two-truths': 'two-truths'", "'question-imposter': 'question-imposter'", "'location-spy': 'location-spy'", "mafia: 'mafia'", "id: 'wavelength'", 'version: 2'],
     'routing': ['advancedMode', 'advanced.html?game=', 'version: 3'],
     'custom_packs': ['secret-circle-party-custom-packs-v1', 'MAX_PACKS = 20', 'MAX_ITEMS = 100', 'createManager', 'commit(nextState)', 'restoreStorage', 'version: 2'],
+    'party_night': ['VERSION = 1', 'secret-circle-party-night-v1', 'buildPlan', 'eligibleGames', 'updateStep', 'createStore', 'Euren ganzen Partyabend planen'],
     'advanced_modes': ['renderTwoTruths', 'renderQuestionImposter', 'renderLocationSpy', 'renderMafia', 'assignMafiaRoles', 'mafiaWinner', 'version: 1'],
     'advanced_runner': ['ACTIVE_VERSION = 2', 'session.players', 'sessionPlayers', 'historyId', 'saveHubState(nextHubState)', 'Session bleibt aktiv', 'MAX_SESSION_ROUNDS = 20'],
     'hub_plus': ['VERSION = 5', 'savePreferences', 'repairStatsFromHistory', 'escapeSelector', 'Statistik konnte nicht repariert'],
@@ -165,25 +170,26 @@ if (base_games, added_games) != (18, 4):
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='([^']+)'", sw)
-if not cache or cache.group(1) != 'secret-circle-v24':
-    raise SystemExit('Service worker cache must be secret-circle-v24.')
+if not cache or cache.group(1) != 'secret-circle-v25':
+    raise SystemExit('Service worker cache must be secret-circle-v25.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', sw)
 if not core_match:
     raise SystemExit('Service worker CORE list missing.')
 core = ast.literal_eval(core_match.group(1))
 expected_core = [
     './', './index.html', './party.html', './advanced.html', './privacy.html',
-    './styles.css', './pwa.css', './party.css', './party-extra.css',
+    './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css',
     './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
     './app.js', './game-engine.js', './role-assignment.js', './word-packs.js',
     './data-store.js', './party-catalog.js', './party-expansion.js',
     './party-routing.js', './party-custom-packs.js', './party-hub.js',
-    './party-hub-plus.js', './party-data-tools.js', './party-advanced.js',
-    './party-advanced-runner.js', './party-advanced-preferences.js',
-    './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
+    './party-hub-plus.js', './party-night.js', './party-data-tools.js',
+    './party-advanced.js', './party-advanced-runner.js',
+    './party-advanced-preferences.js', './manifest.webmanifest',
+    './icon.svg', './icon-192.png', './icon-512.png'
 ]
 if core != expected_core:
-    raise SystemExit('Service worker CORE is not synchronized with cache v24.')
+    raise SystemExit('Service worker CORE is not synchronized with cache v25.')
 for marker in ['cache.addAll', 'await cache.put', 'self.clients.claim', 'handleNavigation', 'handleAsset']:
     if marker not in sw:
         raise SystemExit(f'Service worker marker missing: {marker}')
@@ -207,23 +213,25 @@ if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('n
 for name in ['test', 'check', 'validate', 'test:e2e', 'test:cross-browser', 'ci']:
     if not package.get('scripts', {}).get(name):
         raise SystemExit(f'Package script missing: {name}')
-for marker in ['party-expansion.js', 'party-routing.js', 'party-custom-packs.js', 'party-advanced.js', 'party-advanced-runner.js', 'party-hub-plus.js', 'party-data-tools.js']:
+for marker in ['party-expansion.js', 'party-routing.js', 'party-custom-packs.js', 'party-night.js', 'party-advanced.js', 'party-advanced-runner.js', 'party-hub-plus.js', 'party-data-tools.js']:
     if marker not in package['scripts']['check']:
         raise SystemExit(f'Syntax gate missing: {marker}')
-for marker in ['tests/party-catalog.test.js', 'tests/party-expansion.test.js', 'tests/party-custom-packs.test.js']:
+for marker in ['tests/party-catalog.test.js', 'tests/party-expansion.test.js', 'tests/party-custom-packs.test.js', 'tests/party-night.test.js']:
     if marker not in package['scripts']['test']:
         raise SystemExit(f'Unit gate missing: {marker}')
 
 required_test_markers = {
     'tests/party-expansion.test.js': ['playableGames', 'advancedPlayableGames', 'totalItems'],
     'tests/party-custom-packs.test.js': ['transactionRollback', 'failedRemovalPreservesPack', 'unicodeDuplicatesRemoved'],
+    'tests/party-night.test.js': ['partyNightVersion', 'ageAndGroupFiltering', 'persistentProgress', 'storageFailuresHandled'],
     'tests/e2e/party-hub.spec.js': ['playable catalog and roadmap', 'age preference', 'advanced games are playable'],
+    'tests/e2e/party-night.spec.js': ['varied persistent plan', 'family and player filters', 'Partyabend fortsetzen'],
     'tests/e2e/party-advanced.spec.js': ['survive a reload', 'original player snapshot', 'failed history write'],
     'tests/e2e/party-custom-packs.spec.js': ['custom pack editor validates', 'duplicate pack names', 'custom packs can be deleted'],
     'tests/e2e/party-data.spec.js': ['multibyte backup over the byte limit', 'failed import write rolls back', 'failed deletion rolls back'],
     'tests/e2e/party-stats.spec.js': ['statistics storage failure', 'preference storage failure', 'non-finite history values'],
-    'tests/e2e/offline.spec.js': ['secret-circle-v24', 'custom packs', 'advanced Question Imposter'],
-    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v24'],
+    'tests/e2e/offline.spec.js': ['secret-circle-v25', 'Party Night', 'advanced Question Imposter'],
+    'tests/e2e/runtime-guard.spec.js': ['secret-circle-v25', 'Party Night planner'],
     'tests/e2e/pwa-install.spec.js': ['./party.html', 'Party Hub'],
     'tests/cross-browser/smoke.spec.js': ['Party Hub catalog', 'Question Imposter']
 }
@@ -234,14 +242,14 @@ for relative, markers in required_test_markers.items():
             raise SystemExit(f'Missing test marker {marker} in {relative}')
 
 required_doc_markers = {
-    'README.md': ['secret-circle-v24', 'Eigene Hub-Kategorien', 'Byte-Grenze'],
-    'RELEASE_STATUS.md': ['secret-circle-v24', 'transaktionssichere Datensicherung', 'Gesamte gewünschte Party-Hub-Vision'],
-    'CHANGELOG.md': ['secret-circle-v24', 'Mehrbyte', 'Präferenz'],
-    'DEPLOYMENT.md': ['secret-circle-v24', 'Rollback', 'Spielergruppe'],
-    'RELEASE_CHECKLIST.md': ['secret-circle-v24', 'Byte-Grenze', 'Spieler-Snapshot'],
-    'MANUAL_TEST_PLAN.md': ['secret-circle-v24', 'Mehrbyte', 'Spielergruppe'],
-    'KNOWN_LIMITATIONS.md': ['secret-circle-v24', 'Eigene Hub-Packs', 'Online-Mehrspielermodus'],
-    'CI_TROUBLESHOOTING.md': ['secret-circle-v24', 'eigene Hub-Packs', 'GitHub Actions']
+    'README.md': ['secret-circle-v25', 'Party Night', 'Byte-Grenze'],
+    'RELEASE_STATUS.md': ['secret-circle-v25', 'Party Night', 'Gesamte gewünschte Party-Hub-Vision'],
+    'CHANGELOG.md': ['secret-circle-v25', 'Party Night', 'Mehrbyte'],
+    'DEPLOYMENT.md': ['secret-circle-v25', 'Party Night', 'Rollback'],
+    'RELEASE_CHECKLIST.md': ['secret-circle-v25', 'Party Night', 'Spieler-Snapshot'],
+    'MANUAL_TEST_PLAN.md': ['secret-circle-v25', 'Party Night', 'Spielergruppe'],
+    'KNOWN_LIMITATIONS.md': ['secret-circle-v25', 'Party Night', 'Online-Mehrspielermodus'],
+    'CI_TROUBLESHOOTING.md': ['secret-circle-v25', 'Party Night', 'GitHub Actions']
 }
 for relative, markers in required_doc_markers.items():
     source = read(relative).lower()
@@ -262,8 +270,10 @@ print(json.dumps({
     'advanced_playable_games': 4,
     'advanced_active_schema': 2,
     'hub_plus_version': 5,
+    'party_night_version': 1,
     'data_tools_version': 2,
     'custom_pack_builder': True,
+    'smart_party_planner': True,
     'transactional_custom_packs': True,
     'player_snapshot_sessions': True,
     'transaction_safe_history': True,
