@@ -19,20 +19,28 @@ assert.ok(familyGames.every(game => game.age === 'all'));
 assert.ok(familyGames.every(game => game.minPlayers <= 4 && game.maxPlayers >= 4));
 assert.ok(familyGames.every(game => !['utility', 'random-player'].includes(game.mode)));
 
-const plan = planner.buildPlan({ players: 4, duration: 45, mood: 'funny', ageLevel: 'all' }, {
-  favorites: ['charades'],
-  recent: ['truth-dare']
-}, () => 0);
+const config = { players: 4, duration: 45, mood: 'funny', ageLevel: 'all' };
+const context = { favorites: ['charades'], recent: ['truth-dare'] };
+const plan = planner.buildPlan(config, context, () => 0);
+const repeatedPlan = planner.buildPlan(config, context, () => 0);
 assert.ok(plan);
 assert.equal(plan.version, 1);
 assert.equal(plan.config.players, 4);
 assert.equal(plan.config.duration, 45);
 assert.equal(plan.steps.length, 3);
+assert.deepEqual(repeatedPlan.steps.map(step => step.gameId), plan.steps.map(step => step.gameId));
 assert.equal(new Set(plan.steps.map(step => step.gameId)).size, plan.steps.length);
 assert.ok(plan.steps.every(step => catalog.getGame(step.gameId)?.status === 'playable'));
 assert.ok(plan.steps.every(step => step.status === 'pending'));
 assert.equal(plan.currentIndex, 0);
 assert.ok(plan.estimatedMinutes >= 30);
+
+const shortPlan = planner.buildPlan({ players: 4, duration: 15, mood: 'all', ageLevel: 'all' }, {}, () => -99);
+assert.equal(shortPlan.steps.length, 1);
+assert.ok(catalog.getGame(shortPlan.steps[0].gameId));
+const malformedRandomPlan = planner.buildPlan(config, context, () => Number.NaN);
+assert.equal(malformedRandomPlan.steps.length, 3);
+assert.equal(new Set(malformedRandomPlan.steps.map(step => step.gameId)).size, 3);
 
 const firstId = plan.steps[0].gameId;
 const secondId = plan.steps[1].gameId;
@@ -83,6 +91,8 @@ console.log(JSON.stringify({
   partyNightVersion: planner.version,
   eligibleFamilyGames: familyGames.length,
   generatedSteps: plan.steps.length,
+  shortPlanSteps: shortPlan.steps.length,
+  stableDeterministicRanking: true,
   uniqueGames: true,
   ageAndGroupFiltering: true,
   persistentProgress: true,
