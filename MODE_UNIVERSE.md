@@ -8,21 +8,12 @@ Word Imposter; Zwei Wahrheiten, eine Lüge; Question Imposter; Location Spy; Maf
 
 ## Roadmap-Familien
 
-- verdeckte Rollen und Deduktion
-- Bluff und Täuschungsquiz
-- Zeichnen und Stille Post
-- Wörter und Team-Hinweise
-- Rankings, Abstimmung und Freundschaft
-- Reaktion, Rhythmus und Geschick
-- Audio und Performance
-- Quiz, Wissen und Schätzen
-- Team, Strategie und Kooperation
-- Creator, Mehrgeräte, KI, AR und Übersetzung
+Verdeckte Rollen; Bluff; Zeichnen; Stille Post; Wörter; Team-Hinweise; Rankings; Abstimmung; Reaktion; Rhythmus; Geschick; Audio; Performance; Quiz; Wissen; Schätzen; Kooperation; Creator-Packs; Mehrgeräte; KI; AR; Übersetzung; TV-Host und lokales Netzwerk.
 
 ## Nächste Welle
 
 Bluff-Quiz, Zeichen-Stille-Post, Team-Codewörter, Team-Buzzer, Geteilte Entscheidung, Reaktions-Tippen, Turnier-Bracket, Allgemeinwissen, Paar-Karten-Editor und tägliche Challenge.
 
-## Prinzip
+## Regel
 
-Gemeinsame Engines statt 122 isolierter Codebasen. Jeder Modus benötigt stabile IDs, versionierte Daten, Offline-Support, sicheren Ausstieg, Accessibility, Tests, eigene oder rechtlich nutzbare Inhalte und reale Gruppenprüfung.
+Gemeinsame Engines statt isolierter Codebasen. Jeder Modus benötigt stabile IDs, versionierte Daten, Offline-Support, sicheren Ausstieg, Accessibility, Tests, eigene oder rechtlich nutzbare Inhalte und reale Gruppenprüfung.
