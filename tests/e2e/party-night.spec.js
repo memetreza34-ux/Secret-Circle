@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
-test('Party Night creates a varied persistent plan and opens every selected game safely', async ({ page }) => {
+test('Party Night creates a varied persistent plan and opens a selected game safely', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Euren ganzen Partyabend planen' })).toBeVisible();
   await expect(page.locator('#party-night-player-count')).toHaveText('4');
   await page.locator('#party-night-duration').selectOption('45');
@@ -27,6 +27,7 @@ test('Party Night creates a varied persistent plan and opens every selected game
 
   await expect(page.locator('.party-night-step')).toHaveCount(3);
   await expect(page.locator('.party-night-step.current')).toHaveCount(1);
+  await expect(page.locator('.party-night-step[aria-current="step"]')).toHaveCount(1);
   await expect(page.locator('#party-night-status')).toContainText('3 Spiele');
 
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-night-v1')));
@@ -71,7 +72,20 @@ test('Party Night respects family and player filters and can be completed or cle
     await page.locator('.party-night-step').getByRole('button', { name: 'Als erledigt' }).first().click();
   }
   await expect(page.locator('.party-night-summary')).toContainText('Abend abgeschlossen');
+  page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: 'Plan löschen' }).click();
   await expect(page.locator('.party-night-empty')).toContainText('Noch kein Ablauf geplant');
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-party-night-v1'))).toBeNull();
+});
+
+test('15 minute planning produces one focused game and player count refreshes from the lobby', async ({ page }) => {
+  await page.locator('#party-night-duration').selectOption('15');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+  await expect(page.locator('.party-night-step')).toHaveCount(1);
+
+  await page.getByRole('button', { name: 'Spieler' }).click();
+  await page.locator('#hub-players').fill('Aylin\nBen\nCem\nDaria\nEmir\nFatma');
+  await page.getByRole('button', { name: 'Spieler speichern' }).click();
+  await page.getByRole('button', { name: 'Start' }).click();
+  await expect(page.locator('#party-night-player-count')).toHaveText('6');
 });
