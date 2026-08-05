@@ -15,6 +15,18 @@ const expectedQuickModes = [
   'wavelength', 'draw-guess', 'rapid-fire', 'sound-imitation', 'forehead-guess',
   'letter-categories', 'dont-laugh', 'hum-song', 'scavenger-hunt', 'caption-battle'
 ];
+const minimumItems = {
+  wavelength: 24,
+  'draw-guess': 30,
+  'rapid-fire': 20,
+  'sound-imitation': 30,
+  'forehead-guess': 40,
+  'letter-categories': 9,
+  'dont-laugh': 18,
+  'hum-song': 24,
+  'scavenger-hunt': 24,
+  'caption-battle': 18
+};
 assert.deepEqual([...trending.trendingGameIds], expectedQuickModes);
 
 for (const id of expectedQuickModes) {
@@ -29,8 +41,8 @@ for (const id of expectedQuickModes) {
   assert.ok(Array.isArray(game.instructions) && game.instructions.length >= 3);
   assert.ok(Array.isArray(game.packs) && game.packs.length >= 3);
   assert.deepEqual(trending.getPackNames(id), Object.keys(trending.content[id]));
-  assert.ok(trending.itemCount(id) >= 18, `${id} needs enough launch content`);
-  assert.ok(trending.getItems(id).length === trending.itemCount(id));
+  assert.ok(trending.itemCount(id) >= minimumItems[id], `${id} needs enough launch content`);
+  assert.equal(trending.getItems(id).length, trending.itemCount(id));
 }
 
 for (const id of ['wavelength', 'draw-guess', 'rapid-fire', 'sound-imitation']) {
@@ -62,5 +74,6 @@ console.log(JSON.stringify({
   newQuickModes: expectedQuickModes.length,
   routedAdvancedGames: 4,
   allIdsUnique: true,
-  originalContentValidated: true
+  originalContentValidated: true,
+  minimumContentValidated: minimumItems
 }, null, 2));
