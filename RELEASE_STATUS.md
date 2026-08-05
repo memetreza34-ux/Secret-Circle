@@ -1,10 +1,6 @@
-# Secret Circle Party Hub – Entwicklungs- und Release-Status
+# Secret Circle Party Hub – Release-Status
 
-Stand: 5. August 2026  
-Version: `1.0.0-beta.3`  
-Branch: `codex/party-hub-foundation`  
-Draft-PR: `#11`  
-Planung: Issue `#10`
+Stand: 5. August 2026 · Version `1.0.0-beta.3` · Branch `codex/party-hub-foundation` · Draft-PR #11
 
 ## Kernzahlen
 
@@ -27,15 +23,15 @@ Planung: Issue `#10`
 | Quick-Mode-Engine | 92 % |
 | Advanced-Spiele | 88 % |
 | Inhalte und Kategorien | 87 % |
-| Eigene Hub-Packs | 96 % |
+| eigene Hub-Packs | 96 % |
 | Speicherung und Datensicherung | 98 % |
 | PWA und Offline | 97 % |
 | Accessibility und Mobile | 93 % |
-| Automatisierte Vorbereitung | 99 % |
-| Langfristige Architektur | 96 % |
-| Gesamte 122-Modi-Vision funktional | 34 % |
-| Bereit für reale Geräte-/Partytests | 94 % |
-| Bereit für öffentlichen Release | 83 % |
+| automatisierte Vorbereitung | 99 % |
+| langfristige Architektur | 96 % |
+| gesamte 122-Modi-Vision funktional | 34 % |
+| bereit für reale Geräte-/Partytests | 94 % |
+| bereit für öffentlichen Release | 83 % |
 
 Die Werte bewerten Implementierung und Vorbereitung. Sie ersetzen keine bestandenen Tests.
 
@@ -43,14 +39,12 @@ Die Werte bewerten Implementierung und Vorbereitung. Sie ersetzen keine bestande
 
 - Wellenlänge, Zeichnen & Raten, Schnellfeuer und Geräusche erraten freigeschaltet
 - Stirn-Raten, Buchstaben-Kategorien, Nicht lachen!, Melodie summen, Gegenstandsjagd und Caption Battle ergänzt
-- gemeinsame wiederaufnehmbare Quick-Mode-Engine
-- 3, 5, 10 oder 20 Runden
+- gemeinsame Quick-Mode-Seite und wiederaufnehmbare Engine
 - Spieler-Snapshot, Punkte, Rangliste, Verlauf und Statistik
-- eigene Inhalte für alle zehn Quick Modes
-- korrupte Quick-Sessions werden verworfen
-- Security-, Tastatur-, Touch-, Overflow- und Reduced-Motion-Tests
+- originale Inhalte für alle zehn Quick Modes
+- Korruptions-, Sicherheits-, Tastatur-, Touch-, Overflow- und Reduced-Motion-Tests
 - Offline-Core v26
-- 122-Modi-Universum auf 28 spielbare und 94 zukünftige Modi synchronisiert
+- 28 aktuelle plus 94 zukünftige Modi im 122-Modi-Universum
 - Struktur-, Release-, Architektur- und Performance-Gates erweitert
 
 ## Blocker
@@ -61,7 +55,7 @@ Die Werte bewerten Implementierung und Vorbereitung. Sie ersetzen keine bestande
 4. reale Android-/iOS- und PWA-Update-Tests fehlen.
 5. kleiner und großer Partytest fehlen.
 6. alle 28 Spiele müssen real geprüft werden.
-7. redaktionelle Inhalts- und Altersprüfung fehlt.
+7. Inhalts- und Altersprüfung fehlt.
 8. öffentliche Betreiber- und Kontaktangaben fehlen.
 
 ## Befehle
@@ -77,7 +71,7 @@ npm run test:cross-browser
 
 ## Freigabe
 
-- vollständiger lokaler Testlauf: `GO`
+- automatisierter Gesamttest: `GO`
 - kontrollierter Entwickler-Browsertest: `GO_WITH_CONDITIONS`
 - realer Geräte-/Party-Betatest: `NO_GO` bis grüne automatisierte Läufe
 - Merge von Draft-PR #11: `NO_GO` bis grüne Kernprüfungen
