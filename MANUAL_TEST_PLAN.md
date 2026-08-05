@@ -4,58 +4,30 @@ Dieser Plan ergänzt die automatisierten Prüfungen. Für jeden Durchlauf dokume
 
 Bewertung je Test: `BESTANDEN`, `FEHLER` oder `BLOCKIERT`.
 
-## A. Party-Hub-Navigation
+Zielstand: 28 spielbare Spiele, Smart Party Night und Offline-Core `secret-circle-v26`.
 
-Eine Person ohne Erklärung öffnet `party.html`.
+## 1. Grundlegender Smoke-Test
 
-Prüfen:
+- Party Hub öffnet ohne Konsolenfehler.
+- Startseite zeigt 28 spielbare und 0 geplante Spiele.
+- Suche und alle sechs Filter funktionieren.
+- Quick-, Advanced- und Imposter-Schaltflächen öffnen den korrekten Bereich.
+- Spieler, Presets, Favoriten und Einstellungen überstehen ein Neuladen.
+- Datenschutzseite ist erreichbar.
 
-- Start, Spiele, Spieler, Favoriten, Verlauf und Daten werden verstanden,
-- die sechs Navigationsziele sind auf Desktop und Smartphone vollständig sichtbar,
-- „Spielbar“ und „In Arbeit“ werden nicht verwechselt,
-- Spielerzahl, Dauer und Kategorien sind schnell auffindbar,
-- Suche und Filter funktionieren gemeinsam,
-- 22 Einträge, 18 spielbare und 4 gesperrte Spiele werden korrekt angezeigt.
+## 2. Word Imposter
 
-## B. Smart Party Night
+- 3, 8 und 20 Personen testen.
+- 1, mehrere und maximal 6 Imposter testen.
+- Rollen sind nicht an die Aufdeckreihenfolge gekoppelt.
+- Kartensichtschutz bei App-Wechsel prüfen.
+- Timer im Vordergrund, Hintergrund und nach Neuladen prüfen.
+- Abstimmung, Stichwahl, Ratechance, Punkte und nächste Runde prüfen.
+- aktiven Spielstand fortsetzen.
 
-Mit gespeicherter Spielergruppe von 2, 4, 8 und 12 Personen testen.
+## 3. Standard-Hub-Spiele
 
-Jeweils prüfen:
-
-- Zeitbudget 15, 30, 45, 60 und 90 Minuten,
-- Stimmungen gemischt, lustig, Wettkampf, tiefer, Chaos, clever und locker,
-- Altersstufen alle, familienfreundlich und bis ab 12,
-- Favoriten und zuletzt gespielte Titel,
-- Reihenfolge, Spielvielfalt und nachvollziehbare Empfehlungsgründe,
-- keine doppelten Spiele innerhalb eines Plans,
-- unpassende Gruppengrößen werden ausgeschlossen,
-- Utility- und reine Zufallswerkzeuge werden nicht als Hauptstation eingeplant,
-- „Öffnen“, „Als erledigt“ und „Überspringen“,
-- Fortschrittsbalken und aktueller Schritt,
-- Neuladen nach dem ersten und vor dem letzten Schritt,
-- PWA schließen und erneut öffnen,
-- abgeschlossenen Plan anzeigen,
-- neu zusammenstellen und vollständig löschen.
-
-Erwartet: Der Plan bleibt lokal gespeichert, wird nach Neuladen korrekt fortgesetzt und verwendet ausschließlich gültige spielbare Titel für die aktuelle Spielergruppe.
-
-## C. Spieler, Presets und Einstellungen
-
-- 1, 3, 8 und 20 Namen speichern
-- Leerzeilen, Sonderzeichen und doppelte Namen eingeben
-- Presets erstellen, laden und löschen
-- Favoriten setzen und entfernen
-- Altersfilter und Standardlänge ändern
-- Browser neu laden
-
-Zusätzlich einen Browser-Speicherfehler für Präferenzen simulieren.
-
-Erwartet: Die aktuelle Auswahl bleibt nutzbar, eine Warnung erscheint und nach Neuladen gilt der letzte erfolgreich gespeicherte Wert.
-
-## D. Einfache Hub-Spiele
-
-Mindestens eine Session je Spiel:
+Mindestens eine vollständige Session pro Spiel:
 
 - Wahrheit oder Pflicht
 - Ich habe noch nie
@@ -71,224 +43,171 @@ Mindestens eine Session je Spiel:
 - Flaschendrehen
 - Würfel & Münze
 
-Prüfen: aktive Person, Kartenwiederholung, Timer, Zufall, Punkte, Verlassen und Verlauf.
+Prüfen: Packauswahl, Kartenwechsel, aktive Person, Punkte oder Ergebnis, sicherer Ausstieg, Verlauf und Statistik.
 
-## E. Vier komplexe Spiele
+## 4. Advanced-Spiele
 
 ### Zwei Wahrheiten, eine Lüge
 
-- drei unterschiedliche Aussagen eingeben
-- Lüge markieren
-- mischen und verdecken
-- abstimmen und auflösen
-- neu laden und fortsetzen
+- private Eingabe
+- zufällige Mischung
+- Abstimmung und Auflösung
+- Fortsetzung nach Neuladen
 
 ### Question Imposter
 
-- mit 4 und 8 Personen
-- jede Frage einzeln zeigen und verdecken
-- diskutieren und abstimmen
-- beide Fragen und den Imposter auflösen
+- geheime ähnliche Fragen
+- genau ein Imposter
+- Diskussion und Wahl
+- Spieler-Snapshot nach Lobbyänderung
 
 ### Location Spy
 
-- Rollen verteilen
-- Fragerunde spielen
-- Verdächtigenwahl und Ortsratechance testen
-- mehrere Packs verwenden
+- Ort und Spion geheim verteilen
+- Verdächtigenwahl
+- Ortsraten und Auflösung
 
 ### Mafia
 
-- mit 6, 8 und 12 Personen
-- Rollenübergabe und Moderatorbestätigung
-- Nachtziel, Schutz, Untersuchung und Tageswahl
-- Mafia- und Dorfsieg
+- mindestens 6 Personen
+- private Rollen
+- geschützte Moderatoransicht
+- Nachtaktionen, Tageswahl und Siegbedingung
 
-## F. Spielergruppe und Session-Snapshot
+## 5. Zehn Quick Modes
 
-1. Spielergruppe `Alex, Sam, Mika, Lina` speichern.
-2. Question Imposter starten.
-3. erste Karte öffnen und wieder verdecken.
-4. gemeinsame Lobby auf `Nora, Omar, Pia, Rami` ändern.
-5. gespeicherte Session fortsetzen.
+Jeden Modus mit 3 und 5 Runden testen; mindestens Wellenlänge und Schnellfeuer zusätzlich mit 10 und 20 Runden.
 
-Erwartet:
+### Wellenlänge
 
-- gespeicherte Session zeigt weiterhin vier ursprüngliche Personen,
-- Fragen, Imposter und aktive Person gehören weiter zu Alex, Sam, Mika und Lina,
-- neue Namen erscheinen erst in einer neu begonnenen Session.
+- geheimes Ziel sichtbar nur für Hinweisgeber
+- Ziel wird vor Gruppenwahl verborgen
+- Regler von 0 bis 100
+- 0–4 Punkte abhängig vom Abstand
+- nächste Runde und Wiederaufnahme
 
-Denselben Test mit Mafia wiederholen. Rollenübersicht, Nacht- und Tagesauswahl müssen dieselbe ursprüngliche Spielergruppe verwenden.
+### Zeichnen & Raten
 
-## G. Sessionlängen und Abschluss
+- private Karte
+- Treffer und Überspringen
+- keine unmittelbare Wiederholung
 
-Je eine Session mit 3, 5, 10 und 20 Runden starten.
+### Schnellfeuer
 
-Prüfen:
+- 5-, 10-, 12- und 15-Sekunden-Karten
+- Erfolg vor Timerende
+- automatisches Zeitende
+- Punkte und nächste Person
 
-- Neuladen vor der ersten Aktion,
-- Neuladen mitten in einer Runde,
-- Neuladen auf der Zusammenfassung,
-- Verlängerung um fünf Runden,
-- keine Verlängerung über 20 Runden,
-- beschädigte aktive Daten,
-- normaler Abschluss erzeugt genau einen Verlaufseintrag.
+### Geräusche erraten
 
-## H. Speicherfehler beim Sessionabschluss
+- Zielkarte nur für aktive Person
+- Treffer und Überspringen
 
-1. komplexe Session bis zur Zusammenfassung bringen.
-2. Hub-Speicherung einmalig fehlschlagen lassen.
-3. Abschluss auslösen.
-4. Speicherfehler entfernen.
-5. Abschluss erneut auslösen.
+### Stirn-Raten
 
-Erwartet:
+- ratende Person sieht das Ziel nicht
+- Gerät zeigt zur Gruppe
+- Spielerwechsel
 
-- beim ersten Versuch kein Fortschrittsverlust,
-- Session bleibt aktiv und sichtbar,
-- kein unvollständiger Verlaufseintrag,
-- beim zweiten Versuch genau ein Verlaufseintrag,
-- Runden und Bestwert stimmen.
+### Buchstaben-Kategorien
 
-## I. Eigene Hub-Kategorien
+- zufälliger erlaubter Buchstabe
+- fünf Kategorien
+- 60-Sekunden-Timer
+- Punkteingabe begrenzt auf Kategorienanzahl
 
-1. Pack mit zwei Karten versuchen.
-2. Pack mit mindestens drei Karten speichern.
-3. gleiche Karte mit anderer Großschreibung und kombinierter Unicode-Schreibweise eingeben.
-4. gleichnamiges Pack erneut versuchen.
-5. Pack auswählen und spielen.
-6. Pack löschen.
+### Nicht lachen!
 
-Erwartet:
+- sichere Aufgaben
+- 30-Sekunden-Timer
+- Erfolg und Misserfolg
 
-- zu kurzes Pack wird abgelehnt,
-- visuell gleiche Unicode- und Groß-/Kleinschreibungs-Duplikate werden entfernt,
-- doppelter Packname wird blockiert,
-- Pack erscheint nach Neuladen,
-- ausschließlich eigene Karten werden genutzt,
-- normales Löschen entfernt es vollständig.
+### Melodie summen
 
-Danach Speicherfehler beim Hinzufügen und Löschen simulieren. Erwartet: Speicher und Katalog bleiben jeweils vollständig im vorherigen Zustand.
+- keine bereitgestellten geschützten Aufnahmen oder Liedtexte
+- private Aufgabe
+- Treffer und Überspringen
 
-## J. Gesamtsicherung
+### Gegenstandsjagd
 
-Vorbereitung:
+- sicheren Spielbereich festlegen
+- 60-Sekunden-Timer
+- keine gefährlichen, zerbrechlichen oder privaten Gegenstände verlangen
 
-- Hub-Spieler, Preset und Favorit erstellen
-- Smart Party Night erstellen und mindestens einen Schritt erledigen
-- einfaches Spiel beenden
-- eigenes Hub-Pack erstellen
-- komplexe Session starten
-- eigene Imposter-Kategorie und aktives Imposter-Spiel anlegen
+### Caption Battle
 
-Dann exportieren, alles löschen und importieren.
+- Situation anzeigen
+- Gewinner nur aus aktueller Spielergruppe wählen
+- Rangliste korrekt
 
-Erwartet: Alle Bereiche einschließlich Party-Night-Fortschritt werden wiederhergestellt.
+## 6. Smart Party Night
 
-### Mehrbyte- und Byte-Grenze
+- 15, 30, 45, 60 und 90 Minuten testen.
+- alle Stimmungen testen.
+- Alters- und Gruppengrößenfilter prüfen.
+- Favoritenbonus und zuletzt gespielt prüfen.
+- Hub-, Quick-, Advanced- und Word-Imposter-Abschluss synchronisieren.
+- erledigte und übersprungene Schritte prüfen.
+- Plan nach App-Neustart fortsetzen.
 
-- Sicherungsdatei mit vielen Umlauten oder anderen Mehrbyte-Zeichen erstellen
-- tatsächliche Dateigröße knapp unter 1,5 MB testen
-- tatsächliche Dateigröße über 1,5 MB testen
+## 7. Eigene Hub-Kategorien
 
-Erwartet:
+- gültiges Pack erstellen.
+- weniger als 3 Karten ablehnen.
+- doppelte Karten entfernen.
+- doppelten Packnamen ablehnen.
+- Sonderzeichen und HTML-artige Texte sicher anzeigen.
+- Pack verwenden, löschen, exportieren und importieren.
+- maximal 20 Packs und 100 Karten prüfen.
 
-- unter dem Limit wird validiert,
-- über dem Limit wird vor jeder Datenänderung abgelehnt,
-- Zeichenanzahl allein entscheidet nicht.
+## 8. Backup und Datenschutz
 
-### Import-Rollback
+- vollständigen Export erzeugen.
+- Hub-, Party-Night-, Quick-, Advanced-, Pack- und Imposter-Schlüssel kontrollieren.
+- gültigen Import durchführen.
+- ungültiges JSON und Datei über 1,5 MB ablehnen.
+- simulierten Schreibfehler und Rollback prüfen.
+- vollständige Löschung aller `secret-circle-*`-Schlüssel prüfen.
 
-- gültigen Import vorbereiten
-- ersten Schreibvorgang einmalig fehlschlagen lassen
-- Import auslösen
+## 9. PWA und Offline
 
-Erwartet: Alle alten Daten werden vollständig wiederhergestellt und eine klare Rollback-Meldung erscheint.
+- Online-Erststart vollständig laden.
+- Installation auf Android und iOS.
+- Flugmodus aktivieren.
+- Party Hub, Quick Mode, Advanced-Spiel, Word Imposter und Datenschutz öffnen.
+- aktive Quick-, Advanced- und Imposter-Session offline fortsetzen.
+- Update von älterem Cache auf `secret-circle-v26` prüfen.
+- nur v26 darf danach bestehen bleiben.
 
-### Lösch-Rollback
+## 10. Accessibility und Mobile
 
-- mehrere lokale Bereiche vorbereiten
-- einen Löschvorgang einmalig fehlschlagen lassen
-- vollständige Löschung auslösen
+- Tastaturbedienung ohne Maus.
+- sichtbare Fokusmarkierungen.
+- Screenreader-Grundprüfung.
+- 200-%-Zoom.
+- Hoch- und Querformat.
+- iPhone-Safe-Areas.
+- mindestens 44 × 44 Pixel große Touchziele.
+- kein horizontaler Überlauf.
+- Reduced Motion und große Systemschrift.
 
-Erwartet: Vorherige Daten werden vollständig wiederhergestellt; kein gemischter Teilzustand bleibt bestehen.
+## 11. Reale Partytests
 
-## K. Statistik und Erfolge
-
-- zwei Verlaufseinträge desselben Spiels mit unterschiedlichen Runden und Punkten anlegen
-- zu niedrige alte Statistikwerte setzen
-- Verlauf öffnen
-
-Erwartet: Sessions, Runden und Bestwert werden erhöht, aber bereits höhere Werte nie reduziert.
-
-Zusätzlich negative Werte, unbekannte Spiel-ID und einen Speicherfehler bei der Reparatur testen. Erwartet: sichere Normalisierung, unbekanntes Spiel wird ignoriert und der Hub bleibt bedienbar.
-
-## L. Word Imposter
-
-- 3 und 20 Personen
-- 1 bis 6 Imposter
-- doppelte Namen, 21 Personen und 7 Imposter
-- mindestens 20 Runden zur Rollenverteilung
-- Kartenübergabe und Fokusverlust
-- Timer, Pause, Hintergrund und Neuladen
-- unschuldige Person gewählt
-- Imposter gewählt und richtig/falsch geraten
-- Gleichstand, Stichwahl und Mehr-Runden-Match
-
-Erwartet: faire Rollen, korrekte Punkte, genau ein Verlaufseintrag pro Runde und keine Sackgasse.
-
-## M. Android-Installation
-
-- aktuelles Android und Chrome
-- Installation, Icon und Start im Party Hub
-- Offline-Start aller Kernbereiche
-- Smart Party Night offline erstellen und fortsetzen
-- eigenes Pack offline
-- Update einer älteren Installation auf Cache `secret-circle-v25`
-- Party-Night-Fortschritt, aktive Session und Spieler-Snapshot nach Update
-- Vibration, Portrait und Landscape
-
-## N. iPhone-/iPad-Installation
-
-- aktuelles Safari
-- „Zum Home-Bildschirm“
-- Start im Party Hub
-- Safe Areas und Bildschirmtastatur
-- Offline-Start
-- Party Night mit 30 und 60 Minuten erstellen und fortsetzen
-- eigene Packs und komplexe Kartenübergabe
-- Update auf Cache `secret-circle-v25`
-- Party-Night-Plan und aktive Spielergruppe nach Update unverändert
-
-## O. Browser und Accessibility
-
-Auf Chrome, Firefox und Safari/WebKit:
-
-- Tastaturbedienung
-- sichtbarer Fokus
-- Party-Night-Timeline vollständig per Tastatur bedienen
-- Screenreader-Kurztest
-- 200-Prozent-Vergrößerung
-- reduzierte Bewegung
-- hoher Kontrast
-- Smartphone und Tablet
-- Portrait und Landscape
-- keine abgeschnittenen Aktionen
-- Touchflächen mindestens 44 × 44 Pixel
-
-## P. Realer Partytest
-
-Mindestens zwei Gruppen:
+### Kleine Gruppe
 
 - 3–4 Personen
+- mindestens 60 Minuten
+- Word Imposter, Standardspiel, Quick Mode und Advanced-Spiel
+
+### Große Gruppe
+
 - mindestens 8 Personen
+- mindestens 90 Minuten
+- Mafia, Schnellfeuer, Wellenlänge, Scharade und Party Night
 
-Pflichtspiele: Word Imposter, Question Imposter, Location Spy, Mafia, Scharade, Heiße Kartoffel und ein eigenes Hub-Pack.
+Dokumentieren: unklare Regeln, Wartezeiten, Kartenqualität, ungeeignete Inhalte, technische Unterbrechungen, gewünschte Wiederholungen und bevorzugte Spiele.
 
-Zusätzlich mindestens einen vollständigen Smart-Party-Night-Ablauf mit 45 oder 60 Minuten spielen.
+## Freigabekriterium
 
-Dokumentieren: Zeit bis zum Start, benötigte Erklärungen, Qualität der Reihenfolge, Übergabeprobleme, Spaß, Länge, Wiederholungswunsch, Blockaden und Fehler.
-
-## Freigaberegel
-
-`GO` nur, wenn alle automatisierten Prüfungen erfolgreich sind, Android und iOS bestanden haben, Smart Party Night real geprüft wurde, ein kleiner und ein großer Partytest dokumentiert sind, alle 18 Spiele mindestens einmal real geprüft wurden, keine kritischen oder hohen Fehler offen sind und erforderliche Betreiberinformationen vorliegen.
+Der reale Betatest beginnt erst nach grünem `npm run ci` und grünem Cross-Browser-Lauf. Ein öffentlicher Release benötigt zusätzlich erfolgreiche Android-/iOS-, Offline-Update-, Inhalts-, Gruppen- und rechtliche Prüfungen.
