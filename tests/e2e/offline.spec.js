@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('service worker caches the complete offline core including Party Night advanced games and custom packs', async ({ page, context }) => {
+test('service worker caches the complete offline core including Party Night advanced games Quick Modes and custom packs', async ({ page, context }) => {
   await page.goto('/party.html');
   await page.evaluate(async () => {
     if (!('serviceWorker' in navigator)) throw new Error('Service Worker is unavailable.');
@@ -11,17 +11,17 @@ test('service worker caches the complete offline core including Party Night adva
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v25');
+    const cache = await caches.open('secret-circle-v26');
     const expected = [
-      './index.html', './party.html', './advanced.html', './privacy.html',
-      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css',
+      './index.html', './party.html', './advanced.html', './quick-play.html', './privacy.html',
+      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
       './wake-lock.js', './app.js', './game-engine.js',
       './role-assignment.js', './word-packs.js', './data-store.js',
-      './party-catalog.js', './party-expansion.js', './party-routing.js',
-      './party-custom-packs.js', './party-hub.js', './party-hub-plus.js',
+      './party-catalog.js', './party-expansion.js', './party-trending-catalog.js', './party-routing.js',
+      './party-custom-packs.js', './party-hub.js', './party-hub-plus.js', './party-hub-polish.js',
       './party-night.js', './party-data-tools.js', './party-advanced.js',
-      './party-advanced-runner.js', './party-advanced-preferences.js',
+      './party-advanced-runner.js', './party-advanced-preferences.js', './party-quick-modes.js',
       './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
     ];
     const missing = [];
@@ -31,8 +31,8 @@ test('service worker caches the complete offline core including Party Night adva
     }
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v25');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v25']);
+  expect(cacheState.names).toContain('secret-circle-v26');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v26']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
@@ -41,7 +41,7 @@ test('service worker caches the complete offline core including Party Night adva
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Euren ganzen Partyabend planen' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('18');
+  await expect(page.locator('#playable-count')).toHaveText('28');
   await page.getByRole('button', { name: 'Daten' }).click();
   await expect(page.getByRole('heading', { name: 'Eigene Hub-Kategorien' })).toBeVisible();
   await page.goto('/');
@@ -93,6 +93,28 @@ test('advanced Question Imposter starts completely offline', async ({ page, cont
   await expect(page.locator('#advanced-play-layer')).toBeVisible();
   await page.getByRole('button', { name: 'Meine Frage anzeigen' }).click();
   await expect(page.locator('#play-content')).not.toContainText('Gerät abschirmen');
+});
+
+test('Wavelength Quick Mode starts and resumes completely offline', async ({ page, context }) => {
+  await page.goto('/party.html');
+  await page.evaluate(() => {
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+      version: 1,
+      players: ['Alex', 'Sam', 'Mika', 'Lina'],
+      favorites: [], recent: [], presets: [], history: [], stats: {}
+    }));
+  });
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.reload();
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+  await context.setOffline(true);
+  await page.goto('/quick-play.html?game=wavelength');
+  await expect(page.getByRole('heading', { name: 'Wellenlänge' })).toBeVisible();
+  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
+  await page.reload();
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await expect(page.locator('input[type="range"]')).toBeVisible();
 });
 
 test('offline mode preserves a locally saved active Imposter game', async ({ page, context }) => {
