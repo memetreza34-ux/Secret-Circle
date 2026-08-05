@@ -10,6 +10,8 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] `npm run test:e2e`
 - [ ] `npm run ci`
 - [ ] `npm run test:cross-browser`
+- [ ] alle 9 Unit-Testdateien laufen erfolgreich
+- [ ] mindestens 20 E2E-Suiten laufen erfolgreich
 - [ ] GitHub Actions führt sichtbare Schritte aus
 - [ ] GitHub Actions endet auf dem endgültigen Commit grün
 - [ ] Testausgaben und Commit-SHA sind dokumentiert
@@ -23,10 +25,37 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] 4 Roadmap-Spiele sind sichtbar und technisch gesperrt
 - [ ] Suche und alle Filter funktionieren kombiniert
 - [ ] Spielerzahl, Dauer, Kategorien und Regeln sind vor dem Start sichtbar
+- [ ] Navigation zeigt auf Desktop sechs gleichwertige Ziele
 - [ ] Navigation zwischen Hub, komplexen Spielen und Word Imposter funktioniert
 - [ ] alle 18 spielbaren Spiele wurden mindestens einmal vollständig geprüft
 
-## 3. Spieler, Presets und Einstellungen
+## 3. Smart Party Night
+
+- [ ] Planer zeigt die aktuelle gespeicherte Spielerzahl
+- [ ] Zeitbudgets 15, 30, 45, 60 und 90 Minuten erzeugen gültige Pläne
+- [ ] Stimmung „Bunter Mix“ erzeugt verschiedene Spielarten
+- [ ] jede einzelne Stimmung erzeugt passende Spiele, soweit verfügbar
+- [ ] Familienfilter enthält nur familienfreundliche Spiele
+- [ ] Gruppengröße schließt nicht spielbare Kandidaten aus
+- [ ] Utility- und reine Zufallswerkzeuge werden nicht als Hauptstation eingeplant
+- [ ] ein Plan enthält keine doppelten Spiele
+- [ ] Favoriten werden bei gleicher Eignung bevorzugt
+- [ ] zuletzt gespielte Titel werden nach Möglichkeit nicht sofort wiederholt
+- [ ] erster Schritt eignet sich als schneller Einstieg
+- [ ] Abschluss bevorzugt bei Eignung Wettkampf oder Chaos
+- [ ] jede Station zeigt Spiel, Spielart, Dauer und Empfehlungsgrund
+- [ ] „Öffnen“ öffnet die korrekten Spieldetails
+- [ ] „Als erledigt“ verschiebt den aktuellen Schritt
+- [ ] „Überspringen“ wird getrennt gezählt
+- [ ] Fortschrittsbalken stimmt mit bearbeiteten Stationen überein
+- [ ] Plan bleibt nach Neuladen und PWA-Neustart erhalten
+- [ ] Hero-Aktion wechselt von „planen“ auf „fortsetzen“
+- [ ] abgeschlossener Plan zeigt den Abschlusszustand
+- [ ] Neuplanung ersetzt den alten Plan vollständig
+- [ ] Löschen entfernt `secret-circle-party-night-v1`
+- [ ] Party-Night-Plan ist in Export, Import und Gesamtlöschung enthalten
+
+## 4. Spieler, Presets und Einstellungen
 
 - [ ] 1–20 eindeutige Hub-Spieler können gespeichert werden
 - [ ] Leerzeilen und doppelte Namen werden bereinigt
@@ -37,7 +66,7 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] simulierter Präferenz-Speicherfehler wird sichtbar gemeldet
 - [ ] aktuelle Auswahl bleibt bei Speicherfehler bis zum Neuladen nutzbar
 
-## 4. Spieler-Snapshot und komplexe Sessions
+## 5. Spieler-Snapshot und komplexe Sessions
 
 - [ ] neue Session speichert Schema Version 2
 - [ ] Session besitzt eindeutige ID
@@ -51,7 +80,7 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] 3-, 5-, 10- und 20-Runden-Sessions funktionieren
 - [ ] mehr als 20 Runden sind unmöglich
 
-## 5. Transaktionssicherer Sessionabschluss
+## 6. Transaktionssicherer Sessionabschluss
 
 - [ ] normaler Abschluss erzeugt genau einen Verlaufseintrag
 - [ ] Runden und Bestwert werden korrekt addiert
@@ -61,7 +90,7 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] erneuter erfolgreicher Versuch speichert genau einmal
 - [ ] aktiver Marker wird erst nach erfolgreicher Verlaufsspeicherung entfernt
 
-## 6. Eigene Hub-Kategorien
+## 7. Eigene Hub-Kategorien
 
 - [ ] Editor ist im Datenbereich sichtbar
 - [ ] nur kompatible Spiele sind auswählbar
@@ -76,11 +105,12 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] simulierter Schreibfehler beim Hinzufügen verändert weder Speicher noch Katalog
 - [ ] simulierter Schreibfehler beim Löschen erhält Pack und Katalog
 
-## 7. Gesamtsicherung
+## 8. Gesamtsicherung
 
-- [ ] Export enthält Hub-, Pack-, Session- und Word-Imposter-Daten
+- [ ] Export enthält Hub-, Party-Night-, Pack-, Session- und Word-Imposter-Daten
 - [ ] Dateiname und JSON-Format sind korrekt
 - [ ] gültiger Import stellt alle Bereiche wieder her
+- [ ] importierter Party-Night-Fortschritt ist weiterhin nutzbar
 - [ ] ungültiges JSON und falsches Format werden abgelehnt
 - [ ] Byte-Grenze von 1,5 MB wird anhand tatsächlicher UTF-8-Bytes geprüft
 - [ ] Mehrbyte-Datei über dem Limit wird vor Datenänderung abgelehnt
@@ -91,7 +121,7 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] simulierter Löschfehler stellt vorherige Daten wieder her
 - [ ] normale vollständige Löschung entfernt alle `secret-circle-*`-Schlüssel
 
-## 8. Statistik und Erfolge
+## 9. Statistik und Erfolge
 
 - [ ] Verlauf, Statistik und acht Erfolge werden korrekt aktualisiert
 - [ ] ältere zu niedrige Statistikwerte werden aus dem Verlauf repariert
@@ -101,7 +131,7 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] simulierter Statistik-Speicherfehler wird sichtbar gemeldet
 - [ ] Hub bleibt bei Statistik-Speicherfehler bedienbar
 
-## 9. Word Imposter
+## 10. Word Imposter
 
 - [ ] Start mit 3 und 20 Personen
 - [ ] maximal sechs Imposter
@@ -114,21 +144,23 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] Selbstwahl und doppelte Stimmen werden verhindert
 - [ ] Punkte, Rangliste, Verlauf und nächste Runde sind korrekt
 
-## 10. PWA und Offline
+## 11. PWA und Offline
 
 - [ ] Manifest heißt „Secret Circle – Party Hub“
 - [ ] `start_url` ist `./party.html`
 - [ ] `id` und `scope` sind relativ
 - [ ] Icons sind gültige 192- und 512-Pixel-PNGs
-- [ ] Cache `secret-circle-v24` enthält alle Kernressourcen
-- [ ] nur Cache `secret-circle-v24` bleibt bestehen
-- [ ] Hub, Pack-Editor, komplexe Spiele, Word Imposter und Datenschutz starten offline
+- [ ] Cache `secret-circle-v25` enthält alle Kernressourcen
+- [ ] nur Cache `secret-circle-v25` bleibt bestehen
+- [ ] `party-night.js` und `party-night.css` sind offline verfügbar
+- [ ] Hub, Party Night, Pack-Editor, komplexe Spiele, Word Imposter und Datenschutz starten offline
+- [ ] Party Night kann offline erstellt und fortgesetzt werden
 - [ ] aktive Session und Spieler-Snapshot überstehen PWA-Update
-- [ ] eigene Packs und Einstellungen überstehen PWA-Update
+- [ ] Party-Night-Plan, eigene Packs und Einstellungen überstehen PWA-Update
 - [ ] Android-Installation und Update erfolgreich
 - [ ] iPhone-/iPad-Installation und Update erfolgreich
 
-## 11. Browser, Mobile und Accessibility
+## 12. Browser, Mobile und Accessibility
 
 - [ ] Chrome Android
 - [ ] Safari iOS
@@ -138,13 +170,14 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] Bildschirmtastatur verdeckt keine wichtige Aktion
 - [ ] vollständige Tastaturbedienung
 - [ ] logischer und sichtbarer Fokus
+- [ ] Party-Night-Timeline ist per Tastatur bedienbar
 - [ ] verständliche Labels und Statusmeldungen
 - [ ] 200-Prozent-Vergrößerung
 - [ ] Screenreader-Kurztest
 - [ ] reduzierte Bewegung und ausreichender Kontrast
 - [ ] Touchflächen mindestens 44 × 44 Pixel
 
-## 12. Inhalte, Partytests und Recht
+## 13. Inhalte, Partytests und Recht
 
 - [ ] mindestens 384 Hub-Inhalte redaktionell geprüft
 - [ ] alle 168 Imposter-Begriffe geprüft
@@ -152,6 +185,7 @@ Jeder nicht bestätigte kritische Punkt blockiert den öffentlichen Release.
 - [ ] Altersstufen sind nachvollziehbar
 - [ ] Gruppe mit 3–4 Personen hat vollständigen Test durchgeführt
 - [ ] Gruppe mit mindestens 8 Personen hat vollständigen Test durchgeführt
+- [ ] mindestens ein vollständiger Smart-Party-Night-Abend wurde real gespielt
 - [ ] eigenes Hub-Pack wurde real getestet
 - [ ] mindestens eine 10-Runden-Session wurde real gespielt
 - [ ] Einrichtung wird ohne Entwicklerhilfe verstanden
