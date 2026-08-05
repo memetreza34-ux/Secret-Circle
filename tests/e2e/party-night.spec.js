@@ -89,3 +89,29 @@ test('15 minute planning produces one focused game and player count refreshes fr
   await page.getByRole('button', { name: 'Start' }).click();
   await expect(page.locator('#party-night-player-count')).toHaveText('6');
 });
+
+test('completed Hub history automatically advances the matching Party Night step', async ({ page }) => {
+  await page.locator('#party-night-duration').selectOption('30');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+  const planned = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-night-v1')));
+  const completedGameId = planned.steps[0].gameId;
+  await page.evaluate(({ completedGameId, createdAt }) => {
+    const state = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    state.history.unshift({
+      id: 'automatic-party-night-completion',
+      gameId: completedGameId,
+      title: window.SecretCirclePartyCatalog.getGame(completedGameId).title,
+      endedAt: new Date(Date.parse(createdAt) + 1000).toISOString(),
+      rounds: 1,
+      score: 0
+    });
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify(state));
+  }, { completedGameId, createdAt: planned.createdAt });
+
+  await page.reload();
+  await expect(page.locator('.party-night-step').first()).toHaveClass(/done/);
+  await expect(page.locator('#party-night-status')).toContainText('automatisch');
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-night-v1')));
+  expect(stored.steps[0].status).toBe('done');
+  expect(stored.currentIndex).toBe(1);
+});
