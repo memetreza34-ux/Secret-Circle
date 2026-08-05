@@ -6,17 +6,17 @@
 
 Ein erneut bestätigter Lauf:
 
-- Workflow-Lauf `#726`
-- Run-ID `30938065841`
-- Job-ID `92089123745`
+- Workflow-Lauf `#728`
+- Run-ID `30938240010`
+- Job-ID `92089709339`
 - Jobname `validate`
 - Ergebnis `failure`
 - leere Schrittliste
 - kein normaler Job-Log
 - selbst `actions/checkout` wurde nicht gestartet
-- Commit `47f5b4b45420fd137eba2a996e55255a499b8172`
+- Commit `ce87367c050e6547cb31fbcc485d7a249d73ea90`
 
-Zuvor wurden auch die Runs `30937503573` und `30930748182` einschließlich eines manuell erneut ausgeführten Jobs ohne einen einzigen Schritt beendet. Die Wiederholung wurde von GitHub angenommen, änderte das Verhalten aber nicht.
+Zuvor wurden auch die Runs `30938065841`, `30937503573` und `30930748182` einschließlich eines manuell erneut ausgeführten Jobs ohne einen einzigen Schritt beendet. Die Wiederholung wurde von GitHub angenommen, änderte das Verhalten aber nicht.
 
 Das unterscheidet sich von einem Syntax-, Unit-, Validator- oder Playwright-Fehler. Bei einem Repositoryfehler wäre mindestens der betroffene Workflow-Schritt mit Log sichtbar.
 
@@ -33,17 +33,19 @@ Das unterscheidet sich von einem Syntax-, Unit-, Validator- oder Playwright-Fehl
 Die Workflow-Konfiguration verlangt:
 
 - Syntaxprüfung aller Produktionsmodule
-- 8 Unit-Testdateien
+- 9 Unit-Testdateien
 - Strukturvalidator
 - Performancebudget
 - Release-Audit
-- mindestens 19 Playwright-E2E-Suiten
+- mindestens 20 Playwright-E2E-Suiten
 - Cross-Browser-Lauf für Chromium, Firefox und WebKit
 
-Der aktuelle Offline-Core ist `secret-circle-v24`. Zusätzlich geprüft werden sollen:
+Der aktuelle Offline-Core ist `secret-circle-v25`. Zusätzlich geprüft werden sollen:
 
 - 18 spielbare Spiele und 4 gesperrte Roadmap-Spiele
-- Eigene Hub-Packs mit transaktionssicherem Speichern und Löschen
+- Smart Party Night mit Zeit-, Stimmungs-, Alters- und Gruppenfilter
+- Party-Night-Fortschritt, Wiederaufnahme und Offline-Betrieb
+- eigene Hub-Packs mit transaktionssicherem Speichern und Löschen
 - aktive Session Version 2 und Spieler-Snapshot
 - transaktionssicherer Sessionabschluss
 - tatsächliche UTF-8-Byte-Grenze für Sicherungen
@@ -91,9 +93,9 @@ Verwendete offizielle Actions:
 Hilfreiche Angaben für Support:
 
 - Repository: `memetreza34-ux/Secret-Circle`
-- bestätigter Workflow-Run: `30938065841`
-- bestätigter Job: `92089123745`
-- weiterer Run: `30937503573`, Job `92087237250`
+- bestätigter Workflow-Run: `30938240010`
+- bestätigter Job: `92089709339`
+- weitere Runs: `30938065841` und `30937503573`
 - ältere Wiederholung: Run `30930748182`, Jobs `92064498410` und `92077185391`
 - alle genannten Jobs ohne Schritte und Logs
 
@@ -126,14 +128,17 @@ Der Lauf muss unter anderem bestätigen:
 - Engine und Speicher Version 7
 - faire Rollenverteilung und maximal sechs Imposter
 - 22 Katalogeinträge, 18 spielbar und 4 geplant
-- Eigene Hub-Packs mit Unicode-Normalisierung und Rollback
+- Smart Party Night erzeugt eindeutige, passende und speicherbare Abläufe
+- Party Night berücksichtigt Gruppengröße und Altersstufe
+- Party-Night-Fortschritt übersteht Neuladen und Offline-Modus
+- eigene Hub-Packs besitzen Unicode-Normalisierung und Rollback
 - Spieler-Snapshot in komplexen Sessions
 - aktive Session bleibt bei fehlgeschlagener Verlaufsspeicherung erhalten
 - Mehrbyte-Datei über 1,5 MB wird anhand tatsächlicher Bytes abgelehnt
 - Import- und Löschfehler stellen alte Daten wieder her
 - Präferenz- und Statistikfehler bleiben beherrschbar
-- Cache `secret-circle-v24` ist vollständig und exklusiv
-- Hub, komplexe Spiele, Word Imposter und Datenschutz starten offline
+- Cache `secret-circle-v25` ist vollständig und exklusiv
+- Hub, Party Night, komplexe Spiele, Word Imposter und Datenschutz starten offline
 
 ## Tracking
 
