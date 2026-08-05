@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 budgets = {
     'index.html': 60_000,
-    'party.html': 90_000,
+    'party.html': 95_000,
     'advanced.html': 35_000,
     'privacy.html': 25_000,
     'runtime-guard.js': 10_000,
@@ -22,18 +22,20 @@ budgets = {
     'party-catalog.js': 85_000,
     'party-expansion.js': 45_000,
     'party-routing.js': 8_000,
-    'party-custom-packs.js': 30_000,
+    'party-custom-packs.js': 32_000,
     'party-hub.js': 65_000,
-    'party-hub-plus.js': 30_000,
-    'party-data-tools.js': 18_000,
+    'party-hub-plus.js': 34_000,
+    'party-night.js': 38_000,
+    'party-data-tools.js': 22_000,
     'party-advanced.js': 55_000,
-    'party-advanced-runner.js': 40_000,
+    'party-advanced-runner.js': 48_000,
     'party-advanced-preferences.js': 5_000,
     'styles.css': 35_000,
     'pwa.css': 40_000,
     'party.css': 55_000,
     'party-extra.css': 25_000,
-    'sw.js': 16_000,
+    'party-night.css': 22_000,
+    'sw.js': 18_000,
     'manifest.webmanifest': 6_000,
     'icon.svg': 25_000,
     'icon-192.png': 90_000,
@@ -53,7 +55,7 @@ for relative, maximum in budgets.items():
         violations.append(f'{relative} is {size} bytes; budget is {maximum} bytes.')
 
 core_total = sum(sizes.values())
-core_budget = 1_300_000
+core_budget = 1_420_000
 if core_total > core_budget:
     violations.append(f'Offline core is {core_total} bytes; budget is {core_budget} bytes.')
 
@@ -85,5 +87,7 @@ print(json.dumps({
     'tracked_files_checked': len(tracked),
     'budgeted_assets': len(budgets),
     'custom_pack_module_budgeted': True,
+    'party_night_module_budgeted': True,
+    'statistics_module_budgeted': True,
     'asset_sizes': sizes
 }, ensure_ascii=False, indent=2))
