@@ -23,7 +23,7 @@ Falls keine private Meldefunktion verfügbar ist, muss vor öffentlichem Release
 - Gerät, Betriebssystem und Browser
 - installierte PWA oder Browser-Tab
 - Online- oder Offline-Zustand
-- betroffene lokale Daten oder Sicherungsdatei
+- betroffene lokale Daten, Party-Night-Plan oder Sicherungsdatei
 - minimale reproduzierbare Schritte
 - Screenshot oder Video ohne fremde geheime Spielinhalte
 - mögliche Auswirkungen: Datenverlust, Rollenenthüllung, Skriptausführung, unbemerkte Datenmischung oder Spielblockade
@@ -35,7 +35,7 @@ Secret Circle ist eine statische lokale Pass-and-Play-PWA:
 - kein Benutzerkonto,
 - keine eigene Server-API,
 - keine Analyse-, Werbe- oder Tracking-Dienste,
-- Spieldaten im lokalen Browser-Speicher,
+- Spieldaten und Party-Night-Pläne im lokalen Browser-Speicher,
 - Sicherungsexport und -import ausschließlich lokal,
 - restriktive Content Security Policy,
 - dynamische Namen, Kategorien, Packtexte und Ergebnisse werden als Text ausgegeben,
@@ -43,6 +43,17 @@ Secret Circle ist eine statische lokale Pass-and-Play-PWA:
 - Service Worker verarbeitet nur GET-Anfragen derselben Origin.
 
 ## Schutz lokaler Transaktionen
+
+### Party Night
+
+- ein Plan enthält ausschließlich bekannte spielbare Katalog-IDs,
+- doppelte und unbekannte Spiel-IDs werden beim Laden verworfen,
+- Planlänge ist auf sechs Stationen begrenzt,
+- Statuswerte werden auf `pending`, `done` oder `skipped` begrenzt,
+- Gruppengröße, Zeitbudget, Stimmung und Altersstufe werden normalisiert,
+- defekte oder nicht unterstützte Pläne werden nicht ausgeführt,
+- Speicherfehler werden abgefangen und als Statusmeldung ausgegeben,
+- Plantexte erzeugen keine HTML- oder Skriptausführung.
 
 ### Komplexe Sessions
 
@@ -71,7 +82,7 @@ Diese Maßnahmen reduzieren unbeabsichtigten lokalen Datenverlust. Sie ersetzen 
 ## Nicht als Sicherheitslücke eingestuft
 
 - Personen derselben Runde besitzen physischen Zugriff auf dasselbe Gerät.
-- Nutzer können ihre eigenen Browserdaten oder Sicherungsdateien verändern.
+- Nutzer können ihre eigenen Browserdaten, Party-Night-Pläne oder Sicherungsdateien verändern.
 - Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck entfernen.
 - eine absichtlich weitergegebene Sicherungsdatei enthält lokale Namen und Spielinformationen im Klartext.
 - das Spiel kann absichtliches Beobachten des Bildschirms nicht verhindern.
@@ -84,6 +95,8 @@ Manipulierte lokale Daten dürfen jedoch keine Skriptausführung, fremde Netzwer
 Vor einer Sicherheitsfreigabe müssen mindestens bestehen:
 
 - HTML-/Skripttexte in Namen, Imposter-Kategorien und eigenen Hub-Packs,
+- beschädigter Party-Night-Plan mit unbekannten oder doppelten Spiel-IDs,
+- ungültige Party-Night-Konfiguration und Speicherfehler,
 - ungültige und übergroße Sicherungsdatei,
 - Mehrbyte-Datei über der Byte-Grenze,
 - simulierter Fehler während Import und Löschung,
