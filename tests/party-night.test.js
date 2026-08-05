@@ -1,0 +1,90 @@
+'use strict';
+const assert = require('node:assert/strict');
+const catalog = require('../party-routing.js');
+const planner = require('../party-night.js');
+
+assert.equal(planner.version, 1);
+assert.equal(planner.storageKey, 'secret-circle-party-night-v1');
+assert.deepEqual(planner.normalizeConfig({ players: 99, duration: 31, mood: 'invalid', ageLevel: 'invalid' }), {
+  players: 20,
+  duration: 45,
+  mood: 'all',
+  ageLevel: 'all'
+});
+
+const familyGames = planner.eligibleGames({ players: 4, duration: 45, mood: 'funny', ageLevel: 'family' });
+assert.ok(familyGames.length >= 3);
+assert.ok(familyGames.every(game => game.status === 'playable'));
+assert.ok(familyGames.every(game => game.age === 'all'));
+assert.ok(familyGames.every(game => game.minPlayers <= 4 && game.maxPlayers >= 4));
+assert.ok(familyGames.every(game => !['utility', 'random-player'].includes(game.mode)));
+
+const plan = planner.buildPlan({ players: 4, duration: 45, mood: 'funny', ageLevel: 'all' }, {
+  favorites: ['charades'],
+  recent: ['truth-dare']
+}, () => 0);
+assert.ok(plan);
+assert.equal(plan.version, 1);
+assert.equal(plan.config.players, 4);
+assert.equal(plan.config.duration, 45);
+assert.equal(plan.steps.length, 3);
+assert.equal(new Set(plan.steps.map(step => step.gameId)).size, plan.steps.length);
+assert.ok(plan.steps.every(step => catalog.getGame(step.gameId)?.status === 'playable'));
+assert.ok(plan.steps.every(step => step.status === 'pending'));
+assert.equal(plan.currentIndex, 0);
+assert.ok(plan.estimatedMinutes >= 30);
+
+const firstId = plan.steps[0].gameId;
+const secondId = plan.steps[1].gameId;
+const progressed = planner.updateStep(plan, firstId, 'done');
+assert.equal(progressed.steps[0].status, 'done');
+assert.equal(progressed.currentIndex, 1);
+const skipped = planner.updateStep(progressed, secondId, 'skipped');
+assert.equal(skipped.steps[1].status, 'skipped');
+assert.equal(skipped.currentIndex, 2);
+const completed = planner.updateStep(skipped, skipped.steps[2].gameId, 'done');
+assert.equal(completed.currentIndex, completed.steps.length);
+
+const normalized = planner.normalizePlan({
+  ...completed,
+  steps: [
+    ...completed.steps,
+    { gameId: completed.steps[0].gameId, status: 'pending' },
+    { gameId: 'unknown-game', status: 'done' }
+  ]
+});
+assert.equal(normalized.steps.length, completed.steps.length);
+assert.equal(normalized.currentIndex, normalized.steps.length);
+assert.equal(planner.normalizePlan({ version: 1, steps: [] }), null);
+
+const memory = new Map();
+const storage = {
+  getItem: key => memory.has(key) ? memory.get(key) : null,
+  setItem: (key, value) => memory.set(key, value),
+  removeItem: key => memory.delete(key)
+};
+const store = planner.createStore(storage);
+assert.equal(store.load(), null);
+assert.equal(store.save(plan).ok, true);
+assert.deepEqual(store.load().steps.map(step => step.gameId), plan.steps.map(step => step.gameId));
+assert.equal(store.clear().ok, true);
+assert.equal(store.load(), null);
+
+const failingStore = planner.createStore({
+  getItem: () => null,
+  setItem: () => { throw new Error('quota'); },
+  removeItem: () => { throw new Error('locked'); }
+});
+assert.equal(failingStore.save(plan).ok, false);
+assert.equal(failingStore.clear().ok, false);
+
+console.log(JSON.stringify({
+  ok: true,
+  partyNightVersion: planner.version,
+  eligibleFamilyGames: familyGames.length,
+  generatedSteps: plan.steps.length,
+  uniqueGames: true,
+  ageAndGroupFiltering: true,
+  persistentProgress: true,
+  storageFailuresHandled: true
+}, null, 2));
