@@ -1,13 +1,13 @@
 # Secret Circle Party Hub – Release-Status
 
-Stand: 5. August 2026 · Version `1.0.0-beta.3` · Branch `codex/party-hub-foundation` · Draft-PR #11
+Stand: 5. August 2026 · `1.0.0-beta.3` · Branch `codex/party-hub-foundation` · Draft-PR #11
 
 ## Kernzahlen
 
 - 28 technisch spielbare Spiele
 - 10 Quick Modes
 - 4 Advanced-Spiele
-- 122 Modi im langfristigen Universum
+- 122 Modi im Gesamtuniversum
 - Offline-Core `secret-circle-v26`
 - mindestens 10 Unit-Testdateien
 - mindestens 23 E2E-Suiten
@@ -35,16 +35,6 @@ Stand: 5. August 2026 · Version `1.0.0-beta.3` · Branch `codex/party-hub-found
 
 Die Werte bewerten Implementierung und Vorbereitung, nicht bestandene Tests.
 
-## Neu
-
-- zehn Quick Modes mit gemeinsamer wiederaufnehmbarer Engine
-- Wellenlänge, Zeichnen, Schnellfeuer, Geräusche, Stirn-Raten, Buchstaben-Kategorien, Nicht lachen, Summen, Gegenstandsjagd und Caption Battle
-- 3, 5, 10 oder 20 Runden
-- Spieler-Snapshot, Punkte, Verlauf und Statistik
-- Korruptions-, Security-, Tastatur-, Touch-, Overflow- und Reduced-Motion-Prüfungen
-- v26 Offline-Core
-- 28 aktuelle plus 94 zukünftige Modi
-
 ## Blocker
 
 1. `npm run ci` noch nicht erfolgreich protokolliert.
@@ -68,6 +58,6 @@ npm run test:cross-browser
 ## Entscheidung
 
 - automatisierter Gesamttest: `GO`
-- realer Geräte-/Party-Betatest: `NO_GO` bis grüne automatisierte Läufe
+- realer Geräte-/Party-Betatest: `NO_GO` bis grüne Läufe
 - Merge von PR #11: `NO_GO` bis grüne Kernprüfungen
 - öffentlicher Release: `NO_GO`
