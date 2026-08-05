@@ -11,6 +11,18 @@ Diese Punkte sind bewusst dokumentierte Grenzen des aktuellen Party-Hub-Beta-Sta
 - Daten werden ausschließlich im Browser-Speicher des jeweiligen Geräts gespeichert.
 - Gelöschte Daten können nur aus einer vorher exportierten Sicherung wiederhergestellt werden.
 
+## Smart Party Night
+
+- Party Night erzeugt lokale Empfehlungen anhand von Metadaten wie Spielerzahl, Dauer, Stimmung, Altersstufe, Favoriten und zuletzt gespielt.
+- Der Planer besitzt keine servergestützte KI und lernt nicht geräteübergreifend aus Nutzerverhalten.
+- Empfehlungsgründe sind heuristisch und keine Garantie, dass die konkrete Gruppe jedes vorgeschlagene Spiel mag.
+- Zeitbudgets sind Näherungen; tatsächliche Diskussionen, Erklärungen und Pausen können den Abend verlängern.
+- Ein Plan enthält höchstens sechs Hauptspiele und plant Utility- oder reine Zufallswerkzeuge nicht als Hauptstation ein.
+- Erledigt und übersprungen werden manuell markiert. Der Planer erkennt nicht automatisch, wann ein verlinktes Spiel beendet wurde.
+- Es wird nur ein Party-Night-Plan gleichzeitig unter `secret-circle-party-night-v1` gespeichert.
+- Wird ein geplantes Spiel in einer späteren App-Version entfernt oder gesperrt, wird dieser Eintrag beim Laden verworfen.
+- Party-Night-Fortschritt ist lokal, unverschlüsselt und wird nicht zwischen Geräten synchronisiert.
+
 ## Spiele
 
 - 18 Spiele sind technisch spielbar, aber noch nicht vollständig mit echten Gruppen und Geräten geprüft.
@@ -42,7 +54,7 @@ Diese Punkte sind bewusst dokumentierte Grenzen des aktuellen Party-Hub-Beta-Sta
 ## Gesamtsicherung
 
 - Die Gesamtsicherung ist eine unverschlüsselte JSON-Datei.
-- Wer sie erhält, kann gespeicherte Namen, Verläufe, Sessions und eigene Karten lesen.
+- Wer sie erhält, kann gespeicherte Namen, Party-Night-Pläne, Verläufe, Sessions und eigene Karten lesen.
 - die maximale Größe beträgt 1,5 MB tatsächliche UTF-8-Bytes.
 - einzelne Werte sind ebenfalls begrenzt.
 - es werden höchstens 100 lokale Datensätze importiert.
@@ -67,19 +79,19 @@ Diese Punkte sind bewusst dokumentierte Grenzen des aktuellen Party-Hub-Beta-Sta
 
 ## Installation und Offline-Betrieb
 
-- Die App muss einmal vollständig online geladen werden, bevor Cache `secret-circle-v24` alle Kernressourcen offline bereitstellt.
+- Die App muss einmal vollständig online geladen werden, bevor Cache `secret-circle-v25` alle Kernressourcen offline bereitstellt.
 - Service Worker und Installation funktionieren nur über HTTPS oder `localhost`.
 - auf iPhone und iPad erfolgt die Installation über „Zum Home-Bildschirm“.
 - Browser und Betriebssystem können lokalen Speicher bei Speicherdruck entfernen.
 - Hintergrundbenachrichtigungen, Systemwecker und Push-Nachrichten sind nicht Bestandteil der Beta.
-- der Update-Pfad auf `secret-circle-v24` ist automatisiert vorbereitet, aber noch nicht auf realen Geräten bestätigt.
+- der Update-Pfad auf `secret-circle-v25` ist automatisiert vorbereitet, aber noch nicht auf realen Geräten bestätigt.
 
 ## Geräte und Browser
 
 - Playwright simuliert Chromium, Firefox, WebKit, Android und iPhone, ersetzt aber keine realen Geräteprüfungen.
 - Safari, Rotation, Sperrbildschirm, Energiesparmodus und Bildschirmtastatur müssen manuell geprüft werden.
 - Vibration und Wake Lock sind nur verfügbar, wenn Browser und Gerät die API unterstützen.
-- Mafia und lange Gruppenrunden können auf kleinen Displays zusätzliches Scrollen erfordern.
+- Mafia, Party Night und lange Gruppenrunden können auf kleinen Displays zusätzliches Scrollen erfordern.
 
 ## Datenschutz und Veröffentlichung
 
@@ -87,7 +99,7 @@ Diese Punkte sind bewusst dokumentierte Grenzen des aktuellen Party-Hub-Beta-Sta
 - statische App-Dateien werden beim ersten Laden und bei Updates vom Hosting-Anbieter abgerufen.
 - GitHub Actions muss auf dem endgültigen Commit echte Schritte ausführen und grün enden.
 - vollständige lokale Unit-, Validator-, E2E- und Cross-Browser-Läufe müssen dokumentiert werden.
-- reale Android-, iPhone-/iPad-, PWA-Update- und Partytests fehlen noch.
+- reale Android-, iPhone-/iPad-, PWA-Update-, Party-Night- und Partytests fehlen noch.
 - vor öffentlicher oder kommerzieller Veröffentlichung müssen Verantwortlicher, Kontakt, Hosting-Anbieter und gegebenenfalls Impressum ergänzt werden.
 
 Die verbindlichen Freigabekriterien stehen in `RELEASE_CHECKLIST.md`.
