@@ -5,23 +5,24 @@ test.beforeEach(async ({ page }) => {
   await page.evaluate(() => {
     localStorage.removeItem('secret-circle-party-hub-v1');
     localStorage.removeItem('secret-circle-party-preferences-v1');
+    localStorage.removeItem('secret-circle-party-quick-active-v1');
   });
   await page.reload();
 });
 
-test('party hub exposes a clear playable catalog and roadmap', async ({ page }) => {
+test('party hub exposes a clear 28-game playable catalog', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('18');
-  await expect(page.locator('#planned-count')).toHaveText('4');
+  await expect(page.locator('#playable-count')).toHaveText('28');
+  await expect(page.locator('#planned-count')).toHaveText('0');
   await expect(page.locator('#content-count')).not.toHaveText('0');
 
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await expect(page.getByRole('heading', { name: 'Alle Spiele' })).toBeVisible();
-  await expect(page.locator('#result-count')).toHaveText('22');
-  await expect(page.locator('.game-card')).toHaveCount(22);
+  await expect(page.locator('#result-count')).toHaveText('28');
+  await expect(page.locator('.game-card')).toHaveCount(28);
 
   await page.locator('#status-filter').selectOption('playable');
-  await expect(page.locator('#result-count')).toHaveText('18');
+  await expect(page.locator('#result-count')).toHaveText('28');
   await page.locator('#game-search').fill('Scharade');
   await expect(page.locator('#result-count')).toHaveText('1');
   await expect(page.getByRole('heading', { name: 'Scharade' })).toBeVisible();
@@ -96,22 +97,30 @@ test('shared players, presets and favorites persist locally', async ({ page }) =
   await expect(page.locator('#favorites-grid')).toContainText('Hot Takes');
 });
 
-test('advanced games are playable and remaining roadmap games stay blocked', async ({ page }) => {
+test('advanced and trending Quick Modes are both playable', async ({ page }) => {
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await page.locator('#game-search').fill('Mafia');
   await page.locator('[data-open-game="mafia"]').click();
   await expect(page.locator('#detail-badges')).toContainText('Jetzt spielbar');
-  await page.getByRole('button', { name: 'Mafia öffnen' }).click();
+  await page.getByRole('button', { name: 'Erweitertes Spiel öffnen' }).click();
   await expect(page).toHaveURL(/advanced\.html\?game=mafia/);
 
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await page.locator('#status-filter').selectOption('planned');
-  await expect(page.locator('#result-count')).toHaveText('4');
+  await page.locator('#game-search').fill('Wellenlänge');
   await page.locator('[data-open-game="wavelength"]').click();
   await expect(page.locator('#detail-title')).toHaveText('Wellenlänge');
-  await expect(page.getByRole('button', { name: 'Noch nicht spielbar' })).toBeDisabled();
-  await expect(page.locator('#detail-badges')).toContainText('In Entwicklung');
+  await expect(page.locator('#detail-badges')).toContainText('Jetzt spielbar');
+  await page.getByRole('button', { name: 'Quick Mode öffnen' }).click();
+  await expect(page).toHaveURL(/quick-play\.html\?game=wavelength/);
+  await expect(page.getByRole('heading', { name: 'Wellenlänge' })).toBeVisible();
+});
+
+test('planned catalog filter is empty because all visible games are playable', async ({ page }) => {
+  await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
+  await page.locator('#status-filter').selectOption('planned');
+  await expect(page.locator('#result-count')).toHaveText('0');
+  await expect(page.locator('#game-grid')).toContainText('Keine Spiele passen zu diesen Filtern.');
 });
 
 test('party hub links back to the production word imposter flow', async ({ page }) => {
