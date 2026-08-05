@@ -3,129 +3,68 @@
 Stand: 5. August 2026  
 Version: `1.0.0-beta.3`  
 Branch: `codex/party-hub-foundation`  
-Draft-PR: `#11`
+Draft-PR: `#11`  
+Planung: Issue `#10`
 
-## Bewertung
+## Gesamtbewertung
 
-| Bereich | Fortschritt | Status |
+| Bereich | Stand | Bewertung |
 |---|---:|---|
-| Word Imposter | 98 % | Kernspiel vollständig für den Testlauf vorbereitet |
-| Party-Hub-Struktur | 98 % | Navigation, Katalog, Filter, Spieler, Presets, Favoriten, Verlauf und Daten vorhanden |
-| Smart Party Night | 95 % | Planung, lokaler Fortschritt und automatische Erkennung abgeschlossener Spiele vorhanden; reale Ablaufprüfung fehlt |
-| 18 spielbare Spiele | 91 % | technisch umgesetzt, reale Balance- und Verständlichkeitstests fehlen |
-| Vier komplexe Spiele | 88 % | vollständige lokale Abläufe und sichere Wiederaufnahme vorhanden |
-| Eigene Hub-Packs | 96 % | Editor, Normalisierung, transaktionssicheres Speichern/Löschen, Backup und Spielintegration vorhanden |
-| Speicherung und Datenschutz | 98 % | byte-sichere Gesamtsicherung, Import-/Lösch-Rollback und transaktionssicherer Sessionabschluss |
-| PWA und Offline | 97 % | vollständiger Core `secret-circle-v25`, echter Geräte-Update-Test fehlt |
-| Accessibility und Mobile | 92 % | Party-Night-Tastatur-, Touch-, Overflow- und Reduced-Motion-Tests ergänzt |
-| Automatisierte Testabdeckung | 98 % | 9 Unit-Dateien, mindestens 21 E2E-Suiten und 5 Browser-/Geräteprojekte vorbereitet |
-| Langfristige Wartbarkeit | 94 % | versionierte Module, Architekturvertrag, Performancebudgets und Rollbackregeln vorhanden |
-| Reale Geräte- und Partytests | 20 % | noch nicht erfolgreich dokumentiert |
-| Rechtliche Produktionsfreigabe | 45 % | Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
+| Word Imposter | 98 % | vollständiger Kernablauf mit Rollen, Timer, Abstimmung, Punkten, Speicherung und Offline-PWA |
+| Party-Hub-Struktur | 98 % | Start, Katalog, Suche, Filter, Details, Spieler, Presets, Favoriten, Verlauf, Daten und Installation vorhanden |
+| Spielbarer Katalog | 93 % | 28 Spiele technisch spielbar; reale Balance-, Verständlichkeits- und Langzeittests fehlen |
+| Quick-Mode-Engine | 92 % | zehn wiederaufnehmbare Modi mit Punkten, Verlauf, Offline-Betrieb und eigenen Inhalten |
+| Advanced-Spiele | 88 % | Zwei Wahrheiten, Question Imposter, Location Spy und Mafia vollständig als lokale Abläufe implementiert |
+| Inhalte und Kategorien | 87 % | bestehende Hub-Inhalte, neue Quick-Packs, 168 Imposter-Begriffe und Nutzerpacks; redaktionelle Prüfung nötig |
+| Eigene Hub-Packs | 96 % | Editor, Validierung, Katalogintegration, Export, Import und Löschung vorhanden |
+| Speicherung und Datensicherung | 98 % | Hub, Party Night, Quick- und Advanced-Sessions, Backup, Rollback und Löschung vorhanden |
+| PWA und Offline | 97 % | vollständiger Offline-Core `secret-circle-v26`; echter Update-Test fehlt |
+| Accessibility und Mobile | 93 % | Safe Areas, Tastatur, Touch-, Overflow- und Reduced-Motion-Gates; reale Assistive-Technik-Tests fehlen |
+| Automatisierte Vorbereitung | 99 % | mindestens zehn Unit-Dateien, mindestens 23 E2E-Suiten und fünf Browser-/Geräteprojekte vorbereitet |
+| Langfristige Architektur | 96 % | Architekturvertrag, Größenbudgets und 122-Modi-Universum vorhanden |
+| Reale Geräte- und Gruppentests | 20 % | noch nicht dokumentiert auf echten Geräten und mit echten Gruppen durchgeführt |
+| Öffentliche rechtliche Freigabe | 45 % | Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
 
-## Gewichteter Gesamtstand
+## Gewichteter Fortschritt
 
 - **Word-Imposter-Modul:** etwa **98 %**
 - **Party-Hub-Grundlage:** etwa **98 %**
-- **Smart Party Night:** etwa **95 %**
-- **18 Spiele als technische Beta:** etwa **91 %**
-- **Gesamte gewünschte Party-Hub-Vision:** etwa **89 %**
-- **Bereit für den vollständigen automatisierten Testlauf:** etwa **99 %**
+- **28 spielbare Spiele als technische Beta:** etwa **93 %**
+- **Gesamte 122-Modi-Vision:** etwa **34 % funktional umgesetzt**
+- **Bereit für den vollständigen lokalen automatisierten Testlauf:** etwa **99 %**
 - **Bereit für reale Android-/iOS- und Partytests:** etwa **94 %**
-- **Bereit für öffentlichen Produktionsrelease:** etwa **82 %**
+- **Bereit für einen öffentlichen Produktionsrelease:** etwa **83 %**
 
-Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie sind kein Nachweis für erfolgreich ausgeführte Tests.
+Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie sind kein Nachweis für Fehlerfreiheit und ersetzen keine tatsächlich bestandenen Tests.
 
 ## Neu abgeschlossen
 
-### Smart Party Night
-
-- lokaler Planer Version 1
-- Zeitbudget mit 15, 30, 45, 60 oder 90 Minuten
-- Stimmungen: gemischt, lustig, Wettkampf, tiefer, Chaos, clever und locker
-- Gruppengröße und Altersstufe werden berücksichtigt
-- Favoriten erhalten einen Empfehlungsbonus
-- zuletzt gespielte Titel werden nach Möglichkeit vermieden
-- verschiedene Spielgruppen werden bevorzugt kombiniert
-- 15 Minuten erzeugt einen fokussierten Ein-Spiel-Plan
-- längere Abende enthalten bis zu sechs eindeutige Hauptspiele
-- stabile, vorab berechnete Zufallsgewichtung vermeidet widersprüchliche Sortierung
-- jede Station besitzt Begründung, Dauer, Öffnen-, Erledigt- und Überspringen-Aktion
-- Fortschritt bleibt über Neuladen und App-Neustart erhalten
-- abgeschlossene Hub-Spiele werden anhand des Verlaufs automatisch als erledigt markiert
-- abgeschlossene Word-Imposter-Runden können den Imposter-Schritt automatisch erfüllen
-- Plan kann fortgesetzt, neu erstellt oder nach Bestätigung gelöscht werden
-- Party-Night-Daten werden automatisch gesichert und vollständig gelöscht
-
-### Design und Accessibility
-
-- sechs Navigationspunkte werden auf großen Bildschirmen korrekt als sechs Spalten dargestellt
-- responsive Party-Night-Timeline
-- klarer aktueller Schritt mit `aria-current="step"`
-- sichtbare erledigte und übersprungene Zustände
-- Fortschrittsbalken
-- mobile Einspaltensteuerung
-- mindestens 44 × 44 Pixel große Planner-Touchziele
-- Tastatur-, Mobile-, Overflow- und Reduced-Motion-E2E-Suite
-- stärkere Fokuszustände für Karten und interaktive Zeilen
-
-### Langfristige Architektur
-
-- neues `ARCHITECTURE.md` als Zehn-Jahres-Vertrag
-- stabile Spiel- und Speicher-IDs
-- versionierte Datenschemata und Migrationsregeln
-- reine Logik getrennt von DOM-Orchestrierung
-- lokale Transaktions- und Rollbackregeln
-- Offline-, Accessibility-, Datenschutz- und Performanceverträge
-- klare Erweiterungspunkte für Lokalisierung, Sounds, strukturierte Editoren, Teams und optionalen Online-Modus
-
-### Transaktionssichere Datensicherung
-
-- Datenwerkzeug Version 2
-- tatsächliche UTF-8-Byte-Grenze von 1,5 MB
-- Mehrbyte-Dateien können das Größenlimit nicht über die Zeichenanzahl umgehen
-- Import und vollständige Löschung besitzen Rollback
-- fehlgeschlagener Rollback wird deutlich gemeldet
-
-### Eigene Hub-Packs
-
-- NFKC-Normalisierung für Unicode-Texte
-- doppelte Karten, Packnamen und Pack-IDs werden bereinigt
-- Speichern und Löschen verändern den Katalog erst nach erfolgreichem Speichervorgang
-- fehlgeschlagene Vorgänge stellen Speicher und Katalog wieder her
-
-### Sichere erweiterte Sessions
-
-- aktives Session-Schema Version 2
-- unveränderlicher Spieler-Snapshot
-- eindeutige Session- und Historien-IDs
-- transaktionssicherer Sessionabschluss
-- bei einem Speicherfehler bleibt die Session wiederherstellbar
-
-### Qualität und Offline
-
-- Offline-Core `secret-circle-v25`
-- Unit-Test für Planung, Filterung, stabile Rangfolge, automatische Verlaufssynchronisierung und Speicherfehler
-- E2E-Suiten für Planerstellung, Spielöffnung, Familienfilter, Abschluss, Löschung, Wiederaufnahme und automatische Fortschrittsübernahme
-- Offline-Test erstellt einen Party-Night-Plan ohne Netzwerk
-- Runtime-Test prüft Planner-JavaScript und Planner-CSS im Cache
-- Cross-Browser-Smoke-Test erzeugt einen Party-Night-Plan
-- Validator, Release-Audit und Performancebudget prüfen die neuen Module
+- Katalog von 22 auf **28 technisch spielbare Spiele** erweitert
+- Wellenlänge, Zeichnen & Raten, Schnellfeuer und Geräusche erraten freigeschaltet
+- Stirn-Raten, Buchstaben-Kategorien, Nicht lachen!, Melodie summen, Gegenstandsjagd und Caption Battle ergänzt
+- gemeinsame Quick-Mode-Seite und wiederaufnehmbare Quick-Session-Engine
+- 3, 5, 10 oder 20 Runden
+- Spieler-Snapshot, Punkte, Rangliste, Verlauf und Statistik
+- ursprüngliche Inhalte für alle zehn Quick Modes
+- korrupte Quick-Sessions werden verworfen
+- Sicherheitsprüfung für manipulierte Spielernamen
+- Tastatur-, Touch-, Overflow- und Reduced-Motion-Tests
+- Offline-Core auf `secret-circle-v26` aktualisiert
+- 122-Modi-Universum auf 28 spielbare und 94 zukünftige Modi synchronisiert
+- genaue Schaltflächen für Quick-, Advanced- und Imposter-Spiele
+- Architektur-, Struktur-, Release- und Performance-Gates erweitert
 
 ## Aktuelle Blocker
 
-1. `npm run ci` wurde auf dem endgültigen Stand noch nicht erfolgreich protokolliert.
+1. `npm run ci` wurde auf dem endgültigen v26-Stand noch nicht erfolgreich protokolliert.
 2. `npm run test:cross-browser` wurde noch nicht erfolgreich protokolliert.
-3. GitHub Actions endet weiterhin vor `actions/checkout` mit leerer Schrittliste.
-4. Android- und iPhone-/iPad-Installation fehlen als reale Tests.
-5. Update einer älteren PWA auf `secret-circle-v25` fehlt.
-6. Smart Party Night muss mit 15, 30, 45, 60 und 90 Minuten real geprüft werden.
-7. automatische Fortschrittsübernahme muss mit einfachen, komplexen und Word-Imposter-Spielen real geprüft werden.
-8. kleiner Partytest mit 3–4 Personen fehlt.
-9. großer Partytest mit mindestens 8 Personen fehlt.
-10. alle 18 Spiele und mindestens ein eigenes Pack müssen real geprüft werden.
-11. redaktionelle Inhalts- und Altersprüfung fehlt.
-12. öffentliche rechtliche Angaben fehlen.
+3. GitHub Actions muss echte Schritte ausführen und grün enden; Issue #7 verfolgt den externen Runner-Blocker.
+4. reale Android-, iPhone-/iPad- und PWA-Update-Tests fehlen.
+5. kleiner und großer Partytest fehlen.
+6. alle 28 Spiele müssen mindestens einmal real geprüft werden.
+7. Quick Modes müssen mit 3, 5, 10 und 20 Runden praktisch geprüft werden.
+8. redaktionelle Inhalts- und Altersprüfung fehlt.
+9. öffentliche Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen.
 
 ## Erforderliche Testbefehle
 
@@ -138,27 +77,25 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-## Freigabeentscheidung
+## Freigabestatus
 
-- Weiterentwicklung: `GO`
-- vollständiger lokaler automatisierter Testlauf: `GO`
-- kontrollierter Entwickler-Browsertest: `GO_WITH_CONDITIONS`
-- realer Geräte- und Party-Betatest: `NO_GO`, bis der automatische Gesamtlauf grün ist
-- Merge von Draft-PR #11: `NO_GO`, bis Syntax, Unit, Validator und Chromium-E2E erfolgreich sind
-- öffentlicher Produktionsrelease: `NO_GO`
+- **Weiterentwicklung:** `GO`
+- **Vollständiger lokaler automatisierter Testlauf:** `GO`
+- **Kontrollierter Entwickler-Browsertest:** `GO_WITH_CONDITIONS`
+- **Realer Geräte- und Party-Betatest:** `NO_GO`, bis der automatisierte Gesamtlauf erfolgreich ist
+- **Merge von Draft-PR #11:** `NO_GO`, bis Unit-, Validator- und Chromium-E2E-Lauf grün dokumentiert sind
+- **Öffentlicher Produktionsrelease:** `NO_GO`
 
 ## Release-Candidate-Schwelle
 
-Ein Release Candidate ist erst erreicht, wenn:
+Der Party Hub wird erst als Release Candidate bezeichnet, wenn:
 
-1. alle lokalen CI-Befehle erfolgreich sind,
-2. die Browsermatrix erfolgreich ist,
-3. GitHub Actions sichtbare Schritte ausführt und grün endet,
-4. Android- und iOS-PWA-Tests bestanden sind,
-5. Smart Party Night auf beiden Plattformen gespeichert und fortgesetzt wurde,
-6. automatische Fortschrittsübernahme real funktioniert,
-7. ein kleiner und ein großer Partytest bestanden sind,
-8. alle 18 Spiele real geprüft wurden,
-9. ein eigenes Pack auf Android und iOS erstellt, gespielt, exportiert und importiert wurde,
-10. keine kritischen oder hohen Fehler offen sind,
-11. Inhaltsprüfung und rechtliche Angaben abgeschlossen sind.
+1. `npm run ci` vollständig erfolgreich ist,
+2. `npm run test:cross-browser` erfolgreich ist,
+3. GitHub Actions auf dem endgültigen Commit grün ist,
+4. Android- und iOS-Installation sowie Offline-Update auf v26 bestanden sind,
+5. ein kleiner und ein großer Partytest bestanden sind,
+6. alle 28 Spiele mindestens einmal real getestet wurden,
+7. ein eigenes Pack und eine wiederaufgenommene Quick-Session auf Android und iOS geprüft wurden,
+8. keine kritischen oder hohen Fehler offen sind,
+9. erforderliche öffentliche Betreiberinformationen vorhanden sind.
