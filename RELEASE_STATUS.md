@@ -1,6 +1,6 @@
 # Secret Circle Party Hub – Release-Status
 
-Stand: 5. August 2026 · `1.0.0-beta.3` · Branch `codex/party-hub-foundation` · Draft-PR #11
+Stand: 5. August 2026 · `1.0.0-beta.3` · Draft-PR #11
 
 ## Kernzahlen
 
@@ -18,30 +18,30 @@ Stand: 5. August 2026 · `1.0.0-beta.3` · Branch `codex/party-hub-foundation` �
 | Bereich | Stand |
 |---|---:|
 | Word Imposter | 98 % |
-| Party-Hub-Grundlage | 98 % |
-| 28 spielbare Spiele | 93 % |
-| Quick-Mode-Engine | 92 % |
+| Party Hub | 98 % |
+| 28 Spiele | 93 % |
+| Quick Engine | 92 % |
 | Advanced-Spiele | 88 % |
 | Inhalte | 87 % |
 | eigene Packs | 96 % |
-| Speicherung und Backup | 98 % |
-| PWA und Offline | 97 % |
-| Accessibility und Mobile | 93 % |
+| Speicherung | 98 % |
+| PWA/Offline | 97 % |
+| Accessibility/Mobile | 93 % |
 | Testvorbereitung | 99 % |
-| langfristige Architektur | 96 % |
+| Architektur | 96 % |
 | 122-Modi-Vision funktional | 34 % |
 | reale Testbereitschaft | 94 % |
 | öffentlicher Release | 83 % |
 
-Die Werte bewerten Implementierung und Vorbereitung, nicht bestandene Tests.
+Die Werte ersetzen keine bestandenen Tests.
 
 ## Blocker
 
-1. `npm run ci` noch nicht erfolgreich protokolliert.
-2. Cross-Browser-Lauf noch nicht erfolgreich protokolliert.
-3. GitHub Actions startet weiterhin keine sichtbaren Schritte.
+1. `npm run ci` noch nicht grün protokolliert.
+2. Cross-Browser-Lauf noch nicht grün protokolliert.
+3. GitHub Actions startet keine sichtbaren Schritte.
 4. Android-, iOS- und PWA-Update-Tests fehlen.
-5. reale kleine und große Partytests fehlen.
+5. reale Partytests fehlen.
 6. alle 28 Spiele benötigen reale Prüfung.
 7. Inhalts-, Alters- und Rechtsprüfung fehlt.
 
@@ -59,5 +59,5 @@ npm run test:cross-browser
 
 - automatisierter Gesamttest: `GO`
 - realer Geräte-/Party-Betatest: `NO_GO` bis grüne Läufe
-- Merge von PR #11: `NO_GO` bis grüne Kernprüfungen
+- Merge: `NO_GO` bis grüne Kernprüfungen
 - öffentlicher Release: `NO_GO`
