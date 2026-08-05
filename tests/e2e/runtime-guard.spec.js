@@ -37,16 +37,28 @@ test('critical resource errors are surfaced instead of leaving a silent broken s
   await expect(page.locator('#status')).toContainText('benötigte App-Datei');
 });
 
-test('runtime guard and Party Night planner are available from the complete offline cache', async ({ page }) => {
+test('runtime guard Party Night and Quick Modes are available from the complete offline cache', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v25');
+    const cache = await caches.open('secret-circle-v26');
     return {
       guard: Boolean(await cache.match('./runtime-guard.js')),
       planner: Boolean(await cache.match('./party-night.js')),
-      plannerCss: Boolean(await cache.match('./party-night.css'))
+      plannerCss: Boolean(await cache.match('./party-night.css')),
+      quickPage: Boolean(await cache.match('./quick-play.html')),
+      quickCatalog: Boolean(await cache.match('./party-trending-catalog.js')),
+      quickRuntime: Boolean(await cache.match('./party-quick-modes.js')),
+      quickCss: Boolean(await cache.match('./party-quick.css'))
     };
   });
-  expect(cached).toEqual({ guard: true, planner: true, plannerCss: true });
+  expect(cached).toEqual({
+    guard: true,
+    planner: true,
+    plannerCss: true,
+    quickPage: true,
+    quickCatalog: true,
+    quickRuntime: true,
+    quickCss: true
+  });
 });
