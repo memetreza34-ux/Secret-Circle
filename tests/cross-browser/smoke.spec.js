@@ -30,11 +30,18 @@ test('loads Imposter setup content and privacy without browser errors', async ({
   expect(errors).toEqual([]);
 });
 
-test('loads Party Hub catalog filters and an advanced game without browser errors', async ({ page }) => {
+test('loads Party Hub catalog Party Night and an advanced game without browser errors', async ({ page }) => {
   const errors = captureErrors(page);
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Euren ganzen Partyabend planen' })).toBeVisible();
   await expect(page.locator('#playable-count')).toHaveText('18');
+
+  await page.locator('#party-night-duration').selectOption('30');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+  await expect(page.locator('.party-night-step')).toHaveCount(2);
+  await expect(page.locator('.party-night-step[aria-current="step"]')).toHaveCount(1);
+
   await page.getByRole('button', { name: 'Spiele' }).click();
   await expect(page.locator('.game-card')).toHaveCount(22);
   await page.locator('#game-search').fill('Question Imposter');
