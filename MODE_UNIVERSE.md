@@ -16,40 +16,30 @@ Word Imposter; Zwei Wahrheiten, eine Lüge; Question Imposter; Location Spy; Maf
 
 ## Roadmap 29–122
 
-### Verdeckte Rollen
-29 Undercover-Wortpaar · 30 Chamäleon-Thema · 31 Geheime Teams · 32 Sabotage-Missionen · 33 Eine-Nacht-Rollen · 34 Mordfall-Abend · 35 Verdeckter Anführer · 36 Infiziert · 37 Geheime Aufgabe · 38 Jäger und Überlebende
+**Verdeckte Rollen:** Undercover-Wortpaar; Chamäleon-Thema; Geheime Teams; Sabotage-Missionen; Eine-Nacht-Rollen; Mordfall-Abend; Verdeckter Anführer; Infiziert; Geheime Aufgabe; Jäger und Überlebende.
 
-### Bluff
-39 Bluff-Quiz · 40 Falsche Definition · 41 Falsche Schlagzeile · 42 Film-Bluff · 43 Zitat-Bluff · 44 Fakt oder erfunden · 45 Preis-Bluff · 46 Umfrage-Prozent · 47 Persönliche Wahrheit · 48 Lügen-Rangliste
+**Bluff:** Bluff-Quiz; Falsche Definition; Falsche Schlagzeile; Film-Bluff; Zitat-Bluff; Fakt oder erfunden; Preis-Bluff; Umfrage-Prozent; Persönliche Wahrheit; Lügen-Rangliste.
 
-### Zeichnen und Ketten
-49 Zeichen-Stille-Post · 50 Blind zeichnen · 51 Zeichnung aus Erinnerung · 52 Gemeinschaftsbild · 53 Fremdkörper-Figur · 54 Skizze ergänzen · 55 Fehlendes Teil · 56 Animationskette
+**Zeichnen und Ketten:** Zeichen-Stille-Post; Blind zeichnen; Zeichnung aus Erinnerung; Gemeinschaftsbild; Fremdkörper-Figur; Skizze ergänzen; Fehlendes Teil; Animationskette.
 
-### Wörter und Hinweise
-57 Team-Codewörter · 58 Passwort · 59 Nur ein Wort · 60 Reim-Battle · 61 Verbotener Buchstabe · 62 Akronym-Challenge · 63 Zwanzig Fragen · 64 Assoziationsleiter
+**Wörter und Hinweise:** Team-Codewörter; Passwort; Nur ein Wort; Reim-Battle; Verbotener Buchstabe; Akronym-Challenge; Zwanzig Fragen; Assoziationsleiter.
 
-### Meinungen
-65 Rangliste · 66 Tier-List · 67 Turnier-Bracket · 68 Geteilte Entscheidung · 69 Red Flag oder Green Flag · 70 Freunde-Quiz · 71 Kompatibilitätscheck · 72 Gerichtsdebatte · 73 Kompliment oder Roast · 74 Geheime Einschätzung
+**Meinungen:** Rangliste; Tier-List; Turnier-Bracket; Geteilte Entscheidung; Red Flag oder Green Flag; Freunde-Quiz; Kompatibilitätscheck; Gerichtsdebatte; Kompliment oder Roast; Geheime Einschätzung.
 
-### Reaktion und Geschick
-75 Reaktions-Tippen · 76 Freeze-Challenge · 77 Rhythmus-Pass · 78 Letzte Person übrig · 79 Eine-Minute-Challenges · 80 Balance-Staffel · 81 Muster-Memory
+**Reaktion und Geschick:** Reaktions-Tippen; Freeze-Challenge; Rhythmus-Pass; Letzte Person übrig; Eine-Minute-Challenges; Balance-Staffel; Muster-Memory.
 
-### Audio und Performance
-82 Lippenlesen · 83 Sprechweisen-Challenge · 84 Tanz-Stopp · 85 Melodie fortsetzen · 86 Stimme verstellen · 87 Stummfilm · 88 Beat nachmachen · 89 Geräuschkette
+**Audio und Performance:** Lippenlesen; Sprechweisen-Challenge; Tanz-Stopp; Melodie fortsetzen; Stimme verstellen; Stummfilm; Beat nachmachen; Geräuschkette.
 
-### Quiz und Wissen
-90 Allgemeinwissen · 91 Team-Buzzer · 92 Wahr oder falsch · 93 Höher oder tiefer · 94 Jahr erraten · 95 Flaggen und Länder · 96 Bilder-Quiz · 97 Zitat oder Figur · 98 Quiz-Pyramide · 99 Trivia-Überleben
+**Quiz und Wissen:** Allgemeinwissen; Team-Buzzer; Wahr oder falsch; Höher oder tiefer; Jahr erraten; Flaggen und Länder; Bilder-Quiz; Zitat oder Figur; Quiz-Pyramide; Trivia-Überleben.
 
-### Team und Kooperation
-100 Kooperative Wortspur · 101 Auktionsspiel · 102 Wetten auf Antworten · 103 Escape-Rätsel · 104 Puzzle-Staffel · 105 Ressourcenhandel · 106 Heist-Plan · 107 Team-Kapitän · 108 Kooperations-Ziel · 109 Strategie-Bluff
+**Team und Kooperation:** Kooperative Wortspur; Auktionsspiel; Wetten auf Antworten; Escape-Rätsel; Puzzle-Staffel; Ressourcenhandel; Heist-Plan; Team-Kapitän; Kooperations-Ziel; Strategie-Bluff.
 
-### Creator und Zukunft
-110 Paar-Karten-Editor · 111 Tabu-Editor · 112 Rollen-Set-Editor · 113 Creator-Reaktionsvideo · 114 Tägliche Challenge · 115 Publikumsmodus · 116 Raumcode auf mehreren Geräten · 117 KI-personalisierte Karten · 118 AR-Aufgaben · 119 Live-Übersetzung · 120 TV-Hostansicht · 121 Lokales Netzwerkspiel · 122 Mehrsprachige Content-Packs
+**Creator und Zukunft:** Paar-Karten-Editor; Tabu-Editor; Rollen-Set-Editor; Creator-Reaktionsvideo; Tägliche Challenge; Publikumsmodus; Raumcode; KI-personalisierte Karten; AR-Aufgaben; Live-Übersetzung; TV-Hostansicht; lokales Netzwerkspiel; mehrsprachige Content-Packs.
 
 ## Nächste Welle
 
 Bluff-Quiz, Zeichen-Stille-Post, Team-Codewörter, Team-Buzzer, Geteilte Entscheidung, Reaktions-Tippen, Turnier-Bracket, Allgemeinwissen, Paar-Karten-Editor und tägliche lokale Challenge.
 
-## Architektur- und Qualitätsprinzip
+## Prinzip
 
-Gemeinsame Engines statt 122 isolierter Codebasen. Jeder Modus benötigt stabile IDs, versionierte Daten, Offline-Support, sicheren Ausstieg, Accessibility, relevante automatisierte Tests, eigene oder rechtlich nutzbare Inhalte und mindestens einen realen Gruppentest vor öffentlicher Freigabe.
+Gemeinsame Engine-Familien statt 122 isolierter Codebasen. Jeder Modus benötigt stabile IDs, versionierte Daten, Offline-Support, sicheren Ausstieg, Accessibility, relevante Tests, eigene oder rechtlich nutzbare Inhalte und einen realen Gruppentest vor öffentlicher Freigabe.
