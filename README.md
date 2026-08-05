@@ -1,8 +1,8 @@
 # Secret Circle Party Hub
 
-Offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
+Offline nutzbare Partyspiel-Plattform.
 
-**Stand:** `1.0.0-beta.3` · 28 Spiele · Smart Party Night · Offline-Core `secret-circle-v26` · 122-Modi-Roadmap.
+**Stand:** 28 technisch spielbare Spiele · Smart Party Night · Offline-Core `secret-circle-v26` · 122-Modi-Roadmap.
 
 ## Start
 
@@ -10,26 +10,19 @@ Offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
 python -m http.server 8080
 ```
 
-- `/party.html` – Hub
-- `/index.html` – Word Imposter
-- `/advanced.html?game=question-imposter` – Advanced
-- `/quick-play.html?game=wavelength` – Quick Mode
+Hub `/party.html` · Imposter `/index.html` · Advanced `/advanced.html?game=question-imposter` · Quick `/quick-play.html?game=wavelength`.
 
-## Funktionen
+## Umfang
 
-- 28 technisch spielbare Spiele
-- zehn wiederaufnehmbare Quick Modes
-- vier Advanced-Spiele
-- Smart Party Night für 15–90 Minuten
+- 28 Spiele
+- 10 wiederaufnehmbare Quick Modes
+- 4 Advanced-Spiele
+- Smart Party Night
 - Spieler, Presets, Favoriten, Verlauf, Statistik und Erfolge
 - eigene Packs
-- vollständiger Export, Import und Löschung
-- versionierte Sessions und Rollback
-- Offline-PWA ohne Trackingdienste
-
-## Zentrale Dateien
-
-`party-trending-catalog.js`, `party-quick-modes.js`, `party-night.js`, `party-custom-packs.js`, `party-data-tools.js`, `game-engine.js`, `sw.js`, `ARCHITECTURE.md` und `MODE_UNIVERSE.md`.
+- Export, Import, Löschung und Rollback
+- Offline-PWA ohne Tracking
+- 122-Modi-Produktlandkarte
 
 ## Tests
 
@@ -40,7 +33,5 @@ npm run ci
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
-
-## Freigabe
 
 Automatisierter Gesamttest: `GO`. Realer Betatest und öffentlicher Release bleiben bis zu grünen automatisierten, Geräte-, Gruppen-, Inhalts- und Rechtsprüfungen `NO_GO`.
