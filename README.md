@@ -2,9 +2,9 @@
 
 Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät. Der installierte PWA-Einstieg öffnet den Party Hub; Word Imposter bleibt als separates stabiles Modul erhalten.
 
-**Aktueller Stand:** `1.0.0-beta.3` auf `codex/party-hub-foundation` – **28 sichtbare und technisch spielbare Spiele**, Smart Party Night, eigene Packs, wiederaufnehmbare Sessions und ein langfristiges Universum aus 122 Modi.
+**Stand:** `1.0.0-beta.3` auf `codex/party-hub-foundation` – **28 technisch spielbare Spiele**, Smart Party Night, eigene Packs, wiederaufnehmbare Sessions und ein 122-Modi-Universum.
 
-## Lokal starten
+## Start
 
 ```bash
 python -m http.server 8080
@@ -12,59 +12,22 @@ python -m http.server 8080
 
 - Party Hub: `http://localhost:8080/party.html`
 - Word Imposter: `http://localhost:8080/index.html`
-- Advanced-Beispiel: `http://localhost:8080/advanced.html?game=question-imposter`
-- Quick-Mode-Beispiel: `http://localhost:8080/quick-play.html?game=wavelength`
+- Advanced: `http://localhost:8080/advanced.html?game=question-imposter`
+- Quick Mode: `http://localhost:8080/quick-play.html?game=wavelength`
 
-Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-Cache `secret-circle-v26` ohne Internet zur Verfügung.
+Offline-Core: `secret-circle-v26`.
 
-## 28 spielbare Spiele
+## 28 Spiele
 
-### Täuschung und Rollen
+- **Täuschung:** Word Imposter, Zwei Wahrheiten, Question Imposter, Location Spy, Mafia
+- **Fragen:** Wahrheit oder Pflicht, Ich habe noch nie, Wer würde eher?, Entweder oder, Hot Takes, Nur falsche Antworten, Paranoia
+- **Darstellen und Audio:** Scharade, Nicht sagen!, Zeichnen & Raten, Geräusche erraten, Stirn-Raten, Melodie summen
+- **Tempo und Kreativität:** Heiße Kartoffel, Wortkette, Schnellfeuer, Buchstaben-Kategorien, Nicht lachen!, Gegenstandsjagd, Caption Battle, Wellenlänge
+- **Werkzeuge:** Flaschendrehen, Würfel & Münze
 
-1. Word Imposter
-2. Zwei Wahrheiten, eine Lüge
-3. Question Imposter
-4. Location Spy
-5. Mafia
+## Quick Modes
 
-### Fragen und Abstimmen
-
-6. Wahrheit oder Pflicht
-7. Ich habe noch nie
-8. Wer würde eher?
-9. Entweder oder
-10. Hot Takes
-11. Nur falsche Antworten
-12. Paranoia
-
-### Darstellen, Erklären und Audio
-
-13. Scharade
-14. Nicht sagen! / Tabu
-15. Zeichnen & Raten
-16. Geräusche erraten
-17. Stirn-Raten
-18. Melodie summen
-
-### Tempo, Kreativität und Bewegung
-
-19. Heiße Kartoffel
-20. Wortkette
-21. Schnellfeuer
-22. Buchstaben-Kategorien
-23. Nicht lachen!
-24. Gegenstandsjagd
-25. Caption Battle
-26. Wellenlänge
-
-### Zufall und Werkzeuge
-
-27. Flaschendrehen
-28. Würfel & Münze
-
-## Quick-Mode-Engine
-
-Zehn besonders starke Partymechaniken laufen über eine gemeinsame, wartbare Engine:
+Zehn Modi teilen eine wiederaufnehmbare Engine:
 
 - Wellenlänge
 - Zeichnen & Raten
@@ -77,96 +40,48 @@ Zehn besonders starke Partymechaniken laufen über eine gemeinsame, wartbare Eng
 - Gegenstandsjagd
 - Caption Battle
 
-Gemeinsame Eigenschaften:
-
-- 3, 5, 10 oder 20 Runden
-- unveränderlicher Spieler-Snapshot
-- lokale Punkte und Rangliste
-- Wiederaufnahme nach Neuladen
-- keine sofortige Kartenwiederholung
-- lokaler Verlauf und Statistik
-- Offline-Betrieb
-- sichere Textausgabe
-- Smartphone-, Tastatur- und Reduced-Motion-Unterstützung
+Sie unterstützen 3, 5, 10 oder 20 Runden, Spieler-Snapshot, Punkte, Verlauf, Statistik, Neulade-Wiederaufnahme, Offline-Betrieb und mobile Bedienung.
 
 ## Smart Party Night
 
 - 15, 30, 45, 60 oder 90 Minuten
-- Auswahl nach Stimmung, Gruppengröße und Altersstufe
-- Favoritenbonus und Vermeidung kürzlich gespielter Titel
-- Mischung verschiedener Spielarten
-- höchstens sechs eindeutige Hauptspiele
-- lokaler Fortschritt und Wiederaufnahme
+- Stimmung, Gruppengröße und Altersstufe
+- Favoritenbonus und weniger unmittelbare Wiederholungen
+- gemischte Spielarten
+- lokaler Fortschritt
 - automatische Synchronisierung aus Hub-, Quick-, Advanced- und Word-Imposter-Abschlüssen
-- Bestandteil von Export, Import und Löschung
 
-## Party-Hub-Funktionen
+## Plattform
 
-- Empfehlungen, Quick Picks und zuletzt gespielt
 - Suche und kombinierbare Filter
-- Spielerzahl, Dauer, Altersstufe, Kategorien und Inhaltsmenge vor dem Start
-- gemeinsame lokale Spielerliste
-- Host-Presets und Favoriten
-- Verlauf, Statistik und Erfolge
-- genaue Aktionsbeschriftungen für Hub-, Quick-, Advanced- und Imposter-Spiele
+- gemeinsame Spieler und Host-Presets
+- Favoriten, Verlauf, Statistik und Erfolge
+- eigene Hub-Packs
+- vollständiger Export, Import und Löschung
+- versionierte Sessions und Rollback
+- strikte CSP, keine Analyse-, Werbe- oder Tracking-Dienste
 - installierbare Offline-PWA
-- vollständiger lokaler Export, Import und Datenlöschung
-
-## Eigene Hub-Kategorien
-
-- maximal 20 Packs
-- maximal 100 eindeutige Karten pro Pack
-- mindestens drei Karten erforderlich
-- Unicode-Normalisierung und Duplikaterkennung
-- sichere Textausgabe
-- direkte Katalog- und Packintegration
-- transaktionssicheres Speichern und Löschen
-- Bestandteil der Gesamtsicherung
-
-Strukturierte Inhalte wie Mafia-Rollen, Question-Imposter-Paare, Wellenlängen-Spektren oder Schnellfeuer-Karten benötigen eigene validierte Spezialeditoren.
-
-## Sessions und Datensicherung
-
-- Word-Imposter-Schema 7
-- Advanced-Session-Schema 2
-- Quick-Session `secret-circle-party-quick-active-v1`
-- Spieler-Snapshot während gestarteter Sessions
-- beschädigte Daten werden verworfen
-- eindeutige Historien-IDs
-- Gesamtsicherung maximal 1,5 MB nach UTF-8-Byte-Größe
-- Import und vollständige Löschung mit Rollback
-- sämtliche Daten bleiben lokal
 
 ## 122-Modi-Universum
 
-`MODE_UNIVERSE.md` dokumentiert:
-
-- 28 aktuell spielbare Spiele
-- 94 zusätzliche eindeutige Roadmap-Modi
-- 122 Modi insgesamt
-
-Neue Spiele verwenden gemeinsame Engine-Familien für Karten, Abstimmung, Rollen, Bluff, Zeichnen, Audio, Teams, Quiz, Creator-Packs und optionale Mehrgerätefunktionen.
+`MODE_UNIVERSE.md` enthält 28 aktuelle Spiele und 94 zusätzliche eindeutige Roadmap-Modi. Neue Spiele verwenden gemeinsame Engine-Familien statt 122 getrennten Codebasen.
 
 ## Architektur
 
-- `party.html`: Party Hub
-- `advanced.html`: komplexe Rollen- und Täuschungsspiele
-- `quick-play.html`: zehn Quick Modes
-- `party-catalog.js`: Basiskatalog
-- `party-expansion.js`: Advanced-Erweiterung
+- `party.html`: Hub
+- `advanced.html`: komplexe Spiele
+- `quick-play.html`: Quick Modes
 - `party-trending-catalog.js`: 28-Spiel-Katalog und Quick-Inhalte
-- `party-routing.js`: Advanced- und Quick-Routing
-- `party-quick-modes.js`: wiederaufnehmbare Quick-Engine
-- `party-hub-polish.js`: kontextabhängige Aktionsbeschriftungen
+- `party-quick-modes.js`: Quick-Engine
 - `party-night.js`: Spieleabend-Planer
 - `party-custom-packs.js`: eigene Packs
-- `party-data-tools.js`: byte-sichere Gesamtsicherung
-- `game-engine.js`, `role-assignment.js`: Word-Imposter-Regeln
-- `sw.js`: Offline-Core `secret-circle-v26`
-- `ARCHITECTURE.md`: langfristiger Architekturvertrag
-- `MODE_UNIVERSE.md`: Produkt- und Moduslandkarte
+- `party-data-tools.js`: Gesamtsicherung
+- `game-engine.js`: Word Imposter
+- `sw.js`: Offline-Core v26
+- `ARCHITECTURE.md`: Architekturvertrag
+- `MODE_UNIVERSE.md`: Produktlandkarte
 
-## Automatisierte Prüfung
+## Tests
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
@@ -174,20 +89,17 @@ npx playwright install --with-deps chromium
 npm run ci
 ```
 
-Zusätzliche Browsermatrix:
-
 ```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Abgedeckt werden Engine, Speicherung, Fuzz-Szenarien, 28-Spiel-Katalog, Quick Modes, Advanced-Spiele, Party Night, eigene Packs, Rollback, Offline-Core v26, CSP, Accessibility sowie Chromium, Firefox, WebKit, Android und iPhone.
+Vorbereitet sind Unit-, Fuzz-, E2E-, Offline-, Sicherheits-, Accessibility- und Cross-Browser-Prüfungen für Chromium, Firefox, WebKit, Android und iPhone.
 
-## Freigabestatus
+## Freigabe
 
-- Word-Imposter-Kern: `GO` für den vollständigen Testlauf
-- Party Hub mit 28 Spielen: `GO` für den vollständigen Testlauf
-- reale Geräte- und Party-Beta: `NO_GO`, bis die automatisierten Läufe grün sind
-- öffentlicher Produktionsrelease: `NO_GO`, bis CI, echte Geräte, Gruppen-Betatests, Inhaltsprüfung und rechtliche Angaben abgeschlossen sind
+- vollständiger automatisierter Testlauf: `GO`
+- reale Geräte-/Party-Beta: `NO_GO` bis grüne automatisierte Läufe
+- öffentlicher Release: `NO_GO` bis CI, echte Geräte, Gruppen-, Inhalts- und Rechtsprüfung abgeschlossen sind
 
-Die Expansion wird in Issue #10 und Draft-PR #11 verfolgt.
+Issue #10 und Draft-PR #11 verfolgen die Expansion.
