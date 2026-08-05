@@ -1,6 +1,6 @@
 # Secret Circle Party Hub
 
-Offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät. Word Imposter bleibt als eigenes stabiles Modul erhalten.
+Offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
 
 **Stand:** `1.0.0-beta.3` · 28 technisch spielbare Spiele · Smart Party Night · Offline-Core `secret-circle-v26` · 122-Modi-Universum.
 
@@ -15,44 +15,36 @@ python -m http.server 8080
 - Advanced: `/advanced.html?game=question-imposter`
 - Quick: `/quick-play.html?game=wavelength`
 
-## Spiele
+## 28 Spiele
 
-- **Täuschung:** Word Imposter, Zwei Wahrheiten, Question Imposter, Location Spy, Mafia
-- **Fragen:** Wahrheit oder Pflicht, Ich habe noch nie, Wer würde eher?, Entweder oder, Hot Takes, Nur falsche Antworten, Paranoia
-- **Darstellen und Audio:** Scharade, Nicht sagen!, Zeichnen & Raten, Geräusche erraten, Stirn-Raten, Melodie summen
-- **Tempo und Kreativität:** Heiße Kartoffel, Wortkette, Schnellfeuer, Buchstaben-Kategorien, Nicht lachen!, Gegenstandsjagd, Caption Battle, Wellenlänge
-- **Werkzeuge:** Flaschendrehen, Würfel & Münze
+Täuschung und Rollen, Fragen und Abstimmen, Darstellen und Audio, Tempo und Kreativität sowie Zufallswerkzeuge. Die vollständige Liste steht in `MODE_UNIVERSE.md`.
 
 ## Quick Modes
 
-Zehn Modi teilen eine wiederaufnehmbare Engine mit 3, 5, 10 oder 20 Runden, Spieler-Snapshot, Punkten, Verlauf, Statistik, Offline-Betrieb und mobiler Bedienung.
+Wellenlänge, Zeichnen & Raten, Schnellfeuer, Geräusche erraten, Stirn-Raten, Buchstaben-Kategorien, Nicht lachen!, Melodie summen, Gegenstandsjagd und Caption Battle teilen eine wiederaufnehmbare Engine mit 3–20 Runden, Spieler-Snapshot, Punkten, Verlauf, Statistik und Offline-Betrieb.
 
 ## Smart Party Night
 
-Automatische Pläne für 15–90 Minuten nach Stimmung, Gruppengröße, Alter, Favoriten und Verlauf. Hub-, Quick-, Advanced- und Word-Imposter-Abschlüsse können den Plan fortschreiben.
+Automatische 15–90-Minuten-Pläne nach Stimmung, Gruppe, Alter, Favoriten und Verlauf. Abschlüsse aus Hub, Quick, Advanced und Word Imposter können den Plan fortschreiben.
 
 ## Plattform
 
-Suche, Filter, Spieler, Presets, Favoriten, Verlauf, Statistik, Erfolge, eigene Packs, Gesamtexport, Import, Löschung, versionierte Sessions, Rollback, strikte CSP und keine Trackingdienste.
+Suche, Filter, Spieler, Presets, Favoriten, Verlauf, Statistik, Erfolge, eigene Packs, Export, Import, Löschung, versionierte Sessions, Rollback, strikte CSP und keine Trackingdienste.
 
-## 122-Modi-Universum
-
-`MODE_UNIVERSE.md` enthält 28 aktuelle und 94 zukünftige Modi. Neue Spiele verwenden gemeinsame Engine-Familien.
-
-## Dateien
+## Architektur
 
 - `party.html` – Hub
 - `advanced.html` – komplexe Spiele
 - `quick-play.html` – Quick Modes
 - `party-trending-catalog.js` – 28-Spiel-Katalog
 - `party-quick-modes.js` – Quick-Engine
-- `party-night.js` – Spieleabend-Planer
+- `party-night.js` – Planer
 - `party-custom-packs.js` – eigene Packs
 - `party-data-tools.js` – Sicherung
 - `game-engine.js` – Word Imposter
 - `sw.js` – Offline-Core v26
 - `ARCHITECTURE.md` – Architekturvertrag
-- `MODE_UNIVERSE.md` – Produktlandkarte
+- `MODE_UNIVERSE.md` – 122-Modi-Landkarte
 
 ## Tests
 
@@ -66,6 +58,4 @@ npm run test:cross-browser
 
 ## Freigabe
 
-- automatisierter Gesamttest: `GO`
-- reale Geräte-/Party-Beta: `NO_GO` bis grüne Läufe
-- öffentlicher Release: `NO_GO` bis CI, Geräte-, Gruppen-, Inhalts- und Rechtsprüfung abgeschlossen sind
+Automatisierter Gesamttest: `GO`. Reale Geräte-/Party-Beta und öffentlicher Release: `NO_GO`, bis alle automatisierten, Geräte-, Gruppen-, Inhalts- und Rechtsprüfungen abgeschlossen sind.
