@@ -2,7 +2,7 @@
 
 Stand: 5. August 2026 · `1.0.0-beta.3` · Draft-PR #11
 
-## Kernzahlen
+## Stand
 
 - 28 technisch spielbare Spiele
 - 10 Quick Modes
@@ -21,29 +21,25 @@ Stand: 5. August 2026 · `1.0.0-beta.3` · Draft-PR #11
 | Party Hub | 98 % |
 | 28 Spiele | 93 % |
 | Quick Engine | 92 % |
-| Advanced-Spiele | 88 % |
+| Advanced | 88 % |
 | Inhalte | 87 % |
 | eigene Packs | 96 % |
 | Speicherung | 98 % |
 | PWA/Offline | 97 % |
-| Accessibility/Mobile | 93 % |
+| Accessibility | 93 % |
 | Testvorbereitung | 99 % |
 | Architektur | 96 % |
 | 122-Modi-Vision funktional | 34 % |
 | reale Testbereitschaft | 94 % |
 | öffentlicher Release | 83 % |
 
-Die Werte ersetzen keine bestandenen Tests.
-
 ## Blocker
 
-1. `npm run ci` noch nicht grün protokolliert.
-2. Cross-Browser-Lauf noch nicht grün protokolliert.
-3. GitHub Actions startet keine sichtbaren Schritte.
-4. Android-, iOS- und PWA-Update-Tests fehlen.
-5. reale Partytests fehlen.
-6. alle 28 Spiele benötigen reale Prüfung.
-7. Inhalts-, Alters- und Rechtsprüfung fehlt.
+- `npm run ci` und Cross-Browser-Lauf noch nicht grün protokolliert
+- GitHub Actions startet keine sichtbaren Schritte
+- Android-, iOS- und PWA-Update-Tests fehlen
+- reale Partytests und Prüfung aller 28 Spiele fehlen
+- Inhalts-, Alters- und Rechtsprüfung fehlt
 
 ## Befehle
 
@@ -57,7 +53,4 @@ npm run test:cross-browser
 
 ## Entscheidung
 
-- automatisierter Gesamttest: `GO`
-- realer Geräte-/Party-Betatest: `NO_GO` bis grüne Läufe
-- Merge: `NO_GO` bis grüne Kernprüfungen
-- öffentlicher Release: `NO_GO`
+Automatisierter Gesamttest: `GO`. Realer Betatest, Merge und öffentlicher Release: `NO_GO` bis die jeweiligen Gates grün sind.
