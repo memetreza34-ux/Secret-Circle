@@ -14,7 +14,26 @@ python -m http.server 8080
 - Word Imposter: `http://localhost:8080/index.html`
 - erweitertes Beispiel: `http://localhost:8080/advanced.html?game=question-imposter`
 
-Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-Cache `secret-circle-v24` ohne Internet zur Verfügung.
+Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-Cache `secret-circle-v25` ohne Internet zur Verfügung.
+
+## Smart Party Night
+
+Der Party Hub kann jetzt einen vollständigen Spieleabend automatisch zusammenstellen.
+
+- Zeitbudget mit 15, 30, 45, 60 oder 90 Minuten
+- Auswahl nach Stimmung: gemischt, lustig, Wettkampf, tiefer, Chaos, clever oder locker
+- Berücksichtigung der gespeicherten Gruppengröße
+- Berücksichtigung der Altersstufe
+- Favoriten werden bevorzugt
+- zuletzt gespielte Titel werden nach Möglichkeit nicht sofort wiederholt
+- unterschiedliche Spielarten werden für mehr Abwechslung kombiniert
+- schnelle Spiele werden als Einstieg bevorzugt
+- wettkampforientierte oder chaotische Spiele eignen sich als Abschluss
+- Fortschritt, erledigte und übersprungene Stationen bleiben lokal gespeichert
+- der Plan kann nach einem Neuladen oder App-Neustart fortgesetzt werden
+- der Party-Night-Plan ist Bestandteil von Export, Import und vollständiger Datenlöschung
+
+Der Planer kopiert keine Inhalte oder Designs anderer Apps. Er übernimmt nur allgemeine, bewährte Produktprinzipien wie schneller Einstieg, anpassbare Rundendauer, eigene Packs, Haptik und ein klarer Ablauf.
 
 ## 18 spielbare Spiele
 
@@ -53,6 +72,7 @@ Geplant, sichtbar und technisch nicht startbar: Wellenlänge, Zeichnen & Raten, 
 ## Party-Hub-Funktionen
 
 - Startseite mit Empfehlungen, Quick Picks und zuletzt gespielt
+- Smart Party Night für komplette, gespeicherte Spielabläufe
 - Suche und kombinierbare Filter
 - Spielerzahl, Dauer, Altersstufe, Kategorien und Inhaltsmenge vor dem Start
 - gemeinsame lokale Spielerliste
@@ -93,7 +113,7 @@ Zwei Wahrheiten, Question Imposter, Location Spy und Mafia verwenden wiederaufne
 
 ## Transaktionssichere Datensicherung
 
-Der Gesamtexport umfasst Hub, Eigene Hub-Kategorien, aktive Sessions und Word Imposter.
+Der Gesamtexport umfasst Hub, Party Night, eigene Hub-Kategorien, aktive Sessions und Word Imposter.
 
 - maximale Sicherungsgröße: 1,5 MB
 - **Byte-Grenze** wird über die tatsächliche UTF-8-Größe geprüft, nicht nur über die Zeichenanzahl
@@ -123,7 +143,7 @@ Der Gesamtexport umfasst Hub, Eigene Hub-Kategorien, aktive Sessions und Word Im
 
 ## Lokale Daten und Datenschutz
 
-Secret Circle benötigt kein Konto und sendet Spieldaten nicht an einen eigenen Server. Alle Spiel-, Pack-, Einstellungs- und Verlaufsdaten liegen im lokalen Browser-Speicher.
+Secret Circle benötigt kein Konto und sendet Spieldaten nicht an einen eigenen Server. Alle Spiel-, Pack-, Party-Night-, Einstellungs- und Verlaufsdaten liegen im lokalen Browser-Speicher.
 
 Der Gesamtsicherungsimport besitzt Format-, JSON-, Schlüssel-, Anzahl- und Byte-Prüfung sowie Rollback. „Alle lokalen Daten löschen“ entfernt alle Schlüssel mit dem Präfix `secret-circle-`.
 
@@ -141,15 +161,17 @@ Der Gesamtsicherungsimport besitzt Format-, JSON-, Schlüssel-, Anzahl- und Byte
 ## Architektur
 
 - `party.html`, `party.css`, `party-extra.css`: Hub-Oberfläche
+- `party-night.css`: responsive Ablauf- und Timeline-Darstellung
 - `party-catalog.js`, `party-expansion.js`: Katalog und Inhalte
 - `party-routing.js`: Routing komplexer Spiele
 - `party-custom-packs.js`: eigene Hub-Packs mit Transaktionsschutz
 - `party-hub.js`, `party-hub-plus.js`: Hub, Statistik, Einstellungen und Installation
+- `party-night.js`: lokaler Empfehlungs-, Ablauf- und Fortschrittsplaner
 - `advanced.html`, `party-advanced.js`, `party-advanced-runner.js`: komplexe Spielabläufe und Wiederaufnahme
 - `party-data-tools.js`: byte-sichere Gesamtsicherung und Löschung
 - `game-engine.js`, `role-assignment.js`: Word-Imposter-Regeln
 - `data-store.js`: versionierter Imposter-Speicher
-- `sw.js`: Offline-Core `secret-circle-v24`
+- `sw.js`: Offline-Core `secret-circle-v25`
 
 ## Automatisierte Prüfung
 
@@ -169,7 +191,8 @@ npm run test:cross-browser
 Abgedeckt werden unter anderem:
 
 - Engine, Speicherung, Inhalte, Rollenverteilung und Fuzz-Szenarien
-- Katalog und Eigene Hub-Kategorien
+- Katalog und eigene Hub-Kategorien
+- Smart Party Night: Filter, Planvielfalt, Fortschritt, Speicherung und Neuladen
 - Rollback bei fehlgeschlagenem Pack-Speichern und -Löschen
 - alle vier komplexen Spiele und Spieler-Snapshot
 - sichere Reaktion auf fehlgeschlagene Verlaufsspeicherung
@@ -182,7 +205,7 @@ Abgedeckt werden unter anderem:
 ## Freigabestatus
 
 - Word-Imposter-Kern: `GO` für den vollständigen Testlauf
-- Party-Hub-Code: `GO` für den vollständigen Testlauf
+- Party-Hub-Code einschließlich Party Night: `GO` für den vollständigen Testlauf
 - realer Geräte- und Party-Betatest: `NO_GO`, bis die automatisierten Läufe grün sind
 - öffentlicher Produktionsrelease: `NO_GO`, bis CI, echte Geräte, Gruppen-Betatests, Inhaltsprüfung und rechtliche Angaben abgeschlossen sind
 
