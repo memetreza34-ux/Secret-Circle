@@ -11,10 +11,39 @@
 - Verlauf, Statistik und acht Erfolge
 - komplexe Spielabläufe für Zwei Wahrheiten, Question Imposter, Location Spy und Mafia
 - wiederaufnehmbare Sessions mit 3, 5, 10 oder 20 Runden
-- Eigene Hub-Kategorien für kompatible Frage-, Darstellungs- und Schnellspiele
-- Gesamtexport für Hub, eigene Packs, aktive Sessions und Word Imposter
-- Offline-Core `secret-circle-v24`
-- Regressionstests für Spieler-Snapshot, Speicherfehler, Mehrbyte-Dateien und Rollback
+- eigene Hub-Kategorien für kompatible Frage-, Darstellungs- und Schnellspiele
+- Gesamtexport für Hub, Party Night, eigene Packs, aktive Sessions und Word Imposter
+- Offline-Core `secret-circle-v25`
+- Regressionstests für Spieler-Snapshot, Speicherfehler, Mehrbyte-Dateien, Party Night und Rollback
+
+### Smart Party Night
+
+- neuer lokaler Partyabend-Planer Version 1
+- Zeitbudgets mit 15, 30, 45, 60 und 90 Minuten
+- Stimmungen: gemischt, lustig, Wettkampf, tiefer, Chaos, clever und locker
+- automatische Filterung nach gespeicherter Gruppengröße und Altersstufe
+- Favoriten werden bevorzugt
+- zuletzt gespielte Titel werden nach Möglichkeit vermieden
+- unterschiedliche Spielarten werden für mehr Abwechslung kombiniert
+- kurze Spiele werden als Einstieg priorisiert
+- Wettkampf- und Chaosspiele können als Abschluss priorisiert werden
+- jede Station zeigt Grund, Spielart und ungefähre Dauer
+- Stationen können geöffnet, erledigt oder übersprungen werden
+- Ablauf und Fortschritt bleiben nach Neuladen erhalten
+- Plan kann fortgesetzt, neu erzeugt oder gelöscht werden
+- Party-Night-Daten verwenden den lokalen Schlüssel `secret-circle-party-night-v1`
+
+### Design und Informationsarchitektur
+
+- Party-Night-Bereich direkt unter dem Startseiten-Hero
+- Hero erhält eine kontextabhängige Aktion zum Planen oder Fortsetzen
+- sechs Navigationspunkte werden auf Desktop korrekt als sechs Spalten dargestellt
+- neue responsive Timeline mit aktuellem, erledigtem und übersprungenem Zustand
+- sichtbarer Fortschrittsbalken
+- mobil optimierte Einspaltensteuerung
+- stärkere Fokuszustände für Spielkarten und kompakte Zeilen
+- Reduced-Motion-Unterstützung
+- Design und Logik bleiben in `party-night.css` und `party-night.js` getrennt wartbar
 
 ### Verbesserte Session-Sicherheit
 
@@ -27,7 +56,7 @@
 - Verlauf und Statistik werden vor dem Schließen transaktionssicher gespeichert
 - ein Speicherfehler lässt die Session aktiv und erneut speicherbar
 
-### Verbesserte Eigene Hub-Kategorien
+### Verbesserte eigene Hub-Kategorien
 
 - Unicode-Normalisierung verhindert visuell gleiche Duplikate
 - doppelte Karten, Packnamen und gespeicherte IDs werden bereinigt
@@ -46,8 +75,7 @@
 - Import schreibt alle Datensätze vollständig oder stellt den vorherigen Zustand wieder her
 - ein fehlgeschlagener Rollback wird gesondert gemeldet
 - vollständige Löschung nutzt dieselbe Transaktions- und Rollback-Logik
-- Objekt für exportierte Einträge besitzt keinen geerbten Prototyp
-- Objekt-URL eines Exports wird verzögert freigegeben, damit Downloads zuverlässig beginnen
+- Party-Night-Fortschritt wird automatisch mitgesichert und gelöscht
 
 ### Verbesserte Einstellungen und Statistiken
 
@@ -60,6 +88,7 @@
 
 ### Behoben
 
+- Desktop-Navigation verwendete fünf Spalten für sechs Navigationspunkte
 - laufende komplexe Sessions wechseln nach einer Lobbyänderung nicht mehr unbemerkt die Personen
 - Rollen, Fragen und aktive Person bleiben an die ursprüngliche Spielergruppe gebunden
 - fehlgeschlagene Hub-Speicherung löscht keinen abgeschlossenen Sessionfortschritt
@@ -73,11 +102,14 @@
 
 ### Qualität
 
-- 8 Unit-Testdateien
-- mindestens 19 Playwright-E2E-Suiten
+- 9 Unit-Testdateien
+- mindestens 20 Playwright-E2E-Suiten
+- eigener Unit-Test für Planung, Filterung, Fortschritt und Speicherfehler
+- eigene E2E-Suite für Party-Night-Erstellung, Filter, Spielöffnung, Abschluss, Löschung und Neuladen
+- Offline- und Runtime-Tests prüfen `party-night.js` und `party-night.css`
 - Chromium-, Firefox-, WebKit-, Android- und iPhone-Projekte
-- Strukturvalidator prüft HTML, CSP, Assets, Scriptreihenfolge, Manifest, Icons, Cache, Katalog und Speichertransaktionen
-- Release-Audit prüft Player-Snapshot, Pack-Rollback, byte-sicheren Import und Dokumentation
+- Strukturvalidator prüft HTML, CSP, Assets, Scriptreihenfolge, Manifest, Icons, Cache, Party Night, Katalog und Speichertransaktionen
+- Release-Audit prüft Player-Snapshot, Party Night, Pack-Rollback, byte-sicheren Import und Dokumentation
 - GitHub Actions bleibt durch einen externen Fehler vor dem ersten Schritt blockiert
 
 ### Noch offen
@@ -85,6 +117,7 @@
 - vollständig erfolgreicher lokaler Testlauf
 - grüner GitHub-Actions-Lauf
 - reale Android-, iPhone-/iPad- und PWA-Update-Prüfung
+- reale Party-Night-Tests mit allen Zeitbudgets
 - reale Partytests mit kleinen und großen Gruppen
 - Test aller 18 Spiele und eines eigenen Packs
 - redaktionelle Alters-, Schwierigkeits- und Inhaltsprüfung
