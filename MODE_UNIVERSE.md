@@ -1,20 +1,16 @@
 # Secret Circle – Mode Universe
 
-Dieses Dokument ist die verbindliche Produktlandkarte für Secret Circle. Ziel ist eine langfristig wartbare Partyspiel-Plattform, die nahezu jede wichtige Mechanik abdeckt, ohne Namen, Kartenbibliotheken, Designs, Grafiken, Audios oder andere geschützte Inhalte bestehender Produkte zu kopieren.
+Dieses Dokument ist die verbindliche Produktlandkarte. Secret Circle soll nahezu jede wichtige Partyspiel-Mechanik abdecken, ohne Namen, Kartenbibliotheken, Designs, Grafiken, Audios oder andere geschützte Inhalte bestehender Produkte zu kopieren.
 
-## Exakter aktueller Stand
+## Aktueller Stand
 
-- **28 sichtbare Spiele**
-- **28 technisch spielbare Spiele**
-- **0 sichtbar gesperrte Spiele**
-- **10 Spiele in der gemeinsamen Quick-Mode-Engine**
-- **4 Spiele in der Advanced-Session-Engine**
-- **94 weitere eindeutige Roadmap-Modi**
-- **122 Modi im langfristigen Gesamtuniversum**
+- **28 sichtbare und technisch spielbare Spiele**
+- **10 Quick Modes** in einer gemeinsamen Engine
+- **4 Advanced-Spiele** mit versionierten Sessions
+- **94 zusätzliche Roadmap-Modi**
+- **122 Modi insgesamt**
 
-Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Gemeinsame Karten-, Rollen-, Abstimmungs-, Timer-, Zeichen-, Audio-, Team- und Creator-Engines halten Code, Tests, Offline-Updates und Migrationen beherrschbar.
-
-## 28 aktuell spielbare Spiele
+## Aktuell spielbar
 
 1. Word Imposter
 2. Zwei Wahrheiten, eine Lüge
@@ -45,7 +41,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 27. Flaschendrehen
 28. Würfel & Münze
 
-## 94 zusätzliche Roadmap-Modi
+## Roadmap 29–122
 
 ### Verdeckte Rollen und Deduktion
 
@@ -60,7 +56,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 37. Geheime Aufgabe
 38. Jäger und Überlebende
 
-### Bluff, Lügen und Täuschungsquiz
+### Bluff und Täuschungsquiz
 
 39. Bluff-Quiz
 40. Falsche Definition
@@ -73,7 +69,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 47. Persönliche Wahrheit
 48. Lügen-Rangliste
 
-### Zeichnen, Bilder und Stille Post
+### Zeichnen und Stille Post
 
 49. Zeichen-Stille-Post
 50. Blind zeichnen
@@ -84,7 +80,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 55. Fehlendes Teil
 56. Animationskette
 
-### Wörter, Hinweise und Assoziation
+### Wörter und Hinweise
 
 57. Team-Codewörter
 58. Passwort
@@ -95,7 +91,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 63. Zwanzig Fragen
 64. Assoziationsleiter
 
-### Abstimmen, Meinungen und Freundschaft
+### Meinungen und Freundschaft
 
 65. Rangliste
 66. Tier-List
@@ -108,7 +104,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 73. Kompliment oder Roast
 74. Geheime Einschätzung
 
-### Reaktion, Rhythmus und Geschick
+### Reaktion und Geschick
 
 75. Reaktions-Tippen
 76. Freeze-Challenge
@@ -129,7 +125,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 88. Beat nachmachen
 89. Geräuschkette
 
-### Quiz, Wissen und Schätzen
+### Quiz und Wissen
 
 90. Allgemeinwissen
 91. Team-Buzzer
@@ -142,7 +138,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 98. Quiz-Pyramide
 99. Trivia-Überleben
 
-### Team, Strategie und Kooperation
+### Team und Kooperation
 
 100. Kooperative Wortspur
 101. Auktionsspiel
@@ -155,7 +151,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 108. Kooperations-Ziel
 109. Strategie-Bluff
 
-### Creator, Plattform und Zukunft
+### Creator und Zukunft
 
 110. Paar-Karten-Editor
 111. Tabu-Editor
@@ -171,15 +167,7 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 121. Lokales Netzwerkspiel
 122. Mehrsprachige Content-Packs
 
-## Gesamtübersicht
-
-| Status | Anzahl |
-|---|---:|
-| aktuell technisch spielbar | **28** |
-| zusätzliche Roadmap-Modi | **94** |
-| langfristiges Gesamtuniversum | **122** |
-
-## Nächste Priorität
+## Nächste Engine-Welle
 
 1. Bluff-Quiz
 2. Zeichen-Stille-Post
@@ -189,40 +177,25 @@ Die 122 Modi werden nicht als 122 voneinander getrennte Anwendungen gebaut. Geme
 6. Reaktions-Tippen
 7. Turnier-Bracket
 8. Allgemeinwissen
-9. strukturierter Paar-Karten-Editor
+9. Paar-Karten-Editor
 10. tägliche lokale Challenge
 
-## Engine-Familien
+## Architekturprinzip
 
-- Prompt- und Kartenengine
-- Wahl-, Ranking- und Spektrumengine
-- geheime Rollen- und Abstimmungsengine
-- Bluff-Antworten-Engine
-- Zeichen- und Canvas-Engine
-- Stille-Post-Kettenengine
-- Team-Hinweisengine
-- Timer-, Reaktions- und Eliminationsengine
-- Audio- und Performanceengine
-- Quiz- und Buzzerengine
-- kooperative Rätselengine
-- Creator- und strukturierte Packengine
-- optionale Kamera- und Bewegungsschicht
-- optionaler Mehrgeräte-Raumdienst
+Die Plattform verwendet gemeinsame Engine-Familien für Karten, Wahl und Spektrum, geheime Rollen, Bluff-Antworten, Zeichnen, Stille Post, Team-Hinweise, Timer, Audio, Quiz, Kooperation, Creator-Packs und optionale Mehrgerätefunktionen. Ein neuer Name allein rechtfertigt keine neue Engine.
 
 ## Qualitäts- und Rechtsregeln
 
-- keine Namen, Karten, Grafiken, Audios, Texte oder Designs anderer Spiele kopieren
-- allgemeine Mechaniken mit eigener Oberfläche und eigenen Inhalten umsetzen
-- jeder Modus benötigt Setup, aktiven Ablauf, Ergebnis, Wiederholung und sicheren Ausstieg
-- stabile ID, Spielerbereich, Dauer, Altersstufe und Stimmung sind Pflicht
-- lokale Speicherung muss versioniert, validiert und migrierbar sein
-- kritische lokale Änderungen benötigen Transaktion oder Rollback
-- jeder Modus muss offline funktionieren oder klar als optionales Online-Modul gekennzeichnet sein
-- geheime Inhalte müssen vor Schulterblick und ungewollter Weitergabe geschützt werden
-- Tastatur, Touch, Zoom, Safe Areas und Reduced Motion gehören zur Definition of Done
-- Unit- oder reine Logiktests sowie kritische E2E-Abdeckung sind Pflicht
-- mindestens ein realer Gruppentest ist vor öffentlicher Freigabe erforderlich
+- eigene oder rechtlich nutzbare Inhalte
+- stabile IDs und versionierte Daten
+- Setup, aktiver Ablauf, Ergebnis, Wiederholung und sicherer Ausstieg
+- Offline-Support oder klare Kennzeichnung eines optionalen Online-Moduls
+- Transaktion oder Rollback bei kritischen lokalen Änderungen
+- Schutz geheimer Informationen
+- Tastatur, Touch, Zoom, Safe Areas und Reduced Motion
+- Unit- beziehungsweise Logiktests und kritische E2E-Abdeckung
+- realer Gruppentest vor öffentlicher Freigabe
 
 ## Release-Regel
 
-Die Zahl der Modi allein bestimmt keine Freigabe. Neue Spiele werden nur als öffentlich fertig bezeichnet, wenn automatisierte Tests, echte Geräte, Offline-Update, Inhaltsprüfung und reale Gruppentests bestanden sind.
+Die Zahl der Modi allein bestimmt keine Freigabe. Neue Spiele gelten erst als öffentlich fertig, wenn automatisierte Tests, echte Geräte, Offline-Update, Inhaltsprüfung und reale Gruppentests bestanden sind.
