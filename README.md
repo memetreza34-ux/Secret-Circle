@@ -2,7 +2,7 @@
 
 Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät. Der installierte PWA-Einstieg öffnet den Party Hub; Word Imposter bleibt als separates stabiles Modul erhalten.
 
-**Aktueller Stand:** `1.0.0-beta.3` auf `codex/party-hub-foundation` – 22 sichtbare Spiele, davon **18 spielbar** und 4 eindeutig gesperrte Roadmap-Spiele.
+**Aktueller Stand:** `1.0.0-beta.3` auf `codex/party-hub-foundation` – **28 sichtbare und technisch spielbare Spiele**, Smart Party Night, eigene Packs, wiederaufnehmbare Sessions und ein langfristiges Universum aus 122 geplanten Modi.
 
 ## Lokal starten
 
@@ -13,34 +13,11 @@ python -m http.server 8080
 - Party Hub: `http://localhost:8080/party.html`
 - Word Imposter: `http://localhost:8080/index.html`
 - erweitertes Beispiel: `http://localhost:8080/advanced.html?game=question-imposter`
+- Quick-Mode-Beispiel: `http://localhost:8080/quick-play.html?game=wavelength`
 
-Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-Cache `secret-circle-v25` ohne Internet zur Verfügung.
+Nach dem ersten vollständigen Laden stehen alle Kernbereiche über den Offline-Cache `secret-circle-v26` ohne Internet zur Verfügung.
 
-## Smart Party Night
-
-Der Party Hub kann einen vollständigen Spieleabend automatisch zusammenstellen.
-
-- Zeitbudget mit 15, 30, 45, 60 oder 90 Minuten
-- Auswahl nach Stimmung: gemischt, lustig, Wettkampf, tiefer, Chaos, clever oder locker
-- Berücksichtigung der gespeicherten Gruppengröße
-- Berücksichtigung der Altersstufe
-- Favoriten werden bevorzugt
-- zuletzt gespielte Titel werden nach Möglichkeit nicht sofort wiederholt
-- unterschiedliche Spielarten werden für mehr Abwechslung kombiniert
-- schnelle Spiele werden als Einstieg bevorzugt
-- wettkampforientierte oder chaotische Spiele eignen sich als Abschluss
-- 15 Minuten ergeben einen fokussierten Ein-Spiel-Plan
-- längere Pläne enthalten höchstens sechs eindeutige Hauptspiele
-- stabile Zufallsgewichtung verhindert widersprüchliche Sortierungen
-- Fortschritt, erledigte und übersprungene Stationen bleiben lokal gespeichert
-- abgeschlossene Hub-Spiele werden über den Verlauf automatisch als erledigt erkannt
-- abgeschlossene Word-Imposter-Runden können den Imposter-Schritt automatisch erfüllen
-- der Plan kann nach einem Neuladen oder App-Neustart fortgesetzt werden
-- der Party-Night-Plan ist Bestandteil von Export, Import und vollständiger Datenlöschung
-
-Der Planer kopiert keine Inhalte oder Designs anderer Apps. Er übernimmt nur allgemeine Produktprinzipien wie schneller Einstieg, anpassbare Rundendauer, eigene Packs, Haptik und ein klarer Ablauf.
-
-## 18 spielbare Spiele
+## 28 spielbare Spiele
 
 ### Täuschung und Rollen
 
@@ -60,30 +37,104 @@ Der Planer kopiert keine Inhalte oder Designs anderer Apps. Er übernimmt nur al
 11. Nur falsche Antworten
 12. Paranoia
 
-### Darstellen und Zeitdruck
+### Darstellen, Erklären und Audio
 
 13. Scharade
 14. Nicht sagen! / Tabu
-15. Heiße Kartoffel
-16. Wortkette
+15. Zeichnen & Raten
+16. Geräusche erraten
+17. Stirn-Raten
+18. Melodie summen
+
+### Schnelligkeit, Kreativität und Bewegung
+
+19. Heiße Kartoffel
+20. Wortkette
+21. Schnellfeuer
+22. Buchstaben-Kategorien
+23. Nicht lachen!
+24. Gegenstandsjagd
+25. Caption Battle
+26. Wellenlänge
 
 ### Zufall und Werkzeuge
 
-17. Flaschendrehen
-18. Würfel & Münze
+27. Flaschendrehen
+28. Würfel & Münze
 
-Geplant, sichtbar und technisch nicht startbar: Wellenlänge, Zeichnen & Raten, Schnellfeuer und Geräusche erraten.
+## Neue Quick-Mode-Engine
+
+Zehn besonders starke Partymechaniken laufen über eine gemeinsame, wartbare Engine:
+
+- Wellenlänge
+- Zeichnen & Raten
+- Schnellfeuer
+- Geräusche erraten
+- Stirn-Raten
+- Buchstaben-Kategorien
+- Nicht lachen!
+- Melodie summen
+- Gegenstandsjagd
+- Caption Battle
+
+Gemeinsame Eigenschaften:
+
+- 3, 5, 10 oder 20 Runden
+- unveränderlicher Spieler-Snapshot
+- lokale Punkte und Rangliste
+- Wiederaufnahme nach Neuladen
+- keine sofortige Kartenwiederholung
+- lokaler Verlauf und Statistik
+- Offline-Betrieb
+- sichere Textausgabe
+- Smartphone-, Tastatur- und Reduced-Motion-Unterstützung
+
+### Wellenlänge
+
+Eine Person sieht einen geheimen Zielwert zwischen zwei Gegensätzen. Nach einem Hinweis positioniert die Gruppe einen Regler. Je kleiner der Abstand, desto mehr Punkte.
+
+### Schnellfeuer
+
+Drei oder mehr Begriffe müssen in fünf bis fünfzehn Sekunden genannt werden. Unterschiedliche Packs verändern Anzahl, Schwierigkeit und Zeitlimit.
+
+### Buchstaben-Kategorien
+
+Ein zufälliger Buchstabe wird mit mehreren Kategorien kombiniert. Nach 60 Sekunden werden gültige und möglichst einzigartige Antworten gewertet.
+
+### Stirn-Raten und Darstellungsmodi
+
+Begriffe werden erklärt, gezeichnet, nur mit Geräuschen oder durch Summen vermittelt. Die ratende Person sieht die Karte nicht.
+
+### Nicht lachen, Gegenstandsjagd und Caption Battle
+
+Kurze soziale Challenges ergänzen die klassischen Karten- und Quizmechaniken um Bewegung, Improvisation und Gruppenabstimmung.
+
+## Smart Party Night
+
+Der Party Hub kann einen vollständigen Spieleabend automatisch zusammenstellen.
+
+- Zeitbudget mit 15, 30, 45, 60 oder 90 Minuten
+- Auswahl nach Stimmung
+- Berücksichtigung von Gruppengröße und Altersstufe
+- Bonus für Favoriten
+- zuletzt gespielte Titel werden nach Möglichkeit vermieden
+- Mischung unterschiedlicher Spielarten
+- schneller Einstieg und stärkerer Abschluss
+- höchstens sechs eindeutige Hauptspiele
+- Fortschritt bleibt lokal gespeichert
+- Hub-, Quick-, Advanced- und Word-Imposter-Abschlüsse können den Plan automatisch fortschreiben
+- Party-Night-Daten sind Bestandteil von Export, Import und Löschung
 
 ## Party-Hub-Funktionen
 
 - Startseite mit Empfehlungen, Quick Picks und zuletzt gespielt
-- Smart Party Night für komplette, gespeicherte Spielabläufe
 - Suche und kombinierbare Filter
 - Spielerzahl, Dauer, Altersstufe, Kategorien und Inhaltsmenge vor dem Start
 - gemeinsame lokale Spielerliste
 - Host-Presets und Favoriten
 - Verlauf, Statistiken und acht Erfolge
 - Alterspräferenz und Standard-Sessionlänge
+- genaue Aktionsbeschriftungen für Hub-, Quick-, Advanced- und Imposter-Spiele
 - installierbare Offline-PWA
 - vollständiger lokaler Export, Import und Datenlöschung
 
@@ -97,88 +148,67 @@ Im Datenbereich können eigene Packs für kompatible Frage-, Darstellungs- und S
 - Unicode-Normalisierung und Duplikaterkennung
 - Nutzertexte werden als Text und nicht als HTML ausgegeben
 - Packs erscheinen direkt in Spieldetails und Pack-Auswahl
-- Speichern und Löschen sind transaktionssicher: Schlägt der Browser-Speicher fehl, bleiben vorherige Packs und Katalogzustand erhalten
+- Speichern und Löschen sind transaktionssicher
 - Packs sind Bestandteil von Gesamtexport, Import und vollständiger Löschung
 
-Strukturierte Inhalte wie Mafia-Rollen, Question-Imposter-Fragenpaare, Entweder-oder-Paare und Tabu-Karten benötigen spezielle Datenformen und sind deshalb nicht im allgemeinen Editor freigeschaltet.
+Strukturierte Inhalte wie Mafia-Rollen, Question-Imposter-Fragenpaare, Wellenlängen-Spektren oder Schnellfeuer-Karten benötigen eigene Editoren und werden später über validierte Spezialeditoren ergänzt.
 
-## Sichere erweiterte Sessions
+## Sichere Sessions und Datensicherung
 
-Zwei Wahrheiten, Question Imposter, Location Spy und Mafia verwenden wiederaufnehmbare Sessions.
-
-- aktives Schema Version 2
-- 3, 5, 10 oder 20 Runden
-- maximal 20 Runden
-- eindeutige Session-ID
-- Spieler-Snapshot: Eine gestartete Session behält ihre ursprüngliche Spielergruppe, auch wenn die gemeinsame Lobby später verändert wird
-- beschädigte oder widersprüchliche aktive Daten werden verworfen
+- aktive Advanced-Sessions: Schema Version 2
+- aktive Quick-Sessions: `secret-circle-party-quick-active-v1`
+- Spieler-Snapshot bleibt während einer gestarteten Session unverändert
+- beschädigte aktive Daten werden verworfen
 - abgeschlossene Sessions verwenden eindeutige Historien-IDs
-- ein Speicherfehler löscht die aktive Session nicht
-- ein erneuter Abschluss erzeugt keinen doppelten Verlaufseintrag
-
-## Transaktionssichere Datensicherung
-
-Der Gesamtexport umfasst Hub, Party Night, eigene Hub-Kategorien, aktive Sessions und Word Imposter.
-
-- maximale Sicherungsgröße: 1,5 MB
-- **Byte-Grenze** wird über die tatsächliche UTF-8-Größe geprüft, nicht nur über die Zeichenanzahl
-- Mehrbyte-Texte können das Limit deshalb nicht umgehen
-- maximal 100 lokale Datensätze
-- einzelne Werte werden ebenfalls nach Byte-Größe begrenzt
-- Import ersetzt alle Secret-Circle-Daten nur als vollständige Transaktion
-- bei einem Schreibfehler wird der vorherige Zustand wiederhergestellt
-- schlägt auch der Rollback fehl, erscheint eine eindeutige Warnung
-- vollständige Löschung verwendet dieselbe Rollback-Logik
-
-## Robuste Einstellungen und Statistiken
-
-- Altersfilter und Sessionlänge bleiben bei erfolgreichem Speichern erhalten
-- bei einem Speicherfehler bleibt die aktuelle Auswahl nutzbar und wird als nur vorübergehend gekennzeichnet
-- Statistikreparatur normalisiert negative oder ungültige Werte
-- unbekannte Spiele werden nicht in Erfolge und Reparatur einbezogen
-- fehlgeschlagene Statistik-Speicherung wird sichtbar gemeldet, ohne den Hub zu blockieren
+- Speicherfehler löschen aktive Sessions nicht
+- Gesamtsicherung maximal 1,5 MB nach tatsächlicher UTF-8-Byte-Größe
+- Import und vollständige Löschung verwenden Rollback
+- sämtliche Daten bleiben lokal und können vollständig entfernt werden
 
 ## Inhalte
 
-- mindestens 384 eigenständig erstellte Hub-Inhalte vor Nutzerpacks
+- mindestens 384 vorhandene Hub-Inhalte vor den neuen Quick-Mode-Packs
+- zusätzliche originale Inhalte für zehn Quick Modes
 - 168 Word-Imposter-Begriffe in 14 Kategorien
-- keine unmittelbare Wiederholung innerhalb einer Session, solange ungenutzte Karten vorhanden sind
-- Altersfilter für familienfreundliche und ab 12 empfohlene Inhalte
-- keine kopierten proprietären Karten oder Designs anderer Partyspiel-Apps
+- keine unmittelbare Kartenwiederholung, solange ungenutzte Karten vorhanden sind
+- familienfreundliche und ab 12 empfohlene Inhalte getrennt filterbar
+- keine kopierten proprietären Karten, Namen, Designs oder Mediendateien anderer Apps
 
-## Lokale Daten und Datenschutz
+## 122-Modi-Universum
 
-Secret Circle benötigt kein Konto und sendet Spieldaten nicht an einen eigenen Server. Alle Spiel-, Pack-, Party-Night-, Einstellungs- und Verlaufsdaten liegen im lokalen Browser-Speicher.
+`MODE_UNIVERSE.md` dokumentiert 122 historische, aktuelle und mögliche zukünftige Partyspiel-Modi. Die Plattform erstellt dafür nicht 122 getrennte Codebasen, sondern wiederverwendbare Engine-Familien für:
 
-Der Gesamtsicherungsimport besitzt Format-, JSON-, Schlüssel-, Anzahl- und Byte-Prüfung sowie Rollback. „Alle lokalen Daten löschen“ entfernt alle Schlüssel mit dem Präfix `secret-circle-`.
-
-## Word Imposter
-
-- 3–20 eindeutige Personen
-- maximal sechs Imposter
-- Rollenverteilung unabhängig von der Aufdeckreihenfolge
-- Karten-Sichtschutz bei App-Wechsel
-- deadline-basierter Timer mit Wiederherstellung
-- geheime Abstimmung, begrenzte Stichwahl und Ratechance
-- Punkte, Rangliste und Mehr-Runden-Matches
-- versionierte Speicherung und Migration
+- Karten und Prompts
+- Abstimmung und Spektren
+- verdeckte Rollen
+- Bluff-Antworten
+- Zeichnen und Stille Post
+- Wort- und Buchstabenspiele
+- Timer und Reaktion
+- Audio
+- Teams und Turniere
+- kooperative Aufgaben
+- Creator-Packs
+- optionale Kamera-, KI- und Mehrgerätefunktionen
 
 ## Architektur
 
-- `party.html`, `party.css`, `party-extra.css`: Hub-Oberfläche
-- `party-night.css`: responsive Ablauf- und Timeline-Darstellung
-- `party-catalog.js`, `party-expansion.js`: Katalog und Inhalte
-- `party-routing.js`: Routing komplexer Spiele
-- `party-custom-packs.js`: eigene Hub-Packs mit Transaktionsschutz
-- `party-hub.js`, `party-hub-plus.js`: Hub, Statistik, Einstellungen und Installation
-- `party-night.js`: lokaler Empfehlungs-, Ablauf- und Fortschrittsplaner
-- `advanced.html`, `party-advanced.js`, `party-advanced-runner.js`: komplexe Spielabläufe und Wiederaufnahme
-- `party-data-tools.js`: byte-sichere Gesamtsicherung und Löschung
+- `party.html`: Party Hub
+- `advanced.html`: komplexe Rollen- und Täuschungsspiele
+- `quick-play.html`: zehn schnelle Trend- und Klassiker-Modi
+- `party-catalog.js`: Basiskatalog
+- `party-expansion.js`: Advanced-Spiele und erste Roadmap
+- `party-trending-catalog.js`: 28-Spiel-Katalog und Quick-Mode-Inhalte
+- `party-routing.js`: Advanced- und Quick-Routing
+- `party-quick-modes.js`: wiederaufnehmbare Quick-Mode-Engine
+- `party-hub-polish.js`: korrekte kontextabhängige Aktionsbeschriftungen
+- `party-night.js`: Empfehlungs- und Ablaufplaner
+- `party-custom-packs.js`: eigene Packs mit Transaktionsschutz
+- `party-data-tools.js`: byte-sichere Gesamtsicherung
 - `game-engine.js`, `role-assignment.js`: Word-Imposter-Regeln
-- `data-store.js`: versionierter Imposter-Speicher
-- `sw.js`: Offline-Core `secret-circle-v25`
-- `ARCHITECTURE.md`: langfristiger Vertrag für IDs, Versionierung, Module, Migration, Datenschutz, Accessibility und Rollback
-- `scripts/architecture_audit.py`: automatisch erzwungene Modul-, Größen-, Abhängigkeits- und Architekturgrenzen
+- `sw.js`: Offline-Core `secret-circle-v26`
+- `ARCHITECTURE.md`: langfristiger Architekturvertrag
+- `scripts/architecture_audit.py`: automatisch erzwungene Architekturgrenzen
 
 ## Automatisierte Prüfung
 
@@ -197,25 +227,23 @@ npm run test:cross-browser
 
 Abgedeckt werden unter anderem:
 
-- Engine, Speicherung, Inhalte, Rollenverteilung und Fuzz-Szenarien
-- Katalog und eigene Hub-Kategorien
-- Smart Party Night: Filter, stabile Planung, Fortschritt, automatische Verlaufssynchronisierung, Speicherung und Neuladen
-- Rollback bei fehlgeschlagenem Pack-Speichern und -Löschen
-- alle vier komplexen Spiele und Spieler-Snapshot
-- sichere Reaktion auf fehlgeschlagene Verlaufsspeicherung
-- Mehrbyte-Dateien über der Byte-Grenze
-- Import- und Lösch-Rollback
-- Einstellungs- und Statistik-Speicherfehler
-- Offline-Start, CSP, Accessibility und mobile Layouts
-- Party-Night-Tastatur, 44-Pixel-Touchziele und Reduced Motion
-- Architekturvertrag, Modulgrößen und fehlende Runtime-Abhängigkeiten
+- Engine, Speicherung, Rollenverteilung und Fuzz-Szenarien
+- 28-Spiel-Katalog und zehn Quick Modes
+- Wellenlänge, Schnellfeuer, Buchstaben-Kategorien und Wiederaufnahme
+- alle vier Advanced-Spiele
+- Smart Party Night
+- eigene Hub-Packs
+- Import-, Lösch- und Speicher-Rollback
+- Statistikreparatur
+- vollständiger Offline-Core v26
+- CSP, Accessibility und mobile Layouts
 - Chromium, Firefox, WebKit, Android- und iPhone-Simulation
 
 ## Freigabestatus
 
 - Word-Imposter-Kern: `GO` für den vollständigen Testlauf
-- Party-Hub-Code einschließlich Party Night: `GO` für den vollständigen Testlauf
-- realer Geräte- und Party-Betatest: `NO_GO`, bis die automatisierten Läufe grün sind
+- Party Hub mit 28 Spielen: `GO` für den vollständigen Testlauf
+- reale Geräte- und Party-Beta: `NO_GO`, bis die automatisierten Läufe grün sind
 - öffentlicher Produktionsrelease: `NO_GO`, bis CI, echte Geräte, Gruppen-Betatests, Inhaltsprüfung und rechtliche Angaben abgeschlossen sind
 
 Die Expansion wird in Issue #10 und Draft-PR #11 verfolgt.
