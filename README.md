@@ -2,7 +2,7 @@
 
 Offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
 
-**Stand:** `1.0.0-beta.3` · 28 technisch spielbare Spiele · Smart Party Night · Offline-Core `secret-circle-v26` · 122-Modi-Universum.
+**Stand:** `1.0.0-beta.3` · 28 Spiele · Smart Party Night · Offline-Core `secret-circle-v26` · 122-Modi-Roadmap.
 
 ## Start
 
@@ -10,41 +10,26 @@ Offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
 python -m http.server 8080
 ```
 
-- Hub: `/party.html`
-- Imposter: `/index.html`
-- Advanced: `/advanced.html?game=question-imposter`
-- Quick: `/quick-play.html?game=wavelength`
+- `/party.html` – Hub
+- `/index.html` – Word Imposter
+- `/advanced.html?game=question-imposter` – Advanced
+- `/quick-play.html?game=wavelength` – Quick Mode
 
-## 28 Spiele
+## Funktionen
 
-Täuschung und Rollen, Fragen und Abstimmen, Darstellen und Audio, Tempo und Kreativität sowie Zufallswerkzeuge. Die vollständige Liste steht in `MODE_UNIVERSE.md`.
+- 28 technisch spielbare Spiele
+- zehn wiederaufnehmbare Quick Modes
+- vier Advanced-Spiele
+- Smart Party Night für 15–90 Minuten
+- Spieler, Presets, Favoriten, Verlauf, Statistik und Erfolge
+- eigene Packs
+- vollständiger Export, Import und Löschung
+- versionierte Sessions und Rollback
+- Offline-PWA ohne Trackingdienste
 
-## Quick Modes
+## Zentrale Dateien
 
-Wellenlänge, Zeichnen & Raten, Schnellfeuer, Geräusche erraten, Stirn-Raten, Buchstaben-Kategorien, Nicht lachen!, Melodie summen, Gegenstandsjagd und Caption Battle teilen eine wiederaufnehmbare Engine mit 3–20 Runden, Spieler-Snapshot, Punkten, Verlauf, Statistik und Offline-Betrieb.
-
-## Smart Party Night
-
-Automatische 15–90-Minuten-Pläne nach Stimmung, Gruppe, Alter, Favoriten und Verlauf. Abschlüsse aus Hub, Quick, Advanced und Word Imposter können den Plan fortschreiben.
-
-## Plattform
-
-Suche, Filter, Spieler, Presets, Favoriten, Verlauf, Statistik, Erfolge, eigene Packs, Export, Import, Löschung, versionierte Sessions, Rollback, strikte CSP und keine Trackingdienste.
-
-## Architektur
-
-- `party.html` – Hub
-- `advanced.html` – komplexe Spiele
-- `quick-play.html` – Quick Modes
-- `party-trending-catalog.js` – 28-Spiel-Katalog
-- `party-quick-modes.js` – Quick-Engine
-- `party-night.js` – Planer
-- `party-custom-packs.js` – eigene Packs
-- `party-data-tools.js` – Sicherung
-- `game-engine.js` – Word Imposter
-- `sw.js` – Offline-Core v26
-- `ARCHITECTURE.md` – Architekturvertrag
-- `MODE_UNIVERSE.md` – 122-Modi-Landkarte
+`party-trending-catalog.js`, `party-quick-modes.js`, `party-night.js`, `party-custom-packs.js`, `party-data-tools.js`, `game-engine.js`, `sw.js`, `ARCHITECTURE.md` und `MODE_UNIVERSE.md`.
 
 ## Tests
 
@@ -58,4 +43,4 @@ npm run test:cross-browser
 
 ## Freigabe
 
-Automatisierter Gesamttest: `GO`. Reale Geräte-/Party-Beta und öffentlicher Release: `NO_GO`, bis alle automatisierten, Geräte-, Gruppen-, Inhalts- und Rechtsprüfungen abgeschlossen sind.
+Automatisierter Gesamttest: `GO`. Realer Betatest und öffentlicher Release bleiben bis zu grünen automatisierten, Geräte-, Gruppen-, Inhalts- und Rechtsprüfungen `NO_GO`.
