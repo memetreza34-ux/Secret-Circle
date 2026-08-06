@@ -43,6 +43,9 @@ assert.equal(Filters.normalize({ mood: 'invalid' }).mood, 'all');
 assert.equal(Filters.normalize({ tier: 'premium' }).tier, 'all');
 assert.equal(Filters.normalize({ view: 'admin' }).view, 'home');
 assert.equal(Filters.normalize({ query: 'x'.repeat(200) }).query.length, 120);
+assert.equal(Filters.resolveView('favorites', 'stats'), 'stats');
+assert.equal(Filters.resolveView('favorites', null), 'favorites');
+assert.equal(Filters.resolveView('invalid', 'invalid'), 'home');
 
 const storage = memoryStorage();
 const written = Filters.write(storage, { query: 'Mafia', age: 'teen', tier: 'core', view: 'games' });
@@ -75,6 +78,7 @@ console.log(JSON.stringify({
   filterStateVersion: Filters.version,
   persistentSearchAndSelects: true,
   persistedLastView: true,
+  explicitUrlViewWins: true,
   invalidValuesSanitized: true,
   unavailableStorageReported: true,
   quotaFailureReported: true,
