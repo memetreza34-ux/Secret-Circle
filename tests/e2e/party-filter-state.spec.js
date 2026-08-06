@@ -52,18 +52,20 @@ test('age and release tier remain combined after either filter changes', async (
   await page.locator('#release-tier-filter').selectOption('core');
   await page.locator('#age-filter').selectOption('family');
 
-  const visibleCards = page.locator('#game-grid .game-card:visible');
-  await expect(visibleCards.first()).toBeVisible();
-  const visibleIds = await visibleCards.evaluateAll(cards => cards.map(card => card.dataset.gameId));
-  const visibleTiers = await visibleCards.evaluateAll(cards => cards.map(card => card.dataset.releaseTier));
-  expect(visibleTiers.every(tier => tier === 'core')).toBeTruthy();
-
-  for (const id of visibleIds) {
-    const age = await page.locator(`#game-grid .game-card[data-game-id="${id}"]`).getAttribute('data-game-id');
-    expect(age).toBeTruthy();
-  }
+  const familyVisible = await page.locator('#game-grid .game-card:visible').evaluateAll(cards => cards.map(card => {
+    const game = window.SecretCirclePartyCatalog.getGame(card.dataset.gameId);
+    return { id: card.dataset.gameId, tier: card.dataset.releaseTier, age: game?.age };
+  }));
+  expect(familyVisible.length).toBeGreaterThan(0);
+  expect(familyVisible.every(item => item.tier === 'core')).toBeTruthy();
+  expect(familyVisible.every(item => item.age === 'all')).toBeTruthy();
 
   await page.locator('#age-filter').selectOption('teen');
-  const teenVisibleTiers = await page.locator('#game-grid .game-card:visible').evaluateAll(cards => cards.map(card => card.dataset.releaseTier));
-  expect(teenVisibleTiers.every(tier => tier === 'core')).toBeTruthy();
+  const teenVisible = await page.locator('#game-grid .game-card:visible').evaluateAll(cards => cards.map(card => {
+    const game = window.SecretCirclePartyCatalog.getGame(card.dataset.gameId);
+    return { tier: card.dataset.releaseTier, age: game?.age };
+  }));
+  expect(teenVisible.length).toBeGreaterThanOrEqual(familyVisible.length);
+  expect(teenVisible.every(item => item.tier === 'core')).toBeTruthy();
+  expect(teenVisible.every(item => item.age === 'all' || item.age === 'teen')).toBeTruthy();
 });
