@@ -7,6 +7,21 @@
   const impostersHelp = document.querySelector('#imposters-help');
   if (!playersField || !impostersField || !playersHelp || !impostersHelp) return;
 
+  function addQuickGuide() {
+    const title = document.querySelector('#setup-title');
+    if (!title || document.querySelector('#imposter-quick-guide')) return;
+    const guide = document.createElement('ol');
+    guide.id = 'imposter-quick-guide';
+    guide.className = 'rules setup-quick-guide';
+    guide.setAttribute('aria-label', 'Word Imposter kurz erklärt');
+    ['Namen und Kategorie festlegen.', 'Jede Person sieht ihre Karte allein.', 'Hinweise geben, geheim abstimmen und Punkte sammeln.'].forEach(text => {
+      const item = document.createElement('li');
+      item.textContent = text;
+      guide.append(item);
+    });
+    title.insertAdjacentElement('afterend', guide);
+  }
+
   function normalizedNames() {
     return playersField.value
       .split(/\n|,/)
@@ -50,8 +65,9 @@
   document.querySelector('#import-data')?.addEventListener('change', refreshAfterAsyncAction);
   root.addEventListener('pageshow', update);
 
+  addQuickGuide();
   update();
   refreshAfterAsyncAction();
 
-  root.SecretCircleSetupUx = Object.freeze({ update, version: 3 });
+  root.SecretCircleSetupUx = Object.freeze({ update, addQuickGuide, version: 4 });
 })(window);
