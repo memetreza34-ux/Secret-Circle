@@ -20,14 +20,21 @@
 - Der alte Mega-/Viral-/Quick-Fehler, bei dem `plays` praktisch bei mindestens 1 blieb, wird im gemeinsamen Abschlussregister korrekt behandelt.
 - Liegengebliebene Sessions einer anderen Engine blockieren die Zuordnung eines aktuellen Abschlusses nicht mehr.
 - Eine neue PWA-Version wird nicht mehr automatisch mitten in einer laufenden Nutzung aktiviert.
+- Der aktive Offline-Cache wird bei einer Aktualisierung nicht mehr vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
+- Veraltete Cacheeinträge werden erst entfernt, nachdem der vorbereitete Offline-Core vollständig übernommen wurde.
 
 ### Hinzugefügt
 
 - gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs
 - `session-ledger-legacy-guard.js` für die schrittweise Migration großer Alt-Engines
+- zentrales `backup-schema-registry.js` für Word-Imposter-, Gesamt- und Creator-Sicherungen
+- `BACKUP_SCHEMAS.md` mit Formatversionen, Größen, Migration, Rollback und Release-Gates
 - sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“
 - separat vorbereiteter Service-Worker-Staging-Cache
 - barrierearme, responsive Updateleiste mit Safe-Area- und Reduced-Motion-Unterstützung
+- Party-Hub-Reifestufen mit 15 Kernspielen, 13 Erweiterungen und 17 Labs-Modi
+- Reifestufenfilter, Schnellwahlkarten und sichtbare Qualitätsbadges im Spielekatalog
+- responsive und barrierearme Styles für Kernspiele, Erweiterungen und Labs
 
 ### Qualität
 
@@ -39,11 +46,17 @@
 - Genau-einmal-Tests für Creator, Quick, Mega und Viral ergänzt.
 - Erststart-, Retry- und liegengebliebene-Session-Fälle für den Abschlussguard ergänzt.
 - statische Qualitätsprüfung für sichtbare und kontrollierte PWA-Aktualisierungen ergänzt.
+- Test für nicht-destruktive Cache-Promotion ergänzt.
+- Contract-Test für alle drei Backupformate ergänzt.
+- feste Prüfung der Katalogverteilung 15 / 13 / 17 ergänzt.
+- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf die Foundation-Architektur aktualisiert.
+- feste Größenbudgets für Registry, Ledger, PWA-Update und Release-Struktur ergänzt.
 - Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
 
 ### Bekannte externe Blockade
 
 - GitHub Actions weist dem Workflow weiterhin keinen Runner zu beziehungsweise lässt den Job ohne Schritte in der Warteschlange. Lokale Tests und Syntaxprüfungen ersetzen den verpflichtenden grünen Remote-Lauf nicht.
+- Ein reproduzierbares `package-lock.json` und die Umstellung auf `npm ci` bleiben offen, bis Abhängigkeiten in einer funktionierenden CI- oder lokalen npm-Umgebung aufgelöst werden können.
 
 ## Frühere Entwicklungswelle – Bedienbarkeit, Creator und Offline-Core v29
 
