@@ -38,7 +38,7 @@ assert.ok(mega.getItems('emoji-quiz', 'Sprichwörter').every(item => Array.isArr
 assert.equal(mega.getItems('blind-ranking', 'Superkräfte').length, 10);
 assert.equal(mega.getItems('tier-list', 'Hobbys').length, 10);
 
-assert.equal(routed.version, 7);
+assert.equal(routed.version, 8);
 assert.equal(routed.games.length, 45);
 assert.equal(routed.createdGameIds.length, 0);
 for (const id of megaIds) assert.equal(routed.getGame(id).href, `quick-play.html?game=${encodeURIComponent(id)}`);
