@@ -25,12 +25,19 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Creator-Zeitstempel bei Laden, Export und Import stabilisiert
 - Word-Imposter- und Gesamtsicherung verwenden dieselbe 1,5-MB-Grenze
 - Backupgrößen werden als UTF-8-Bytes geprüft
-- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel und Unicode-Backups
+- gemeinsames Abschlussregister mit stabilen Session- und Abschluss-IDs
+- Creator- und klassische Quick-Abschlüsse werden höchstens einmal gezählt
+- Mega- und Viral-Abschlüsse werden während ihrer schrittweisen Migration zuverlässig dedupliziert
+- Spielanzahl, Rundenzahl, Bestwert und Verlauf werden gemeinsam aktualisiert
+- neue PWA-Versionen werden separat vorbereitet und nicht mehr automatisch aktiviert
+- sichtbarer Updatehinweis mit „Jetzt aktualisieren“ und „Später“
+- laufende Sessions werden im Updatehinweis ausdrücklich berücksichtigt
+- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse und PWA-Updates
 - Changelog und Roadmap aktualisiert
 
 ## Lokal geprüft
 
-- JavaScript-Syntax der geänderten Kernmodule
+- JavaScript-Syntax ausgewählter geänderter Kernmodule
 - deterministische Rollenverteilung
 - 200 Fairnessstichproben mit wechselnder erster Aufdeckrolle
 - Timer- und Runden-Smoke-Test der Word-Imposter-Engine
@@ -39,6 +46,8 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - echte Bearbeitung aktualisiert `updatedAt`
 - ASCII- und mehrbyteige Unicode-Backups gegen dieselbe Bytegrenze
 - atomischer Import-Rollback bei Speicherfehlern
+- Mega-/Viral-Abschlussguard mit Erststart und wiederholtem Abschluss
+- liegengebliebene Session einer anderen Engine wird korrekt ignoriert
 
 ## Externer Releaseblocker
 
@@ -53,8 +62,8 @@ Dadurch existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf. Vor Me
 ## Nächste technische Prioritäten
 
 1. zentrales Backup-Schemaregister einführen
-2. sichtbaren und kontrollierten PWA-Updatefluss ergänzen
-3. doppelte Sessionabschlüsse und Statistikschreibvorgänge verhindern
+2. Mega- und Viral-Engines später direkt auf das Session-Ledger umstellen und den Kompatibilitätsschutz entfernen
+3. PWA-Update von einer älteren installierten Version auf echten Geräten prüfen
 4. Hub klar in Kernspiele, Kategorien und Labs strukturieren
 5. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch und nächstes Spiel
 6. Kerninhalte redaktionell und nach Altersstufen prüfen
