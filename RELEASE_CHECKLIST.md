@@ -1,122 +1,100 @@
-# Secret Circle – Release-Checkliste
+# Secret Circle Party Hub – Release-Checkliste
 
-Nicht bestätigte Punkte blockieren den öffentlichen Release.
+Zielstand: `1.0.0-beta.3`, 45 eingebaute Spiele, lokaler Game-Creator und Offline-Core `secret-circle-v29`.
 
-## 1. Automatisierte Prüfungen
+## Automatisierte Gates
 
 - [ ] `npm run check`
 - [ ] `npm test`
 - [ ] `npm run validate`
 - [ ] `npm run test:e2e`
-- [ ] `npm run ci`
 - [ ] `npm run test:cross-browser`
-- [ ] GitHub Actions auf dem endgültigen Commit erfolgreich
-- [ ] Keine offenen kritischen oder hohen Fehler
+- [ ] GitHub Actions mit sichtbaren grünen Schritten
+- [ ] keine offenen kritischen oder hohen Fehler
 
-## 2. Rollen und Kernspiel
+## Hub und Bedienbarkeit
 
-- [ ] Spielstart mit 3 und 20 Personen
-- [ ] maximal sechs Imposter möglich
-- [ ] doppelte Namen und ungültige Imposter-Werte werden blockiert
-- [ ] Rollenverteilung ist unabhängig von der Aufdeckreihenfolge
-- [ ] über wiederholte Runden ist die zuerst aufdeckende Person nicht systematisch Imposter
-- [ ] gleiche Seeds erzeugen reproduzierbare Rollen und Aufdeckreihenfolge
-- [ ] mehrere Imposter sind eindeutig und korrekt verteilt
-- [ ] Kartenübergabe zeigt nur die aktuelle Rolle
-- [ ] sichtbare Karte wird bei Fokusverlust automatisch verdeckt
-- [ ] verdeckte Karte kann nicht ohne erneutes Öffnen weitergegeben werden
-- [ ] Diskussion, Timer, Abstimmung, Stichwahl und Ratechance funktionieren
-- [ ] Selbstwahl und doppelte Stimmen werden verhindert
-- [ ] Punkte, Rangliste, Verlauf und nächste Runde sind korrekt
-- [ ] Begriffe wiederholen sich erst nach erschöpftem Pool
-- [ ] Match endet nach der gewählten Rundenzahl
+- [ ] 45 eindeutige eingebaute Spiele und 0 irreführend geplante Spiele
+- [ ] Drei-Schritte-Einstieg verständlich
+- [ ] erster-Besuch-Onboarding verständlich und schließbar
+- [ ] kurze Hilfen in allen Hauptbereichen
+- [ ] Spielkarten zeigen klare Aktion, Spielerzahl, Dauer und Kategorie
+- [ ] Spieldetail besitzt verständliche Kurzregeln
+- [ ] Tastatur, Fokus, 200-%-Zoom, Reduced Motion und 44-Pixel-Touchziele
 
-## 3. Timer und Geräteverhalten
+## Game-Creator
 
-- [ ] Timer startet, pausiert und setzt korrekt fort
-- [ ] Timer übersteht App-Wechsel, Hintergrund und Neuladen
-- [ ] abgelaufener Timer bleibt bei Rückkehr abgelaufen
-- [ ] Wake Lock wird während der Diskussion angefordert
-- [ ] Wake Lock wird vor Abstimmung und im Hintergrund freigegeben
-- [ ] Spiel funktioniert ohne Wake-Lock-API
-- [ ] Bildschirmrotation und Energiesparmodus geprüft
+- [ ] alle sechs Vorlagen funktionieren
+- [ ] Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenspiel erstellen
+- [ ] mehrere Kategorien je Spiel
+- [ ] Icon, Akzent, Gruppe, Dauer und Altersstufe bleiben erhalten
+- [ ] mindestens drei Karten werden erzwungen
+- [ ] Duplikate und Unicode-Varianten werden bereinigt
+- [ ] Auswahlkarten bleiben nach Speichern, Export und Import strukturiert
+- [ ] Bearbeiten, Kopieren und Löschen
+- [ ] eigenes Spiel erscheint im Hub und ist spielbar
+- [ ] bis zu 40 Spiele, 8 Kategorien und 200 Karten geprüft
+- [ ] Speicherfehler löst Rollback aus
+- [ ] beschädigte Creator-Daten werden verworfen
 
-## 4. Speicherung und Datenschutz
+## Spielengines
 
-- [ ] aktives Spiel kann nach Neuladen fortgesetzt werden
-- [ ] alte Daten werden auf Version 7 migriert
-- [ ] beschädigte Daten werden sicher verworfen
-- [ ] Einstellungen, Verlauf und eigene Kategorien bleiben lokal erhalten
-- [ ] vollständige JSON-Sicherung kann exportiert und importiert werden
-- [ ] ungültige oder zu große Sicherung wird abgelehnt
-- [ ] fehlgeschlagener Import besitzt Rollback
-- [ ] alle lokalen Daten können vollständig gelöscht werden
-- [ ] keine Analyse-, Tracking- oder Werbedienste
-- [ ] keine Secrets oder `.env`-Dateien im Repository
+- [ ] alle 27 Quick-, Trend- und Viral-Modi vollständig
+- [ ] alle 4 Advanced-Spiele vollständig
+- [ ] Word Imposter vollständig
+- [ ] 3-, 5-, 10- und 20-Runden-Sessions
+- [ ] Wiederaufnahme und Spieler-Snapshot
+- [ ] Verlauf und Statistik zählen genau einmal
+- [ ] geheime Rollen, Figuren, Antworten und Missionen bleiben geschützt
 
-## 5. PWA und Offline
+## Smart Party Night
 
-- [ ] Manifest besitzt stabile relative Werte für `id`, `start_url` und `scope`
-- [ ] 192- und 512-Pixel-PNG-Icons sind gültig
-- [ ] Android- und Apple-Installationsmetadaten vorhanden
-- [ ] Cache `secret-circle-v17` enthält alle Kernressourcen
-- [ ] `role-assignment.js`, `setup-ux.js`, `privacy-guard.js` und `wake-lock.js` sind offline verfügbar
-- [ ] nur der aktuelle Cache bleibt bestehen
-- [ ] App startet nach erstem Online-Aufruf vollständig offline
-- [ ] Installation und Update auf Android erfolgreich
-- [ ] Installation und Update auf iOS erfolgreich
+- [ ] 15, 30, 45, 60 und 90 Minuten
+- [ ] Alters-, Gruppen- und Stimmungsfilter
+- [ ] Fortschritt aus allen Engine-Familien
+- [ ] Wiederaufnahme nach Neustart
+- [ ] eigene Spiele werden sinnvoll behandelt oder bewusst ausgeschlossen
 
-## 6. Browser und Accessibility
+## Daten und Datenschutz
 
-- [ ] aktuelles Chrome Android
-- [ ] aktuelles Safari iOS
-- [ ] Chrome, Firefox und Safari Desktop
-- [ ] kleine und große Smartphone-Breite
-- [ ] iPhone-Safe-Areas
-- [ ] vollständige Tastaturbedienung
-- [ ] sichtbarer und logischer Fokus
-- [ ] verständliche Labels und Statusmeldungen
-- [ ] 200-Prozent-Vergrößerung
-- [ ] Screenreader-Kurztest
-- [ ] reduzierte Bewegung und ausreichender Kontrast
-- [ ] Touchflächen mindestens 44 × 44 Pixel
+- [ ] Gesamtexport enthält eigene Spiele, Packs und alle Sessionarten
+- [ ] Creator-Bibliothek separat exportierbar und importierbar
+- [ ] vollständige Löschung aller `secret-circle-*`-Schlüssel
+- [ ] Import-Rollback bei Speicherfehler
+- [ ] keine Analyse-, Werbe- oder Tracking-Dienste
+- [ ] Anime-, Geld-, Preis-, Social- und Creator-Hinweise korrekt
 
-## 7. Inhalt und Sicherheit
+## PWA und Offline
 
-- [ ] alle 14 Kategorien redaktionell geprüft
-- [ ] alle 168 Begriffe und Hilfswörter redaktionell geprüft
-- [ ] keine ungeeigneten oder diskriminierenden Inhalte
-- [ ] dynamische Inhalte werden escaped
-- [ ] eigene Kategorien führen keinen HTML- oder Skriptcode aus
-- [ ] Content Security Policy blockiert fremde Skripte
-- [ ] keine unnötigen externen Ressourcen
-- [ ] Rollen können nicht aus der Aufdeckreihenfolge abgeleitet werden
+- [ ] nur Cache `secret-circle-v29` aktiv
+- [ ] Hub, Creator, Schnellhilfe und alle Engines offline
+- [ ] Update von älterem Cache auf v29
+- [ ] lokale Spieler, Packs, eigene Spiele und Sessions überstehen Update
+- [ ] Android und iPhone/iPad installiert
 
-## 8. Realer Party-Betatest
+## Reale Partytests
 
-- [ ] vollständiges Match mit 3–4 Personen
-- [ ] vollständiges Match mit mindestens 8 Personen
-- [ ] mindestens ein Match mit mehreren Impostern
-- [ ] Einrichtung und Kartenübergabe werden ohne Erklärung verstanden
-- [ ] automatische Kartenverdeckung wird verstanden
-- [ ] Aufdeckreihenfolge erzeugt keinen Rollenverdacht
-- [ ] Abstimmung, Punkte und Stichwahl werden verstanden
-- [ ] keine Blockade oder unklare Sackgasse
-- [ ] Feedback und Fehler dokumentiert
+- [ ] Gruppe mit 3–4 Personen
+- [ ] Gruppe mit mindestens 8 Personen
+- [ ] alle 45 eingebauten Spiele real geprüft
+- [ ] mindestens drei selbst erstellte Spiele real geprüft
+- [ ] Creator ohne Hilfe von Entwicklern bedienbar
+- [ ] keine kritischen oder hohen Fehler offen
 
-## 9. Release-Dokumentation
+## Bilder, Icons und Animationen
 
-- [ ] Version und Release-Commit festgelegt
-- [ ] Changelog und bekannte Einschränkungen aktuell
-- [ ] Rollback und Backup-Kompatibilität dokumentiert
-- [ ] Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt
-- [ ] Testperson und Testdatum eingetragen
+- [ ] eigenes Logo- und Iconsystem
+- [ ] Kategorieillustrationen
+- [ ] Topspiel-Keyvisuals
+- [ ] Animationen beachten Reduced Motion
+- [ ] Assetbudgets aus `ASSET_PLAN.md` eingehalten
+- [ ] keine kopierten Designs oder fremden Medien
 
-## Freigabe
+## Inhalte und Recht
 
-- Version:
-- Commit:
-- Testdatum:
-- Getestet von:
-- Ergebnis: `GO` / `NO_GO`
-- Offene Einschränkungen:
+- [ ] Karten und Altersstufen redaktionell geprüft
+- [ ] Anime-Fan-Content rechtlich geprüft
+- [ ] Creator-Hinweise und Nutzerverantwortung verständlich
+- [ ] Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben vorhanden
+
+Ohne vollständig dokumentierte grüne Gates bleibt der öffentliche Release `NO_GO`.

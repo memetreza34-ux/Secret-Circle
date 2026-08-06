@@ -1,8 +1,51 @@
-# Secret Circle
+# Secret Circle Party Hub
 
-Secret Circle ist ein lokales Imposter-Partyspiel für drei bis zwanzig Personen. Eine oder mehrere Personen kennen den geheimen Begriff nicht und müssen anhand der Hinweise unauffällig bleiben.
+Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
 
-**Aktueller Stand:** `1.0.0-beta.3` – umfangreiche Produktionsbeta, noch ohne öffentliche Release-Freigabe.
+## Aktueller Umfang
+
+- **45 eingebaute, technisch spielbare Spiele**
+- **27 Quick-, Trend- und Viral-Modi**
+- **4 Advanced-Spiele**
+- Word Imposter
+- Smart Party Night für 15–90 Minuten
+- eigene Text-Packs
+- lokaler No-Code-Game-Creator
+- bis zu **40 selbst erstellte Spiele**
+- eigene wiederaufnehmbare Creator-Spielengine
+- Offline-Core `secret-circle-v30`
+
+## Einfacher Einstieg
+
+Der Party Hub erklärt den Ablauf in drei Schritten:
+
+1. Spieler festlegen
+2. Spiel auswählen
+3. kurze Regeln lesen und starten
+
+Jeder Hauptbereich besitzt kurze kontextabhängige Hilfen. Spielkarten zeigen Name, Kurzbeschreibung, Spielerzahl, Dauer, Inhaltsmenge und eine klare Aktion.
+
+## Eigenes Spiel erstellen
+
+`creator.html` führt ohne Programmieren durch vier Schritte:
+
+1. Vorlage wählen
+2. Name, Icon, Akzent und Gruppe festlegen
+3. Kategorien und Karten eintragen
+4. prüfen, speichern und direkt testen
+
+Vorlagen:
+
+- Fragen & Aussagen
+- Entweder oder
+- Erraten & Darstellen
+- Challenges
+- Story & Kreativität
+- Meinung & Debatte
+
+Eigene Spiele lassen sich bearbeiten, kopieren, löschen, exportieren, importieren und direkt im Party Hub spielen. Pro Spiel sind bis zu acht Kategorien und bis zu 200 Karten je Kategorie vorgesehen.
+
+Die dedizierte Creator-Spielengine unterstützt 3, 5, 10 oder 20 Runden, lokale Wiederaufnahme, Spieler-Snapshots, Punkte, Verlauf und Statistik. Erratenspiele besitzen eine geschützte Begriffsansicht vor der gemeinsamen Runde.
 
 ## Start
 
@@ -10,100 +53,29 @@ Secret Circle ist ein lokales Imposter-Partyspiel für drei bis zwanzig Personen
 python -m http.server 8080
 ```
 
-Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App offline verwendet und auf unterstützten Geräten installiert werden.
+- Hub: `/party.html`
+- Creator: `/creator.html`
+- Word Imposter: `/index.html`
+- Advanced: `/advanced.html?game=question-imposter`
+- Trend: `/quick-play.html?game=anime-guess`
+- Viral: `/quick-play.html?game=guess-the-price`
+- eigenes Spiel: `/quick-play.html?game=<custom-game-id>`
 
-## Funktionen
+## Produkt- und Designpläne
 
-- drei bis zwanzig eindeutige Spielernamen
-- Live-Anzeige der erkannten Personen und des gültigen Imposter-Bereichs
-- ein bis maximal sechs Imposter, auch bei wiederhergestellten Spielständen
-- unabhängige Rollenverteilung: Die Imposter werden getrennt von der Aufdeckreihenfolge ausgelost
-- vierzehn integrierte Kategorien mit 168 Begriffen
-- gemischter Modus und eigene Kategorien im Format `Begriff | Hilfswort`
-- optionales neutrales Hilfswort
-- keine Begriffswiederholung, bis der gewählte Pool aufgebraucht ist
-- geheime Kartenübergabe mit automatischer Verdeckung bei App-Wechsel
-- blockierte Weitergabe, bis eine automatisch verdeckte Karte erneut geöffnet wurde
-- optionaler Bildschirm-Wake-Lock während der Diskussionsrunde
-- deadline-basierter Timer mit Pause, Hintergrund- und Neulade-Wiederherstellung
-- geheime Abstimmung, Selbstwahl- und Doppelstimmenschutz
-- begrenzte Stichwahl, Imposter-Ratechance, Punkte, Rangliste und Mehr-Runden-Matches
-- lokaler Verlauf und Wiederaufnahme unterbrochener Spiele
-- versionierte Migration, beschädigte-Daten-Wiederherstellung und vollständige JSON-Sicherung
-- vollständiges Löschen aller lokalen Daten
-- installierbare PWA mit 192- und 512-Pixel-PNG-Icons
-- vollständiger Offline-Cache `secret-circle-v18` für App, Rollenverteilung, Datenschutz, Inhalte und Schutzmodule
-- restriktive Content Security Policy, keine Anmeldung, kein Tracking und keine Serverübertragung von Spieldaten
+- `MODE_UNIVERSE.md`: 122-Modi-Universum
+- `TREND_FORMATS.md`: frühere, aktuelle und zukünftige Trendformate
+- `ASSET_PLAN.md`: Icons, Illustrationen, Animationen und Produktionsbudgets
+- `ARCHITECTURE.md`: Speicher-, Offline-, Datenschutz- und Qualitätsverträge
 
-## Architektur
-
-- `game-engine.js`: deterministische Spielregeln, Timer, Abstimmung, Punkte und Matches
-- `role-assignment.js`: unabhängige Rollenverteilung und globale Grenze von sechs Impostern
-- `word-packs.js`: integrierte Kategorien und Begriffe
-- `data-store.js`: versionierte Speicherung, Migration, Backup und Wiederherstellung
-- `setup-ux.js`: Live-Validierung und Synchronisierung gespeicherter Einstellungen
-- `privacy-guard.js`: automatische Verdeckung geheimer Karten
-- `wake-lock.js`: optionaler Bildschirmschutz während der Diskussion
-- `runtime-guard.js`: globale Fehleranzeige und sicherer PWA-Update-Wechsel
-- `app.js`: Benutzeroberfläche und Ablaufsteuerung
-- `sw.js`: Offline-Cache und PWA-Betrieb
-
-## Automatisierte Prüfung
+## Tests
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
 npx playwright install --with-deps chromium
 npm run ci
-```
-
-Zusätzlicher Browser-Smoke-Test:
-
-```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Die Prüfungen umfassen unter anderem:
-
-- Engine-, Speicher-, Inhalts-, Rollenverteilungs- und Fuzz-Tests
-- unabhängige Rollenverteilung ohne Kopplung an die Aufdeckreihenfolge
-- Ablehnung von mehr als sechs Impostern bei neuen und wiederhergestellten Spielen
-- Grenzwerte mit 3–20 Personen
-- vollständige Desktop- und Mobilspielabläufe
-- Timer, Verlauf, Backup, Migration und beschädigte Daten
-- Karten-Sichtschutz, Wake Lock, Accessibility und Eingabesicherheit
-- Offline-Core, Manifest, Installationsicons und Service-Worker-Aktualisierung
-- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
-
-## Dokumentation
-
-- `RELEASE_STATUS.md` – Fortschritt und offene Blocker
-- `RELEASE_CHECKLIST.md` – verbindliche Freigabekriterien
-- `MANUAL_TEST_PLAN.md` – reale Geräte- und Partytests
-- `DEPLOYMENT.md` – GitHub Pages, Update und Rollback
-- `CHANGELOG.md` – Änderungen des Beta-Stands
-- `KNOWN_LIMITATIONS.md` – bekannte Grenzen
-- `SECURITY.md` – Sicherheitsmodell und Meldeweg
-- `CI_TROUBLESHOOTING.md` – Diagnose des GitHub-Actions-Problems
-- `privacy.html` – Datenschutzinformationen
-
-## Release-Gate
-
-Ein öffentlicher Release ist erst vorgesehen, wenn:
-
-1. `npm run ci` vollständig erfolgreich läuft,
-2. GitHub Actions auf dem endgültigen Commit grün ist,
-3. die Rollenverteilung über reale Runden keine Verbindung zur Aufdeckreihenfolge zeigt,
-4. Android- und iOS-Installation, Offline-Start und Update getestet wurden,
-5. Karten-Sichtschutz, Timer und Wake Lock auf realen Geräten geprüft wurden,
-6. mindestens ein kleiner und ein großer Partytest bestanden sind,
-7. keine kritischen oder hohen Fehler offen sind,
-8. erforderliche Anbieter-, Kontakt- und Impressumsangaben ergänzt wurden.
-
-## Status
-
-- Funktionsumfang und interne Produktionsstruktur: `GO`
-- automatisierter Testumfang: `GO_WITH_EXTERNAL_CI_BLOCKER`
-- kontrollierter lokaler Browser-Betatest: `GO_WITH_CONDITIONS`
-- reale Android-/iOS- und Partytests: `AUSSTEHEND`
-- öffentliche produktive Veröffentlichung: `NO_GO`
+Der Stand ist für den vollständigen automatisierten Testlauf vorbereitet. Ein grüner endgültiger Lauf ist noch nicht dokumentiert. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.

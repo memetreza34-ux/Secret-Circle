@@ -1,100 +1,78 @@
-# Secret Circle – Release-Status
+# Secret Circle Party Hub – Release-Status
 
-Stand: 4. August 2026  
-Version: `1.0.0-beta.3`  
-Pull Request: `#3`  
-Zielbranch: `main`
+6. August 2026 · `1.0.0-beta.3` · Draft-PR #11
 
-## Gesamtbewertung
+## Umfang
 
-| Bereich | Stand | Bewertung |
-|---|---:|---|
-| Kernspiel und Regeln | 99 % | vollständiger lokaler Ablauf; unabhängige Rollenverteilung Version 2 |
-| Speicherung und Migration | 99 % | maximal sechs Imposter werden auch bei wiederhergestellten Spielen erzwungen |
-| PWA und Offline-Struktur | 98 % | Cache-Version 18 mit vollständigem Offline-Core |
-| Accessibility und mobile Bedienung | 97 % | Live-Setup, Safe Areas, Karten-Sichtschutz und Wake Lock |
-| Automatisierte Testabdeckung | 98 % | fünf Unit- und vierzehn E2E-Suiten plus Fuzz- und Cross-Browser-Struktur |
-| Dokumentation und Release-Prozess | 98 % | Checkliste, Testplan, Sicherheit, Deployment und Rollback vorhanden |
-| Reale Geräte- und Gruppentests | 35 % | noch nicht dokumentiert durchgeführt |
-| Öffentliche rechtliche Freigabe | 45 % | Anbieter-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben fehlen |
+- 45 eingebaute technisch spielbare Spiele
+- 27 Quick-, Trend- und Viral-Modi
+- 4 Advanced-Spiele
+- Smart Party Night
+- lokaler No-Code-Game-Creator mit 6 Vorlagen
+- bis zu 40 selbst erstellte Spiele
+- eigene wiederaufnehmbare Creator-Spielengine
+- Offline-Core `secret-circle-v30`
 
-## Gewichteter Fortschritt
+## Neu abgeschlossen
 
-- **Technische Produktbeta:** etwa **98 %**
-- **Bereit für den vollständigen lokalen Testlauf:** etwa **98 %**
-- **Bereit für reale Android-/iOS- und Party-Betatests:** etwa **95 %**
-- **Bereit für einen öffentlichen Produktionsrelease:** etwa **90 %**
+- vereinfachter Drei-Schritte-Einstieg im Party Hub
+- kurze Hilfen für Start, Katalog, Spieler, Favoriten, Verlauf, Daten und Creator
+- verständlichere Spielkarten und Aktionsbeschriftungen
+- „Kurz erklärt“-Block in Spieldetails
+- erster-Besuch-Onboarding
+- eigener Creator-Bereich mit Live-Vorschau
+- Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenvorlagen
+- mehrere Kategorien je eigenem Spiel
+- Bearbeiten, Kopieren, Löschen, Exportieren und Importieren
+- eigene Spiele erscheinen im normalen Hub-Katalog
+- eigene Spiele laufen über eine dedizierte 3-/5-/10-/20-Runden-Engine
+- Wiederaufnahme, Spieler-Snapshot, Punkte, Verlauf und Statistik für Creator-Spiele
+- geschützte Begriffsansicht für eigene Erratenspiele
+- Icon- und Akzentsystem als Vorbereitung für Bilder und Animationen
+- vollständiger Asset- und Motion-Produktionsplan
+- Creator, Hilfesystem und Creator-Spielengine vollständig in Offline-Core v30 aufgenommen
 
-Die Prozentwerte sind eine technische Projektbewertung und kein Nachweis für Fehlerfreiheit.
+## Fortschritt
 
-## Kritische abgeschlossene Verbesserungen
+| Bereich | Stand |
+|---|---:|
+| Word Imposter | 98 % |
+| Party-Hub-Grundstruktur | 98 % |
+| Bedienbarkeit und Erklärungen | 94 % |
+| 45 eingebaute Spiele | 86 % |
+| No-Code-Game-Creator | 89 % |
+| Creator-Spielengine | 87 % |
+| eigene Packs und Spiele | 96 % |
+| Quick-/Trend-/Viral-Engines | 89 % |
+| Advanced-Spiele | 88 % |
+| Speicherung und Backup | 98 % |
+| PWA und Offline | 97 % |
+| Accessibility und Mobile | 93 % |
+| visuelles Asset-System geplant | 88 % |
+| Bilder und Animationen produziert | 5 % |
+| automatisierte Testvorbereitung | 99 % |
+| reale Testbereitschaft | 90 % |
+| öffentlicher Release | 79 % |
+| vollständige 122-Modi-Vision funktional | 47 % |
 
-- vollständiger Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
-- Punkte, Rangliste, Stichwahl und Mehr-Runden-Matches
-- unabhängige Rollenverteilung ohne Kopplung an die Aufdeckreihenfolge
-- maximal sechs Imposter bei neuen, fortgesetzten und importierten aktiven Spielen
-- deterministische Wiederholbarkeit ohne sichtbares Rollen-Muster
-- 14 Kategorien und 168 Begriff-Hinweis-Paare
-- Timer mit Hintergrund- und Neulade-Wiederherstellung
-- Live-Gruppengröße synchronisiert sich auch nach geladenen Einstellungen und Importen
-- automatische Kartenverdeckung und blockierte Weitergabe
-- optionaler Wake Lock mit sicherem Fallback
-- Speicherungsversion 7, Migration, Datenkorruptionsschutz und Backup-Rollback
-- vollständige lokale Datenlöschung
-- Offline-PWA mit Cache-Version 18
-- CSP, Eingabe-Escaping, Datenschutzseite und Laufzeit-Fehlerschutz
-- fünf Unit-Testdateien einschließlich Rollenverteilung und Fuzz-Tests
-- vierzehn E2E-Suiten einschließlich Rollenverteilung, Privatsphäre und Wake Lock
-- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
-- struktureller HTML-, Asset-, Manifest- und Service-Worker-Validator
+Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie ersetzen keinen bestandenen Testlauf.
 
-## Aktuelle Blocker
+## Blocker
 
-### 1. GitHub Actions startet keinen ersten Schritt
+1. endgültiger `npm run ci`-Lauf nicht grün dokumentiert
+2. Cross-Browser-Lauf nicht grün dokumentiert
+3. GitHub Actions scheitert weiterhin vor sichtbaren Workflow-Schritten
+4. Creator-Flows und eigene Spiele auf echten Android-/iOS-Geräten ungeprüft
+5. PWA-Update auf `secret-circle-v30` nicht praktisch dokumentiert
+6. reale Gruppenprüfung aller 45 eingebauten Spiele fehlt
+7. selbst erstellte Spiele benötigen reale Usability-Tests
+8. Icons, Illustrationen und Animationen sind noch nicht produziert
+9. Inhalts-, Alters-, Fan-Content- und Rechtsprüfung fehlt
 
-Der Workflow endet weiterhin vor `actions/checkout` und liefert weder Schritte noch normale Logs. Ein erneuter Workflow-Versuch zeigte dasselbe Verhalten. Issue #7 verfolgt den externen Blocker.
+## Entscheidung
 
-### 2. Vollständiger lokaler Testlauf ist noch nicht protokolliert
-
-```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npx playwright install --with-deps chromium
-npm run ci
-
-npx playwright install --with-deps chromium firefox webkit
-npm run test:cross-browser
-```
-
-### 3. Reale Geräte- und Partytests fehlen
-
-Issue #8 verfolgt:
-
-- Android- und iPhone-/iPad-Installation
-- Offline-Start und Update auf `secret-circle-v18`
-- Timer, Karten-Sichtschutz und Wake Lock
-- wiederholte Prüfung, dass die Aufdeckreihenfolge keinen Imposter verrät
-- Partytest mit 3–4 Personen
-- Partytest mit mindestens 8 Personen und mehreren Impostern
-
-### 4. Öffentliche Anbieterinformationen fehlen
-
-Vor einer öffentlichen oder kommerziellen Veröffentlichung müssen die erforderlichen Verantwortlichen-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben ergänzt werden.
-
-## Freigabestatus
-
-- **Code für vollständigen lokalen Testlauf:** `GO`
-- **Kontrollierter Browser-Betatest:** `GO_WITH_CONDITIONS`
-- **Realer Geräte- und Party-Betatest:** `GO_WITH_CONDITIONS`
-- **Merge in `main`:** `NO_GO`, bis ein vollständiger Testlauf erfolgreich protokolliert ist
-- **Öffentlicher Produktionsrelease:** `NO_GO`
-
-## Release-Candidate-Schwelle
-
-Die App wird erst als Release Candidate bezeichnet, wenn:
-
-1. `npm run ci` erfolgreich ist,
-2. `npm run test:cross-browser` erfolgreich ist,
-3. GitHub Actions sichtbare Schritte ausführt und grün endet,
-4. Rollenverteilung, Installation, Offline-Modus, Sichtschutz und Wake Lock auf realen Geräten geprüft sind,
-5. ein kleiner und ein großer Partytest bestanden sind,
-6. keine kritischen oder hohen Fehler offen sind.
+- vollständiger automatisierter Testlauf: `GO`
+- kontrollierter Entwickler-Browsertest: `GO_WITH_CONDITIONS`
+- realer Geräte-/Party-Betatest: `NO_GO` bis grüne automatisierte Läufe
+- Merge von PR #11: `NO_GO` bis grüne Kernprüfungen
+- öffentlicher Produktionsrelease: `NO_GO`

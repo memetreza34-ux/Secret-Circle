@@ -19,7 +19,6 @@ test('unexpected runtime errors produce a recoverable user message', async ({ pa
       error: new Error('synthetic runtime failure')
     }));
   });
-
   await expect(page.locator('#status')).toHaveClass(/error/);
   await expect(page.locator('#status')).toContainText('unerwarteter Fehler');
   await expect(page.locator('#status')).toContainText('gespeicherter Spielstand bleibt erhalten');
@@ -32,17 +31,25 @@ test('critical resource errors are surfaced instead of leaving a silent broken s
     script.dispatchEvent(new Event('error'));
     script.remove();
   });
-
   await expect(page.locator('#status')).toHaveClass(/error/);
-  await expect(page.locator('#status')).toContainText('unerwarteter Fehler');
+  await expect(page.locator('#status')).toContainText('benötigte App-Datei');
 });
 
-test('runtime guard is available from the complete offline cache', async ({ page }) => {
+test('all game engines Creator and guidance are available from cache v30', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v18');
-    return Boolean(await cache.match('./runtime-guard.js'));
+    const cache = await caches.open('secret-circle-v30');
+    const assets = [
+      'runtime-guard.js', 'party-night.js', 'party-night.css', 'quick-play.html',
+      'party-trending-catalog.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
+      'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
+      'party-created-modes.js', 'quick-loader.js', 'party-quick.css', 'creator.html',
+      'game-creator.js', 'creator-page.js', 'creator.css', 'party-guide.js', 'party-guide.css'
+    ];
+    const result = {};
+    for (const asset of assets) result[asset] = Boolean(await cache.match(`./${asset}`));
+    return result;
   });
-  expect(cached).toBe(true);
+  expect(Object.values(cached).every(Boolean)).toBe(true);
 });

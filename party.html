@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Secret Circle Party Hub – viele lokale Partyspiele auf einem Gerät.">
+  <meta name="referrer" content="no-referrer">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Secret Circle">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Secret Circle – Party Hub</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="party.css">
+  <link rel="stylesheet" href="party-extra.css">
+  <link rel="stylesheet" href="party-night.css">
+</head>
+<body>
+  <a class="skip-link" href="#hub-main">Zum Inhalt springen</a>
+  <div class="hub-shell">
+    <header class="hub-header">
+      <div class="brand-row">
+        <a class="brand" href="party.html" aria-label="Secret Circle Party Hub Startseite">
+          <span class="brand-mark" aria-hidden="true">SC</span>
+          <span><strong>Secret Circle</strong><small>Party Hub</small></span>
+        </a>
+        <div class="header-actions">
+          <span id="hub-connection" class="connection">Online</span>
+          <button id="hub-install-app" class="ghost-button" type="button" hidden>Installieren</button>
+          <a class="ghost-button" href="index.html">Word Imposter direkt</a>
+        </div>
+      </div>
+      <nav class="hub-nav" aria-label="Hauptnavigation">
+        <button type="button" data-view-target="home" aria-current="page">Start</button>
+        <button type="button" data-view-target="games">Spiele</button>
+        <button type="button" data-view-target="players">Spieler</button>
+        <button type="button" data-view-target="favorites">Favoriten</button>
+        <button type="button" data-view-target="stats">Verlauf</button>
+        <button type="button" data-view-target="settings">Daten</button>
+      </nav>
+    </header>
+
+    <main id="hub-main">
+      <p id="hub-status" class="hub-status" role="status" aria-live="polite"></p>
+
+      <section id="view-home" class="hub-view" data-view="home" aria-labelledby="home-title">
+        <div class="hero-card">
+          <div>
+            <p class="eyebrow">Ein Handy · viele Spiele · komplett offline</p>
+            <h1 id="home-title">Der ganze Spieleabend in einer App</h1>
+            <p>Wähle schnell nach Stimmung, Gruppengröße und Dauer. Spieler, Favoriten und Verlauf bleiben lokal auf deinem Gerät.</p>
+            <div class="hero-actions">
+              <button id="browse-games" type="button">Alle Spiele ansehen</button>
+              <button id="quick-start" class="secondary" type="button">Schnellstart</button>
+            </div>
+          </div>
+          <div class="hero-metrics" aria-label="Inhalt des Party Hubs">
+            <div><strong id="playable-count">0</strong><span>spielbar</span></div>
+            <div><strong id="planned-count">0</strong><span>in Arbeit</span></div>
+            <div><strong id="content-count">0</strong><span>Karten</span></div>
+          </div>
+        </div>
+
+        <section class="section-block" aria-labelledby="featured-title">
+          <div class="section-title"><div><p class="eyebrow">Empfohlen</p><h2 id="featured-title">Sofort loslegen</h2></div><button class="text-link" type="button" data-view-target="games">Alle anzeigen</button></div>
+          <div id="featured-grid" class="game-grid featured-grid"></div>
+        </section>
+
+        <section class="section-block two-column" aria-label="Schnelle Auswahl">
+          <div>
+            <div class="section-title"><div><p class="eyebrow">Für eure Stimmung</p><h2>Quick Picks</h2></div></div>
+            <div class="quick-picks">
+              <button type="button" data-quick-filter="funny"><span>😂</span><strong>Lustig</strong><small>Locker und schnell</small></button>
+              <button type="button" data-quick-filter="competitive"><span>🏆</span><strong>Wettkampf</strong><small>Punkte und Druck</small></button>
+              <button type="button" data-quick-filter="deep"><span>💬</span><strong>Tiefer</strong><small>Reden und entdecken</small></button>
+              <button type="button" data-quick-filter="chaotic"><span>⚡</span><strong>Chaos</strong><small>Schnell und laut</small></button>
+            </div>
+          </div>
+          <div>
+            <div class="section-title"><div><p class="eyebrow">Zuletzt</p><h2>Weiter spielen</h2></div></div>
+            <div id="recent-list" class="compact-list empty-state">Noch kein Spiel gestartet.</div>
+          </div>
+        </section>
+      </section>
+
+      <section id="view-games" class="hub-view" data-view="games" hidden aria-labelledby="games-title">
+        <div class="page-heading">
+          <div><p class="eyebrow">Entdecken</p><h1 id="games-title">Alle Spiele</h1><p>Jedes Spiel zeigt sofort Spielerzahl, Dauer, Kategorien, Altersstufe und Status.</p></div>
+        </div>
+        <div class="filter-bar" aria-label="Spiele filtern">
+          <label class="search-field" for="game-search"><span>Suche</span><input id="game-search" type="search" placeholder="z. B. Imposter, Anime, Ranking, schnell"></label>
+          <label for="group-filter">Art<select id="group-filter"><option value="all">Alle Arten</option></select></label>
+          <label for="mood-filter">Stimmung<select id="mood-filter"><option value="all">Alle Stimmungen</option><option value="funny">Lustig</option><option value="competitive">Wettkampf</option><option value="deep">Tiefer</option><option value="chaotic">Chaos</option><option value="clever">Clever</option><option value="friendly">Locker</option></select></label>
+          <label for="player-filter">Gruppe<select id="player-filter"><option value="all">Alle Größen</option><option value="small">1–4 Personen</option><option value="medium">5–8 Personen</option><option value="large">9+ Personen</option></select></label>
+          <label for="age-filter">Altersstufe<select id="age-filter"><option value="all">Alle Inhalte</option><option value="family">Nur familienfreundlich</option><option value="teen">Bis ab 12</option></select></label>
+          <label for="status-filter">Status<select id="status-filter"><option value="all">Spielbar + geplant</option><option value="playable">Nur spielbar</option><option value="planned">In Arbeit</option></select></label>
+        </div>
+        <div class="catalog-summary"><strong id="result-count">0</strong><span>Spiele gefunden</span></div>
+        <div id="game-grid" class="game-grid"></div>
+      </section>
+
+      <section id="view-players" class="hub-view" data-view="players" hidden aria-labelledby="players-title">
+        <div class="page-heading"><div><p class="eyebrow">Gemeinsame Lobby</p><h1 id="players-title">Spieler & Presets</h1><p>Diese Liste wird von allen Hub-Spielen verwendet. Word Imposter verwaltet weiterhin seine eigene Match-Einrichtung.</p></div></div>
+        <div class="settings-grid">
+          <section class="panel" aria-labelledby="player-editor-title">
+            <h2 id="player-editor-title">Aktive Gruppe</h2>
+            <label for="hub-players">Ein Name pro Zeile</label>
+            <textarea id="hub-players" rows="10" maxlength="1200" aria-describedby="hub-players-help" placeholder="Alex&#10;Sam&#10;Mika&#10;Lina"></textarea>
+            <p id="hub-players-help" class="muted" aria-live="polite"></p>
+            <div class="inline-actions"><button id="save-players" type="button">Spieler speichern</button><button id="clear-players" class="secondary" type="button">Leeren</button></div>
+          </section>
+          <section class="panel" aria-labelledby="preset-title">
+            <h2 id="preset-title">Host-Presets</h2>
+            <p class="muted">Speichere häufige Gruppen, damit der nächste Spieleabend sofort starten kann.</p>
+            <label for="preset-name">Preset-Name</label>
+            <input id="preset-name" maxlength="40" placeholder="z. B. Freitagstruppe">
+            <button id="save-preset" type="button">Aktuelle Gruppe als Preset</button>
+            <div id="preset-list" class="preset-list empty-state">Noch kein Preset gespeichert.</div>
+          </section>
+        </div>
+      </section>
+
+      <section id="view-favorites" class="hub-view" data-view="favorites" hidden aria-labelledby="favorites-title">
+        <div class="page-heading"><div><p class="eyebrow">Deine Auswahl</p><h1 id="favorites-title">Favoriten</h1><p>Markierte Spiele erscheinen hier für einen besonders schnellen Start.</p></div></div>
+        <div id="favorites-grid" class="game-grid empty-state">Noch keine Favoriten gespeichert.</div>
+      </section>
+
+      <section id="view-stats" class="hub-view" data-view="stats" hidden aria-labelledby="stats-title">
+        <div class="page-heading"><div><p class="eyebrow">Nur lokal gespeichert</p><h1 id="stats-title">Verlauf & Statistik</h1><p>Keine Anmeldung, kein Tracking und keine Übertragung an einen Server.</p></div></div>
+        <div id="stat-cards" class="stat-cards"></div>
+        <section class="panel" aria-labelledby="achievement-title">
+          <div class="section-title"><div><p class="eyebrow"><span id="achievement-count">0</span> freigeschaltet</p><h2 id="achievement-title">Erfolge</h2></div></div>
+          <div id="achievement-grid" class="achievement-grid"></div>
+        </section>
+        <section class="panel section-block" aria-labelledby="history-title">
+          <div class="section-title"><h2 id="history-title">Letzte Hub-Spiele</h2><button id="clear-hub-history" class="secondary" type="button">Verlauf löschen</button></div>
+          <div id="hub-history" class="compact-list empty-state">Noch kein Hub-Spiel beendet.</div>
+        </section>
+      </section>
+
+      <section id="view-settings" class="hub-view" data-view="settings" hidden aria-labelledby="settings-title">
+        <div class="page-heading"><div><p class="eyebrow">Kontrolle bleibt bei dir</p><h1 id="settings-title">Daten & Einstellungen</h1><p>Alle Party-Hub- und Word-Imposter-Daten können gemeinsam gesichert, wiederhergestellt oder gelöscht werden.</p></div></div>
+        <div class="settings-stack">
+          <section class="data-panel" aria-labelledby="content-settings-title">
+            <h2 id="content-settings-title">Standardwerte</h2>
+            <div class="settings-grid">
+              <label for="default-session-length">Standardlänge für erweiterte Spiele<select id="default-session-length"><option value="3">3 Runden</option><option value="5" selected>5 Runden</option><option value="10">10 Runden</option><option value="20">20 Runden</option></select></label>
+              <label for="settings-age-level">Bevorzugte Altersstufe<select id="settings-age-level"><option value="all">Alle Inhalte</option><option value="family">Nur familienfreundlich</option><option value="teen">Bis ab 12</option></select></label>
+            </div>
+            <p class="muted">Die Altersstufe wird mit dem Filter im Spielekatalog synchronisiert. Geplante spätere Erwachsenen-Packs bleiben standardmäßig ausgeblendet.</p>
+          </section>
+          <section class="data-panel" aria-labelledby="backup-title">
+            <h2 id="backup-title">Vollständige lokale Sicherung</h2>
+            <p class="muted">Exportiert Hub-Spieler, Presets, Favoriten, Verlauf, Statistiken, aktive Sessions, eigene Hub- und Imposter-Kategorien, Einstellungen und Spielstände in eine JSON-Datei.</p>
+            <div class="data-actions">
+              <button id="hub-export-data" type="button">Alles exportieren</button>
+              <button id="hub-import-trigger" class="secondary" type="button">Sicherung importieren</button>
+              <input id="hub-import-data" class="file-input-hidden" type="file" accept="application/json,.json" aria-label="Secret-Circle-Gesamtsicherung auswählen">
+              <button id="hub-delete-data" class="danger-button" type="button">Alle lokalen Daten löschen</button>
+            </div>
+          </section>
+          <section class="data-panel" aria-labelledby="privacy-settings-title">
+            <h2 id="privacy-settings-title">Datenschutz</h2>
+            <p class="muted">Secret Circle benötigt kein Konto. Die App verwendet keine Analyse-, Werbe- oder Tracking-Dienste und sendet Spieldaten nicht an einen eigenen Server.</p>
+            <a class="ghost-button" href="privacy.html">Datenschutz vollständig ansehen</a>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="hub-footer">
+      <span>Secret Circle Party Hub · lokale Offline-PWA</span>
+      <div><a href="index.html">Word Imposter</a><a href="privacy.html">Datenschutz</a></div>
+    </footer>
+  </div>
+
+  <section id="game-detail" class="modal-layer" hidden aria-labelledby="detail-title" aria-modal="true" role="dialog">
+    <div class="modal-card">
+      <button id="close-detail" class="close-button" type="button" aria-label="Spieldetails schließen">×</button>
+      <div class="detail-heading"><span id="detail-icon" class="detail-icon" aria-hidden="true"></span><div><p id="detail-group" class="eyebrow"></p><h2 id="detail-title"></h2><p id="detail-description"></p></div></div>
+      <div id="detail-badges" class="badge-row"></div>
+      <section aria-labelledby="detail-packs-title"><h3 id="detail-packs-title">Kategorien & Inhalte</h3><div id="detail-packs" class="pack-grid"></div></section>
+      <section aria-labelledby="detail-rules-title"><h3 id="detail-rules-title">So funktioniert es</h3><ol id="detail-rules" class="rule-list"></ol></section>
+      <label id="pack-select-label" for="pack-select">Pack<select id="pack-select"></select></label>
+      <div class="modal-actions"><button id="start-selected-game" type="button">Spiel starten</button><button id="favorite-selected" class="secondary" type="button">Als Favorit speichern</button></div>
+    </div>
+  </section>
+
+  <section id="play-layer" class="play-layer" hidden aria-labelledby="play-title">
+    <div class="play-topbar"><button id="exit-game" class="ghost-button" type="button">Spiel verlassen</button><div><span id="play-progress"></span><strong id="play-score"></strong></div></div>
+    <div class="play-card">
+      <p id="play-eyebrow" class="eyebrow"></p>
+      <h1 id="play-title"></h1>
+      <p id="play-player" class="active-player"></p>
+      <div id="play-content" class="play-content" aria-live="polite"></div>
+      <div id="play-options" class="play-options"></div>
+      <div id="play-actions" class="play-actions"></div>
+    </div>
+  </section>
+
+  <script src="runtime-guard.js"></script>
+  <script src="party-catalog.js"></script>
+  <script src="party-expansion.js"></script>
+  <script src="party-trending-catalog.js"></script>
+  <script src="party-mega-catalog.js"></script>
+  <script src="party-viral-catalog.js"></script>
+  <script src="party-routing.js"></script>
+  <script src="party-custom-packs.js"></script>
+  <script src="party-hub.js"></script>
+  <script src="party-hub-plus.js"></script>
+  <script src="party-hub-polish.js"></script>
+  <script src="party-night.js"></script>
+  <script src="party-data-tools.js"></script>
+</body>
+</html>

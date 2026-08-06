@@ -1,33 +1,75 @@
 # Bekannte Einschränkungen
 
-Diese Punkte sind keine versteckten Fehler, sondern bewusst dokumentierte Grenzen des aktuellen Beta-Stands.
+Stand: `1.0.0-beta.3`, 45 eingebaute Spiele, lokaler Creator und Offline-Core `secret-circle-v29`.
 
-## Produkt
+## Gemeinsames Gerät
 
-- Secret Circle ist ein lokales Pass-and-Play-Spiel auf einem gemeinsam genutzten Gerät.
-- Es gibt derzeit keinen Online-Mehrspielermodus, keine Räume und keine Konten.
-- Einstellungen, Spielstände, Verlauf und eigene Kategorien werden nur im Browser-Speicher des jeweiligen Geräts gespeichert.
-- Gelöschte Browserdaten können nur aus einer zuvor exportierten Sicherungsdatei wiederhergestellt werden.
-- Ein Match endet, sobald die Abstimmung eine unschuldige Person oder einen Imposter bestimmt beziehungsweise die begrenzte Stichwahl erneut unentschieden bleibt.
-- Bei mehreren Impostern beendet bereits die Entdeckung eines Imposters die Runde; die übrigen Imposter werden anschließend ebenfalls aufgedeckt.
+Secret Circle ist derzeit lokales Pass-and-Play. Es gibt keine Raumcodes, Konten, privaten Rollen auf persönlichen Handys oder geräteübergreifende Synchronisierung. Geheime Karten müssen physisch abgeschirmt werden.
 
-## Installation und Offline-Betrieb
+## Automatisierter Teststatus
 
-- Die App muss einmal vollständig online geladen werden, bevor alle Dateien offline verfügbar sind.
-- Die Installationsoberfläche unterscheidet sich je nach Browser. Auf iPhone und iPad erfolgt die Installation über das Teilen-Menü und „Zum Home-Bildschirm“.
-- Browser und Betriebssystem können lokalen Speicher bei starkem Speicherdruck entfernen. Für wichtige eigene Kategorien oder laufende Matches sollte eine Sicherung exportiert werden.
-- Benachrichtigungen im Hintergrund und ein Systemwecker sind nicht Bestandteil dieser Beta.
+Unit-, E2E-, Offline-, Sicherheits-, Accessibility- und Cross-Browser-Prüfungen sind vorbereitet. Der endgültige v29-Gesamtlauf ist noch nicht grün dokumentiert. GitHub Actions hat zuletzt vor sichtbaren Workflow-Schritten Probleme gezeigt.
 
-## Geräte und Browser
+## 45 eingebaute Spiele
 
-- Automatisierte Browserprüfungen simulieren Desktop-Chromium und ein mobiles Android-Gerät, ersetzen aber keine realen Android-, iPhone- und iPad-Tests.
-- Safari, Firefox, Bildschirmrotation, gesperrter Bildschirm und Energiesparmodus müssen vor der öffentlichen Freigabe manuell geprüft werden.
-- Vibration beim Timerende ist nur verfügbar, wenn Browser und Gerät die Vibrations-API unterstützen.
+Alle eingebauten Spiele sind technisch startbar. Sie sind aber noch nicht vollständig mit realen Gruppen auf Verständlichkeit, Balance, Wartezeit, Wiederholungswert, sozialen Druck und Alterseignung geprüft.
 
-## Veröffentlichung
+Zeichnen & Raten besitzt noch keine integrierte Canvas-Zeichenfläche. Geräusche- und Melodie-Modi verwenden menschliche Darstellung und liefern keine geschützten Aufnahmen oder Liedtexte.
 
-- Vor einer öffentlichen oder kommerziellen Veröffentlichung müssen Verantwortlicher, Kontaktmöglichkeit, Hosting-Anbieter und gegebenenfalls ein Impressum ergänzt werden.
-- GitHub Actions muss auf dem endgültigen Release-Commit erfolgreich laufen.
-- Ein realer Party-Betatest mit mehreren Gruppen ist vor der Produktionsfreigabe erforderlich.
+## Game-Creator
+
+Der Creator unterstützt sechs Vorlagen: Fragen, Auswahl, Erraten, Challenges, Story und Debatte. Strukturierte Rollen-, Preis-, Zahlen-, Buzzer-, Tabu-, Spektrum- und komplexe Abstimmungsspiele benötigen spätere spezialisierte Editoren.
+
+Grenzen:
+
+- höchstens 40 selbst erstellte Spiele
+- höchstens 8 Kategorien je Spiel
+- höchstens 200 Karten je Kategorie
+- nur lokale Speicherung und JSON-Export
+- keine automatische Inhaltsmoderation
+- keine Bild-, Audio- oder Videouploads
+- Ersteller sind für Rechte, Eignung und Altersstufe ihrer Texte verantwortlich
+
+## Eigene Packs
+
+Der bestehende Pack-Editor unterstützt kompatible einfache Textmodi. Strukturierte Karten bleiben bewusst blockiert. Pro Gerät sind bis zu 30 Packs mit jeweils bis zu 150 Karten vorgesehen.
+
+## Timer nach Neuladen
+
+Aktive Sessions werden wiederhergestellt. Ein bereits laufender Quick-, Trend- oder Viral-Timer startet nach vollständigem Neuladen für die aktuelle Phase erneut, weil die genaue Deadline noch nicht persistiert wird.
+
+## Smart Party Night
+
+Der Planer arbeitet lokal und heuristisch mit Spielerzahl, Dauer, Stimmung, Altersstufe, Favoriten und Verlauf. Empfehlungen sind keine Garantie für den Geschmack der Gruppe. Zeitangaben sind Näherungen.
+
+## Anime- und Fan-Inhalte
+
+Das Anime-Quiz ist textbasiert und inoffiziell. Es enthält keine fremden Bilder, Logos, Videos, Audios oder Zitate. Allgemein bekannte Figurennamen benötigen vor öffentlicher oder kommerzieller Veröffentlichung eine gesonderte rechtliche und redaktionelle Prüfung.
+
+## Geld und Preise
+
+Geld-Challenges sind hypothetisch. „Preis schätzen“ verwendet feste Spielwerte und keine aktuellen Händler- oder Marktdaten. Die Werte eignen sich nicht für Kaufentscheidungen.
+
+## Persönliche Fragen
+
+Finger runter, Hot Seat, Wer kennt mich am besten?, Pass das Handy und ähnliche Modi können persönliche Situationen berühren. Überspringen ist vorgesehen. Komfort und Gruppendruck müssen real getestet werden.
+
+## Bilder, Icons und Animationen
+
+Das technische Icon- und Akzentsystem ist vorbereitet. Die endgültigen eigenständigen Illustrationen, SVG-Icons, Kartenhintergründe und Motion-Übergänge sind noch nicht produziert. `ASSET_PLAN.md` dokumentiert Reihenfolge und Budgets.
+
+## Offline und PWA
+
+Die App muss einmal vollständig online geladen werden. Service Worker und Installation benötigen HTTPS oder `localhost`. Der Update-Pfad auf `secret-circle-v29` ist automatisiert vorbereitet, aber noch nicht auf realen Android- und iOS-Geräten dokumentiert.
+
+Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck entfernen. Wichtige eigene Spiele und Packs sollten exportiert werden.
+
+## Backup
+
+Gesamtsicherungen und Creator-Exporte sind unverschlüsselte JSON-Dateien. Wer die Datei erhält, kann gespeicherte Namen, eigene Inhalte, Einstellungen und Sessions lesen. Es gibt keine automatische Cloud-Sicherung.
+
+## Rechtliche Veröffentlichung
+
+Vor öffentlicher oder kommerzieller Veröffentlichung fehlen konkrete Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben sowie die abschließende Inhalts-, Fan-Content- und Altersprüfung.
 
 Die verbindlichen Freigabekriterien stehen in `RELEASE_CHECKLIST.md`.

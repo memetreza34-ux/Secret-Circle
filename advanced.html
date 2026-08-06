@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Secret Circle – erweiterte lokale Partyspiele.">
+  <meta name="referrer" content="no-referrer">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Secret Circle">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Secret Circle – Spiel</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="party.css">
+  <link rel="stylesheet" href="party-extra.css">
+</head>
+<body>
+  <a class="skip-link" href="#advanced-main">Zum Spiel springen</a>
+  <main id="advanced-main" class="advanced-shell">
+    <header class="advanced-header">
+      <a class="brand" href="party.html"><span class="brand-mark" aria-hidden="true">SC</span><span><strong>Secret Circle</strong><small>Party Hub</small></span></a>
+      <a class="ghost-button" href="party.html">Zur Spieleübersicht</a>
+    </header>
+    <p id="advanced-status" class="hub-status" role="status" aria-live="polite"></p>
+
+    <section id="advanced-setup" class="advanced-setup" aria-labelledby="advanced-title">
+      <article class="advanced-summary">
+        <p id="advanced-group" class="eyebrow"></p>
+        <h1 id="advanced-title">Spiel wird geladen</h1>
+        <p id="advanced-description"></p>
+        <div id="advanced-meta" class="advanced-meta"></div>
+        <h2>So funktioniert es</h2>
+        <ol id="advanced-rules" class="rule-list"></ol>
+        <h2>Aktive Gruppe</h2>
+        <div id="advanced-players" class="advanced-player-list"></div>
+        <p id="advanced-player-help" class="muted"></p>
+      </article>
+
+      <aside class="advanced-settings" aria-labelledby="advanced-settings-title">
+        <h2 id="advanced-settings-title">Session einstellen</h2>
+        <label for="advanced-pack">Kategorie<select id="advanced-pack"></select></label>
+        <label for="advanced-length">Rundenlänge<select id="advanced-length"><option value="3">Kurz · 3 Runden</option><option value="5" selected>Klassisch · 5 Runden</option><option value="10">Marathon · 10 Runden</option><option value="20">Langer Abend · 20 Runden</option></select></label>
+        <button id="advanced-start" type="button">Spiel starten</button>
+        <a class="ghost-button" href="party.html?view=players">Spielerliste ändern</a>
+      </aside>
+    </section>
+  </main>
+
+  <section id="advanced-play-layer" class="play-layer" hidden aria-labelledby="play-title">
+    <div class="play-topbar">
+      <button id="advanced-exit" class="ghost-button" type="button">Session beenden</button>
+      <div><span id="play-progress"></span><strong id="play-score"></strong></div>
+    </div>
+    <div class="play-card">
+      <p id="play-eyebrow" class="eyebrow"></p>
+      <h1 id="play-title"></h1>
+      <p id="play-player" class="active-player"></p>
+      <div id="play-content" class="play-content" aria-live="polite"></div>
+      <div id="play-options" class="play-options"></div>
+      <div id="play-actions" class="play-actions"></div>
+    </div>
+  </section>
+
+  <script src="runtime-guard.js"></script>
+  <script src="party-catalog.js"></script>
+  <script src="party-expansion.js"></script>
+  <script src="party-routing.js"></script>
+  <script src="party-advanced.js"></script>
+  <script src="party-advanced-runner.js"></script>
+  <script src="party-advanced-preferences.js"></script>
+</body>
+</html>

@@ -1,191 +1,213 @@
-# Secret Circle – Manueller Testplan
+# Secret Circle Party Hub – Manueller Testplan
 
-Dieser Plan ergänzt die automatisierten Prüfungen. Vor jedem Durchlauf Version, Commit, Datum, Testperson, Gerät, Betriebssystem, Browser, Installationsmodus und Online-/Offline-Zustand dokumentieren.
+Dieser Plan ergänzt die automatisierten Prüfungen. Für jeden Durchlauf dokumentieren: Version, Commit, Datum, Testperson, Gerät, Betriebssystem, Browser, Installationsmodus, Gruppengröße und Online-/Offline-Zustand.
 
-Bewertung: `BESTANDEN`, `FEHLER` oder `BLOCKIERT`.
+Bewertung je Test: `BESTANDEN`, `FEHLER` oder `BLOCKIERT`.
 
-## A. Einrichtung und Grenzen
+Zielstand: 28 spielbare Spiele, Smart Party Night und Offline-Core `secret-circle-v26`.
 
-### A1 – Drei Personen
+## 1. Grundlegender Smoke-Test
 
-- drei eindeutige Namen, ein Imposter, eine Runde
-- Start ohne Fehler
-- genau drei Karten
-- keine geheimen Inhalte nach der Weitergabe
+- Party Hub öffnet ohne Konsolenfehler.
+- Startseite zeigt 28 spielbare und 0 geplante Spiele.
+- Suche und alle sechs Filter funktionieren.
+- Quick-, Advanced- und Imposter-Schaltflächen öffnen den korrekten Bereich.
+- Spieler, Presets, Favoriten und Einstellungen überstehen ein Neuladen.
+- Datenschutzseite ist erreichbar.
 
-### A2 – Zwanzig Personen
+## 2. Word Imposter
 
-- zwanzig Namen und sechs Imposter
-- jede Person genau einmal in der Aufdeckreihenfolge
-- sechs unterschiedliche Imposter
-- keine fehlenden Abstimmungsoptionen oder horizontale Überbreite
+- 3, 8 und 20 Personen testen.
+- 1, mehrere und maximal 6 Imposter testen.
+- Rollen sind nicht an die Aufdeckreihenfolge gekoppelt.
+- Kartensichtschutz bei App-Wechsel prüfen.
+- Timer im Vordergrund, Hintergrund und nach Neuladen prüfen.
+- Abstimmung, Stichwahl, Ratechance, Punkte und nächste Runde prüfen.
+- aktiven Spielstand fortsetzen.
 
-### A3 – Ungültige Werte
+## 3. Standard-Hub-Spiele
 
-Prüfen: zwei Personen, doppelte Namen, einundzwanzig Personen, sieben Imposter und genauso viele Imposter wie Personen.
+Mindestens eine vollständige Session pro Spiel:
 
-Erwartet: verständliche Live-Hinweise, sichere Begrenzung und kein beschädigter Spielstand.
+- Wahrheit oder Pflicht
+- Ich habe noch nie
+- Wer würde eher?
+- Entweder oder
+- Hot Takes
+- Nur falsche Antworten
+- Paranoia
+- Scharade
+- Nicht sagen! / Tabu
+- Heiße Kartoffel
+- Wortkette
+- Flaschendrehen
+- Würfel & Münze
 
-## B. Unabhängige Rollenverteilung
+Prüfen: Packauswahl, Kartenwechsel, aktive Person, Punkte oder Ergebnis, sicherer Ausstieg, Verlauf und Statistik.
 
-### B1 – Aufdeckreihenfolge verrät keine Rolle
+## 4. Advanced-Spiele
 
-1. Mindestens zwanzig neue Runden mit denselben sechs Personen spielen.
-2. Pro Runde erste aufdeckende Person und Imposter notieren.
-3. Reihenfolge der Namen zwischen einigen Durchläufen verändern.
+### Zwei Wahrheiten, eine Lüge
 
-Erwartet:
+- private Eingabe
+- zufällige Mischung
+- Abstimmung und Auflösung
+- Fortsetzung nach Neuladen
 
-- die erste Person ist nicht automatisch Imposter,
-- Imposter sind nicht systematisch die ersten Positionen,
-- alle Personen können über verschiedene Runden Imposter sein,
-- bei zwei Impostern sind beide Rollen eindeutig,
-- gleiche Testdaten mit gleichem Seed sind reproduzierbar.
+### Question Imposter
 
-### B2 – Kartenübergabe
+- geheime ähnliche Fragen
+- genau ein Imposter
+- Diskussion und Wahl
+- Spieler-Snapshot nach Lobbyänderung
 
-- Rolle und Begriff nur nach bewusstem Öffnen sichtbar
-- App-Wechsel verdeckt die Karte sofort
-- verdeckte Karte kann nicht weitergegeben werden
-- Fokus kehrt zum Öffnen-Button zurück
-- erneutes Öffnen ermöglicht normale Fortsetzung
+### Location Spy
 
-## C. Timer und Wake Lock
+- Ort und Spion geheim verteilen
+- Verdächtigenwahl
+- Ortsraten und Auflösung
 
-### C1 – Timer
+### Mafia
 
-- Start, Pause und Fortsetzen
-- Hintergrund für mindestens zehn Sekunden
-- Neuladen bei laufendem Timer
-- Ablauf während Bildschirm- oder App-Wechsel
+- mindestens 6 Personen
+- private Rollen
+- geschützte Moderatoransicht
+- Nachtaktionen, Tageswahl und Siegbedingung
 
-Erwartet: reale Zeit wird korrekt berücksichtigt; kein Zurückspringen.
+## 5. Zehn Quick Modes
 
-### C2 – Wake Lock
+Jeden Modus mit 3 und 5 Runden testen; mindestens Wellenlänge und Schnellfeuer zusätzlich mit 10 und 20 Runden.
 
-Auf unterstütztem Gerät Diskussion länger als die normale Display-Abschaltzeit offen lassen.
+### Wellenlänge
 
-Erwartet:
+- geheimes Ziel sichtbar nur für Hinweisgeber
+- Ziel wird vor Gruppenwahl verborgen
+- Regler von 0 bis 100
+- 0–4 Punkte abhängig vom Abstand
+- nächste Runde und Wiederaufnahme
 
-- Bildschirm bleibt während der Diskussion aktiv,
-- Sperre endet vor der Abstimmung und im Hintergrund,
-- bei Rückkehr wird sie erneut angefordert,
-- ohne Wake-Lock-API bleibt das Spiel vollständig nutzbar.
+### Zeichnen & Raten
 
-## D. Abstimmung und Punkte
+- private Karte
+- Treffer und Überspringen
+- keine unmittelbare Wiederholung
 
-Prüfen:
+### Schnellfeuer
 
-- unschuldige Person wird gewählt,
-- Imposter wird gewählt und rät falsch,
-- Imposter wird gewählt und rät richtig,
-- erste Wahl unentschieden,
-- Stichwahl erneut unentschieden,
-- schnelle Doppelklicks.
+- 5-, 10-, 12- und 15-Sekunden-Karten
+- Erfolg vor Timerende
+- automatisches Zeitende
+- Punkte und nächste Person
 
-Erwartet:
+### Geräusche erraten
 
-- korrekter Sieger und Punktestand,
-- keine Selbstwahl und keine Doppelstimme,
-- genau eine Stichwahl,
-- garantiertes Rundenende,
-- genau ein Verlaufseintrag.
+- Zielkarte nur für aktive Person
+- Treffer und Überspringen
 
-## E. Mehr-Runden-Match
+### Stirn-Raten
 
-Drei Runden spielen und zwischendurch neu laden.
+- ratende Person sieht das Ziel nicht
+- Gerät zeigt zur Gruppe
+- Spielerwechsel
 
-Erwartet:
+### Buchstaben-Kategorien
 
-- Punktestand und Rundennummer bleiben korrekt,
-- keine Begriffswiederholung bei verfügbarem Pool,
-- nach der letzten Runde keine weitere Runde,
-- Verlauf enthält jede Runde genau einmal.
+- zufälliger erlaubter Buchstabe
+- fünf Kategorien
+- 60-Sekunden-Timer
+- Punkteingabe begrenzt auf Kategorienanzahl
 
-## F. Speicherung und Backup
+### Nicht lachen!
 
-Prüfen:
+- sichere Aufgaben
+- 30-Sekunden-Timer
+- Erfolg und Misserfolg
 
-- aktives Spiel nach Neuladen fortsetzen,
-- eigene Kategorie speichern,
-- vollständige Sicherung exportieren,
-- Daten löschen und Sicherung importieren,
-- ungültige und zu große Datei importieren,
-- fehlgeschlagenen Import mit vorhandenen Daten.
+### Melodie summen
 
-Erwartet:
+- keine bereitgestellten geschützten Aufnahmen oder Liedtexte
+- private Aufgabe
+- Treffer und Überspringen
 
-- gültige Daten werden vollständig wiederhergestellt,
-- ungültige Daten werden abgelehnt,
-- Rollback schützt bestehende Daten,
-- vollständige Löschung setzt die App sauber zurück.
+### Gegenstandsjagd
 
-## G. Eingabe- und Inhaltssicherheit
+- sicheren Spielbereich festlegen
+- 60-Sekunden-Timer
+- keine gefährlichen, zerbrechlichen oder privaten Gegenstände verlangen
 
-Eigene Namen und Kategorien mit HTML-, Skript- und Sonderzeichen testen.
+### Caption Battle
 
-Erwartet:
+- Situation anzeigen
+- Gewinner nur aus aktueller Spielergruppe wählen
+- Rangliste korrekt
 
-- Inhalte erscheinen nur als Text,
-- keine Skriptausführung,
-- keine externen Netzwerkzugriffe,
-- App bleibt bedienbar.
+## 6. Smart Party Night
 
-## H. PWA und Offline
+- 15, 30, 45, 60 und 90 Minuten testen.
+- alle Stimmungen testen.
+- Alters- und Gruppengrößenfilter prüfen.
+- Favoritenbonus und zuletzt gespielt prüfen.
+- Hub-, Quick-, Advanced- und Word-Imposter-Abschluss synchronisieren.
+- erledigte und übersprungene Schritte prüfen.
+- Plan nach App-Neustart fortsetzen.
 
-### H1 – Android-Installation
+## 7. Eigene Hub-Kategorien
 
-- aktuelles Android-Gerät und Chrome
-- Installation und Standalone-Start
-- Flugmodus nach erstem vollständigem Laden
-- Update von älterem Cache auf `secret-circle-v17`
-- Timer, Karten-Sichtschutz und Wake Lock prüfen
+- gültiges Pack erstellen.
+- weniger als 3 Karten ablehnen.
+- doppelte Karten entfernen.
+- doppelten Packnamen ablehnen.
+- Sonderzeichen und HTML-artige Texte sicher anzeigen.
+- Pack verwenden, löschen, exportieren und importieren.
+- maximal 20 Packs und 100 Karten prüfen.
 
-### H2 – iPhone-/iPad-Installation
+## 8. Backup und Datenschutz
 
-- aktuelles Safari
-- Teilen → „Zum Home-Bildschirm“
-- korrektes Icon und App-Name
-- Safe Areas und Eingabefeld-Zoom
-- Offline-Start
-- Karten-Sichtschutz
-- Fallback ohne Wake-Lock-Unterstützung
+- vollständigen Export erzeugen.
+- Hub-, Party-Night-, Quick-, Advanced-, Pack- und Imposter-Schlüssel kontrollieren.
+- gültigen Import durchführen.
+- ungültiges JSON und Datei über 1,5 MB ablehnen.
+- simulierten Schreibfehler und Rollback prüfen.
+- vollständige Löschung aller `secret-circle-*`-Schlüssel prüfen.
 
-### H3 – Offline-Core
+## 9. PWA und Offline
 
-Erwartet:
+- Online-Erststart vollständig laden.
+- Installation auf Android und iOS.
+- Flugmodus aktivieren.
+- Party Hub, Quick Mode, Advanced-Spiel, Word Imposter und Datenschutz öffnen.
+- aktive Quick-, Advanced- und Imposter-Session offline fortsetzen.
+- Update von älterem Cache auf `secret-circle-v26` prüfen.
+- nur v26 darf danach bestehen bleiben.
 
-- App und Datenschutzseite offline erreichbar,
-- `role-assignment.js`, `setup-ux.js`, `privacy-guard.js` und `wake-lock.js` geladen,
-- nur Cache `secret-circle-v17` vorhanden,
-- Rollenverteilung bleibt unabhängig von der Aufdeckreihenfolge.
+## 10. Accessibility und Mobile
 
-## I. Accessibility
+- Tastaturbedienung ohne Maus.
+- sichtbare Fokusmarkierungen.
+- Screenreader-Grundprüfung.
+- 200-%-Zoom.
+- Hoch- und Querformat.
+- iPhone-Safe-Areas.
+- mindestens 44 × 44 Pixel große Touchziele.
+- kein horizontaler Überlauf.
+- Reduced Motion und große Systemschrift.
 
-- vollständige Tastaturbedienung
-- sichtbarer logischer Fokus
-- Screenreader-Kurztest
-- 200-Prozent-Vergrößerung
-- reduzierte Bewegung und hoher Kontrast
-- keine abgeschnittenen Inhalte
-- Touchflächen mindestens 44 × 44 Pixel
+## 11. Reale Partytests
 
-## J. Realer Partytest
+### Kleine Gruppe
 
-Mindestens:
+- 3–4 Personen
+- mindestens 60 Minuten
+- Word Imposter, Standardspiel, Quick Mode und Advanced-Spiel
 
-- ein Match mit 3–4 Personen,
-- ein Match mit mindestens 8 Personen,
-- ein Match mit mehreren Impostern.
+### Große Gruppe
 
-Dokumentieren:
+- mindestens 8 Personen
+- mindestens 90 Minuten
+- Mafia, Schnellfeuer, Wellenlänge, Scharade und Party Night
 
-- Verständlichkeit der Einrichtung,
-- Kartenübergabe und automatische Verdeckung,
-- ob die Aufdeckreihenfolge Rollenverdacht erzeugt,
-- Verständlichkeit von Abstimmung, Punkten und Stichwahl,
-- Blockaden, Verzögerungen und beobachtete Fehler.
+Dokumentieren: unklare Regeln, Wartezeiten, Kartenqualität, ungeeignete Inhalte, technische Unterbrechungen, gewünschte Wiederholungen und bevorzugte Spiele.
 
-## Freigaberegel
+## Freigabekriterium
 
-`GO` nur, wenn alle automatisierten Prüfungen erfolgreich sind, Android und iOS bestanden haben, mindestens zwei Partytests dokumentiert sind, keine kritischen oder hohen Fehler offen sind und die erforderlichen Anbieterinformationen vollständig vorliegen.
+Der reale Betatest beginnt erst nach grünem `npm run ci` und grünem Cross-Browser-Lauf. Ein öffentlicher Release benötigt zusätzlich erfolgreiche Android-/iOS-, Offline-Update-, Inhalts-, Gruppen- und rechtliche Prüfungen.

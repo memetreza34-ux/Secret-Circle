@@ -1,62 +1,81 @@
 # Änderungsverlauf
 
-## 1.0.0-beta.3 – 2026-08-04
+## In Entwicklung – Bedienbarkeit, Creator und Offline-Core v29
 
 ### Hinzugefügt
 
-- vollständiger Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
-- Punkte, Rangliste, Mehr-Runden-Matches und begrenzte Stichwahl
-- maximal sechs Imposter
-- unabhängige deterministische Rollenverteilung in `role-assignment.js`
-- 14 Kategorien mit 168 Begriff-Hinweis-Paaren
-- deadline-basierter Timer mit Hintergrund- und Neulade-Wiederherstellung
-- Live-Gruppengröße und dynamische Imposter-Grenzen
-- automatische Kartenverdeckung mit blockierter Weitergabe
-- optionaler Wake Lock während der Diskussion
-- Verlauf, Datenmigration, Backup-Export/-Import und vollständige lokale Löschung
-- Datenschutzseite, Content Security Policy und Laufzeit-Fehlerschutz
-- 192- und 512-Pixel-PNG-Icons
-- vollständiger Offline-Core `secret-circle-v17`
-- fünf Unit-Testdateien einschließlich Rollenverteilung und 120 Fuzz-Szenarien
-- vierzehn E2E-Suiten einschließlich Rollenverteilung, Privatsphäre, Wake Lock und Sicherheit
-- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Konfiguration
-- Repository-Hygiene, Performancebudget, Strukturvalidator und Release-Audit
-- Release-Checkliste, Testplan, Sicherheits-, Deployment- und Rollback-Dokumentation
+- Party Hub mit 45 eingebauten technisch spielbaren Spielen
+- 27 Quick-, Trend- und Viral-Modi
+- Drei-Schritte-Einstieg für neue Gruppen
+- kontextabhängige Kurz-Hilfen in allen Hauptbereichen
+- erster-Besuch-Onboarding
+- „Kurz erklärt“-Regeln direkt im Spieldetail
+- eigener lokaler No-Code-Game-Creator
+- sechs Creator-Vorlagen: Fragen, Auswahl, Erraten, Challenges, Story und Debatte
+- Live-Vorschau mit Icon, Akzent, Spielerzahl und Dauer
+- bis zu 40 selbst erstellte Spiele
+- bis zu 8 Kategorien und 200 Karten je eigener Kategorie
+- Bearbeiten, Kopieren, Löschen, Exportieren und Importieren eigener Spiele
+- Integration selbst erstellter Spiele in Suche, Filter, Favoriten, Verlauf und einfache Hub-Engines
+- Creator- und Guidance-E2E-Tests
+- Creator-Unit-Test mit Unicode-, Struktur-, Export-, Import- und Rollback-Prüfung
+- `ASSET_PLAN.md` für Icons, Illustrationen und Animationen
+- Offline-Core `secret-circle-v29`
 
 ### Verbessert
 
-- mobile Safe Areas, dynamische Viewport-Höhe und zoomsichere Formulare
-- Tastatur-, Fokus- und Screenreader-Struktur
-- Wake-Lock-Fallback auf nicht unterstützten Geräten
-- sichere Service-Worker-Cache-Schreibvorgänge und Update-Bereinigung
-- strengere Validierung gespeicherter und importierter Daten
-- reproduzierbare Tests der Rollenverteilung über 200 Unit- und 120 Browser-Samples
+- klarere Buttons: „Spielen“, „Jetzt spielen“, „Eigenes Spiel starten“ und engineabhängige Aktionen
+- verständlichere Spielkarten mit Mechanik- oder Kategorielabel
+- neue Creator-Einstiege in Navigation, Hero und Startseite
+- leere Zustände erklären die nächste Aktion
+- eigene Spiele werden validiert und transaktionssicher gespeichert
+- strukturierte Entweder-oder-Karten bleiben über Speichern, Export und Import erhalten
+- Gesamtsicherung und Datenlöschung nennen und enthalten selbst erstellte Spiele
+- Datenschutzseite erklärt Creator-, Social-, Anime-, Geld- und Preisdaten
+- Katalogrouting auf Version 7
+- Custom-Pack-Manager auf Version 4
+- Architektur-, Struktur-, Release- und Performance-Gates auf v29 synchronisiert
 
-### Behoben
+### Noch offen
 
-- **kritischer Rollenfehler:** Imposter waren zuvor an die ersten Positionen der Aufdeckreihenfolge gekoppelt
-- Aufdeckreihenfolge verrät die Rollen nicht mehr systematisch
-- mehr als sechs Imposter werden zuverlässig abgelehnt
-- endlose Stichwahlen
-- doppelte Stimmen und Selbstwahl
-- Begriffswiederholungen innerhalb eines noch nicht erschöpften Pools
-- Timerabweichungen nach Hintergrundbetrieb oder Neuladen
-- fehlende Verlaufseinträge bei direkt beendeten Runden
-- unvollständige Migration älterer Spielstände
-- versehentliche Weitergabe automatisch verdeckter Karten
-- unvollständiger Offline-Cache und nicht abgewartete Cache-Schreibvorgänge
-- veraltete, nicht mehr geladene Match- und Accessibility-Dateien
+- vollständiger grüner `npm run ci`-Lauf
+- grüner Cross-Browser-Lauf
+- sichtbare grüne GitHub-Actions-Schritte
+- echte Android-, iOS- und PWA-v29-Update-Prüfung
+- reale Creator-Usability-Tests
+- reale Partytests mit allen 45 eingebauten Spielen
+- Produktion der geplanten Icons, Illustrationen und Animationen
+- redaktionelle Inhalts-, Alters-, Fan-Content- und Rechtsprüfung
 
-### Sicherheit und Datenschutz
+## Frühere Erweiterungswellen
 
+### Viral- und Trend-Modi
+
+- Wer bin ich?
+- Anime-Figuren erraten
+- hypothetische Geld-Challenge
+- Blind Ranking
+- Emoji Quiz
+- Pass das Handy
+- Red Flag oder Green Flag
+- Geheime Mission
+- Tier List Battle
+- Finger runter
+- Preis schätzen
+- Höher oder tiefer
+- Wer kennt mich am besten?
+- Hear Me Out
+- Hot Seat
+- Story Chain
+- Satz beenden
+
+### Word Imposter und Plattformkern
+
+- vollständiger Rollen-, Timer-, Abstimmungs-, Rate- und Punkteablauf
+- Smart Party Night
+- Advanced-Spiele
+- lokale Speicherung und Sicherung
+- installierbare Offline-PWA
+- 14 Imposter-Kategorien mit 168 Begriff-Hinweis-Paaren
+- Content Security Policy und Laufzeit-Fehlerschutz
 - keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste
-- keine appgesteuerte Übertragung von Spieldaten
-- restriktive Ressourcen- und Skriptrichtlinie
-- escaped Namen und Kategorien
-- Größenbegrenzung und Rollback für Sicherungsimporte
-- automatischer Sichtschutz geheimer Rollen und Begriffe
-- dokumentierter privater Meldeweg für Sicherheitsprobleme
-
-## Frühere Beta-Stände
-
-Frühere Entwicklungsstände enthielten den grundlegenden Offline-Spielablauf, eigene Kategorien und die erste PWA-Struktur. Beta.3 bündelt diese Arbeiten zu einer testbaren Produktionsbeta.

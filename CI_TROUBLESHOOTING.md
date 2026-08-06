@@ -1,71 +1,46 @@
 # GitHub Actions – Fehler vor dem ersten Schritt
 
-## Beobachtetes Verhalten
+## Beobachtung
 
-`Secret Circle CI` wird beendet, bevor ein einziger Workflow-Schritt ausgeführt wird.
+GitHub-Actions-Läufe können als Fehler enden, bevor `actions/checkout` oder ein anderer Workflow-Schritt sichtbar wird. Eine leere Schrittliste und fehlende normale Job-Logs sind kein konkreter Beweis für einen JavaScript-, Unit-, Validator- oder Playwright-Fehler.
 
-Zuletzt bestätigt:
+Der aktuelle Stand erwartet:
 
-- Workflow-Lauf `#420`
-- Run-ID `30903841947`
-- erster Job `91974191883`
-- erneuter Job `91974334081`
-- Commit `3217d826f428402d079ef458e2147d880ad94e92`
-- Job `validate`
-- Ergebnis `failure`
-- bei beiden Versuchen leere Schrittliste und kein normales Job-Log
+- 45 eingebaute technisch spielbare Spiele
+- 27 Quick-, Trend- und Viral-Modi
+- 4 Advanced-Spiele
+- lokaler Game-Creator mit 6 Vorlagen und bis zu 40 eigenen Spielen
+- Smart Party Night
+- Offline-Core `secret-circle-v29`
+- mindestens 13 Unit-Testdateien
+- mindestens 27 E2E-Suiten
+- fünf Browser-/Geräteprojekte
 
-Der erneute Workflow-Versuch wurde von GitHub angenommen, endete aber erneut vor `actions/checkout`. Das unterscheidet sich von einem Syntax-, Test- oder Playwright-Fehler, bei dem mindestens der fehlerhafte Schritt sichtbar wäre.
+## Externe Ursachen prüfen
 
-## Wahrscheinliche externe Ursachen
+`Settings → Actions → General`:
 
-1. Actions ist für das Repository deaktiviert oder eingeschränkt.
-2. Kontolimit, Budget oder Abrechnung blockiert gehostete Runner.
-3. Konto- oder Organisationsrichtlinie verhindert die Runner-Bereitstellung.
-4. Vorübergehende GitHub-Actions-Störung.
-5. Externe Einschränkung des Kontos oder Repositorys.
+- Actions ist erlaubt.
+- offizielle Actions sind zugelassen.
+- Workflow besitzt Lesezugriff auf Repository-Inhalte.
+- Repository ist nicht archiviert.
 
-## Prüfung
+`Settings → Billing and licensing`:
 
-### Actions-Berechtigungen
+- kein erreichtes Actions-Limit
+- keine blockierte Zahlungsmethode
+- private Repository-Nutzung zulässig
+- kein Organisationsbudget blockiert Runner
 
-`Settings → Actions → General`
+Zusätzlich GitHub-Status, Konto- und Organisationsbenachrichtigungen prüfen.
 
-- Actions erlauben
-- offizielle `actions/*`-Workflows erlauben
-- mindestens Leseberechtigung für Repository-Inhalte aktivieren
+## Erneut auslösen
 
-Verwendete Actions:
-
-- `actions/checkout@v4`
-- `actions/setup-node@v4`
-- `actions/setup-python@v5`
-- `actions/upload-artifact@v4`
-
-### Abrechnung und Nutzungslimits
-
-`Settings → Billing and licensing`
-
-- Actions-Ausgabenlimit
-- verfügbare Minuten
-- Zahlungsmethode
-- deaktivierte Actions-Nutzung
-- Organisations-Billing, falls zutreffend
-
-### Repository und Konto
-
-- Repository nicht archiviert
-- Schreibzugriff vorhanden
-- keine Konto- oder Organisationsbeschränkung
-- GitHub-Statusseite ohne aktuelle Actions-Störung
-
-## Erneut ausführen
-
-1. Pull Request #3 öffnen.
+1. Draft-PR #11 öffnen.
 2. `Checks` oder `Actions` öffnen.
-3. Workflow erneut starten.
-4. Prüfen, ob `Check out repository` erscheint.
-5. Erst ab dann den ersten roten Schritt als Repository-Fehler behandeln.
+3. fehlgeschlagenen Lauf erneut starten.
+4. kontrollieren, dass `Check out repository` erscheint.
+5. anschließend den ersten roten Schritt auswerten.
 
 ## Lokale Ersatzprüfung
 
@@ -73,30 +48,52 @@ Verwendete Actions:
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
 npx playwright install --with-deps chromium
 npm run ci
+```
 
+Cross-Browser:
+
+```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Die aktuelle Validierung prüft unter anderem:
+## Erwartete lokale Prüfpunkte
 
-- Engine und Speicherung Version 7
-- unabhängige Rollenverteilung und maximale Anzahl von sechs Impostern
-- keine Kopplung der Rollen an die Aufdeckreihenfolge
-- vollständigen Offline-Cache `secret-circle-v17`
-- Live-Einrichtung, Karten-Sichtschutz und Wake Lock
-- Datenschutz, Eingabesicherheit und Browserabläufe
-- Rollen-, Inhalts- und Fuzz-Tests
+- Syntax aller Produktionsmodule
+- Engine und Speicher Version 7
+- Katalogschichten mit 45 eingebauten Spielen
+- Routing Version 7
+- Creator-Speicher Version 1
+- sechs Creator-Vorlagen
+- strukturierte Auswahlkarten bleiben nach Export und Import erhalten
+- Creator-Rollback bei Speicherfehler
+- kurze Hilfen und Creator-Einstiege im Hub
+- Quick-, Trend-, Viral- und Advanced-Sessions
+- Backup und vollständige Löschung einschließlich eigener Spiele
+- Manifest, CSP, Icons und Accessibility
+- Cache `secret-circle-v29` vollständig und exklusiv
+- Hub, Creator, Hilfesystem, alle Engines, Word Imposter und Datenschutz offline
 
-Ein erfolgreicher lokaler Lauf ist ein starkes technisches Signal, ersetzt aber nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit.
+## Typische Repository-Fehler
+
+- Syntax: `npm run check`
+- Unit-Tests: `npm test`
+- Struktur, Cache oder Dokumentation: `npm run validate`
+- Chromium: `npm run test:e2e`
+- Firefox/WebKit: `npm run test:cross-browser`
+- veralteter Cache: Ziel `secret-circle-v29`
+- veraltete Routingversion: Ziel 7
+- veralteter Custom-Pack-Manager: Ziel 4
+- fehlende Creator-Dateien: `creator.html`, `game-creator.js`, `creator-page.js`, `creator.css`
+- fehlende Guidance-Dateien: `party-guide.js`, `party-guide.css`
 
 ## Tracking
 
-- Issue #7: externer GitHub-Actions-Blocker
+- Issue #7: externer GitHub-Actions-Runner-Blocker
 - Issue #8: reale Geräte-, Rollen- und Partytests
+- Issue #10: Party-Hub-Expansion
+- Draft-PR #11: aktueller Expansions-, UX- und Creator-Stand
 
-## Freigabeentscheidung
+## Freigabe
 
-- lokaler Betatest nach erfolgreichem `npm run ci`: möglich
-- Merge ohne grüne CI: nur bewusste Ausnahme, keine Produktionsfreigabe
-- öffentlicher Release: blockiert, bis der endgültige Commit sichtbare und erfolgreiche Workflow-Schritte besitzt
+Ein grüner lokaler Lauf ist ein starkes technisches Signal, ersetzt aber nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit. Merge, realer Betatest und öffentlicher Release bleiben bis zu den jeweiligen Gates blockiert.

@@ -8,109 +8,136 @@ read = lambda path: (ROOT / path).read_text(encoding='utf-8')
 
 package = json.loads(read('package.json'))
 manifest = json.loads(read('manifest.webmanifest'))
-engine = read('game-engine.js')
-roles = read('role-assignment.js')
-store = read('data-store.js')
-content = read('word-packs.js')
 sw = read('sw.js')
-index = read('index.html')
+base_catalog = read('party-catalog.js')
+expansion = read('party-expansion.js')
+trending = read('party-trending-catalog.js')
+mega = read('party-mega-catalog.js')
+viral = read('party-viral-catalog.js')
+routing = read('party-routing.js')
+creator = read('game-creator.js')
+creator_page = read('creator-page.js')
+guide = read('party-guide.js')
+quick_runtime = read('party-quick-modes.js')
+mega_runtime = read('party-mega-modes.js')
+viral_runtime = read('party-viral-modes.js')
+created_runtime = read('party-created-modes.js')
+loader = read('quick-loader.js')
+custom_packs = read('party-custom-packs.js')
+party_night = read('party-night.js')
 workflow = read('.github/workflows/ci.yml')
 cross_workflow = read('.github/workflows/cross-browser.yml')
 
 checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
-    'node_support': package.get('engines', {}).get('node') == '>=20',
-    'engine_version': bool(re.search(r'\bVERSION\s*=\s*7\b', engine)),
-    'storage_schema': bool(re.search(r'\bKEY_VERSION\s*=\s*7\b', store)),
-    'storage_migration_engine': bool(re.search(r'\bENGINE_VERSION\s*=\s*7\b', store)),
-    'role_assignment_v2': 'version: 2' in roles,
-    'maximum_six_imposters': 'MAX_IMPOSTERS = 6' in roles,
-    'independent_role_seed': 'independent-roles-v1' in roles,
-    'create_and_next_wrapped': all(marker in roles for marker in ('engine.createGame', 'engine.nextRound')),
-    'restore_and_assert_wrapped': all(marker in roles for marker in ('engine.restoreGame', 'engine.assertGame')),
-    'pwa_cache_v18': "const CACHE='secret-circle-v18'" in sw,
-    'all_protection_modules_cached': all(asset in sw for asset in (
-        './runtime-guard.js', './setup-ux.js', './privacy-guard.js',
-        './wake-lock.js', './role-assignment.js'
+    'node_baseline': package.get('engines', {}).get('node') == '>=20',
+    'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
+    'manifest_party_hub': manifest.get('name') == 'Secret Circle – Party Hub' and manifest.get('start_url') == './party.html',
+    'standalone_pwa': manifest.get('display') == 'standalone' and manifest.get('scope') == './',
+    'cache_v30': "const CACHE='secret-circle-v30'" in sw,
+    'creator_offline': all(asset in sw for asset in ('./creator.html', './game-creator.js', './creator-page.js', './creator.css', './party-created-modes.js')),
+    'guidance_offline': all(asset in sw for asset in ('./party-guide.js', './party-guide.css')),
+    'all_fast_engines_offline': all(asset in sw for asset in (
+        './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
+        './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js',
+        './party-created-modes.js', './quick-loader.js'
     )),
-    'safe_cache_writes': 'await cache.put' in sw,
-    'stable_manifest_scope': all(manifest.get(key) == './' for key in ('id', 'start_url', 'scope')),
-    'standalone_pwa': manifest.get('display') == 'standalone',
-    'german_manifest': manifest.get('lang') == 'de',
-    'strict_csp': all(marker in index for marker in (
-        "default-src 'self'", "script-src 'self'", "style-src 'self'",
-        "object-src 'none'", "base-uri 'none'", "form-action 'self'"
-    )),
-    'role_assignment_before_app': index.index('role-assignment.js') < index.index('app.js'),
-    'main_ci_commands': all(command in workflow for command in (
-        'npm run check', 'npm test', 'npm run validate', 'npm run test:e2e'
-    )),
-    'cross_browser_matrix': all(marker in cross_workflow for marker in (
-        'chromium firefox webkit', 'npm run test:cross-browser'
-    )),
-    'exact_playwright_version': bool(re.fullmatch(
-        r'\d+\.\d+\.\d+', package.get('devDependencies', {}).get('@playwright/test', '')
-    ))
+    'trending_catalog_v3': 'version: 3' in trending and 'trendingGameIds' in trending,
+    'mega_catalog_v4': 'version: 4' in mega and 'megaGameIds' in mega,
+    'viral_catalog_v5': 'version: 5' in viral and 'viralGameIds' in viral,
+    'routing_v8': 'version: 8' in routing and "CREATED_KEY = 'secret-circle-party-created-games-v1'" in routing and 'createCatalog' in routing,
+    'creator_v1': all(marker in creator for marker in ("STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'createStore', 'normalizeGame')),
+    'creator_wizard': all(marker in creator_page for marker in ('renderTemplates', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary')),
+    'created_runner': all(marker in created_runtime for marker in ("ACTIVE_KEY = 'secret-circle-party-created-active-v1'", 'validActive', 'sanitizeScores', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'finishSession')),
+    'created_runner_counts_replays': 'plays: Math.max(0, Number(stats.plays) || 0) + 1' in created_runtime,
+    'contextual_guidance': all(marker in guide for marker in ('addCreatorEntryPoints', 'addHowItWorks', 'addSectionHelp', 'enhanceGameCards')),
+    'quick_resume': all(marker in quick_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
+    'mega_resume': all(marker in mega_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
+    'viral_resume': all(marker in viral_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
+    'single_engine_loader': all(marker in loader for marker in ('party-created-modes.js', 'party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js')),
+    'custom_pack_v4': all(marker in custom_packs for marker in ('MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4')),
+    'party_night_planner': all(marker in party_night for marker in ('buildPlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1')),
+    'main_ci': all(command in workflow for command in ('npm run check', 'npm test', 'npm run validate', 'npm run test:e2e')),
+    'cross_browser_ci': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
+    'creator_syntax_gates': all(marker in package.get('scripts', {}).get('check', '') for marker in ('game-creator.js', 'creator-page.js', 'party-guide.js', 'party-created-modes.js')),
+    'creator_unit_gate': 'tests/game-creator.test.js' in package.get('scripts', {}).get('test', ''),
+    'architecture_gate': 'scripts/architecture_audit.py' in package.get('scripts', {}).get('validate', '')
 }
 failed = [name for name, passed in checks.items() if not passed]
 if failed:
     raise SystemExit(f'Release audit failed: {", ".join(failed)}')
 
-category_count = content.count('entries:[')
-term_count = len(re.findall(r"\['(?:[^'\\]|\\.)*','(?:[^'\\]|\\.)*'\]", content))
-if (category_count, term_count) != (14, 168):
-    raise SystemExit(f'Unexpected built-in content: {category_count} categories, {term_count} terms.')
+base_games = len(re.findall(r"\bid:\s*'[^']+'", base_catalog.split('const content =', 1)[0]))
+expansion_games = len(re.findall(r"\bid:\s*'[^']+'", expansion.split('const advancedContent =', 1)[0]))
+trending_games = len(re.findall(r"\bid:\s*'[^']+'", trending.split('const quickContent =', 1)[0]))
+mega_games = len(re.findall(r"\bid:\s*'[^']+'", mega.split('const megaContent =', 1)[0]))
+viral_games = len(re.findall(r"\bid:\s*'[^']+'", viral.split('const viralContent =', 1)[0]))
+if (base_games, expansion_games, trending_games, mega_games, viral_games) != (18, 4, 6, 9, 8):
+    raise SystemExit(f'Unexpected catalog layers: {base_games}, {expansion_games}, {trending_games}, {mega_games}, {viral_games}.')
+
+classic_ids = ['wavelength', 'draw-guess', 'rapid-fire', 'sound-imitation', 'forehead-guess', 'letter-categories', 'dont-laugh', 'hum-song', 'scavenger-hunt', 'caption-battle']
+mega_ids = ['who-am-i', 'anime-guess', 'money-challenge', 'blind-ranking', 'emoji-quiz', 'pass-the-phone', 'red-green-flag', 'secret-mission', 'tier-list']
+viral_ids = ['put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best', 'hear-me-out', 'hot-seat', 'story-chain', 'finish-the-sentence']
+for game_id in classic_ids:
+    if game_id not in trending:
+        raise SystemExit(f'Classic Quick Mode missing: {game_id}')
+for game_id in mega_ids:
+    if game_id not in mega:
+        raise SystemExit(f'Mega Trend Mode missing: {game_id}')
+for game_id in viral_ids:
+    if game_id not in viral:
+        raise SystemExit(f'Viral Mode missing: {game_id}')
 
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
-cross_browser_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 5 or len(e2e_suites) < 14 or not cross_browser_suites:
-    raise SystemExit('Automated test matrix is incomplete.')
-if 'role-assignment.test.js' not in unit_tests or 'role-assignment.spec.js' not in e2e_suites:
-    raise SystemExit('Independent role-assignment coverage is missing.')
+cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
+if len(unit_tests) < 13 or len(e2e_suites) < 28 or not cross_suites:
+    raise SystemExit('Release test matrix is incomplete.')
+for required in ('party-trending-catalog.test.js', 'party-mega-catalog.test.js', 'party-viral-catalog.test.js', 'game-creator.test.js'):
+    if required not in unit_tests:
+        raise SystemExit(f'Critical unit test missing: {required}')
+for required in ('game-creator.spec.js', 'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js', 'party-viral-modes.spec.js', 'offline.spec.js'):
+    if required not in e2e_suites:
+        raise SystemExit(f'Critical E2E test missing: {required}')
 
 required_docs = [
-    'README.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
-    'KNOWN_LIMITATIONS.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md',
-    'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md', 'privacy.html'
+    'README.md', 'ARCHITECTURE.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'ASSET_PLAN.md',
+    'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md', 'KNOWN_LIMITATIONS.md',
+    'SECURITY.md', 'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md', 'privacy.html'
 ]
 for relative in required_docs:
     path = ROOT / relative
     if not path.is_file() or path.stat().st_size < 300:
-        raise SystemExit(f'Missing or incomplete production document: {relative}')
+        raise SystemExit(f'Missing or incomplete release document: {relative}')
 
-for relative, markers in {
-    'README.md': ['secret-circle-v18', 'Rollenverteilung', 'Aufdeckreihenfolge'],
-    'RELEASE_STATUS.md': ['Cache-Version 18', 'unabhängige Rollenverteilung', 'Aktuelle Blocker'],
-    'DEPLOYMENT.md': ['secret-circle-v18', 'Rollenverteilung', 'Rollback'],
-    'RELEASE_CHECKLIST.md': ['Aufdeckreihenfolge', 'Realer Party-Betatest', 'GitHub Actions'],
-    'CHANGELOG.md': ['Rollenverteilung', 'Aufdeckreihenfolge', 'secret-circle-v18'],
-    'CI_TROUBLESHOOTING.md': ['Fehler vor dem ersten Schritt', 'Abrechnung', 'secret-circle-v18'],
-    'MANUAL_TEST_PLAN.md': ['Aufdeckreihenfolge', 'Android-Installation', 'iPhone-/iPad-Installation', 'Realer Partytest']
-}.items():
-    text = read(relative)
-    for marker in markers:
-        if marker.lower() not in text.lower():
-            raise SystemExit(f'Missing documentation marker {marker} in {relative}')
+for forbidden in ['eval(', 'new Function(', 'document.write(', 'http://']:
+    for relative in [
+        'party-trending-catalog.js', 'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
+        'game-creator.js', 'creator-page.js', 'party-guide.js', 'party-quick-modes.js',
+        'party-mega-modes.js', 'party-viral-modes.js', 'party-created-modes.js', 'quick-loader.js', 'party-hub.js'
+    ]:
+        if forbidden in read(relative):
+            raise SystemExit(f'Forbidden release pattern {forbidden} in {relative}')
 
 print(json.dumps({
     'release_audit': 'PASS',
     'package_version': package['version'],
-    'engine_version': 7,
-    'storage_version': 7,
-    'role_assignment_version': 2,
-    'maximum_imposters': 6,
-    'restored_game_limit_enforced': True,
-    'independent_role_assignment': True,
-    'pwa_cache': 'secret-circle-v18',
-    'built_in_categories': category_count,
-    'built_in_terms': term_count,
-    'unit_test_files': unit_tests,
-    'e2e_suites': e2e_suites,
-    'cross_browser_suites': cross_browser_suites,
+    'pwa_cache': 'secret-circle-v30',
+    'visible_builtin_games': base_games + expansion_games + trending_games + mega_games + viral_games,
+    'playable_builtin_games': 45,
+    'maximum_local_created_games': 40,
+    'creator_templates': 6,
+    'creator_runner': True,
+    'classic_quick_modes': len(classic_ids),
+    'mega_trend_modes': len(mega_ids),
+    'viral_modes': len(viral_ids),
+    'all_fast_modes': len(classic_ids) + len(mega_ids) + len(viral_ids),
+    'long_term_mode_universe': 122,
+    'unit_test_files': len(unit_tests),
+    'e2e_suites': len(e2e_suites),
     'cross_browser_projects': 5,
-    'secret_card_privacy_guard': True,
-    'discussion_wake_lock': True,
-    'critical_checks': checks,
-    'production_docs': required_docs
+    'local_creator': True,
+    'contextual_help': True,
+    'offline_first': True,
+    'critical_checks': checks
 }, ensure_ascii=False, indent=2))

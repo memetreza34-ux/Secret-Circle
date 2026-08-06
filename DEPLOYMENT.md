@@ -1,81 +1,101 @@
-# Secret Circle – Deployment und Rollback
+# Secret Circle Party Hub – Deployment und Rollback
 
-Secret Circle besteht ausschließlich aus statischen Dateien. Eine veröffentlichte PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
+Secret Circle besteht aus statischen Dateien. Eine installierbare PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
 
-## Voraussetzungen
+## Aktueller Umfang
 
-- `npm run ci` lokal erfolgreich
-- `npm run test:cross-browser` erfolgreich
+- 45 eingebaute technisch spielbare Spiele
+- 27 Quick-, Trend- und Viral-Modi
+- 4 Advanced-Spiele
+- Word Imposter
+- Smart Party Night
+- eigener No-Code-Game-Creator mit sechs Vorlagen
+- bis zu 40 selbst erstellte Spiele
+- kontextabhängige Schnellhilfe
+- Offline-Core `secret-circle-v29`
+
+## Voraussetzungen vor öffentlichem Deployment
+
+- `npm run ci` vollständig erfolgreich
+- `npm run test:cross-browser` vollständig erfolgreich
 - GitHub Actions auf dem endgültigen Commit grün
-- reale Geräte- und Partytests dokumentiert
-- keine offenen kritischen oder hohen Fehler
+- Android- und iOS-Installation geprüft
+- Offline-Start und Update auf v29 geprüft
+- alle 45 eingebauten Spiele real getestet
+- Creator auf Android und iOS getestet
+- eigenes Fragen-, Auswahl- und Erratenspiel erstellt und gespielt
+- kleine und große Partygruppe dokumentiert
+- Inhalts-, Alters-, Fan-Content- und Rechtsprüfung abgeschlossen
+- Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben vorhanden
 
 ## GitHub Pages
 
-1. Pull Request #3 nach erfolgreicher Prüfung zusammenführen.
+1. Draft-PR #11 erst nach erfolgreicher Prüfung zusammenführen.
 2. `Settings → Pages` öffnen.
 3. `Deploy from a branch` wählen.
-4. Branch `main`, Ordner `/ (root)` auswählen.
-5. HTTPS-Adresse abwarten und den Smoke-Test durchführen.
+4. Branch `main` und Ordner `/ (root)` auswählen.
+5. HTTPS-Adresse abwarten.
+6. vollständigen Deployment-Smoke-Test durchführen.
 
 ## Prüfung nach dem Deployment
 
-1. `index.html`, `privacy.html` und `manifest.webmanifest` liefern Status 200.
-2. Manifest, 192- und 512-Pixel-Icons werden korrekt erkannt.
-3. Service Worker verwendet ausschließlich Cache `secret-circle-v17`.
-4. Rollenverteilung ist aktiv und unabhängig von der Aufdeckreihenfolge.
-5. Über mehrere Runden ist die zuerst aufdeckende Person nicht systematisch Imposter.
-6. App startet nach einem Online-Aufruf vollständig offline.
-7. `role-assignment.js`, `setup-ux.js`, `privacy-guard.js` und `wake-lock.js` sind offline verfügbar.
-8. Android- und iOS-Installation funktionieren.
-9. Aktiver Spielstand, Timer, Verlauf und Punkte überstehen Neuladen.
-10. Backup-Export, Import und vollständige Datenlöschung funktionieren.
-11. Geheime Karten werden bei App-Wechsel verdeckt und können nicht verdeckt weitergegeben werden.
-12. Wake Lock wird während der Diskussion angefordert und anschließend freigegeben; ohne API funktioniert das Spiel weiter.
-13. Nach einem Update bleibt nur Cache `secret-circle-v17` bestehen.
+### Seiten und Installation
 
-## Release markieren
+- `party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200.
+- Manifest installiert „Secret Circle – Party Hub“ mit `party.html` als Startpunkt.
+- 192- und 512-Pixel-Icons werden erkannt.
+- Browserkonsole und Netzwerkansicht zeigen keine Fehler.
+- Content Security Policy blockiert keine benötigten lokalen Dateien.
+
+### Hub und Bedienbarkeit
+
+- ohne eigene Spiele werden 45 spielbare und 0 geplante Spiele angezeigt.
+- Drei-Schritte-Einstieg, Onboarding und kontextabhängige Hilfen funktionieren.
+- Suche, Filter, Favoriten, Spieler, Presets, Verlauf und Smart Party Night funktionieren.
+- Spielkarten und Spieldetails benennen die nächste Aktion klar.
+
+### Creator
+
+- alle sechs Vorlagen lassen sich öffnen.
+- Fragen-, Auswahl- und Erraten-Spiel speichern strukturierte Karten korrekt.
+- mehrere Kategorien, Icon, Akzent, Spielerzahl und Dauer bleiben erhalten.
+- Bearbeiten, Kopieren, Löschen, Export und Import funktionieren.
+- eigene Spiele erscheinen im Hub und sind direkt spielbar.
+- ungültige oder beschädigte Creator-Daten werden verworfen.
+- Speicherfehler stellt den alten Zustand wieder her.
+
+### Engines und Daten
+
+- Quick-, Trend-, Viral-, Advanced- und Word-Imposter-Abläufe funktionieren.
+- aktive Sessions lassen sich fortsetzen.
+- Verlauf und Statistik zählen Abschlüsse genau einmal.
+- Gesamtexport enthält selbst erstellte Spiele und alle Sessionarten.
+- vollständige Löschung entfernt alle `secret-circle-*`-Datensätze.
+
+### Offline
+
+- nur Cache `secret-circle-v29` bleibt aktiv.
+- Hub, Creator, Schnellhilfe, alle Engine-Familien, Word Imposter und Datenschutz starten offline.
+- Update von einer älteren Version erhält lokale Spieler, Packs, eigene Spiele und Sessions.
+
+## Lokale Befehle
 
 ```bash
-git tag -a v1.0.0-beta.3 -m "Secret Circle 1.0.0 beta 3"
-git push origin v1.0.0-beta.3
+npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+npx playwright install --with-deps chromium
+npm run ci
+npx playwright install --with-deps chromium firefox webkit
+npm run test:cross-browser
 ```
-
-Eine stabile Version `v1.0.0` darf erst nach allen Freigabeprüfungen erstellt werden.
 
 ## Update-Regeln
 
-Bei Änderungen an offline benötigten Dateien:
-
-1. Cache-Version in `sw.js` erhöhen.
-2. `CORE`, Offline-Test, Strukturvalidator und Release-Audit synchronisieren.
-3. alte installierte Version öffnen und Update testen.
-4. prüfen, dass keine Mischung aus alten und neuen Laufzeitdateien entsteht.
-5. lokale Datenmigration separat prüfen.
+Bei Änderungen an offline benötigten Dateien Cache-Version erhöhen und Service Worker, Offline-Test, Runtime-Test, Validator, Release-Audit und Dokumentation synchronisieren. Danach Update von einer installierten älteren Version praktisch testen.
 
 ## Rollback
 
-Bei einem kritischen Fehler:
-
-1. Veröffentlichung stoppen.
-2. gezielten Revert auf den letzten funktionierenden Commit erstellen.
-3. Service-Worker-Cache erneut erhöhen, damit installierte Apps den Rollback beziehen.
-4. Speicherschema nicht ohne kompatible Migration zurücksetzen.
-5. vollständige CI- und manuelle Kernprüfungen erneut ausführen.
-6. Rollback im Changelog dokumentieren.
-
-Keinen Force-Push auf `main` verwenden.
-
-## Eigene Domain und Recht
-
-Zusätzlich prüfen:
-
-- gültiges HTTPS-Zertifikat
-- keine Weiterleitungsschleife
-- Manifest-Scope innerhalb derselben Origin
-- Hosting-Anbieter und Kontaktinformationen im Datenschutz
-- erforderliche Anbieter- und Impressumsangaben
+Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert erstellen, Cache erneut erhöhen, Datenschemata kompatibel halten, Hub, Creator und sämtliche Engines smoke-testen und den Rollback dokumentieren. Kein Force-Push auf `main`.
 
 ## Produktionsfreigabe
 
-GitHub Pages ist für eine kontrollierte Web-PWA-Beta geeignet. Der öffentliche Produktionsrelease bleibt blockiert, bis CI, Rollenverteilung, Android/iOS, Offline-Modus, Partytests und rechtliche Angaben vollständig bestätigt sind.
+Ein öffentlicher Release bleibt blockiert, bis CI, Creator, alle 45 Spiele, Android/iOS, Offline-Update, reale Gruppen, Inhalte und rechtliche Angaben bestätigt sind.

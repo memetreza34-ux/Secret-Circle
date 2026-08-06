@@ -2,69 +2,120 @@
 
 ## Unterstützte Versionen
 
-Während der Beta wird ausschließlich der aktuelle Stand von `1.0.0-beta.3` beziehungsweise der neueste Commit des aktiven Release-Branches gepflegt. Frühere Entwicklungsstände erhalten keine separaten Sicherheitskorrekturen.
+Während der Beta wird ausschließlich der neueste Commit des aktiven Release-Branches gepflegt. Frühere Entwicklungsstände erhalten keine separaten Sicherheitskorrekturen.
 
 ## Sicherheitsproblem melden
 
-Sicherheitsprobleme sollten nicht als öffentlich sichtbare Diskussion mit vollständigen Ausnutzungsdetails veröffentlicht werden.
+Sicherheitsprobleme sollten nicht öffentlich mit vollständigen Ausnutzungsdetails veröffentlicht werden.
 
 Bevorzugter Weg:
 
 1. Repository auf GitHub öffnen.
 2. Tab `Security` öffnen.
-3. `Report a vulnerability` beziehungsweise eine private Security Advisory verwenden, sofern diese Funktion für das Repository aktiviert ist.
-4. Problem, betroffene Version, genaue Reproduktionsschritte, erwartetes Verhalten und mögliche Auswirkungen angeben.
+3. `Report a vulnerability` beziehungsweise eine private Security Advisory verwenden, sofern aktiviert.
+4. Problem, betroffene Version, Reproduktionsschritte, erwartetes Verhalten und mögliche Auswirkungen angeben.
 
-Falls die private Meldefunktion nicht aktiviert ist, muss vor einem öffentlichen Release eine verantwortliche Kontaktmöglichkeit ergänzt werden.
+Falls keine private Meldefunktion verfügbar ist, muss vor öffentlichem Release eine verantwortliche Kontaktmöglichkeit ergänzt werden.
 
 ## Hilfreiche Angaben
 
 - App-Version und Commit
 - Gerät, Betriebssystem und Browser
-- installierte PWA oder normaler Browser-Tab
+- installierte PWA oder Browser-Tab
 - Online- oder Offline-Zustand
-- betroffene lokale Daten oder Sicherungsdatei
+- betroffene lokale Daten, Party-Night-Plan oder Sicherungsdatei
 - minimale reproduzierbare Schritte
 - Screenshot oder Video ohne fremde geheime Spielinhalte
-- Einschätzung, ob Datenverlust, Rollenenthüllung, Skriptausführung oder eine Blockade des Spiels möglich ist
+- mögliche Auswirkungen: Datenverlust, Rollenenthüllung, Skriptausführung, unbemerkte Datenmischung oder Spielblockade
 
-## Sicherheitsmodell der App
+## Sicherheitsmodell
 
 Secret Circle ist eine statische lokale Pass-and-Play-PWA:
 
 - kein Benutzerkonto,
 - keine eigene Server-API,
 - keine Analyse-, Werbe- oder Tracking-Dienste,
-- Spieldaten ausschließlich im lokalen Browser-Speicher,
+- Spieldaten und Party-Night-Pläne im lokalen Browser-Speicher,
 - Sicherungsexport und -import ausschließlich lokal,
 - restriktive Content Security Policy,
-- dynamische Namen, Kategorien und Ergebnisse werden vor HTML-Ausgabe escaped,
-- importierte Daten werden validiert und in der Größe begrenzt,
-- fehlgeschlagene Imports besitzen einen Rollback,
+- dynamische Namen, Kategorien, Packtexte und Ergebnisse werden als Text ausgegeben,
+- importierte Daten werden nach Format, Schlüssel, Anzahl und tatsächlicher UTF-8-Byte-Größe validiert,
 - Service Worker verarbeitet nur GET-Anfragen derselben Origin.
+
+## Schutz lokaler Transaktionen
+
+### Party Night
+
+- ein Plan enthält ausschließlich bekannte spielbare Katalog-IDs,
+- doppelte und unbekannte Spiel-IDs werden beim Laden verworfen,
+- Planlänge ist auf sechs Stationen begrenzt,
+- Statuswerte werden auf `pending`, `done` oder `skipped` begrenzt,
+- Gruppengröße, Zeitbudget, Stimmung und Altersstufe werden normalisiert,
+- defekte oder nicht unterstützte Pläne werden nicht ausgeführt,
+- Speicherfehler werden abgefangen und als Statusmeldung ausgegeben,
+- Plantexte erzeugen keine HTML- oder Skriptausführung.
+
+### Komplexe Sessions
+
+- eine gestartete Session besitzt eine eindeutige ID und einen Spieler-Snapshot,
+- Verlauf und Statistik werden vor dem Entfernen des aktiven Session-Markers gespeichert,
+- bei einem Schreibfehler bleibt die Session aktiv,
+- eindeutige Historien-IDs verhindern doppelte Abschlüsse.
+
+### Eigene Hub-Packs
+
+- Texte werden Unicode-normalisiert,
+- Duplikate werden bereinigt,
+- Speichern und Löschen aktualisieren lokalen Speicher und Katalog gemeinsam,
+- bei einem Fehler wird der vorherige Zustand wiederhergestellt.
+
+### Gesamtsicherung und Löschung
+
+- die 1,5-MB-Grenze basiert auf tatsächlichen UTF-8-Bytes,
+- Mehrbyte-Zeichen können die Grenze nicht umgehen,
+- Import und vollständige Löschung arbeiten als lokale Transaktion,
+- bei einem Fehler wird der vorherige Zustand wiederhergestellt,
+- ein fehlgeschlagener Rollback erzeugt eine gesonderte kritische Meldung.
+
+Diese Maßnahmen reduzieren unbeabsichtigten lokalen Datenverlust. Sie ersetzen keine verschlüsselte Datenbank und keinen Schutz vor einer Person, die das eigene Gerät und den Browser-Speicher bewusst manipuliert.
 
 ## Nicht als Sicherheitslücke eingestuft
 
-Folgende Eigenschaften sind dokumentierte Produktgrenzen:
+- Personen derselben Runde besitzen physischen Zugriff auf dasselbe Gerät.
+- Nutzer können ihre eigenen Browserdaten, Party-Night-Pläne oder Sicherungsdateien verändern.
+- Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck entfernen.
+- eine absichtlich weitergegebene Sicherungsdatei enthält lokale Namen und Spielinformationen im Klartext.
+- das Spiel kann absichtliches Beobachten des Bildschirms nicht verhindern.
+- es gibt keinen Schutz gegen einen Gerätebesitzer, der Entwicklerwerkzeuge zur Rollenanzeige verwendet.
 
-- Personen in derselben Runde besitzen physischen Zugriff auf dasselbe Gerät.
-- Ein Nutzer kann seine eigenen Browserdaten, lokalen Spielstände oder exportierten Sicherungsdateien verändern.
-- Das Betriebssystem oder der Browser kann lokalen Speicher bei Speicherdruck entfernen.
-- Eine absichtlich weitergegebene Sicherungsdatei enthält die darin gespeicherten lokalen Namen und Spielinformationen.
-- Das Spiel verhindert kein absichtliches Beobachten des Bildschirms durch andere anwesende Personen.
+Manipulierte lokale Daten dürfen jedoch keine Skriptausführung, fremde Netzwerkzugriffe oder einen nicht behebbaren App-Zustand verursachen.
 
-Manipulierte lokale Daten dürfen die App jedoch nicht zur Skriptausführung, zu fremden Netzwerkzugriffen oder zu einem nicht behebbaren Zustand bringen.
+## Besonders relevante Testfälle
 
-## Bearbeitung
+Vor einer Sicherheitsfreigabe müssen mindestens bestehen:
 
-Nach Eingang einer nachvollziehbaren Meldung sollte:
+- HTML-/Skripttexte in Namen, Imposter-Kategorien und eigenen Hub-Packs,
+- beschädigter Party-Night-Plan mit unbekannten oder doppelten Spiel-IDs,
+- ungültige Party-Night-Konfiguration und Speicherfehler,
+- ungültige und übergroße Sicherungsdatei,
+- Mehrbyte-Datei über der Byte-Grenze,
+- simulierter Fehler während Import und Löschung,
+- simulierter Fehler während Pack-Speichern und -Löschen,
+- simulierter Fehler beim Sessionabschluss,
+- beschädigter aktiver Sessiondatensatz,
+- Content Security Policy ohne `unsafe-inline` und `unsafe-eval`,
+- vollständiger Offline-Start ohne externe Ressourcen.
 
-1. Empfang bestätigt werden,
-2. Schweregrad und Reproduzierbarkeit geprüft werden,
-3. eine Korrektur auf einem separaten Branch entstehen,
-4. Engine-, Speicher-, Sicherheits- und Browserprüfungen ausgeführt werden,
-5. Cache-Version bei geänderten PWA-Dateien erhöht werden,
-6. Korrektur im `CHANGELOG.md` dokumentiert werden,
-7. betroffene Beta-Version ersetzt oder zurückgezogen werden.
+## Bearbeitung einer Meldung
+
+Nach Eingang einer nachvollziehbaren Meldung:
+
+1. Empfang bestätigen,
+2. Schweregrad und Reproduzierbarkeit prüfen,
+3. Korrektur auf separatem Branch erstellen,
+4. Engine-, Speicher-, Sicherheits- und Browserprüfungen ausführen,
+5. Cache-Version bei geänderten PWA-Dateien erhöhen,
+6. Korrektur im `CHANGELOG.md` dokumentieren,
+7. betroffene Beta-Version ersetzen oder zurückziehen.
 
 Eine öffentliche Produktionsfreigabe ist blockiert, solange ein bestätigter kritischer oder hoher Sicherheitsfehler offen ist.

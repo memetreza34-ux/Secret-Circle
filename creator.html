@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Erstelle eigene lokale Partyspiele für Secret Circle.">
+  <meta name="referrer" content="no-referrer">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Secret Circle – Eigenes Spiel erstellen</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="party.css">
+  <link rel="stylesheet" href="party-guide.css">
+  <link rel="stylesheet" href="creator.css">
+</head>
+<body>
+  <a class="skip-link" href="#creator-main">Zum Creator springen</a>
+  <div class="creator-shell">
+    <header class="creator-header">
+      <a class="ghost-button" href="party.html">← Party Hub</a>
+      <div class="creator-brand">
+        <span class="creator-logo" aria-hidden="true">🛠️</span>
+        <div><p class="eyebrow">Secret Circle Creator</p><h1>Eigenes Spiel erstellen</h1></div>
+      </div>
+      <button id="new-game" class="secondary" type="button">Neues Spiel</button>
+    </header>
+
+    <main id="creator-main">
+      <p id="creator-status" class="hub-status" role="status" aria-live="polite"></p>
+
+      <section class="creator-intro" aria-labelledby="creator-intro-title">
+        <div>
+          <p class="eyebrow">Ohne Programmieren</p>
+          <h2 id="creator-intro-title">In vier einfachen Schritten</h2>
+          <p>Vorlage wählen, Namen und Stil festlegen, eigene Karten eintragen und direkt im Party Hub testen. Alles bleibt lokal auf deinem Gerät.</p>
+        </div>
+        <div class="creator-intro-steps" aria-label="Creator-Ablauf">
+          <span><strong>1</strong> Vorlage</span>
+          <span><strong>2</strong> Details</span>
+          <span><strong>3</strong> Inhalte</span>
+          <span><strong>4</strong> Prüfen</span>
+        </div>
+      </section>
+
+      <div class="creator-layout">
+        <section class="creator-wizard" aria-labelledby="wizard-title">
+          <div class="wizard-head">
+            <div><p class="eyebrow">Schritt für Schritt</p><h2 id="wizard-title">Spiel konfigurieren</h2></div>
+            <span id="wizard-progress-text">Schritt 1 von 4</span>
+          </div>
+          <div class="wizard-progress" aria-hidden="true"><span id="wizard-progress-bar"></span></div>
+
+          <form id="creator-form" novalidate>
+            <section class="wizard-step" data-step="1" aria-labelledby="template-title">
+              <div class="step-heading">
+                <div><h3 id="template-title">Welche Art von Spiel möchtest du?</h3><p>Eine Vorlage legt nur den Ablauf fest. Name, Kategorien und Karten bestimmst du selbst.</p></div>
+                <button class="help-dot" type="button" data-creator-help="template" aria-label="Hilfe zu Spielvorlagen">?</button>
+              </div>
+              <div id="template-grid" class="template-grid" role="radiogroup" aria-label="Spielvorlage auswählen"></div>
+            </section>
+
+            <section class="wizard-step" data-step="2" aria-labelledby="details-title" hidden>
+              <div class="step-heading">
+                <div><h3 id="details-title">Name, Stil und Gruppe</h3><p>Kurze Texte sind leichter zu verstehen. Die Vorschau rechts aktualisiert sich sofort.</p></div>
+                <button class="help-dot" type="button" data-creator-help="details" aria-label="Hilfe zu Spieldetails">?</button>
+              </div>
+
+              <div class="creator-fields two-fields">
+                <label for="creator-title">Spielname <span>2–50 Zeichen</span><input id="creator-title" maxlength="50" required placeholder="z. B. Unser Anime-Abend"></label>
+                <label for="creator-group">Kategorie <span>für Suche und Filter</span><input id="creator-group" maxlength="30" value="Eigene Spiele" placeholder="z. B. Freunde, Anime, Schule"></label>
+              </div>
+              <label for="creator-description">Kurze Erklärung <span>ein Satz reicht</span><textarea id="creator-description" rows="3" maxlength="180" required placeholder="Beschreibe in einem kurzen Satz, was die Gruppe macht."></textarea></label>
+
+              <fieldset class="visual-picker">
+                <legend>Icon wählen <span>später durch eigene Grafiken ersetzbar</span></legend>
+                <div id="icon-picker" class="icon-picker"></div>
+              </fieldset>
+
+              <fieldset class="visual-picker">
+                <legend>Akzent wählen <span>für Karten und spätere Illustrationen</span></legend>
+                <div id="accent-picker" class="accent-picker"></div>
+              </fieldset>
+
+              <div class="creator-fields three-fields">
+                <label for="creator-min-players">Mindestens<input id="creator-min-players" type="number" min="1" max="20" value="2" inputmode="numeric"></label>
+                <label for="creator-max-players">Höchstens<input id="creator-max-players" type="number" min="1" max="20" value="20" inputmode="numeric"></label>
+                <label for="creator-duration">Dauer in Minuten<input id="creator-duration" type="number" min="3" max="90" value="15" inputmode="numeric"></label>
+              </div>
+              <label for="creator-age">Altersstufe<select id="creator-age"><option value="all">Familienfreundlich</option><option value="teen">Ab 12 empfohlen</option></select></label>
+            </section>
+
+            <section class="wizard-step" data-step="3" aria-labelledby="content-title" hidden>
+              <div class="step-heading">
+                <div><h3 id="content-title">Eigene Kategorien und Karten</h3><p id="content-instruction">Eine Karte pro Zeile. Mindestens drei unterschiedliche Karten.</p></div>
+                <button class="help-dot" type="button" data-creator-help="content" aria-label="Hilfe zu eigenen Karten">?</button>
+              </div>
+              <div id="pack-editor" class="pack-editor"></div>
+              <button id="add-pack" class="secondary" type="button">+ Weitere Kategorie</button>
+              <p class="micro-help">Du kannst bis zu 8 Kategorien und bis zu 200 Karten je Kategorie speichern. Doppelte Karten werden automatisch entfernt.</p>
+            </section>
+
+            <section class="wizard-step" data-step="4" aria-labelledby="review-title" hidden>
+              <div class="step-heading">
+                <div><h3 id="review-title">Kurz prüfen und speichern</h3><p>Kontrolliere Name, Spielerzahl und Inhalte. Danach erscheint das Spiel im Party Hub unter deiner gewählten Kategorie.</p></div>
+                <button class="help-dot" type="button" data-creator-help="review" aria-label="Hilfe zum Speichern">?</button>
+              </div>
+              <div id="review-summary" class="review-summary"></div>
+              <label class="creator-confirm"><input id="creator-safe-confirm" type="checkbox" aria-label="Inhaltsprüfung bestätigen"> <span>Ich habe die Karten geprüft. Sie sind verständlich, freiwillig spielbar und enthalten keine kopierten Bilder, Audios oder längeren fremden Texte.</span></label>
+              <button id="save-created-game" type="submit">Spiel speichern</button>
+            </section>
+
+            <div class="wizard-actions">
+              <button id="wizard-back" class="secondary" type="button" hidden>Zurück</button>
+              <button id="wizard-next" type="button">Weiter zu Details</button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="creator-preview" aria-labelledby="preview-title">
+          <div class="preview-heading"><p class="eyebrow">Live-Vorschau</p><h2 id="preview-title">So erscheint dein Spiel</h2></div>
+          <article id="creator-preview-card" class="creator-preview-card accent-violet">
+            <div class="preview-icon" id="preview-icon" aria-hidden="true">🎉</div>
+            <p id="preview-group" class="eyebrow">Eigene Spiele</p>
+            <h3 id="preview-name">Dein Spielname</h3>
+            <p id="preview-description">Eine kurze Erklärung zeigt der Gruppe sofort, was sie tun soll.</p>
+            <div class="preview-meta"><span id="preview-players">2–20 Personen</span><span id="preview-duration">ca. 15 Min.</span></div>
+            <button type="button" disabled>Spielen</button>
+          </article>
+          <div class="asset-note">
+            <strong>Für spätere Bilder und Animationen vorbereitet</strong>
+            <p>Icon und Akzent werden bereits gespeichert. Später können für jede Kategorie passende Illustrationen, Kartenhintergründe und kurze Übergangsanimationen ergänzt werden.</p>
+          </div>
+        </aside>
+      </div>
+
+      <section class="creator-library" aria-labelledby="library-title">
+        <div class="section-title">
+          <div><p class="eyebrow">Lokal gespeichert</p><h2 id="library-title">Meine Spiele</h2><p>Bearbeiten, kopieren, exportieren oder direkt im Party Hub testen.</p></div>
+          <div class="inline-actions">
+            <button id="export-created-games" class="secondary" type="button">Bibliothek exportieren</button>
+            <button id="import-created-games-trigger" class="secondary" type="button">Importieren</button>
+            <input id="import-created-games" class="file-input-hidden" type="file" accept="application/json,.json" aria-label="Eigene Secret-Circle-Spiele importieren">
+          </div>
+        </div>
+        <div id="created-games-list" class="created-games-list empty-state">Noch kein eigenes Spiel gespeichert.</div>
+      </section>
+    </main>
+
+    <footer class="hub-footer"><span>Secret Circle Creator · lokale Daten</span><div><a href="party.html">Party Hub</a><a href="privacy.html">Datenschutz</a></div></footer>
+  </div>
+
+  <section id="creator-help" class="help-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="creator-help-title">
+    <div class="help-sheet-card">
+      <button id="close-creator-help" class="close-button" type="button" aria-label="Hilfe schließen">×</button>
+      <p class="eyebrow">Kurz erklärt</p>
+      <h2 id="creator-help-title">Hilfe</h2>
+      <div id="creator-help-content"></div>
+    </div>
+  </section>
+
+  <script src="runtime-guard.js"></script>
+  <script src="game-creator.js"></script>
+  <script src="creator-page.js"></script>
+</body>
+</html>
