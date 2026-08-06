@@ -20,36 +20,42 @@
       <p>Secret Circle funktioniert ohne Benutzerkonto, ohne Tracking und ohne eigenen Spielserver.</p>
 
       <h2>Welche Daten werden lokal gespeichert?</h2>
-      <p>Je nach Nutzung speichert die App Spielernamen, Gruppen-Presets, Favoriten, Alters- und Sessioneinstellungen, Party-Night-Pläne, eigene Kategorien, aktive Word-Imposter-, Advanced-, Quick- und Trend-Sessions, Verlauf, Punkte und lokale Statistiken im Browser-Speicher des Geräts.</p>
+      <p>Je nach Nutzung speichert die App Spielernamen, Presets, Favoriten, Alters- und Sessioneinstellungen, Party-Night-Pläne, eigene Kategorien, selbst erstellte Spiele, aktive Word-Imposter-, Advanced-, Quick-, Trend- und Viral-Sessions, Verlauf, Punkte und lokale Statistiken im Browser-Speicher.</p>
+
+      <h2>Eigene Spiele und Kategorien</h2>
+      <p>Der lokale Game-Creator speichert Spielname, Erklärung, Vorlage, Icon, Akzent, Spielerzahl, Dauer und eigene Textkarten. Es werden keine Bilder oder Dateien automatisch hochgeladen. Eigene Spiele können separat oder über die Gesamtsicherung als JSON exportiert werden.</p>
+      <p>Die App prüft Länge, Anzahl, Format und doppelte Karten. Die inhaltliche und rechtliche Verantwortung für selbst eingetragene Texte bleibt bei der Person, die das Spiel erstellt.</p>
 
       <h2>Smart Party Night</h2>
-      <p>Der Planer verarbeitet Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel ausschließlich lokal. Es werden keine Daten an einen KI-, Analyse- oder Empfehlungsserver übertragen.</p>
+      <p>Der Planer verarbeitet Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel ausschließlich lokal. Es werden keine Daten an einen Analyse-, Werbe- oder Empfehlungsserver übertragen.</p>
 
       <h2>Geheime Spielinhalte</h2>
-      <p>Rollen, Fragen, Orte, Figuren, Identitäten und geheime Missionen werden bei Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Übergabe- und Verdeckungsstufen verringern Schulterblick, können absichtliches Mitlesen jedoch nicht technisch verhindern.</p>
-      <p>Die Mafia-Moderatoransicht zeigt konstruktionsbedingt alle Rollen und darf nur von der neutralen Erzählerperson geöffnet werden.</p>
+      <p>Rollen, Fragen, Orte, Figuren, Identitäten, persönliche Antworten und geheime Missionen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Übergabe- und Verdeckungsstufen verringern Schulterblick, können absichtliches Mitlesen jedoch nicht vollständig verhindern.</p>
 
       <h2>Anime-Fan-Quiz</h2>
-      <p>Das inoffizielle Anime-Figuren-Quiz verwendet ausschließlich Textnamen und eigene Spielanweisungen. Es lädt keine fremden Bilder, Logos, Videos, Audios oder Zitate. Die Funktion steht in keiner Verbindung zu Rechteinhabern. Vor einer öffentlichen oder kommerziellen Veröffentlichung ist dennoch eine gesonderte rechtliche und redaktionelle Prüfung erforderlich.</p>
+      <p>Das inoffizielle Anime-Figuren-Quiz verwendet ausschließlich Textnamen und eigene Spielanweisungen. Es lädt keine fremden Bilder, Logos, Videos, Audios oder Zitate. Die Funktion steht in keiner Verbindung zu Rechteinhabern. Vor öffentlicher oder kommerzieller Veröffentlichung ist eine gesonderte rechtliche und redaktionelle Prüfung erforderlich.</p>
 
-      <h2>Geld-Challenge</h2>
-      <p>Alle Geldbeträge und „Wer zahlt?“-Situationen sind hypothetische Partyfragen. Die App verarbeitet keine Zahlung, fordert keine Zahlungsdaten an und verpflichtet niemanden zu einer Ausgabe oder Herausforderung.</p>
+      <h2>Geld-, Preis- und Schätzspiele</h2>
+      <p>Alle Geld-Challenges sind hypothetische Partyfragen. Die App verarbeitet keine Zahlung, fordert keine Zahlungsdaten an und verpflichtet niemanden zu einer Ausgabe. „Preis schätzen“ verwendet feste Spielwerte und keine aktuellen Händler-, Börsen- oder Marktdaten.</p>
+
+      <h2>Persönliche Social-Spiele</h2>
+      <p>Bei Wer kennt mich am besten?, Finger runter, Hot Seat, Pass das Handy und ähnlichen Modi können persönliche Antworten entstehen. Überspringen ist erlaubt. Die Antworten werden nicht an einen Server gesendet; je nach Modus wird nur der lokale Sessionzustand oder die Punktzahl gespeichert.</p>
 
       <h2>Sicherung und Import</h2>
-      <p>Eine vollständige JSON-Sicherung kann Spielernamen, Presets, Favoriten, Party-Night-Pläne, Verlauf, Statistiken, eigene Kategorien, Einstellungen und aktive Sessions enthalten. Sie wird lokal erstellt, ist nicht verschlüsselt und sollte nur an einem vertrauenswürdigen Ort gespeichert werden.</p>
+      <p>Eine vollständige JSON-Sicherung kann Spielernamen, Presets, Favoriten, Party-Night-Pläne, Verlauf, Statistiken, eigene Kategorien, selbst erstellte Spiele, Einstellungen und aktive Sessions enthalten. Sie wird lokal erstellt, ist nicht verschlüsselt und sollte nur an einem vertrauenswürdigen Ort gespeichert werden.</p>
       <p>Importe werden auf Format, Schlüssel, Anzahl, UTF-8-Byte-Größe und JSON-Struktur geprüft. Bei einem Schreibfehler versucht die App, den vorherigen Zustand wiederherzustellen.</p>
 
       <h2>Werden Spieldaten übertragen?</h2>
       <p>Nein. Beim Laden oder Aktualisieren ruft der Browser lediglich statische App-Dateien vom Hosting-Anbieter ab. Spieldaten werden nicht an einen eigenen Secret-Circle-Server gesendet.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert Party Hub, Smart Party Night, klassische Quick Modes, neue Trend Modes, Advanced-Spiele, Word Imposter und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v27</code>.</p>
+      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v29</code>.</p>
 
       <h2>Daten löschen</h2>
-      <p>„Alle lokalen Daten löschen“ entfernt sämtliche Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>, einschließlich klassischer und neuer aktiver Sessions. Exportierte Dateien müssen separat im Dateisystem gelöscht werden.</p>
+      <p>„Alle lokalen Daten löschen“ entfernt sämtliche Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>, einschließlich eigener Spiele und aktiver Sessions. Exportierte Dateien müssen separat im Dateisystem gelöscht werden.</p>
 
       <h2>Browsergrenzen</h2>
-      <p>Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck, manuellem Löschen oder einer Neuinstallation entfernen. Für wichtige eigene Packs sollte regelmäßig eine Sicherung exportiert werden.</p>
+      <p>Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck, manuellem Löschen oder einer Neuinstallation entfernen. Für wichtige eigene Spiele und Packs sollte regelmäßig eine Sicherung exportiert werden.</p>
 
       <h2>Analyse, Werbung und externe Inhalte</h2>
       <p>Secret Circle verwendet keine Analyse-, Werbe- oder Tracking-Dienste und lädt keine externen Spielskripte, Schriftarten oder Werbeinhalte.</p>
@@ -59,7 +65,7 @@
 
       <div class="actions">
         <a class="button-link" href="party.html">Zurück zum Party Hub</a>
-        <a class="button-link secondary-link" href="index.html">Zu Word Imposter</a>
+        <a class="button-link secondary-link" href="creator.html">Eigene Spiele verwalten</a>
       </div>
     </article>
   </main>
