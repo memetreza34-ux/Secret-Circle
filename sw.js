@@ -22,13 +22,18 @@ async function promoteStagedCore() {
   const requests = await staging.keys();
   if (!requests.length) throw new Error('Der vorbereitete Offline-Core ist leer.');
 
-  await caches.delete(CACHE);
   const active = await caches.open(CACHE);
+  const stagedUrls = new Set(requests.map(request => request.url));
   await Promise.all(requests.map(async request => {
     const response = await staging.match(request);
     if (!response) throw new Error(`Vorbereitete Ressource fehlt: ${request.url}`);
     await active.put(request, response);
   }));
+
+  const activeRequests = await active.keys();
+  await Promise.all(activeRequests
+    .filter(request => !stagedUrls.has(request.url))
+    .map(request => active.delete(request)));
   await caches.delete(STAGING_CACHE);
 
   const keys = await caches.keys();
