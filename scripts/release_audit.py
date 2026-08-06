@@ -22,6 +22,7 @@ manifest = json.loads(require('manifest.webmanifest'))
 sw = require('sw.js')
 runtime_guard = require('runtime-guard.js')
 release_structure = require('party-release-structure.js')
+filter_state = require('party-filter-state.js')
 release_styles = require('party-release.css')
 registry = require('backup-schema-registry.js')
 ledger = require('session-ledger.js')
@@ -79,15 +80,30 @@ checks = {
     'release_tier_labels': all(marker in release_structure for marker in (
         "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'", 'release-tier-filter',
     )),
+    'combined_age_tier_filter': all(marker in release_structure for marker in (
+        'ageAllows', 'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches',
+    )),
     'release_tier_runtime': all(marker in runtime_guard for marker in (
-        'party-release-structure.js', 'party-release.css', 'loadPartyReleaseStructure',
+        'party-release-structure.js', 'party-filter-state.js', 'party-release.css',
+        'loadPartyReleaseStructure', 'loadPartyFilterState',
     )),
     'release_tier_offline': all(marker in sw for marker in (
-        './party-release-structure.js', './party-release.css',
+        './party-release-structure.js', './party-filter-state.js', './party-release.css',
     )),
     'release_tier_styles': all(marker in release_styles for marker in (
-        '.release-tier-overview', '.release-tier-pill', 'focus-visible', 'prefers-reduced-motion',
+        '.release-tier-overview', '.release-tier-pill', '.filter-reset-button',
+        'focus-visible', 'prefers-reduced-motion',
     )),
+    'persistent_filter_contract': all(marker in filter_state for marker in (
+        "STORAGE_KEY = 'secret-circle-party-catalog-filters-v1'",
+        'game-search', 'group-filter', 'mood-filter', 'player-filter',
+        'age-filter', 'status-filter', 'release-tier-filter', 'Filter zurücksetzen',
+    )),
+    'persistent_filter_safety': all(marker in filter_state for marker in (
+        'normalize(value)', 'FIXED_VALUES', 'optionExists', 'resolveView',
+        'lokaler Speicher ist nicht verfügbar',
+    )),
+    'explicit_view_precedence': 'resolveView(stored.view, requestedView)' in filter_state,
     'backup_registry': all(marker in registry for marker in (
         "format: 'secret-circle-backup'",
         "format: 'secret-circle-complete-backup'",
@@ -143,12 +159,17 @@ checks = {
     'cross_browser_ci': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'foundation_audit_in_gate': 'scripts/foundation_contract_audit.py' in package.get('scripts', {}).get('validate', ''),
     'foundation_tests_in_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
-        'tests/party-release-structure.test.js', 'tests/backup-schema-registry.test.js',
-        'tests/session-ledger.test.js', 'tests/session-ledger-legacy-guard.test.js',
-        'tests/pwa-update.test.js',
+        'tests/party-release-structure.test.js', 'tests/party-filter-state.test.js',
+        'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
+        'tests/session-ledger-legacy-guard.test.js', 'tests/pwa-update.test.js',
     )),
     'release_dates_documented': all(marker in roadmap for marker in (
         '30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027',
+    )),
+    'filter_milestones_documented': all(marker in roadmap for marker in (
+        '[x] Filterzustand und zuletzt verwendete Ansicht speichern',
+        '[x] Alters- und Reifestufenfilter als gemeinsame Sichtbarkeitsregel auswerten',
+        '[x] direkte URL-Ansichten gegenüber gespeicherten Ansichten priorisieren',
     )),
     'quality_tiers_documented': all(marker in release_scope for marker in ('Stufe A', 'Stufe B', 'Stufe C', 'Labs')),
 }
@@ -184,14 +205,15 @@ cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').g
 if len(unit_tests) < 18 or len(e2e_suites) < 28 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required_test in (
-    'party-release-structure.test.js', 'backup-schema-registry.test.js',
-    'session-ledger.test.js', 'session-ledger-legacy-guard.test.js',
-    'session-ledger-integration.test.js', 'service-worker.test.js', 'pwa-update.test.js',
+    'party-release-structure.test.js', 'party-filter-state.test.js',
+    'backup-schema-registry.test.js', 'session-ledger.test.js',
+    'session-ledger-legacy-guard.test.js', 'session-ledger-integration.test.js',
+    'service-worker.test.js', 'pwa-update.test.js',
 ):
     if required_test not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required_test}')
 for required_test in (
-    'game-creator.spec.js', 'creator-runner-resilience.spec.js',
+    'party-filter-state.spec.js', 'game-creator.spec.js', 'creator-runner-resilience.spec.js',
     'party-viral-resilience.spec.js', 'party-viral-modes.spec.js', 'offline.spec.js',
 ):
     if required_test not in e2e_suites:
@@ -210,10 +232,10 @@ for relative in required_docs:
 for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
     for relative in (
         'backup-schema-registry.js', 'session-ledger.js', 'session-ledger-legacy-guard.js',
-        'party-release-structure.js', 'runtime-guard.js', 'party-routing.js',
-        'game-creator.js', 'creator-page.js', 'party-quick-modes.js',
-        'party-mega-modes.js', 'party-viral-modes.js', 'party-created-modes.js',
-        'quick-loader.js', 'party-hub.js',
+        'party-release-structure.js', 'party-filter-state.js', 'runtime-guard.js',
+        'party-routing.js', 'game-creator.js', 'creator-page.js',
+        'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
+        'party-created-modes.js', 'quick-loader.js', 'party-hub.js',
     ):
         if forbidden in read(relative):
             raise SystemExit(f'Forbidden release pattern {forbidden} in {relative}')
@@ -226,6 +248,9 @@ print(json.dumps({
     'non_destructive_cache_promotion': True,
     'visible_builtin_games': base_games + expansion_games + trending_games + mega_games + viral_games,
     'release_tiers': {'core': core_count, 'extended': extended_count, 'labs': lab_count},
+    'persistent_catalog_filters': True,
+    'explicit_url_view_precedence': True,
+    'combined_age_and_release_filter': True,
     'playable_builtin_games': 45,
     'maximum_local_created_games': 40,
     'backup_schemas': 3,
