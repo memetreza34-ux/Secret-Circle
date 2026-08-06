@@ -9,12 +9,12 @@
   }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createRoleAssignmentApi() {
   const MAX_IMPOSTERS = 6;
-  const INSTALL_FLAG = '__secretCircleIndependentRoles';
 
   function requireEngine(engine) {
-    if (!engine || typeof engine.createGame !== 'function' || typeof engine.nextRound !== 'function' || typeof engine.restoreGame !== 'function' || typeof engine.createRng !== 'function' || typeof engine.shuffle !== 'function' || typeof engine.assertGame !== 'function') {
-      throw Error('Secret-Circle-Engine für Rollenverteilung fehlt.');
+    if (!engine || typeof engine.createGame !== 'function' || typeof engine.nextRound !== 'function' || typeof engine.restoreGame !== 'function' || typeof engine.assignIndependentRoles !== 'function' || typeof engine.validateImposterCount !== 'function' || typeof engine.assertGame !== 'function') {
+      throw Error('Secret-Circle-Engine mit integrierter Rollenverteilung fehlt.');
     }
+    if (engine.MAX_IMPOSTERS !== MAX_IMPOSTERS) throw Error('Engine und Rollenmodul verwenden unterschiedliche Imposter-Grenzen.');
   }
 
   function validateCount(value, playerCount) {
@@ -28,60 +28,23 @@
 
   function validateGameRoles(game) {
     validateCount(game?.imposters?.length, game?.players?.length);
+    if (!Array.isArray(game.imposters) || new Set(game.imposters).size !== game.imposters.length || game.imposters.some(name => !game.players.includes(name))) {
+      throw Error('Ungültige Imposter-Verteilung.');
+    }
     return game;
   }
 
   function assignIndependentRoles(game, engine) {
     requireEngine(engine);
-    const count = validateCount(game.imposters.length, game.players.length);
-    const random = engine.createRng(`${game.seed}|independent-roles-v1`);
-    game.imposters = engine.shuffle(game.players, random).slice(0, count);
-    engine.assertGame(game);
-    return game;
+    const next = JSON.parse(JSON.stringify(game));
+    const count = validateCount(next?.imposters?.length, next?.players?.length);
+    next.imposters = engine.assignIndependentRoles(next.players, count, next.seed);
+    engine.assertGame(next);
+    return next;
   }
 
   function install(engine) {
     requireEngine(engine);
-    if (engine[INSTALL_FLAG]) return engine;
-
-    const originalAssertGame = engine.assertGame.bind(engine);
-    const originalRestoreGame = engine.restoreGame.bind(engine);
-    const originalCreateGame = engine.createGame.bind(engine);
-    const originalNextRound = engine.nextRound.bind(engine);
-
-    engine.assertGame = game => {
-      originalAssertGame(game);
-      validateGameRoles(game);
-      return true;
-    };
-
-    engine.restoreGame = raw => validateGameRoles(originalRestoreGame(raw));
-
-    engine.createGame = options => {
-      const players = engine.normalizePlayers(options?.players);
-      validateCount(options?.imposterCount ?? 1, players.length);
-      return assignIndependentRoles(originalCreateGame(options), engine);
-    };
-
-    engine.nextRound = (game, options) => {
-      engine.assertGame(game);
-      const count = options?.imposterCount ?? game.imposters.length;
-      validateCount(count, game.players.length);
-      return assignIndependentRoles(originalNextRound(game, options), engine);
-    };
-
-    Object.defineProperty(engine, 'MAX_IMPOSTERS', {
-      value: MAX_IMPOSTERS,
-      enumerable: true,
-      configurable: false,
-      writable: false
-    });
-    Object.defineProperty(engine, INSTALL_FLAG, {
-      value: true,
-      enumerable: false,
-      configurable: false,
-      writable: false
-    });
     return engine;
   }
 
@@ -90,6 +53,7 @@
     assignIndependentRoles,
     install,
     validateCount,
-    version: 2
+    validateGameRoles,
+    version: 3
   });
 });
