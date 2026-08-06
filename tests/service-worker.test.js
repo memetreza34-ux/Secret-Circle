@@ -12,6 +12,7 @@ assert.match(source, /canonicalNavigation \? stripSearch\(request\) : request/);
 assert.match(source, /caches\.match\(stripSearch\(request\)\)/);
 assert.match(source, /quick-play\.html/);
 assert.match(source, /session-ledger\.js/);
+assert.match(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /cache\.put\(request,response\.clone\(\)\)/);
 
 console.log(JSON.stringify({
@@ -19,5 +20,6 @@ console.log(JSON.stringify({
   cacheContract: 30,
   queryNavigationOffline: true,
   canonicalNavigationCaching: true,
-  exactOnceLedgerOffline: true
+  exactOnceLedgerOffline: true,
+  megaViralGuardOffline: true
 }, null, 2));
