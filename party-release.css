@@ -1,0 +1,108 @@
+.release-tier-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0 0 1rem;
+}
+
+.release-tier-card {
+  min-height: 7rem;
+  padding: 1rem;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border-radius: 1rem;
+  background: var(--panel, rgba(15, 23, 42, 0.82));
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.release-tier-card strong,
+.release-tier-card span {
+  display: block;
+}
+
+.release-tier-card strong {
+  margin-bottom: 0.4rem;
+  font-size: 1.05rem;
+}
+
+.release-tier-card span {
+  color: var(--muted, #cbd5e1);
+  line-height: 1.45;
+}
+
+.release-tier-card:hover {
+  transform: translateY(-1px);
+  border-color: currentColor;
+}
+
+.release-tier-card:focus-visible,
+.release-tier-filter-label select:focus-visible {
+  outline: 3px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+.release-tier-card.tier-core {
+  box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.18);
+}
+
+.release-tier-card.tier-extended {
+  box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.18);
+}
+
+.release-tier-card.tier-labs {
+  box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.18);
+}
+
+.release-tier-filter-label {
+  min-width: 11rem;
+}
+
+.release-tier-pill {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  margin: 0.7rem 0.35rem 0 0;
+  padding: 0.28rem 0.55rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.release-tier-pill.tier-core {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.release-tier-pill.tier-extended {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.release-tier-pill.tier-labs {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.release-tier-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+@media (max-width: 54rem) {
+  .release-tier-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .release-tier-card {
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .release-tier-card:hover {
+    transform: none;
+  }
+}
