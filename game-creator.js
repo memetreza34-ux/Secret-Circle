@@ -15,60 +15,12 @@
   const ALLOWED_ACCENTS = new Set(['violet', 'cyan', 'pink', 'orange', 'green', 'blue', 'yellow', 'red']);
 
   const TEMPLATES = Object.freeze({
-    prompt: Object.freeze({
-      id: 'prompt',
-      title: 'Fragen & Aussagen',
-      icon: '💬',
-      mode: 'prompt',
-      description: 'Eine Karte wird vorgelesen, beantwortet oder gemeinsam diskutiert.',
-      example: 'Was würdest du sofort lernen?\nWelcher kleine Luxus ist unterschätzt?\nWas macht einen guten Spieleabend aus?',
-      instruction: 'Eine Frage oder Aussage pro Zeile.'
-    }),
-    choice: Object.freeze({
-      id: 'choice',
-      title: 'Entweder oder',
-      icon: '↔️',
-      mode: 'choice',
-      description: 'Zwei Optionen erscheinen gleichzeitig und die Gruppe entscheidet.',
-      example: 'Meer | Berge\nPlanen | Spontan\nSuperkraft fliegen | Superkraft teleportieren',
-      instruction: 'Pro Zeile zwei Optionen mit einem | trennen.'
-    }),
-    guess: Object.freeze({
-      id: 'guess',
-      title: 'Erraten & Darstellen',
-      icon: '🎭',
-      mode: 'charades',
-      description: 'Begriffe werden dargestellt oder erklärt und von der Gruppe erraten.',
-      example: 'Pinguin\nRaumstation\nKaffeetasse\nDetektiv',
-      instruction: 'Ein Begriff pro Zeile.'
-    }),
-    challenge: Object.freeze({
-      id: 'challenge',
-      title: 'Challenges',
-      icon: '⚡',
-      mode: 'prompt',
-      description: 'Kurze sichere Aufgaben für eine aktive Person oder die ganze Gruppe.',
-      example: 'Erfinde in zehn Sekunden einen Bandnamen.\nStelle einen Roboter ohne Worte dar.\nNenne drei Dinge, die in einen Rucksack gehören.',
-      instruction: 'Eine sichere Aufgabe pro Zeile.'
-    }),
-    story: Object.freeze({
-      id: 'story',
-      title: 'Story & Kreativität',
-      icon: '📖',
-      mode: 'prompt',
-      description: 'Offene Anfänge für Geschichten, Improvisation oder Satzketten.',
-      example: 'Als die Tür aufging, war der Raum plötzlich leer.\nDer Roboter beantragte zum ersten Mal Urlaub.\nIm Zug lag ein Brief aus der Zukunft.',
-      instruction: 'Ein Geschichtenanfang pro Zeile.'
-    }),
-    debate: Object.freeze({
-      id: 'debate',
-      title: 'Meinung & Debatte',
-      icon: '🎤',
-      mode: 'prompt',
-      description: 'Thesen werden begründet, diskutiert oder von der Gruppe bewertet.',
-      example: 'Frühstück ist zu jeder Tageszeit die beste Mahlzeit.\nEin leerer Kalender ist echter Luxus.\nOffline-Funktionen sind wichtiger als ein Konto.',
-      instruction: 'Eine harmlose These pro Zeile.'
-    })
+    prompt: Object.freeze({ id: 'prompt', title: 'Fragen & Aussagen', icon: '💬', mode: 'prompt', description: 'Eine Karte wird vorgelesen, beantwortet oder gemeinsam diskutiert.', example: 'Was würdest du sofort lernen?\nWelcher kleine Luxus ist unterschätzt?\nWas macht einen guten Spieleabend aus?', instruction: 'Eine Frage oder Aussage pro Zeile.' }),
+    choice: Object.freeze({ id: 'choice', title: 'Entweder oder', icon: '↔️', mode: 'choice', description: 'Zwei Optionen erscheinen gleichzeitig und die Gruppe entscheidet.', example: 'Meer | Berge\nPlanen | Spontan\nSuperkraft fliegen | Superkraft teleportieren', instruction: 'Pro Zeile zwei Optionen mit einem | trennen.' }),
+    guess: Object.freeze({ id: 'guess', title: 'Erraten & Darstellen', icon: '🎭', mode: 'charades', description: 'Begriffe werden dargestellt oder erklärt und von der Gruppe erraten.', example: 'Pinguin\nRaumstation\nKaffeetasse\nDetektiv', instruction: 'Ein Begriff pro Zeile.' }),
+    challenge: Object.freeze({ id: 'challenge', title: 'Challenges', icon: '⚡', mode: 'prompt', description: 'Kurze sichere Aufgaben für eine aktive Person oder die ganze Gruppe.', example: 'Erfinde in zehn Sekunden einen Bandnamen.\nStelle einen Roboter ohne Worte dar.\nNenne drei Dinge, die in einen Rucksack gehören.', instruction: 'Eine sichere Aufgabe pro Zeile.' }),
+    story: Object.freeze({ id: 'story', title: 'Story & Kreativität', icon: '📖', mode: 'prompt', description: 'Offene Anfänge für Geschichten, Improvisation oder Satzketten.', example: 'Als die Tür aufging, war der Raum plötzlich leer.\nDer Roboter beantragte zum ersten Mal Urlaub.\nIm Zug lag ein Brief aus der Zukunft.', instruction: 'Ein Geschichtenanfang pro Zeile.' }),
+    debate: Object.freeze({ id: 'debate', title: 'Meinung & Debatte', icon: '🎤', mode: 'prompt', description: 'Thesen werden begründet, diskutiert oder von der Gruppe bewertet.', example: 'Frühstück ist zu jeder Tageszeit die beste Mahlzeit.\nEin leerer Kalender ist echter Luxus.\nOffline-Funktionen sind wichtiger als ein Konto.', instruction: 'Eine harmlose These pro Zeile.' })
   });
 
   function cleanText(value, maximum = 180) {
@@ -84,11 +36,6 @@
     return `custom-game-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
-  function normalizeIcon(value) {
-    const icon = cleanText(value, 8);
-    return ALLOWED_ICONS.includes(icon) ? icon : '🎉';
-  }
-
   function parseCards(value, templateId) {
     const template = TEMPLATES[templateId] || TEMPLATES.prompt;
     const lines = Array.isArray(value) ? value : String(value ?? '').split(/\r?\n/);
@@ -97,13 +44,15 @@
 
     for (const raw of lines) {
       if (template.mode === 'choice') {
-        const parts = String(raw ?? '').split('|').map(part => cleanText(part, 100)).filter(Boolean);
+        const source = Array.isArray(raw) && raw.length === 2 ? raw : String(raw ?? '').split('|');
+        const parts = source.map(part => cleanText(part, 100)).filter(Boolean);
         if (parts.length !== 2) continue;
         const key = `${keyText(parts[0])}\u0000${keyText(parts[1])}`;
         if (seen.has(key)) continue;
         seen.add(key);
         result.push(parts);
       } else {
+        if (Array.isArray(raw)) continue;
         const card = cleanText(raw, 180);
         if (card.length < 2) continue;
         const key = keyText(card);
@@ -120,8 +69,7 @@
     if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
     const name = cleanText(value.name, 40);
     const items = parseCards(value.items, templateId);
-    if (name.length < 2 || items.length < 3) return null;
-    return { name, items };
+    return name.length >= 2 && items.length >= 3 ? { name, items } : null;
   }
 
   function normalizeGame(value) {
@@ -129,27 +77,22 @@
     const templateId = TEMPLATES[value.templateId] ? value.templateId : 'prompt';
     const title = cleanText(value.title, 50);
     const description = cleanText(value.description, 180);
-    const group = cleanText(value.group, 30) || 'Eigene Spiele';
     const minPlayers = Math.max(1, Math.min(20, Number.parseInt(value.minPlayers, 10) || 2));
     const maxPlayers = Math.max(minPlayers, Math.min(20, Number.parseInt(value.maxPlayers, 10) || 20));
-    const duration = Math.max(3, Math.min(90, Number.parseInt(value.duration, 10) || 15));
-    const packs = (Array.isArray(value.packs) ? value.packs : [])
-      .map(pack => normalizePack(pack, templateId))
-      .filter(Boolean)
-      .slice(0, MAX_PACKS);
-
+    const packs = (Array.isArray(value.packs) ? value.packs : []).map(pack => normalizePack(pack, templateId)).filter(Boolean).slice(0, MAX_PACKS);
     if (title.length < 2 || description.length < 10 || !packs.length) return null;
+    const requestedId = cleanText(value.id, 100);
     return {
-      id: cleanText(value.id, 100).startsWith('custom-game-') ? cleanText(value.id, 100) : createId(),
+      id: requestedId.startsWith('custom-game-') ? requestedId : createId(),
       title,
       description,
       templateId,
-      icon: normalizeIcon(value.icon),
+      icon: ALLOWED_ICONS.includes(cleanText(value.icon, 8)) ? cleanText(value.icon, 8) : '🎉',
       accent: ALLOWED_ACCENTS.has(value.accent) ? value.accent : 'violet',
-      group,
+      group: cleanText(value.group, 30) || 'Eigene Spiele',
       minPlayers,
       maxPlayers,
-      duration,
+      duration: Math.max(3, Math.min(90, Number.parseInt(value.duration, 10) || 15)),
       age: ALLOWED_AGES.has(value.age) ? value.age : 'all',
       packs,
       createdAt: cleanText(value.createdAt, 40) || new Date().toISOString(),
@@ -174,20 +117,16 @@
   }
 
   function createStore(storage) {
-    let state = load();
-
     function load() {
       if (!storage) return { version: VERSION, games: [] };
-      try {
-        return normalizeState(JSON.parse(storage.getItem(STORAGE_KEY)));
-      } catch {
-        return { version: VERSION, games: [] };
-      }
+      try { return normalizeState(JSON.parse(storage.getItem(STORAGE_KEY))); }
+      catch { return { version: VERSION, games: [] }; }
     }
 
-    function snapshot() {
-      return { version: VERSION, games: state.games.map(game => JSON.parse(JSON.stringify(game))) };
-    }
+    let state = load();
+    const snapshot = () => ({ version: VERSION, games: JSON.parse(JSON.stringify(state.games)) });
+    const list = () => snapshot().games;
+    const get = id => list().find(game => game.id === id) || null;
 
     function commit(nextState) {
       const normalized = normalizeState(nextState);
@@ -199,70 +138,49 @@
       } catch (error) {
         state = previousState;
         try {
-          if (storage) {
-            if (previousRaw === null) storage.removeItem(STORAGE_KEY);
-            else storage.setItem(STORAGE_KEY, previousRaw);
-          }
+          if (storage) previousRaw === null ? storage.removeItem(STORAGE_KEY) : storage.setItem(STORAGE_KEY, previousRaw);
         } catch {}
         throw new Error(`Eigenes Spiel konnte nicht gespeichert werden: ${error?.message || 'lokaler Speicherfehler'}`);
       }
       return snapshot();
     }
 
-    function list() {
-      return snapshot().games;
-    }
-
-    function get(id) {
-      return list().find(game => game.id === id) || null;
-    }
-
     function save(value) {
       const game = normalizeGame(value);
       if (!game) throw new Error('Name, kurze Erklärung und mindestens drei gültige Karten sind erforderlich.');
-      const existingIndex = state.games.findIndex(item => item.id === game.id);
-      const titleDuplicate = state.games.some(item => item.id !== game.id && keyText(item.title) === keyText(game.title));
-      if (titleDuplicate) throw new Error('Ein eigenes Spiel mit diesem Namen existiert bereits.');
-      if (existingIndex < 0 && state.games.length >= MAX_GAMES) throw new Error(`Höchstens ${MAX_GAMES} eigene Spiele sind möglich.`);
+      const index = state.games.findIndex(item => item.id === game.id);
+      if (state.games.some(item => item.id !== game.id && keyText(item.title) === keyText(game.title))) throw new Error('Ein eigenes Spiel mit diesem Namen existiert bereits.');
+      if (index < 0 && state.games.length >= MAX_GAMES) throw new Error(`Höchstens ${MAX_GAMES} eigene Spiele sind möglich.`);
       const games = [...state.games];
-      if (existingIndex >= 0) games[existingIndex] = { ...game, createdAt: state.games[existingIndex].createdAt };
+      if (index >= 0) games[index] = { ...game, createdAt: state.games[index].createdAt };
       else games.unshift(game);
       commit({ version: VERSION, games });
       return get(game.id);
     }
 
     function remove(id) {
-      const next = state.games.filter(game => game.id !== id);
-      if (next.length === state.games.length) return false;
-      commit({ version: VERSION, games: next });
+      const games = state.games.filter(game => game.id !== id);
+      if (games.length === state.games.length) return false;
+      commit({ version: VERSION, games });
       return true;
     }
 
     function duplicate(id) {
       const source = get(id);
       if (!source) throw new Error('Spiel wurde nicht gefunden.');
-      return save({
-        ...source,
-        id: createId(),
-        title: `${source.title} Kopie`.slice(0, 50),
-        createdAt: new Date().toISOString()
-      });
+      let title = `${source.title} Kopie`.slice(0, 50);
+      let counter = 2;
+      while (state.games.some(game => keyText(game.title) === keyText(title))) title = `${source.title} Kopie ${counter++}`.slice(0, 50);
+      return save({ ...source, id: createId(), title, createdAt: new Date().toISOString() });
     }
 
     function exportData() {
-      return JSON.stringify({
-        type: 'secret-circle-created-games',
-        version: VERSION,
-        exportedAt: new Date().toISOString(),
-        games: list()
-      }, null, 2);
+      return JSON.stringify({ type: 'secret-circle-created-games', version: VERSION, exportedAt: new Date().toISOString(), games: list() }, null, 2);
     }
 
     function importData(value) {
       const parsed = typeof value === 'string' ? JSON.parse(value) : value;
-      if (!parsed || parsed.type !== 'secret-circle-created-games' || parsed.version !== VERSION || !Array.isArray(parsed.games)) {
-        throw new Error('Diese Datei ist keine gültige Secret-Circle-Spielebibliothek.');
-      }
+      if (!parsed || parsed.type !== 'secret-circle-created-games' || parsed.version !== VERSION || !Array.isArray(parsed.games)) throw new Error('Diese Datei ist keine gültige Secret-Circle-Spielebibliothek.');
       const incoming = normalizeState({ version: VERSION, games: parsed.games }).games;
       if (!incoming.length) throw new Error('Die Datei enthält keine gültigen Spiele.');
       const merged = [...state.games];
@@ -283,53 +201,22 @@
   function toCatalogGame(game) {
     const template = TEMPLATES[game.templateId] || TEMPLATES.prompt;
     return Object.freeze({
-      id: game.id,
-      title: game.title,
-      icon: game.icon,
-      group: game.group || 'Eigene Spiele',
-      status: 'playable',
-      mode: template.mode,
-      minPlayers: game.minPlayers,
-      maxPlayers: game.maxPlayers,
-      duration: game.duration,
+      id: game.id, title: game.title, icon: game.icon, group: game.group || 'Eigene Spiele', status: 'playable', mode: template.mode,
+      minPlayers: game.minPlayers, maxPlayers: game.maxPlayers, duration: game.duration,
       moods: ['friendly', game.templateId === 'debate' ? 'deep' : game.templateId === 'challenge' ? 'chaotic' : 'funny'],
-      age: game.age,
-      featured: false,
-      description: game.description,
-      instructions: [
-        'Pack auswählen und aktive Gruppe prüfen.',
-        template.description,
-        'Karten nacheinander spielen und freiwilliges Überspringen erlauben.',
-        'Session jederzeit sicher beenden oder das Spiel erneut öffnen.'
-      ],
-      packs: game.packs.map(pack => pack.name),
-      custom: true,
-      accent: game.accent,
-      templateId: game.templateId
+      age: game.age, featured: false, description: game.description,
+      instructions: ['Pack auswählen und aktive Gruppe prüfen.', template.description, 'Karten nacheinander spielen und freiwilliges Überspringen erlauben.', 'Session jederzeit sicher beenden oder das Spiel erneut öffnen.'],
+      packs: game.packs.map(pack => pack.name), custom: true, accent: game.accent, templateId: game.templateId
     });
   }
 
   function toCatalogContent(game) {
-    const content = {};
-    for (const pack of game.packs) content[pack.name] = JSON.parse(JSON.stringify(pack.items));
-    return content;
+    return Object.fromEntries(game.packs.map(pack => [pack.name, JSON.parse(JSON.stringify(pack.items))]));
   }
 
   return Object.freeze({
-    version: VERSION,
-    storageKey: STORAGE_KEY,
-    maxGames: MAX_GAMES,
-    maxCards: MAX_CARDS,
-    maxPacks: MAX_PACKS,
-    templates: TEMPLATES,
-    icons: Object.freeze(ALLOWED_ICONS),
-    accents: Object.freeze([...ALLOWED_ACCENTS]),
-    cleanText,
-    parseCards,
-    normalizeGame,
-    normalizeState,
-    createStore,
-    toCatalogGame,
-    toCatalogContent
+    version: VERSION, storageKey: STORAGE_KEY, maxGames: MAX_GAMES, maxCards: MAX_CARDS, maxPacks: MAX_PACKS,
+    templates: TEMPLATES, icons: Object.freeze(ALLOWED_ICONS), accents: Object.freeze([...ALLOWED_ACCENTS]),
+    cleanText, parseCards, normalizeGame, normalizeState, createStore, toCatalogGame, toCatalogContent
   });
 });
