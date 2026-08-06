@@ -7,16 +7,17 @@ async function seedHub(page, players = ['Alex', 'Sam', 'Mika', 'Lina']) {
       version: 1, players: value, favorites: [], recent: [], presets: [], history: [], stats: {}
     }));
     localStorage.removeItem('secret-circle-party-mega-active-v1');
+    localStorage.removeItem('secret-circle-party-viral-active-v1');
   }, players);
 }
 
-test('Party Hub exposes 37 playable games and dedicated Trend Mode actions', async ({ page }) => {
+test('Party Hub exposes 45 playable games and dedicated Trend Mode actions', async ({ page }) => {
   await seedHub(page);
   await page.goto('/party.html');
-  await expect(page.locator('#playable-count')).toHaveText('37');
+  await expect(page.locator('#playable-count')).toHaveText('45');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await expect(page.locator('#result-count')).toHaveText('37');
-  await expect(page.locator('.game-card.playable')).toHaveCount(37);
+  await expect(page.locator('#result-count')).toHaveText('45');
+  await expect(page.locator('.game-card.playable')).toHaveCount(45);
   await page.locator('#game-search').fill('Anime-Figuren');
   await page.locator('[data-open-game="anime-guess"]').click();
   await expect(page.locator('#detail-title')).toHaveText('Anime-Figuren erraten');
@@ -91,7 +92,7 @@ test('completed Trend Mode records one play and one history entry', async ({ pag
   expect(hub.stats['money-challenge'].best).toBe(3);
 });
 
-test('all nine mega trend modes load category content without runtime errors', async ({ page }) => {
+test('all nine mega trend modes load category content through only the mega engine', async ({ page }) => {
   await seedHub(page, ['Alex', 'Sam', 'Mika', 'Lina', 'Noah']);
   const ids = [
     'who-am-i', 'anime-guess', 'money-challenge', 'blind-ranking', 'emoji-quiz',
@@ -105,6 +106,9 @@ test('all nine mega trend modes load category content without runtime errors', a
     await expect(page.locator('#quick-pack option')).not.toHaveCount(0);
     await page.getByRole('button', { name: 'Spiel starten' }).click();
     await expect(page.locator('#quick-play')).toBeVisible();
+    expect(await page.locator('script[src="party-mega-modes.js"]').count()).toBe(1);
+    expect(await page.locator('script[src="party-quick-modes.js"]').count()).toBe(0);
+    expect(await page.locator('script[src="party-viral-modes.js"]').count()).toBe(0);
     await page.evaluate(() => localStorage.removeItem('secret-circle-party-mega-active-v1'));
   }
   expect(errors).toEqual([]);
