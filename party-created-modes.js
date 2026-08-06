@@ -2,14 +2,23 @@
 
 (() => {
   const C = window.SecretCirclePartyCatalog;
+  const L = window.SecretCircleSessionLedger;
   const gameId = new URLSearchParams(location.search).get('game') || '';
   if (!C?.createdGameIds?.includes(gameId)) return;
+  if (!L) {
+    const status = document.querySelector('#quick-status');
+    if (status) {
+      status.textContent = 'Die gemeinsame Sitzungsverwaltung konnte nicht geladen werden. Bitte Seite neu laden.';
+      status.classList.add('error');
+    }
+    return;
+  }
 
   const game = C.getGame(gameId);
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const ACTIVE_KEY = 'secret-circle-party-created-active-v1';
   const VERSION = 1;
-  const MAX_HISTORY = 50;
+  const MAX_HISTORY = L.maximumHistory;
   const $ = selector => document.querySelector(selector);
   let hub = loadHub();
   let active = loadActive();
@@ -79,9 +88,12 @@
     const current = validCurrent(value.current);
     if (value.current !== null && current === null) return null;
     const used = [...new Set((Array.isArray(value.used) ? value.used : []).filter(index => Number.isInteger(index) && index >= 0 && index < availableItems.length))];
+    const startedAt = String(value.startedAt ?? new Date().toISOString());
+    const sessionId = L.normalizeSessionId(value.sessionId) || L.legacySessionId(gameId, startedAt, value.targetRounds);
     return {
       version: VERSION,
       gameId,
+      sessionId,
       pack,
       targetRounds: value.targetRounds,
       round: value.round,
@@ -93,7 +105,7 @@
       phase: ['ready', 'private', 'active', 'result'].includes(value.phase) ? value.phase : 'ready',
       choice: Number.isInteger(value.choice) && value.choice >= 0 && value.choice <= 1 ? value.choice : null,
       players,
-      startedAt: String(value.startedAt ?? new Date().toISOString()),
+      startedAt,
       completedRecorded: Boolean(value.completedRecorded)
     };
   }
@@ -372,6 +384,7 @@
     active = {
       version: VERSION,
       gameId,
+      sessionId: L.createSessionId(gameId),
       pack,
       targetRounds,
       round: 1,
@@ -398,31 +411,24 @@
     stopTimer();
     if (!active) return;
     if (!active.completedRecorded) {
-      const entry = {
-        id: `created-${Date.now()}-${randomInt(1_000_000)}`,
+      const result = L.recordCompletion(loadHub(), {
+        id: L.completionId('created', gameId, active.sessionId),
         gameId,
         title: game.title,
         endedAt: new Date().toISOString(),
         rounds: active.targetRounds,
         score: active.score
-      };
-      const nextHub = clone(loadHub());
-      nextHub.history = [entry, ...(Array.isArray(nextHub.history) ? nextHub.history : [])].slice(0, MAX_HISTORY);
-      nextHub.recent = [gameId, ...(Array.isArray(nextHub.recent) ? nextHub.recent.filter(id => id !== gameId) : [])].slice(0, 8);
-      nextHub.stats = nextHub.stats || {};
-      const stats = nextHub.stats[gameId] || { plays: 0, rounds: 0, best: 0 };
-      nextHub.stats[gameId] = {
-        plays: Math.max(0, Number(stats.plays) || 0) + 1,
-        rounds: Math.max(0, Number(stats.rounds) || 0) + active.targetRounds,
-        best: Math.max(Number(stats.best) || 0, active.score)
-      };
-      if (!saveHub(nextHub)) return;
+      });
+      if (result.recorded && !saveHub(result.hub)) return;
       active.completedRecorded = true;
-      saveActive();
+      if (!saveActive()) return;
     }
     const final = clone(active);
     active = null;
-    saveActive();
+    if (!saveActive()) {
+      active = final;
+      return;
+    }
     $('#quick-play').hidden = true;
     $('#quick-result').hidden = false;
     $('#quick-final-score').textContent = String(final.score);
