@@ -18,8 +18,12 @@
       start.textContent = 'Noch nicht spielbar';
       return;
     }
+    if (game.custom) {
+      start.textContent = 'Eigenes Spiel starten';
+      return;
+    }
     if (game.mode !== 'link') {
-      start.textContent = 'Spiel starten';
+      start.textContent = 'Jetzt spielen';
       return;
     }
     if (C.viralGameIds?.includes(game.id)) start.textContent = 'Viral Mode öffnen';
@@ -30,11 +34,33 @@
     else start.textContent = 'Spiel öffnen';
   }
 
+  function loadGuidance() {
+    if (!document.querySelector('link[href="party-guide.css"]')) {
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = 'party-guide.css';
+      document.head.append(style);
+    }
+    if (!document.querySelector('script[src="party-guide.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'party-guide.js';
+      script.addEventListener('error', () => {
+        const status = document.querySelector('#hub-status');
+        if (status) {
+          status.textContent = 'Die Schnellhilfe konnte nicht geladen werden. Die Spiele bleiben nutzbar.';
+          status.classList.add('error');
+        }
+      });
+      document.body.append(script);
+    }
+  }
+
   const observer = new MutationObserver(updateStartLabel);
   observer.observe(title, { childList: true, characterData: true, subtree: true });
   observer.observe(detail, { attributes: true, attributeFilter: ['hidden'] });
   addEventListener('pagehide', () => observer.disconnect(), { once: true });
   updateStartLabel();
+  loadGuidance();
 
-  window.SecretCirclePartyHubPolish = Object.freeze({ version: 3, updateStartLabel });
+  window.SecretCirclePartyHubPolish = Object.freeze({ version: 4, updateStartLabel, loadGuidance });
 })();
