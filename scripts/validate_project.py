@@ -25,7 +25,8 @@ REQUIRED = {
     'tests/party-trending-catalog.test.js', 'tests/party-mega-catalog.test.js', 'tests/party-viral-catalog.test.js',
     'tests/game-creator.test.js', 'tests/party-custom-packs.test.js',
     'tests/e2e/party-quick-modes.spec.js', 'tests/e2e/party-mega-modes.spec.js', 'tests/e2e/party-viral-modes.spec.js',
-    'tests/e2e/party-viral-resilience.spec.js', 'tests/e2e/game-creator.spec.js', 'tests/e2e/offline.spec.js',
+    'tests/e2e/party-viral-resilience.spec.js', 'tests/e2e/game-creator.spec.js',
+    'tests/e2e/creator-runner-resilience.spec.js', 'tests/e2e/offline.spec.js',
     'scripts/repo_hygiene.py', 'scripts/architecture_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
     'README.md', 'ARCHITECTURE.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'ASSET_PLAN.md', 'RELEASE_CHECKLIST.md',
@@ -147,7 +148,7 @@ markers = {
     'quick': ['secret-circle-party-quick-active-v1', 'renderWavelength', 'finishSession'],
     'mega_runtime': ['secret-circle-party-mega-active-v1', 'renderWhoAmI', 'renderAnimeGuess', 'finishSession'],
     'viral_runtime': ['secret-circle-party-viral-active-v1', 'renderFingerDown', 'renderGuessPrice', 'finishSession'],
-    'created_runtime': ['secret-circle-party-created-active-v1', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'finishSession'],
+    'created_runtime': ['secret-circle-party-created-active-v1', 'sanitizeScores', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'plays: Math.max(0, Number(stats.plays) || 0) + 1', 'finishSession'],
     'loader': ['party-created-modes.js', 'party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
     'night': ['buildPlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'],
     'data_tools': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']
@@ -207,9 +208,9 @@ for marker in ['tests/game-creator.test.js', 'tests/party-viral-catalog.test.js'
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 13 or len(e2e_suites) < 27 or not cross_suites:
+if len(unit_tests) < 13 or len(e2e_suites) < 28 or not cross_suites:
     raise SystemExit('Automated test matrix is incomplete.')
-for required in ['game-creator.spec.js', 'party-viral-resilience.spec.js', 'party-viral-modes.spec.js', 'offline.spec.js']:
+for required in ['game-creator.spec.js', 'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js', 'party-viral-modes.spec.js', 'offline.spec.js']:
     if required not in e2e_suites:
         raise SystemExit(f'Critical E2E suite missing: {required}')
 
