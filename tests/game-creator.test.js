@@ -90,13 +90,15 @@ assert.equal(store.list().length, 2);
 storage.failWrites = false;
 
 const catalog = routing.createCatalog(storage);
-assert.equal(routing.version, 7);
+assert.equal(routing.version, 8);
 assert.equal(routing.games.length, 45);
 assert.equal(catalog.games.length, 47);
 assert.equal(catalog.createdGameIds.length, 2);
 const custom = catalog.getGame(saved.id);
 assert.equal(custom.custom, true);
-assert.equal(custom.mode, 'choice');
+assert.equal(custom.mode, 'link');
+assert.equal(custom.creatorMode, 'choice');
+assert.equal(custom.href, `quick-play.html?game=${encodeURIComponent(saved.id)}`);
 assert.equal(custom.group, 'Unsere Spiele');
 assert.deepEqual(catalog.getPackNames(saved.id), ['Alltag', 'Fantasie']);
 assert.deepEqual(catalog.getItems(saved.id, 'Alltag')[0], ['Früh', 'Spät']);
@@ -113,6 +115,7 @@ console.log(JSON.stringify({
   maximumCardsPerPack: Creator.maxCards,
   routedBaseGames: routing.games.length,
   routedCreatedGames: catalog.createdGameIds.length,
+  routedCreatorRunner: true,
   structuredChoiceCardsPreserved: true,
   unicodeDeduplication: true,
   transactionRollback: true,
