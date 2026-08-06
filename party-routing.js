@@ -41,17 +41,18 @@
         }).filter(Boolean).slice(0, 8);
         if (!id.startsWith('custom-game-') || ids.has(id) || title.length < 2 || description.length < 10 || !packs.length) continue;
         ids.add(id);
+        const minPlayers = Math.max(1, Math.min(20, Number.parseInt(raw.minPlayers, 10) || 2));
         result.push({
           id,
           title,
           description,
           templateId,
-          mode: templateModes[templateId],
+          creatorMode: templateModes[templateId],
           icon: clean(raw.icon, 8) || '🎉',
           accent: clean(raw.accent, 20) || 'violet',
           group: clean(raw.group, 30) || 'Eigene Spiele',
-          minPlayers: Math.max(1, Math.min(20, Number.parseInt(raw.minPlayers, 10) || 2)),
-          maxPlayers: Math.max(1, Math.min(20, Number.parseInt(raw.maxPlayers, 10) || 20)),
+          minPlayers,
+          maxPlayers: Math.max(minPlayers, Math.min(20, Number.parseInt(raw.maxPlayers, 10) || 20)),
           duration: Math.max(3, Math.min(90, Number.parseInt(raw.duration, 10) || 15)),
           age: raw.age === 'teen' ? 'teen' : 'all',
           packs
@@ -81,9 +82,11 @@
       icon: game.icon,
       group: game.group,
       status: 'playable',
-      mode: game.mode,
+      mode: 'link',
+      href: `quick-play.html?game=${encodeURIComponent(game.id)}`,
+      creatorMode: game.creatorMode,
       minPlayers: game.minPlayers,
-      maxPlayers: Math.max(game.minPlayers, game.maxPlayers),
+      maxPlayers: game.maxPlayers,
       duration: game.duration,
       moods: ['friendly', game.templateId === 'debate' ? 'deep' : game.templateId === 'challenge' ? 'chaotic' : 'funny'],
       age: game.age,
@@ -91,9 +94,9 @@
       description: game.description,
       instructions: [
         'Kategorie auswählen und aktive Gruppe prüfen.',
-        game.templateId === 'choice' ? 'Zwei Optionen werden gleichzeitig gezeigt.' : game.templateId === 'guess' ? 'Eine Person stellt Begriffe dar, die Gruppe rät.' : 'Eine eigene Karte wird vorgelesen oder ausgespielt.',
+        game.templateId === 'choice' ? 'Zwei Optionen werden gleichzeitig gezeigt.' : game.templateId === 'guess' ? 'Eine Person sieht den Begriff, die Gruppe rät.' : 'Eine eigene Karte wird vorgelesen oder ausgespielt.',
         'Freiwilliges Überspringen ist jederzeit erlaubt.',
-        'Session beenden oder direkt die nächste Karte spielen.'
+        'Rundenfortschritt wird lokal gespeichert und kann fortgesetzt werden.'
       ],
       packs: game.packs.map(pack => pack.name),
       custom: true,
@@ -101,9 +104,7 @@
       templateId: game.templateId
     }));
     const content = { ...base.content };
-    for (const game of created) {
-      content[game.id] = Object.fromEntries(game.packs.map(pack => [pack.name, pack.items]));
-    }
+    for (const game of created) content[game.id] = Object.fromEntries(game.packs.map(pack => [pack.name, pack.items]));
     const games = Object.freeze([...routedBase, ...createdGames]);
 
     function getGame(id) {
@@ -128,7 +129,7 @@
 
     return Object.freeze({
       ...base,
-      version: 7,
+      version: 8,
       games,
       content,
       getGame,
