@@ -91,9 +91,11 @@
     if (heading) heading.insertAdjacentElement('afterend', overview);
 
     const title = documentRef.querySelector('#games-title');
-    const description = title?.parentElement?.querySelector('p');
+    const description = title?.nextElementSibling;
     if (title) title.textContent = 'Kernspiele, Erweiterungen & Labs';
-    if (description) description.textContent = 'Wähle nach Qualität, Spielart, Stimmung, Gruppe und Altersstufe. Labs bleiben klar von den priorisierten Kernspielen getrennt.';
+    if (description?.tagName === 'P') {
+      description.textContent = 'Wähle nach Qualität, Spielart, Stimmung, Gruppe und Altersstufe. Labs bleiben klar von den priorisierten Kernspielen getrennt.';
+    }
 
     let scheduled = false;
     let applying = false;
@@ -157,13 +159,16 @@
       filter.focus();
     });
 
-    const observer = new MutationObserver(schedule);
-    for (const target of [
-      grid,
-      documentRef.querySelector('#featured-grid'),
-      documentRef.querySelector('#favorites-grid')
-    ].filter(Boolean)) {
-      observer.observe(target, { childList: true, subtree: true });
+    const Observer = root.MutationObserver;
+    if (Observer) {
+      const observer = new Observer(schedule);
+      for (const target of [
+        grid,
+        documentRef.querySelector('#featured-grid'),
+        documentRef.querySelector('#favorites-grid')
+      ].filter(Boolean)) {
+        observer.observe(target, { childList: true, subtree: true });
+      }
     }
 
     schedule();
