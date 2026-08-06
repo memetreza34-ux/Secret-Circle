@@ -24,17 +24,17 @@ test('loads Imposter setup content and privacy without browser errors', async ({
   expect(errors).toEqual([]);
 });
 
-test('loads the 37-game Hub and all three external engine families', async ({ page }) => {
+test('loads the 45-game Hub and all four external engine families', async ({ page }) => {
   const errors = captureErrors(page);
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('37');
+  await expect(page.locator('#playable-count')).toHaveText('45');
   await page.locator('#party-night-duration').selectOption('30');
   await page.getByRole('button', { name: 'Plan erstellen' }).click();
   await expect(page.locator('.party-night-step')).toHaveCount(2);
 
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await expect(page.locator('.game-card')).toHaveCount(37);
+  await expect(page.locator('.game-card')).toHaveCount(45);
   await page.locator('#game-search').fill('Question Imposter');
   await page.locator('[data-open-game="question-imposter"]').click();
   await page.getByRole('button', { name: 'Erweitertes Spiel öffnen' }).click();
@@ -53,6 +53,13 @@ test('loads the 37-game Hub and all three external engine families', async ({ pa
   await page.locator('[data-open-game="anime-guess"]').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await expect(page.getByRole('heading', { name: 'Anime-Figuren erraten' })).toBeVisible();
+
+  await page.goto('/party.html');
+  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.locator('#game-search').fill('Preis schätzen');
+  await page.locator('[data-open-game="guess-the-price"]').click();
+  await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();
+  await expect(page.getByRole('heading', { name: 'Preis schätzen' })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
