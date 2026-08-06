@@ -60,6 +60,8 @@ assert.deepEqual(Filters.read(storage), {
 });
 storage.failWrites = true;
 assert.equal(Filters.write(storage, Filters.defaults).ok, false);
+assert.equal(Filters.write(null, Filters.defaults).ok, false);
+assert.match(Filters.write(null, Filters.defaults).error, /nicht verfügbar/);
 
 assert.equal(Release.ageAllows({ age: 'all' }, 'family'), true);
 assert.equal(Release.ageAllows({ age: 'teen' }, 'family'), false);
@@ -74,6 +76,7 @@ console.log(JSON.stringify({
   persistentSearchAndSelects: true,
   persistedLastView: true,
   invalidValuesSanitized: true,
-  storageFailureReported: true,
+  unavailableStorageReported: true,
+  quotaFailureReported: true,
   ageAndReleaseTierCombined: true
 }, null, 2));
