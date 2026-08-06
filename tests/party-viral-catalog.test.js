@@ -45,8 +45,9 @@ assert.ok(viral.getItems('higher-lower', 'Wissen').every(item => Array.isArray(i
 assert.ok(viral.getItems('know-me-best', 'Reisen').every(item => Array.isArray(item) && item.length === 4));
 assert.ok(viral.getItems('hot-seat', 'Kreativ').every(item => typeof item === 'string'));
 
-assert.equal(routed.version, 6);
+assert.equal(routed.version, 7);
 assert.equal(routed.games.length, 45);
+assert.equal(routed.createdGameIds.length, 0);
 for (const id of viralIds) assert.equal(routed.getGame(id).href, `quick-play.html?game=${encodeURIComponent(id)}`);
 for (const id of ['two-truths', 'question-imposter', 'location-spy', 'mafia']) {
   assert.equal(routed.getGame(id).href, `advanced.html?game=${encodeURIComponent(id)}`);
@@ -56,6 +57,7 @@ console.log(JSON.stringify({
   ok: true,
   visibleGames: viral.games.length,
   playableGames: viral.games.filter(game => game.status === 'playable').length,
+  routedVersion: routed.version,
   viralModes: viralIds.length,
   allFastModes: viral.allFastGameIds.length,
   structuredPriceCards: true,
