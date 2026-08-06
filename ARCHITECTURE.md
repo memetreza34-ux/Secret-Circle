@@ -1,212 +1,115 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Dieses Dokument beschreibt die technischen Regeln, die Secret Circle auch nach vielen Jahren verständlich, migrierbar und testbar halten sollen.
+Dieses Dokument beschreibt die Regeln, die Secret Circle auch nach vielen Jahren verständlich, migrierbar, offline nutzbar und testbar halten sollen.
 
 ## 1. Produktgrenzen
 
-Secret Circle bleibt im Kern:
-
-- offline-first,
-- ohne verpflichtendes Konto,
-- ohne externe Laufzeitabhängigkeiten,
-- als statische PWA auslieferbar,
-- auf einem gemeinsam genutzten Gerät vollständig spielbar,
-- mit klar getrennten optionalen Erweiterungen.
-
-Ein späterer Online-Mehrspielermodus darf den lokalen Modus nicht ersetzen. Er muss als separates Modul funktionieren und bei Serverausfall vollständig deaktivierbar sein.
+Secret Circle bleibt im Kern offline-first, ohne verpflichtendes Konto, ohne externe Laufzeitabhängigkeiten, als statische PWA auslieferbar und auf einem gemeinsam genutzten Gerät vollständig spielbar. Spätere Onlinefunktionen bleiben optionale getrennte Module.
 
 ## 2. Stabile Identitäten
 
-Folgende IDs sind interne Verträge und dürfen nicht ohne Migration geändert werden:
-
-- Spiel-IDs wie `imposter`, `charades` oder `question-imposter`,
-- Pack-IDs und Packnamen in gespeicherten Sessions,
-- Speicherpräfix `secret-circle-`,
-- Backupformat `secret-circle-complete-backup`,
-- Manifest-ID und PWA-Scope.
-
-Anzeigenamen dürfen geändert oder übersetzt werden. Persistierte IDs bleiben stabil.
+Spiel-IDs, Pack-IDs, Speicherpräfix `secret-circle-`, Backupformat, Manifest-ID und PWA-Scope sind interne Verträge. Anzeigenamen dürfen sich ändern; persistierte IDs benötigen bei Änderungen eine Migration.
 
 ## 3. Versionierte Daten
 
-Jeder dauerhaft gespeicherte komplexe Datensatz besitzt eine Versionsnummer.
-
 Aktuelle Bereiche:
 
-- Word-Imposter-Schema Version 7,
-- erweiterte Session Version 2,
-- Party Hub Version 1,
-- Party Night Version 1,
-- eigene Hub-Packs Version 1,
-- Gesamtsicherung Version 1.
+- Word-Imposter-Schema Version 7
+- Advanced-Session Version 2
+- Party Hub Version 1
+- Party Night Version 1
+- klassische Quick-Session Version 1
+- Mega-Trend-Session Version 1
+- eigene Hub-Packs Speicherschema Version 1, Manager Version 3
+- Gesamtsicherung Version 1
 
-Regeln:
-
-1. neue Felder erhalten sichere Standardwerte,
-2. alte gültige Daten werden migriert,
-3. unbekannte neuere Versionen werden nicht blind überschrieben,
-4. beschädigte Daten werden isoliert verworfen,
-5. Migrationen werden mit realistischen alten Snapshots getestet,
-6. ein Schema wird erst entfernt, wenn eine dokumentierte Export-/Import-Alternative existiert.
+Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert verworfen. Unbekannte neuere Versionen werden nicht blind überschrieben. Migrationen benötigen realistische alte Snapshots.
 
 ## 4. Modulgrenzen
 
 ### Word Imposter
 
-- `game-engine.js`: reine Regeln und Zustandsübergänge
+- `game-engine.js`: Regeln und Zustandsübergänge
 - `role-assignment.js`: unabhängige Rollenverteilung
 - `data-store.js`: Migration, Validierung und Sicherung
-- `app.js`: Browseroberfläche und Orchestrierung
+- `app.js`: Browseroberfläche
 
-### Party Hub
+### Party Hub und Katalogschichten
 
-- `party-catalog.js`: Basisspiele und Inhalte
-- `party-expansion.js`: zusätzliche Spiele und Inhalte
-- `party-routing.js`: stabile Fassade und Routing
-- `party-hub.js`: einfache Spiele und Hub-Zustand
+- `party-catalog.js`: Basisspiele
+- `party-expansion.js`: Advanced-Erweiterung
+- `party-trending-catalog.js`: klassische Quick Modes
+- `party-mega-catalog.js`: Anime-, Geld-, Ranking-, Social- und weitere Trend-Modi
+- `party-routing.js`: stabile Routingfassade
+- `party-hub.js`: Hub und einfache Spiele
 - `party-hub-plus.js`: Einstellungen, Statistik, Erfolge und Installation
+- `party-hub-polish.js`: kontextabhängige Aktionen
 - `party-custom-packs.js`: eigene Inhalte mit Transaktionsschutz
-- `party-night.js`: reine Planung, Fortschritt und Browserintegration
-- `party-data-tools.js`: Gesamtsicherung und vollständige Löschung
+- `party-night.js`: Planung und Fortschritt
+- `party-data-tools.js`: Gesamtsicherung und Löschung
 
-### Komplexe Spiele
+### Spielengines
 
-- `party-advanced.js`: Spielregeln und Renderzustände
-- `party-advanced-runner.js`: Session, Spieler-Snapshot und Verlauf
-- `party-advanced-preferences.js`: Startwerte
+- `party-advanced.js` und `party-advanced-runner.js`: komplexe Rollen- und Täuschungsspiele
+- `party-quick-modes.js`: zehn klassische Quick Modes
+- `party-mega-modes.js`: neun neue Trend-Modi
+- `quick-loader.js`: lädt pro Quick-Seite genau eine Engine
 
-Neue große Funktionen erhalten ein eigenes Modul. Bestehende Dateien werden nicht unbegrenzt erweitert.
+Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB.
 
 ## 5. Reine Logik vor DOM-Logik
 
-Planung, Validierung, Migration, Rollenverteilung und Spielzustände sollen als testbare Funktionen ohne Browser verfügbar sein.
-
-DOM-Code darf Elemente erstellen, Ereignisse verbinden, Status anzeigen und reine Funktionen aufrufen. DOM-Code darf keine zweite, abweichende Version der Spielregeln enthalten.
+Planung, Validierung, Migration und Zustandsübergänge sollen ohne Browser testbar sein. DOM-Code erstellt Elemente, verbindet Ereignisse und zeigt Status; er dupliziert keine abweichenden Spielregeln.
 
 ## 6. Lokale Transaktionen
 
-Vorgänge über mehrere Speicherschlüssel folgen dem Muster:
-
-1. Eingabe vollständig validieren,
-2. alten Zustand erfassen,
-3. neue Werte schreiben,
-4. Ergebnis prüfen,
-5. bei Fehler alten Zustand wiederherstellen,
-6. fehlgeschlagenen Rollback deutlich melden.
-
-Das gilt insbesondere für Gesamtsicherungsimport, vollständige Löschung, Sessionabschluss, eigene Packs und spätere Inhaltsmigrationen.
+Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Stand wieder her. Das gilt für Import, Löschung, Sessionabschluss, eigene Packs und Inhaltsmigrationen.
 
 ## 7. Datenschutz durch Architektur
 
-- keine Analyse- oder Werbeskripte im Kernprodukt,
-- keine externen Schriftarten oder Laufzeit-CDNs,
-- keine versteckten Netzwerkaufrufe,
-- dynamische Inhalte über `textContent`,
-- restriktive Content Security Policy,
-- Exportdateien klar als unverschlüsselt kennzeichnen,
-- alle App-Daten über das Präfix `secret-circle-` auffindbar und löschbar halten.
-
-Eine spätere optionale Cloud-Funktion benötigt ausdrückliche Aktivierung, eigene Datenschutzhinweise und eine vollständige lokale Alternative.
+- keine Analyse- oder Werbeskripte
+- keine externen Schriftarten oder Laufzeit-CDNs
+- keine versteckten Netzwerkaufrufe
+- dynamische Texte über `textContent`
+- restriktive Content Security Policy
+- alle App-Daten über `secret-circle-` auffindbar und löschbar
+- Fan-Quiz enthält nur Namen und eigene Beschreibungen, keine fremden Bilder, Logos, Zitate oder Mediendateien
+- Geld-Challenges bleiben ausdrücklich hypothetisch und lösen keine Zahlung aus
 
 ## 8. Offline- und Updatevertrag
 
-Jede veröffentlichte Version muss:
-
-- einen eindeutigen Service-Worker-Cache besitzen,
-- alle benötigten Kernressourcen auflisten,
-- alte Caches bei Aktivierung entfernen,
-- Navigation offline auf eine sinnvolle Seite zurückführen,
-- lokale Daten bei Updates erhalten,
-- ein Rollback über eine erneut erhöhte Cache-Version ermöglichen.
-
-Keine stillen Änderungen an offline benötigten Dateien nach einer veröffentlichten Cache-Version.
+Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: `secret-circle-v27`.
 
 ## 9. Accessibility als Definition of Done
 
-Jede neue Oberfläche benötigt:
-
-- semantische Überschriften,
-- beschriftete Formularfelder,
-- vollständige Tastaturbedienung,
-- sichtbaren Fokus,
-- mindestens 44 × 44 Pixel große Touchziele,
-- reduzierte Bewegung,
-- 200-Prozent-Zoom ohne horizontale Sackgassen,
-- verständliche Live-Statusmeldungen,
-- Tests auf Smartphone und Desktop.
-
-Farbe allein darf nie den einzigen Statusunterschied darstellen.
+Jede Oberfläche benötigt semantische Überschriften, beschriftete Felder, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 Pixel große Touchziele, Reduced Motion, 200-Prozent-Zoom, verständliche Statusmeldungen sowie Smartphone- und Desktopprüfung. Farbe allein darf keinen Status erklären.
 
 ## 10. Inhaltsvertrag
 
-- keine proprietären Karten oder Texte anderer Apps kopieren,
-- jede Karte besitzt ein eigenes redaktionelles Ziel,
-- Dopplungen und nahezu gleiche Inhalte regelmäßig prüfen,
-- Altersstufe und sensible Themen dokumentieren,
-- strukturierte Spielmodi verwenden strukturierte Daten statt Freitext-Tricks,
-- Nutzerpacks bleiben klar von eingebauten Inhalten getrennt.
+- keine proprietären Karten, Texte, Bilder, Logos, Zitate oder Audios anderer Apps kopieren
+- allgemein bekannte Namen werden nur in einem klar inoffiziellen textbasierten Fan-Quiz verwendet
+- jede Karte besitzt ein eigenes redaktionelles Ziel
+- Altersstufe und sensible Themen werden dokumentiert
+- strukturierte Modi verwenden strukturierte Daten
+- Nutzerpacks bleiben von eingebauten Inhalten getrennt
+- öffentliche oder kommerzielle Fan-Inhalte benötigen vor Release eine eigene Rechtsprüfung
 
 ## 11. Testpyramide
 
-### Bei jedem Commit
-
-- JavaScript-Syntax,
-- Unit-Tests,
-- Strukturvalidator,
-- Release-Audit,
-- Performancebudget.
-
-### Bei jedem Release Candidate
-
-- vollständige Chromium-E2E-Suite,
-- Firefox und WebKit,
-- Android- und iPhone-Simulation,
-- echte Android- und iOS-Geräte,
-- Offline-Installation und Update,
-- kleiner und großer Partytest.
-
-### Für kritische Datenänderungen
-
-- alte Snapshots,
-- beschädigte Daten,
-- Quota- und Schreibfehler,
-- fehlgeschlagener Rollback,
-- Mehrbyte- und Größenlimits.
+Bei jedem Commit: Syntax, Unit-Tests, Strukturvalidator, Release-Audit und Performancebudget. Bei Release Candidates zusätzlich Chromium, Firefox, WebKit, Android-/iPhone-Simulation, echte Geräte, Offline-Update sowie kleine und große Partytests. Datenänderungen benötigen Korruptions-, Quota-, Rollback- und Größenprüfungen.
 
 ## 12. Performancebudget
 
-- neue Module erhalten ein eigenes Dateibudget,
-- keine großen Frameworks ohne messbaren Produktgewinn,
-- keine Bilder oder Videos im Kerncache ohne Kompression und Budget,
-- keine ungenutzten Bibliotheken,
-- Offline-Core-Wachstum muss im Performanceaudit sichtbar sein.
+Neue Module erhalten eigene Budgets. Keine großen Frameworks oder Medien ohne messbaren Nutzen, Kompression und Audit. Wachstum des Offline-Cores muss sichtbar bleiben.
 
 ## 13. Erweiterungspunkte
 
-Langfristig sinnvolle Module:
-
-- lokalisierte Inhaltsdateien,
-- optionale Sound- und Haptikschicht,
-- strukturierter Editor für Paar-, Rollen- und Tabu-Packs,
-- Team- und Turniermodus,
-- optionaler Raumcode-Mehrspielermodus,
-- moderierte Inhaltsupdates,
-- anonyme lokale Qualitätsbewertung von Karten.
-
-Jeder Erweiterungspunkt muss ohne ihn weiterhin eine vollständige lokale App hinterlassen.
+Lokalisierte Inhalte, optionale Sounds, strukturierte Editoren, Team- und Turniermodi, tägliche Challenges, optionale Raumcodes, moderierte Inhaltsupdates und lokale Kartenbewertungen dürfen den vollständig lokalen Modus nicht ersetzen.
 
 ## 14. Deprecation und Rollback
 
-Eine Funktion oder ein Schema wird nicht sofort entfernt.
-
-1. als veraltet markieren,
-2. Migration und Export anbieten,
-3. mindestens einen Beta-Zyklus beobachten,
-4. Entfernung dokumentieren,
-5. Rollback testen.
-
-Force-Pushes auf Release-Branches und nicht migrierbare stille Datenlöschungen sind ausgeschlossen.
+Veraltete Funktionen werden markiert, migriert, mindestens einen Beta-Zyklus beobachtet, dokumentiert entfernt und mit Rollback geprüft. Keine Force-Pushes auf Release-Branches und keine stillen nicht migrierbaren Datenlöschungen.
 
 ## 15. Releaseentscheidung
 
-Eine Funktion ist erst fertig, wenn Verhalten implementiert, Fehlerzustände behandelt, Datenmigration geklärt, Offline-Betrieb und Accessibility geprüft, Unit- und Browsertests vorhanden, Dokumentation und Datenschutz angepasst und reale Nutzung mindestens einmal beobachtet wurden.
+Eine Funktion ist erst fertig, wenn Verhalten und Fehlerzustände implementiert, Datenmigration geklärt, Offline-Betrieb und Accessibility geprüft, relevante Tests vorhanden, Dokumentation und Datenschutz angepasst und reale Nutzung beobachtet wurden.
