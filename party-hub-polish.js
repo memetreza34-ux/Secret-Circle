@@ -22,7 +22,8 @@
       start.textContent = 'Spiel starten';
       return;
     }
-    if (game.href?.startsWith('quick-play.html')) start.textContent = 'Quick Mode öffnen';
+    if (C.megaGameIds?.includes(game.id)) start.textContent = 'Trend Mode öffnen';
+    else if (game.href?.startsWith('quick-play.html')) start.textContent = 'Quick Mode öffnen';
     else if (game.href?.startsWith('advanced.html')) start.textContent = 'Erweitertes Spiel öffnen';
     else if (game.href === 'index.html') start.textContent = 'Word Imposter öffnen';
     else start.textContent = 'Spiel öffnen';
@@ -31,7 +32,8 @@
   const observer = new MutationObserver(updateStartLabel);
   observer.observe(title, { childList: true, characterData: true, subtree: true });
   observer.observe(detail, { attributes: true, attributeFilter: ['hidden'] });
+  addEventListener('pagehide', () => observer.disconnect(), { once: true });
   updateStartLabel();
 
-  window.SecretCirclePartyHubPolish = Object.freeze({ version: 1, updateStartLabel });
+  window.SecretCirclePartyHubPolish = Object.freeze({ version: 2, updateStartLabel });
 })();
