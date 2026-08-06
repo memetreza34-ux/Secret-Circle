@@ -19,13 +19,13 @@ async function seedPlayers(page) {
   });
 }
 
-test('service worker caches the complete v29 core including Creator and guidance', async ({ page, context }) => {
+test('service worker caches the complete v30 core including Creator guidance and dedicated player', async ({ page, context }) => {
   await page.goto('/party.html');
   await waitForWorker(page);
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v29');
+    const cache = await caches.open('secret-circle-v30');
     const expected = [
       './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
       './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css', './party-guide.css', './creator.css',
@@ -36,14 +36,15 @@ test('service worker caches the complete v29 core including Creator and guidance
       './party-custom-packs.js', './party-hub.js', './party-hub-plus.js', './party-hub-polish.js', './party-guide.js',
       './party-night.js', './party-data-tools.js', './party-advanced.js', './party-advanced-runner.js',
       './party-advanced-preferences.js', './party-quick-modes.js', './party-mega-modes.js',
-      './party-viral-modes.js', './quick-loader.js', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
+      './party-viral-modes.js', './party-created-modes.js', './quick-loader.js',
+      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
     ];
     const missing = [];
     for (const path of expected) if (!await cache.match(path)) missing.push(path);
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v29');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v29']);
+  expect(cacheState.names).toContain('secret-circle-v30');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v30']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
@@ -76,7 +77,7 @@ test('offline Party Hub can create a Party Night plan and run a prompt game', as
   await expect(page.locator('#play-layer')).toBeVisible();
 });
 
-test('Creator can save and launch a custom game completely offline', async ({ page, context }) => {
+test('Creator can save launch and resume a custom game completely offline', async ({ page, context }) => {
   await page.goto('/party.html');
   await seedPlayers(page);
   await waitForWorker(page);
@@ -95,7 +96,16 @@ test('Creator can save and launch a custom game completely offline', async ({ pa
   await page.locator('#created-games-list').getByRole('link', { name: 'Testen', exact: true }).click();
   await expect(page.locator('#detail-title')).toHaveText('Offline Duell');
   await page.getByRole('button', { name: 'Eigenes Spiel starten' }).click();
+  await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
+  await page.locator('#quick-rounds').selectOption('3');
+  await page.getByRole('button', { name: 'Spiel starten' }).click();
   await expect(page.locator('.choice-card')).toHaveCount(2);
+  await page.locator('.choice-card').first().click();
+  await page.getByRole('button', { name: 'Nächste Entscheidung' }).click();
+  await page.reload();
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await expect(page.locator('#quick-progress')).toContainText('Runde 2 von 3');
+  expect(await page.locator('script[src="party-created-modes.js"]').count()).toBe(1);
 });
 
 test('advanced Question Imposter starts completely offline', async ({ page, context }) => {
