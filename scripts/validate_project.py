@@ -139,7 +139,7 @@ markers = {
     'trending': ['trendingGameIds', 'version: 3', 'caption-battle'],
     'mega': ['megaGameIds', 'quickGameIds', 'version: 4', 'anime-guess', 'money-challenge'],
     'viral': ['viralGameIds', 'allFastGameIds', 'version: 5', 'put-a-finger-down', 'guess-the-price', 'higher-lower'],
-    'routing': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'createCatalog', 'version: 8', 'party-created-modes'],
+    'routing': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'createCatalog', 'version: 8', "href: `quick-play.html?game=${encodeURIComponent(game.id)}`"],
     'creator': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'createStore', 'normalizeGame'],
     'creator_page': ['renderTemplates', 'addPack', 'renderLibrary', 'importLibrary'],
     'custom': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4'],
