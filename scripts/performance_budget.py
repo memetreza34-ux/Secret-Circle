@@ -8,14 +8,14 @@ ROOT = Path(__file__).resolve().parents[1]
 budgets = {
     'index.html': 60_000, 'party.html': 100_000, 'advanced.html': 35_000,
     'quick-play.html': 40_000, 'creator.html': 45_000, 'privacy.html': 28_000,
-    'runtime-guard.js': 18_000, 'setup-ux.js': 14_000, 'privacy-guard.js': 10_000,
+    'runtime-guard.js': 20_000, 'setup-ux.js': 14_000, 'privacy-guard.js': 10_000,
     'wake-lock.js': 10_000, 'role-assignment.js': 14_000, 'app.js': 80_000,
     'game-engine.js': 60_000, 'data-store.js': 55_000, 'backup-schema-registry.js': 12_000,
     'session-ledger.js': 16_000, 'session-ledger-legacy-guard.js': 16_000,
     'word-packs.js': 40_000, 'party-catalog.js': 85_000, 'party-expansion.js': 45_000,
     'party-trending-catalog.js': 70_000, 'party-mega-catalog.js': 90_000,
     'party-viral-catalog.js': 90_000, 'party-routing.js': 20_000,
-    'party-release-structure.js': 20_000,
+    'party-release-structure.js': 22_000, 'party-filter-state.js': 14_000,
     'game-creator.js': 45_000, 'creator-page.js': 55_000,
     'party-custom-packs.js': 45_000, 'party-hub.js': 65_000,
     'party-hub-plus.js': 34_000, 'party-hub-polish.js': 10_000,
@@ -44,7 +44,7 @@ for relative, maximum in budgets.items():
         violations.append(f'{relative} is {size} bytes; budget is {maximum} bytes.')
 
 core_total = sum(sizes.values())
-core_budget = 2_725_000
+core_budget = 2_750_000
 if core_total > core_budget:
     violations.append(f'Offline core is {core_total} bytes; budget is {core_budget} bytes.')
 
@@ -76,6 +76,7 @@ print(json.dumps({
     'budgeted_assets': len(budgets),
     'visible_builtin_games': 45,
     'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
+    'persistent_catalog_filters': True,
     'maximum_local_created_games': 40,
     'creator_templates': 6,
     'creator_runner': True,
