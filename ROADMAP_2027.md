@@ -42,12 +42,12 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 
 ### Kerntechnik
 
-- [ ] unabhängige Rollenverteilung direkt in die Word-Imposter-Engine integrieren
-- [ ] Runtime-Patching der Engine entfernen
+- [x] unabhängige Rollenverteilung direkt in die Word-Imposter-Engine integrieren
+- [x] Runtime-Patching der Engine entfernen
 - [ ] alle Speicherformate und Migrationen inventarisieren
 - [ ] ein zentrales Backup-Schemaregister einführen
 - [ ] UTF-8-Bytegrenzen für alle Importwege vereinheitlichen
-- [ ] Creator-Zeitstempel korrigieren
+- [x] Creator-Zeitstempel korrigieren
 - [ ] wiederholte Sessionabschlüsse in allen Engines verhindern
 - [ ] PWA-Updatefluss mit sichtbarer neuer-Version-Meldung ergänzen
 
