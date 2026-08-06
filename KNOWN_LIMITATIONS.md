@@ -1,105 +1,75 @@
 # Bekannte Einschränkungen
 
-Diese Punkte sind bewusst dokumentierte Grenzen des aktuellen Party-Hub-Beta-Stands.
+Stand: `1.0.0-beta.3`, 45 eingebaute Spiele, lokaler Creator und Offline-Core `secret-circle-v29`.
 
-## Produktmodell
+## Gemeinsames Gerät
 
-- Secret Circle ist ein lokaler Pass-and-Play-Party-Hub auf einem gemeinsam genutzten Gerät.
-- Es gibt noch keinen Online-Mehrspielermodus, keine Raumcodes, keine Konten und keine Synchronisierung zwischen Geräten.
-- Spielende müssen das Gerät bei geheimen Rollen, Fragen und Karten physisch abschirmen und weitergeben.
-- Hub-Spieler und Word-Imposter-Spielerlisten sind getrennte Einrichtungsbereiche.
-- Daten werden ausschließlich im Browser-Speicher des jeweiligen Geräts gespeichert.
-- Gelöschte Daten können nur aus einer vorher exportierten Sicherung wiederhergestellt werden.
+Secret Circle ist derzeit lokales Pass-and-Play. Es gibt keine Raumcodes, Konten, privaten Rollen auf persönlichen Handys oder geräteübergreifende Synchronisierung. Geheime Karten müssen physisch abgeschirmt werden.
+
+## Automatisierter Teststatus
+
+Unit-, E2E-, Offline-, Sicherheits-, Accessibility- und Cross-Browser-Prüfungen sind vorbereitet. Der endgültige v29-Gesamtlauf ist noch nicht grün dokumentiert. GitHub Actions hat zuletzt vor sichtbaren Workflow-Schritten Probleme gezeigt.
+
+## 45 eingebaute Spiele
+
+Alle eingebauten Spiele sind technisch startbar. Sie sind aber noch nicht vollständig mit realen Gruppen auf Verständlichkeit, Balance, Wartezeit, Wiederholungswert, sozialen Druck und Alterseignung geprüft.
+
+Zeichnen & Raten besitzt noch keine integrierte Canvas-Zeichenfläche. Geräusche- und Melodie-Modi verwenden menschliche Darstellung und liefern keine geschützten Aufnahmen oder Liedtexte.
+
+## Game-Creator
+
+Der Creator unterstützt sechs Vorlagen: Fragen, Auswahl, Erraten, Challenges, Story und Debatte. Strukturierte Rollen-, Preis-, Zahlen-, Buzzer-, Tabu-, Spektrum- und komplexe Abstimmungsspiele benötigen spätere spezialisierte Editoren.
+
+Grenzen:
+
+- höchstens 40 selbst erstellte Spiele
+- höchstens 8 Kategorien je Spiel
+- höchstens 200 Karten je Kategorie
+- nur lokale Speicherung und JSON-Export
+- keine automatische Inhaltsmoderation
+- keine Bild-, Audio- oder Videouploads
+- Ersteller sind für Rechte, Eignung und Altersstufe ihrer Texte verantwortlich
+
+## Eigene Packs
+
+Der bestehende Pack-Editor unterstützt kompatible einfache Textmodi. Strukturierte Karten bleiben bewusst blockiert. Pro Gerät sind bis zu 30 Packs mit jeweils bis zu 150 Karten vorgesehen.
+
+## Timer nach Neuladen
+
+Aktive Sessions werden wiederhergestellt. Ein bereits laufender Quick-, Trend- oder Viral-Timer startet nach vollständigem Neuladen für die aktuelle Phase erneut, weil die genaue Deadline noch nicht persistiert wird.
 
 ## Smart Party Night
 
-- Party Night erzeugt lokale Empfehlungen anhand von Metadaten wie Spielerzahl, Dauer, Stimmung, Altersstufe, Favoriten und zuletzt gespielt.
-- Der Planer besitzt keine servergestützte KI und lernt nicht geräteübergreifend aus Nutzerverhalten.
-- Empfehlungsgründe sind heuristisch und keine Garantie, dass die konkrete Gruppe jedes vorgeschlagene Spiel mag.
-- Zeitbudgets sind Näherungen; tatsächliche Diskussionen, Erklärungen und Pausen können den Abend verlängern.
-- Ein Plan enthält höchstens sechs Hauptspiele und plant Utility- oder reine Zufallswerkzeuge nicht als Hauptstation ein.
-- Erledigt und übersprungen werden manuell markiert. Der Planer erkennt nicht automatisch, wann ein verlinktes Spiel beendet wurde.
-- Es wird nur ein Party-Night-Plan gleichzeitig unter `secret-circle-party-night-v1` gespeichert.
-- Wird ein geplantes Spiel in einer späteren App-Version entfernt oder gesperrt, wird dieser Eintrag beim Laden verworfen.
-- Party-Night-Fortschritt ist lokal, unverschlüsselt und wird nicht zwischen Geräten synchronisiert.
+Der Planer arbeitet lokal und heuristisch mit Spielerzahl, Dauer, Stimmung, Altersstufe, Favoriten und Verlauf. Empfehlungen sind keine Garantie für den Geschmack der Gruppe. Zeitangaben sind Näherungen.
 
-## Spiele
+## Anime- und Fan-Inhalte
 
-- 18 Spiele sind technisch spielbar, aber noch nicht vollständig mit echten Gruppen und Geräten geprüft.
-- Wellenlänge, Zeichnen & Raten, Schnellfeuer und Geräusche erraten sind sichtbar geplant und absichtlich nicht startbar.
-- Zwei Wahrheiten, eine Lüge benötigt persönliche Eingaben.
-- Question Imposter verwendet vorbereitete ähnliche Fragen.
-- Location Spy verwendet feste Ortslisten und noch keine individuellen Rollen je Ort.
-- Mafia ist ein lokaler Moderator-Modus ohne Audio-Erzählung und komplexe Sonderrollen.
-- einfache Hub-Spiele besitzen bewusst leichte Punkte- und Verlaufslogik.
+Das Anime-Quiz ist textbasiert und inoffiziell. Es enthält keine fremden Bilder, Logos, Videos, Audios oder Zitate. Allgemein bekannte Figurennamen benötigen vor öffentlicher oder kommerzieller Veröffentlichung eine gesonderte rechtliche und redaktionelle Prüfung.
 
-## Aktive komplexe Sessions
+## Geld und Preise
 
-- Es kann immer nur eine komplexe Session gleichzeitig aktiv gespeichert werden.
-- Eine Session speichert ihre Spielergruppe als Snapshot. Änderungen an der gemeinsamen Lobby wirken erst auf eine neue Session.
-- alte aktive Daten ohne Snapshot werden bestmöglich migriert; unklare Daten werden verworfen.
-- wird ein verwendetes Pack gelöscht, kann die zugehörige aktive Session nicht fortgesetzt werden.
-- bei einem lokalen Speicherfehler bleibt die Session aktiv, aber der Abschluss muss später erneut versucht werden.
-- Sessiondaten liegen unverschlüsselt im Browser-Speicher.
+Geld-Challenges sind hypothetisch. „Preis schätzen“ verwendet feste Spielwerte und keine aktuellen Händler- oder Marktdaten. Die Werte eignen sich nicht für Kaufentscheidungen.
 
-## Eigene Hub-Packs
+## Persönliche Fragen
 
-- Eigene Hub-Packs unterstützen nur kompatible Prompt-, Paranoia-, Scharade-, Heiße-Kartoffel- und Wortketten-Modi.
-- strukturierte Spiele wie Mafia, Question Imposter, Entweder oder und Nicht sagen! benötigen spezielle Datenformen.
-- pro Gerät sind maximal 20 Packs mit jeweils maximal 100 Karten vorgesehen.
-- Eigene Hub-Packs werden nicht zwischen Geräten synchronisiert.
-- Nutzer sind für Inhalt, Rechte, Eignung und Altersstufe ihrer Karten verantwortlich.
-- Speichern und Löschen besitzt Rollback, kann aber bei einem vollständig ausgefallenen Browser-Speicher keine dauerhafte Änderung vornehmen.
+Finger runter, Hot Seat, Wer kennt mich am besten?, Pass das Handy und ähnliche Modi können persönliche Situationen berühren. Überspringen ist vorgesehen. Komfort und Gruppendruck müssen real getestet werden.
 
-## Gesamtsicherung
+## Bilder, Icons und Animationen
 
-- Die Gesamtsicherung ist eine unverschlüsselte JSON-Datei.
-- Wer sie erhält, kann gespeicherte Namen, Party-Night-Pläne, Verläufe, Sessions und eigene Karten lesen.
-- die maximale Größe beträgt 1,5 MB tatsächliche UTF-8-Bytes.
-- einzelne Werte sind ebenfalls begrenzt.
-- es werden höchstens 100 lokale Datensätze importiert.
-- ein normaler Import- oder Löschfehler stellt den vorherigen Zustand wieder her.
-- wenn Browser-Speicher sowohl beim eigentlichen Vorgang als auch beim Rollback vollständig ausfällt, kann keine Garantie für Wiederherstellung gegeben werden; die App zeigt dann eine kritische Meldung.
-- es gibt keine automatische Cloud-Sicherung.
+Das technische Icon- und Akzentsystem ist vorbereitet. Die endgültigen eigenständigen Illustrationen, SVG-Icons, Kartenhintergründe und Motion-Übergänge sind noch nicht produziert. `ASSET_PLAN.md` dokumentiert Reihenfolge und Budgets.
 
-## Einstellungen, Verlauf und Erfolge
+## Offline und PWA
 
-- fehlgeschlagene Präferenz-Speicherung lässt die aktuelle Auswahl nur bis zum Neuladen gelten.
-- Statistikreparatur kann ältere zu niedrige Werte erhöhen, reduziert aber bewusst keine höheren Werte.
-- unbekannte Spiele werden nicht in Reparatur und Erfolge einbezogen.
-- wird der Verlauf gelöscht, können daraus abgeleitete Erfolge wieder gesperrt erscheinen.
-- aktive einfache Hub-Sessions werden nicht so detailliert wiederaufgenommen wie komplexe Spiele und Word Imposter.
+Die App muss einmal vollständig online geladen werden. Service Worker und Installation benötigen HTTPS oder `localhost`. Der Update-Pfad auf `secret-circle-v29` ist automatisiert vorbereitet, aber noch nicht auf realen Android- und iOS-Geräten dokumentiert.
 
-## Inhalte und Altersstufen
+Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck entfernen. Wichtige eigene Spiele und Packs sollten exportiert werden.
 
-- nicht jedes Spiel besitzt gleich viele Karten.
-- Altersstufen sind technische Filter und keine rechtliche Altersfreigabe.
-- vor öffentlichem Release ist eine vollständige redaktionelle Prüfung erforderlich.
-- es gibt noch keine separat freischaltbaren Erwachsenen-Packs.
+## Backup
 
-## Installation und Offline-Betrieb
+Gesamtsicherungen und Creator-Exporte sind unverschlüsselte JSON-Dateien. Wer die Datei erhält, kann gespeicherte Namen, eigene Inhalte, Einstellungen und Sessions lesen. Es gibt keine automatische Cloud-Sicherung.
 
-- Die App muss einmal vollständig online geladen werden, bevor Cache `secret-circle-v25` alle Kernressourcen offline bereitstellt.
-- Service Worker und Installation funktionieren nur über HTTPS oder `localhost`.
-- auf iPhone und iPad erfolgt die Installation über „Zum Home-Bildschirm“.
-- Browser und Betriebssystem können lokalen Speicher bei Speicherdruck entfernen.
-- Hintergrundbenachrichtigungen, Systemwecker und Push-Nachrichten sind nicht Bestandteil der Beta.
-- der Update-Pfad auf `secret-circle-v25` ist automatisiert vorbereitet, aber noch nicht auf realen Geräten bestätigt.
+## Rechtliche Veröffentlichung
 
-## Geräte und Browser
-
-- Playwright simuliert Chromium, Firefox, WebKit, Android und iPhone, ersetzt aber keine realen Geräteprüfungen.
-- Safari, Rotation, Sperrbildschirm, Energiesparmodus und Bildschirmtastatur müssen manuell geprüft werden.
-- Vibration und Wake Lock sind nur verfügbar, wenn Browser und Gerät die API unterstützen.
-- Mafia, Party Night und lange Gruppenrunden können auf kleinen Displays zusätzliches Scrollen erfordern.
-
-## Datenschutz und Veröffentlichung
-
-- Secret Circle verwendet keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste.
-- statische App-Dateien werden beim ersten Laden und bei Updates vom Hosting-Anbieter abgerufen.
-- GitHub Actions muss auf dem endgültigen Commit echte Schritte ausführen und grün enden.
-- vollständige lokale Unit-, Validator-, E2E- und Cross-Browser-Läufe müssen dokumentiert werden.
-- reale Android-, iPhone-/iPad-, PWA-Update-, Party-Night- und Partytests fehlen noch.
-- vor öffentlicher oder kommerzieller Veröffentlichung müssen Verantwortlicher, Kontakt, Hosting-Anbieter und gegebenenfalls Impressum ergänzt werden.
+Vor öffentlicher oder kommerzieller Veröffentlichung fehlen konkrete Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben sowie die abschließende Inhalts-, Fan-Content- und Altersprüfung.
 
 Die verbindlichen Freigabekriterien stehen in `RELEASE_CHECKLIST.md`.
