@@ -1,7 +1,8 @@
 'use strict';
 
 const CACHE='secret-circle-v30';
-const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-guide.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./party-advanced-runner.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./session-ledger.js','./session-ledger-legacy-guard.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const STAGING_CACHE='secret-circle-v30-staging';
+const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./pwa-update.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-guide.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./party-advanced-runner.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./session-ledger.js','./session-ledger-legacy-guard.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 function stripSearch(value) {
   const url = new URL(typeof value === 'string' ? value : value.url);
@@ -10,20 +11,42 @@ function stripSearch(value) {
   return url.href;
 }
 
+async function stageCore() {
+  await caches.delete(STAGING_CACHE);
+  const staging = await caches.open(STAGING_CACHE);
+  await staging.addAll(CORE);
+}
+
+async function promoteStagedCore() {
+  const staging = await caches.open(STAGING_CACHE);
+  const requests = await staging.keys();
+  if (!requests.length) throw new Error('Der vorbereitete Offline-Core ist leer.');
+
+  await caches.delete(CACHE);
+  const active = await caches.open(CACHE);
+  await Promise.all(requests.map(async request => {
+    const response = await staging.match(request);
+    if (!response) throw new Error(`Vorbereitete Ressource fehlt: ${request.url}`);
+    await active.put(request, response);
+  }));
+  await caches.delete(STAGING_CACHE);
+
+  const keys = await caches.keys();
+  await Promise.all(keys
+    .filter(key => key.startsWith('secret-circle-') && key !== CACHE)
+    .map(key => caches.delete(key)));
+}
+
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(CORE))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil(stageCore());
+});
+
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil(promoteStagedCore().then(() => self.clients.claim()));
 });
 
 async function fetchAndCache(request, canonicalNavigation = false) {
@@ -40,15 +63,15 @@ async function handleNavigation(request) {
   try {
     return await fetchAndCache(request, true);
   } catch {
-    return await caches.match(stripSearch(request))
-      || await caches.match('./party.html')
-      || await caches.match('./index.html')
+    return await caches.match(stripSearch(request), { cacheName: CACHE })
+      || await caches.match('./party.html', { cacheName: CACHE })
+      || await caches.match('./index.html', { cacheName: CACHE })
       || new Response('Offline', { status: 503, statusText: 'Offline' });
   }
 }
 
 async function handleAsset(request) {
-  const cached = await caches.match(request);
+  const cached = await caches.match(request, { cacheName: CACHE });
   if (cached) return cached;
   try {
     return await fetchAndCache(request);
