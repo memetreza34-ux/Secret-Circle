@@ -1,71 +1,81 @@
 # Änderungsverlauf
 
-## In Entwicklung – Mega-Trend-Erweiterung
+## In Entwicklung – Bedienbarkeit, Creator und Offline-Core v29
 
 ### Hinzugefügt
 
-- Katalog von 28 auf **37 technisch spielbare Spiele** erweitert
-- eigene Mega-Trend-Engine mit wiederaufnehmbaren Sessions
-- Wer bin ich? mit Anime-Archetypen, Gaming, Geschichte, Sport, Berufen, Tieren, Mythen und Bühne
-- inoffizielles textbasiertes Anime-Figuren-Quiz ohne Bilder, Logos oder Zitate
-- hypothetische Geld-Challenge mit 10-, 50-, 100- und 500-Euro-Fragen sowie „Wer zahlt?“-Situationen
-- Blind Ranking mit fünf festen Positionen
-- Emoji Quiz mit Tieren, Essen, Berufen, Orten, Sprichwörtern und Alltag
-- Pass das Handy mit Freundschaft, Komplimenten, Chaos, Team und Entscheidungen
-- Red Flag oder Green Flag für Freundschaft, Dating, Alltag, Schule, Arbeit und Internet
-- Geheime Mission mit sicheren Gesprächs-, Bewegungs-, Team- und Chaosaufgaben
-- Tier List Battle mit Snacks, Apps, Schulfächern, Hobbys, Reisen und Partysituationen
-- eigene Text-Packs für Wer bin ich?, Anime-Figuren, Pass das Handy, Flags, Missionen und Tier Lists
-- neuer `quick-loader.js`, der pro Seite genau eine Quick- oder Trend-Engine lädt
-- Offline-Core `secret-circle-v27`
-- Unit-, E2E-, Offline- und Cross-Browser-Prüfungen für die neuen Modi
+- Party Hub mit 45 eingebauten technisch spielbaren Spielen
+- 27 Quick-, Trend- und Viral-Modi
+- Drei-Schritte-Einstieg für neue Gruppen
+- kontextabhängige Kurz-Hilfen in allen Hauptbereichen
+- erster-Besuch-Onboarding
+- „Kurz erklärt“-Regeln direkt im Spieldetail
+- eigener lokaler No-Code-Game-Creator
+- sechs Creator-Vorlagen: Fragen, Auswahl, Erraten, Challenges, Story und Debatte
+- Live-Vorschau mit Icon, Akzent, Spielerzahl und Dauer
+- bis zu 40 selbst erstellte Spiele
+- bis zu 8 Kategorien und 200 Karten je eigener Kategorie
+- Bearbeiten, Kopieren, Löschen, Exportieren und Importieren eigener Spiele
+- Integration selbst erstellter Spiele in Suche, Filter, Favoriten, Verlauf und einfache Hub-Engines
+- Creator- und Guidance-E2E-Tests
+- Creator-Unit-Test mit Unicode-, Struktur-, Export-, Import- und Rollback-Prüfung
+- `ASSET_PLAN.md` für Icons, Illustrationen und Animationen
+- Offline-Core `secret-circle-v29`
 
 ### Verbessert
 
-- insgesamt 19 Quick- und Trend-Modi
-- eigene Packgrenze auf 30 Packs und 150 Karten je Pack erhöht
-- Party Hub, Suche, Filter, Favoriten, Statistik und Smart Party Night verwenden den 37-Spiel-Katalog
-- Trend-Spiele sind im Detailfenster klar mit „Trend Mode öffnen“ gekennzeichnet
-- alle neuen Sessions besitzen Spieler-Snapshot, Verlauf, Statistik, Wiederaufnahme und Korruptionsprüfung
-- Geldfragen lösen keine echte Zahlung aus
-- Nutzertexte werden ausschließlich als Text dargestellt
-- Architektur-, Struktur-, Release- und Performance-Gates auf v27 synchronisiert
-- 122-Modi-Universum besteht jetzt aus 37 aktuellen und 85 zukünftigen Modi
+- klarere Buttons: „Spielen“, „Jetzt spielen“, „Eigenes Spiel starten“ und engineabhängige Aktionen
+- verständlichere Spielkarten mit Mechanik- oder Kategorielabel
+- neue Creator-Einstiege in Navigation, Hero und Startseite
+- leere Zustände erklären die nächste Aktion
+- eigene Spiele werden validiert und transaktionssicher gespeichert
+- strukturierte Entweder-oder-Karten bleiben über Speichern, Export und Import erhalten
+- Gesamtsicherung und Datenlöschung nennen und enthalten selbst erstellte Spiele
+- Datenschutzseite erklärt Creator-, Social-, Anime-, Geld- und Preisdaten
+- Katalogrouting auf Version 7
+- Custom-Pack-Manager auf Version 4
+- Architektur-, Struktur-, Release- und Performance-Gates auf v29 synchronisiert
 
 ### Noch offen
 
 - vollständiger grüner `npm run ci`-Lauf
 - grüner Cross-Browser-Lauf
-- sichtbare und grüne GitHub-Actions-Schritte
-- echte Android-, iOS- und PWA-v27-Update-Prüfung
-- reale Partytests mit allen 37 Spielen
-- redaktionelle Inhalts-, Alters- und Fan-Content-Prüfung
-- öffentliche Betreiber-, Kontakt-, Hosting- und Rechtsangaben
+- sichtbare grüne GitHub-Actions-Schritte
+- echte Android-, iOS- und PWA-v29-Update-Prüfung
+- reale Creator-Usability-Tests
+- reale Partytests mit allen 45 eingebauten Spielen
+- Produktion der geplanten Icons, Illustrationen und Animationen
+- redaktionelle Inhalts-, Alters-, Fan-Content- und Rechtsprüfung
 
-## 1.0.0-beta.3 – 2026-08-04
+## Frühere Erweiterungswellen
 
-### Hinzugefügt
+### Viral- und Trend-Modi
 
-- vollständiger Word-Imposter-Ablauf mit Rollen, Timer, Abstimmung, Ratechance und Punkten
-- Party Hub, Smart Party Night, Advanced-Spiele und klassische Quick Modes
-- lokale Speicherung, Sicherung, vollständige Löschung und Offline-PWA
+- Wer bin ich?
+- Anime-Figuren erraten
+- hypothetische Geld-Challenge
+- Blind Ranking
+- Emoji Quiz
+- Pass das Handy
+- Red Flag oder Green Flag
+- Geheime Mission
+- Tier List Battle
+- Finger runter
+- Preis schätzen
+- Höher oder tiefer
+- Wer kennt mich am besten?
+- Hear Me Out
+- Hot Seat
+- Story Chain
+- Satz beenden
+
+### Word Imposter und Plattformkern
+
+- vollständiger Rollen-, Timer-, Abstimmungs-, Rate- und Punkteablauf
+- Smart Party Night
+- Advanced-Spiele
+- lokale Speicherung und Sicherung
+- installierbare Offline-PWA
 - 14 Imposter-Kategorien mit 168 Begriff-Hinweis-Paaren
 - Content Security Policy und Laufzeit-Fehlerschutz
-
-### Behoben
-
-- unabhängige Imposter-Verteilung
-- maximal sechs Imposter
-- begrenzte Stichwahl
-- doppelte Stimmen und Selbstwahl
-- Begriffswiederholungen vor Pool-Erschöpfung
-- Timerabweichungen nach Hintergrundbetrieb oder Neuladen
-- fehlende Verlaufseinträge und unvollständige Migrationen
-
-### Sicherheit und Datenschutz
-
 - keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste
-- keine appgesteuerte Übertragung von Spieldaten
-- restriktive Ressourcenrichtlinie
-- sichere Textausgabe und Import-Rollback
-- automatischer Sichtschutz geheimer Inhalte
