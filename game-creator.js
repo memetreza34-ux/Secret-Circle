@@ -165,12 +165,18 @@
       return true;
     }
 
+    function copyTitle(baseTitle, number) {
+      const suffix = number === 1 ? ' Kopie' : ` Kopie ${number}`;
+      const maximumBaseLength = Math.max(1, 50 - suffix.length);
+      return `${baseTitle.slice(0, maximumBaseLength).trimEnd()}${suffix}`;
+    }
+
     function duplicate(id) {
       const source = get(id);
       if (!source) throw new Error('Spiel wurde nicht gefunden.');
-      let title = `${source.title} Kopie`.slice(0, 50);
-      let counter = 2;
-      while (state.games.some(game => keyText(game.title) === keyText(title))) title = `${source.title} Kopie ${counter++}`.slice(0, 50);
+      let number = 1;
+      let title = copyTitle(source.title, number);
+      while (state.games.some(game => keyText(game.title) === keyText(title))) title = copyTitle(source.title, ++number);
       return save({ ...source, id: createId(), title, createdAt: new Date().toISOString() });
     }
 
