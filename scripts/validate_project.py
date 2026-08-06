@@ -18,7 +18,8 @@ REQUIRED = {
     'party-routing.js', 'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
     'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js', 'party-advanced-runner.js',
-    'party-advanced-preferences.js', 'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js', 'quick-loader.js',
+    'party-advanced-preferences.js', 'party-quick-modes.js', 'party-mega-modes.js',
+    'party-viral-modes.js', 'party-created-modes.js', 'quick-loader.js',
     'sw.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
     'package.json', 'playwright.config.js', 'playwright.cross-browser.config.js',
     'tests/party-trending-catalog.test.js', 'tests/party-mega-catalog.test.js', 'tests/party-viral-catalog.test.js',
@@ -27,7 +28,7 @@ REQUIRED = {
     'tests/e2e/party-viral-resilience.spec.js', 'tests/e2e/game-creator.spec.js', 'tests/e2e/offline.spec.js',
     'scripts/repo_hygiene.py', 'scripts/architecture_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
-    'README.md', 'ARCHITECTURE.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'RELEASE_CHECKLIST.md',
+    'README.md', 'ARCHITECTURE.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'ASSET_PLAN.md', 'RELEASE_CHECKLIST.md',
     'RELEASE_STATUS.md', 'CHANGELOG.md', 'KNOWN_LIMITATIONS.md', 'SECURITY.md',
     'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md', 'DEPLOYMENT.md'
 }
@@ -125,8 +126,8 @@ sources = {name: read(path) for name, path in {
     'routing': 'party-routing.js', 'creator': 'game-creator.js', 'creator_page': 'creator-page.js',
     'custom': 'party-custom-packs.js', 'guide': 'party-guide.js',
     'quick': 'party-quick-modes.js', 'mega_runtime': 'party-mega-modes.js',
-    'viral_runtime': 'party-viral-modes.js', 'loader': 'quick-loader.js',
-    'night': 'party-night.js', 'data_tools': 'party-data-tools.js'
+    'viral_runtime': 'party-viral-modes.js', 'created_runtime': 'party-created-modes.js',
+    'loader': 'quick-loader.js', 'night': 'party-night.js', 'data_tools': 'party-data-tools.js'
 }.items()}
 
 if not re.search(r'\bVERSION\s*=\s*7\b', sources['engine']):
@@ -138,7 +139,7 @@ markers = {
     'trending': ['trendingGameIds', 'version: 3', 'caption-battle'],
     'mega': ['megaGameIds', 'quickGameIds', 'version: 4', 'anime-guess', 'money-challenge'],
     'viral': ['viralGameIds', 'allFastGameIds', 'version: 5', 'put-a-finger-down', 'guess-the-price', 'higher-lower'],
-    'routing': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'createCatalog', 'version: 7'],
+    'routing': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'createCatalog', 'version: 8', 'party-created-modes'],
     'creator': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'createStore', 'normalizeGame'],
     'creator_page': ['renderTemplates', 'addPack', 'renderLibrary', 'importLibrary'],
     'custom': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4'],
@@ -146,7 +147,8 @@ markers = {
     'quick': ['secret-circle-party-quick-active-v1', 'renderWavelength', 'finishSession'],
     'mega_runtime': ['secret-circle-party-mega-active-v1', 'renderWhoAmI', 'renderAnimeGuess', 'finishSession'],
     'viral_runtime': ['secret-circle-party-viral-active-v1', 'renderFingerDown', 'renderGuessPrice', 'finishSession'],
-    'loader': ['party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
+    'created_runtime': ['secret-circle-party-created-active-v1', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'finishSession'],
+    'loader': ['party-created-modes.js', 'party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
     'night': ['buildPlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'],
     'data_tools': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']
 }
@@ -165,8 +167,8 @@ if (base_games, expansion_games, trending_games, mega_games, viral_games) != (18
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='([^']+)'", sw)
-if not cache or cache.group(1) != 'secret-circle-v29':
-    raise SystemExit('Service worker cache must be secret-circle-v29.')
+if not cache or cache.group(1) != 'secret-circle-v30':
+    raise SystemExit('Service worker cache must be secret-circle-v30.')
 core_match = re.search(r'const CORE=(\[[^;]+\]);', sw)
 if not core_match:
     raise SystemExit('Service worker CORE list missing.')
@@ -174,7 +176,8 @@ core = ast.literal_eval(core_match.group(1))
 for required_asset in [
     './party.html', './advanced.html', './quick-play.html', './creator.html',
     './party-viral-catalog.js', './party-routing.js', './game-creator.js', './creator-page.js',
-    './party-guide.js', './party-guide.css', './creator.css', './party-viral-modes.js', './quick-loader.js'
+    './party-guide.js', './party-guide.css', './creator.css', './party-viral-modes.js',
+    './party-created-modes.js', './quick-loader.js'
 ]:
     if required_asset not in core:
         raise SystemExit(f'Service worker CORE asset missing: {required_asset}')
@@ -194,7 +197,7 @@ for source, size in [('icon-192.png', 192), ('icon-512.png', 512)]:
 package = json.loads(read('package.json'))
 if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('node') != '>=20':
     raise SystemExit('Package metadata invalid.')
-for marker in ['game-creator.js', 'creator-page.js', 'party-guide.js', 'party-viral-modes.js']:
+for marker in ['game-creator.js', 'creator-page.js', 'party-guide.js', 'party-viral-modes.js', 'party-created-modes.js']:
     if marker not in package['scripts']['check']:
         raise SystemExit(f'Syntax gate missing: {marker}')
 for marker in ['tests/game-creator.test.js', 'tests/party-viral-catalog.test.js']:
@@ -210,7 +213,7 @@ for required in ['game-creator.spec.js', 'party-viral-resilience.spec.js', 'part
     if required not in e2e_suites:
         raise SystemExit(f'Critical E2E suite missing: {required}')
 
-for relative in ['README.md', 'ARCHITECTURE.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md', 'privacy.html']:
+for relative in ['README.md', 'ARCHITECTURE.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'ASSET_PLAN.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md', 'privacy.html']:
     path = ROOT / relative
     if not path.is_file() or path.stat().st_size < 300:
         raise SystemExit(f'Missing or incomplete document: {relative}')
@@ -224,6 +227,7 @@ print(json.dumps({
     'visible_builtin_games': 45,
     'maximum_local_created_games': 40,
     'creator_templates': 6,
+    'creator_runner': True,
     'pwa_cache': cache.group(1),
     'offline_core_assets': len(core),
     'unit_test_files': len(unit_tests),
