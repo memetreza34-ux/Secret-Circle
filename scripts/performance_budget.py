@@ -13,16 +13,17 @@ budgets = {
     'game-engine.js': 60_000, 'data-store.js': 55_000, 'word-packs.js': 40_000,
     'party-catalog.js': 85_000, 'party-expansion.js': 45_000,
     'party-trending-catalog.js': 70_000, 'party-mega-catalog.js': 90_000,
-    'party-routing.js': 8_000, 'party-custom-packs.js': 40_000,
-    'party-hub.js': 65_000, 'party-hub-plus.js': 34_000, 'party-hub-polish.js': 8_000,
+    'party-viral-catalog.js': 90_000, 'party-routing.js': 8_000,
+    'party-custom-packs.js': 40_000, 'party-hub.js': 65_000,
+    'party-hub-plus.js': 34_000, 'party-hub-polish.js': 8_000,
     'party-night.js': 38_000, 'party-data-tools.js': 22_000,
     'party-advanced.js': 55_000, 'party-advanced-runner.js': 48_000,
     'party-advanced-preferences.js': 5_000, 'party-quick-modes.js': 75_000,
-    'party-mega-modes.js': 75_000, 'quick-loader.js': 8_000,
-    'styles.css': 35_000, 'pwa.css': 40_000, 'party.css': 55_000,
-    'party-extra.css': 25_000, 'party-night.css': 22_000, 'party-quick.css': 35_000,
-    'sw.js': 22_000, 'manifest.webmanifest': 6_000, 'icon.svg': 25_000,
-    'icon-192.png': 90_000, 'icon-512.png': 220_000
+    'party-mega-modes.js': 75_000, 'party-viral-modes.js': 75_000,
+    'quick-loader.js': 8_000, 'styles.css': 35_000, 'pwa.css': 40_000,
+    'party.css': 55_000, 'party-extra.css': 25_000, 'party-night.css': 22_000,
+    'party-quick.css': 35_000, 'sw.js': 24_000, 'manifest.webmanifest': 6_000,
+    'icon.svg': 25_000, 'icon-192.png': 90_000, 'icon-512.png': 220_000
 }
 
 sizes = {}
@@ -38,7 +39,7 @@ for relative, maximum in budgets.items():
         violations.append(f'{relative} is {size} bytes; budget is {maximum} bytes.')
 
 core_total = sum(sizes.values())
-core_budget = 1_900_000
+core_budget = 2_150_000
 if core_total > core_budget:
     violations.append(f'Offline core is {core_total} bytes; budget is {core_budget} bytes.')
 
@@ -68,8 +69,9 @@ print(json.dumps({
     'core_budget_used_percent': round(core_total / core_budget * 100, 2),
     'tracked_files_checked': len(tracked),
     'budgeted_assets': len(budgets),
-    'visible_games': 37,
+    'visible_games': 45,
     'classic_quick_modes': 10,
     'mega_trend_modes': 9,
+    'viral_modes': 8,
     'asset_sizes': sizes
 }, ensure_ascii=False, indent=2))
