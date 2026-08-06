@@ -10,11 +10,12 @@ production_js = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
-    'party-mega-catalog.js', 'party-routing.js', 'party-custom-packs.js',
-    'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js',
+    'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
+    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
     'party-advanced-runner.js', 'party-advanced-preferences.js',
-    'party-quick-modes.js', 'party-mega-modes.js', 'quick-loader.js', 'sw.js'
+    'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
+    'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'privacy.html']
 violations = []
@@ -69,10 +70,12 @@ contracts = {
     'party-advanced-runner.js': ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubState(nextHubState)'],
     'party-quick-modes.js': ["ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'validActive', 'finishSession', 'renderWavelength', 'renderRapidFire'],
     'party-mega-modes.js': ["ACTIVE_KEY = 'secret-circle-party-mega-active-v1'", 'validActive', 'renderWhoAmI', 'renderAnimeGuess', 'renderMoneyChallenge', 'renderBlindRanking', 'renderEmojiQuiz', 'renderSecretMission'],
+    'party-viral-modes.js': ["ACTIVE_KEY = 'secret-circle-party-viral-active-v1'", 'validActive', 'renderFingerDown', 'renderGuessPrice', 'renderHigherLower', 'renderKnowMeBest', 'renderHearMeOut', 'renderHotSeat', 'renderStoryChain', 'finishSession'],
     'party-trending-catalog.js': ['trendingGameIds', 'caption-battle', 'version: 3'],
     'party-mega-catalog.js': ['megaGameIds', 'quickGameIds', 'anime-guess', 'money-challenge', 'blind-ranking', 'version: 4'],
-    'party-routing.js': ["require('./party-mega-catalog.js')", 'version: 5'],
-    'quick-loader.js': ['SecretCirclePartyCatalog', 'party-mega-modes.js', 'party-quick-modes.js'],
+    'party-viral-catalog.js': ['viralGameIds', 'allFastGameIds', 'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best', 'version: 5'],
+    'party-routing.js': ["require('./party-viral-catalog.js')", 'version: 6'],
+    'quick-loader.js': ['party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
     'party-custom-packs.js': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 3', 'createManager', 'commit(nextState)', 'restoreStorage'],
     'party-data-tools.js': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']
 }
@@ -84,12 +87,12 @@ for relative, markers in contracts.items():
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
-if not cache or cache.group(1) != '27':
-    violations.append('Service-worker cache must be secret-circle-v27.')
+if not cache or cache.group(1) != '28':
+    violations.append('Service-worker cache must be secret-circle-v28.')
 for asset in [
     './party-night.js', './party-advanced-runner.js', './quick-play.html',
-    './party-trending-catalog.js', './party-mega-catalog.js',
-    './party-quick-modes.js', './party-mega-modes.js', './quick-loader.js'
+    './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
+    './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js', './quick-loader.js'
 ]:
     if asset not in sw:
         violations.append(f'Offline architecture asset missing from CORE: {asset}')
@@ -111,10 +114,11 @@ print(json.dumps({
     'maximum_module_lines': 1000,
     'maximum_module_bytes': 100000,
     'runtime_dependencies': 0,
-    'offline_cache_version': 27,
-    'visible_games': 37,
+    'offline_cache_version': 28,
+    'visible_games': 45,
     'classic_quick_modes': 10,
     'mega_trend_modes': 9,
+    'viral_modes': 8,
     'versioned_storage': True,
     'transaction_contracts': True,
     'external_runtime_assets': 0
