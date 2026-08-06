@@ -1,101 +1,71 @@
 # Änderungsverlauf
 
-## In Entwicklung – Party-Hub-Erweiterung
+## In Entwicklung – Mega-Trend-Erweiterung
 
 ### Hinzugefügt
 
-- installierter PWA-Einstieg öffnet den Party Hub
-- Suche und Filter nach Art, Stimmung, Gruppengröße, Altersstufe und Status
-- gemeinsame lokale Spieler, Host-Presets, Favoriten, Verlauf, Statistik und Erfolge
-- Smart Party Night mit 15-, 30-, 45-, 60- und 90-Minuten-Plänen
-- vollständige Word-Imposter-, Advanced- und Quick-Session-Wiederaufnahme
-- 28 technisch spielbare Spiele
-- neue Quick-Mode-Engine für zehn besonders starke Mechaniken
-- Wellenlänge mit geheimem Zielwert und abstandsbasierter Punktewertung
-- Zeichnen & Raten
-- Schnellfeuer mit variablen Anforderungen und Zeitlimits
-- Geräusche erraten
-- Stirn-Raten
-- Buchstaben-Kategorien
-- Nicht lachen!
-- Melodie summen
-- Gegenstandsjagd
-- Caption Battle
-- 3, 5, 10 oder 20 Quick-Mode-Runden
-- Quick-Mode-Spieler-Snapshot, Punkte, Rangliste, Verlauf und Statistik
-- eigene originale Packs für alle neuen Quick Modes
-- eigene Hub-Kategorien für kompatible Spiele
-- vollständiger gemeinsamer Export, Import und Datenlöschung
-- langfristiges 122-Modi-Universum mit 94 zusätzlichen Roadmap-Modi
-- Architekturvertrag und automatischer Architektur-Audit
-- Offline-Core `secret-circle-v26`
+- Katalog von 28 auf **37 technisch spielbare Spiele** erweitert
+- eigene Mega-Trend-Engine mit wiederaufnehmbaren Sessions
+- Wer bin ich? mit Anime-Archetypen, Gaming, Geschichte, Sport, Berufen, Tieren, Mythen und Bühne
+- inoffizielles textbasiertes Anime-Figuren-Quiz ohne Bilder, Logos oder Zitate
+- hypothetische Geld-Challenge mit 10-, 50-, 100- und 500-Euro-Fragen sowie „Wer zahlt?“-Situationen
+- Blind Ranking mit fünf festen Positionen
+- Emoji Quiz mit Tieren, Essen, Berufen, Orten, Sprichwörtern und Alltag
+- Pass das Handy mit Freundschaft, Komplimenten, Chaos, Team und Entscheidungen
+- Red Flag oder Green Flag für Freundschaft, Dating, Alltag, Schule, Arbeit und Internet
+- Geheime Mission mit sicheren Gesprächs-, Bewegungs-, Team- und Chaosaufgaben
+- Tier List Battle mit Snacks, Apps, Schulfächern, Hobbys, Reisen und Partysituationen
+- eigene Text-Packs für Wer bin ich?, Anime-Figuren, Pass das Handy, Flags, Missionen und Tier Lists
+- neuer `quick-loader.js`, der pro Seite genau eine Quick- oder Trend-Engine lädt
+- Offline-Core `secret-circle-v27`
+- Unit-, E2E-, Offline- und Cross-Browser-Prüfungen für die neuen Modi
 
 ### Verbessert
 
-- Hub-Schaltflächen unterscheiden jetzt Quick Mode, Advanced-Spiel und Word Imposter eindeutig
-- alle 28 sichtbaren Katalogeinträge sind technisch startbar
-- Party Night kann aus einem deutlich vielfältigeren Katalog auswählen
-- Quick-Sessions bleiben nach Neuladen erhalten
-- korrupte Quick-Snapshots werden verworfen
-- Quick-Timer verwenden reale Deadlines während einer laufenden Seite
-- mobile Quick-Ansicht berücksichtigt Safe Areas, Touchflächen und Überlauf
-- Nutzertexte werden als Text ausgegeben
-- Statistikwerte älterer Sessions werden aus dem Verlauf repariert
-- Backup-Grenzen verwenden tatsächliche UTF-8-Byte-Größen
-- Package-, Struktur-, Release-, Architektur- und Performance-Gates berücksichtigen alle Quick-Dateien
-- Chromium-, Firefox-, WebKit-, Android- und iPhone-Smoke-Matrix umfasst den 28-Spiel-Katalog
-
-### Behoben
-
-- vier zuvor sichtbare Roadmap-Spiele waren trotz vorhandener Produktdefinition nicht startbar
-- generische Link-Schaltflächen bezeichneten Advanced- oder Quick-Spiele fälschlich als Word Imposter
-- manipulierte Quick-Session-Daten konnten als Fortsetzungsoption erscheinen
-- bösartig aussehende Spielernamen werden in Quick-Ergebnissen nicht als HTML interpretiert
-- eigene Hub-Packs werden vor dem Katalogrendern geladen
-- doppelte eigene Karten und Packnamen werden normalisiert und abgefangen
-- fehlgeschlagene Speicher-, Import- und Löschvorgänge besitzen Rollback oder erhalten die aktive Session
+- insgesamt 19 Quick- und Trend-Modi
+- eigene Packgrenze auf 30 Packs und 150 Karten je Pack erhöht
+- Party Hub, Suche, Filter, Favoriten, Statistik und Smart Party Night verwenden den 37-Spiel-Katalog
+- Trend-Spiele sind im Detailfenster klar mit „Trend Mode öffnen“ gekennzeichnet
+- alle neuen Sessions besitzen Spieler-Snapshot, Verlauf, Statistik, Wiederaufnahme und Korruptionsprüfung
+- Geldfragen lösen keine echte Zahlung aus
+- Nutzertexte werden ausschließlich als Text dargestellt
+- Architektur-, Struktur-, Release- und Performance-Gates auf v27 synchronisiert
+- 122-Modi-Universum besteht jetzt aus 37 aktuellen und 85 zukünftigen Modi
 
 ### Noch offen
 
-- vollständig erfolgreicher lokaler `npm run ci`-Lauf
-- erfolgreicher Cross-Browser-Gesamtlauf
-- grüner GitHub-Actions-Lauf auf dem endgültigen Commit
-- echte Android-, iOS- und PWA-Update-Prüfung
-- reale Partytests mit kleinen und großen Gruppen
-- praktischer Test aller 28 Spiele
-- redaktionelle Inhalts- und Altersprüfung
-- öffentliche Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben
+- vollständiger grüner `npm run ci`-Lauf
+- grüner Cross-Browser-Lauf
+- sichtbare und grüne GitHub-Actions-Schritte
+- echte Android-, iOS- und PWA-v27-Update-Prüfung
+- reale Partytests mit allen 37 Spielen
+- redaktionelle Inhalts-, Alters- und Fan-Content-Prüfung
+- öffentliche Betreiber-, Kontakt-, Hosting- und Rechtsangaben
 
 ## 1.0.0-beta.3 – 2026-08-04
 
 ### Hinzugefügt
 
-- vollständiger Word-Imposter-Karten-, Diskussions-, Abstimmungs-, Rate- und Ergebnisablauf
-- Punkte, Rangliste, Mehr-Runden-Matches und begrenzte Stichwahl
-- maximal sechs Imposter
-- unabhängige deterministische Rollenverteilung
-- 14 Kategorien mit 168 Begriff-Hinweis-Paaren
-- deadline-basierter Timer mit Hintergrund- und Neulade-Wiederherstellung
-- Verlauf, Migration, Sicherung und vollständige lokale Löschung
-- Datenschutzseite, Content Security Policy und Laufzeit-Fehlerschutz
-- 192- und 512-Pixel-PNG-Icons
+- vollständiger Word-Imposter-Ablauf mit Rollen, Timer, Abstimmung, Ratechance und Punkten
+- Party Hub, Smart Party Night, Advanced-Spiele und klassische Quick Modes
+- lokale Speicherung, Sicherung, vollständige Löschung und Offline-PWA
+- 14 Imposter-Kategorien mit 168 Begriff-Hinweis-Paaren
+- Content Security Policy und Laufzeit-Fehlerschutz
 
 ### Behoben
 
-- Kopplung der Imposter an die ersten Positionen der Aufdeckreihenfolge
-- mehr als sechs Imposter werden zuverlässig abgelehnt
-- endlose Stichwahlen
+- unabhängige Imposter-Verteilung
+- maximal sechs Imposter
+- begrenzte Stichwahl
 - doppelte Stimmen und Selbstwahl
-- Begriffswiederholungen innerhalb eines noch nicht erschöpften Pools
+- Begriffswiederholungen vor Pool-Erschöpfung
 - Timerabweichungen nach Hintergrundbetrieb oder Neuladen
-- fehlende Verlaufseinträge bei direkt beendeten Runden
-- unvollständige Migration älterer Spielstände
+- fehlende Verlaufseinträge und unvollständige Migrationen
 
 ### Sicherheit und Datenschutz
 
 - keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste
 - keine appgesteuerte Übertragung von Spieldaten
-- restriktive Ressourcen- und Skriptrichtlinie
-- escaped Namen und Kategorien
-- Größenbegrenzung und Rollback für Sicherungsimporte
-- automatischer Sichtschutz geheimer Rollen und Begriffe
+- restriktive Ressourcenrichtlinie
+- sichere Textausgabe und Import-Rollback
+- automatischer Sichtschutz geheimer Inhalte
