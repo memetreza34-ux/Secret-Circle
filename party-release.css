@@ -37,7 +37,8 @@
 }
 
 .release-tier-card:focus-visible,
-.release-tier-filter-label select:focus-visible {
+.release-tier-filter-label select:focus-visible,
+.filter-reset-button:focus-visible {
   outline: 3px solid #67e8f9;
   outline-offset: 2px;
 }
@@ -56,6 +57,12 @@
 
 .release-tier-filter-label {
   min-width: 11rem;
+}
+
+.filter-reset-button {
+  align-self: end;
+  min-height: 2.75rem;
+  white-space: nowrap;
 }
 
 .release-tier-pill {
@@ -98,6 +105,10 @@
 
   .release-tier-card {
     min-height: auto;
+  }
+
+  .filter-reset-button {
+    width: 100%;
   }
 }
 
