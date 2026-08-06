@@ -76,7 +76,7 @@ contracts = {
     'party-trending-catalog.js': ['trendingGameIds', 'caption-battle', 'version: 3'],
     'party-mega-catalog.js': ['megaGameIds', 'quickGameIds', 'anime-guess', 'money-challenge', 'blind-ranking', 'version: 4'],
     'party-viral-catalog.js': ['viralGameIds', 'allFastGameIds', 'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best', 'version: 5'],
-    'party-routing.js': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'safeCreatedGames', 'createCatalog', 'version: 8', 'party-created-modes'],
+    'party-routing.js': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'safeCreatedGames', 'createCatalog', 'version: 8', "href: `quick-play.html?game=${encodeURIComponent(game.id)}`"],
     'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'normalizeGame', 'createStore', 'toCatalogGame'],
     'creator-page.js': ['renderTemplates', 'addPack', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary'],
     'party-guide.js': ['addCreatorEntryPoints', 'addHowItWorks', 'showHelp', 'enhanceGameCards', 'openRequestedGame'],
