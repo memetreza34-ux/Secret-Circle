@@ -32,6 +32,12 @@ runtime_guard = require_file('runtime-guard.js')
 service_worker = require_file('sw.js')
 package = json.loads(require_file('package.json'))
 
+install_handler_match = re.search(
+    r"self\.addEventListener\('install',[\s\S]*?\n\}\);",
+    service_worker,
+)
+install_handler = install_handler_match.group(0) if install_handler_match else ''
+
 checks = {
     'backup_registry_version': 'const VERSION = 1;' in registry,
     'backup_shared_limit': 'const MAX_FILE_BYTES = 1_500_000;' in registry,
@@ -50,7 +56,8 @@ checks = {
     'loader_orders_shared_runtime': all(marker in loader for marker in ('session-ledger.js', 'session-ledger-legacy-guard.js', 'scriptPlan')),
     'visible_pwa_update': all(marker in runtime_guard for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', "type: 'SKIP_WAITING'")),
     'staged_pwa_update': all(marker in service_worker for marker in ('STAGING_CACHE', 'stageCore', 'promoteStagedCore', "event.data?.type === 'SKIP_WAITING'")),
-    'no_install_auto_activation': not bool(re.search(r"self\.addEventListener\('install',[\s\S]*?skipWaiting", service_worker)),
+    'install_handler_detected': bool(install_handler),
+    'no_install_auto_activation': bool(install_handler) and 'skipWaiting' not in install_handler,
     'foundation_tests_in_unit_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
         'tests/session-ledger.test.js',
         'tests/session-ledger-legacy-guard.test.js',
