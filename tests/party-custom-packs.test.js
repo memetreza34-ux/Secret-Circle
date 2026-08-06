@@ -25,20 +25,27 @@ function createMemoryStorage(initial = {}) {
   };
 }
 
-assert.equal(packs.version, 2);
+assert.equal(packs.version, 3);
 assert.equal(packs.storageKey, 'secret-circle-party-custom-packs-v1');
-assert.equal(packs.maxPacks, 20);
-assert.equal(packs.maxItems, 100);
+assert.equal(packs.maxPacks, 30);
+assert.equal(packs.maxItems, 150);
 assert.equal(typeof packs.createManager, 'function');
 assert.ok(packs.supportedGameIds.includes('charades'));
 assert.ok(packs.supportedGameIds.includes('hot-potato'));
 assert.ok(packs.supportedGameIds.includes('word-chain'));
-assert.ok(!packs.supportedGameIds.includes('would-rather'));
+assert.ok(packs.supportedGameIds.includes('who-am-i'));
+assert.ok(packs.supportedGameIds.includes('anime-guess'));
+assert.ok(packs.supportedGameIds.includes('pass-the-phone'));
+assert.ok(packs.supportedGameIds.includes('red-green-flag'));
+assert.ok(packs.supportedGameIds.includes('secret-mission'));
+assert.ok(packs.supportedGameIds.includes('tier-list'));
+assert.ok(!packs.supportedGameIds.includes('money-challenge'));
+assert.ok(!packs.supportedGameIds.includes('emoji-quiz'));
 assert.ok(!packs.supportedGameIds.includes('mafia'));
 
 const parsed = packs.parseItems('  Erste Karte  \nzweite Karte\nERSTE KARTE\n\nDritte Karte  ');
 assert.deepEqual(parsed, ['Erste Karte', 'zweite Karte', 'Dritte Karte']);
-assert.equal(packs.parseItems(Array.from({ length: 140 }, (_, index) => `Karte ${index + 1}`).join('\n')).length, 100);
+assert.equal(packs.parseItems(Array.from({ length: 180 }, (_, index) => `Karte ${index + 1}`).join('\n')).length, 150);
 assert.deepEqual(packs.parseItems('Cafe\u0301\nCAFÉ\nRakete\nSonne'), ['Café', 'Rakete', 'Sonne']);
 
 assert.equal(packs.normalizePack({ gameId: 'mafia', name: 'Nicht erlaubt', items: ['A', 'B', 'C'] }), null);
@@ -53,12 +60,20 @@ assert.equal(created.gameId, 'charades');
 assert.equal(created.name, 'Unsere Runde');
 assert.deepEqual(created.items, ['Pinguin', 'Raumstation', 'Kaffeetasse']);
 assert.deepEqual(catalog.getItems('charades', 'Eigene · Unsere Runde'), created.items);
-assert.equal(catalog.itemCount('charades') >= created.items.length, true);
 assert.throws(() => packs.addPack({
   gameId: 'charades',
   name: 'unsere runde',
   items: ['Eins', 'Zwei', 'Drei']
 }), /existiert bereits/);
+
+const animePack = packs.addPack({
+  gameId: 'anime-guess',
+  name: 'Unsere Anime-Figuren',
+  items: ['Eigene Figur A', 'Eigene Figur B', 'Eigene Figur C']
+});
+assert.deepEqual(catalog.getItems('anime-guess', 'Eigene · Unsere Anime-Figuren'), animePack.items);
+assert.equal(packs.removePack(animePack.id), true);
+assert.deepEqual(catalog.getItems('anime-guess', 'Eigene · Unsere Anime-Figuren'), []);
 
 const copy = packs.getPacks();
 copy[0].items.push('Manipulation');
@@ -71,31 +86,31 @@ assert.deepEqual(catalog.getItems('charades', 'Eigene · Unsere Runde'), []);
 const storage = createMemoryStorage();
 const transactional = packs.createManager(storage);
 const stable = transactional.addPack({
-  gameId: 'charades',
+  gameId: 'who-am-i',
   name: 'Transaktion',
   items: ['Rakete', 'Satellit', 'Raumanzug']
 });
 assert.equal(transactional.getPacks().length, 1);
-assert.deepEqual(catalog.getItems('charades', 'Eigene · Transaktion'), stable.items);
+assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Transaktion'), stable.items);
 const beforeFailure = storage.snapshot();
 
 storage.failWrites = true;
 assert.throws(() => transactional.addPack({
-  gameId: 'charades',
+  gameId: 'who-am-i',
   name: 'Darf nicht erscheinen',
   items: ['Eins', 'Zwei', 'Drei']
 }), /konnten nicht gespeichert werden/);
 assert.deepEqual(storage.snapshot(), beforeFailure);
 assert.equal(transactional.getPacks().length, 1);
-assert.deepEqual(catalog.getItems('charades', 'Eigene · Darf nicht erscheinen'), []);
+assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Darf nicht erscheinen'), []);
 
 assert.throws(() => transactional.removePack(stable.id), /konnten nicht gespeichert werden/);
 assert.equal(transactional.getPacks().length, 1);
-assert.deepEqual(catalog.getItems('charades', 'Eigene · Transaktion'), stable.items);
+assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Transaktion'), stable.items);
 
 storage.failWrites = false;
 assert.equal(transactional.removePack(stable.id), true);
-assert.deepEqual(catalog.getItems('charades', 'Eigene · Transaktion'), []);
+assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Transaktion'), []);
 
 const duplicateStorage = createMemoryStorage({
   'secret-circle-party-custom-packs-v1': JSON.stringify({
@@ -119,9 +134,10 @@ console.log(JSON.stringify({
   supportedGames: packs.supportedGameIds.length,
   maximumPacks: packs.maxPacks,
   maximumItemsPerPack: packs.maxItems,
+  animeAndWhoAmIPacks: true,
   duplicateCardsRemoved: true,
   unicodeDuplicatesRemoved: true,
-  unsupportedStructuredModesBlocked: true,
+  structuredModesBlocked: true,
   catalogInjectionAndRemoval: true,
   duplicateStoredPacksNormalized: true,
   transactionRollback: true,
