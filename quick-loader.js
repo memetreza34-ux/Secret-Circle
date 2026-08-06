@@ -4,7 +4,8 @@
   const catalog = window.SecretCirclePartyCatalog;
   const gameId = new URLSearchParams(location.search).get('game') || '';
   let source = 'party-quick-modes.js';
-  if (catalog?.viralGameIds?.includes(gameId)) source = 'party-viral-modes.js';
+  if (catalog?.createdGameIds?.includes(gameId)) source = 'party-created-modes.js';
+  else if (catalog?.viralGameIds?.includes(gameId)) source = 'party-viral-modes.js';
   else if (catalog?.megaGameIds?.includes(gameId)) source = 'party-mega-modes.js';
 
   const script = document.createElement('script');
