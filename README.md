@@ -13,7 +13,7 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 - lokaler No-Code-Game-Creator
 - bis zu **40 selbst erstellte Spiele**
 - eigene wiederaufnehmbare Creator-Spielengine
-- Offline-Core `secret-circle-v31`
+- Offline-Core `secret-circle-v30`
 
 „Technisch spielbar“ bedeutet noch nicht automatisch releasefertig. Für Januar 2027 werden Kernspiele, Erweiterungen und experimentelle Modi nach klaren Qualitätskriterien getrennt.
 
@@ -98,4 +98,4 @@ Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger 
 
 ## Aktuelle technische Verbesserung
 
-Offline-Navigationen mit Query-Parametern, beispielsweise `quick-play.html?game=...`, verwenden ab Cache `secret-circle-v31` den richtigen gecachten Seiteneinstieg statt auf eine unpassende Startseite zurückzufallen. Ein eigener Regressionstest schützt dieses Verhalten.
+Offline-Navigationen mit Query-Parametern, beispielsweise `quick-play.html?game=...`, verwenden nun den richtigen gecachten Seiteneinstieg statt auf eine unpassende Startseite zurückzufallen. Ein eigener Regressionstest schützt dieses Verhalten innerhalb des bestehenden Cachevertrags `secret-circle-v30`.
