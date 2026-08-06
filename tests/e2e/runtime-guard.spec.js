@@ -35,17 +35,17 @@ test('critical resource errors are surfaced instead of leaving a silent broken s
   await expect(page.locator('#status')).toContainText('benötigte App-Datei');
 });
 
-test('all game engines Creator and guidance are available from cache v29', async ({ page }) => {
+test('all game engines Creator and guidance are available from cache v30', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v29');
+    const cache = await caches.open('secret-circle-v30');
     const assets = [
       'runtime-guard.js', 'party-night.js', 'party-night.css', 'quick-play.html',
       'party-trending-catalog.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
       'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-      'quick-loader.js', 'party-quick.css', 'creator.html', 'game-creator.js',
-      'creator-page.js', 'creator.css', 'party-guide.js', 'party-guide.css'
+      'party-created-modes.js', 'quick-loader.js', 'party-quick.css', 'creator.html',
+      'game-creator.js', 'creator-page.js', 'creator.css', 'party-guide.js', 'party-guide.css'
     ];
     const result = {};
     for (const asset of assets) result[asset] = Boolean(await cache.match(`./${asset}`));
