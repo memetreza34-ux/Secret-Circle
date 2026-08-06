@@ -22,7 +22,8 @@
       start.textContent = 'Spiel starten';
       return;
     }
-    if (C.megaGameIds?.includes(game.id)) start.textContent = 'Trend Mode öffnen';
+    if (C.viralGameIds?.includes(game.id)) start.textContent = 'Viral Mode öffnen';
+    else if (C.megaGameIds?.includes(game.id)) start.textContent = 'Trend Mode öffnen';
     else if (game.href?.startsWith('quick-play.html')) start.textContent = 'Quick Mode öffnen';
     else if (game.href?.startsWith('advanced.html')) start.textContent = 'Erweitertes Spiel öffnen';
     else if (game.href === 'index.html') start.textContent = 'Word Imposter öffnen';
@@ -35,5 +36,5 @@
   addEventListener('pagehide', () => observer.disconnect(), { once: true });
   updateStartLabel();
 
-  window.SecretCirclePartyHubPolish = Object.freeze({ version: 2, updateStartLabel });
+  window.SecretCirclePartyHubPolish = Object.freeze({ version: 3, updateStartLabel });
 })();
