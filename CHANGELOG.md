@@ -1,6 +1,31 @@
 # Änderungsverlauf
 
-## In Entwicklung – Bedienbarkeit, Creator und Offline-Core v29
+## In Entwicklung – Release Foundation Januar 2027
+
+### Behoben
+
+- Offline-Navigation für dynamische Spiel-URLs wie `quick-play.html?game=...` verwendet nun einen kanonischen Cache-Schlüssel ohne Query-Parameter.
+- Unbekannte oder beschädigte Quick-Game-IDs laden nicht mehr stillschweigend die falsche Spiel-Engine.
+- Word-Imposter-Rollen werden unabhängig von der Karten-Aufdeckreihenfolge erzeugt.
+- Die maximale Zahl von sechs Impostern wird direkt durch die Hauptengine validiert.
+- Das nachträgliche Überschreiben von Engine-Methoden durch `role-assignment.js` wurde entfernt.
+- Creator-Zeitstempel bleiben beim Laden, Exportieren und Importieren unverändert.
+- `updatedAt` wird nur noch bei einem tatsächlichen Speichervorgang erneuert.
+- Duplizierte Creator-Spiele erhalten eigene Erstellungs- und Änderungszeitpunkte.
+
+### Qualität
+
+- Regressionstest für Service-Worker-Navigation ergänzt.
+- Regressionstest für Quick-Game-Routing ergänzt.
+- Fairnessprüfung mit 200 deterministischen Rollenstichproben ergänzt.
+- Regressionstest für Creator-Zeitstempel ergänzt.
+- Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
+
+### Bekannte externe Blockade
+
+- GitHub Actions weist dem Workflow weiterhin keinen Runner zu (`runner_id: 0`, keine ausgeführten Schritte). Lokale Tests und Syntaxprüfungen ersetzen den verpflichtenden grünen Remote-Lauf nicht.
+
+## Frühere Entwicklungswelle – Bedienbarkeit, Creator und Offline-Core v29
 
 ### Hinzugefügt
 
@@ -41,7 +66,7 @@
 - vollständiger grüner `npm run ci`-Lauf
 - grüner Cross-Browser-Lauf
 - sichtbare grüne GitHub-Actions-Schritte
-- echte Android-, iOS- und PWA-v29-Update-Prüfung
+- echte Android-, iOS- und PWA-Update-Prüfung
 - reale Creator-Usability-Tests
 - reale Partytests mit allen 45 eingebauten Spielen
 - Produktion der geplanten Icons, Illustrationen und Animationen
