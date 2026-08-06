@@ -3,7 +3,9 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   else {
     root.SecretCirclePartyFilterState = api;
-    api.install(root, root.document, root.localStorage);
+    let storage = null;
+    try { storage = root.localStorage; } catch {}
+    api.install(root, root.document, storage);
   }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createPartyFilterState() {
   'use strict';
@@ -60,8 +62,11 @@
 
   function write(storage, value) {
     const normalized = normalize(value);
+    if (!storage || typeof storage.setItem !== 'function') {
+      return { ok: false, value: normalized, error: 'lokaler Speicher ist nicht verfügbar' };
+    }
     try {
-      storage?.setItem?.(STORAGE_KEY, JSON.stringify(normalized));
+      storage.setItem(STORAGE_KEY, JSON.stringify(normalized));
       return { ok: true, value: normalized };
     } catch (error) {
       return { ok: false, value: normalized, error: error?.message || 'lokaler Speicherfehler' };
@@ -169,7 +174,8 @@
     reset.addEventListener('click', () => {
       const next = { ...defaults, view: currentView };
       apply(documentRef, next, root.Event);
-      write(storage, next);
+      const result = write(storage, next);
+      if (!result.ok) showStorageWarning(result.error);
       reset.focus();
     });
 
