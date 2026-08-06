@@ -35,15 +35,16 @@ test('critical resource errors are surfaced instead of leaving a silent broken s
   await expect(page.locator('#status')).toContainText('benötigte App-Datei');
 });
 
-test('runtime guard classic Quick and Mega Trend engines are available from cache v27', async ({ page }) => {
+test('all Quick Trend and Viral engines are available from cache v28', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v27');
+    const cache = await caches.open('secret-circle-v28');
     const assets = [
       'runtime-guard.js', 'party-night.js', 'party-night.css', 'quick-play.html',
-      'party-trending-catalog.js', 'party-mega-catalog.js', 'party-quick-modes.js',
-      'party-mega-modes.js', 'quick-loader.js', 'party-quick.css'
+      'party-trending-catalog.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
+      'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
+      'quick-loader.js', 'party-quick.css'
     ];
     const result = {};
     for (const asset of assets) result[asset] = Boolean(await cache.match(`./${asset}`));
