@@ -10,7 +10,7 @@ function read(file) {
   return fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
 }
 
-assert.equal(release.version, 1);
+assert.equal(release.version, 2);
 assert.equal(release.coreIds.length, 15);
 assert.equal(release.labIds.length, 17);
 assert.equal(new Set(release.coreIds).size, release.coreIds.length);
@@ -38,14 +38,22 @@ assert.equal(release.tierFor(catalog.getGame('wavelength')), 'extended');
 assert.equal(release.tierFor({ id: 'custom-game-demo', custom: true, status: 'playable' }), 'extended');
 assert.equal(release.tierFor({ id: 'unknown-planned', status: 'planned' }), 'labs');
 assert.equal(release.tierFor(null), 'labs');
+assert.equal(release.ageAllows({ age: 'all' }, 'family'), true);
+assert.equal(release.ageAllows({ age: 'teen' }, 'family'), false);
+assert.equal(release.ageAllows({ age: 'teen' }, 'teen'), true);
+assert.equal(release.ageAllows({ age: 'all' }, 'teen'), true);
+assert.equal(release.ageAllows({ age: 'teen' }, 'all'), true);
 
 const runtime = read('runtime-guard.js');
 const worker = read('sw.js');
 const styles = read('party-release.css');
 assert.match(runtime, /party-release-structure\.js/);
+assert.match(runtime, /party-filter-state\.js/);
 assert.match(runtime, /party-release\.css/);
 assert.match(runtime, /loadPartyReleaseStructure/);
+assert.match(runtime, /loadPartyFilterState/);
 assert.match(worker, /\.\/party-release-structure\.js/);
+assert.match(worker, /\.\/party-filter-state\.js/);
 assert.match(worker, /\.\/party-release\.css/);
 assert.match(styles, /\.release-tier-overview/);
 assert.match(styles, /\.release-tier-pill/);
@@ -59,6 +67,8 @@ console.log(JSON.stringify({
   labsGames: summary.labs,
   customGamesClassifiedAsExtended: true,
   plannedGamesClassifiedAsLabs: true,
+  ageAndReleaseTierCombined: true,
+  persistentFiltersLoadedAfterTierStructure: true,
   runtimeLoaderIntegrated: true,
   offlineAssetsIntegrated: true,
   responsiveTierStyles: true
