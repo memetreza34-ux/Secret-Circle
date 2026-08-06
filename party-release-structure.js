@@ -8,7 +8,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createPartyReleaseStructure() {
   'use strict';
 
-  const VERSION = 1;
+  const VERSION = 2;
   const CORE_IDS = Object.freeze([
     'imposter', 'truth-dare', 'never-have', 'most-likely', 'would-rather',
     'paranoia', 'charades', 'taboo', 'hot-potato', 'word-chain',
@@ -36,6 +36,13 @@
     return 'extended';
   }
 
+  function ageAllows(game, level) {
+    if (!game || typeof game !== 'object') return false;
+    if (level === 'family') return game.age === 'all';
+    if (level === 'teen') return game.age === 'all' || game.age === 'teen';
+    return true;
+  }
+
   function counts(games) {
     const result = { core: 0, extended: 0, labs: 0 };
     for (const game of Array.isArray(games) ? games : []) result[tierFor(game)] += 1;
@@ -60,17 +67,26 @@
     const filterBar = gamesView.querySelector('.filter-bar');
     const heading = gamesView.querySelector('.page-heading');
     const resultCount = documentRef.querySelector('#result-count');
+    const ageFilter = documentRef.querySelector('#age-filter');
     const summary = counts(catalog.games);
+    const OptionConstructor = root.Option;
 
     const filterLabel = element(documentRef, 'label', 'release-tier-filter-label');
     filterLabel.htmlFor = 'release-tier-filter';
     filterLabel.append(documentRef.createTextNode('Reifestufe'));
     const filter = documentRef.createElement('select');
     filter.id = 'release-tier-filter';
-    filter.add(new Option('Alle Stufen', 'all'));
-    filter.add(new Option(`Kernspiele (${summary.core})`, 'core'));
-    filter.add(new Option(`Erweiterungen (${summary.extended})`, 'extended'));
-    filter.add(new Option(`Labs (${summary.labs})`, 'labs'));
+    const options = [
+      ['Alle Stufen', 'all'],
+      [`Kernspiele (${summary.core})`, 'core'],
+      [`Erweiterungen (${summary.extended})`, 'extended'],
+      [`Labs (${summary.labs})`, 'labs']
+    ];
+    for (const [label, value] of options) {
+      const option = OptionConstructor ? new OptionConstructor(label, value) : element(documentRef, 'option', '', label);
+      option.value = value;
+      filter.add(option);
+    }
     filterLabel.append(filter);
     const statusLabel = documentRef.querySelector('label[for="status-filter"]');
     if (filterBar) filterBar.insertBefore(filterLabel, statusLabel || null);
@@ -115,28 +131,31 @@
         pill.className = `release-tier-pill tier-${tier}`;
         pill.textContent = TIERS[tier].label;
       }
-      return tier;
+      return { game, tier };
     }
 
     function apply() {
       scheduled = false;
       if (applying) return;
       applying = true;
-      const selected = filter.value;
+      const selectedTier = filter.value;
+      const selectedAge = ageFilter?.value || 'all';
       let visible = 0;
 
       for (const card of documentRef.querySelectorAll('.game-card[data-game-id]')) {
-        const tier = decorateCard(card);
-        if (card.closest('#game-grid')) {
-          const show = selected === 'all' || selected === tier;
-          card.hidden = !show;
-          if (show) visible += 1;
-        }
+        const decorated = decorateCard(card);
+        if (!decorated || !card.closest('#game-grid')) continue;
+        const tierMatches = selectedTier === 'all' || selectedTier === decorated.tier;
+        const ageMatches = ageAllows(decorated.game, selectedAge);
+        const show = tierMatches && ageMatches;
+        card.hidden = !show;
+        if (show) visible += 1;
       }
 
       grid.querySelector('.release-tier-empty')?.remove();
+      grid.querySelector('.age-empty-state')?.remove();
       if (!visible && grid.querySelector('.game-card')) {
-        const empty = element(documentRef, 'p', 'release-tier-empty empty-state', 'Keine Spiele passen zu dieser Reifestufe und den übrigen Filtern.');
+        const empty = element(documentRef, 'p', 'release-tier-empty empty-state', 'Keine Spiele passen zu diesen Filtern. Passe Reifestufe, Alter oder die übrigen Katalogfilter an.');
         grid.append(empty);
       }
       if (resultCount) resultCount.textContent = String(visible);
@@ -149,7 +168,8 @@
       (root.queueMicrotask || (callback => Promise.resolve().then(callback)))(apply);
     }
 
-    filter.addEventListener('change', apply);
+    filter.addEventListener('change', schedule);
+    ageFilter?.addEventListener('change', schedule);
     overview.addEventListener('click', event => {
       const button = event.target.closest('[data-release-tier-target]');
       if (!button) return;
@@ -181,6 +201,7 @@
     coreIds: CORE_IDS,
     labIds: LAB_IDS,
     tierFor,
+    ageAllows,
     counts,
     install
   });
