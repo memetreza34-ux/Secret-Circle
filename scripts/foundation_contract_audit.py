@@ -28,6 +28,8 @@ legacy_guard = require_file('session-ledger-legacy-guard.js')
 created_runtime = require_file('party-created-modes.js')
 quick_runtime = require_file('party-quick-modes.js')
 loader = require_file('quick-loader.js')
+release_structure = require_file('party-release-structure.js')
+release_styles = require_file('party-release.css')
 runtime_guard = require_file('runtime-guard.js')
 service_worker = require_file('sw.js')
 package = json.loads(require_file('package.json'))
@@ -54,11 +56,27 @@ checks = {
     'quick_exact_once': all(marker in quick_runtime for marker in ('SecretCircleSessionLedger', "completionId('quick'", 'recordCompletion(loadHub()')),
     'mega_viral_guarded': all(marker in legacy_guard for marker in ('secret-circle-party-mega-active-v1', 'secret-circle-party-viral-active-v1', 'recordCompletion(baseHub, completion)')),
     'loader_orders_shared_runtime': all(marker in loader for marker in ('session-ledger.js', 'session-ledger-legacy-guard.js', 'scriptPlan')),
+    'release_tier_contract': all(marker in release_structure for marker in (
+        'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'", 'tierFor', 'counts',
+    )),
+    'release_tier_counts_declared': all(marker in release_structure for marker in (
+        "'imposter'", "'wrong-answers'", "'who-am-i'", "'finish-the-sentence'",
+    )),
+    'release_tier_runtime_loader': all(marker in runtime_guard for marker in (
+        'party-release-structure.js', 'party-release.css', 'loadPartyReleaseStructure',
+    )),
+    'release_tier_offline': all(marker in service_worker for marker in (
+        './party-release-structure.js', './party-release.css',
+    )),
+    'release_tier_accessibility_styles': all(marker in release_styles for marker in (
+        '.release-tier-overview', '.release-tier-pill', 'focus-visible', 'prefers-reduced-motion',
+    )),
     'visible_pwa_update': all(marker in runtime_guard for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', "type: 'SKIP_WAITING'")),
     'staged_pwa_update': all(marker in service_worker for marker in ('STAGING_CACHE', 'stageCore', 'promoteStagedCore', "event.data?.type === 'SKIP_WAITING'")),
     'install_handler_detected': bool(install_handler),
     'no_install_auto_activation': bool(install_handler) and 'skipWaiting' not in install_handler,
     'foundation_tests_in_unit_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
+        'tests/party-release-structure.test.js',
         'tests/session-ledger.test.js',
         'tests/session-ledger-legacy-guard.test.js',
         'tests/session-ledger-integration.test.js',
@@ -66,6 +84,7 @@ checks = {
         'tests/pwa-update.test.js',
     )),
     'foundation_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
+        'party-release-structure.js',
         'backup-schema-registry.js',
         'session-ledger.js',
         'session-ledger-legacy-guard.js',
@@ -80,6 +99,7 @@ if failed:
 
 print(json.dumps({
     'foundation_contract_audit': 'PASS',
+    'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
     'backup_schemas': ['word-imposter', 'complete', 'creator-library'],
     'maximum_backup_bytes': 1_500_000,
     'exact_once_engines': ['created', 'quick', 'mega-compatibility', 'viral-compatibility'],
