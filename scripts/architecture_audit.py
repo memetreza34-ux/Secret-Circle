@@ -12,7 +12,8 @@ production_js = [
     'backup-schema-registry.js', 'session-ledger.js', 'session-ledger-legacy-guard.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
-    'party-release-structure.js', 'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
+    'party-release-structure.js', 'party-filter-state.js',
+    'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
     'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
     'party-advanced-runner.js', 'party-advanced-preferences.js',
@@ -80,12 +81,20 @@ contracts = {
     ],
     'party-release-structure.js': [
         'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'",
-        "label: 'Labs'", 'tierFor', 'counts', 'release-tier-filter'
+        "label: 'Labs'", 'tierFor', 'ageAllows', 'counts', 'release-tier-filter',
+        'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches'
+    ],
+    'party-filter-state.js': [
+        "STORAGE_KEY = 'secret-circle-party-catalog-filters-v1'", 'FIXED_VALUES',
+        'game-search', 'group-filter', 'mood-filter', 'player-filter',
+        'age-filter', 'status-filter', 'release-tier-filter', 'Filter zurücksetzen',
+        'normalize(value)', 'optionExists', 'scheduleSave'
     ],
     'runtime-guard.js': [
         'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession',
         "waitingWorker.postMessage({ type: 'SKIP_WAITING' })",
-        'party-release-structure.js', 'party-release.css', 'loadPartyReleaseStructure'
+        'party-release-structure.js', 'party-filter-state.js', 'party-release.css',
+        'loadPartyReleaseStructure', 'loadPartyFilterState'
     ],
     'party-night.js': ['normalizeConfig', 'eligibleGames', 'buildPlan', 'normalizePlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'],
     'party-advanced-runner.js': ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubState(nextHubState)'],
@@ -144,7 +153,7 @@ if not install_handler or 'skipWaiting' in install_handler.group(0):
     violations.append('Service-worker install must not activate an update automatically.')
 for asset in [
     './party-night.js', './party-advanced-runner.js', './quick-play.html', './creator.html',
-    './pwa-update.css', './party-release.css', './party-release-structure.js',
+    './pwa-update.css', './party-release.css', './party-release-structure.js', './party-filter-state.js',
     './session-ledger.js', './session-ledger-legacy-guard.js',
     './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
     './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js',
@@ -175,6 +184,8 @@ print(json.dumps({
     'offline_cache_version': 30,
     'staged_updates': True,
     'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
+    'persistent_catalog_filters': True,
+    'combined_age_and_release_filter': True,
     'backup_schemas': 3,
     'exact_once_engine_families': 4,
     'visible_builtin_games': 45,
