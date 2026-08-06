@@ -11,13 +11,14 @@ production_js = [
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
-    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js',
+    'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
+    'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
     'party-advanced-runner.js', 'party-advanced-preferences.js',
     'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
     'quick-loader.js', 'sw.js'
 ]
-html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'privacy.html']
+html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html']
 violations = []
 
 architecture = ROOT / 'ARCHITECTURE.md'
@@ -74,9 +75,12 @@ contracts = {
     'party-trending-catalog.js': ['trendingGameIds', 'caption-battle', 'version: 3'],
     'party-mega-catalog.js': ['megaGameIds', 'quickGameIds', 'anime-guess', 'money-challenge', 'blind-ranking', 'version: 4'],
     'party-viral-catalog.js': ['viralGameIds', 'allFastGameIds', 'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best', 'version: 5'],
-    'party-routing.js': ["require('./party-viral-catalog.js')", 'version: 6'],
+    'party-routing.js': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'safeCreatedGames', 'createCatalog', 'version: 7'],
+    'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'normalizeGame', 'createStore', 'toCatalogGame'],
+    'creator-page.js': ['renderTemplates', 'addPack', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary'],
+    'party-guide.js': ['addCreatorEntryPoints', 'addHowItWorks', 'showHelp', 'enhanceGameCards', 'openRequestedGame'],
     'quick-loader.js': ['party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
-    'party-custom-packs.js': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 3', 'createManager', 'commit(nextState)', 'restoreStorage'],
+    'party-custom-packs.js': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4', 'createManager', 'commit(nextState)', 'restoreStorage'],
     'party-data-tools.js': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']
 }
 for relative, markers in contracts.items():
@@ -87,19 +91,20 @@ for relative, markers in contracts.items():
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
-if not cache or cache.group(1) != '28':
-    violations.append('Service-worker cache must be secret-circle-v28.')
+if not cache or cache.group(1) != '29':
+    violations.append('Service-worker cache must be secret-circle-v29.')
 for asset in [
-    './party-night.js', './party-advanced-runner.js', './quick-play.html',
+    './party-night.js', './party-advanced-runner.js', './quick-play.html', './creator.html',
     './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
-    './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js', './quick-loader.js'
+    './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js', './quick-loader.js',
+    './game-creator.js', './creator-page.js', './party-guide.js', './party-guide.css', './creator.css'
 ]:
     if asset not in sw:
         violations.append(f'Offline architecture asset missing from CORE: {asset}')
 
 for relative in [
     'README.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md',
-    'MANUAL_TEST_PLAN.md', 'MODE_UNIVERSE.md'
+    'MANUAL_TEST_PLAN.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md'
 ]:
     if not (ROOT / relative).is_file() or (ROOT / relative).stat().st_size < 300:
         violations.append(f'Operational document missing or incomplete: {relative}')
@@ -114,8 +119,10 @@ print(json.dumps({
     'maximum_module_lines': 1000,
     'maximum_module_bytes': 100000,
     'runtime_dependencies': 0,
-    'offline_cache_version': 28,
-    'visible_games': 45,
+    'offline_cache_version': 29,
+    'visible_builtin_games': 45,
+    'maximum_local_created_games': 40,
+    'creator_templates': 6,
     'classic_quick_modes': 10,
     'mega_trend_modes': 9,
     'viral_modes': 8,
