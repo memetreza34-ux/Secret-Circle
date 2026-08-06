@@ -21,6 +21,8 @@ package = json.loads(require('package.json'))
 manifest = json.loads(require('manifest.webmanifest'))
 sw = require('sw.js')
 runtime_guard = require('runtime-guard.js')
+release_structure = require('party-release-structure.js')
+release_styles = require('party-release.css')
 registry = require('backup-schema-registry.js')
 ledger = require('session-ledger.js')
 legacy_guard = require('session-ledger-legacy-guard.js')
@@ -52,6 +54,12 @@ install_handler_match = re.search(
 )
 install_handler = install_handler_match.group(0) if install_handler_match else ''
 
+core_ids = re.search(r'const CORE_IDS = Object\.freeze\(\[(.*?)\]\);', release_structure, re.S)
+lab_ids = re.search(r'const LAB_IDS = Object\.freeze\(\[(.*?)\]\);', release_structure, re.S)
+core_count = len(re.findall(r"'[^']+'", core_ids.group(1))) if core_ids else 0
+lab_count = len(re.findall(r"'[^']+'", lab_ids.group(1))) if lab_ids else 0
+extended_count = 45 - core_count - lab_count
+
 checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
     'node_baseline': package.get('engines', {}).get('node') == '>=20',
@@ -62,10 +70,24 @@ checks = {
     'staging_cache': "const STAGING_CACHE='secret-circle-v30-staging'" in sw,
     'install_waits_for_user': bool(install_handler) and 'skipWaiting' not in install_handler,
     'message_activates_update': "event.data?.type === 'SKIP_WAITING'" in sw,
+    'non_destructive_cache_promotion': 'await caches.delete(CACHE)' not in sw and 'active.delete(request)' in sw,
     'visible_update_prompt': all(marker in runtime_guard for marker in (
         'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', "type: 'SKIP_WAITING'",
     )),
     'update_respects_active_sessions': 'hasActiveSession' in runtime_guard and 'activeSessionKeys' in runtime_guard,
+    'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 17),
+    'release_tier_labels': all(marker in release_structure for marker in (
+        "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'", 'release-tier-filter',
+    )),
+    'release_tier_runtime': all(marker in runtime_guard for marker in (
+        'party-release-structure.js', 'party-release.css', 'loadPartyReleaseStructure',
+    )),
+    'release_tier_offline': all(marker in sw for marker in (
+        './party-release-structure.js', './party-release.css',
+    )),
+    'release_tier_styles': all(marker in release_styles for marker in (
+        '.release-tier-overview', '.release-tier-pill', 'focus-visible', 'prefers-reduced-motion',
+    )),
     'backup_registry': all(marker in registry for marker in (
         "format: 'secret-circle-backup'",
         "format: 'secret-circle-complete-backup'",
@@ -121,8 +143,9 @@ checks = {
     'cross_browser_ci': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'foundation_audit_in_gate': 'scripts/foundation_contract_audit.py' in package.get('scripts', {}).get('validate', ''),
     'foundation_tests_in_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
-        'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
-        'tests/session-ledger-legacy-guard.test.js', 'tests/pwa-update.test.js',
+        'tests/party-release-structure.test.js', 'tests/backup-schema-registry.test.js',
+        'tests/session-ledger.test.js', 'tests/session-ledger-legacy-guard.test.js',
+        'tests/pwa-update.test.js',
     )),
     'release_dates_documented': all(marker in roadmap for marker in (
         '30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027',
@@ -161,9 +184,9 @@ cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').g
 if len(unit_tests) < 18 or len(e2e_suites) < 28 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required_test in (
-    'backup-schema-registry.test.js', 'session-ledger.test.js',
-    'session-ledger-legacy-guard.test.js', 'session-ledger-integration.test.js',
-    'service-worker.test.js', 'pwa-update.test.js',
+    'party-release-structure.test.js', 'backup-schema-registry.test.js',
+    'session-ledger.test.js', 'session-ledger-legacy-guard.test.js',
+    'session-ledger-integration.test.js', 'service-worker.test.js', 'pwa-update.test.js',
 ):
     if required_test not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required_test}')
@@ -187,9 +210,10 @@ for relative in required_docs:
 for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
     for relative in (
         'backup-schema-registry.js', 'session-ledger.js', 'session-ledger-legacy-guard.js',
-        'runtime-guard.js', 'party-routing.js', 'game-creator.js', 'creator-page.js',
-        'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-        'party-created-modes.js', 'quick-loader.js', 'party-hub.js',
+        'party-release-structure.js', 'runtime-guard.js', 'party-routing.js',
+        'game-creator.js', 'creator-page.js', 'party-quick-modes.js',
+        'party-mega-modes.js', 'party-viral-modes.js', 'party-created-modes.js',
+        'quick-loader.js', 'party-hub.js',
     ):
         if forbidden in read(relative):
             raise SystemExit(f'Forbidden release pattern {forbidden} in {relative}')
@@ -199,7 +223,9 @@ print(json.dumps({
     'package_version': package['version'],
     'pwa_cache': 'secret-circle-v30',
     'staged_pwa_updates': True,
+    'non_destructive_cache_promotion': True,
     'visible_builtin_games': base_games + expansion_games + trending_games + mega_games + viral_games,
+    'release_tiers': {'core': core_count, 'extended': extended_count, 'labs': lab_count},
     'playable_builtin_games': 45,
     'maximum_local_created_games': 40,
     'backup_schemas': 3,
