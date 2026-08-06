@@ -39,17 +39,21 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [ ] veralteten `main`-Stand nicht mehr als Produktstand behandeln
 - [ ] PR #11 in überprüfbare Themenbereiche zerlegen oder kontrolliert konsolidieren
 - [ ] Release- und Hotfix-Branchstrategie dokumentieren
+- [ ] reproduzierbares `package-lock.json` erzeugen und CI auf `npm ci` umstellen
 
 ### Kerntechnik
 
 - [x] unabhängige Rollenverteilung direkt in die Word-Imposter-Engine integrieren
 - [x] Runtime-Patching der Engine entfernen
-- [ ] alle Speicherformate und Migrationen inventarisieren
-- [ ] ein zentrales Backup-Schemaregister einführen
-- [ ] UTF-8-Bytegrenzen für alle Importwege vereinheitlichen
+- [x] alle Speicher- und Sicherungsformate inventarisieren
+- [x] zentrales Backup-Schemaregister einführen
+- [x] UTF-8-Bytegrenzen für alle aktuell unterstützten Importwege vereinheitlichen
 - [x] Creator-Zeitstempel korrigieren
-- [ ] wiederholte Sessionabschlüsse in allen Engines verhindern
-- [ ] PWA-Updatefluss mit sichtbarer neuer-Version-Meldung ergänzen
+- [x] wiederholte Sessionabschlüsse in Creator und klassischer Quick-Engine verhindern
+- [x] Mega- und Viral-Abschlüsse über einen begrenzten Migrationsguard deduplizieren
+- [ ] Mega- und Viral-Engines direkt auf das Session-Ledger umstellen
+- [x] PWA-Updatefluss mit sichtbarer neuer-Version-Meldung ergänzen
+- [x] aktive Cacheversion bei fehlgeschlagener Promotion vor vorzeitigem Löschen schützen
 
 ## September 2026 – Bedienung und Kernspiele
 
@@ -59,7 +63,9 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [ ] Startseite auf drei klare Hauptaktionen reduzieren
 - [ ] Filterzustand und zuletzt verwendete Ansicht speichern
 - [ ] Spielkarten visuell vereinheitlichen
-- [ ] fertige, Beta- und experimentelle Spiele eindeutig kennzeichnen
+- [x] fertige, erweiterte und experimentelle Spiele eindeutig kennzeichnen
+- [x] Katalog in 15 Kernspiele, 13 Erweiterungen und 17 Labs gliedern
+- [x] Reifestufenfilter und Schnellwahl ergänzen
 - [ ] Suchbegriffe, Synonyme und Tippfehler besser unterstützen
 - [ ] gemeinsame Spielerlobby in alle kompatiblen Spiele integrieren
 - [ ] verständliche leere Zustände und Fehlermeldungen prüfen
@@ -109,8 +115,8 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 
 - [ ] vollständiges `npm run ci` grün dokumentieren
 - [ ] Chromium, Firefox und WebKit grün dokumentieren
-- [ ] beschädigte Daten, Quota, Rollback und Importgrenzen testen
-- [ ] alle Query-Routen offline testen
+- [x] beschädigte Daten, Quota, Rollback und Importgrenzen durch Unit- und Contract-Tests abdecken
+- [ ] alle Query-Routen offline in echten Browserläufen testen
 - [ ] Service-Worker-Update von mindestens zwei älteren Cacheversionen testen
 - [ ] Accessibility-E2E mit Axe oder gleichwertiger Prüfung ergänzen
 - [ ] Performancebudget für Erststart und Offline-Core einhalten
