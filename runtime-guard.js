@@ -4,6 +4,8 @@
   const VERSION = '1.0.0-beta.3';
   const UPDATE_RELOAD_KEY = 'secret-circle-update-reload';
   const UPDATE_STYLE = 'pwa-update.css';
+  const PARTY_RELEASE_STYLE = 'party-release.css';
+  const PARTY_RELEASE_SOURCE = 'party-release-structure.js';
   const ACTIVE_SESSION_KEYS = [
     'secret-circle-active-v7',
     'secret-circle-party-quick-active-v1',
@@ -36,17 +38,33 @@
     catch { return false; }
   }
 
-  function ensureUpdateStyle() {
-    if (!document.head || document.querySelector(`link[href="${UPDATE_STYLE}"]`)) return;
+  function ensureStylesheet(source) {
+    if (!document.head || document.querySelector(`link[href="${source}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = UPDATE_STYLE;
+    link.href = source;
     document.head.append(link);
+  }
+
+  function loadPartyReleaseStructure() {
+    if (!document.querySelector('#game-grid') || root.SecretCirclePartyReleaseStructure) return;
+    ensureStylesheet(PARTY_RELEASE_STYLE);
+    if (document.querySelector(`script[src="${PARTY_RELEASE_SOURCE}"]`)) return;
+    const script = document.createElement('script');
+    script.src = PARTY_RELEASE_SOURCE;
+    script.dataset.sharedRuntime = 'party-release-structure';
+    script.addEventListener('error', () => {
+      const status = statusElement();
+      if (!status || status.textContent) return;
+      status.textContent = 'Die Release-Struktur des Spielekatalogs konnte nicht geladen werden. Alle Spiele bleiben weiterhin erreichbar.';
+      status.classList.add('error');
+    });
+    document.body.append(script);
   }
 
   function createUpdateBanner() {
     if (updateBanner || !document.body) return updateBanner;
-    ensureUpdateStyle();
+    ensureStylesheet(UPDATE_STYLE);
 
     const banner = document.createElement('section');
     banner.className = 'pwa-update-banner';
@@ -156,6 +174,10 @@
     });
   }
 
+  const initialisePageEnhancements = () => loadPartyReleaseStructure();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialisePageEnhancements, { once: true });
+  else initialisePageEnhancements();
+
   root.addEventListener('pageshow', () => {
     try {
       if (sessionStorage.getItem(UPDATE_RELOAD_KEY) === VERSION) sessionStorage.removeItem(UPDATE_RELOAD_KEY);
@@ -165,9 +187,12 @@
   root.SecretCircleRuntime = Object.freeze({
     version: VERSION,
     updateStyle: UPDATE_STYLE,
+    partyReleaseStyle: PARTY_RELEASE_STYLE,
+    partyReleaseSource: PARTY_RELEASE_SOURCE,
     activeSessionKeys: Object.freeze([...ACTIVE_SESSION_KEYS]),
     hasActiveSession,
     showRuntimeError,
-    showUpdate
+    showUpdate,
+    loadPartyReleaseStructure
   });
 })(window);
