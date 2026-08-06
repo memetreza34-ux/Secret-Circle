@@ -81,13 +81,16 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 
 ## Externer Releaseblocker
 
-GitHub Actions hat dem aktuellen Job weiterhin keinen Runner zugewiesen. Der Job befindet sich ohne sichtbare Schritte in der Warteschlange beziehungsweise scheitert bei früheren Läufen vor Checkout:
+Frühere GitHub-Actions-Läufe erhielten weiterhin keinen Runner und blieben ohne sichtbare Schritte. Für den neuesten PR-Head wurde zum Zeitpunkt dieser Statusaktualisierung noch kein Workflowlauf zurückgegeben.
 
-- kein zugewiesener Runner
-- kein Runnername
+Damit existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf:
+
+- frühere Jobs ohne zugewiesenen Runner
+- leerer Runnername
 - `steps: []`
+- aktueller Head ohne gefundenen Workflowlauf
 
-Dadurch existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf. Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und Organisationsrichtlinien geprüft werden.
+Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und Organisationsrichtlinien geprüft werden.
 
 ## Nächste technische Prioritäten
 
