@@ -11,27 +11,26 @@
     return C.games.find(game => game.title === title.textContent) || null;
   }
 
+  function desiredLabel(game) {
+    if (game.status !== 'playable') return 'Noch nicht spielbar';
+    if (game.custom) return 'Eigenes Spiel starten';
+    if (game.mode !== 'link') return 'Jetzt spielen';
+    if (C.viralGameIds?.includes(game.id)) return 'Viral Mode öffnen';
+    if (C.megaGameIds?.includes(game.id)) return 'Trend Mode öffnen';
+    if (game.href?.startsWith('quick-play.html')) return 'Quick Mode öffnen';
+    if (game.href?.startsWith('advanced.html')) return 'Erweitertes Spiel öffnen';
+    if (game.href === 'index.html') return 'Word Imposter öffnen';
+    return 'Spiel öffnen';
+  }
+
   function updateStartLabel() {
     const game = currentGame();
     if (!game) return;
-    if (game.status !== 'playable') {
-      start.textContent = 'Noch nicht spielbar';
-      return;
-    }
-    if (game.custom) {
-      start.textContent = 'Eigenes Spiel starten';
-      return;
-    }
-    if (game.mode !== 'link') {
-      start.textContent = 'Jetzt spielen';
-      return;
-    }
-    if (C.viralGameIds?.includes(game.id)) start.textContent = 'Viral Mode öffnen';
-    else if (C.megaGameIds?.includes(game.id)) start.textContent = 'Trend Mode öffnen';
-    else if (game.href?.startsWith('quick-play.html')) start.textContent = 'Quick Mode öffnen';
-    else if (game.href?.startsWith('advanced.html')) start.textContent = 'Erweitertes Spiel öffnen';
-    else if (game.href === 'index.html') start.textContent = 'Word Imposter öffnen';
-    else start.textContent = 'Spiel öffnen';
+    const label = desiredLabel(game);
+    start.textContent = label;
+    window.setTimeout(() => {
+      if (!detail.hidden && currentGame()?.id === game.id) start.textContent = label;
+    }, 0);
   }
 
   function loadGuidance() {
@@ -62,5 +61,5 @@
   updateStartLabel();
   loadGuidance();
 
-  window.SecretCirclePartyHubPolish = Object.freeze({ version: 4, updateStartLabel, loadGuidance });
+  window.SecretCirclePartyHubPolish = Object.freeze({ version: 5, updateStartLabel, loadGuidance });
 })();
