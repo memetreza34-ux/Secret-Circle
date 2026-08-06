@@ -13,7 +13,23 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 - lokaler No-Code-Game-Creator
 - bis zu **40 selbst erstellte Spiele**
 - eigene wiederaufnehmbare Creator-Spielengine
-- Offline-Core `secret-circle-v30`
+- Offline-Core `secret-circle-v31`
+
+„Technisch spielbar“ bedeutet noch nicht automatisch releasefertig. Für Januar 2027 werden Kernspiele, Erweiterungen und experimentelle Modi nach klaren Qualitätskriterien getrennt.
+
+## Releaseziel
+
+- funktionsfertig bis spätestens **30. November 2026**
+- Code Freeze am **5. Dezember 2026**
+- Release Candidate bis spätestens **15. Dezember 2026**
+- öffentlicher Release zwischen **4. und 15. Januar 2027**
+
+Verbindliche Dokumente:
+
+- `ROADMAP_2027.md`: Zeitplan, Arbeitsphasen und Releaseverbote
+- `RELEASE_SCOPE_2027.md`: Kernspiele, Erweiterungen und Labs
+- `RELEASE_CHECKLIST.md`: abschließende technische und organisatorische Freigabe
+- `RELEASE_STATUS.md`: aktueller Entwicklungs- und Blockerstatus
 
 ## Einfacher Einstieg
 
@@ -63,7 +79,7 @@ python -m http.server 8080
 
 ## Produkt- und Designpläne
 
-- `MODE_UNIVERSE.md`: 122-Modi-Universum
+- `MODE_UNIVERSE.md`: langfristiges 122-Modi-Universum
 - `TREND_FORMATS.md`: frühere, aktuelle und zukünftige Trendformate
 - `ASSET_PLAN.md`: Icons, Illustrationen, Animationen und Produktionsbudgets
 - `ARCHITECTURE.md`: Speicher-, Offline-, Datenschutz- und Qualitätsverträge
@@ -78,4 +94,8 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Der Stand ist für den vollständigen automatisierten Testlauf vorbereitet. Ein grüner endgültiger Lauf ist noch nicht dokumentiert. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
+Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions derzeit vor dem ersten sichtbaren Workflow-Schritt endet. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
+
+## Aktuelle technische Verbesserung
+
+Offline-Navigationen mit Query-Parametern, beispielsweise `quick-play.html?game=...`, verwenden ab Cache `secret-circle-v31` den richtigen gecachten Seiteneinstieg statt auf eine unpassende Startseite zurückzufallen. Ein eigener Regressionstest schützt dieses Verhalten.
