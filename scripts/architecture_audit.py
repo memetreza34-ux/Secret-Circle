@@ -8,7 +8,8 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
 production_js = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
+    'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js',
+    'backup-schema-registry.js', 'session-ledger.js', 'session-ledger-legacy-guard.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
     'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
@@ -67,20 +68,57 @@ for relative in html_pages:
         violations.append(f'Strict CSP contract missing in {relative}.')
 
 contracts = {
+    'backup-schema-registry.js': [
+        'MAX_FILE_BYTES = 1_500_000', "format: 'secret-circle-backup'",
+        "format: 'secret-circle-complete-backup'", "format: 'secret-circle-created-games'",
+        'validateHeader', 'assertSize'
+    ],
+    'session-ledger.js': ['createSessionId', 'legacySessionId', 'completionId', 'recordCompletion'],
+    'session-ledger-legacy-guard.js': [
+        'secret-circle-party-mega-active-v1', 'secret-circle-party-viral-active-v1',
+        'completionFromLegacyWrite', 'recordCompletion(baseHub, completion)'
+    ],
+    'runtime-guard.js': [
+        'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession',
+        "waitingWorker.postMessage({ type: 'SKIP_WAITING' })"
+    ],
     'party-night.js': ['normalizeConfig', 'eligibleGames', 'buildPlan', 'normalizePlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'],
     'party-advanced-runner.js': ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubState(nextHubState)'],
-    'party-quick-modes.js': ["ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'validActive', 'finishSession', 'renderWavelength', 'renderRapidFire'],
-    'party-mega-modes.js': ["ACTIVE_KEY = 'secret-circle-party-mega-active-v1'", 'validActive', 'renderWhoAmI', 'renderAnimeGuess', 'renderMoneyChallenge', 'renderBlindRanking', 'renderEmojiQuiz', 'renderSecretMission'],
-    'party-viral-modes.js': ["ACTIVE_KEY = 'secret-circle-party-viral-active-v1'", 'validActive', 'renderFingerDown', 'renderGuessPrice', 'renderHigherLower', 'renderKnowMeBest', 'renderHearMeOut', 'renderHotSeat', 'renderStoryChain', 'finishSession'],
-    'party-created-modes.js': ["ACTIVE_KEY = 'secret-circle-party-created-active-v1'", 'validActive', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'finishSession'],
+    'party-quick-modes.js': [
+        "ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'SecretCircleSessionLedger',
+        "completionId('quick'", 'recordCompletion(loadHub()', 'renderWavelength', 'renderRapidFire'
+    ],
+    'party-mega-modes.js': [
+        "ACTIVE_KEY = 'secret-circle-party-mega-active-v1'", 'validActive', 'renderWhoAmI',
+        'renderAnimeGuess', 'renderMoneyChallenge', 'renderBlindRanking', 'renderEmojiQuiz', 'renderSecretMission'
+    ],
+    'party-viral-modes.js': [
+        "ACTIVE_KEY = 'secret-circle-party-viral-active-v1'", 'validActive', 'renderFingerDown',
+        'renderGuessPrice', 'renderHigherLower', 'renderKnowMeBest', 'renderHearMeOut',
+        'renderHotSeat', 'renderStoryChain', 'finishSession'
+    ],
+    'party-created-modes.js': [
+        "ACTIVE_KEY = 'secret-circle-party-created-active-v1'", 'SecretCircleSessionLedger',
+        "completionId('created'", 'recordCompletion(loadHub()', 'renderChoice', 'renderGuess',
+        'renderChallenge', 'renderDebate', 'renderStory'
+    ],
     'party-trending-catalog.js': ['trendingGameIds', 'caption-battle', 'version: 3'],
     'party-mega-catalog.js': ['megaGameIds', 'quickGameIds', 'anime-guess', 'money-challenge', 'blind-ranking', 'version: 4'],
-    'party-viral-catalog.js': ['viralGameIds', 'allFastGameIds', 'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best', 'version: 5'],
-    'party-routing.js': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'safeCreatedGames', 'createCatalog', 'version: 8', "href: `quick-play.html?game=${encodeURIComponent(game.id)}`"],
-    'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'normalizeGame', 'createStore', 'toCatalogGame'],
+    'party-viral-catalog.js': ['viralGameIds', 'allFastGameIds', 'put-a-finger-down', 'guess-the-price', 'higher-lower', 'version: 5'],
+    'party-routing.js': [
+        "CREATED_KEY = 'secret-circle-party-created-games-v1'", 'safeCreatedGames',
+        'createCatalog', 'version: 8', "href: `quick-play.html?game=${encodeURIComponent(game.id)}`"
+    ],
+    'game-creator.js': [
+        "STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40',
+        'MAX_CARDS = 200', 'normalizeGame', 'createStore', 'toCatalogGame'
+    ],
     'creator-page.js': ['renderTemplates', 'addPack', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary'],
     'party-guide.js': ['addCreatorEntryPoints', 'addHowItWorks', 'showHelp', 'enhanceGameCards', 'openRequestedGame'],
-    'quick-loader.js': ['party-created-modes.js', 'party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
+    'quick-loader.js': [
+        'session-ledger.js', 'session-ledger-legacy-guard.js', 'scriptPlan',
+        'party-created-modes.js', 'party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'
+    ],
     'party-custom-packs.js': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4', 'createManager', 'commit(nextState)', 'restoreStorage'],
     'party-data-tools.js': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']
 }
@@ -94,8 +132,14 @@ sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or cache.group(1) != '30':
     violations.append('Service-worker cache must be secret-circle-v30.')
+if "const STAGING_CACHE='secret-circle-v30-staging'" not in sw:
+    violations.append('Service-worker staging cache contract is missing.')
+install_handler = re.search(r"self\.addEventListener\('install',[\s\S]*?\n\}\);", sw)
+if not install_handler or 'skipWaiting' in install_handler.group(0):
+    violations.append('Service-worker install must not activate an update automatically.')
 for asset in [
     './party-night.js', './party-advanced-runner.js', './quick-play.html', './creator.html',
+    './pwa-update.css', './session-ledger.js', './session-ledger-legacy-guard.js',
     './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
     './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js',
     './party-created-modes.js', './quick-loader.js', './game-creator.js', './creator-page.js',
@@ -105,7 +149,8 @@ for asset in [
         violations.append(f'Offline architecture asset missing from CORE: {asset}')
 
 for relative in [
-    'README.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md',
+    'README.md', 'ARCHITECTURE.md', 'BACKUP_SCHEMAS.md', 'RELEASE_SCOPE_2027.md',
+    'ROADMAP_2027.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md',
     'MANUAL_TEST_PLAN.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'ASSET_PLAN.md'
 ]:
     if not (ROOT / relative).is_file() or (ROOT / relative).stat().st_size < 300:
@@ -122,10 +167,12 @@ print(json.dumps({
     'maximum_module_bytes': 100000,
     'runtime_dependencies': 0,
     'offline_cache_version': 30,
+    'staged_updates': True,
+    'backup_schemas': 3,
+    'exact_once_engine_families': 4,
     'visible_builtin_games': 45,
     'maximum_local_created_games': 40,
     'creator_templates': 6,
-    'creator_runner': True,
     'classic_quick_modes': 10,
     'mega_trend_modes': 9,
     'viral_modes': 8,
