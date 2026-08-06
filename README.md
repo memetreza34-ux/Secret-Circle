@@ -2,18 +2,22 @@
 
 Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
 
-## Aktueller Umfang
+## Aktueller Funktionsumfang
 
-- **45 eingebaute, technisch spielbare Spiele**
-- **27 Quick-, Trend- und Viral-Modi**
-- **4 Advanced-Spiele**
-- Word Imposter
-- Smart Party Night für 15–90 Minuten
-- eigene Text-Packs
-- lokaler No-Code-Game-Creator
-- bis zu **40 selbst erstellte Spiele**
+- 45 eingebaute technisch spielbare Spiele
+- 15 priorisierte Kernspiele für Januar 2027
+- 13 spielbare Erweiterungen
+- 17 klar gekennzeichnete Labs-Modi
+- 27 Quick-, Trend- und Viral-Modi
+- 4 Advanced-Spiele
+- Smart Party Night
+- gemeinsamer lokaler Spielerpool
+- Favoriten, Presets, Verlauf, Statistiken und Erfolge
+- lokaler No-Code-Game-Creator mit 6 Vorlagen
+- bis zu 40 selbst erstellte Spiele
 - eigene wiederaufnehmbare Creator-Spielengine
-- Offline-Core `secret-circle-v30`
+- installierbare Offline-PWA
+- kontrollierte, sichtbare PWA-Aktualisierungen
 
 „Technisch spielbar“ bedeutet noch nicht automatisch releasefertig. Für Januar 2027 werden Kernspiele, Erweiterungen und experimentelle Modi nach klaren Qualitätskriterien getrennt.
 
@@ -30,16 +34,27 @@ Verbindliche Dokumente:
 - `RELEASE_SCOPE_2027.md`: Kernspiele, Erweiterungen und Labs
 - `RELEASE_CHECKLIST.md`: abschließende technische und organisatorische Freigabe
 - `RELEASE_STATUS.md`: aktueller Entwicklungs- und Blockerstatus
+- `BACKUP_SCHEMAS.md`: Sicherungsformate, Versionen, Migrationen und Rollbackregeln
+
+## Übersichtlicher Spielekatalog
+
+Der Party Hub zeigt drei klar getrennte Reifestufen:
+
+- **Kernspiele:** höchste Priorität für Inhalt, Regeln, Offlinebetrieb, Accessibility und reale Gruppentests
+- **Erweiterungen:** spielbare zusätzliche Funktionen, die nach den Kernspielen priorisiert werden
+- **Labs:** experimentelle Modi in Prüfung, die nicht automatisch als releasefertig gelten
+
+Ein eigener Filter, Schnellwahlkarten und Badges machen diese Stufen im Katalog sichtbar. Selbst erstellte Creator-Spiele werden als Erweiterungen eingeordnet.
 
 ## Einfacher Einstieg
 
 Der Party Hub erklärt den Ablauf in drei Schritten:
 
-1. Spieler festlegen
-2. Spiel auswählen
-3. kurze Regeln lesen und starten
+1. Spieler speichern.
+2. Spiel oder Reifestufe auswählen.
+3. Pack und Rundenzahl festlegen und starten.
 
-Jeder Hauptbereich besitzt kurze kontextabhängige Hilfen. Spielkarten zeigen Name, Kurzbeschreibung, Spielerzahl, Dauer, Inhaltsmenge und eine klare Aktion.
+Die App benötigt kein Konto und verwendet keine Analyse-, Werbe- oder Tracking-Dienste.
 
 ## Eigenes Spiel erstellen
 
@@ -61,21 +76,48 @@ Vorlagen:
 
 Eigene Spiele lassen sich bearbeiten, kopieren, löschen, exportieren, importieren und direkt im Party Hub spielen. Pro Spiel sind bis zu acht Kategorien und bis zu 200 Karten je Kategorie vorgesehen.
 
-Die dedizierte Creator-Spielengine unterstützt 3, 5, 10 oder 20 Runden, lokale Wiederaufnahme, Spieler-Snapshots, Punkte, Verlauf und Statistik. Erratenspiele besitzen eine geschützte Begriffsansicht vor der gemeinsamen Runde.
+## Stabilitätsgrundlage
 
-## Start
+- Imposterrollen werden unabhängig von der Kartenreihenfolge bestimmt.
+- Creator- und Quick-Abschlüsse werden über stabile Session-IDs höchstens einmal gezählt.
+- Mega- und Viral-Abschlüsse werden während ihrer Migration gegen Doppelzählungen geschützt.
+- Sicherungsdateien werden als UTF-8-Bytes geprüft und sind auf 1,5 MB begrenzt.
+- Drei Sicherungsformate sind zentral versioniert.
+- Neue PWA-Versionen werden vorbereitet, aber erst nach einem sichtbaren Nutzerklick aktiviert.
+- Der bestehende Offline-Cache wird vor erfolgreicher Übernahme der neuen Dateien nicht gelöscht.
+
+## Lokal starten
+
+Die App muss über HTTP statt direkt über `file://` geöffnet werden:
 
 ```bash
 python -m http.server 8080
 ```
 
-- Hub: `/party.html`
-- Creator: `/creator.html`
-- Word Imposter: `/index.html`
-- Advanced: `/advanced.html?game=question-imposter`
-- Trend: `/quick-play.html?game=anime-guess`
-- Viral: `/quick-play.html?game=guess-the-price`
-- eigenes Spiel: `/quick-play.html?game=<custom-game-id>`
+Danach:
+
+- Party Hub: `http://localhost:8080/party.html`
+- Word Imposter: `http://localhost:8080/index.html`
+- Game Creator: `http://localhost:8080/creator.html`
+- Advanced-Spiel: `http://localhost:8080/advanced.html?game=question-imposter`
+- Trend- oder Viral-Spiel: `http://localhost:8080/quick-play.html?game=guess-the-price`
+
+## Qualitätsprüfungen
+
+```bash
+npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+npx playwright install --with-deps chromium
+npm run ci
+```
+
+Cross-Browser-Prüfung:
+
+```bash
+npx playwright install --with-deps chromium firefox webkit
+npm run test:cross-browser
+```
+
+`npm run validate` umfasst Repository-Hygiene, Architektur, Foundation-Verträge, Struktur, Performance und Release-Gates.
 
 ## Produkt- und Designpläne
 
@@ -84,18 +126,6 @@ python -m http.server 8080
 - `ASSET_PLAN.md`: Icons, Illustrationen, Animationen und Produktionsbudgets
 - `ARCHITECTURE.md`: Speicher-, Offline-, Datenschutz- und Qualitätsverträge
 
-## Tests
+## Aktueller Freigabestatus
 
-```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npx playwright install --with-deps chromium
-npm run ci
-npx playwright install --with-deps chromium firefox webkit
-npm run test:cross-browser
-```
-
-Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions derzeit vor dem ersten sichtbaren Workflow-Schritt endet. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
-
-## Aktuelle technische Verbesserung
-
-Offline-Navigationen mit Query-Parametern, beispielsweise `quick-play.html?game=...`, verwenden nun den richtigen gecachten Seiteneinstieg statt auf eine unpassende Startseite zurückzufallen. Ein eigener Regressionstest schützt dieses Verhalten innerhalb des bestehenden Cachevertrags `secret-circle-v30`.
+Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions weiterhin keinen verlässlichen Runnerlauf mit sichtbaren Schritten liefert. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
