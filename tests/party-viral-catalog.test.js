@@ -45,7 +45,7 @@ assert.ok(viral.getItems('higher-lower', 'Wissen').every(item => Array.isArray(i
 assert.ok(viral.getItems('know-me-best', 'Reisen').every(item => Array.isArray(item) && item.length === 4));
 assert.ok(viral.getItems('hot-seat', 'Kreativ').every(item => typeof item === 'string'));
 
-assert.equal(routed.version, 7);
+assert.equal(routed.version, 8);
 assert.equal(routed.games.length, 45);
 assert.equal(routed.createdGameIds.length, 0);
 for (const id of viralIds) assert.equal(routed.getGame(id).href, `quick-play.html?game=${encodeURIComponent(id)}`);
