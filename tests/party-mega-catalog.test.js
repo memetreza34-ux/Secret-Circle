@@ -38,8 +38,8 @@ assert.ok(mega.getItems('emoji-quiz', 'Sprichwörter').every(item => Array.isArr
 assert.equal(mega.getItems('blind-ranking', 'Superkräfte').length, 10);
 assert.equal(mega.getItems('tier-list', 'Hobbys').length, 10);
 
-assert.equal(routed.version, 5);
-assert.equal(routed.games.length, 37);
+assert.equal(routed.version, 6);
+assert.equal(routed.games.length, 45);
 for (const id of megaIds) assert.equal(routed.getGame(id).href, `quick-play.html?game=${encodeURIComponent(id)}`);
 for (const id of ['two-truths', 'question-imposter', 'location-spy', 'mafia']) {
   assert.equal(routed.getGame(id).href, `advanced.html?game=${encodeURIComponent(id)}`);
@@ -47,10 +47,10 @@ for (const id of ['two-truths', 'question-imposter', 'location-spy', 'mafia']) {
 
 console.log(JSON.stringify({
   ok: true,
-  visibleGames: mega.games.length,
-  playableGames: mega.games.filter(game => game.status === 'playable').length,
+  megaCatalogGames: mega.games.length,
+  routedGames: routed.games.length,
   megaModes: megaIds.length,
-  allQuickModes: mega.quickGameIds.length,
+  allMegaQuickModes: mega.quickGameIds.length,
   animeFanQuiz: true,
   categoryExpansion: true,
   structuredCardsValidated: true
