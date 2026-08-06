@@ -61,7 +61,9 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 
 - [ ] Navigation und Informationsarchitektur mit echten Nutzern testen
 - [ ] Startseite auf drei klare Hauptaktionen reduzieren
-- [ ] Filterzustand und zuletzt verwendete Ansicht speichern
+- [x] Filterzustand und zuletzt verwendete Ansicht speichern
+- [x] Alters- und Reifestufenfilter als gemeinsame Sichtbarkeitsregel auswerten
+- [x] direkte URL-Ansichten gegenüber gespeicherten Ansichten priorisieren
 - [ ] Spielkarten visuell vereinheitlichen
 - [x] fertige, erweiterte und experimentelle Spiele eindeutig kennzeichnen
 - [x] Katalog in 15 Kernspiele, 13 Erweiterungen und 17 Labs gliedern
