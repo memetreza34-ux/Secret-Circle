@@ -23,6 +23,7 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Schnellwahlkarten für Kernspiele, Erweiterungen und Labs
 - selbst erstellte Spiele werden als Erweiterungen eingeordnet
 - neue Struktur reagiert auf Suche, Filter, Favoriten und neu gerenderte Karten
+- Katalogverteilung wird durch Unit-, Contract-, Architektur- und Release-Gates geschützt
 
 ### Engine und Daten
 
@@ -61,7 +62,7 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - moderne Struktur-, Architektur-, Contract-, Performance- und Release-Audits
 - feste Größenbudgets für Registry, Ledger, PWA-Update und Release-Struktur
 - Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates und Release-Tiers
-- Changelog, Backupvertrag und Release-Status aktualisiert
+- README, Changelog, Roadmap, Backupvertrag, Releaseumfang und Release-Status aktualisiert
 
 ## Lokal geprüft
 
@@ -81,14 +82,14 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 
 ## Externer Releaseblocker
 
-Frühere GitHub-Actions-Läufe erhielten weiterhin keinen Runner und blieben ohne sichtbare Schritte. Für den neuesten PR-Head wurde zum Zeitpunkt dieser Statusaktualisierung noch kein Workflowlauf zurückgegeben.
+Frühere GitHub-Actions-Läufe erhielten weiterhin keinen Runner und blieben ohne sichtbare Schritte. Für den zuletzt geprüften PR-Head wurde kein Workflowlauf zurückgegeben.
 
 Damit existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf:
 
 - frühere Jobs ohne zugewiesenen Runner
 - leerer Runnername
 - `steps: []`
-- aktueller Head ohne gefundenen Workflowlauf
+- zuletzt geprüfter Head ohne gefundenen Workflowlauf
 
 Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und Organisationsrichtlinien geprüft werden.
 
