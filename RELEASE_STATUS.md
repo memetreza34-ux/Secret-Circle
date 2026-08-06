@@ -24,6 +24,10 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - selbst erstellte Spiele werden als Erweiterungen eingeordnet
 - neue Struktur reagiert auf Suche, Filter, Favoriten und neu gerenderte Karten
 - Katalogverteilung wird durch Unit-, Contract-, Architektur- und Release-Gates geschützt
+- Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzte Ansicht werden lokal gespeichert
+- alle gespeicherten Filter lassen sich mit einer Schaltfläche zurücksetzen
+- direkte URL-Ansichten haben Vorrang vor einem gespeicherten letzten Bereich
+- Alters- und Reifestufenfilter werden als gemeinsame Sichtbarkeitsregel ausgewertet
 
 ### Engine und Daten
 
@@ -55,13 +59,14 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - laufende Sessions werden im Updatehinweis ausdrücklich berücksichtigt
 - aktiver Offline-Cache wird bei der Promotion nicht mehr vorzeitig gelöscht
 - neue Dateien werden zuerst vollständig übernommen; erst danach werden veraltete Cacheeinträge entfernt
-- Party-Hub-Reifestufen funktionieren auch offline
+- Party-Hub-Reifestufen und gespeicherte Filter funktionieren auch offline
 
 ### Qualität
 
 - moderne Struktur-, Architektur-, Contract-, Performance- und Release-Audits
-- feste Größenbudgets für Registry, Ledger, PWA-Update und Release-Struktur
-- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates und Release-Tiers
+- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur und Filterzustand
+- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates, Release-Tiers und Filterzustand
+- Browserprüfungen für Filterwiederherstellung, Reset, URL-Priorität und kombinierte Alters-/Reifestufenfilter vorbereitet
 - README, Changelog, Roadmap, Backupvertrag, Releaseumfang und Release-Status aktualisiert
 
 ## Lokal geprüft
@@ -79,6 +84,8 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - liegengebliebene Session einer anderen Engine wird korrekt ignoriert
 - zentrales Backup-Register und seine Runtime-Verträge
 - feste Katalogverteilung 15 Kernspiele / 13 Erweiterungen / 17 Labs
+- Filterzustand wird normalisiert; ungültige Werte fallen auf sichere Standards zurück
+- nicht verfügbarer oder voller lokaler Speicher wird als Fehler gemeldet
 
 ## Externer Releaseblocker
 
@@ -96,10 +103,10 @@ Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Min
 ## Nächste technische Prioritäten
 
 1. Mega- und Viral-Engines direkt auf das Session-Ledger umstellen und den Kompatibilitätsschutz entfernen
-2. Reifestufenfilter und übrige Katalogfilter gemeinsam lokal speichern
-3. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch, Wiederholen und nächstes Spiel
-4. PWA-Update von einer älteren installierten Version auf echten Geräten prüfen
-5. Kernspiele einzeln nach Regeln, Inhalt, Timer, Wiederaufnahme und Accessibility abnehmen
+2. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch, Wiederholen und nächstes Spiel
+3. PWA-Update von einer älteren installierten Version auf echten Geräten prüfen
+4. Kernspiele einzeln nach Regeln, Inhalt, Timer, Wiederaufnahme und Accessibility abnehmen
+5. Suchbegriffe, Synonyme und Tippfehler besser unterstützen
 6. Kerninhalte redaktionell und nach Altersstufen prüfen
 7. Android-, iPhone-, Tablet- und echte Gruppentests
 8. reproduzierbaren Dependency-Lock erzeugen und CI auf `npm ci` umstellen
