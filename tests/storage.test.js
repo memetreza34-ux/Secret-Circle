@@ -1,7 +1,7 @@
 'use strict';
 const assert = require('node:assert/strict');
 const E = require('../game-engine.js');
-const { createStore, KEY_VERSION, ENGINE_VERSION, BACKUP_FORMAT } = require('../data-store.js');
+const { createStore, KEY_VERSION, ENGINE_VERSION, BACKUP_FORMAT, MAX_BACKUP_BYTES, byteLength } = require('../data-store.js');
 
 class MemoryStorage {
   constructor(initial = {}) {
@@ -68,6 +68,10 @@ assert.equal(store.keyVersion, KEY_VERSION);
 assert.equal(store.engineVersion, ENGINE_VERSION);
 assert.equal(KEY_VERSION, 7);
 assert.equal(ENGINE_VERSION, 7);
+assert.equal(MAX_BACKUP_BYTES, 1_500_000);
+assert.equal(store.maximumBackupBytes, MAX_BACKUP_BYTES);
+assert.equal(byteLength('€'), 3);
+assert.equal(store.byteLength('🎉'), 4);
 assert.equal(migrated.active.id, game.id);
 assert.equal(migrated.active.version, 7);
 assert.equal(migrated.active.timerRunning, false);
@@ -120,9 +124,21 @@ assert.equal(importedLegacyBackup.data.active.timerRunning, false);
 const invalidBackup = store.importBackup('{"format":"unknown"}', E);
 assert.equal(invalidBackup.ok, false);
 assert.match(invalidBackup.error, /keine unterstützte/);
-const oversizedBackup = store.importBackup('x'.repeat(2_000_001), E);
+const oversizedBackup = store.importBackup('x'.repeat(MAX_BACKUP_BYTES + 1), E);
 assert.equal(oversizedBackup.ok, false);
-assert.match(oversizedBackup.error, /zu groß/);
+assert.match(oversizedBackup.error, /1,5 MB/);
+
+const multibyteBackup = JSON.stringify({
+  format: BACKUP_FORMAT,
+  version: 1,
+  data: { active: null, custom: [], history: [], settings: null },
+  padding: '€'.repeat(500_000)
+});
+assert.ok(multibyteBackup.length < MAX_BACKUP_BYTES, 'Character count alone would incorrectly accept this file.');
+assert.ok(byteLength(multibyteBackup) > MAX_BACKUP_BYTES);
+const oversizedMultibyteBackup = store.importBackup(multibyteBackup, E);
+assert.equal(oversizedMultibyteBackup.ok, false);
+assert.match(oversizedMultibyteBackup.error, /1,5 MB/);
 
 storage.setItem('secret-circle-custom-v7', '{broken json');
 const recovered = store.loadAll(E);
@@ -153,6 +169,7 @@ console.log(JSON.stringify({
   corruptedDataRecovery: true,
   backupExportImport: true,
   legacyBackupImport: true,
+  utf8ByteLimit: true,
   oversizedBackupProtection: true,
   unavailableStorageFallback: true,
   atomicImportRollback: true
