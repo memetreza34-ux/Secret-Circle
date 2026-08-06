@@ -57,7 +57,7 @@ test('creates a custom choice game and opens it from the Party Hub', async ({ pa
   expect(saved.games[0].templateId).toBe('choice');
   expect(saved.games[0].packs[0].items[0]).toEqual(['Ninja', 'Magier']);
 
-  await page.getByRole('link', { name: 'Testen' }).click();
+  await page.locator('#created-games-list').getByRole('link', { name: 'Testen', exact: true }).click();
   await expect(page).toHaveURL(/party\.html\?game=custom-game-/);
   await expect(page.locator('#game-detail')).toBeVisible();
   await expect(page.locator('#detail-title')).toHaveText('Unser Anime Duell');
@@ -84,11 +84,11 @@ test('supports multiple categories, editing and duplication', async ({ page }) =
   await page.getByRole('button', { name: 'Spiel speichern' }).click();
   await expect(page.locator('#created-games-list')).toContainText('2 Kategorien');
 
-  await page.getByRole('button', { name: 'Kopieren' }).click();
+  await page.locator('#created-games-list').getByRole('button', { name: 'Kopieren', exact: true }).click();
   await expect(page.locator('#created-games-list .created-game-card')).toHaveCount(2);
   await expect(page.locator('#creator-title')).toHaveValue(/Kopie/);
 
-  await page.getByRole('button', { name: 'Bearbeiten' }).first().click();
+  await page.locator('#created-games-list').getByRole('button', { name: 'Bearbeiten', exact: true }).first().click();
   await expect(page.locator('#creator-status')).toContainText('wird bearbeitet');
   await page.locator('#creator-description').fill('Bearbeitete Erklärung für unsere gemeinsame Story-Runde.');
   await page.getByRole('button', { name: 'Weiter zu Inhalten' }).click();
@@ -118,8 +118,9 @@ test('Hub guidance makes the main actions and short explanations visible', async
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'In drei Schritten zur ersten Runde' })).toBeVisible();
   await expect(page.locator('.simple-step-card')).toHaveCount(3);
-  await expect(page.getByRole('link', { name: 'Eigenes Spiel erstellen' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Eigenes Spiel erstellen' }).first()).toHaveAttribute('href', 'creator.html');
+  const creatorLinks = page.getByRole('link', { name: 'Eigenes Spiel erstellen' });
+  await expect(creatorLinks.first()).toBeVisible();
+  await expect(creatorLinks.first()).toHaveAttribute('href', 'creator.html');
   await page.getByRole('button', { name: 'Hilfe zum Schnellstart' }).click();
   await expect(page.locator('#hub-help-sheet')).toContainText('In weniger als einer Minute starten');
   await page.getByRole('button', { name: 'Hilfe schließen' }).click();
