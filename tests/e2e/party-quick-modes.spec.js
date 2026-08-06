@@ -8,15 +8,16 @@ async function configurePlayers(page, players = ['Alex', 'Sam', 'Mika', 'Lina'])
     }));
     localStorage.removeItem('secret-circle-party-quick-active-v1');
     localStorage.removeItem('secret-circle-party-mega-active-v1');
+    localStorage.removeItem('secret-circle-party-viral-active-v1');
   }, players);
 }
 
-test('Party Hub exposes 37 playable games and accurate Quick Mode actions', async ({ page }) => {
+test('Party Hub exposes 45 playable games and accurate Quick Mode actions', async ({ page }) => {
   await configurePlayers(page);
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await expect(page.locator('#result-count')).toHaveText('37');
-  await expect(page.locator('.game-card.playable')).toHaveCount(37);
+  await expect(page.locator('#result-count')).toHaveText('45');
+  await expect(page.locator('.game-card.playable')).toHaveCount(45);
   await expect(page.locator('.game-card.planned')).toHaveCount(0);
 
   await page.locator('[data-game-id="wavelength"] [data-open-game="wavelength"]').click();
@@ -95,6 +96,9 @@ test('all ten classic Quick Modes load original content without runtime errors',
     await expect(page.locator('#quick-content-count')).toContainText('Karten');
     await page.getByRole('button', { name: 'Spiel starten' }).click();
     await expect(page.locator('#quick-play')).toBeVisible();
+    expect(await page.locator('script[src="party-quick-modes.js"]').count()).toBe(1);
+    expect(await page.locator('script[src="party-mega-modes.js"]').count()).toBe(0);
+    expect(await page.locator('script[src="party-viral-modes.js"]').count()).toBe(0);
     await page.evaluate(() => localStorage.removeItem('secret-circle-party-quick-active-v1'));
   }
   expect(errors).toEqual([]);
