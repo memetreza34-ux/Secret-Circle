@@ -1,47 +1,119 @@
 'use strict';
-const CACHE='secret-circle-v30';
-const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-guide.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./party-advanced-runner.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
-self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
+const CACHE = 'secret-circle-v31';
+const CORE = [
+  './',
+  './index.html',
+  './party.html',
+  './advanced.html',
+  './quick-play.html',
+  './creator.html',
+  './privacy.html',
+  './styles.css',
+  './pwa.css',
+  './party.css',
+  './party-extra.css',
+  './party-night.css',
+  './party-quick.css',
+  './party-guide.css',
+  './creator.css',
+  './runtime-guard.js',
+  './setup-ux.js',
+  './privacy-guard.js',
+  './wake-lock.js',
+  './app.js',
+  './game-engine.js',
+  './role-assignment.js',
+  './word-packs.js',
+  './data-store.js',
+  './party-catalog.js',
+  './party-expansion.js',
+  './party-trending-catalog.js',
+  './party-mega-catalog.js',
+  './party-viral-catalog.js',
+  './party-routing.js',
+  './game-creator.js',
+  './creator-page.js',
+  './party-custom-packs.js',
+  './party-hub.js',
+  './party-hub-plus.js',
+  './party-hub-polish.js',
+  './party-guide.js',
+  './party-night.js',
+  './party-data-tools.js',
+  './party-advanced.js',
+  './party-advanced-runner.js',
+  './party-advanced-preferences.js',
+  './party-quick-modes.js',
+  './party-mega-modes.js',
+  './party-viral-modes.js',
+  './party-created-modes.js',
+  './quick-loader.js',
+  './manifest.webmanifest',
+  './icon.svg',
+  './icon-192.png',
+  './icon-512.png'
+];
+
+function stripSearch(value) {
+  const url = new URL(typeof value === 'string' ? value : value.url);
+  url.search = '';
+  url.hash = '';
+  return url.href;
+}
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(CORE))
+      .then(() => self.skipWaiting())
+  );
 });
 
-self.addEventListener('activate',event=>{
-  event.waitUntil(caches.keys()
-    .then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))))
-    .then(()=>self.clients.claim()));
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
 });
 
-async function fetchAndCache(request){
-  const response=await fetch(request);
-  if(response.ok){
-    const cache=await caches.open(CACHE);
-    await cache.put(request,response.clone());
+async function fetchAndCache(request, canonicalNavigation = false) {
+  const response = await fetch(request);
+  if (response.ok) {
+    const cache = await caches.open(CACHE);
+    const cacheKey = canonicalNavigation ? stripSearch(request) : request;
+    await cache.put(cacheKey, response.clone());
   }
   return response;
 }
 
-async function handleNavigation(request){
-  try{
-    return await fetchAndCache(request);
-  }catch{
-    return await caches.match(request)||await caches.match('./party.html')||await caches.match('./index.html')||new Response('Offline',{status:503,statusText:'Offline'});
+async function handleNavigation(request) {
+  try {
+    return await fetchAndCache(request, true);
+  } catch {
+    return await caches.match(stripSearch(request))
+      || await caches.match('./party.html')
+      || await caches.match('./index.html')
+      || new Response('Offline', { status: 503, statusText: 'Offline' });
   }
 }
 
-async function handleAsset(request){
-  const cached=await caches.match(request);
-  if(cached)return cached;
-  try{
+async function handleAsset(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  try {
     return await fetchAndCache(request);
-  }catch{
-    return new Response('Offline',{status:503,statusText:'Offline'});
+  } catch {
+    return new Response('Offline', { status: 503, statusText: 'Offline' });
   }
 }
 
-self.addEventListener('fetch',event=>{
-  if(event.request.method!=='GET')return;
-  const requestUrl=new URL(event.request.url);
-  if(requestUrl.origin!==self.location.origin)return;
-  event.respondWith(event.request.mode==='navigate'?handleNavigation(event.request):handleAsset(event.request));
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) return;
+  event.respondWith(event.request.mode === 'navigate'
+    ? handleNavigation(event.request)
+    : handleAsset(event.request));
 });
