@@ -11,6 +11,7 @@ function read(file) {
 const runtime = read('runtime-guard.js');
 const worker = read('sw.js');
 const styles = read('pwa-update.css');
+const installHandler = worker.match(/self\.addEventListener\('install',[\s\S]*?\n\}\);/)?.[0] || '';
 
 assert.match(runtime, /Neue Secret-Circle-Version bereit/);
 assert.match(runtime, /Jetzt aktualisieren/);
@@ -27,7 +28,8 @@ assert.match(worker, /STAGING_CACHE/);
 assert.match(worker, /stageCore/);
 assert.match(worker, /promoteStagedCore/);
 assert.match(worker, /SKIP_WAITING/);
-assert.doesNotMatch(worker, /stageCore\(\).*skipWaiting/s);
+assert.ok(installHandler, 'Service-worker install handler must exist.');
+assert.doesNotMatch(installHandler, /skipWaiting/);
 
 assert.match(styles, /\.pwa-update-banner/);
 assert.match(styles, /env\(safe-area-inset-bottom\)/);
