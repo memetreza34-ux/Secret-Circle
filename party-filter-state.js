@@ -40,6 +40,11 @@
     return allowed.includes(value) ? value : 'all';
   }
 
+  function resolveView(storedView, requestedView) {
+    if (VIEW_VALUES.has(requestedView)) return requestedView;
+    return VIEW_VALUES.has(storedView) ? storedView : 'home';
+  }
+
   function normalize(value) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return { ...defaults };
     return {
@@ -51,7 +56,7 @@
       age: fixed(value.age, FIXED_VALUES.age),
       status: fixed(value.status, FIXED_VALUES.status),
       tier: fixed(value.tier, FIXED_VALUES.tier),
-      view: VIEW_VALUES.has(value.view) ? value.view : 'home'
+      view: resolveView(value.view)
     };
   }
 
@@ -180,12 +185,11 @@
     });
 
     const stored = read(storage);
-    currentView = stored.view;
-    apply(documentRef, stored, root.Event);
-
     const requestedView = new root.URLSearchParams(root.location.search).get('view');
-    if (!requestedView && stored.view !== 'home') {
-      documentRef.querySelector(`[data-view-target="${stored.view}"]`)?.click();
+    currentView = resolveView(stored.view, requestedView);
+    apply(documentRef, { ...stored, view: currentView }, root.Event);
+    if (currentView !== 'home') {
+      documentRef.querySelector(`[data-view-target="${currentView}"]`)?.click();
     }
     return true;
   }
@@ -195,6 +199,7 @@
     storageKey: STORAGE_KEY,
     defaults,
     fixedValues: FIXED_VALUES,
+    resolveView,
     normalize,
     read,
     write,
