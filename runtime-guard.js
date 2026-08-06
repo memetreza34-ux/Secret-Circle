@@ -3,10 +3,23 @@
 (function initialiseRuntimeGuard(root) {
   const VERSION = '1.0.0-beta.3';
   const UPDATE_RELOAD_KEY = 'secret-circle-update-reload';
+  const UPDATE_STYLE = 'pwa-update.css';
+  const ACTIVE_SESSION_KEYS = [
+    'secret-circle-active-v7',
+    'secret-circle-party-quick-active-v1',
+    'secret-circle-party-mega-active-v1',
+    'secret-circle-party-viral-active-v1',
+    'secret-circle-party-created-active-v1',
+    'secret-circle-party-advanced-active-v1'
+  ];
   let fatalMessageShown = false;
+  let waitingWorker = null;
+  let updateRequested = false;
+  let reloadHandled = false;
+  let updateBanner = null;
 
   function statusElement() {
-    return document.querySelector('#status, #hub-status, #advanced-status');
+    return document.querySelector('#status, #hub-status, #advanced-status, #quick-status, #creator-status');
   }
 
   function showRuntimeError(message) {
@@ -16,6 +29,100 @@
     if (!status) return;
     status.textContent = message || 'Ein unerwarteter Fehler ist aufgetreten. Lade die App neu. Deine lokal gespeicherten Daten bleiben erhalten.';
     status.classList.add('error');
+  }
+
+  function hasActiveSession() {
+    try { return ACTIVE_SESSION_KEYS.some(key => Boolean(localStorage.getItem(key))); }
+    catch { return false; }
+  }
+
+  function ensureUpdateStyle() {
+    if (!document.head || document.querySelector(`link[href="${UPDATE_STYLE}"]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = UPDATE_STYLE;
+    document.head.append(link);
+  }
+
+  function createUpdateBanner() {
+    if (updateBanner || !document.body) return updateBanner;
+    ensureUpdateStyle();
+
+    const banner = document.createElement('section');
+    banner.className = 'pwa-update-banner';
+    banner.hidden = true;
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('aria-live', 'polite');
+    banner.setAttribute('aria-label', 'App-Aktualisierung');
+
+    const copy = document.createElement('div');
+    copy.className = 'pwa-update-copy';
+    const title = document.createElement('strong');
+    title.textContent = 'Neue Secret-Circle-Version bereit';
+    const message = document.createElement('p');
+    message.dataset.updateMessage = 'true';
+    copy.append(title, message);
+
+    const actions = document.createElement('div');
+    actions.className = 'pwa-update-actions';
+    const accept = document.createElement('button');
+    accept.type = 'button';
+    accept.className = 'pwa-update-accept';
+    accept.textContent = 'Jetzt aktualisieren';
+    const later = document.createElement('button');
+    later.type = 'button';
+    later.className = 'pwa-update-later';
+    later.textContent = 'Später';
+
+    accept.addEventListener('click', () => {
+      if (!waitingWorker) return;
+      updateRequested = true;
+      accept.disabled = true;
+      later.disabled = true;
+      accept.textContent = 'Wird aktualisiert …';
+      message.textContent = 'Die neue Version wird aktiviert. Die App lädt anschließend einmal neu.';
+      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    });
+    later.addEventListener('click', () => {
+      banner.hidden = true;
+    });
+
+    actions.append(accept, later);
+    banner.append(copy, actions);
+    document.body.append(banner);
+    updateBanner = banner;
+    return banner;
+  }
+
+  function showUpdate(worker) {
+    waitingWorker = worker;
+    const display = () => {
+      const banner = createUpdateBanner();
+      if (!banner) return;
+      const message = banner.querySelector('[data-update-message]');
+      if (message) {
+        message.textContent = hasActiveSession()
+          ? 'Deine laufende Session ist lokal gespeichert. Beim Aktualisieren wird die App einmal neu geladen und kann danach fortgesetzt werden.'
+          : 'Aktualisiere kontrolliert auf die neue Offline-Version. Die App wird danach einmal neu geladen.';
+      }
+      banner.querySelectorAll('button').forEach(button => { button.disabled = false; });
+      const accept = banner.querySelector('.pwa-update-accept');
+      if (accept) accept.textContent = 'Jetzt aktualisieren';
+      banner.hidden = false;
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', display, { once: true });
+    else display();
+  }
+
+  function watchRegistration(registration) {
+    if (registration.waiting && navigator.serviceWorker.controller) showUpdate(registration.waiting);
+    registration.addEventListener('updatefound', () => {
+      const installing = registration.installing;
+      if (!installing) return;
+      installing.addEventListener('statechange', () => {
+        if (installing.state === 'installed' && navigator.serviceWorker.controller) showUpdate(installing);
+      });
+    });
   }
 
   root.addEventListener('error', event => {
@@ -34,31 +141,33 @@
   });
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {
+    navigator.serviceWorker.register('./sw.js').then(watchRegistration).catch(() => {
       const status = statusElement();
       if (!status || status.textContent) return;
       status.textContent = 'Offline-Modus konnte nicht aktiviert werden. Online bleibt die App nutzbar.';
       status.classList.add('error');
     });
 
-    const controlledAtStartup = Boolean(navigator.serviceWorker.controller);
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!controlledAtStartup) return;
-      try {
-        if (sessionStorage.getItem(UPDATE_RELOAD_KEY) === VERSION) return;
-        sessionStorage.setItem(UPDATE_RELOAD_KEY, VERSION);
-      } catch {}
+      if (!updateRequested || reloadHandled) return;
+      reloadHandled = true;
+      try { sessionStorage.setItem(UPDATE_RELOAD_KEY, VERSION); } catch {}
       root.location.reload();
     });
   }
 
   root.addEventListener('pageshow', () => {
     try {
-      if (sessionStorage.getItem(UPDATE_RELOAD_KEY) === VERSION) {
-        sessionStorage.removeItem(UPDATE_RELOAD_KEY);
-      }
+      if (sessionStorage.getItem(UPDATE_RELOAD_KEY) === VERSION) sessionStorage.removeItem(UPDATE_RELOAD_KEY);
     } catch {}
   }, { once: true });
 
-  root.SecretCircleRuntime = Object.freeze({ version: VERSION, showRuntimeError });
+  root.SecretCircleRuntime = Object.freeze({
+    version: VERSION,
+    updateStyle: UPDATE_STYLE,
+    activeSessionKeys: Object.freeze([...ACTIVE_SESSION_KEYS]),
+    hasActiveSession,
+    showRuntimeError,
+    showUpdate
+  });
 })(window);
