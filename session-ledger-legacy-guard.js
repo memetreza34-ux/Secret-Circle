@@ -8,13 +8,17 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createLegacySessionGuard() {
   'use strict';
 
-  const VERSION = 1;
+  const VERSION = 2;
   const HUB_KEY = 'secret-circle-party-hub-v1';
-  const INSTALL_FLAG = '__secretCircleLegacySessionGuardV1';
+  const INSTALL_FLAG = '__secretCircleLegacySessionGuardV2';
   const ENGINES = Object.freeze([
     Object.freeze({ engine: 'mega', activeKey: 'secret-circle-party-mega-active-v1', legacyPrefix: 'mega-' }),
     Object.freeze({ engine: 'viral', activeKey: 'secret-circle-party-viral-active-v1', legacyPrefix: 'viral-' })
   ]);
+
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
 
   function parseObject(raw) {
     if (typeof raw !== 'string' || !raw.trim()) return null;
@@ -31,16 +35,17 @@
     return Number.isFinite(number) ? Math.max(minimum, Math.min(maximum, number)) : minimum;
   }
 
-  function contextFor(storage) {
+  function contextsFor(storage) {
+    const contexts = [];
     for (const definition of ENGINES) {
       const active = parseObject(storage?.getItem?.(definition.activeKey));
       if (!active || !active.gameId || !active.startedAt) continue;
       const rounds = finiteInteger(active.targetRounds, 1, 10_000);
       const score = finiteInteger(active.totalScore, 0, 1_000_000);
       if (!rounds) continue;
-      return { definition, active, rounds, score };
+      contexts.push({ definition, active, rounds, score });
     }
-    return null;
+    return contexts;
   }
 
   function completionFromLegacyWrite(nextHub, context, ledger) {
@@ -67,16 +72,34 @@
     };
   }
 
+  function emptyBaseFromFirstWrite(nextHub, completion) {
+    const base = clone(nextHub);
+    base.history = Array.isArray(base.history)
+      ? base.history.filter(entry => entry?.id !== completion.id && entry?.gameId !== completion.gameId)
+      : [];
+    base.recent = Array.isArray(base.recent) ? base.recent.filter(id => id !== completion.gameId) : [];
+    if (base.stats && typeof base.stats === 'object' && !Array.isArray(base.stats)) delete base.stats[completion.gameId];
+    else base.stats = {};
+    return base;
+  }
+
   function normalizeHubWrite(storage, rawNext, ledger) {
     if (!ledger || typeof ledger.recordCompletion !== 'function') return String(rawNext);
     const nextHub = parseObject(String(rawNext));
-    const currentHub = parseObject(storage?.getItem?.(HUB_KEY));
-    const context = contextFor(storage);
-    if (!nextHub || !currentHub || !context) return String(rawNext);
+    if (!nextHub) return String(rawNext);
 
-    const completion = completionFromLegacyWrite(nextHub, context, ledger);
+    let completion = null;
+    for (const context of contextsFor(storage)) {
+      completion = completionFromLegacyWrite(nextHub, context, ledger);
+      if (completion) break;
+    }
     if (!completion) return String(rawNext);
-    return JSON.stringify(ledger.recordCompletion(currentHub, completion).hub);
+
+    const currentRaw = storage?.getItem?.(HUB_KEY);
+    const currentHub = parseObject(currentRaw);
+    if (currentRaw !== null && !currentHub) return String(rawNext);
+    const baseHub = currentHub || emptyBaseFromFirstWrite(nextHub, completion);
+    return JSON.stringify(ledger.recordCompletion(baseHub, completion).hub);
   }
 
   function install(root) {
@@ -113,8 +136,9 @@
     hubKey: HUB_KEY,
     engines: ENGINES,
     parseObject,
-    contextFor,
+    contextsFor,
     completionFromLegacyWrite,
+    emptyBaseFromFirstWrite,
     normalizeHubWrite,
     install
   });
