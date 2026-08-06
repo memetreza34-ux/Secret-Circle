@@ -10,10 +10,11 @@
   if (!catalog) throw new Error('Party-Katalog für eigene Packs fehlt.');
 
   const KEY = 'secret-circle-party-custom-packs-v1';
-  const MAX_PACKS = 20;
-  const MAX_ITEMS = 100;
+  const MAX_PACKS = 30;
+  const MAX_ITEMS = 150;
   const supportedModes = new Set(['prompt', 'paranoia', 'charades', 'hot-potato', 'word-chain']);
-  const supportedGames = catalog.games.filter(game => game.status === 'playable' && supportedModes.has(game.mode));
+  const supportedQuickGames = new Set(['who-am-i', 'anime-guess', 'pass-the-phone', 'red-green-flag', 'secret-mission', 'tier-list']);
+  const supportedGames = catalog.games.filter(game => game.status === 'playable' && (supportedModes.has(game.mode) || supportedQuickGames.has(game.id)));
 
   function cleanText(value, maximum) {
     return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
@@ -164,12 +165,12 @@
     section.setAttribute('aria-labelledby', 'custom-pack-title');
     section.innerHTML = `
       <h2 id="custom-pack-title">Eigene Hub-Kategorien</h2>
-      <p class="muted">Erstelle eigene Kartenpacks für Frage-, Darstellungs- und Schnellspiele. Mindestens drei unterschiedliche Zeilen sind erforderlich.</p>
+      <p class="muted">Erstelle eigene Kartenpacks – auch für Wer bin ich?, Anime-Figuren, Pass das Handy, Flags, Missionen und Tier Lists. Mindestens drei unterschiedliche Zeilen sind erforderlich.</p>
       <div class="settings-grid">
         <label for="custom-pack-game">Spiel<select id="custom-pack-game"></select></label>
-        <label for="custom-pack-name">Packname<input id="custom-pack-name" maxlength="40" placeholder="z. B. Unsere Gruppe"></label>
+        <label for="custom-pack-name">Packname<input id="custom-pack-name" maxlength="40" placeholder="z. B. Unsere Anime-Figuren"></label>
       </div>
-      <label for="custom-pack-items">Eine Karte pro Zeile<textarea id="custom-pack-items" rows="7" maxlength="18000" placeholder="Erste eigene Karte&#10;Zweite eigene Karte&#10;Dritte eigene Karte"></textarea></label>
+      <label for="custom-pack-items">Eine Karte pro Zeile<textarea id="custom-pack-items" rows="7" maxlength="27000" placeholder="Erste eigene Karte&#10;Zweite eigene Karte&#10;Dritte eigene Karte"></textarea></label>
       <button id="save-custom-pack" type="button">Eigenes Pack speichern</button>
       <div id="custom-pack-list" class="compact-list empty-state">Noch kein eigenes Hub-Pack gespeichert.</div>`;
     const backup = documentRef.querySelector('#backup-title')?.closest('.data-panel');
@@ -255,7 +256,7 @@
   initializeUi();
 
   return Object.freeze({
-    version: 2,
+    version: 3,
     storageKey: KEY,
     maxPacks: MAX_PACKS,
     maxItems: MAX_ITEMS,
