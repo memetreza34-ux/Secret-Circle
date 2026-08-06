@@ -1,112 +1,46 @@
 # GitHub Actions – Fehler vor dem ersten Schritt
 
-## Beobachtetes Verhalten
+## Beobachtung
 
-`Secret Circle CI` wird beendet, bevor ein einziger Workflow-Schritt ausgeführt wird.
+GitHub-Actions-Läufe können als Fehler enden, bevor `actions/checkout` oder ein anderer Workflow-Schritt sichtbar wird. Eine leere Schrittliste und fehlende normale Job-Logs sind kein konkreter Beweis für einen JavaScript-, Unit-, Validator- oder Playwright-Fehler.
 
-Aktuellster bestätigter Lauf:
+Der aktuelle Stand erwartet:
 
-- Workflow-Lauf `#784`
-- Run-ID `30999709578`
-- Job-ID `92285344885`
-- Jobname `validate`
-- Ergebnis `failure`
-- leere Schrittliste
-- kein normaler Job-Log
-- selbst `actions/checkout` wurde nicht gestartet
-- Commit `e462d8ba2e622845cf9ea1c9a38d2c0745060323`
+- 45 eingebaute technisch spielbare Spiele
+- 27 Quick-, Trend- und Viral-Modi
+- 4 Advanced-Spiele
+- lokaler Game-Creator mit 6 Vorlagen und bis zu 40 eigenen Spielen
+- Smart Party Night
+- Offline-Core `secret-circle-v29`
+- mindestens 13 Unit-Testdateien
+- mindestens 27 E2E-Suiten
+- fünf Browser-/Geräteprojekte
 
-Zuvor wurden auch die Runs `30938240010`, `30938065841`, `30937503573` und `30930748182` einschließlich eines manuell erneut ausgeführten Jobs ohne einen einzigen Schritt beendet. Die Wiederholung wurde von GitHub angenommen, änderte das Verhalten aber nicht.
+## Externe Ursachen prüfen
 
-Das unterscheidet sich von einem Syntax-, Unit-, Validator- oder Playwright-Fehler. Bei einem Repositoryfehler wäre mindestens der betroffene Workflow-Schritt mit Log sichtbar.
+`Settings → Actions → General`:
 
-## Wahrscheinliche externe Ursachen
+- Actions ist erlaubt.
+- offizielle Actions sind zugelassen.
+- Workflow besitzt Lesezugriff auf Repository-Inhalte.
+- Repository ist nicht archiviert.
 
-1. GitHub Actions ist für das Repository deaktiviert oder eingeschränkt.
-2. Kontolimit, Budget oder Abrechnung blockiert gehostete Runner.
-3. Konto- oder Organisationsrichtlinie verhindert die Runner-Bereitstellung.
-4. eine Sicherheits- oder Nutzungsbeschränkung betrifft das Konto.
-5. vorübergehende GitHub-Actions-Störung.
+`Settings → Billing and licensing`:
 
-## Repositoryseitiger Stand
+- kein erreichtes Actions-Limit
+- keine blockierte Zahlungsmethode
+- private Repository-Nutzung zulässig
+- kein Organisationsbudget blockiert Runner
 
-Die Workflow-Konfiguration verlangt:
+Zusätzlich GitHub-Status, Konto- und Organisationsbenachrichtigungen prüfen.
 
-- Syntaxprüfung aller Produktionsmodule
-- 9 Unit-Testdateien
-- Strukturvalidator
-- Performancebudget
-- Release-Audit
-- mindestens 20 Playwright-E2E-Suiten
-- Cross-Browser-Lauf für Chromium, Firefox und WebKit
+## Erneut auslösen
 
-Der aktuelle Offline-Core ist `secret-circle-v25`. Zusätzlich geprüft werden sollen:
-
-- 18 spielbare Spiele und 4 gesperrte Roadmap-Spiele
-- Smart Party Night mit Zeit-, Stimmungs-, Alters- und Gruppenfilter
-- Party-Night-Fortschritt, Wiederaufnahme und Offline-Betrieb
-- eigene Hub-Packs mit transaktionssicherem Speichern und Löschen
-- aktive Session Version 2 und Spieler-Snapshot
-- transaktionssicherer Sessionabschluss
-- tatsächliche UTF-8-Byte-Grenze für Sicherungen
-- Import- und Lösch-Rollback
-- Präferenz- und Statistik-Speicherfehler
-- Manifest, Icons, CSP, Accessibility und Offline-Start
-
-Diese Prüfungen sind im Repository definiert, wurden wegen des Runner-Blockers aber nicht auf GitHub ausgeführt.
-
-## Actions-Berechtigungen prüfen
-
-`Settings → Actions → General`
-
-- Actions für das Repository erlauben
-- offizielle `actions/*`-Workflows erlauben
-- Workflow-Berechtigung mindestens auf Lesen des Repository-Inhalts setzen
-- Fork- und Organisationsrichtlinien kontrollieren
-- Repository darf nicht archiviert sein
-
-Verwendete offizielle Actions:
-
-- `actions/checkout@v4`
-- `actions/setup-node@v4`
-- `actions/setup-python@v5`
-- `actions/upload-artifact@v4`
-
-## Abrechnung und Nutzungslimits prüfen
-
-`Settings → Billing and licensing`
-
-- verfügbare Actions-Minuten
-- Ausgabenlimit
-- Zahlungsmethode
-- deaktivierte Actions-Nutzung
-- Organisationsbudget, falls zutreffend
-- mögliche Konto- oder Zahlungsbeschränkung
-
-## GitHub-Status und Konto prüfen
-
-- GitHub-Statusseite auf Actions-Störung prüfen
-- E-Mail- und Kontoverifizierung kontrollieren
-- Repository- und Kontobenachrichtigungen auf Einschränkungen prüfen
-- bei anhaltendem Fehler GitHub Support mit Run-ID und Job-ID kontaktieren
-
-Hilfreiche Angaben für Support:
-
-- Repository: `memetreza34-ux/Secret-Circle`
-- aktuellster Run: `30999709578`
-- aktuellster Job: `92285344885`
-- weitere Runs: `30938240010`, `30938065841` und `30937503573`
-- ältere Wiederholung: Run `30930748182`, Jobs `92064498410` und `92077185391`
-- alle genannten Jobs ohne Schritte und Logs
-
-## Erneut ausführen
-
-1. Einstellungen und Abrechnung prüfen.
-2. Draft-PR #11 öffnen.
-3. `Checks` oder `Actions` öffnen.
-4. fehlgeschlagenen Job erneut starten.
-5. prüfen, ob `Check out repository` erscheint.
-6. erst danach einen roten Repository-Schritt anhand seines Logs bearbeiten.
+1. Draft-PR #11 öffnen.
+2. `Checks` oder `Actions` öffnen.
+3. fehlgeschlagenen Lauf erneut starten.
+4. kontrollieren, dass `Check out repository` erscheint.
+5. anschließend den ersten roten Schritt auswerten.
 
 ## Lokale Ersatzprüfung
 
@@ -114,42 +48,52 @@ Hilfreiche Angaben für Support:
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
 npx playwright install --with-deps chromium
 npm run ci
+```
 
+Cross-Browser:
+
+```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Ein erfolgreicher lokaler Lauf ist ein starkes technisches Signal. Er ersetzt nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit.
+## Erwartete lokale Prüfpunkte
 
-## Erwartete lokale Prüfergebnisse
-
-Der Lauf muss unter anderem bestätigen:
-
+- Syntax aller Produktionsmodule
 - Engine und Speicher Version 7
-- faire Rollenverteilung und maximal sechs Imposter
-- 22 Katalogeinträge, 18 spielbar und 4 geplant
-- Smart Party Night erzeugt eindeutige, passende und speicherbare Abläufe
-- Party Night berücksichtigt Gruppengröße und Altersstufe
-- Party-Night-Fortschritt übersteht Neuladen und Offline-Modus
-- eigene Hub-Packs besitzen Unicode-Normalisierung und Rollback
-- Spieler-Snapshot in komplexen Sessions
-- aktive Session bleibt bei fehlgeschlagener Verlaufsspeicherung erhalten
-- Mehrbyte-Datei über 1,5 MB wird anhand tatsächlicher Bytes abgelehnt
-- Import- und Löschfehler stellen alte Daten wieder her
-- Präferenz- und Statistikfehler bleiben beherrschbar
-- Cache `secret-circle-v25` ist vollständig und exklusiv
-- Hub, Party Night, komplexe Spiele, Word Imposter und Datenschutz starten offline
+- Katalogschichten mit 45 eingebauten Spielen
+- Routing Version 7
+- Creator-Speicher Version 1
+- sechs Creator-Vorlagen
+- strukturierte Auswahlkarten bleiben nach Export und Import erhalten
+- Creator-Rollback bei Speicherfehler
+- kurze Hilfen und Creator-Einstiege im Hub
+- Quick-, Trend-, Viral- und Advanced-Sessions
+- Backup und vollständige Löschung einschließlich eigener Spiele
+- Manifest, CSP, Icons und Accessibility
+- Cache `secret-circle-v29` vollständig und exklusiv
+- Hub, Creator, Hilfesystem, alle Engines, Word Imposter und Datenschutz offline
+
+## Typische Repository-Fehler
+
+- Syntax: `npm run check`
+- Unit-Tests: `npm test`
+- Struktur, Cache oder Dokumentation: `npm run validate`
+- Chromium: `npm run test:e2e`
+- Firefox/WebKit: `npm run test:cross-browser`
+- veralteter Cache: Ziel `secret-circle-v29`
+- veraltete Routingversion: Ziel 7
+- veralteter Custom-Pack-Manager: Ziel 4
+- fehlende Creator-Dateien: `creator.html`, `game-creator.js`, `creator-page.js`, `creator.css`
+- fehlende Guidance-Dateien: `party-guide.js`, `party-guide.css`
 
 ## Tracking
 
 - Issue #7: externer GitHub-Actions-Runner-Blocker
 - Issue #8: reale Geräte-, Rollen- und Partytests
 - Issue #10: Party-Hub-Expansion
-- Draft-PR #11: aktueller Expansionsstand
+- Draft-PR #11: aktueller Expansions-, UX- und Creator-Stand
 
-## Freigabeentscheidung
+## Freigabe
 
-- lokaler Entwickler-Test nach erfolgreichem `npm run ci`: möglich
-- Merge ohne grüne CI: nur bewusste Ausnahme, nicht als Produktionsfreigabe
-- realer Beta-Test: erst nach erfolgreichem lokalen Gesamt- und Browserlauf
-- öffentlicher Release: blockiert, bis der endgültige Commit sichtbare erfolgreiche Workflow-Schritte besitzt
+Ein grüner lokaler Lauf ist ein starkes technisches Signal, ersetzt aber nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit. Merge, realer Betatest und öffentlicher Release bleiben bis zu den jeweiligen Gates blockiert.
