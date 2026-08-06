@@ -22,6 +22,9 @@
 - Eine neue PWA-Version wird nicht mehr automatisch mitten in einer laufenden Nutzung aktiviert.
 - Der aktive Offline-Cache wird bei einer Aktualisierung nicht mehr vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
 - Veraltete Cacheeinträge werden erst entfernt, nachdem der vorbereitete Offline-Core vollständig übernommen wurde.
+- Alters- und Reifestufenfilter können sich nicht mehr gegenseitig aufheben.
+- Eine ausdrücklich per URL angeforderte Hub-Ansicht überschreibt korrekt die zuvor gespeicherte Ansicht.
+- Fehlender oder blockierter lokaler Speicher wird bei Katalogfiltern nicht mehr fälschlich als erfolgreicher Schreibvorgang behandelt.
 
 ### Hinzugefügt
 
@@ -34,7 +37,9 @@
 - barrierearme, responsive Updateleiste mit Safe-Area- und Reduced-Motion-Unterstützung
 - Party-Hub-Reifestufen mit 15 Kernspielen, 13 Erweiterungen und 17 Labs-Modi
 - Reifestufenfilter, Schnellwahlkarten und sichtbare Qualitätsbadges im Spielekatalog
-- responsive und barrierearme Styles für Kernspiele, Erweiterungen und Labs
+- dauerhafte Speicherung von Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzter Hub-Ansicht
+- einheitliche Schaltfläche „Filter zurücksetzen“
+- responsive und barrierearme Styles für Kernspiele, Erweiterungen, Labs und Filterreset
 
 ### Qualität
 
@@ -49,8 +54,10 @@
 - Test für nicht-destruktive Cache-Promotion ergänzt.
 - Contract-Test für alle drei Backupformate ergänzt.
 - feste Prüfung der Katalogverteilung 15 / 13 / 17 ergänzt.
+- Unit-Test für Filterzustand, Sanitizing, Speicherfehler und URL-Priorität ergänzt.
+- Browsertests für Filterwiederherstellung, Reset und kombinierte Alters-/Reifestufenfilter ergänzt.
 - Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf die Foundation-Architektur aktualisiert.
-- feste Größenbudgets für Registry, Ledger, PWA-Update und Release-Struktur ergänzt.
+- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur und Filterzustand ergänzt.
 - Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
 
 ### Bekannte externe Blockade
