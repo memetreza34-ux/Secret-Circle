@@ -19,7 +19,6 @@ test('unexpected runtime errors produce a recoverable user message', async ({ pa
       error: new Error('synthetic runtime failure')
     }));
   });
-
   await expect(page.locator('#status')).toHaveClass(/error/);
   await expect(page.locator('#status')).toContainText('unerwarteter Fehler');
   await expect(page.locator('#status')).toContainText('gespeicherter Spielstand bleibt erhalten');
@@ -32,33 +31,23 @@ test('critical resource errors are surfaced instead of leaving a silent broken s
     script.dispatchEvent(new Event('error'));
     script.remove();
   });
-
   await expect(page.locator('#status')).toHaveClass(/error/);
   await expect(page.locator('#status')).toContainText('benötigte App-Datei');
 });
 
-test('runtime guard Party Night and Quick Modes are available from the complete offline cache', async ({ page }) => {
+test('runtime guard classic Quick and Mega Trend engines are available from cache v27', async ({ page }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v26');
-    return {
-      guard: Boolean(await cache.match('./runtime-guard.js')),
-      planner: Boolean(await cache.match('./party-night.js')),
-      plannerCss: Boolean(await cache.match('./party-night.css')),
-      quickPage: Boolean(await cache.match('./quick-play.html')),
-      quickCatalog: Boolean(await cache.match('./party-trending-catalog.js')),
-      quickRuntime: Boolean(await cache.match('./party-quick-modes.js')),
-      quickCss: Boolean(await cache.match('./party-quick.css'))
-    };
+    const cache = await caches.open('secret-circle-v27');
+    const assets = [
+      'runtime-guard.js', 'party-night.js', 'party-night.css', 'quick-play.html',
+      'party-trending-catalog.js', 'party-mega-catalog.js', 'party-quick-modes.js',
+      'party-mega-modes.js', 'quick-loader.js', 'party-quick.css'
+    ];
+    const result = {};
+    for (const asset of assets) result[asset] = Boolean(await cache.match(`./${asset}`));
+    return result;
   });
-  expect(cached).toEqual({
-    guard: true,
-    planner: true,
-    plannerCss: true,
-    quickPage: true,
-    quickCatalog: true,
-    quickRuntime: true,
-    quickCss: true
-  });
+  expect(Object.values(cached).every(Boolean)).toBe(true);
 });
