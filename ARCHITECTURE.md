@@ -21,11 +21,12 @@ Aktuelle Bereiche:
 - klassische Quick-Session Version 1
 - Mega-Trend-Session Version 1
 - Viral-Session Version 1
+- Creator-Session Version 1
 - eigene Hub-Packs Speicherschema Version 1, Manager Version 4
 - selbst erstellte Spiele Version 1
 - Gesamtsicherung Version 1
 
-Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert verworfen. Unbekannte neuere Versionen werden nicht blind überschrieben. Migrationen benötigen realistische alte Snapshots.
+Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert verworfen oder auf begrenzte sichere Werte normalisiert. Unbekannte neuere Versionen werden nicht blind überschrieben. Migrationen benötigen realistische alte Snapshots.
 
 ## 4. Modulgrenzen
 
@@ -58,6 +59,7 @@ Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert v
 - `creator-page.js`: vierstufiger Wizard und lokale Bibliothek
 - `creator.html`: semantische Creator-Oberfläche
 - `creator.css`: responsive Vorschau und Bedienung
+- `party-created-modes.js`: eigene wiederaufnehmbare Spielengine für alle sechs Vorlagen
 
 Der Creator unterstützt Fragen, Auswahl, Erraten, Challenges, Story und Debatte. Neue Creator-Vorlagen werden nur ergänzt, wenn sie auf einer klaren Engine basieren und migrationsfähig bleiben.
 
@@ -67,7 +69,8 @@ Der Creator unterstützt Fragen, Auswahl, Erraten, Challenges, Story und Debatte
 - `party-quick-modes.js`: zehn klassische Quick Modes
 - `party-mega-modes.js`: neun Trend-Modi
 - `party-viral-modes.js`: acht Viral-Modi
-- `quick-loader.js`: lädt pro Quick-Seite genau eine Engine
+- `party-created-modes.js`: selbst erstellte Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenspiele
+- `quick-loader.js`: lädt pro Quick-Seite genau eine passende Engine
 
 Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB.
 
@@ -78,6 +81,8 @@ Planung, Validierung, Migration und Zustandsübergänge sollen ohne Browser test
 ## 6. Lokale Transaktionen
 
 Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Stand wieder her. Das gilt für Import, Löschung, Sessionabschluss, eigene Packs, eigene Spiele und Inhaltsmigrationen.
+
+Sessionabschlüsse schreiben Verlauf und Statistik genau einmal. Wiederholte Creator-Sessions erhöhen den Zähler jeweils um eins; ein Neuladen darf keinen zweiten Abschluss erzeugen.
 
 ## 7. Bedienbarkeitsvertrag
 
@@ -105,9 +110,9 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 
 ## 9. Offline- und Updatevertrag
 
-Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: `secret-circle-v29`.
+Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: `secret-circle-v30`.
 
-Creator, Hilfesystem, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core.
+Creator, Hilfesystem, Creator-Spielengine, alle weiteren Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core.
 
 ## 10. Accessibility als Definition of Done
 
@@ -130,6 +135,8 @@ Jede Oberfläche benötigt semantische Überschriften, beschriftete Felder, Tast
 ## 13. Testpyramide
 
 Bei jedem Commit: Syntax, Unit-Tests, Strukturvalidator, Release-Audit und Performancebudget. Bei Release Candidates zusätzlich Chromium, Firefox, WebKit, Android-/iPhone-Simulation, echte Geräte, Offline-Update sowie kleine und große Partytests. Datenänderungen benötigen Korruptions-, Quota-, Rollback- und Größenprüfungen.
+
+Creator-spezifische E2E-Prüfungen decken Wizard, strukturierte Karten, Offline-Start, Wiederaufnahme, Sanitizing, exakte Verlaufseinträge und wiederholte Statistik ab.
 
 ## 14. Performancebudget
 
