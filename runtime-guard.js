@@ -6,6 +6,7 @@
   const UPDATE_STYLE = 'pwa-update.css';
   const PARTY_RELEASE_STYLE = 'party-release.css';
   const PARTY_RELEASE_SOURCE = 'party-release-structure.js';
+  const PARTY_FILTER_SOURCE = 'party-filter-state.js';
   const ACTIVE_SESSION_KEYS = [
     'secret-circle-active-v7',
     'secret-circle-party-quick-active-v1',
@@ -46,20 +47,48 @@
     document.head.append(link);
   }
 
-  function loadPartyReleaseStructure() {
-    if (!document.querySelector('#game-grid') || root.SecretCirclePartyReleaseStructure) return;
-    ensureStylesheet(PARTY_RELEASE_STYLE);
-    if (document.querySelector(`script[src="${PARTY_RELEASE_SOURCE}"]`)) return;
+  function loadScript(source, runtimeName, onLoad, failureMessage) {
+    if (root[runtimeName]) {
+      onLoad?.();
+      return;
+    }
+    const existing = document.querySelector(`script[src="${source}"]`);
+    if (existing) {
+      existing.addEventListener('load', () => onLoad?.(), { once: true });
+      return;
+    }
     const script = document.createElement('script');
-    script.src = PARTY_RELEASE_SOURCE;
-    script.dataset.sharedRuntime = 'party-release-structure';
+    script.src = source;
+    script.dataset.sharedRuntime = runtimeName;
+    script.addEventListener('load', () => onLoad?.());
     script.addEventListener('error', () => {
       const status = statusElement();
       if (!status || status.textContent) return;
-      status.textContent = 'Die Release-Struktur des Spielekatalogs konnte nicht geladen werden. Alle Spiele bleiben weiterhin erreichbar.';
+      status.textContent = failureMessage;
       status.classList.add('error');
     });
     document.body.append(script);
+  }
+
+  function loadPartyFilterState() {
+    if (!document.querySelector('#game-grid')) return;
+    loadScript(
+      PARTY_FILTER_SOURCE,
+      'SecretCirclePartyFilterState',
+      null,
+      'Gespeicherte Katalogfilter konnten nicht geladen werden. Der Spielekatalog bleibt weiterhin nutzbar.'
+    );
+  }
+
+  function loadPartyReleaseStructure() {
+    if (!document.querySelector('#game-grid')) return;
+    ensureStylesheet(PARTY_RELEASE_STYLE);
+    loadScript(
+      PARTY_RELEASE_SOURCE,
+      'SecretCirclePartyReleaseStructure',
+      loadPartyFilterState,
+      'Die Release-Struktur des Spielekatalogs konnte nicht geladen werden. Alle Spiele bleiben weiterhin erreichbar.'
+    );
   }
 
   function createUpdateBanner() {
@@ -189,10 +218,13 @@
     updateStyle: UPDATE_STYLE,
     partyReleaseStyle: PARTY_RELEASE_STYLE,
     partyReleaseSource: PARTY_RELEASE_SOURCE,
+    partyFilterSource: PARTY_FILTER_SOURCE,
     activeSessionKeys: Object.freeze([...ACTIVE_SESSION_KEYS]),
     hasActiveSession,
     showRuntimeError,
     showUpdate,
-    loadPartyReleaseStructure
+    loadScript,
+    loadPartyReleaseStructure,
+    loadPartyFilterState
   });
 })(window);
