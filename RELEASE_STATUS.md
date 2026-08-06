@@ -10,7 +10,8 @@
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit 6 Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- Offline-Core `secret-circle-v29`
+- eigene wiederaufnehmbare Creator-Spielengine
+- Offline-Core `secret-circle-v30`
 
 ## Neu abgeschlossen
 
@@ -23,10 +24,13 @@
 - Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenvorlagen
 - mehrere Kategorien je eigenem Spiel
 - Bearbeiten, Kopieren, Löschen, Exportieren und Importieren
-- eigene Spiele erscheinen im normalen Hub-Katalog und sind dort spielbar
-- Icon- und Akzentsystem als Vorbereitung für spätere Bilder und Animationen
+- eigene Spiele erscheinen im normalen Hub-Katalog
+- eigene Spiele laufen über eine dedizierte 3-/5-/10-/20-Runden-Engine
+- Wiederaufnahme, Spieler-Snapshot, Punkte, Verlauf und Statistik für Creator-Spiele
+- geschützte Begriffsansicht für eigene Erratenspiele
+- Icon- und Akzentsystem als Vorbereitung für Bilder und Animationen
 - vollständiger Asset- und Motion-Produktionsplan
-- Creator und Hilfesystem vollständig in Offline-Core v29 aufgenommen
+- Creator, Hilfesystem und Creator-Spielengine vollständig in Offline-Core v30 aufgenommen
 
 ## Fortschritt
 
@@ -34,21 +38,22 @@
 |---|---:|
 | Word Imposter | 98 % |
 | Party-Hub-Grundstruktur | 98 % |
-| Bedienbarkeit und Erklärungen | 92 % |
+| Bedienbarkeit und Erklärungen | 94 % |
 | 45 eingebaute Spiele | 86 % |
-| No-Code-Game-Creator | 84 % |
-| eigene Packs und Spiele | 94 % |
+| No-Code-Game-Creator | 89 % |
+| Creator-Spielengine | 87 % |
+| eigene Packs und Spiele | 96 % |
 | Quick-/Trend-/Viral-Engines | 89 % |
 | Advanced-Spiele | 88 % |
 | Speicherung und Backup | 98 % |
-| PWA und Offline | 96 % |
+| PWA und Offline | 97 % |
 | Accessibility und Mobile | 93 % |
-| visuelles Asset-System geplant | 82 % |
+| visuelles Asset-System geplant | 88 % |
 | Bilder und Animationen produziert | 5 % |
 | automatisierte Testvorbereitung | 99 % |
-| reale Testbereitschaft | 88 % |
-| öffentlicher Release | 77 % |
-| vollständige 122-Modi-Vision funktional | 46 % |
+| reale Testbereitschaft | 90 % |
+| öffentlicher Release | 79 % |
+| vollständige 122-Modi-Vision funktional | 47 % |
 
 Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie ersetzen keinen bestandenen Testlauf.
 
@@ -56,9 +61,9 @@ Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie ersetzen keinen 
 
 1. endgültiger `npm run ci`-Lauf nicht grün dokumentiert
 2. Cross-Browser-Lauf nicht grün dokumentiert
-3. GitHub Actions muss sichtbare Schritte ausführen und grün enden
+3. GitHub Actions scheitert weiterhin vor sichtbaren Workflow-Schritten
 4. Creator-Flows und eigene Spiele auf echten Android-/iOS-Geräten ungeprüft
-5. PWA-Update auf `secret-circle-v29` nicht praktisch dokumentiert
+5. PWA-Update auf `secret-circle-v30` nicht praktisch dokumentiert
 6. reale Gruppenprüfung aller 45 eingebauten Spiele fehlt
 7. selbst erstellte Spiele benötigen reale Usability-Tests
 8. Icons, Illustrationen und Animationen sind noch nicht produziert
