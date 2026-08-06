@@ -57,11 +57,13 @@
     if (!Number.isInteger(value.targetRounds) || ![3, 5, 10, 20].includes(value.targetRounds)) return null;
     if (!Number.isInteger(value.round) || value.round < 1 || value.round > value.targetRounds) return null;
     const players = cleanPlayers(value.players);
-    if (!players.length || players.length !== value.players.length) return null;
+    if (!Array.isArray(value.players) || !players.length || players.length !== value.players.length) return null;
+    const pack = String(value.pack ?? '');
+    if (!C.getPackNames(gameId).includes(pack)) return null;
     return {
       version: VERSION,
       gameId,
-      pack: String(value.pack ?? ''),
+      pack,
       targetRounds: value.targetRounds,
       round: value.round,
       totalScore: Number.isInteger(value.totalScore) ? Math.max(0, value.totalScore) : 0,
@@ -289,17 +291,38 @@
   }
 
   function renderAnimeGuess() {
-    const current = ensureCurrent(() => ({ identity: pickUnused(sessionItems()) }));
+    const current = ensureCurrent(() => ({ identity: pickUnused(sessionItems()), success: null }));
     $('#quick-player').textContent = `${currentPlayer()} rät die Figur`;
     if (active.phase === 'ready') {
-      $('#quick-content').append(element('p', '', 'Die ratende Person schaut weg. Die Gruppe erklärt ohne Namen, Zitate, Logos oder Bilder.'));
-      $('#quick-actions').append(button('Figur anzeigen', () => { active.phase = 'card'; saveActive(); renderRound(); }));
+      $('#quick-content').append(element('p', '', 'Die ratende Person schaut weg. Die Gruppe erklärt später ohne Namen, Zitate, Logos oder Bilder.'));
+      $('#quick-actions').append(button('Figur der Gruppe zeigen', () => { active.phase = 'card'; saveActive(); renderRound(); }));
       return;
     }
-    $('#quick-private-note').hidden = false;
-    $('#quick-private-note').textContent = 'Inoffizielles Fan-Quiz. Keine Verbindung zu Rechteinhabern.';
-    $('#quick-content').append(element('div', 'challenge-card', String(current.identity || 'Keine Figur verfügbar.')));
-    $('#quick-actions').append(button('Figur erraten', () => { addScore(1); nextRound(); }), button('Überspringen', nextRound, 'secondary'));
+    if (active.phase === 'card') {
+      $('#quick-private-note').hidden = false;
+      $('#quick-private-note').textContent = 'Inoffizielles Fan-Quiz. Die ratende Person darf die Figur nicht sehen.';
+      $('#quick-content').append(element('div', 'challenge-card', String(current.identity || 'Keine Figur verfügbar.')));
+      $('#quick-actions').append(button('Figur verbergen und 60 Sekunden starten', () => { active.phase = 'guess'; saveActive(); renderRound(); }));
+      return;
+    }
+    if (active.phase === 'guess') {
+      $('#quick-content').append(element('div', 'challenge-card', 'Erklärt die Anime-Figur.'), element('p', 'muted', 'Der Name, direkte Zitate, Logos und Bilder sind verboten.'));
+      const timer = element('div', 'quick-timer', '1:00');
+      $('#quick-controls').append(timer);
+      const finish = success => {
+        stopTimer();
+        current.success = success;
+        if (success) addScore(1);
+        active.phase = 'result';
+        saveActive();
+        renderRound();
+      };
+      $('#quick-actions').append(button('Figur erraten', () => finish(true)), button('Nicht erraten', () => finish(false), 'secondary'));
+      countdown(60, timer, () => finish(false));
+      return;
+    }
+    $('#quick-content').append(element('div', 'challenge-card', String(current.identity)), element('p', current.success ? 'success-text' : 'muted', current.success ? 'Figur erraten – 1 Punkt.' : 'Diesmal nicht erraten.'));
+    $('#quick-actions').append(button('Nächste Anime-Figur', nextRound));
   }
 
   function renderMoneyChallenge() {
@@ -482,7 +505,7 @@
       nextHub.stats = nextHub.stats || {};
       const stats = nextHub.stats[game.id] || { plays: 0, rounds: 0, best: 0 };
       nextHub.stats[game.id] = {
-        plays: Math.max(0, Number(stats.plays) || 0) + 1,
+        plays: Math.max(1, Number(stats.plays) || 0),
         rounds: Math.max(0, Number(stats.rounds) || 0) + active.targetRounds,
         best: Math.max(Number(stats.best) || 0, active.totalScore)
       };
