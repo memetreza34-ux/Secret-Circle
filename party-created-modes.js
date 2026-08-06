@@ -55,6 +55,17 @@
     return typeof value === 'string' ? value : null;
   }
 
+  function sanitizeScores(value, players) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+    const allowed = new Set([...players, 'Gruppe']);
+    const scores = {};
+    for (const [name, score] of Object.entries(value)) {
+      if (!allowed.has(name) || !Number.isFinite(Number(score))) continue;
+      scores[name] = Math.max(0, Math.min(10_000, Math.trunc(Number(score))));
+    }
+    return scores;
+  }
+
   function validActive(value) {
     if (!value || value.version !== VERSION || value.gameId !== gameId) return null;
     if (!Number.isInteger(value.targetRounds) || ![3, 5, 10, 20].includes(value.targetRounds)) return null;
@@ -63,18 +74,21 @@
     if (!players.length || players.length !== value.players?.length) return null;
     const pack = String(value.pack ?? '');
     if (!C.getPackNames(gameId).includes(pack)) return null;
+    const availableItems = C.getItems(gameId, pack);
+    if (!availableItems.length) return null;
     const current = validCurrent(value.current);
     if (value.current !== null && current === null) return null;
+    const used = [...new Set((Array.isArray(value.used) ? value.used : []).filter(index => Number.isInteger(index) && index >= 0 && index < availableItems.length))];
     return {
       version: VERSION,
       gameId,
       pack,
       targetRounds: value.targetRounds,
       round: value.round,
-      score: Number.isInteger(value.score) ? Math.max(0, value.score) : 0,
-      scores: value.scores && typeof value.scores === 'object' && !Array.isArray(value.scores) ? value.scores : {},
-      playerIndex: Number.isInteger(value.playerIndex) ? Math.max(0, value.playerIndex) : 0,
-      used: Array.isArray(value.used) ? value.used.filter(Number.isInteger) : [],
+      score: Number.isInteger(value.score) ? Math.max(0, Math.min(10_000, value.score)) : 0,
+      scores: sanitizeScores(value.scores, players),
+      playerIndex: Number.isInteger(value.playerIndex) ? Math.max(0, value.playerIndex) % players.length : 0,
+      used,
       current,
       phase: ['ready', 'private', 'active', 'result'].includes(value.phase) ? value.phase : 'ready',
       choice: Number.isInteger(value.choice) && value.choice >= 0 && value.choice <= 1 ? value.choice : null,
@@ -175,8 +189,8 @@
 
   function addScore(points, player = currentPlayer()) {
     const safe = Number.isInteger(points) ? Math.max(0, points) : 0;
-    active.score += safe;
-    if (player && safe) active.scores[player] = Math.max(0, Number(active.scores[player]) || 0) + safe;
+    active.score = Math.min(10_000, active.score + safe);
+    if (player && safe) active.scores[player] = Math.min(10_000, Math.max(0, Number(active.scores[player]) || 0) + safe);
   }
 
   function stopTimer() {
@@ -350,11 +364,16 @@
       return;
     }
     const pack = $('#quick-pack').value || C.getPackNames(gameId)[0];
+    const targetRounds = Number($('#quick-rounds').value);
+    if (!C.getPackNames(gameId).includes(pack) || ![3, 5, 10, 20].includes(targetRounds)) {
+      setStatus('Kategorie oder Rundenzahl ist ungültig.', true);
+      return;
+    }
     active = {
       version: VERSION,
       gameId,
       pack,
-      targetRounds: Number($('#quick-rounds').value),
+      targetRounds,
       round: 1,
       score: 0,
       scores: {},
@@ -393,7 +412,7 @@
       nextHub.stats = nextHub.stats || {};
       const stats = nextHub.stats[gameId] || { plays: 0, rounds: 0, best: 0 };
       nextHub.stats[gameId] = {
-        plays: Math.max(1, Number(stats.plays) || 0),
+        plays: Math.max(0, Number(stats.plays) || 0) + 1,
         rounds: Math.max(0, Number(stats.rounds) || 0) + active.targetRounds,
         best: Math.max(Number(stats.best) || 0, active.score)
       };
