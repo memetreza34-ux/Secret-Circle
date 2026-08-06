@@ -4,6 +4,7 @@ async function clearCreator(page) {
   await page.goto('/creator.html');
   await page.evaluate(() => {
     localStorage.removeItem('secret-circle-party-created-games-v1');
+    localStorage.removeItem('secret-circle-party-created-active-v1');
     localStorage.removeItem('secret-circle-party-onboarding-v1');
     localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
       version: 1,
@@ -25,7 +26,7 @@ test('Creator explains the four-step flow and exposes six templates', async ({ p
   await page.getByRole('button', { name: 'Hilfe schließen' }).click();
 });
 
-test('creates a custom choice game and opens it from the Party Hub', async ({ page }) => {
+test('creates a custom choice game and opens it through the resumable Creator player', async ({ page }) => {
   await clearCreator(page);
   await page.locator('[data-template-id="choice"]').click();
   await page.getByRole('button', { name: 'Weiter zu Details' }).click();
@@ -63,8 +64,19 @@ test('creates a custom choice game and opens it from the Party Hub', async ({ pa
   await expect(page.locator('#detail-title')).toHaveText('Unser Anime Duell');
   await expect(page.locator('#start-selected-game')).toHaveText('Eigenes Spiel starten');
   await page.locator('#start-selected-game').click();
-  await expect(page.locator('#play-layer')).toBeVisible();
+  await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
+  await expect(page.getByRole('heading', { name: 'Unser Anime Duell' })).toBeVisible();
+  await page.locator('#quick-rounds').selectOption('3');
+  await page.getByRole('button', { name: 'Spiel starten' }).click();
   await expect(page.locator('.choice-card')).toHaveCount(2);
+  await page.locator('.choice-card').first().click();
+  await expect(page.locator('.choice-result')).toContainText('Gewählt:');
+  await page.getByRole('button', { name: 'Nächste Entscheidung' }).click();
+  await expect(page.locator('#quick-progress')).toContainText('Runde 2 von 3');
+  await page.reload();
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await expect(page.locator('#quick-progress')).toContainText('Runde 2 von 3');
+  expect(await page.locator('script[src="party-created-modes.js"]').count()).toBe(1);
 });
 
 test('supports multiple categories, editing and duplication', async ({ page }) => {
