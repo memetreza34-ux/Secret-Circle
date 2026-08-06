@@ -11,11 +11,13 @@ assert.match(source, /function stripSearch/);
 assert.match(source, /canonicalNavigation \? stripSearch\(request\) : request/);
 assert.match(source, /caches\.match\(stripSearch\(request\)\)/);
 assert.match(source, /quick-play\.html/);
+assert.match(source, /session-ledger\.js/);
 assert.doesNotMatch(source, /cache\.put\(request,response\.clone\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
   cacheContract: 30,
   queryNavigationOffline: true,
-  canonicalNavigationCaching: true
+  canonicalNavigationCaching: true,
+  exactOnceLedgerOffline: true
 }, null, 2));
