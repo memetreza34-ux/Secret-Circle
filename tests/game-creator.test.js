@@ -25,6 +25,7 @@ assert.equal(Creator.maxPacks, 8);
 assert.deepEqual(Object.keys(Creator.templates), ['prompt', 'choice', 'guess', 'challenge', 'story', 'debate']);
 
 assert.deepEqual(Creator.parseCards('Meer | Berge\nPlanen | Spontan\nMeer | Berge', 'choice'), [['Meer', 'Berge'], ['Planen', 'Spontan']]);
+assert.deepEqual(Creator.parseCards([['Meer', 'Berge'], ['Planen', 'Spontan']], 'choice'), [['Meer', 'Berge'], ['Planen', 'Spontan']]);
 assert.deepEqual(Creator.parseCards('Cafe\u0301\nCAFÉ\nRakete\nSonne', 'prompt'), ['Café', 'Rakete', 'Sonne']);
 assert.equal(Creator.parseCards(Array.from({ length: 240 }, (_, index) => `Karte ${index}`).join('\n'), 'prompt').length, 200);
 
@@ -49,12 +50,13 @@ const saved = store.save({
 assert.ok(saved.id.startsWith('custom-game-'));
 assert.equal(saved.packs.length, 2);
 assert.equal(saved.packs[0].items.length, 3);
+assert.deepEqual(saved.packs[0].items[0], ['Früh', 'Spät']);
 assert.equal(store.list().length, 1);
 assert.throws(() => store.save({
   title: 'unser entscheidungsduell',
   description: 'Gleicher Name mit anderer Schreibweise ist nicht erlaubt.',
   templateId: 'prompt',
-  packs: [{ name: 'Standard', items: ['A', 'B', 'C'] }]
+  packs: [{ name: 'Standard', items: ['Alpha', 'Beta', 'Gamma'] }]
 }), /existiert bereits/);
 
 const copy = store.duplicate(saved.id);
@@ -66,11 +68,13 @@ const exported = JSON.parse(store.exportData());
 assert.equal(exported.type, 'secret-circle-created-games');
 assert.equal(exported.version, 1);
 assert.equal(exported.games.length, 2);
+assert.deepEqual(exported.games.find(game => game.id === saved.id).packs[0].items[0], ['Früh', 'Spät']);
 
 const importedStorage = memoryStorage();
 const importedStore = Creator.createStore(importedStorage);
 assert.equal(importedStore.importData(exported).length, 2);
 assert.equal(importedStore.get(saved.id).title, saved.title);
+assert.deepEqual(importedStore.get(saved.id).packs[0].items[0], ['Früh', 'Spät']);
 assert.throws(() => importedStore.importData({ type: 'wrong', version: 1, games: [] }), /keine gültige/);
 
 const beforeFailure = storage.snapshot();
@@ -109,6 +113,7 @@ console.log(JSON.stringify({
   maximumCardsPerPack: Creator.maxCards,
   routedBaseGames: routing.games.length,
   routedCreatedGames: catalog.createdGameIds.length,
+  structuredChoiceCardsPreserved: true,
   unicodeDeduplication: true,
   transactionRollback: true,
   exportImport: true
