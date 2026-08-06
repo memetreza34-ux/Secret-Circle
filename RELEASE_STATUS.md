@@ -23,7 +23,9 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - maximale Zahl von sechs Impostern direkt in der Engine validiert
 - Runtime-Monkey-Patching der Rollenlogik entfernt
 - Creator-Zeitstempel bei Laden, Export und Import stabilisiert
-- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness und Creator-Zeitstempel
+- Word-Imposter- und Gesamtsicherung verwenden dieselbe 1,5-MB-Grenze
+- Backupgrößen werden als UTF-8-Bytes geprüft
+- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel und Unicode-Backups
 - Changelog und Roadmap aktualisiert
 
 ## Lokal geprüft
@@ -35,12 +37,14 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Creator-Laden ohne künstliche Änderung von `updatedAt`
 - Creator-Export und -Import mit unveränderten Zeitstempeln
 - echte Bearbeitung aktualisiert `updatedAt`
+- ASCII- und mehrbyteige Unicode-Backups gegen dieselbe Bytegrenze
+- atomischer Import-Rollback bei Speicherfehlern
 
 ## Externer Releaseblocker
 
-GitHub Actions startet weiterhin keinen Runner. Der aktuelle Fehler entsteht vor Checkout und vor allen Workflow-Schritten:
+GitHub Actions hat dem aktuellen Job weiterhin keinen Runner zugewiesen. Der Job befindet sich ohne sichtbare Schritte in der Warteschlange beziehungsweise scheitert bei früheren Läufen vor Checkout:
 
-- `runner_id: 0`
+- kein zugewiesener Runner
 - kein Runnername
 - `steps: []`
 
@@ -48,14 +52,13 @@ Dadurch existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf. Vor Me
 
 ## Nächste technische Prioritäten
 
-1. UTF-8-Bytegrenzen aller Sicherungs- und Importwege vereinheitlichen
-2. zentrales Backup-Schemaregister einführen
-3. PWA-Updatehinweis und kontrollierte Aktivierung einer neuen Version
-4. doppelte Sessionabschlüsse und Statistikschreibvorgänge verhindern
-5. Hub klar in Kernspiele, Kategorien und Labs strukturieren
-6. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch und nächstes Spiel
-7. Kerninhalte redaktionell und nach Altersstufen prüfen
-8. Android-, iPhone-, Tablet- und echte Gruppentests
+1. zentrales Backup-Schemaregister einführen
+2. sichtbaren und kontrollierten PWA-Updatefluss ergänzen
+3. doppelte Sessionabschlüsse und Statistikschreibvorgänge verhindern
+4. Hub klar in Kernspiele, Kategorien und Labs strukturieren
+5. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch und nächstes Spiel
+6. Kerninhalte redaktionell und nach Altersstufen prüfen
+7. Android-, iPhone-, Tablet- und echte Gruppentests
 
 ## Releaseentscheidung
 
