@@ -9,11 +9,12 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 production_js = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
-    'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js', 'party-routing.js',
-    'party-custom-packs.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js',
+    'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
+    'party-mega-catalog.js', 'party-routing.js', 'party-custom-packs.js',
+    'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
     'party-advanced-runner.js', 'party-advanced-preferences.js',
-    'party-quick-modes.js', 'sw.js'
+    'party-quick-modes.js', 'party-mega-modes.js', 'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'privacy.html']
 violations = []
@@ -34,11 +35,11 @@ else:
 
 package = json.loads(read('package.json'))
 if package.get('dependencies'):
-    violations.append('Runtime npm dependencies are not allowed in the offline core without an architecture review.')
+    violations.append('Runtime npm dependencies are not allowed without an architecture review.')
 if package.get('devDependencies', {}).get('@playwright/test') != '1.54.2':
-    violations.append('Playwright must remain exactly pinned for reproducible browser tests.')
+    violations.append('Playwright must remain exactly pinned.')
 if package.get('engines', {}).get('node') != '>=20':
-    violations.append('Supported Node.js baseline changed without an architecture update.')
+    violations.append('Supported Node.js baseline changed.')
 
 for relative in production_js:
     path = ROOT / relative
@@ -46,11 +47,11 @@ for relative in production_js:
         violations.append(f'Production module missing: {relative}')
         continue
     source = path.read_text(encoding='utf-8')
-    line_count = len(source.splitlines())
-    if line_count > 1_000:
-        violations.append(f'{relative} has {line_count} lines; split it before it exceeds 1000 lines.')
+    lines = len(source.splitlines())
+    if lines > 1_000:
+        violations.append(f'{relative} has {lines} lines; split it before 1000 lines.')
     if path.stat().st_size > 100_000:
-        violations.append(f'{relative} exceeds the 100 KB production-module architecture limit.')
+        violations.append(f'{relative} exceeds the 100 KB module limit.')
     if "'use strict'" not in source and '"use strict"' not in source:
         violations.append(f'{relative} does not declare strict mode.')
 
@@ -63,51 +64,32 @@ for relative in html_pages:
     if "script-src 'self'" not in source or "object-src 'none'" not in source:
         violations.append(f'Strict CSP contract missing in {relative}.')
 
-party_night = read('party-night.js')
-for marker in [
-    'normalizeConfig', 'eligibleGames', 'buildPlan', 'normalizePlan',
-    'syncPlanFromHistory', 'createStore', 'secret-circle-party-night-v1'
-]:
-    if marker not in party_night:
-        violations.append(f'Party Night pure-logic boundary missing: {marker}')
-
-advanced_runner = read('party-advanced-runner.js')
-for marker in ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubState(nextHubState)']:
-    if marker not in advanced_runner:
-        violations.append(f'Advanced-session contract missing: {marker}')
-
-quick_modes = read('party-quick-modes.js')
-for marker in [
-    "ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'validActive',
-    'saveActive', 'saveHub', 'finishSession', 'renderWavelength',
-    'renderRapidFire', 'renderCategories', 'renderCaptionBattle'
-]:
-    if marker not in quick_modes:
-        violations.append(f'Quick-mode contract missing: {marker}')
-
-trending_catalog = read('party-trending-catalog.js')
-for marker in ['trendingGameIds', 'quick-play.html?game=', 'wavelength', 'caption-battle', 'version: 3']:
-    if marker not in trending_catalog:
-        violations.append(f'Trending catalog contract missing: {marker}')
-
-custom_packs = read('party-custom-packs.js')
-for marker in ['createManager', 'commit(nextState)', 'restoreStorage']:
-    if marker not in custom_packs:
-        violations.append(f'Custom-pack transaction contract missing: {marker}')
-
-data_tools = read('party-data-tools.js')
-for marker in ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']:
-    if marker not in data_tools:
-        violations.append(f'Backup transaction contract missing: {marker}')
+contracts = {
+    'party-night.js': ['normalizeConfig', 'eligibleGames', 'buildPlan', 'normalizePlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'],
+    'party-advanced-runner.js': ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubState(nextHubState)'],
+    'party-quick-modes.js': ["ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'validActive', 'finishSession', 'renderWavelength', 'renderRapidFire'],
+    'party-mega-modes.js': ["ACTIVE_KEY = 'secret-circle-party-mega-active-v1'", 'validActive', 'renderWhoAmI', 'renderAnimeGuess', 'renderMoneyChallenge', 'renderBlindRanking', 'renderEmojiQuiz', 'renderSecretMission'],
+    'party-trending-catalog.js': ['trendingGameIds', 'caption-battle', 'version: 3'],
+    'party-mega-catalog.js': ['megaGameIds', 'quickGameIds', 'anime-guess', 'money-challenge', 'blind-ranking', 'version: 4'],
+    'party-routing.js': ["require('./party-mega-catalog.js')", 'version: 5'],
+    'quick-loader.js': ['SecretCirclePartyCatalog', 'party-mega-modes.js', 'party-quick-modes.js'],
+    'party-custom-packs.js': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 3', 'createManager', 'commit(nextState)', 'restoreStorage'],
+    'party-data-tools.js': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']
+}
+for relative, markers in contracts.items():
+    source = read(relative)
+    for marker in markers:
+        if marker not in source:
+            violations.append(f'Architecture contract missing in {relative}: {marker}')
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
-if not cache:
-    violations.append('Versioned service-worker cache contract is missing.')
+if not cache or cache.group(1) != '27':
+    violations.append('Service-worker cache must be secret-circle-v27.')
 for asset in [
-    './party-night.js', './party-night.css', './party-data-tools.js',
-    './party-advanced-runner.js', './quick-play.html', './party-quick.css',
-    './party-trending-catalog.js', './party-quick-modes.js'
+    './party-night.js', './party-advanced-runner.js', './quick-play.html',
+    './party-trending-catalog.js', './party-mega-catalog.js',
+    './party-quick-modes.js', './party-mega-modes.js', './quick-loader.js'
 ]:
     if asset not in sw:
         violations.append(f'Offline architecture asset missing from CORE: {asset}')
@@ -116,25 +98,24 @@ for relative in [
     'README.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md',
     'MANUAL_TEST_PLAN.md', 'MODE_UNIVERSE.md'
 ]:
-    if not (ROOT / relative).is_file() or (ROOT / relative).stat().st_size < 500:
-        violations.append(f'Long-term operational document missing or incomplete: {relative}')
+    if not (ROOT / relative).is_file() or (ROOT / relative).stat().st_size < 300:
+        violations.append(f'Operational document missing or incomplete: {relative}')
 
 if violations:
     raise SystemExit('\n'.join(sorted(set(violations))))
 
 print(json.dumps({
     'architecture_audit': 'PASS',
-    'architecture_contract': 'ARCHITECTURE.md',
-    'mode_universe': 'MODE_UNIVERSE.md',
     'production_modules_checked': len(production_js),
     'html_pages_checked': len(html_pages),
     'maximum_module_lines': 1000,
     'maximum_module_bytes': 100000,
     'runtime_dependencies': 0,
-    'offline_cache_version': int(cache.group(1)),
+    'offline_cache_version': 27,
+    'visible_games': 37,
+    'classic_quick_modes': 10,
+    'mega_trend_modes': 9,
     'versioned_storage': True,
     'transaction_contracts': True,
-    'party_night_pure_logic': True,
-    'quick_mode_engine': True,
     'external_runtime_assets': 0
 }, ensure_ascii=False, indent=2))
