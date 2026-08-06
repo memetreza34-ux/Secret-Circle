@@ -12,7 +12,7 @@ production_js = [
     'backup-schema-registry.js', 'session-ledger.js', 'session-ledger-legacy-guard.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
-    'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
+    'party-release-structure.js', 'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
     'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
     'party-advanced-runner.js', 'party-advanced-preferences.js',
@@ -78,9 +78,14 @@ contracts = {
         'secret-circle-party-mega-active-v1', 'secret-circle-party-viral-active-v1',
         'completionFromLegacyWrite', 'recordCompletion(baseHub, completion)'
     ],
+    'party-release-structure.js': [
+        'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'",
+        "label: 'Labs'", 'tierFor', 'counts', 'release-tier-filter'
+    ],
     'runtime-guard.js': [
         'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession',
-        "waitingWorker.postMessage({ type: 'SKIP_WAITING' })"
+        "waitingWorker.postMessage({ type: 'SKIP_WAITING' })",
+        'party-release-structure.js', 'party-release.css', 'loadPartyReleaseStructure'
     ],
     'party-night.js': ['normalizeConfig', 'eligibleGames', 'buildPlan', 'normalizePlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'],
     'party-advanced-runner.js': ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubState(nextHubState)'],
@@ -139,7 +144,8 @@ if not install_handler or 'skipWaiting' in install_handler.group(0):
     violations.append('Service-worker install must not activate an update automatically.')
 for asset in [
     './party-night.js', './party-advanced-runner.js', './quick-play.html', './creator.html',
-    './pwa-update.css', './session-ledger.js', './session-ledger-legacy-guard.js',
+    './pwa-update.css', './party-release.css', './party-release-structure.js',
+    './session-ledger.js', './session-ledger-legacy-guard.js',
     './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
     './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js',
     './party-created-modes.js', './quick-loader.js', './game-creator.js', './creator-page.js',
@@ -168,6 +174,7 @@ print(json.dumps({
     'runtime_dependencies': 0,
     'offline_cache_version': 30,
     'staged_updates': True,
+    'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
     'backup_schemas': 3,
     'exact_once_engine_families': 4,
     'visible_builtin_games': 45,
