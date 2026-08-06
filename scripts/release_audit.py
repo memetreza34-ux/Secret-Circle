@@ -48,7 +48,8 @@ checks = {
     'routing_v8': 'version: 8' in routing and "CREATED_KEY = 'secret-circle-party-created-games-v1'" in routing and 'createCatalog' in routing,
     'creator_v1': all(marker in creator for marker in ("STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'createStore', 'normalizeGame')),
     'creator_wizard': all(marker in creator_page for marker in ('renderTemplates', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary')),
-    'created_runner': all(marker in created_runtime for marker in ("ACTIVE_KEY = 'secret-circle-party-created-active-v1'", 'validActive', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'finishSession')),
+    'created_runner': all(marker in created_runtime for marker in ("ACTIVE_KEY = 'secret-circle-party-created-active-v1'", 'validActive', 'sanitizeScores', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'finishSession')),
+    'created_runner_counts_replays': 'plays: Math.max(0, Number(stats.plays) || 0) + 1' in created_runtime,
     'contextual_guidance': all(marker in guide for marker in ('addCreatorEntryPoints', 'addHowItWorks', 'addSectionHelp', 'enhanceGameCards')),
     'quick_resume': all(marker in quick_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
     'mega_resume': all(marker in mega_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
@@ -90,12 +91,12 @@ for game_id in viral_ids:
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 13 or len(e2e_suites) < 27 or not cross_suites:
+if len(unit_tests) < 13 or len(e2e_suites) < 28 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required in ('party-trending-catalog.test.js', 'party-mega-catalog.test.js', 'party-viral-catalog.test.js', 'game-creator.test.js'):
     if required not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required}')
-for required in ('game-creator.spec.js', 'party-viral-resilience.spec.js', 'party-viral-modes.spec.js', 'offline.spec.js'):
+for required in ('game-creator.spec.js', 'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js', 'party-viral-modes.spec.js', 'offline.spec.js'):
     if required not in e2e_suites:
         raise SystemExit(f'Critical E2E test missing: {required}')
 
