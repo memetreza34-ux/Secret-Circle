@@ -12,7 +12,8 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 - eigene Text-Packs
 - lokaler No-Code-Game-Creator
 - bis zu **40 selbst erstellte Spiele**
-- Offline-Core `secret-circle-v29`
+- eigene wiederaufnehmbare Creator-Spielengine
+- Offline-Core `secret-circle-v30`
 
 ## Einfacher Einstieg
 
@@ -44,6 +45,8 @@ Vorlagen:
 
 Eigene Spiele lassen sich bearbeiten, kopieren, löschen, exportieren, importieren und direkt im Party Hub spielen. Pro Spiel sind bis zu acht Kategorien und bis zu 200 Karten je Kategorie vorgesehen.
 
+Die dedizierte Creator-Spielengine unterstützt 3, 5, 10 oder 20 Runden, lokale Wiederaufnahme, Spieler-Snapshots, Punkte, Verlauf und Statistik. Erratenspiele besitzen eine geschützte Begriffsansicht vor der gemeinsamen Runde.
+
 ## Start
 
 ```bash
@@ -56,6 +59,7 @@ python -m http.server 8080
 - Advanced: `/advanced.html?game=question-imposter`
 - Trend: `/quick-play.html?game=anime-guess`
 - Viral: `/quick-play.html?game=guess-the-price`
+- eigenes Spiel: `/quick-play.html?game=<custom-game-id>`
 
 ## Produkt- und Designpläne
 
