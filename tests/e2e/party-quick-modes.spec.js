@@ -4,24 +4,19 @@ async function configurePlayers(page, players = ['Alex', 'Sam', 'Mika', 'Lina'])
   await page.goto('/party.html');
   await page.evaluate(value => {
     localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
-      version: 1,
-      players: value,
-      favorites: [],
-      recent: [],
-      presets: [],
-      history: [],
-      stats: {}
+      version: 1, players: value, favorites: [], recent: [], presets: [], history: [], stats: {}
     }));
     localStorage.removeItem('secret-circle-party-quick-active-v1');
+    localStorage.removeItem('secret-circle-party-mega-active-v1');
   }, players);
 }
 
-test('Party Hub exposes 28 playable games and accurate Quick Mode actions', async ({ page }) => {
+test('Party Hub exposes 37 playable games and accurate Quick Mode actions', async ({ page }) => {
   await configurePlayers(page);
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await expect(page.locator('#result-count')).toHaveText('28');
-  await expect(page.locator('.game-card.playable')).toHaveCount(28);
+  await expect(page.locator('#result-count')).toHaveText('37');
+  await expect(page.locator('.game-card.playable')).toHaveCount(37);
   await expect(page.locator('.game-card.planned')).toHaveCount(0);
 
   await page.locator('[data-game-id="wavelength"] [data-open-game="wavelength"]').click();
@@ -40,7 +35,10 @@ test('Wavelength completes a round and persists a resumable session', async ({ p
   await expect(page.locator('#quick-progress')).toContainText('Runde 1 von 3');
   await expect(page.locator('.spectrum-card strong')).toContainText('Ziel:');
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
-  await page.locator('input[type="range"]').fill('50');
+  await page.locator('input[type="range"]').evaluate(input => {
+    input.value = '50';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
   await page.getByRole('button', { name: 'Position festlegen' }).click();
   await expect(page.locator('#quick-content')).toContainText('Eure Position: 50');
   await page.getByRole('button', { name: 'Nächstes Spektrum' }).click();
@@ -82,22 +80,22 @@ test('Rapid Fire finishes three rounds and records history and statistics', asyn
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-party-quick-active-v1'))).toBeNull();
 });
 
-test('all ten Quick Modes load original content without runtime errors', async ({ page }) => {
+test('all ten classic Quick Modes load original content without runtime errors', async ({ page }) => {
   await configurePlayers(page, ['Alex', 'Sam', 'Mika', 'Lina', 'Noah']);
   const ids = [
     'wavelength', 'draw-guess', 'rapid-fire', 'sound-imitation', 'forehead-guess',
     'letter-categories', 'dont-laugh', 'hum-song', 'scavenger-hunt', 'caption-battle'
   ];
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
   for (const id of ids) {
-    const errors = [];
-    page.on('pageerror', error => errors.push(error.message));
     await page.goto(`/quick-play.html?game=${id}`);
     await expect(page.locator('#quick-title')).not.toHaveText('Spiel laden');
     await expect(page.locator('#quick-pack option')).not.toHaveCount(0);
     await expect(page.locator('#quick-content-count')).toContainText('Karten');
     await page.getByRole('button', { name: 'Spiel starten' }).click();
     await expect(page.locator('#quick-play')).toBeVisible();
-    expect(errors).toEqual([]);
     await page.evaluate(() => localStorage.removeItem('secret-circle-party-quick-active-v1'));
   }
+  expect(errors).toEqual([]);
 });
