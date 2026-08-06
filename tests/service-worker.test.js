@@ -21,6 +21,7 @@ assert.match(source, /quick-play\.html/);
 assert.match(source, /pwa-update\.css/);
 assert.match(source, /party-release\.css/);
 assert.match(source, /party-release-structure\.js/);
+assert.match(source, /party-filter-state\.js/);
 assert.match(source, /session-ledger\.js/);
 assert.match(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);
@@ -36,6 +37,7 @@ console.log(JSON.stringify({
   queryNavigationOffline: true,
   canonicalNavigationCaching: true,
   releaseStructureOffline: true,
+  persistentCatalogFiltersOffline: true,
   exactOnceLedgerOffline: true,
   megaViralGuardOffline: true
 }, null, 2));
