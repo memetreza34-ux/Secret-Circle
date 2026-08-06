@@ -1,8 +1,14 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const catalog = require('../party-viral-catalog.js');
 const release = require('../party-release-structure.js');
+
+function read(file) {
+  return fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+}
 
 assert.equal(release.version, 1);
 assert.equal(release.coreIds.length, 15);
@@ -33,6 +39,18 @@ assert.equal(release.tierFor({ id: 'custom-game-demo', custom: true, status: 'pl
 assert.equal(release.tierFor({ id: 'unknown-planned', status: 'planned' }), 'labs');
 assert.equal(release.tierFor(null), 'labs');
 
+const runtime = read('runtime-guard.js');
+const worker = read('sw.js');
+const styles = read('party-release.css');
+assert.match(runtime, /party-release-structure\.js/);
+assert.match(runtime, /party-release\.css/);
+assert.match(runtime, /loadPartyReleaseStructure/);
+assert.match(worker, /\.\/party-release-structure\.js/);
+assert.match(worker, /\.\/party-release\.css/);
+assert.match(styles, /\.release-tier-overview/);
+assert.match(styles, /\.release-tier-pill/);
+assert.match(styles, /prefers-reduced-motion/);
+
 console.log(JSON.stringify({
   ok: true,
   totalBuiltInGames: catalog.games.length,
@@ -40,5 +58,8 @@ console.log(JSON.stringify({
   extendedGames: summary.extended,
   labsGames: summary.labs,
   customGamesClassifiedAsExtended: true,
-  plannedGamesClassifiedAsLabs: true
+  plannedGamesClassifiedAsLabs: true,
+  runtimeLoaderIntegrated: true,
+  offlineAssetsIntegrated: true,
+  responsiveTierStyles: true
 }, null, 2));
