@@ -7,23 +7,24 @@ test.beforeEach(async ({ page }) => {
     localStorage.removeItem('secret-circle-party-preferences-v1');
     localStorage.removeItem('secret-circle-party-quick-active-v1');
     localStorage.removeItem('secret-circle-party-mega-active-v1');
+    localStorage.removeItem('secret-circle-party-viral-active-v1');
   });
   await page.reload();
 });
 
-test('party hub exposes a clear 37-game playable catalog', async ({ page }) => {
+test('party hub exposes a clear 45-game playable catalog', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('37');
+  await expect(page.locator('#playable-count')).toHaveText('45');
   await expect(page.locator('#planned-count')).toHaveText('0');
   await expect(page.locator('#content-count')).not.toHaveText('0');
 
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await expect(page.getByRole('heading', { name: 'Alle Spiele' })).toBeVisible();
-  await expect(page.locator('#result-count')).toHaveText('37');
-  await expect(page.locator('.game-card')).toHaveCount(37);
+  await expect(page.locator('#result-count')).toHaveText('45');
+  await expect(page.locator('.game-card')).toHaveCount(45);
 
   await page.locator('#status-filter').selectOption('playable');
-  await expect(page.locator('#result-count')).toHaveText('37');
+  await expect(page.locator('#result-count')).toHaveText('45');
   await page.locator('#game-search').fill('Scharade');
   await expect(page.locator('#result-count')).toHaveText('1');
   await expect(page.getByRole('heading', { name: 'Scharade' })).toBeVisible();
@@ -98,7 +99,7 @@ test('shared players, presets and favorites persist locally', async ({ page }) =
   await expect(page.locator('#favorites-grid')).toContainText('Hot Takes');
 });
 
-test('advanced Quick and Trend Modes are all playable', async ({ page }) => {
+test('advanced Quick Trend and Viral Modes are all playable', async ({ page }) => {
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await page.locator('#game-search').fill('Mafia');
   await page.locator('[data-open-game="mafia"]').click();
@@ -119,7 +120,14 @@ test('advanced Quick and Trend Modes are all playable', async ({ page }) => {
   await page.locator('[data-open-game="who-am-i"]').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=who-am-i/);
-  await expect(page.getByRole('heading', { name: 'Wer bin ich?' })).toBeVisible();
+
+  await page.goto('/party.html');
+  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.locator('#game-search').fill('Finger runter');
+  await page.locator('[data-open-game="put-a-finger-down"]').click();
+  await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();
+  await expect(page).toHaveURL(/quick-play\.html\?game=put-a-finger-down/);
+  await expect(page.getByRole('heading', { name: 'Finger runter' })).toBeVisible();
 });
 
 test('planned catalog filter is empty because all visible games are playable', async ({ page }) => {
