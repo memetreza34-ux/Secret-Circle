@@ -105,10 +105,11 @@ test('Anime Trend Mode starts and resumes completely offline', async ({ page, co
   await page.goto('/quick-play.html?game=anime-guess');
   await expect(page.getByRole('heading', { name: 'Anime-Figuren erraten' })).toBeVisible();
   await page.getByRole('button', { name: 'Spiel starten' }).click();
-  await page.getByRole('button', { name: 'Figur anzeigen' }).click();
+  await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
+  await expect(page.locator('.challenge-card')).not.toHaveText('');
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
-  await expect(page.locator('.challenge-card')).not.toHaveText('');
+  await expect(page.getByRole('button', { name: 'Figur verbergen und 60 Sekunden starten' })).toBeVisible();
 });
 
 test('offline mode preserves a locally saved active Imposter game', async ({ page, context }) => {
