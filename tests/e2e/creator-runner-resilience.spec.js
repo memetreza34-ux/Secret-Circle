@@ -114,6 +114,7 @@ test('Creator runner sanitizes a resumable session before rendering it', async (
   await expect(page.locator('#quick-score')).toHaveText('10000 Punkte');
   await expect(page.locator('.choice-card')).toHaveCount(2);
 
+  await page.reload();
   const active = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-created-active-v1')));
   expect(active.playerIndex).toBe(3);
   expect(active.used).toEqual([0]);
