@@ -12,6 +12,9 @@
 - Creator-Zeitstempel bleiben beim Laden, Exportieren und Importieren unverändert.
 - `updatedAt` wird nur noch bei einem tatsächlichen Speichervorgang erneuert.
 - Duplizierte Creator-Spiele erhalten eigene Erstellungs- und Änderungszeitpunkte.
+- Word-Imposter-Backups verwenden jetzt dieselbe 1,5-MB-Grenze wie die Gesamtsicherung.
+- Backupgrößen werden als echte UTF-8-Bytes statt als JavaScript-Zeichenanzahl geprüft.
+- Auch als Objekt übergebene Backups werden vor dem Import serialisiert und gegen die Größenbegrenzung geprüft.
 
 ### Qualität
 
@@ -19,11 +22,12 @@
 - Regressionstest für Quick-Game-Routing ergänzt.
 - Fairnessprüfung mit 200 deterministischen Rollenstichproben ergänzt.
 - Regressionstest für Creator-Zeitstempel ergänzt.
+- Unicode-Regressionstest für mehrbyteige Backupinhalte ergänzt.
 - Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
 
 ### Bekannte externe Blockade
 
-- GitHub Actions weist dem Workflow weiterhin keinen Runner zu (`runner_id: 0`, keine ausgeführten Schritte). Lokale Tests und Syntaxprüfungen ersetzen den verpflichtenden grünen Remote-Lauf nicht.
+- GitHub Actions weist dem Workflow weiterhin keinen Runner zu beziehungsweise lässt den Job ohne Schritte in der Warteschlange. Lokale Tests und Syntaxprüfungen ersetzen den verpflichtenden grünen Remote-Lauf nicht.
 
 ## Frühere Entwicklungswelle – Bedienbarkeit, Creator und Offline-Core v29
 
@@ -66,7 +70,7 @@
 - vollständiger grüner `npm run ci`-Lauf
 - grüner Cross-Browser-Lauf
 - sichtbare grüne GitHub-Actions-Schritte
-- echte Android-, iOS- und PWA-Update-Prüfung
+- echte Android-, iOS- und PWA-v29-Update-Prüfung
 - reale Creator-Usability-Tests
 - reale Partytests mit allen 45 eingebauten Spielen
 - Produktion der geplanten Icons, Illustrationen und Animationen
