@@ -1,6 +1,6 @@
 (function (root, factory) {
   const base = typeof module === 'object' && module.exports
-    ? require('./party-mega-catalog.js')
+    ? require('./party-viral-catalog.js')
     : root.SecretCirclePartyCatalog;
   const api = factory(base);
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -26,7 +26,7 @@
 
   return Object.freeze({
     ...base,
-    version: 5,
+    version: 6,
     games: Object.freeze(games),
     getGame
   });
