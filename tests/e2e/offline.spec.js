@@ -19,37 +19,37 @@ async function seedPlayers(page) {
   });
 }
 
-test('service worker caches the complete v27 core including all trend engines', async ({ page, context }) => {
+test('service worker caches the complete v28 core including all game engines', async ({ page, context }) => {
   await page.goto('/party.html');
   await waitForWorker(page);
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v27');
+    const cache = await caches.open('secret-circle-v28');
     const expected = [
       './index.html', './party.html', './advanced.html', './quick-play.html', './privacy.html',
       './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
       './app.js', './game-engine.js', './role-assignment.js', './word-packs.js', './data-store.js',
       './party-catalog.js', './party-expansion.js', './party-trending-catalog.js', './party-mega-catalog.js',
-      './party-routing.js', './party-custom-packs.js', './party-hub.js', './party-hub-plus.js',
-      './party-hub-polish.js', './party-night.js', './party-data-tools.js', './party-advanced.js',
-      './party-advanced-runner.js', './party-advanced-preferences.js', './party-quick-modes.js',
-      './party-mega-modes.js', './quick-loader.js', './manifest.webmanifest', './icon.svg',
-      './icon-192.png', './icon-512.png'
+      './party-viral-catalog.js', './party-routing.js', './party-custom-packs.js', './party-hub.js',
+      './party-hub-plus.js', './party-hub-polish.js', './party-night.js', './party-data-tools.js',
+      './party-advanced.js', './party-advanced-runner.js', './party-advanced-preferences.js',
+      './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js', './quick-loader.js',
+      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
     ];
     const missing = [];
     for (const path of expected) if (!await cache.match(path)) missing.push(path);
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v27');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v27']);
+  expect(cacheState.names).toContain('secret-circle-v28');
+  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v28']);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('37');
+  await expect(page.locator('#playable-count')).toHaveText('45');
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Datenschutz' })).toBeVisible();
   await page.goto('/');
@@ -110,6 +110,21 @@ test('Anime Trend Mode starts and resumes completely offline', async ({ page, co
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
   await expect(page.getByRole('button', { name: 'Figur verbergen und 60 Sekunden starten' })).toBeVisible();
+});
+
+test('Price Guess Viral Mode starts and resumes completely offline', async ({ page, context }) => {
+  await page.goto('/party.html');
+  await seedPlayers(page);
+  await waitForWorker(page);
+  await context.setOffline(true);
+  await page.goto('/quick-play.html?game=guess-the-price');
+  await expect(page.getByRole('heading', { name: 'Preis schätzen' })).toBeVisible();
+  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('input[type="number"]').fill('50');
+  await page.reload();
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await expect(page.locator('input[type="number"]')).toBeVisible();
+  expect(await page.locator('script[src="party-viral-modes.js"]').count()).toBe(1);
 });
 
 test('offline mode preserves a locally saved active Imposter game', async ({ page, context }) => {
