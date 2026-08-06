@@ -1,78 +1,65 @@
-# Secret Circle Party Hub – Release-Status
+# Release-Status – Secret Circle
 
-6. August 2026 · `1.0.0-beta.3` · Draft-PR #11
+Stand: 6. August 2026
+Zielrelease: 4.–15. Januar 2027
+Arbeitsbranch: `agent/release-foundation-2027`
+Draft-PR: #13
 
-## Umfang
+## Aktueller Gesamtstatus
 
-- 45 eingebaute technisch spielbare Spiele
-- 27 Quick-, Trend- und Viral-Modi
-- 4 Advanced-Spiele
-- Smart Party Night
-- lokaler No-Code-Game-Creator mit 6 Vorlagen
-- bis zu 40 selbst erstellte Spiele
-- eigene wiederaufnehmbare Creator-Spielengine
-- Offline-Core `secret-circle-v30`
+**Phase:** technische Release-Grundlage
 
-## Neu abgeschlossen
+Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release wird jedoch nicht nach der Anzahl sichtbarer Spiele bewertet, sondern nach Stabilität, Verständlichkeit, Inhaltsqualität, Offlinefähigkeit, Barrierefreiheit und realen Gruppentests.
 
-- vereinfachter Drei-Schritte-Einstieg im Party Hub
-- kurze Hilfen für Start, Katalog, Spieler, Favoriten, Verlauf, Daten und Creator
-- verständlichere Spielkarten und Aktionsbeschriftungen
-- „Kurz erklärt“-Block in Spieldetails
-- erster-Besuch-Onboarding
-- eigener Creator-Bereich mit Live-Vorschau
-- Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenvorlagen
-- mehrere Kategorien je eigenem Spiel
-- Bearbeiten, Kopieren, Löschen, Exportieren und Importieren
-- eigene Spiele erscheinen im normalen Hub-Katalog
-- eigene Spiele laufen über eine dedizierte 3-/5-/10-/20-Runden-Engine
-- Wiederaufnahme, Spieler-Snapshot, Punkte, Verlauf und Statistik für Creator-Spiele
-- geschützte Begriffsansicht für eigene Erratenspiele
-- Icon- und Akzentsystem als Vorbereitung für Bilder und Animationen
-- vollständiger Asset- und Motion-Produktionsplan
-- Creator, Hilfesystem und Creator-Spielengine vollständig in Offline-Core v30 aufgenommen
+## Abgeschlossen
 
-## Fortschritt
+- separater Release-Foundation-Branch
+- verbindlicher Fahrplan bis Januar 2027
+- qualitätsbasierter Umfang mit Kernrelease, erweitertem Release und Labs
+- Offline-Fallback für Query-Routen korrigiert
+- kanonische Cache-Schlüssel für dynamische Spiel-URLs
+- unbekannte Quick-Game-Routen werden sicher abgelehnt
+- unabhängige Imposter-Zuweisung direkt in der Engine
+- maximale Zahl von sechs Impostern direkt in der Engine validiert
+- Runtime-Monkey-Patching der Rollenlogik entfernt
+- Creator-Zeitstempel bei Laden, Export und Import stabilisiert
+- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness und Creator-Zeitstempel
+- Changelog und Roadmap aktualisiert
 
-| Bereich | Stand |
-|---|---:|
-| Word Imposter | 98 % |
-| Party-Hub-Grundstruktur | 98 % |
-| Bedienbarkeit und Erklärungen | 94 % |
-| 45 eingebaute Spiele | 86 % |
-| No-Code-Game-Creator | 89 % |
-| Creator-Spielengine | 87 % |
-| eigene Packs und Spiele | 96 % |
-| Quick-/Trend-/Viral-Engines | 89 % |
-| Advanced-Spiele | 88 % |
-| Speicherung und Backup | 98 % |
-| PWA und Offline | 97 % |
-| Accessibility und Mobile | 93 % |
-| visuelles Asset-System geplant | 88 % |
-| Bilder und Animationen produziert | 5 % |
-| automatisierte Testvorbereitung | 99 % |
-| reale Testbereitschaft | 90 % |
-| öffentlicher Release | 79 % |
-| vollständige 122-Modi-Vision funktional | 47 % |
+## Lokal geprüft
 
-Die Prozentwerte bewerten Implementierung und Vorbereitung. Sie ersetzen keinen bestandenen Testlauf.
+- JavaScript-Syntax der geänderten Kernmodule
+- deterministische Rollenverteilung
+- 200 Fairnessstichproben mit wechselnder erster Aufdeckrolle
+- Timer- und Runden-Smoke-Test der Word-Imposter-Engine
+- Creator-Laden ohne künstliche Änderung von `updatedAt`
+- Creator-Export und -Import mit unveränderten Zeitstempeln
+- echte Bearbeitung aktualisiert `updatedAt`
 
-## Blocker
+## Externer Releaseblocker
 
-1. endgültiger `npm run ci`-Lauf nicht grün dokumentiert
-2. Cross-Browser-Lauf nicht grün dokumentiert
-3. GitHub Actions scheitert weiterhin vor sichtbaren Workflow-Schritten
-4. Creator-Flows und eigene Spiele auf echten Android-/iOS-Geräten ungeprüft
-5. PWA-Update auf `secret-circle-v30` nicht praktisch dokumentiert
-6. reale Gruppenprüfung aller 45 eingebauten Spiele fehlt
-7. selbst erstellte Spiele benötigen reale Usability-Tests
-8. Icons, Illustrationen und Animationen sind noch nicht produziert
-9. Inhalts-, Alters-, Fan-Content- und Rechtsprüfung fehlt
+GitHub Actions startet weiterhin keinen Runner. Der aktuelle Fehler entsteht vor Checkout und vor allen Workflow-Schritten:
 
-## Entscheidung
+- `runner_id: 0`
+- kein Runnername
+- `steps: []`
 
-- vollständiger automatisierter Testlauf: `GO`
-- kontrollierter Entwickler-Browsertest: `GO_WITH_CONDITIONS`
-- realer Geräte-/Party-Betatest: `NO_GO` bis grüne automatisierte Läufe
-- Merge von PR #11: `NO_GO` bis grüne Kernprüfungen
-- öffentlicher Produktionsrelease: `NO_GO`
+Dadurch existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf. Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und Organisationsrichtlinien geprüft werden.
+
+## Nächste technische Prioritäten
+
+1. UTF-8-Bytegrenzen aller Sicherungs- und Importwege vereinheitlichen
+2. zentrales Backup-Schemaregister einführen
+3. PWA-Updatehinweis und kontrollierte Aktivierung einer neuen Version
+4. doppelte Sessionabschlüsse und Statistikschreibvorgänge verhindern
+5. Hub klar in Kernspiele, Kategorien und Labs strukturieren
+6. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch und nächstes Spiel
+7. Kerninhalte redaktionell und nach Altersstufen prüfen
+8. Android-, iPhone-, Tablet- und echte Gruppentests
+
+## Releaseentscheidung
+
+- **Öffentlicher Release heute:** Nein
+- **Kontrollierte Entwicklungsbeta:** Ja
+- **Merge von PR #13 heute:** Nein, Draft bleibt bestehen
+- **Releaseziel Januar 2027 erreichbar:** Ja, sofern CI, Geräteprüfungen, Kernspielqualität und rechtliche Angaben rechtzeitig abgeschlossen werden
