@@ -16,7 +16,7 @@ production_js = [
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
     'party-advanced-runner.js', 'party-advanced-preferences.js',
     'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-    'quick-loader.js', 'sw.js'
+    'party-created-modes.js', 'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html']
 violations = []
@@ -28,9 +28,9 @@ else:
     text = architecture.read_text(encoding='utf-8')
     for marker in [
         'Stabile Identitäten', 'Versionierte Daten', 'Modulgrenzen',
-        'Lokale Transaktionen', 'Offline- und Updatevertrag',
-        'Accessibility als Definition of Done', 'Performancebudget',
-        'Deprecation und Rollback'
+        'Lokale Transaktionen', 'Bedienbarkeitsvertrag',
+        'Offline- und Updatevertrag', 'Accessibility als Definition of Done',
+        'Performancebudget', 'Deprecation und Rollback'
     ]:
         if marker not in text:
             violations.append(f'Architecture contract marker missing: {marker}')
@@ -72,14 +72,15 @@ contracts = {
     'party-quick-modes.js': ["ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'validActive', 'finishSession', 'renderWavelength', 'renderRapidFire'],
     'party-mega-modes.js': ["ACTIVE_KEY = 'secret-circle-party-mega-active-v1'", 'validActive', 'renderWhoAmI', 'renderAnimeGuess', 'renderMoneyChallenge', 'renderBlindRanking', 'renderEmojiQuiz', 'renderSecretMission'],
     'party-viral-modes.js': ["ACTIVE_KEY = 'secret-circle-party-viral-active-v1'", 'validActive', 'renderFingerDown', 'renderGuessPrice', 'renderHigherLower', 'renderKnowMeBest', 'renderHearMeOut', 'renderHotSeat', 'renderStoryChain', 'finishSession'],
+    'party-created-modes.js': ["ACTIVE_KEY = 'secret-circle-party-created-active-v1'", 'validActive', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory', 'finishSession'],
     'party-trending-catalog.js': ['trendingGameIds', 'caption-battle', 'version: 3'],
     'party-mega-catalog.js': ['megaGameIds', 'quickGameIds', 'anime-guess', 'money-challenge', 'blind-ranking', 'version: 4'],
     'party-viral-catalog.js': ['viralGameIds', 'allFastGameIds', 'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best', 'version: 5'],
-    'party-routing.js': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'safeCreatedGames', 'createCatalog', 'version: 7'],
+    'party-routing.js': ["CREATED_KEY = 'secret-circle-party-created-games-v1'", 'safeCreatedGames', 'createCatalog', 'version: 8', 'party-created-modes'],
     'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'normalizeGame', 'createStore', 'toCatalogGame'],
     'creator-page.js': ['renderTemplates', 'addPack', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary'],
     'party-guide.js': ['addCreatorEntryPoints', 'addHowItWorks', 'showHelp', 'enhanceGameCards', 'openRequestedGame'],
-    'quick-loader.js': ['party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
+    'quick-loader.js': ['party-created-modes.js', 'party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'],
     'party-custom-packs.js': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4', 'createManager', 'commit(nextState)', 'restoreStorage'],
     'party-data-tools.js': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup']
 }
@@ -91,20 +92,21 @@ for relative, markers in contracts.items():
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
-if not cache or cache.group(1) != '29':
-    violations.append('Service-worker cache must be secret-circle-v29.')
+if not cache or cache.group(1) != '30':
+    violations.append('Service-worker cache must be secret-circle-v30.')
 for asset in [
     './party-night.js', './party-advanced-runner.js', './quick-play.html', './creator.html',
     './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
-    './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js', './quick-loader.js',
-    './game-creator.js', './creator-page.js', './party-guide.js', './party-guide.css', './creator.css'
+    './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js',
+    './party-created-modes.js', './quick-loader.js', './game-creator.js', './creator-page.js',
+    './party-guide.js', './party-guide.css', './creator.css'
 ]:
     if asset not in sw:
         violations.append(f'Offline architecture asset missing from CORE: {asset}')
 
 for relative in [
     'README.md', 'RELEASE_STATUS.md', 'DEPLOYMENT.md', 'SECURITY.md',
-    'MANUAL_TEST_PLAN.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md'
+    'MANUAL_TEST_PLAN.md', 'MODE_UNIVERSE.md', 'TREND_FORMATS.md', 'ASSET_PLAN.md'
 ]:
     if not (ROOT / relative).is_file() or (ROOT / relative).stat().st_size < 300:
         violations.append(f'Operational document missing or incomplete: {relative}')
@@ -119,10 +121,11 @@ print(json.dumps({
     'maximum_module_lines': 1000,
     'maximum_module_bytes': 100000,
     'runtime_dependencies': 0,
-    'offline_cache_version': 29,
+    'offline_cache_version': 30,
     'visible_builtin_games': 45,
     'maximum_local_created_games': 40,
     'creator_templates': 6,
+    'creator_runner': True,
     'classic_quick_modes': 10,
     'mega_trend_modes': 9,
     'viral_modes': 8,
