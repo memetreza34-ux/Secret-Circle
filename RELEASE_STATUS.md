@@ -7,33 +7,61 @@ Draft-PR: #13
 
 ## Aktueller Gesamtstatus
 
-**Phase:** technische Release-Grundlage
+**Phase:** technische Release-Grundlage und Informationsarchitektur
 
 Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release wird jedoch nicht nach der Anzahl sichtbarer Spiele bewertet, sondern nach Stabilität, Verständlichkeit, Inhaltsqualität, Offlinefähigkeit, Barrierefreiheit und realen Gruppentests.
 
 ## Abgeschlossen
 
+### Release und Struktur
+
 - separater Release-Foundation-Branch
 - verbindlicher Fahrplan bis Januar 2027
 - qualitätsbasierter Umfang mit Kernrelease, erweitertem Release und Labs
-- Offline-Fallback für Query-Routen korrigiert
-- kanonische Cache-Schlüssel für dynamische Spiel-URLs
-- unbekannte Quick-Game-Routen werden sicher abgelehnt
+- Party Hub in **15 Kernspiele**, **13 Erweiterungen** und **17 Labs-Modi** gegliedert
+- eigener Reifestufenfilter und sichtbare Qualitätsbadges auf Spielkarten
+- Schnellwahlkarten für Kernspiele, Erweiterungen und Labs
+- selbst erstellte Spiele werden als Erweiterungen eingeordnet
+- neue Struktur reagiert auf Suche, Filter, Favoriten und neu gerenderte Karten
+
+### Engine und Daten
+
 - unabhängige Imposter-Zuweisung direkt in der Engine
 - maximale Zahl von sechs Impostern direkt in der Engine validiert
 - Runtime-Monkey-Patching der Rollenlogik entfernt
 - Creator-Zeitstempel bei Laden, Export und Import stabilisiert
-- Word-Imposter- und Gesamtsicherung verwenden dieselbe 1,5-MB-Grenze
-- Backupgrößen werden als UTF-8-Bytes geprüft
 - gemeinsames Abschlussregister mit stabilen Session- und Abschluss-IDs
 - Creator- und klassische Quick-Abschlüsse werden höchstens einmal gezählt
 - Mega- und Viral-Abschlüsse werden während ihrer schrittweisen Migration zuverlässig dedupliziert
 - Spielanzahl, Rundenzahl, Bestwert und Verlauf werden gemeinsam aktualisiert
+
+### Backup und Wiederherstellung
+
+- drei Sicherungsformate zentral in `backup-schema-registry.js` registriert
+- Word Imposter, Gesamtsicherung und Creator-Bibliothek eindeutig versioniert
+- gemeinsames Dateilimit von 1.500.000 UTF-8-Bytes
+- maximale Einträge und Creator-Kapazitäten im Register dokumentiert
+- Runtime-Verträge werden automatisch gegen das zentrale Register geprüft
+- Migrations-, Rollback- und Release-Regeln in `BACKUP_SCHEMAS.md` dokumentiert
+
+### PWA und Offline
+
+- Offline-Fallback für Query-Routen korrigiert
+- kanonische Cache-Schlüssel für dynamische Spiel-URLs
+- unbekannte Quick-Game-Routen werden sicher abgelehnt
 - neue PWA-Versionen werden separat vorbereitet und nicht mehr automatisch aktiviert
 - sichtbarer Updatehinweis mit „Jetzt aktualisieren“ und „Später“
 - laufende Sessions werden im Updatehinweis ausdrücklich berücksichtigt
-- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse und PWA-Updates
-- Changelog und Roadmap aktualisiert
+- aktiver Offline-Cache wird bei der Promotion nicht mehr vorzeitig gelöscht
+- neue Dateien werden zuerst vollständig übernommen; erst danach werden veraltete Cacheeinträge entfernt
+- Party-Hub-Reifestufen funktionieren auch offline
+
+### Qualität
+
+- moderne Struktur-, Architektur-, Contract-, Performance- und Release-Audits
+- feste Größenbudgets für Registry, Ledger, PWA-Update und Release-Struktur
+- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates und Release-Tiers
+- Changelog, Backupvertrag und Release-Status aktualisiert
 
 ## Lokal geprüft
 
@@ -48,6 +76,8 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - atomischer Import-Rollback bei Speicherfehlern
 - Mega-/Viral-Abschlussguard mit Erststart und wiederholtem Abschluss
 - liegengebliebene Session einer anderen Engine wird korrekt ignoriert
+- zentrales Backup-Register und seine Runtime-Verträge
+- feste Katalogverteilung 15 Kernspiele / 13 Erweiterungen / 17 Labs
 
 ## Externer Releaseblocker
 
@@ -61,13 +91,14 @@ Dadurch existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf. Vor Me
 
 ## Nächste technische Prioritäten
 
-1. zentrales Backup-Schemaregister einführen
-2. Mega- und Viral-Engines später direkt auf das Session-Ledger umstellen und den Kompatibilitätsschutz entfernen
-3. PWA-Update von einer älteren installierten Version auf echten Geräten prüfen
-4. Hub klar in Kernspiele, Kategorien und Labs strukturieren
-5. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch und nächstes Spiel
+1. Mega- und Viral-Engines direkt auf das Session-Ledger umstellen und den Kompatibilitätsschutz entfernen
+2. Reifestufenfilter und übrige Katalogfilter gemeinsam lokal speichern
+3. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch, Wiederholen und nächstes Spiel
+4. PWA-Update von einer älteren installierten Version auf echten Geräten prüfen
+5. Kernspiele einzeln nach Regeln, Inhalt, Timer, Wiederaufnahme und Accessibility abnehmen
 6. Kerninhalte redaktionell und nach Altersstufen prüfen
 7. Android-, iPhone-, Tablet- und echte Gruppentests
+8. reproduzierbaren Dependency-Lock erzeugen und CI auf `npm ci` umstellen
 
 ## Releaseentscheidung
 
