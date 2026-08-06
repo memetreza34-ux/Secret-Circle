@@ -3,7 +3,7 @@
 (() => {
   const PREFIX = 'secret-circle-';
   const FORMAT = 'secret-circle-complete-backup';
-  const VERSION = 2;
+  const VERSION = 3;
   const MAX_BYTES = 1_500_000;
   const MAX_ENTRIES = 100;
   const MAX_VALUE_BYTES = 1_000_000;
@@ -34,8 +34,7 @@
     const entries = Object.create(null);
     for (const key of storageKeys()) {
       const value = localStorage.getItem(key);
-      if (value === null) continue;
-      entries[key] = value;
+      if (value !== null) entries[key] = value;
     }
     return entries;
   }
@@ -105,7 +104,7 @@
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
-    setStatus(`${Object.keys(payload.entries).length} lokale Datensätze exportiert.`);
+    setStatus(`${Object.keys(payload.entries).length} lokale Datensätze exportiert – einschließlich eigener Spiele.`);
   }
 
   async function importData(file) {
@@ -122,12 +121,12 @@
     }
     const entries = validateBackup(payload, bytes);
     replaceEntries(entries);
-    setStatus(`${entries.length} Datensätze importiert. App wird neu geladen.`);
+    setStatus(`${entries.length} Datensätze importiert. Eigene Spiele und der Hub werden neu geladen.`);
     window.setTimeout(() => window.location.reload(), 350);
   }
 
   function deleteAll() {
-    if (!window.confirm('Alle Secret-Circle-Daten löschen? Dazu gehören Imposter-Spiele, Hub-Spieler, Eigene Hub-Packs, Favoriten, Presets, Verlauf, Statistiken und aktive Sessions.')) return;
+    if (!window.confirm('Alle Secret-Circle-Daten löschen? Dazu gehören Word Imposter, Hub-Spieler, Favoriten, Presets, Verlauf, Statistiken, aktive Sessions, eigene Packs und selbst erstellte Spiele.')) return;
     const count = storageKeys().length;
     try {
       replaceEntries([]);
@@ -135,7 +134,7 @@
       setStatus(`Datenlöschung abgebrochen. Der vorherige Zustand wurde soweit möglich wiederhergestellt: ${error.message}`, true);
       return;
     }
-    setStatus(`${count} lokale Datensätze vollständig gelöscht.`);
+    setStatus(`${count} lokale Datensätze einschließlich eigener Spiele vollständig gelöscht.`);
     window.setTimeout(() => window.location.reload(), 350);
   }
 
@@ -145,22 +144,16 @@
   const deleteButton = document.querySelector('#hub-delete-data');
 
   exportButton?.addEventListener('click', () => {
-    try {
-      exportData();
-    } catch (error) {
-      setStatus(error.message || 'Sicherung konnte nicht exportiert werden.', true);
-    }
+    try { exportData(); }
+    catch (error) { setStatus(error.message || 'Sicherung konnte nicht exportiert werden.', true); }
   });
   importButton?.addEventListener('click', () => importInput?.click());
   importInput?.addEventListener('change', async () => {
     const file = importInput.files?.[0];
     importInput.value = '';
     if (!file) return;
-    try {
-      await importData(file);
-    } catch (error) {
-      setStatus(error.message || 'Sicherung konnte nicht importiert werden.', true);
-    }
+    try { await importData(file); }
+    catch (error) { setStatus(error.message || 'Sicherung konnte nicht importiert werden.', true); }
   });
   deleteButton?.addEventListener('click', deleteAll);
 
