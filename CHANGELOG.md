@@ -15,6 +15,19 @@
 - Word-Imposter-Backups verwenden jetzt dieselbe 1,5-MB-Grenze wie die Gesamtsicherung.
 - Backupgrößen werden als echte UTF-8-Bytes statt als JavaScript-Zeichenanzahl geprüft.
 - Auch als Objekt übergebene Backups werden vor dem Import serialisiert und gegen die Größenbegrenzung geprüft.
+- Creator- und klassische Quick-Sessions schreiben Verlauf, Spielanzahl und Rundenzahl höchstens einmal.
+- Mega- und Viral-Abschlüsse werden über einen eng begrenzten Kompatibilitätsschutz dedupliziert.
+- Der alte Mega-/Viral-/Quick-Fehler, bei dem `plays` praktisch bei mindestens 1 blieb, wird im gemeinsamen Abschlussregister korrekt behandelt.
+- Liegengebliebene Sessions einer anderen Engine blockieren die Zuordnung eines aktuellen Abschlusses nicht mehr.
+- Eine neue PWA-Version wird nicht mehr automatisch mitten in einer laufenden Nutzung aktiviert.
+
+### Hinzugefügt
+
+- gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs
+- `session-ledger-legacy-guard.js` für die schrittweise Migration großer Alt-Engines
+- sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“
+- separat vorbereiteter Service-Worker-Staging-Cache
+- barrierearme, responsive Updateleiste mit Safe-Area- und Reduced-Motion-Unterstützung
 
 ### Qualität
 
@@ -23,6 +36,9 @@
 - Fairnessprüfung mit 200 deterministischen Rollenstichproben ergänzt.
 - Regressionstest für Creator-Zeitstempel ergänzt.
 - Unicode-Regressionstest für mehrbyteige Backupinhalte ergänzt.
+- Genau-einmal-Tests für Creator, Quick, Mega und Viral ergänzt.
+- Erststart-, Retry- und liegengebliebene-Session-Fälle für den Abschlussguard ergänzt.
+- statische Qualitätsprüfung für sichtbare und kontrollierte PWA-Aktualisierungen ergänzt.
 - Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
 
 ### Bekannte externe Blockade
