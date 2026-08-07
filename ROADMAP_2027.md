@@ -57,6 +57,9 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] temporären Legacy-Guard und globales Storage-Patching entfernen
 - [x] PWA-Updatefluss mit sichtbarer neuer-Version-Meldung ergänzen
 - [x] aktive Cacheversion bei fehlgeschlagener Promotion vor vorzeitigem Löschen schützen
+- [x] direkte Hub-Sessions versioniert speichern und nach Reload explizit wiederaufnehmbar machen
+- [x] direkte Hub-Timerrestzeit für Scharade, Heiße Kartoffel und Wortkette über Reload sichern
+- [x] private Hub-/Advanced-Reveal-Zustände nach Reload standardmäßig wieder verdecken
 
 ## September 2026 – Bedienung und Kernspiele
 
@@ -82,9 +85,12 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [ ] Regeln jeder Runde vor dem Start in höchstens vier Schritten erklären
 - [x] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel für Quick-, Mega-, Viral- und Creator-Modi vereinheitlichen
 - [x] laufende Timer dieser vier Enginefamilien während einer Pause tatsächlich einfrieren
+- [x] direkte Hub-Timer über Hintergrund und Neuladen technisch pausierbar/wiederaufnehmbar machen
 - [ ] Wartezeiten und Übergaben bei großen Gruppen reduzieren
 - [ ] Punkte und Siegerlogik pro Spiel dokumentieren
-- [ ] Timer über Hintergrund, Sperrbildschirm und Neuladen korrekt fortsetzen
+- [ ] Timer über Sperrbildschirm auf echten Zielgeräten korrekt fortsetzen
+- [ ] Skip, Fokus und mobile Accessibility der direkten Hub-Kernspiele vereinheitlichen
+- [ ] Produktentscheidung über eine feste Tabu-Rundenuhr abschließen
 
 ## Oktober 2026 – Inhalte, Creator und Design
 
