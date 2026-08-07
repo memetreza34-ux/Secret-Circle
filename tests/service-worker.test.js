@@ -22,8 +22,10 @@ assert.match(source, /pwa-update\.css/);
 assert.match(source, /party-release\.css/);
 assert.match(source, /party-release-structure\.js/);
 assert.match(source, /party-filter-state\.js/);
+assert.match(source, /party-search-assist\.js/);
+assert.match(source, /party-search\.css/);
 assert.match(source, /session-ledger\.js/);
-assert.match(source, /session-ledger-legacy-guard\.js/);
+assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);
 assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 assert.doesNotMatch(source, /cache\.put\(request,response\.clone\(\)\)/);
@@ -38,6 +40,7 @@ console.log(JSON.stringify({
   canonicalNavigationCaching: true,
   releaseStructureOffline: true,
   persistentCatalogFiltersOffline: true,
+  searchAssistanceOffline: true,
   exactOnceLedgerOffline: true,
-  megaViralGuardOffline: true
+  legacyGuardRemoved: true
 }, null, 2));
