@@ -24,13 +24,16 @@ complete_tools = require_file('party-data-tools.js')
 creator = require_file('game-creator.js')
 creator_page = require_file('creator-page.js')
 ledger = require_file('session-ledger.js')
-legacy_guard = require_file('session-ledger-legacy-guard.js')
 created_runtime = require_file('party-created-modes.js')
 quick_runtime = require_file('party-quick-modes.js')
+mega_runtime = require_file('party-mega-modes.js')
+viral_runtime = require_file('party-viral-modes.js')
 loader = require_file('quick-loader.js')
 release_structure = require_file('party-release-structure.js')
 filter_state = require_file('party-filter-state.js')
+search_assist = require_file('party-search-assist.js')
 release_styles = require_file('party-release.css')
+search_styles = require_file('party-search.css')
 runtime_guard = require_file('runtime-guard.js')
 service_worker = require_file('sw.js')
 package = json.loads(require_file('package.json'))
@@ -40,6 +43,19 @@ install_handler_match = re.search(
     service_worker,
 )
 install_handler = install_handler_match.group(0) if install_handler_match else ''
+
+
+def direct_engine(source: str, engine: str) -> bool:
+    return all(marker in source for marker in (
+        'SecretCircleSessionLedger',
+        f"completionId('{engine}'",
+        'recordCompletion(loadHub()',
+        'sessionId: L.createSessionId',
+        'legacySessionId',
+        'if (result.recorded && !saveHub(result.hub)) return',
+        'active = final;',
+    ))
+
 
 checks = {
     'backup_registry_version': 'const VERSION = 1;' in registry,
@@ -53,10 +69,12 @@ checks = {
     'creator_capacity_matches': all(marker in creator for marker in ('MAX_GAMES = 40', 'MAX_PACKS = 8', 'MAX_CARDS = 200')),
     'backup_contract_documented': all(marker in backup_docs for marker in ('word-imposter', 'complete', 'creator-library', '1.500.000 UTF-8-Bytes')),
     'session_ledger_versioned': 'const VERSION = 1;' in ledger,
-    'creator_exact_once': all(marker in created_runtime for marker in ('SecretCircleSessionLedger', "completionId('created'", 'recordCompletion(loadHub()')),
-    'quick_exact_once': all(marker in quick_runtime for marker in ('SecretCircleSessionLedger', "completionId('quick'", 'recordCompletion(loadHub()')),
-    'mega_viral_guarded': all(marker in legacy_guard for marker in ('secret-circle-party-mega-active-v1', 'secret-circle-party-viral-active-v1', 'recordCompletion(baseHub, completion)')),
-    'loader_orders_shared_runtime': all(marker in loader for marker in ('session-ledger.js', 'session-ledger-legacy-guard.js', 'scriptPlan')),
+    'creator_exact_once': direct_engine(created_runtime, 'created'),
+    'quick_exact_once': direct_engine(quick_runtime, 'quick'),
+    'mega_exact_once': direct_engine(mega_runtime, 'mega'),
+    'viral_exact_once': direct_engine(viral_runtime, 'viral'),
+    'legacy_guard_removed': all('session-ledger-legacy-guard' not in source for source in (loader, service_worker, package.get('scripts', {}).get('test', ''), package.get('scripts', {}).get('check', ''))),
+    'loader_orders_shared_runtime': all(marker in loader for marker in ('session-ledger.js', 'scriptPlan', 'SecretCircleSessionLedger')),
     'release_tier_contract': all(marker in release_structure for marker in (
         'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'", 'tierFor', 'ageAllows', 'counts',
     )),
@@ -74,15 +92,23 @@ checks = {
     'filter_state_sanitized': all(marker in filter_state for marker in (
         'normalize(value)', 'FIXED_VALUES', 'optionExists', 'cleanText',
     )),
-    'release_tier_runtime_loader': all(marker in runtime_guard for marker in (
-        'party-release-structure.js', 'party-filter-state.js', 'party-release.css',
-        'loadPartyReleaseStructure', 'loadPartyFilterState',
+    'search_assist_contract': all(marker in search_assist for marker in (
+        'MANUAL_ALIASES', 'normalizeText', 'levenshtein', 'suggestions',
+        'aria-autocomplete', 'listbox', 'ArrowDown', 'Escape',
     )),
-    'release_tier_offline': all(marker in service_worker for marker in (
-        './party-release-structure.js', './party-filter-state.js', './party-release.css',
+    'release_runtime_loader': all(marker in runtime_guard for marker in (
+        'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
+        'party-release.css', 'party-search.css', 'loadPartyReleaseStructure',
+        'loadPartyFilterState', 'loadPartySearchAssist',
     )),
-    'release_tier_accessibility_styles': all(marker in release_styles for marker in (
+    'release_runtime_offline': all(marker in service_worker for marker in (
+        './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
+        './party-release.css', './party-search.css',
+    )),
+    'release_accessibility_styles': all(marker in release_styles for marker in (
         '.release-tier-overview', '.release-tier-pill', 'focus-visible', 'prefers-reduced-motion',
+    )) and all(marker in search_styles for marker in (
+        '.party-search-suggestions', 'focus-visible', 'prefers-reduced-motion',
     )),
     'visible_pwa_update': all(marker in runtime_guard for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', "type: 'SKIP_WAITING'")),
     'staged_pwa_update': all(marker in service_worker for marker in ('STAGING_CACHE', 'stageCore', 'promoteStagedCore', "event.data?.type === 'SKIP_WAITING'")),
@@ -91,8 +117,8 @@ checks = {
     'foundation_tests_in_unit_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
         'tests/party-release-structure.test.js',
         'tests/party-filter-state.test.js',
+        'tests/party-search-assist.test.js',
         'tests/session-ledger.test.js',
-        'tests/session-ledger-legacy-guard.test.js',
         'tests/session-ledger-integration.test.js',
         'tests/backup-schema-registry.test.js',
         'tests/pwa-update.test.js',
@@ -100,9 +126,9 @@ checks = {
     'foundation_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
         'party-release-structure.js',
         'party-filter-state.js',
+        'party-search-assist.js',
         'backup-schema-registry.js',
         'session-ledger.js',
-        'session-ledger-legacy-guard.js',
         'runtime-guard.js',
         'sw.js',
     )),
@@ -116,10 +142,12 @@ print(json.dumps({
     'foundation_contract_audit': 'PASS',
     'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
     'persistent_catalog_filters': True,
+    'search_assistance': True,
     'combined_age_and_release_filter': True,
     'backup_schemas': ['word-imposter', 'complete', 'creator-library'],
     'maximum_backup_bytes': 1_500_000,
-    'exact_once_engines': ['created', 'quick', 'mega-compatibility', 'viral-compatibility'],
+    'exact_once_engines': ['created', 'quick', 'mega', 'viral'],
+    'legacy_guard_removed': True,
     'controlled_pwa_updates': True,
     'checks': checks,
 }, ensure_ascii=False, indent=2))
