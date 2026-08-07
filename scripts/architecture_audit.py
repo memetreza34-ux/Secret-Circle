@@ -9,7 +9,7 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 production_js = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js',
-    'backup-schema-registry.js', 'session-ledger.js', 'app.js',
+    'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
     'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
@@ -68,6 +68,15 @@ for relative in html_pages:
     if "script-src 'self'" not in source or "object-src 'none'" not in source:
         violations.append(f'Strict CSP contract missing in {relative}.')
 
+quick_play = read('quick-play.html')
+for marker in (
+    'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
+    'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"',
+    'id="quick-pause-overlay"'
+):
+    if marker not in quick_play:
+        violations.append(f'Shared session control missing from quick-play.html: {marker}')
+
 contracts = {
     'backup-schema-registry.js': [
         'MAX_FILE_BYTES = 1_500_000', "format: 'secret-circle-backup'",
@@ -75,6 +84,12 @@ contracts = {
         'validateHeader', 'assertSize'
     ],
     'session-ledger.js': ['createSessionId', 'legacySessionId', 'completionId', 'recordCompletion'],
+    'party-session-controls.js': [
+        'formatMilliseconds', 'orderedGameIds', 'nextGameId', 'nextGameHref',
+        'createController', 'function countdown', 'function setPaused', 'function setSessionActive',
+        '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay', '#quick-next-game',
+        'remainingMilliseconds'
+    ],
     'party-release-structure.js': [
         'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'",
         "label: 'Labs'", 'tierFor', 'ageAllows', 'counts', 'release-tier-filter',
@@ -101,23 +116,31 @@ contracts = {
     'party-advanced-runner.js': ['ACTIVE_VERSION = 2', 'session.players', 'historyId', 'saveHubState(nextHubState)'],
     'party-quick-modes.js': [
         "ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", 'SecretCircleSessionLedger',
+        'SecretCircleSessionControls', 'S.createController', 'sessionControls.countdown',
+        'sessionControls.stopTimer', 'onSkip:', 'onAbort: abortSession', 'onReplay: replaySession',
         "completionId('quick'", 'recordCompletion(loadHub()', 'sessionId: L.createSessionId',
         'legacySessionId', 'renderWavelength', 'renderRapidFire'
     ],
     'party-mega-modes.js': [
         "ACTIVE_KEY = 'secret-circle-party-mega-active-v1'", 'SecretCircleSessionLedger',
+        'SecretCircleSessionControls', 'S.createController', 'sessionControls.countdown',
+        'sessionControls.stopTimer', 'onSkip:', 'onAbort: abortSession', 'onReplay: replaySession',
         "completionId('mega'", 'recordCompletion(loadHub()', 'sessionId: L.createSessionId',
         'legacySessionId', 'renderWhoAmI', 'renderAnimeGuess', 'renderMoneyChallenge',
         'renderBlindRanking', 'renderEmojiQuiz', 'renderSecretMission'
     ],
     'party-viral-modes.js': [
         "ACTIVE_KEY = 'secret-circle-party-viral-active-v1'", 'SecretCircleSessionLedger',
+        'SecretCircleSessionControls', 'S.createController', 'sessionControls.countdown',
+        'sessionControls.stopTimer', 'onSkip:', 'onAbort: abortSession', 'onReplay: replaySession',
         "completionId('viral'", 'recordCompletion(loadHub()', 'sessionId: L.createSessionId',
         'legacySessionId', 'renderFingerDown', 'renderGuessPrice', 'renderHigherLower',
         'renderKnowMeBest', 'renderHearMeOut', 'renderHotSeat', 'renderStoryChain', 'finishSession'
     ],
     'party-created-modes.js': [
         "ACTIVE_KEY = 'secret-circle-party-created-active-v1'", 'SecretCircleSessionLedger',
+        'SecretCircleSessionControls', 'S.createController', 'sessionControls.countdown',
+        'sessionControls.stopTimer', 'onSkip:', 'onAbort: abortSession', 'onReplay: replaySession',
         "completionId('created'", 'recordCompletion(loadHub()', 'sessionId: L.createSessionId',
         'legacySessionId', 'renderChoice', 'renderGuess', 'renderChallenge', 'renderDebate', 'renderStory'
     ],
@@ -135,7 +158,8 @@ contracts = {
     'creator-page.js': ['renderTemplates', 'addPack', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary'],
     'party-guide.js': ['addCreatorEntryPoints', 'addHowItWorks', 'showHelp', 'enhanceGameCards', 'openRequestedGame'],
     'quick-loader.js': [
-        'session-ledger.js', 'scriptPlan', 'SecretCircleSessionLedger',
+        'session-ledger.js', 'party-session-controls.js', 'scriptPlan',
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls',
         'party-created-modes.js', 'party-viral-modes.js', 'party-mega-modes.js', 'party-quick-modes.js'
     ],
     'party-custom-packs.js': ['MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4', 'createManager', 'commit(nextState)', 'restoreStorage'],
@@ -152,6 +176,11 @@ for forbidden in ('session-ledger-legacy-guard.js', 'SecretCircleLegacySessionGu
         if forbidden in read(relative):
             violations.append(f'Obsolete legacy guard reference in {relative}: {forbidden}')
 
+for relative in ('party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js', 'party-created-modes.js'):
+    source = read(relative)
+    if 'let timerId = null' in source or 'const deadline = Date.now() + seconds * 1000' in source:
+        violations.append(f'Engine still contains a private non-pausable timer: {relative}')
+
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or cache.group(1) != '30':
@@ -165,10 +194,11 @@ for asset in [
     './party-night.js', './party-advanced-runner.js', './quick-play.html', './creator.html',
     './pwa-update.css', './party-release.css', './party-search.css',
     './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-    './session-ledger.js', './party-trending-catalog.js', './party-mega-catalog.js',
-    './party-viral-catalog.js', './party-quick-modes.js', './party-mega-modes.js',
-    './party-viral-modes.js', './party-created-modes.js', './quick-loader.js',
-    './game-creator.js', './creator-page.js', './party-guide.js', './party-guide.css', './creator.css'
+    './session-ledger.js', './party-session-controls.js', './party-trending-catalog.js',
+    './party-mega-catalog.js', './party-viral-catalog.js', './party-quick-modes.js',
+    './party-mega-modes.js', './party-viral-modes.js', './party-created-modes.js',
+    './quick-loader.js', './game-creator.js', './creator-page.js', './party-guide.js',
+    './party-guide.css', './creator.css'
 ]:
     if asset not in sw:
         violations.append(f'Offline architecture asset missing from CORE: {asset}')
@@ -196,6 +226,8 @@ print(json.dumps({
     'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
     'persistent_catalog_filters': True,
     'search_assistance': True,
+    'shared_session_controls': True,
+    'pausable_fast_engine_timers': True,
     'combined_age_and_release_filter': True,
     'backup_schemas': 3,
     'exact_once_engine_families': 4,
