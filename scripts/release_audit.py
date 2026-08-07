@@ -17,12 +17,6 @@ def require(relative: str) -> str:
     return read(relative)
 
 
-def require_markers(name: str, source: str, markers) -> None:
-    missing = [marker for marker in markers if marker not in source]
-    if missing:
-        raise SystemExit(f'Release audit failed in {name}: {", ".join(missing)}')
-
-
 package = json.loads(require('package.json'))
 manifest = json.loads(require('manifest.webmanifest'))
 sw = require('sw.js')
@@ -91,8 +85,18 @@ def hub_engine(source: str) -> bool:
     markers = (
         'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
         "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
-        'hubTimer.countdown(60, timer', 'hubTimer.countdown(milliseconds / 1000, hiddenClock',
-        'hubTimer.countdown(30, timer', "document.addEventListener('visibilitychange'",
+        "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
+        'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
+        'players: [...state.players]', 'renderStoredTimerSession', 'Session fortsetzen',
+        'Gespeicherten Stand verwerfen',
+        'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
+        "kind: 'charades', phase: 'running', remainingMs",
+        "kind: 'hot-potato', phase: 'running', remainingMs",
+        "kind: 'word-chain', phase: 'running', remainingMs",
+        'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
+        'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
+        'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
+        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
         'setHubPaused(true)',
     )
     return all(marker in source for marker in markers) \
@@ -113,7 +117,10 @@ checks = {
     'visible_update_prompt': all(marker in runtime_guard for marker in (
         'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', "type: 'SKIP_WAITING'",
     )),
-    'update_respects_active_sessions': 'hasActiveSession' in runtime_guard and 'ACTIVE_SESSION_KEYS' in runtime_guard,
+    'update_respects_active_sessions': all(marker in runtime_guard for marker in (
+        'hasActiveSession', 'ACTIVE_SESSION_KEYS', 'secret-circle-party-hub-active-v1',
+        'secret-circle-party-active-v1',
+    )),
     'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 17),
     'combined_age_tier_filter': all(marker in release_structure for marker in ('ageAllows', 'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches')),
     'persistent_filter_contract': all(marker in filter_state for marker in (
@@ -148,7 +155,7 @@ checks = {
         '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
         '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
     )),
-    'hub_direct_exact_once_and_pausable': hub_engine(hub_runtime),
+    'hub_direct_exact_once_pausable_resumable': hub_engine(hub_runtime),
     'creator_direct_exact_once': direct_engine(created_runtime, 'created'),
     'quick_direct_exact_once': direct_engine(quick_runtime, 'quick'),
     'mega_direct_exact_once': direct_engine(mega_runtime, 'mega'),
@@ -188,10 +195,12 @@ checks = {
     'foundation_audit_in_gate': 'scripts/foundation_contract_audit.py' in package.get('scripts', {}).get('validate', ''),
     'foundation_tests_in_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
         'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
-        'tests/hub-timer-contract.test.js', 'tests/party-filter-state.test.js',
-        'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
-        'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
-        'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
+        'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
+        'tests/mafia-rules.test.js', 'tests/advanced-resume-contract.test.js',
+        'tests/party-filter-state.test.js', 'tests/party-search-assist.test.js',
+        'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
+        'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
+        'tests/pwa-update.test.js',
     )),
     'release_dates_documented': all(marker in roadmap for marker in ('30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027')),
     'shared_controls_documented': '[x] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel' in roadmap,
@@ -230,6 +239,7 @@ if len(unit_tests) < 21 or len(e2e_suites) < 33 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required_test in (
     'party-release-structure.test.js', 'core-game-contract.test.js', 'hub-timer-contract.test.js',
+    'hub-resume-contract.test.js', 'mafia-rules.test.js', 'advanced-resume-contract.test.js',
     'party-filter-state.test.js', 'party-search-assist.test.js', 'backup-schema-registry.test.js',
     'session-ledger.test.js', 'party-session-controls.test.js', 'session-ledger-integration.test.js',
     'service-worker.test.js', 'pwa-update.test.js',
@@ -237,8 +247,10 @@ for required_test in (
     if required_test not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required_test}')
 for required_test in (
-    'core-game-catalog.spec.js', 'core-hub-statistics.spec.js',
-    'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
+    'core-game-catalog.spec.js', 'core-hub-statistics.spec.js', 'core-hub-timers.spec.js',
+    'core-hub-resume.spec.js', 'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
+    'advanced-secret-resume.spec.js', 'advanced-core-round-flow.spec.js',
+    'advanced-completion-exact-once.spec.js', 'mafia-extended.spec.js',
     'party-filter-state.spec.js', 'party-search-assist.spec.js', 'party-session-controls.spec.js',
     'game-creator.spec.js', 'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js',
     'party-viral-modes.spec.js', 'offline.spec.js',
@@ -284,6 +296,7 @@ print(json.dumps({
     'shared_session_controls': True,
     'pausable_fast_engine_timers': True,
     'pausable_core_hub_timers': True,
+    'direct_hub_reload_resume': True,
     'classic_quick_modes': len(classic_ids),
     'mega_modes': len(mega_ids),
     'viral_modes': len(viral_ids),
