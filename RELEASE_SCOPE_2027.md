@@ -1,6 +1,6 @@
 # Releaseumfang Januar 2027
 
-Dieses Dokument trennt den sichtbaren Funktionsumfang von der tatsächlichen Releasepriorität. „Technisch spielbar“ ist kein Freigabesiegel.
+Dieses Dokument trennt den sichtbaren Funktionsumfang von der tatsächlichen Releasepriorität. „Technisch spielbar“ ist kein Freigabesiegel. Die abschließende Abnahme erfolgt über `RELEASE_CHECKLIST.md`.
 
 ## Stufe A – 15 Kernspiele
 
