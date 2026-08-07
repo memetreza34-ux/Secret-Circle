@@ -4,100 +4,82 @@
 
 ### Behoben
 
-- Offline-Navigation für dynamische Spiel-URLs wie `quick-play.html?game=...` verwendet nun einen kanonischen Cache-Schlüssel ohne Query-Parameter.
-- Unbekannte oder beschädigte Quick-Game-IDs laden nicht mehr stillschweigend die falsche Spiel-Engine.
-- Word-Imposter-Rollen werden unabhängig von der Karten-Aufdeckreihenfolge erzeugt.
-- Die maximale Zahl von sechs Impostern wird direkt durch die Hauptengine validiert.
+- Offline-Navigation für dynamische Spiel-URLs wie `quick-play.html?game=...` verwendet einen kanonischen Cache-Schlüssel ohne Query-Parameter.
+- Unbekannte oder beschädigte Quick-Game-IDs laden nicht stillschweigend die falsche Spiel-Engine.
+- Word-Imposter-Rollen werden unabhängig von der Karten-Aufdeckreihenfolge erzeugt; maximal sechs Imposter werden direkt in der Hauptengine validiert.
 - Das nachträgliche Überschreiben von Engine-Methoden durch `role-assignment.js` wurde entfernt.
-- Creator-Zeitstempel bleiben beim Laden, Exportieren und Importieren unverändert.
-- `updatedAt` wird nur noch bei einem tatsächlichen Speichervorgang erneuert.
-- Duplizierte Creator-Spiele erhalten eigene Erstellungs- und Änderungszeitpunkte.
-- Word-Imposter-Backups verwenden jetzt dieselbe 1,5-MB-Grenze wie die Gesamtsicherung.
-- Backupgrößen werden als echte UTF-8-Bytes statt als JavaScript-Zeichenanzahl geprüft.
-- Auch als Objekt übergebene Backups werden vor dem Import serialisiert und gegen die Größenbegrenzung geprüft.
+- Creator-Zeitstempel bleiben beim Laden, Exportieren und Importieren stabil; `updatedAt` ändert sich nur bei einer echten Bearbeitung.
+- Word-Imposter- und Gesamtbackups verwenden dieselbe 1,5-MB-Grenze als echte UTF-8-Bytes.
 - Creator-, Quick-, Mega- und Viral-Sessions schreiben Verlauf, Spielanzahl, Rundenzahl und Bestwert höchstens einmal pro echter Session.
-- Direkte Hub-Spiele erhöhen `plays` nicht mehr bereits beim Öffnen oder bei einem ungültigen Startversuch; Statistik und Verlauf werden erst beim echten Abschluss geschrieben.
-- Der alte Mega-/Viral-/Quick-Fehler, bei dem `plays` praktisch bei mindestens 1 blieb, ist in allen betroffenen Engines direkt beseitigt.
-- Ältere aktive Mega- und Viral-Sessions erhalten beim Laden eine deterministische kompatible Session-ID.
-- Ein fehlgeschlagenes Entfernen der aktiven Session stellt den letzten Abschlusszustand wieder her, statt eine inkonsistente Oberfläche zu hinterlassen.
-- Der temporäre globale `Storage.prototype`-Guard wurde nach der direkten Engine-Migration vollständig entfernt.
+- Direkte Hub-Spiele erhöhen `plays` nicht mehr beim Öffnen oder Startversuch; Statistik und Verlauf entstehen erst beim echten Abschluss.
+- Ältere aktive Mega- und Viral-Sessions erhalten deterministische kompatible Session-IDs; der temporäre globale Storage-Guard wurde entfernt.
 - Scharade, Heiße Kartoffel und Wortkette verwenden keine privaten Hub-Intervalle mehr, sondern den gemeinsamen pausierbaren Timerkern.
-- Beim Wechsel eines laufenden Hub-Timers in den Hintergrund wird die aktuelle Runde automatisch pausiert.
-- Der PWA-Update-Schutz verwendet jetzt denselben realen Advanced-Speicherschlüssel wie der Advanced Runner.
-- Bereits geöffnete private Question-Imposter-Fragen, Location-Spy-Karten und Mafia-Rollen werden nach einem Reload wieder verdeckt.
+- Beim App-/Tab-Wechsel wird eine laufende Hub-Timerrunde automatisch pausiert.
+- Direkte Hub-Sessions besitzen jetzt den versionierten Active-State `secret-circle-party-hub-active-v1` und können nach einem vollständigen Reload ausdrücklich fortgesetzt werden.
+- Laufende Hub-Sessions speichern einen eigenen Spieler-Snapshot, damit spätere Lobbyänderungen eine bestehende Session nicht verändern.
+- Beschädigte Hub-Active-States werden validiert und verworfen, statt ungeprüft geladen zu werden.
+- Ein Reload öffnet direkte Hub-Spiele nicht automatisch; die Wiederaufnahme erfolgt über „Session fortsetzen“.
+- Private Hub-Inhalte werden nach Reload nicht automatisch wieder offengelegt; insbesondere Paranoia kehrt zum verdeckten Schritt zurück.
+- Scharade speichert über Reload Restzeit, Rundentreffer und aktuelle Karte und wird pausiert wiederhergestellt.
+- Heiße Kartoffel speichert die interne zufällige Restzeit, zeigt sie aber auch nach Wiederaufnahme nicht an.
+- Wortkette speichert Buchstabe und Restzeit und wird pausiert wiederhergestellt.
+- Das Verwerfen eines gespeicherten Hub-Spielstands erzeugt keinen fertigen Verlaufseintrag und keine Statistikbuchung.
+- Der PWA-Update-Schutz erkennt jetzt auch aktive direkte Hub-Sessions.
+- Der PWA-Update-Schutz verwendet denselben realen Advanced-Speicherschlüssel wie der Advanced Runner.
+- Bereits geöffnete private Question-Imposter-Fragen, Location-Spy-Karten und Mafia-Rollen werden nach Reload wieder verdeckt.
 - Eine offene Mafia-Moderatorübersicht benötigt nach Reload erneut die bewusste Moderatorbestätigung.
-- Advanced-Browserverträge wurden auf den tatsächlichen Resume-Flow und den tatsächlichen Speicherschlüssel korrigiert.
-- Mafia skaliert die Zahl der Mafia-Rollen jetzt mit der Gruppengröße statt unabhängig von der Gruppe immer nur eine Mafia zu erzeugen.
-- Die Mafia-Packs `Schnell`, `Klassisch` und `Erweitert` beeinflussen jetzt tatsächlich die Rollenverteilung.
-- Der in `Erweitert` deklarierte Beschützer besitzt jetzt eine echte Nachtaktion und kann nicht dieselbe Person in zwei aufeinanderfolgenden Nächten schützen.
-- Eine neue PWA-Version wird nicht mehr automatisch mitten in einer laufenden Nutzung aktiviert.
-- Der aktive Offline-Cache wird bei einer Aktualisierung nicht mehr vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
-- Veraltete Cacheeinträge werden erst entfernt, nachdem der vorbereitete Offline-Core vollständig übernommen wurde.
-- Alters- und Reifestufenfilter können sich nicht mehr gegenseitig aufheben.
-- Eine ausdrücklich per URL angeforderte Hub-Ansicht überschreibt korrekt die zuvor gespeicherte Ansicht.
-- Fehlender oder blockierter lokaler Speicher wird bei Katalogfiltern nicht mehr fälschlich als erfolgreicher Schreibvorgang behandelt.
-- Suchhilfe und Such-Styles werden jetzt tatsächlich in der kontrollierten Hub-Ladekette geladen und offline gespeichert.
+- Advanced-Browserverträge wurden auf den tatsächlichen Resume-Flow und Speicherschlüssel korrigiert.
+- Mafia skaliert die Zahl der Mafia-Rollen mit der Gruppengröße statt unabhängig von der Gruppe immer nur eine Mafia zu erzeugen.
+- Die Mafia-Packs `Schnell`, `Klassisch` und `Erweitert` beeinflussen tatsächlich die Rollenverteilung.
+- Der in `Erweitert` deklarierte Beschützer besitzt eine echte Nachtaktion und kann nicht dieselbe Person in zwei aufeinanderfolgenden Nächten schützen.
+- Eine neue PWA-Version wird nicht automatisch mitten in einer laufenden Nutzung aktiviert.
+- Der aktive Offline-Cache wird bei einer Aktualisierung nicht vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
+- Alters- und Reifestufenfilter können sich nicht gegenseitig aufheben; eine URL-Ansicht hat Vorrang vor der gespeicherten Ansicht.
+- Fehlender oder blockierter lokaler Speicher wird bei Katalogfiltern nicht fälschlich als erfolgreicher Schreibvorgang behandelt.
+- Suchhilfe und Such-Styles werden in der kontrollierten Hub-Ladekette geladen und offline gespeichert.
 
 ### Hinzugefügt
 
-- gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs für Creator, Quick, Mega und Viral
+- gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs
 - direkte Hub-Abschlüsse über dasselbe Session-Ledger
 - gemeinsames `party-session-controls.js` für schnelle Engines und Hub-Timer
-- `CORE_GAME_ACCEPTANCE.md` als nachvollziehbare technische und manuelle Abnahmematrix der 15 Kernspiele
+- versionierter direkter Hub-Wiederaufnahmezustand mit explizitem Resume und sicherem Verwerfen
+- `CORE_GAME_ACCEPTANCE.md` als technische und manuelle Abnahmematrix der 15 Kernspiele
 - zentrales `backup-schema-registry.js` für Word-Imposter-, Gesamt- und Creator-Sicherungen
-- `BACKUP_SCHEMAS.md` mit Formatversionen, Größen, Migration, Rollback und Release-Gates
-- sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“
-- separat vorbereiteter Service-Worker-Staging-Cache
-- barrierearme, responsive Updateleiste mit Safe-Area- und Reduced-Motion-Unterstützung
+- sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“ sowie separater Staging-Cache
 - Party-Hub-Reifestufen mit 15 Kernspielen, 13 Erweiterungen und 17 Labs-Modi
-- Reifestufenfilter, Schnellwahlkarten und sichtbare Qualitätsbadges im Spielekatalog
 - dauerhafte Speicherung von Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzter Hub-Ansicht
-- einheitliche Schaltfläche „Filter zurücksetzen“
-- Synonym- und Tippfehlersuche mit bekannten Alternativnamen, gewichteten Vorschlägen und maximal sechs Ergebnissen
-- barrierearme Suchvorschläge mit ARIA-Listbox, Pfeiltasten, Enter, Escape, Maus und Touch
-- responsive Styles für Kernspiele, Erweiterungen, Labs, Filterreset und Suchvorschläge
-- vollständig neu strukturierte Release-Checkliste für CI, Engines, Kernspiele, Hub, Backups, PWA, Geräte, Inhalte und Gruppentests
+- Synonym- und Tippfehlersuche mit ARIA-Listbox, Tastatur, Maus und Touch
+- vollständig neu strukturierte Release-Checkliste bis Januar 2027
 
 ### Qualität
 
-- Regressionstest für Service-Worker-Navigation ergänzt.
-- Regressionstest für Quick-Game-Routing ergänzt.
-- Fairnessprüfung mit 200 deterministischen Rollenstichproben ergänzt.
-- Regressionstest für Creator-Zeitstempel ergänzt.
-- Unicode-Regressionstest für mehrbyteige Backupinhalte ergänzt.
-- Direkte Genau-einmal-Vertragstests für Creator, Quick, Mega und Viral ergänzt.
-- Hub-Statistik- und Hub-Timer-Verträge ergänzt.
-- feste 15-Kernspiel-Verträge für Status, Spielergrenzen, Regeln, Packs und Routing ergänzt.
-- Browserkatalog- und Hub-Statistiktests für die Kernspiele ergänzt.
-- Browsertests für pausierbare Scharade-, Heiße-Kartoffel- und Wortkette-Timer ergänzt.
-- Advanced-Smoke-, sichere-Unterbrechungs-, Geheimnis-Resume-, Rundenfluss- und Genau-einmal-Abschlusstests ergänzt.
-- deterministische Mafia-Rollen- und Siegbedingungstests ergänzt.
-- Browservertrag für die erweiterte Mafia mit Arzt, Beschützer und Detektiv ergänzt.
-- Migration älterer aktiver Sessions und Rollback bei fehlgeschlagener Abschlussbereinigung werden geprüft.
-- Der Build verbietet eine erneute Einführung des entfernten Legacy-Guards in Loader, Offline-Core oder Testskripten.
-- statische Qualitätsprüfung für sichtbare und kontrollierte PWA-Aktualisierungen ergänzt.
-- Test für nicht-destruktive Cache-Promotion ergänzt.
-- Contract-Test für alle drei Backupformate ergänzt.
-- feste Prüfung der Katalogverteilung 15 / 13 / 17 ergänzt.
-- Unit-Test für Filterzustand, Sanitizing, Speicherfehler und URL-Priorität ergänzt.
-- Browsertests für Filterwiederherstellung, Reset und kombinierte Alters-/Reifestufenfilter ergänzt.
-- Unit- und Browsertests für Synonyme, Tippfehler, Maus-, Tastatur- und Escape-Bedienung ergänzt.
-- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf gemeinsame Ledger-/Timer-Verträge aktualisiert.
-- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe ergänzt.
-- Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
+- Regressionstests für Service-Worker-Navigation, Quick-Routing, Rollenfairness, Creator-Zeitstempel und Unicode-Backups.
+- direkte Genau-einmal-Vertragstests für Creator, Quick, Mega, Viral und Hub-Abschlüsse.
+- `tests/core-game-contract.test.js` für die 15 Kernspiele.
+- `tests/hub-timer-contract.test.js` für den gemeinsamen pausierbaren Hub-Timer und die serialisierte Restzeit.
+- `tests/hub-resume-contract.test.js` für Active-State, Spieler-Snapshot, sichere Wiederaufnahme, Geheimnis-Schutz und PWA-Update-Erkennung.
+- `tests/e2e/core-hub-resume.spec.js` für Paranoia, Scharade, Heiße Kartoffel, Wortkette und das sichere Verwerfen gespeicherter Sessions.
+- Browserkatalog- und Hub-Statistiktests für die Kernspiele.
+- Advanced-Smoke-, Unterbrechungs-, Geheimnis-Resume-, Rundenfluss- und Genau-einmal-Abschlusstests.
+- deterministische Mafia-Rollen- und Siegbedingungstests sowie Browservertrag für die erweiterte Mafia.
+- Contract-Test für alle drei Backupformate.
+- Unit-/Browser-Verträge für Filterzustand, kombinierte Alters-/Reifestufenfilter, Synonyme und Tippfehler.
+- Struktur-, Architektur-, Foundation-, Performance- und Release-Audits auf gemeinsame Ledger-, Timer- und Hub-Resume-Verträge aktualisiert.
+- das bestehende 65-KB-Budget für `party-hub.js` wurde trotz zusätzlicher Resume-Logik nicht gelockert.
 
 ### Bekannte externe Blockade
 
-- GitHub Actions weist dem Workflow weiterhin keinen Runner zu. Lauf #1567 für Commit `6b9a57973a23485542044ac37647b1f8c7a90eb5` endete mit `runner_id: 0`, leerem Runnernamen, `steps: []` und ohne Checkout.
+- GitHub Actions weist dem Workflow weiterhin keinen Runner zu. Die zuletzt überprüften Läufe endeten mit `runner_id: 0`, leerem Runnernamen, `steps: []` und ohne Checkout.
+- Deshalb sind die neu ergänzten Node-/Playwright-Verträge vorbereitet, aber noch nicht durch einen vertrauenswürdigen vollständigen Remote-Lauf als grün dokumentiert.
 - Ein reproduzierbares `package-lock.json` und die Umstellung auf `npm ci` bleiben offen, bis Abhängigkeiten in einer funktionierenden CI- oder lokalen npm-Umgebung aufgelöst werden können.
 
 ### Noch offen
 
-- sichere Wiederaufnahme direkter Hub-Sessions über vollständigen Seiten-Reload
-- definierter Reload-Vertrag für die Timerrestzeit von Scharade, Heiße Kartoffel und Wortkette
 - Produktentscheidung über einen festen Tabu-Rundentimer
+- systematische Vereinheitlichung von Skip, Fokus, Punkteverhalten und mobiler Accessibility in den direkten Hub-Kernspielen
 - vollständiger grüner `npm run ci`- und Cross-Browser-Lauf
-- echte Android-, iOS-, Tablet- und PWA-Update-Prüfung
+- echte Android-, iOS-, Tablet-, Sperrbildschirm- und PWA-Update-Prüfung
 - reale Kernspiel- und Gruppentests
 - redaktionelle Inhalts-, Alters-, Fan-Content- und Rechtsprüfung
 
