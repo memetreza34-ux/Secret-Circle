@@ -24,6 +24,11 @@ Diese Checkliste muss für den unveränderlichen Release-Commit vollständig aus
 - [ ] Verlauf, `plays`, Runden und Bestwert werden pro Session höchstens einmal aktualisiert
 - [ ] Reload zwischen Hub-Speicherung und Sessionbereinigung erzeugt keine Doppelzählung
 - [ ] fehlgeschlagene Sessionbereinigung stellt den letzten aktiven Zustand wieder her
+- [ ] direkte Hub-Sessions verwenden `secret-circle-party-hub-active-v1`
+- [ ] direkte Hub-Session speichert einen stabilen Spieler-Snapshot
+- [ ] beschädigter direkter Hub-Spielstand wird sicher verworfen
+- [ ] direkte Hub-Wiederaufnahme erfolgt explizit und öffnet keine privaten Inhalte automatisch
+- [ ] verworfener Hub-Spielstand erzeugt keinen Verlauf und keine Statistik
 - [ ] Advanced Runner und PWA-Update-Schutz verwenden beide `secret-circle-party-active-v1`
 - [ ] Advanced-Abschluss mit derselben Session-ID kann Verlauf und Statistik nicht doppelt erhöhen
 - [ ] private Advanced-Reveal-Zustände werden nach Reload wieder verdeckt
@@ -51,8 +56,12 @@ Für jedes Kernspiel separat dokumentieren:
 Zusätzliche Kernspielverträge:
 
 - [ ] Scharade friert ihren 60-Sekunden-Timer während Pause ein
+- [ ] Scharade stellt Restzeit, Rundentreffer und aktuelle Karte nach Reload pausiert wieder her
 - [ ] Heiße Kartoffel pausiert den Zufallstimer ohne Offenlegung der Restzeit
+- [ ] Heiße Kartoffel stellt dieselbe interne Zufallsrestzeit nach Reload pausiert wieder her
 - [ ] Wortkette friert ihren 30-Sekunden-Timer während Pause ein
+- [ ] Wortkette stellt Buchstabe und Restzeit nach Reload pausiert wieder her
+- [ ] Paranoia öffnet eine private Frage nach Reload nicht automatisch erneut
 - [ ] Zwei Wahrheiten: private Eingabe, Mischung, Abstimmung und Reload geprüft
 - [ ] Question Imposter: private Reveal-Kette bleibt über Reload geschützt
 - [ ] Location Spy: Ort und Spion bleiben über Reload geschützt
@@ -74,7 +83,7 @@ Zusätzliche Kernspielverträge:
 - [ ] Suchvorschläge funktionieren mit Maus, Touch, Pfeiltasten, Enter und Escape
 - [ ] Screenreader erkennt Listbox und aktiven Vorschlag
 - [ ] leere Ergebnisse erklären die nächste Aktion
-- [ ] direkte Hub-Session über vollständigen Reload besitzt einen dokumentierten sicheren Vertrag
+- [ ] direkte Hub-Session über vollständigen Reload besitzt den dokumentierten sicheren Resume-Vertrag
 
 ## 5. Backup und lokale Daten
 
@@ -84,7 +93,7 @@ Zusätzliche Kernspielverträge:
 - [ ] Import validiert vollständig vor dem ersten Schreibvorgang
 - [ ] Quota-Fehler lösen einen Rollback aus
 - [ ] Export lässt sich wieder erfolgreich importieren
-- [ ] Gesamtsicherung enthält aktive Advanced-Session
+- [ ] Gesamtsicherung enthält aktive Hub- und Advanced-Sessions
 - [ ] Löschen nennt exakt die betroffenen lokalen Daten
 - [ ] Löschung und Wiederherstellung auf mindestens zwei Browsern geprüft
 
@@ -95,11 +104,12 @@ Zusätzliche Kernspielverträge:
 - [ ] Offline-Neustart nach vorheriger Installation
 - [ ] alle Kernseiten offline erreichbar
 - [ ] alle vier schnellen Enginefamilien offline startbar
-- [ ] Advanced-Kernspiele offline startbar und wiederaufnehmbar
+- [ ] direkte Hub- und Advanced-Kernspiele offline startbar und wiederaufnehmbar
 - [ ] Release-Tiers, Filterzustand und Suchhilfe offline verfügbar
 - [ ] Query-Routen wie `quick-play.html?game=...` offline korrekt
 - [ ] neue Version wird zuerst vollständig im Staging-Cache vorbereitet
 - [ ] keine automatische Aktivierung mitten in einer laufenden Session
+- [ ] direkte Hub-Session wird vom Update-Schutz erkannt
 - [ ] Advanced-Session wird vom Update-Schutz erkannt
 - [ ] sichtbarer Hinweis „Jetzt aktualisieren“ / „Später“
 - [ ] aktiver Offline-Core bleibt bei fehlgeschlagener Promotion erhalten
@@ -121,6 +131,7 @@ Zusätzliche Kernspielverträge:
 - [ ] Safe Areas und Bildschirmtastatur auf iOS
 - [ ] Reduced Motion
 - [ ] Kontrast und Status nicht nur durch Farbe
+- [ ] Timerverhalten bei realem App-Wechsel und Sperrbildschirm dokumentiert
 
 ## 8. Inhalte und Recht
 
