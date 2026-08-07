@@ -16,6 +16,8 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 - lokaler No-Code-Game-Creator mit 6 Vorlagen
 - bis zu 40 selbst erstellte Spiele
 - eigene wiederaufnehmbare Creator-Spielengine
+- gespeicherte Katalogfilter und letzte Hub-Ansicht
+- Synonym- und Tippfehlersuche mit barrierearmen Vorschlägen
 - installierbare Offline-PWA
 - kontrollierte, sichtbare PWA-Aktualisierungen
 
@@ -45,6 +47,21 @@ Der Party Hub zeigt drei klar getrennte Reifestufen:
 - **Labs:** experimentelle Modi in Prüfung, die nicht automatisch als releasefertig gelten
 
 Ein eigener Filter, Schnellwahlkarten und Badges machen diese Stufen im Katalog sichtbar. Selbst erstellte Creator-Spiele werden als Erweiterungen eingeordnet.
+
+Der Hub speichert Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzte Ansicht lokal. Direkte Links wie `party.html?view=stats` haben Vorrang vor der gespeicherten Ansicht. Über **Filter zurücksetzen** lassen sich alle Katalogeinstellungen gemeinsam löschen.
+
+## Verbesserte Suche
+
+Die Suchhilfe normalisiert Groß- und Kleinschreibung, Umlaute, `ß`, Sonderzeichen und zusätzliche Leerzeichen. Sie kennt außerdem häufige alternative Namen und kleine Tippfehler, zum Beispiel:
+
+- `Werwolf` → Mafia
+- `Montagsmaler` → Zeichnen & Raten
+- `Stadt Land Fluss` → Buchstaben-Kategorien
+- `Tabu` → Nicht sagen!
+- `Maifa` → Mafia
+- `Impsoter` → Word Imposter
+
+Die Vorschlagsliste ist mit Maus, Touch, Pfeiltasten, Enter und Escape bedienbar und verwendet eine ARIA-Listbox. Suche, Filter und Reifestufen funktionieren auch offline.
 
 ## Einfacher Einstieg
 
@@ -79,8 +96,10 @@ Eigene Spiele lassen sich bearbeiten, kopieren, löschen, exportieren, importier
 ## Stabilitätsgrundlage
 
 - Imposterrollen werden unabhängig von der Kartenreihenfolge bestimmt.
-- Creator- und Quick-Abschlüsse werden über stabile Session-IDs höchstens einmal gezählt.
-- Mega- und Viral-Abschlüsse werden während ihrer Migration gegen Doppelzählungen geschützt.
+- Creator, Quick, Mega und Viral verwenden dasselbe direkte Session-Ledger.
+- Jede neue Session besitzt eine stabile ID; ältere aktive Sessions erhalten eine deterministische kompatible ID.
+- Verlauf, Spielanzahl, Rundenzahl und Bestwert werden pro Session höchstens einmal aktualisiert.
+- Der frühere Mega-/Viral-Kompatibilitätsguard und sein globales Storage-Patching wurden vollständig entfernt.
 - Sicherungsdateien werden als UTF-8-Bytes geprüft und sind auf 1,5 MB begrenzt.
 - Drei Sicherungsformate sind zentral versioniert.
 - Neue PWA-Versionen werden vorbereitet, aber erst nach einem sichtbaren Nutzerklick aktiviert.
@@ -117,7 +136,7 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-`npm run validate` umfasst Repository-Hygiene, Architektur, Foundation-Verträge, Struktur, Performance und Release-Gates.
+`npm run validate` umfasst Repository-Hygiene, Architektur, Foundation-Verträge, Struktur, Performance und Release-Gates. Die Gates verlangen direkte Genau-einmal-Integration für alle vier schnellen Enginefamilien und verhindern eine erneute Einführung des entfernten Legacy-Guards.
 
 ## Produkt- und Designpläne
 
