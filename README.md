@@ -18,6 +18,8 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 - eigene wiederaufnehmbare Creator-Spielengine
 - gespeicherte Katalogfilter und letzte Hub-Ansicht
 - Synonym- und Tippfehlersuche mit barrierearmen Vorschlägen
+- gemeinsame Steuerung für Pause, Skip, Abbruch, Wiederholen und nächstes Spiel in den schnellen Modi
+- pausierbare Timer für Quick-, Mega-, Viral- und Creator-Spiele
 - installierbare Offline-PWA
 - kontrollierte, sichtbare PWA-Aktualisierungen
 
@@ -63,6 +65,24 @@ Die Suchhilfe normalisiert Groß- und Kleinschreibung, Umlaute, `ß`, Sonderzeic
 
 Die Vorschlagsliste ist mit Maus, Touch, Pfeiltasten, Enter und Escape bedienbar und verwendet eine ARIA-Listbox. Suche, Filter und Reifestufen funktionieren auch offline.
 
+## Einheitliche Spielsteuerung
+
+Quick-, Mega-, Viral- und Creator-Modi verwenden denselben Steuerungsruntime `party-session-controls.js`.
+
+Während einer aktiven Session stehen an derselben Stelle bereit:
+
+- **Pause / Fortsetzen**
+- **Runde überspringen**
+- **Session beenden** mit Bestätigung
+
+Nach einem vollständigen Abschluss stehen bereit:
+
+- **Wiederholen**
+- **Nächstes Spiel**
+- **Zum Verlauf**
+
+Eine Pause ist nicht nur optisch: Ein gerade laufender Timer friert mit seiner Restzeit ein. Die Rundenaktionen werden währenddessen aus der Bedienung genommen und nach dem Fortsetzen wieder freigegeben. Der gemeinsame Runtime-Layer ist Teil des Offline-Cores.
+
 ## Einfacher Einstieg
 
 Der Party Hub erklärt den Ablauf in drei Schritten:
@@ -99,6 +119,8 @@ Eigene Spiele lassen sich bearbeiten, kopieren, löschen, exportieren, importier
 - Creator, Quick, Mega und Viral verwenden dasselbe direkte Session-Ledger.
 - Jede neue Session besitzt eine stabile ID; ältere aktive Sessions erhalten eine deterministische kompatible ID.
 - Verlauf, Spielanzahl, Rundenzahl und Bestwert werden pro Session höchstens einmal aktualisiert.
+- Creator, Quick, Mega und Viral verwenden dieselbe Sessionsteuerung und keinen privaten Intervalltimer.
+- Ein fehlgeschlagener Sessionabbruch stellt den letzten aktiven Zustand wieder her, statt ihn still zu verlieren.
 - Der frühere Mega-/Viral-Kompatibilitätsguard und sein globales Storage-Patching wurden vollständig entfernt.
 - Sicherungsdateien werden als UTF-8-Bytes geprüft und sind auf 1,5 MB begrenzt.
 - Drei Sicherungsformate sind zentral versioniert.
@@ -136,7 +158,7 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-`npm run validate` umfasst Repository-Hygiene, Architektur, Foundation-Verträge, Struktur, Performance und Release-Gates. Die Gates verlangen direkte Genau-einmal-Integration für alle vier schnellen Enginefamilien und verhindern eine erneute Einführung des entfernten Legacy-Guards.
+`npm run validate` umfasst Repository-Hygiene, Architektur, Foundation-Verträge, Struktur, Performance und Release-Gates. Die Gates verlangen direkte Genau-einmal-Integration und die gemeinsame Sessionsteuerung für alle vier schnellen Enginefamilien. Sie verhindern sowohl eine erneute Einführung des entfernten Legacy-Guards als auch private nicht pausierbare Engine-Timer.
 
 Die vollständige Freigabe erfolgt anhand von `RELEASE_CHECKLIST.md`; dort werden CI, Engines, 15 Kernspiele, Hub, Backups, PWA, Accessibility, Geräte, Inhalte, Recht und reale Gruppentests einzeln bestätigt.
 
@@ -149,4 +171,4 @@ Die vollständige Freigabe erfolgt anhand von `RELEASE_CHECKLIST.md`; dort werde
 
 ## Aktueller Freigabestatus
 
-Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions weiterhin keinen verlässlichen Runnerlauf mit sichtbaren Schritten liefert. Der aktuelle Lauf #1401 endete vor dem Checkout mit `runner_id: 0` und `steps: []`. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
+Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions weiterhin keinen verlässlichen Runnerlauf mit sichtbaren Schritten liefert. Die zuletzt geprüften Jobs endeten vor dem Checkout mit `runner_id: 0` und `steps: []`. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
