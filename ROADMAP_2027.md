@@ -9,7 +9,7 @@ Stand: 7. August 2026
 - **Release Candidate:** spätestens 15. Dezember 2026
 - **Öffentlicher Release:** 4.–15. Januar 2027
 
-Neue Funktionen nach dem Code Freeze dürfen den Release nicht gefährden. Ab Dezember werden nur noch Fehler, Inhalte, Barrierefreiheit, Performance, Gerätekompatibilität und rechtlich notwendige Angaben bearbeitet.
+Neue Funktionen nach dem Code Freeze dürfen den Release nicht gefährden. Ab Dezember werden nur noch Fehler, Inhalte, Barrierefreiheit, Performance, Gerätekompatibilität und rechtlich notwendige Angaben bearbeitet. Die finale Abnahme erfolgt anhand von `RELEASE_CHECKLIST.md`.
 
 ## Produktprinzipien
 
@@ -33,6 +33,7 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] separaten Release-Foundation-Branch erstellen
 - [x] Offline-Navigation mit Query-Parametern reparieren
 - [x] Service-Worker-Regressionstest ergänzen
+- [x] Release-Checkliste auf Januar-2027-Gates aktualisieren
 - [ ] GitHub-Actions-Runner wieder funktionsfähig machen
 - [ ] geschützte stabile Releasebasis festlegen
 - [ ] Branch Protection und verpflichtende Checks aktivieren
