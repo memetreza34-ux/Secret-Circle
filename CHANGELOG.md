@@ -20,6 +20,9 @@
 - Ältere aktive Mega- und Viral-Sessions erhalten beim Laden eine deterministische kompatible Session-ID.
 - Ein fehlgeschlagenes Entfernen der aktiven Session stellt den letzten Abschlusszustand wieder her, statt eine inkonsistente Oberfläche zu hinterlassen.
 - Der temporäre globale `Storage.prototype`-Guard wurde nach der direkten Engine-Migration vollständig entfernt.
+- Ein manueller Sessionabbruch verliert den letzten aktiven Zustand nicht mehr, wenn dessen Entfernung nicht gespeichert werden kann.
+- Laufende Quick-, Mega-, Viral- und Creator-Timer laufen während einer sichtbaren Pause nicht mehr im Hintergrund weiter.
+- Die vier schnellen Enginefamilien besitzen keine voneinander abweichenden privaten Intervalltimer mehr.
 - Eine neue PWA-Version wird nicht mehr automatisch mitten in einer laufenden Nutzung aktiviert.
 - Der aktive Offline-Cache wird bei einer Aktualisierung nicht mehr vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
 - Veraltete Cacheeinträge werden erst entfernt, nachdem der vorbereitete Offline-Core vollständig übernommen wurde.
@@ -31,6 +34,10 @@
 ### Hinzugefügt
 
 - gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs für Creator, Quick, Mega und Viral
+- gemeinsames `party-session-controls.js` für Pause/Fortsetzen, Runde überspringen, sicheren Abbruch, Wiederholen, nächstes Spiel und pausierbare Timer
+- einheitliche Spielsteuerleiste in `quick-play.html` für Quick-, Mega-, Viral- und Creator-Modi
+- sichtbarer Pausenstatus mit `aria-pressed`, Live-Status und blockierten Rundenaktionen über `inert`
+- deterministische Nächstes-Spiel-Navigation über die spielbaren schnellen Kataloge
 - zentrales `backup-schema-registry.js` für Word-Imposter-, Gesamt- und Creator-Sicherungen
 - `BACKUP_SCHEMAS.md` mit Formatversionen, Größen, Migration, Rollback und Release-Gates
 - sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“
@@ -42,7 +49,7 @@
 - einheitliche Schaltfläche „Filter zurücksetzen“
 - Synonym- und Tippfehlersuche mit bekannten Alternativnamen, gewichteten Vorschlägen und maximal sechs Ergebnissen
 - barrierearme Suchvorschläge mit ARIA-Listbox, Pfeiltasten, Enter, Escape, Maus und Touch
-- responsive Styles für Kernspiele, Erweiterungen, Labs, Filterreset und Suchvorschläge
+- responsive Styles für Kernspiele, Erweiterungen, Labs, Filterreset, Suchvorschläge und die gemeinsame Sessionsteuerung
 - vollständig neu strukturierte Release-Checkliste für CI, Engines, Kernspiele, Hub, Backups, PWA, Geräte, Inhalte und Gruppentests
 
 ### Qualität
@@ -54,6 +61,10 @@
 - Unicode-Regressionstest für mehrbyteige Backupinhalte ergänzt.
 - Direkte Genau-einmal-Vertragstests für Creator, Quick, Mega und Viral ergänzt.
 - Migration älterer aktiver Sessions und Rollback bei fehlgeschlagener Abschlussbereinigung werden geprüft.
+- Isolierter Test für pausierbaren Timer, Pause/Fortsetzen, Skip, Abbruch, Replay, Next-Game und Accessibility-Zustände ergänzt.
+- Playwright-Suite für echte Timerpause, Fortsetzung, Skip, bestätigten Abbruch, Wiederholen und nächstes Spiel ergänzt.
+- Loader-Test verlangt die Reihenfolge Session-Ledger → Sessionsteuerung → genau eine Engine.
+- Architektur-, Foundation-, Struktur- und Release-Gates verbieten private nicht pausierbare Timer in den vier schnellen Enginefamilien.
 - Der Build verbietet eine erneute Einführung des entfernten Legacy-Guards in Loader, Offline-Core oder Testskripten.
 - statische Qualitätsprüfung für sichtbare und kontrollierte PWA-Aktualisierungen ergänzt.
 - Test für nicht-destruktive Cache-Promotion ergänzt.
@@ -62,13 +73,13 @@
 - Unit-Test für Filterzustand, Sanitizing, Speicherfehler und URL-Priorität ergänzt.
 - Browsertests für Filterwiederherstellung, Reset und kombinierte Alters-/Reifestufenfilter ergänzt.
 - Unit- und Browsertests für Synonyme, Tippfehler, Maus-, Tastatur- und Escape-Bedienung ergänzt.
-- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf die direkte Ledger-Architektur aktualisiert.
-- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe ergänzt.
+- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf die direkte Ledger- und gemeinsame Steuerungsarchitektur aktualisiert.
+- feste Größenbudgets für Registry, Ledger, Sessionsteuerung, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe ergänzt.
 - Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
 
 ### Bekannte externe Blockade
 
-- GitHub Actions weist dem Workflow weiterhin keinen Runner zu. Der aktuelle Lauf #1401 endete mit `runner_id: 0`, leerem Runnernamen, `steps: []` und ohne Joblog vor dem Checkout.
+- GitHub Actions weist dem Workflow weiterhin keinen Runner zu; die zuletzt geprüften Jobs enden mit `runner_id: 0`, leerem Runnernamen und `steps: []` vor dem Checkout.
 - Ein reproduzierbares `package-lock.json` und die Umstellung auf `npm ci` bleiben offen, bis Abhängigkeiten in einer funktionierenden CI- oder lokalen npm-Umgebung aufgelöst werden können.
 
 ## Frühere Entwicklungswelle – Bedienbarkeit, Creator und Offline-Core v29
