@@ -80,7 +80,8 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 
 - [ ] Release-Kernspiele aus `RELEASE_SCOPE_2027.md` vollständig prüfen
 - [ ] Regeln jeder Runde vor dem Start in höchstens vier Schritten erklären
-- [ ] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel vereinheitlichen
+- [x] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel für Quick-, Mega-, Viral- und Creator-Modi vereinheitlichen
+- [x] laufende Timer dieser vier Enginefamilien während einer Pause tatsächlich einfrieren
 - [ ] Wartezeiten und Übergaben bei großen Gruppen reduzieren
 - [ ] Punkte und Siegerlogik pro Spiel dokumentieren
 - [ ] Timer über Hintergrund, Sperrbildschirm und Neuladen korrekt fortsetzen
