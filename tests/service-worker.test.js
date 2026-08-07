@@ -25,6 +25,7 @@ assert.match(source, /party-filter-state\.js/);
 assert.match(source, /party-search-assist\.js/);
 assert.match(source, /party-search\.css/);
 assert.match(source, /session-ledger\.js/);
+assert.match(source, /party-session-controls\.js/);
 assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);
 assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
@@ -42,5 +43,6 @@ console.log(JSON.stringify({
   persistentCatalogFiltersOffline: true,
   searchAssistanceOffline: true,
   exactOnceLedgerOffline: true,
+  sharedSessionControlsOffline: true,
   legacyGuardRemoved: true
 }, null, 2));
