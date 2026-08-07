@@ -26,8 +26,11 @@ filter_state = require('party-filter-state.js')
 search_assist = require('party-search-assist.js')
 release_styles = require('party-release.css')
 search_styles = require('party-search.css')
+quick_styles = require('party-quick.css')
 registry = require('backup-schema-registry.js')
 ledger = require('session-ledger.js')
+session_controls = require('party-session-controls.js')
+quick_play = require('quick-play.html')
 base_catalog = require('party-catalog.js')
 expansion = require('party-expansion.js')
 trending = require('party-trending-catalog.js')
@@ -70,13 +73,20 @@ extended_count = 45 - core_count - lab_count
 def direct_engine(source: str, engine: str) -> bool:
     return all(marker in source for marker in (
         'SecretCircleSessionLedger',
+        'SecretCircleSessionControls',
+        'S.createController',
+        'sessionControls.countdown',
+        'sessionControls.stopTimer',
+        'onSkip:',
+        'onAbort: abortSession',
+        'onReplay: replaySession',
         f"completionId('{engine}'",
         'recordCompletion(loadHub()',
         'sessionId: L.createSessionId',
         'legacySessionId',
         'if (result.recorded && !saveHub(result.hub)) return',
         'active = final;',
-    ))
+    )) and 'let timerId = null' not in source and 'const deadline = Date.now() + seconds * 1000' not in source
 
 
 checks = {
@@ -108,7 +118,7 @@ checks = {
     )),
     'release_runtime_offline': all(marker in sw for marker in (
         './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-        './party-release.css', './party-search.css',
+        './party-release.css', './party-search.css', './party-session-controls.js',
     )),
     'release_styles': all(marker in release_styles for marker in (
         '.release-tier-overview', '.release-tier-pill', '.filter-reset-button',
@@ -140,6 +150,22 @@ checks = {
         'word-imposter', 'complete', 'creator-library', 'Release-Gates',
     )),
     'ledger_versioned': 'const VERSION = 1;' in ledger,
+    'session_controls_versioned': 'const VERSION = 1;' in session_controls,
+    'session_controls_contract': all(marker in session_controls for marker in (
+        'formatMilliseconds', 'orderedGameIds', 'nextGameId', 'nextGameHref',
+        'createController', 'function countdown', 'function setPaused',
+        'function setSessionActive', 'remainingMilliseconds',
+        '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay', '#quick-next-game',
+    )),
+    'session_controls_surface': all(marker in quick_play for marker in (
+        'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
+        'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"',
+        'id="quick-pause-overlay"',
+    )),
+    'session_controls_styles': all(marker in quick_styles for marker in (
+        '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
+        '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
+    )),
     'creator_direct_exact_once': direct_engine(created_runtime, 'created'),
     'quick_direct_exact_once': direct_engine(quick_runtime, 'quick'),
     'mega_direct_exact_once': direct_engine(mega_runtime, 'mega'),
@@ -147,12 +173,16 @@ checks = {
     'legacy_guard_removed': all('session-ledger-legacy-guard' not in source for source in (
         loader, sw, package.get('scripts', {}).get('test', ''), package.get('scripts', {}).get('check', ''),
     )),
-    'ledger_loaded_first': all(marker in loader for marker in ('session-ledger.js', 'SecretCircleSessionLedger', 'scriptPlan')),
+    'shared_runtime_loaded_first': all(marker in loader for marker in (
+        'session-ledger.js', 'party-session-controls.js', 'SecretCircleSessionLedger',
+        'SecretCircleSessionControls', 'scriptPlan',
+    )),
     'creator_offline': all(asset in sw for asset in (
         './creator.html', './game-creator.js', './creator-page.js', './creator.css', './party-created-modes.js',
     )),
     'foundation_runtime_offline': all(asset in sw for asset in (
-        './pwa-update.css', './session-ledger.js', './party-search-assist.js', './party-search.css',
+        './pwa-update.css', './session-ledger.js', './party-session-controls.js',
+        './party-search-assist.js', './party-search.css',
     )),
     'all_fast_engines_offline': all(asset in sw for asset in (
         './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
@@ -183,8 +213,8 @@ checks = {
     'foundation_tests_in_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
         'tests/party-release-structure.test.js', 'tests/party-filter-state.test.js',
         'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
-        'tests/session-ledger.test.js', 'tests/session-ledger-integration.test.js',
-        'tests/pwa-update.test.js',
+        'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
+        'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
     )),
     'release_dates_documented': all(marker in roadmap for marker in (
         '30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027',
@@ -220,18 +250,18 @@ for game_id in viral_ids:
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 18 or len(e2e_suites) < 28 or not cross_suites:
+if len(unit_tests) < 19 or len(e2e_suites) < 29 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required_test in (
     'party-release-structure.test.js', 'party-filter-state.test.js', 'party-search-assist.test.js',
-    'backup-schema-registry.test.js', 'session-ledger.test.js', 'session-ledger-integration.test.js',
-    'service-worker.test.js', 'pwa-update.test.js',
+    'backup-schema-registry.test.js', 'session-ledger.test.js', 'party-session-controls.test.js',
+    'session-ledger-integration.test.js', 'service-worker.test.js', 'pwa-update.test.js',
 ):
     if required_test not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required_test}')
 for required_test in (
-    'party-filter-state.spec.js', 'party-search-assist.spec.js', 'game-creator.spec.js',
-    'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js',
+    'party-filter-state.spec.js', 'party-search-assist.spec.js', 'party-session-controls.spec.js',
+    'game-creator.spec.js', 'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js',
     'party-viral-modes.spec.js', 'offline.spec.js',
 ):
     if required_test not in e2e_suites:
@@ -249,9 +279,9 @@ for relative in required_docs:
 
 for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
     for relative in (
-        'backup-schema-registry.js', 'session-ledger.js', 'party-release-structure.js',
-        'party-filter-state.js', 'party-search-assist.js', 'runtime-guard.js',
-        'party-routing.js', 'game-creator.js', 'creator-page.js',
+        'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
+        'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
+        'runtime-guard.js', 'party-routing.js', 'game-creator.js', 'creator-page.js',
         'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
         'party-created-modes.js', 'quick-loader.js', 'party-hub.js',
     ):
@@ -272,6 +302,8 @@ print(json.dumps({
     'exact_once_engine_families': 4,
     'legacy_guard_removed': True,
     'search_assistance': True,
+    'shared_session_controls': True,
+    'pausable_fast_engine_timers': True,
     'classic_quick_modes': len(classic_ids),
     'mega_modes': len(mega_ids),
     'viral_modes': len(viral_ids),
