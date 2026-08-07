@@ -7,140 +7,137 @@ Draft-PR: #13
 
 ## Aktueller Gesamtstatus
 
-**Phase:** technische Release-Grundlage und Informationsarchitektur
+**Phase:** technische Kernspiel-Abnahme auf stabiler Release-Grundlage
 
-Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release wird jedoch nicht nach der Anzahl sichtbarer Spiele bewertet, sondern nach Stabilität, Verständlichkeit, Inhaltsqualität, Offlinefähigkeit, Barrierefreiheit und realen Gruppentests.
+Secret Circle besitzt 45 eingebaute Spiele, davon 15 priorisierte Kernspiele. Für den Januar-Release zählt nicht die sichtbare Menge, sondern Stabilität, verständliche Regeln, sichere Wiederaufnahme, korrekte Statistik, Offlinefähigkeit, Accessibility, Inhaltsqualität und reale Gruppentests.
 
 ## Abgeschlossen
 
 ### Release und Struktur
 
-- separater Release-Foundation-Branch
-- verbindlicher Fahrplan und moderne Release-Checkliste bis Januar 2027
-- qualitätsbasierter Umfang mit Kernrelease, erweitertem Release und Labs
-- Party Hub in **15 Kernspiele**, **13 Erweiterungen** und **17 Labs-Modi** gegliedert
-- eigener Reifestufenfilter und sichtbare Qualitätsbadges auf Spielkarten
-- Schnellwahlkarten für Kernspiele, Erweiterungen und Labs
-- selbst erstellte Spiele werden als Erweiterungen eingeordnet
-- neue Struktur reagiert auf Suche, Filter, Favoriten und neu gerenderte Karten
-- Katalogverteilung wird durch Unit-, Contract-, Architektur- und Release-Gates geschützt
-- Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzte Ansicht werden lokal gespeichert
-- alle gespeicherten Filter lassen sich mit einer Schaltfläche zurücksetzen
-- direkte URL-Ansichten haben Vorrang vor einem gespeicherten letzten Bereich
-- Alters- und Reifestufenfilter werden als gemeinsame Sichtbarkeitsregel ausgewertet
-- Synonyme, bekannte alternative Spielnamen und kleine Tippfehler erzeugen gewichtete Suchvorschläge
-- Suchvorschläge unterstützen Maus, Touch, Pfeiltasten, Enter, Escape und Screenreader
+- verbindlicher Fahrplan bis Januar 2027
+- 15 Kernspiele, 13 Erweiterungen und 17 Labs-Modi
+- Reifestufen-, Alters-, Gruppen-, Stimmungs- und Statusfilter
+- lokal gespeicherte Filter und URL-Priorität
+- Synonym- und Tippfehlersuche mit Tastatur-/Touch-Unterstützung
+- Kernspielvertrag und eigene Abnahmematrix in `CORE_GAME_ACCEPTANCE.md`
 
-### Engine, Session und Daten
+### Word Imposter
 
-- unabhängige Imposter-Zuweisung direkt in der Engine
-- maximale Zahl von sechs Impostern direkt in der Engine validiert
-- Runtime-Monkey-Patching der Rollenlogik entfernt
-- Creator-Zeitstempel bei Laden, Export und Import stabilisiert
-- gemeinsames Abschlussregister mit stabilen Session- und Abschluss-IDs
-- Creator, klassische Quick-, Mega- und Viral-Engine sind direkt an dasselbe Session-Ledger angebunden
-- jede neue Session besitzt sofort eine stabile Session-ID
-- ältere aktive Sessions erhalten deterministisch eine kompatible Session-ID
-- Verlauf, Spielanzahl, Rundenzahl und Bestwert werden pro Session höchstens einmal aktualisiert
-- der alte Mega-/Viral-`plays`-Fehler ist direkt in den Engines beseitigt
-- fehlgeschlagene Abschlussbereinigung stellt den aktiven Abschlusszustand wieder her
-- temporärer Legacy-Guard und sein globales `Storage.prototype`-Patching wurden vollständig entfernt
-- `party-session-controls.js` stellt für Quick-, Mega-, Viral- und Creator-Modi dieselbe Steuerung bereit
-- Pause/Fortsetzen, Runde überspringen, bestätigter Abbruch, Wiederholen und nächstes Spiel sind über dieselbe Oberfläche erreichbar
-- laufende Timer dieser vier Enginefamilien frieren während einer Pause tatsächlich ein und laufen anschließend mit der Restzeit weiter
-- pausierte Rundenaktionen werden mit `inert` und einem sichtbaren Pausenstatus blockiert
-- Abbruch entfernt eine aktive Session nur dann endgültig, wenn die Speicherbereinigung erfolgreich war
-- die vier schnellen Engines besitzen keine eigenen Intervalltimer mehr
+- Rollen unabhängig von der Aufdeckreihenfolge
+- getrennte Zufallsströme für Reveal, Rollen und Begriff
+- maximal sechs Imposter direkt in der Hauptengine
+- kein Laufzeit-Monkey-Patching der Rollenlogik
+- deterministische Fairnessverträge
 
-### Backup und Wiederherstellung
+### Sessionabschluss und Statistik
 
-- drei Sicherungsformate zentral in `backup-schema-registry.js` registriert
-- Word Imposter, Gesamtsicherung und Creator-Bibliothek eindeutig versioniert
-- gemeinsames Dateilimit von 1.500.000 UTF-8-Bytes
-- maximale Einträge und Creator-Kapazitäten im Register dokumentiert
-- Runtime-Verträge werden automatisch gegen das zentrale Register geprüft
-- Migrations-, Rollback- und Release-Regeln in `BACKUP_SCHEMAS.md` dokumentiert
+- gemeinsames `session-ledger.js`
+- Creator, Quick, Mega, Viral und direkte Hub-Sessions mit stabilen Session-/Abschluss-IDs
+- Hub-`plays` wird nicht mehr beim bloßen Öffnen oder Startversuch erhöht
+- echte Hub-Abschlüsse schreiben Verlauf/Statistik genau einmal
+- Quick/Mega/Viral/Creator schreiben ebenfalls genau einmal
+- Advanced Runner besitzt eine stabile Abschluss-ID aus seiner Session-ID und einen Wiederholschutz
 
-### PWA und Offline
+### Gemeinsame Timer und Bedienung
 
-- Offline-Fallback für Query-Routen korrigiert
-- kanonische Cache-Schlüssel für dynamische Spiel-URLs
-- unbekannte Quick-Game-Routen werden sicher abgelehnt
-- neue PWA-Versionen werden separat vorbereitet und nicht mehr automatisch aktiviert
-- sichtbarer Updatehinweis mit „Jetzt aktualisieren“ und „Später“
-- laufende Sessions werden im Updatehinweis ausdrücklich berücksichtigt
-- aktiver Offline-Cache wird bei der Promotion nicht mehr vorzeitig gelöscht
-- neue Dateien werden zuerst vollständig übernommen; erst danach werden veraltete Cacheeinträge entfernt
-- Party-Hub-Reifestufen, gespeicherte Filter, Suchhilfe, Such-Styles und gemeinsame Sessionsteuerung funktionieren auch offline
-- der entfernte Legacy-Guard gehört nicht mehr zum Offline-Core
+- `party-session-controls.js` für Quick/Mega/Viral/Creator
+- Pause, Skip, bestätigter Abbruch, Replay und nächstes Spiel auf derselben Oberfläche
+- direkte Hub-Timer verwenden denselben pausierbaren Timerkern
+- Scharade: gemeinsamer 60-Sekunden-Countdown
+- Heiße Kartoffel: gemeinsamer verdeckter Zufalls-Countdown
+- Wortkette: gemeinsamer 30-Sekunden-Countdown
+- Hub-Rundenaktionen werden während Pause per `inert` gesperrt
+- laufende Hub-Timer pausieren beim Wechsel in den Hintergrund
+- private Intervalltimer wurden aus den schnellen Engines und dem Hub-Timerpfad entfernt
+
+### Advanced-Kernspiele
+
+- realer Advanced-Speicherschlüssel ist `secret-circle-party-active-v1`
+- PWA-Update-Schutz verwendet jetzt denselben Schlüssel
+- nach Reload werden bereits geöffnete private Fragen, Orte und Rollen wieder verdeckt
+- Mafia-Moderatorübersicht benötigt nach Reload erneut bewusste Bestätigung
+- Advanced-Smoke- und Unterbrechungsverträge wurden auf den tatsächlichen Resume-Flow korrigiert
+- Zwei Wahrheiten: Eingabe, Mischung, Abstimmung und Rundenfortschritt als Browservertrag vorbereitet
+- Question Imposter: komplette private Reveal-Kette und Abstimmung als Browservertrag vorbereitet
+- Location Spy: komplette private Reveal-Kette und korrekte Spionwahl als Browservertrag vorbereitet
+- Advanced-Abschluss wird für alle vier Modi gegen doppelte Statistik vorbereitet geprüft
+
+### Mafia
+
+- Mafiaanzahl skaliert mit der Gruppe: 1 / 2 / 3 / 4
+- `Schnell`, `Klassisch` und `Erweitert` besitzen unterschiedliche Rollenverträge
+- Arzt ist in den passenden Packs verfügbar
+- `Erweitert` besitzt jetzt eine echte Beschützer-Nachtaktion
+- Beschützer darf dieselbe Person nicht zwei Nächte hintereinander schützen
+- geschützte Mafia-Ziele überleben die Nacht
+- Detektiv-Ergebnis bleibt in der Moderatoransicht
+- Siegbedingung Dorf/Mafia bleibt zentral geprüft
+
+### Backup und PWA
+
+- zentrales Backup-Schemaregister
+- Word-, Gesamt- und Creator-Backup versioniert
+- gemeinsame Grenze von 1.500.000 UTF-8-Bytes
+- Gesamtsicherung erfasst alle `secret-circle-*`-Schlüssel, einschließlich Advanced-Spielstand
+- PWA-Staging-Cache und sichtbare Updateentscheidung
+- kein automatisches Aktivieren einer neuen Version während normaler Nutzung
+- aktiver Cache wird nicht vor erfolgreicher Promotion zerstört
 
 ### Qualität
 
-- moderne Struktur-, Architektur-, Contract-, Performance- und Release-Audits
-- feste Größenbudgets für Registry, Ledger, gemeinsame Sessionsteuerung, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe
-- direkte Genau-einmal-Vertragstests für Creator, Quick, Mega und Viral
-- Unit-Test für pausierbaren Timer, Skip, Abbruch, Replay, Next-Game und ARIA-/`inert`-Zustände
-- Browserprüfung für echte Timerpause, Fortsetzung, Überspringen, bestätigten Abbruch, Wiederholen und nächstes Spiel vorbereitet
-- Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates, Release-Tiers, Filterzustand und Suchhilfe
-- Browserprüfungen für Filterwiederherstellung, Reset, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Maus- und Tastaturbedienung der Suche vorbereitet
-- Validatoren stoppen bei privaten nicht pausierbaren Timern in den vier schnellen Enginefamilien
-- Validatoren stoppen bei einer erneuten Einführung des entfernten Legacy-Guards
-- alter falscher Release-Audit-Marker `activeSessionKeys` auf den tatsächlichen Runtime-Vertrag `ACTIVE_SESSION_KEYS` korrigiert
-- README, Changelog, Roadmap, Release-Checkliste, Architekturvertrag und manueller Testplan auf den aktuellen Foundation-Stand synchronisiert
+Neu beziehungsweise erweitert:
 
-## Geprüft beziehungsweise als Testvertrag abgesichert
+- `tests/core-game-contract.test.js`
+- `tests/hub-timer-contract.test.js`
+- `tests/advanced-resume-contract.test.js`
+- `tests/mafia-rules.test.js`
+- `tests/e2e/core-game-catalog.spec.js`
+- `tests/e2e/core-hub-statistics.spec.js`
+- `tests/e2e/core-hub-timers.spec.js`
+- `tests/e2e/advanced-core-smoke.spec.js`
+- `tests/e2e/advanced-core-abort.spec.js`
+- `tests/e2e/advanced-secret-resume.spec.js`
+- `tests/e2e/advanced-core-round-flow.spec.js`
+- `tests/e2e/advanced-completion-exact-once.spec.js`
+- `tests/e2e/mafia-extended.spec.js`
 
-- deterministische Rollenverteilung
-- 200 Fairnessstichproben mit wechselnder erster Aufdeckrolle
-- Timer- und Runden-Smoke-Test der Word-Imposter-Engine
-- Creator-Laden ohne künstliche Änderung von `updatedAt`
-- Creator-Export und -Import mit unveränderten Zeitstempeln
-- echte Bearbeitung aktualisiert `updatedAt`
-- ASCII- und mehrbyteige Unicode-Backups gegen dieselbe Bytegrenze
-- atomischer Import-Rollback bei Speicherfehlern
-- stabile Abschluss-IDs für alle vier schnellen Enginefamilien
-- direkte Genau-einmal-Aktualisierung von Verlauf, `plays`, Runden und Bestwert
-- deterministische Migration alter aktiver Mega- und Viral-Sessions
-- Wiederherstellung bei fehlgeschlagener Bereinigung des aktiven Abschlusses
-- gemeinsamer pausierbarer Timervertrag für Quick, Mega, Viral und Creator
-- gemeinsamer Bedienvertrag für Pause, Skip, Abbruch, Replay und nächstes Spiel
-- isolierter Controller-Smoke-Test lokal grün
-- zentrales Backup-Register und seine Runtime-Verträge
-- feste Katalogverteilung 15 Kernspiele / 13 Erweiterungen / 17 Labs
-- Filterzustand wird normalisiert; ungültige Werte fallen auf sichere Standards zurück
-- nicht verfügbarer oder voller lokaler Speicher wird als Fehler gemeldet
-- Suchnormalisierung, Synonyme, Tippfehlertoleranz und maximal sechs Vorschläge
+Struktur-, Architektur-, Foundation- und Release-Audit erkennen direkte Hub-Sessions inzwischen als fünften genau-einmal-Abschlussweg und verbieten private Hub-Timer.
 
-Ein vollständiger grüner Lauf aller Tests ist weiterhin nicht dokumentiert, da der aktuelle GitHub-Actions-Blocker die Remote-Ausführung verhindert. Die neu ergänzte Browserprüfung ist deshalb vorbereitet, aber noch nicht durch einen vertrauenswürdigen Remote-Runner bestätigt.
+## Noch technisch offen
+
+1. **Direkte Hub-Sessions über vollständigen Reload:** aktuelle Runde und Timerrestzeit werden noch nicht wiederhergestellt.
+2. **Tabu:** Produktentscheidung über eine feste Rundenuhr fehlt.
+3. **Automatisierte Browserausführung:** die vorbereiteten Playwright-Verträge benötigen einen funktionierenden Runner.
+4. **Dependency-Lock:** `package-lock.json` und `npm ci` bleiben offen.
+5. **Geräte und reale Gruppen:** Android, iPhone, Tablet, PWA-Update und echte Partyabende fehlen noch.
+6. **Inhalte und Recht:** redaktionelle Alters-, Fan-Content- und Rechtsprüfung ist noch nicht abgeschlossen.
 
 ## Externer Releaseblocker
 
-Der aktuelle GitHub-Actions-Lauf **#1487** für Commit `57f64ab94ea13a49bfb737e4853e57c721e7eba2` wurde am 7. August 2026 bereits nach zwei Sekunden beendet.
-
-Der Job `validate` zeigt erneut:
+GitHub Actions beendet die Jobs weiterhin vor dem ersten Repository-Schritt. Das bekannte Muster ist:
 
 - `runner_id: 0`
-- leeren Runnernamen
+- leerer Runnername
 - `runner_group_id: 0`
 - `steps: []`
 - kein Checkout
-- kein ausgeführter Repository-Befehl
 
-Damit ist weiterhin **kein Repository-Test fehlgeschlagen**; der Code wurde von GitHub Actions gar nicht ausgeführt. Vor Merge und Release müssen Actions, Abrechnung beziehungsweise Minutenbudget und mögliche Organisationsrichtlinien außerhalb des Repository-Codes korrigiert werden.
+Damit darf ein solcher Lauf nicht als Repository-Testfehler interpretiert werden; der Code wird gar nicht ausgeführt.
 
 ## Nächste technische Prioritäten
 
-1. die 15 Kernspiele einzeln nach Regeln, Inhalt, Timer, Wiederaufnahme, Statistik und Accessibility abnehmen
-2. Timer über App-Wechsel, Sperrbildschirm und Neuladen korrekt fortsetzen und auf echten Geräten prüfen
-3. PWA-Update von einer älteren installierten Version auf echten Geräten prüfen
-4. Kerninhalte redaktionell und nach Altersstufen prüfen
-5. Android-, iPhone-, Tablet- und echte Gruppentests
-6. reproduzierbaren Dependency-Lock erzeugen und CI auf `npm ci` umstellen
-7. Branch Protection und verpflichtende Checks aktivieren, sobald Actions wieder läuft
+1. sichere Wiederaufnahme direkter Hub-Sessions über Reload definieren und implementieren
+2. dabei private Zustände nach Reload standardmäßig verdecken
+3. Restzeit-/Neustartvertrag für Scharade, Heiße Kartoffel und Wortkette festlegen
+4. direkte Hub-Kernspiele auf Skip, Fokus, Punkte und mobile Accessibility prüfen
+5. danach Inhalts-/Altersprüfung und echte Gruppen-/Gerätetests
+6. Dependency-Lock erzeugen und CI auf `npm ci` umstellen
+7. Branch Protection aktivieren, sobald Actions wieder zuverlässig läuft
 
 ## Releaseentscheidung
 
 - **Öffentlicher Release heute:** Nein
 - **Kontrollierte Entwicklungsbeta:** Ja
 - **Merge von PR #13 heute:** Nein, Draft bleibt bestehen
-- **Releaseziel Januar 2027 erreichbar:** Ja, sofern CI, Geräteprüfungen, Kernspielqualität und rechtliche Angaben rechtzeitig abgeschlossen werden
+- **Releaseziel Januar 2027:** weiterhin realistisch, wenn CI, Geräteprüfungen, Inhaltsqualität und rechtliche Angaben rechtzeitig abgeschlossen werden
