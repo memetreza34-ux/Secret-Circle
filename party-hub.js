@@ -180,6 +180,7 @@
         savedAt: new Date().toISOString(),
         session
       }));
+      syncHubPauseUi();
       return true;
     } catch {
       setStatus('Die laufende Hub-Session konnte nicht lokal gesichert werden.', true);
@@ -928,8 +929,7 @@
   }
 
   function offerHubResume(active) {
-    const existing = $('#hub-resume-session');
-    existing?.remove();
+    $('#hub-resume-session')?.remove();
     const game = C.getGame(active.gameId);
     if (!game) return;
     const card = makeElement('section', 'panel hub-resume-session');
@@ -960,8 +960,7 @@
     }, 'secondary');
     actions.append(resume, discard);
     card.append(title, copy, actions);
-    const status = $('#hub-status');
-    status?.insertAdjacentElement('afterend', card);
+    $('#hub-status')?.insertAdjacentElement('afterend', card);
   }
 
   function quickStart() {
