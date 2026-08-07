@@ -26,6 +26,7 @@ Aktuelle Bereiche:
 - Viral-Session Version 1
 - Creator-Session Version 1
 - gemeinsames Session-Ledger Version 1
+- gemeinsame schnelle Sessionsteuerung Version 1
 - eigene Hub-Packs Speicherschema Version 1, Manager Version 4
 - selbst erstellte Spiele Version 1
 - Gesamtsicherung Version 1
@@ -72,23 +73,28 @@ Der Hub lädt Erweiterungen in kontrollierter Reihenfolge: Reifestufenstruktur, 
 
 Der Creator unterstützt Fragen, Auswahl, Erraten, Challenges, Story und Debatte. Neue Creator-Vorlagen werden nur ergänzt, wenn sie auf einer klaren Engine basieren und migrationsfähig bleiben.
 
-### Spielengines und Abschlussregister
+### Spielengines, Abschlussregister und gemeinsame Steuerung
 
 - `session-ledger.js`: stabile Session- und Abschluss-IDs sowie genau-einmal-Aktualisierung von Verlauf, zuletzt gespielt und Statistik
+- `party-session-controls.js`: gemeinsame Pause/Fortsetzen-, Überspringen-, Abbruch-, Wiederholen- und Nächstes-Spiel-Steuerung sowie pausierbarer Timer für schnelle Engines
 - `party-advanced.js` und `party-advanced-runner.js`: komplexe Rollen- und Täuschungsspiele
 - `party-quick-modes.js`: zehn klassische Quick Modes
 - `party-mega-modes.js`: neun Trend-Modi
 - `party-viral-modes.js`: acht Viral-Modi
 - `party-created-modes.js`: selbst erstellte Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenspiele
-- `quick-loader.js`: lädt zuerst das gemeinsame Session-Ledger und danach genau eine passende Engine
+- `quick-loader.js`: lädt zuerst das gemeinsame Session-Ledger, danach die gemeinsame Sessionsteuerung und erst anschließend genau eine passende Engine
 
-Creator, Quick, Mega und Viral verwenden denselben direkten Abschlussvertrag. Keine Engine erzeugt beim wiederholten Abschlussversuch eine neue zufällige Verlaufs-ID. Ein globales Überschreiben von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik ist verboten.
+Creator, Quick, Mega und Viral verwenden denselben direkten Abschluss- und Bedienvertrag. Keine Engine erzeugt beim wiederholten Abschlussversuch eine neue zufällige Verlaufs-ID. Keine dieser vier Enginefamilien besitzt einen privaten Intervalltimer; zeitgesteuerte Runden verwenden `party-session-controls.js`, damit eine sichtbare Pause auch die verbleibende Zeit tatsächlich einfriert.
+
+Ein globales Überschreiben von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik ist verboten.
 
 Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB.
 
 ## 5. Reine Logik vor DOM-Logik
 
 Planung, Validierung, Suche, Migration und Zustandsübergänge sollen ohne Browser testbar sein. DOM-Code erstellt Elemente, verbindet Ereignisse und zeigt Status; er dupliziert keine abweichenden Regeln.
+
+Der gemeinsame Sessioncontroller hält Timerlogik, Pausenzustand und die generischen Navigationsaktionen getrennt von der eigentlichen Spielmechanik. Engines liefern nur ihre callbackspezifischen Aktionen wie nächste Runde, Abbruch und Replay.
 
 ## 6. Lokale Transaktionen
 
@@ -105,6 +111,8 @@ Sessionabschlüsse schreiben Verlauf und Statistik genau einmal. Der Ablauf laut
 
 Jede neue echte Session erhöht `plays` genau um eins; ein Neuladen oder wiederholter Abschlussversuch erzeugt weder einen zweiten Verlaufseintrag noch zusätzliche Runden.
 
+Ein manueller Sessionabbruch entfernt den gespeicherten aktiven Zustand nur dann endgültig, wenn dieser Schreibvorgang erfolgreich ist. Bei Speicherfehlern bleibt der letzte aktive Zustand wiederherstellbar.
+
 ## 7. Bedienbarkeitsvertrag
 
 - Hauptaufgaben sind in höchstens drei bis vier klaren Schritten erreichbar
@@ -115,6 +123,9 @@ Jede neue echte Session erhöht `plays` genau um eins; ein Neuladen oder wiederh
 - wichtige Regeln stehen vor dem Start in Kurzform
 - progressive Offenlegung statt langer Formulare auf einmal
 - Nutzer können jederzeit zurück, abbrechen oder Daten sichern
+- Quick-, Mega-, Viral- und Creator-Modi zeigen Pause/Fortsetzen, Runde überspringen und Session beenden an derselben Position
+- nach einem Abschluss stehen Wiederholen und nächstes Spiel an derselben Stelle bereit
+- Pause blockiert die Rundenaktionen und friert einen aktiven Timer ein; Fortsetzen nimmt ihn mit der Restzeit wieder auf
 - Suchvorschläge bleiben optional und vollständig per Tastatur bedienbar
 - direkte URL-Navigation besitzt Vorrang vor einer gespeicherten letzten Ansicht
 
@@ -135,7 +146,7 @@ Jede neue echte Session erhöht `plays` genau um eins; ein Neuladen oder wiederh
 
 Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: `secret-circle-v30`.
 
-Creator, Hilfesystem, Release-Tiers, Filterzustand, Suchhilfe, Session-Ledger, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core. Nicht mehr verwendete Übergangsmodule werden aus Code, Tests, Loader und Cache entfernt.
+Creator, Hilfesystem, Release-Tiers, Filterzustand, Suchhilfe, Session-Ledger, gemeinsame Sessionsteuerung, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core. Nicht mehr verwendete Übergangsmodule werden aus Code, Tests, Loader und Cache entfernt.
 
 Eine neue Version wird zuerst in einem Staging-Cache vollständig vorbereitet. Sie wird erst nach sichtbarer Zustimmung aktiviert. Der aktive Offline-Core wird nicht vor erfolgreicher Übernahme gelöscht.
 
@@ -144,6 +155,8 @@ Eine neue Version wird zuerst in einem Staging-Cache vollständig vorbereitet. S
 Jede Oberfläche benötigt semantische Überschriften, beschriftete Felder, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 Pixel große Touchziele, Reduced Motion, 200-Prozent-Zoom, verständliche Statusmeldungen sowie Smartphone- und Desktopprüfung. Farbe allein darf keinen Status erklären.
 
 Dynamische Suchvorschläge verwenden eine ARIA-Listbox, einen nachvollziehbaren aktiven Eintrag und die Tasten Pfeil hoch, Pfeil runter, Enter und Escape.
+
+Der Pausenknopf meldet seinen Zustand über `aria-pressed`; pausierte Rundenaktionen werden über `inert` aus der Bedienung genommen und ein sichtbarer Live-Status erklärt, dass Spiel und Timer pausiert sind.
 
 ## 11. Inhaltsvertrag
 
@@ -165,11 +178,15 @@ Bei jedem Commit: Syntax, Unit-Tests, Strukturvalidator, Release-Audit und Perfo
 
 Sessiontests prüfen alle vier schnellen Enginefamilien auf stabile Session-IDs, deterministische Migration alter Sessions, genau einen Verlaufseintrag, genau eine Statistikaktualisierung und Wiederherstellung bei fehlgeschlagener Bereinigung.
 
+Der gemeinsame Sessioncontroller besitzt einen isolierten Test mit kontrollierter Uhr. Browserprüfungen müssen zusätzlich nachweisen, dass ein sichtbarer Timer während einer Pause unverändert bleibt, nach Fortsetzen weiterläuft, Skip und bestätigter Abbruch funktionieren und Replay beziehungsweise nächstes Spiel erreichbar sind.
+
 Creator-spezifische E2E-Prüfungen decken Wizard, strukturierte Karten, Offline-Start, Wiederaufnahme, Sanitizing, exakte Verlaufseinträge und wiederholte Statistik ab. Hub-E2E-Prüfungen decken Filterwiederherstellung, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Suchvorschläge mit Maus und Tastatur ab.
 
 ## 14. Performancebudget
 
 Neue Module und Assets erhalten eigene Budgets. Keine großen Frameworks, Videos oder Mediendateien ohne messbaren Nutzen, Kompression und Audit. Wachstum des Offline-Cores bleibt sichtbar.
+
+`party-session-controls.js` besitzt ein eigenes Größenbudget und darf nicht als Vorwand dienen, spielabhängige Logik in einen unübersichtlichen globalen Controller zu verschieben.
 
 ## 15. Erweiterungspunkte
 
