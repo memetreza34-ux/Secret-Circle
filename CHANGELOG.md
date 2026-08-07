@@ -43,6 +43,7 @@
 - Synonym- und Tippfehlersuche mit bekannten Alternativnamen, gewichteten Vorschlägen und maximal sechs Ergebnissen
 - barrierearme Suchvorschläge mit ARIA-Listbox, Pfeiltasten, Enter, Escape, Maus und Touch
 - responsive Styles für Kernspiele, Erweiterungen, Labs, Filterreset und Suchvorschläge
+- vollständig neu strukturierte Release-Checkliste für CI, Engines, Kernspiele, Hub, Backups, PWA, Geräte, Inhalte und Gruppentests
 
 ### Qualität
 
@@ -67,7 +68,7 @@
 
 ### Bekannte externe Blockade
 
-- GitHub Actions weist dem Workflow weiterhin keinen Runner zu beziehungsweise lässt den Job ohne Schritte in der Warteschlange. Lokale Tests und Syntaxprüfungen ersetzen den verpflichtenden grünen Remote-Lauf nicht.
+- GitHub Actions weist dem Workflow weiterhin keinen Runner zu. Der aktuelle Lauf #1401 endete mit `runner_id: 0`, leerem Runnernamen, `steps: []` und ohne Joblog vor dem Checkout.
 - Ein reproduzierbares `package-lock.json` und die Umstellung auf `npm ci` bleiben offen, bis Abhängigkeiten in einer funktionierenden CI- oder lokalen npm-Umgebung aufgelöst werden können.
 
 ## Frühere Entwicklungswelle – Bedienbarkeit, Creator und Offline-Core v29
