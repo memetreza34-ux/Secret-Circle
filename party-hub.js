@@ -9,7 +9,11 @@
   if (!S) throw new Error('Gemeinsame Sessionsteuerung für den Party Hub fehlt.');
 
   const STORAGE_KEY = 'secret-circle-party-hub-v1';
+  const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
+  const ACTIVE_VERSION = 1;
   const MAX_HISTORY = L.maximumHistory;
+  const MAX_ACTIVE_USED = 500;
+  const TIMER_KINDS = new Set(['charades', 'hot-potato', 'word-chain']);
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const hubTimer = S.createController({ windowRef: window });
@@ -33,12 +37,21 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function cleanText(value, maximum = 200) {
+    return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
+  }
+
+  function safeInteger(value, maximum = 1_000_000) {
+    const number = Number(value);
+    return Number.isInteger(number) && number >= 0 ? Math.min(number, maximum) : 0;
+  }
+
   function normalizePlayers(input) {
     const values = Array.isArray(input) ? input : String(input ?? '').split(/\n|,/);
     const players = [];
     const seen = new Set();
     for (const raw of values) {
-      const name = String(raw ?? '').trim().replace(/\s+/g, ' ').slice(0, 32);
+      const name = cleanText(raw, 32);
       if (!name) continue;
       const key = name.toLocaleLowerCase('de-DE');
       if (seen.has(key)) continue;
@@ -58,16 +71,16 @@
       recent: Array.isArray(value.recent) ? value.recent.filter(id => C.getGame(id)).slice(0, 8) : [],
       presets: Array.isArray(value.presets) ? value.presets.slice(0, 20).map(item => ({
         id: String(item?.id ?? '').slice(0, 80),
-        name: String(item?.name ?? '').trim().slice(0, 40),
+        name: cleanText(item?.name, 40),
         players: normalizePlayers(item?.players)
       })).filter(item => item.id && item.name && item.players.length) : [],
       history: Array.isArray(value.history) ? value.history.slice(0, MAX_HISTORY).filter(item => C.getGame(item?.gameId)).map(item => ({
         id: String(item.id ?? ''),
         gameId: item.gameId,
-        title: String(item.title ?? C.getGame(item.gameId)?.title ?? '').slice(0, 80),
+        title: cleanText(item.title ?? C.getGame(item.gameId)?.title, 80),
         endedAt: String(item.endedAt ?? ''),
-        rounds: Number.isInteger(item.rounds) ? Math.max(0, item.rounds) : 0,
-        score: Number.isInteger(item.score) ? Math.max(0, item.score) : 0
+        rounds: safeInteger(item.rounds, 10_000),
+        score: safeInteger(item.score)
       })) : [],
       stats: value.stats && typeof value.stats === 'object' && !Array.isArray(value.stats) ? value.stats : {}
     };
@@ -93,8 +106,98 @@
 
   function setStatus(message, error = false) {
     const node = $('#hub-status');
+    if (!node) return;
     node.textContent = message || '';
     node.classList.toggle('error', error);
+  }
+
+  function normalizeTimerState(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value) || !TIMER_KINDS.has(value.kind)) return null;
+    const phase = value.phase === 'ended' ? 'ended' : 'running';
+    return {
+      kind: value.kind,
+      phase,
+      remainingMs: phase === 'running' ? Math.max(250, Math.min(3_600_000, Number(value.remainingMs) || 0)) : 0,
+      roundScore: safeInteger(value.roundScore, 10_000),
+      item: cleanText(value.item, 240),
+      prompt: cleanText(value.prompt, 400),
+      letter: cleanText(value.letter, 12)
+    };
+  }
+
+  function normalizeActiveSession(value) {
+    if (!value || typeof value !== 'object' || value.version !== ACTIVE_VERSION || !value.session) return null;
+    const source = value.session;
+    if (!source || typeof source !== 'object' || Array.isArray(source)) return null;
+    const game = C.getGame(source.gameId);
+    if (!game || game.status !== 'playable' || game.mode === 'link') return null;
+    const players = normalizePlayers(source.players);
+    if (players.length < game.minPlayers || players.length > game.maxPlayers) return null;
+    const packs = C.getPackNames(game.id);
+    const pack = source.pack === null || source.pack === undefined ? null : cleanText(source.pack, 80);
+    if (packs.length && !packs.includes(pack)) return null;
+    const sessionId = L.normalizeSessionId(source.sessionId);
+    if (!sessionId) return null;
+    const startedAt = Number.isNaN(Date.parse(source.startedAt)) ? new Date().toISOString() : new Date(source.startedAt).toISOString();
+    const used = Array.isArray(source.used)
+      ? [...new Set(source.used.filter(index => Number.isInteger(index) && index >= 0))].slice(0, MAX_ACTIVE_USED)
+      : [];
+    return {
+      gameId: game.id,
+      sessionId,
+      players,
+      pack: packs.length ? pack : null,
+      rounds: safeInteger(source.rounds, 10_000),
+      score: safeInteger(source.score),
+      playerIndex: safeInteger(source.playerIndex, 10_000) % players.length,
+      used,
+      current: null,
+      startedAt,
+      running: Boolean(source.running),
+      timer: normalizeTimerState(source.timer)
+    };
+  }
+
+  function clearActiveSession() {
+    try {
+      localStorage.removeItem(ACTIVE_KEY);
+      return true;
+    } catch {
+      setStatus('Der aktive Hub-Spielstand konnte nicht entfernt werden.', true);
+      return false;
+    }
+  }
+
+  function persistActiveSession() {
+    if (!session) return clearActiveSession();
+    if (session.timer?.phase === 'running') {
+      const remaining = hubTimer.remainingMilliseconds();
+      if (remaining > 0) session.timer.remainingMs = Math.ceil(remaining);
+    }
+    try {
+      localStorage.setItem(ACTIVE_KEY, JSON.stringify({
+        version: ACTIVE_VERSION,
+        savedAt: new Date().toISOString(),
+        session
+      }));
+      return true;
+    } catch {
+      setStatus('Die laufende Hub-Session konnte nicht lokal gesichert werden.', true);
+      return false;
+    }
+  }
+
+  function loadActiveSession() {
+    let raw;
+    try {
+      raw = localStorage.getItem(ACTIVE_KEY);
+      if (!raw) return null;
+      const active = normalizeActiveSession(JSON.parse(raw));
+      if (active) return active;
+    } catch {}
+    try { localStorage.removeItem(ACTIVE_KEY); } catch {}
+    setStatus('Ein beschädigter aktiver Hub-Spielstand wurde verworfen.', true);
+    return null;
   }
 
   function randomInt(maximum) {
@@ -108,7 +211,7 @@
   }
 
   function randomItem(items) {
-    return items[randomInt(items.length)];
+    return Array.isArray(items) && items.length ? items[randomInt(items.length)] : null;
   }
 
   function formatDate(value) {
@@ -123,7 +226,7 @@
   }
 
   function clearNode(node) {
-    while (node.firstChild) node.firstChild.remove();
+    while (node?.firstChild) node.firstChild.remove();
   }
 
   function makeElement(tag, className, text) {
@@ -139,7 +242,7 @@
     if (pause) {
       pause.textContent = paused ? 'Fortsetzen' : 'Pause';
       pause.setAttribute('aria-pressed', paused ? 'true' : 'false');
-      pause.disabled = !session;
+      pause.disabled = !session || hubTimer.remainingMilliseconds() <= 0;
     }
     const status = $('#play-pause-status');
     if (status) status.textContent = paused ? 'Spiel pausiert. Der Timer steht und Rundenaktionen sind gesperrt.' : '';
@@ -157,6 +260,7 @@
     hubTimer.setSessionActive(true);
     const result = hubTimer.setPaused(value);
     syncHubPauseUi();
+    persistActiveSession();
     return result;
   }
 
@@ -167,12 +271,12 @@
 
   function stopHubTimer() {
     hubTimer.stopTimer();
+    syncHubPauseUi();
   }
 
   function gameCard(game, compact = false) {
     const article = makeElement('article', `game-card ${game.status}${compact ? ' compact-card' : ''}`);
     article.dataset.gameId = game.id;
-
     const top = makeElement('div', 'game-card-top');
     top.append(makeElement('span', 'game-icon', game.icon));
     const favorite = makeElement('button', `favorite-button${state.favorites.includes(game.id) ? ' active' : ''}`, state.favorites.includes(game.id) ? '★' : '☆');
@@ -180,25 +284,18 @@
     favorite.dataset.favoriteGame = game.id;
     favorite.setAttribute('aria-label', `${game.title} ${state.favorites.includes(game.id) ? 'aus Favoriten entfernen' : 'als Favorit speichern'}`);
     top.append(favorite);
-    article.append(top);
-
-    article.append(makeElement('h3', '', game.title));
-    article.append(makeElement('p', '', game.description));
-
+    article.append(top, makeElement('h3', '', game.title), makeElement('p', '', game.description));
     const meta = makeElement('div', 'game-meta');
     meta.append(makeElement('span', '', `${game.minPlayers}–${game.maxPlayers} Personen`));
     meta.append(makeElement('span', '', `ca. ${game.duration} Min.`));
     if (C.itemCount(game.id)) meta.append(makeElement('span', '', `${C.itemCount(game.id)} Karten`));
     article.append(meta);
-
     const actions = makeElement('div', 'game-card-actions');
     const open = makeElement('button', 'open-game', game.status === 'playable' ? 'Öffnen' : 'Details');
     open.type = 'button';
     open.dataset.openGame = game.id;
     actions.append(open);
-    article.append(actions);
-
-    article.append(makeElement('span', `status-pill ${game.status}`, game.status === 'playable' ? 'Spielbar' : 'In Arbeit'));
+    article.append(actions, makeElement('span', `status-pill ${game.status}`, game.status === 'playable' ? 'Spielbar' : 'In Arbeit'));
     return article;
   }
 
@@ -222,11 +319,9 @@
     $('#playable-count').textContent = String(playable.length);
     $('#planned-count').textContent = String(C.games.length - playable.length);
     $('#content-count').textContent = String(C.games.reduce((sum, game) => sum + C.itemCount(game.id), 0));
-
     const featured = $('#featured-grid');
     clearNode(featured);
     C.games.filter(game => game.featured).slice(0, 3).forEach(game => featured.append(gameCard(game)));
-
     const recent = $('#recent-list');
     clearNode(recent);
     const games = state.recent.map(id => C.getGame(id)).filter(Boolean).slice(0, 4);
@@ -254,10 +349,7 @@
     const current = select.value;
     const groups = [...new Set(C.games.map(game => game.group))].sort((a, b) => a.localeCompare(b, 'de-DE'));
     while (select.options.length > 1) select.remove(1);
-    for (const group of groups) {
-      const option = new Option(group, group);
-      select.add(option);
-    }
+    for (const group of groups) select.add(new Option(group, group));
     select.value = groups.includes(current) ? current : 'all';
   }
 
@@ -352,7 +444,6 @@
       card.append(makeElement('strong', '', String(value)), makeElement('span', '', label));
       cards.append(card);
     });
-
     const history = $('#hub-history');
     clearNode(history);
     if (!state.history.length) {
@@ -393,25 +484,20 @@
     $('#detail-group').textContent = game.group;
     $('#detail-title').textContent = game.title;
     $('#detail-description').textContent = game.description;
-
     const badges = $('#detail-badges');
     clearNode(badges);
     [`${game.minPlayers}–${game.maxPlayers} Personen`, `ca. ${game.duration} Minuten`, game.age === 'all' ? 'Familienfreundlich' : 'Ab 12 empfohlen', game.status === 'playable' ? 'Jetzt spielbar' : 'In Entwicklung'].forEach(text => badges.append(makeElement('span', 'badge', text)));
-
     const packs = $('#detail-packs');
     clearNode(packs);
     game.packs.forEach(pack => packs.append(makeElement('span', 'pack-chip', pack)));
-
     const rules = $('#detail-rules');
     clearNode(rules);
     game.instructions.forEach(rule => rules.append(makeElement('li', '', rule)));
-
     const select = $('#pack-select');
     clearNode(select);
     const names = C.getPackNames(game.id);
     names.forEach(name => select.add(new Option(`${name} (${packCount(game.id, name)})`, name)));
     $('#pack-select-label').hidden = names.length === 0 || game.mode === 'link';
-
     const start = $('#start-selected-game');
     start.textContent = game.status === 'planned' ? 'Noch nicht spielbar' : game.mode === 'link' ? 'Word Imposter öffnen' : 'Spiel starten';
     start.disabled = game.status !== 'playable';
@@ -430,14 +516,12 @@
   function updateDetailFavorite() {
     const game = C.getGame(selectedGameId);
     if (!game) return;
-    const favorite = state.favorites.includes(game.id);
-    $('#favorite-selected').textContent = favorite ? 'Aus Favoriten entfernen' : 'Als Favorit speichern';
+    $('#favorite-selected').textContent = state.favorites.includes(game.id) ? 'Aus Favoriten entfernen' : 'Als Favorit speichern';
   }
 
   function closeDetail() {
     $('#game-detail').hidden = true;
-    const trigger = document.querySelector(`[data-open-game="${selectedGameId}"]`);
-    trigger?.focus();
+    document.querySelector(`[data-open-game="${selectedGameId}"]`)?.focus();
   }
 
   function rememberRecent(gameId) {
@@ -466,6 +550,7 @@
     session = {
       gameId: game.id,
       sessionId: L.createSessionId(game.id),
+      players: [...state.players],
       pack: $('#pack-select').value || C.getPackNames(game.id)[0] || null,
       rounds: 0,
       score: 0,
@@ -473,12 +558,13 @@
       used: [],
       current: null,
       startedAt: new Date().toISOString(),
-      running: false
+      running: false,
+      timer: null
     };
     setHubSessionActive(true);
-    setHubPaused(false);
     closeDetail();
     $('#play-layer').hidden = false;
+    persistActiveSession();
     renderPlayRound();
     $('#exit-game').focus();
   }
@@ -486,7 +572,8 @@
   function finishSession() {
     if (!session) return;
     stopHubTimer();
-    setHubPaused(false);
+    hubTimer.setPaused(false);
+    syncHubPauseUi();
     const game = C.getGame(session.gameId);
     if (session.rounds > 0) {
       const result = L.recordCompletion(state, {
@@ -502,10 +589,12 @@
         state = result.hub;
         if (!saveState()) {
           state = previous;
+          persistActiveSession();
           return;
         }
       }
     }
+    if (!clearActiveSession()) return;
     session = null;
     setHubSessionActive(false);
     $('#play-layer').hidden = true;
@@ -520,29 +609,46 @@
     const available = items.map((_, index) => index).filter(index => !session.used.includes(index));
     const index = available[randomInt(available.length)];
     session.used.push(index);
+    persistActiveSession();
     return items[index];
   }
 
+  function sessionPlayers() {
+    const players = normalizePlayers(session?.players);
+    return players.length ? players : state.players;
+  }
+
   function currentPlayer() {
-    if (!state.players.length) return '';
-    return state.players[session.playerIndex % state.players.length];
+    const players = sessionPlayers();
+    return players.length ? players[session.playerIndex % players.length] : '';
   }
 
   function advancePlayer() {
-    session.playerIndex = (session.playerIndex + 1) % Math.max(1, state.players.length);
+    const players = sessionPlayers();
+    session.playerIndex = (session.playerIndex + 1) % Math.max(1, players.length);
   }
 
   function resetPlayCard() {
     stopHubTimer();
-    setHubPaused(false);
+    hubTimer.setPaused(false);
+    syncHubPauseUi();
     $('#play-eyebrow').textContent = '';
     $('#play-title').textContent = '';
     $('#play-player').textContent = '';
+    $('#play-content').className = 'play-content';
     clearNode($('#play-content'));
     clearNode($('#play-options'));
     clearNode($('#play-actions'));
     $('#play-progress').textContent = `${session.rounds} Karten`;
     $('#play-score').textContent = session.score ? `${session.score} Punkte` : '';
+  }
+
+  function preparePlayCard() {
+    resetPlayCard();
+    const game = C.getGame(session.gameId);
+    $('#play-title').textContent = game.title;
+    $('#play-eyebrow').textContent = session.pack || game.group;
+    return game;
   }
 
   function actionButton(text, handler, className = '') {
@@ -553,18 +659,17 @@
   }
 
   function nextSimpleRound() {
+    session.timer = null;
+    session.running = false;
     session.rounds += 1;
     advancePlayer();
+    persistActiveSession();
     renderPlayRound();
   }
 
   function renderPlayRound() {
     if (!session) return;
-    resetPlayCard();
-    const game = C.getGame(session.gameId);
-    $('#play-title').textContent = game.title;
-    $('#play-eyebrow').textContent = session.pack || game.group;
-
+    const game = preparePlayCard();
     if (game.mode === 'truth-dare') return renderTruthDare();
     if (game.mode === 'prompt') return renderPromptGame();
     if (game.mode === 'choice') return renderChoiceGame();
@@ -584,6 +689,7 @@
       actionButton('Wahrheit', () => revealTruthDare('truth')),
       actionButton('Pflicht', () => revealTruthDare('dare'), 'secondary')
     );
+    persistActiveSession();
   }
 
   function revealTruthDare(type) {
@@ -593,14 +699,15 @@
     $('#play-eyebrow').textContent = type === 'truth' ? `${session.pack} · Wahrheit` : `${session.pack} · Pflicht`;
     $('#play-content').textContent = value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Erledigt · nächste Person', nextSimpleRound));
+    persistActiveSession();
   }
 
   function renderPromptGame() {
-    const items = contentItems(session.gameId, session.pack);
-    const value = pickUnused(items);
+    const value = pickUnused(contentItems(session.gameId, session.pack));
     if (session.gameId === 'wrong-answers') $('#play-player').textContent = `${currentPlayer()} beginnt`;
     $('#play-content').textContent = value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Nächste Karte', nextSimpleRound));
+    persistActiveSession();
   }
 
   function renderChoiceGame() {
@@ -609,6 +716,7 @@
     grid.append(makeElement('div', 'choice-card', pair?.[0] || 'Option A'), makeElement('div', 'choice-card', pair?.[1] || 'Option B'));
     $('#play-content').append(grid);
     $('#play-actions').append(actionButton('Nächste Entscheidung', nextSimpleRound));
+    persistActiveSession();
   }
 
   function renderParanoia() {
@@ -623,41 +731,68 @@
         $('#play-content').textContent = reveal ? `Frage wird aufgedeckt: ${question}` : 'Die Frage bleibt geheim.';
         clearNode($('#play-actions'));
         $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
+        persistActiveSession();
       }));
+      persistActiveSession();
     }));
+    persistActiveSession();
   }
 
   function renderCharadesStart() {
     $('#play-player').textContent = `${currentPlayer()} stellt dar`;
     $('#play-content').textContent = '60 Sekunden. Begriffe dürfen nicht gesprochen oder buchstabiert werden.';
-    $('#play-options').append(actionButton('Runde starten', startCharades));
+    $('#play-options').append(actionButton('Runde starten', () => startCharades(60_000, 0, '')));
+    persistActiveSession();
   }
 
-  function startCharades() {
+  function finishCharadesTimer() {
+    const roundScore = session.timer?.roundScore || 0;
+    session.running = false;
+    session.timer = { ...(session.timer || {}), kind: 'charades', phase: 'ended', remainingMs: 0, roundScore };
+    persistActiveSession();
+    $('#play-content').textContent = `Zeit vorbei · ${roundScore} Treffer`;
+    clearNode($('#play-options'));
+    clearNode($('#play-actions'));
+    $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
+    syncHubPauseUi();
+  }
+
+  function startCharades(remainingMs = 60_000, restoredScore = 0, restoredItem = '') {
     session.running = true;
-    session.used = [];
-    let roundScore = 0;
+    session.used = Array.isArray(session.used) ? session.used : [];
     const content = $('#play-content');
     const options = $('#play-options');
+    const timer = makeElement('div', 'timer-display', S.formatMilliseconds(remainingMs));
+    session.timer = {
+      kind: 'charades', phase: 'running', remainingMs,
+      roundScore: safeInteger(restoredScore, 10_000), item: cleanText(restoredItem, 240), prompt: '', letter: ''
+    };
     const showCard = () => {
       const item = pickUnused(contentItems('charades', session.pack));
+      session.timer.item = cleanText(item, 240);
       content.textContent = item || 'Keine Karte verfügbar.';
+      persistActiveSession();
     };
-    const timer = makeElement('div', 'timer-display', '1:00');
-    $('#play-player').textContent = `${currentPlayer()} · ${roundScore} Treffer`;
+    const showStoredOrNew = () => {
+      if (session.timer.item) content.textContent = session.timer.item;
+      else showCard();
+    };
+    $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
     clearNode(options);
     options.append(
-      actionButton('Treffer', () => { roundScore += 1; session.score += 1; $('#play-player').textContent = `${currentPlayer()} · ${roundScore} Treffer`; showCard(); }),
+      actionButton('Treffer', () => {
+        session.timer.roundScore += 1;
+        session.score += 1;
+        $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
+        showCard();
+      }),
       actionButton('Überspringen', showCard, 'secondary')
     );
+    clearNode($('#play-actions'));
     $('#play-actions').append(timer);
-    showCard();
-    hubTimer.countdown(60, timer, () => {
-      content.textContent = `Zeit vorbei · ${roundScore} Treffer`;
-      clearNode(options);
-      clearNode($('#play-actions'));
-      $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
-    });
+    showStoredOrNew();
+    hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer);
+    persistActiveSession();
   }
 
   function renderTaboo() {
@@ -671,58 +806,106 @@
       actionButton('Treffer', () => { session.score += 1; nextSimpleRound(); }),
       actionButton('Überspringen', nextSimpleRound, 'secondary')
     );
+    persistActiveSession();
   }
 
   function renderHotPotatoStart() {
     const prompt = pickUnused(contentItems('hot-potato', session.pack));
     $('#play-content').textContent = prompt || 'Keine Aufgabe verfügbar.';
     $('#play-player').textContent = `${currentPlayer()} beginnt mit dem Gerät`;
-    $('#play-options').append(actionButton('Zufallstimer starten', () => startHotPotato(prompt)));
+    $('#play-options').append(actionButton('Zufallstimer starten', () => startHotPotato(prompt, 10000 + randomInt(16000))));
+    persistActiveSession();
   }
 
-  function startHotPotato(prompt) {
-    const milliseconds = 10000 + randomInt(16000);
-    $('#play-content').textContent = prompt;
+  function finishHotPotatoTimer() {
+    session.running = false;
+    session.timer = { ...(session.timer || {}), kind: 'hot-potato', phase: 'ended', remainingMs: 0 };
+    persistActiveSession();
+    const indicator = $('#play-actions .timer-display');
+    if (indicator) indicator.textContent = 'STOPP';
+    $('#play-content').textContent = 'Wer das Gerät jetzt hält, verliert diese Runde.';
+    $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
+    syncHubPauseUi();
+  }
+
+  function startHotPotato(prompt, remainingMs) {
+    session.running = true;
+    session.timer = {
+      kind: 'hot-potato', phase: 'running', remainingMs,
+      roundScore: 0, item: '', prompt: cleanText(prompt, 400), letter: ''
+    };
+    $('#play-content').textContent = session.timer.prompt || 'Keine Aufgabe verfügbar.';
     clearNode($('#play-options'));
+    clearNode($('#play-actions'));
     const indicator = makeElement('div', 'timer-display', '●');
     const hiddenClock = makeElement('span', '', '');
-    $('#play-actions').append(indicator);
-    hubTimer.countdown(milliseconds / 1000, hiddenClock, () => {
-      indicator.textContent = 'STOPP';
-      $('#play-content').textContent = 'Wer das Gerät jetzt hält, verliert diese Runde.';
-      $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-    });
+    hiddenClock.hidden = true;
+    $('#play-actions').append(indicator, hiddenClock);
+    hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer);
+    persistActiveSession();
   }
 
   function renderWordChainStart() {
-    const letters = contentItems('word-chain', session.pack);
-    const letter = randomItem(letters) || 'A';
+    const letter = randomItem(contentItems('word-chain', session.pack)) || 'A';
     $('#play-content').textContent = `Kategorie: ${session.pack} · Startbuchstabe: ${letter}`;
     $('#play-player').textContent = `${currentPlayer()} beginnt`;
-    $('#play-options').append(actionButton('30-Sekunden-Runde starten', () => startWordChain(letter)));
+    $('#play-options').append(actionButton('30-Sekunden-Runde starten', () => startWordChain(letter, 30_000)));
+    persistActiveSession();
   }
 
-  function startWordChain(letter) {
-    const timer = makeElement('div', 'timer-display', '0:30');
+  function finishWordChainTimer() {
+    session.running = false;
+    session.timer = { ...(session.timer || {}), kind: 'word-chain', phase: 'ended', remainingMs: 0 };
+    persistActiveSession();
+    $('#play-content').textContent = 'Zeit vorbei.';
+    clearNode($('#play-actions'));
+    $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
+    syncHubPauseUi();
+  }
+
+  function startWordChain(letter, remainingMs) {
+    session.running = true;
+    session.timer = {
+      kind: 'word-chain', phase: 'running', remainingMs,
+      roundScore: 0, item: '', prompt: '', letter: cleanText(letter, 12) || 'A'
+    };
+    const timer = makeElement('div', 'timer-display', S.formatMilliseconds(remainingMs));
     clearNode($('#play-options'));
-    $('#play-content').textContent = `${session.pack} · Start mit ${letter}`;
+    clearNode($('#play-actions'));
+    $('#play-content').textContent = `${session.pack} · Start mit ${session.timer.letter}`;
     $('#play-actions').append(timer, actionButton('Runde geschafft', () => { session.score += 1; nextSimpleRound(); }, 'secondary'));
-    hubTimer.countdown(30, timer, () => {
-      $('#play-content').textContent = 'Zeit vorbei.';
-      clearNode($('#play-actions'));
-      $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-    });
+    hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer);
+    persistActiveSession();
+  }
+
+  function renderStoredTimerSession() {
+    if (!session?.timer) return renderPlayRound();
+    const timerState = clone(session.timer);
+    preparePlayCard();
+    session.timer = timerState;
+    if (timerState.phase === 'ended') {
+      if (timerState.kind === 'charades') return finishCharadesTimer();
+      if (timerState.kind === 'hot-potato') return finishHotPotatoTimer();
+      if (timerState.kind === 'word-chain') return finishWordChainTimer();
+    }
+    if (timerState.kind === 'charades') startCharades(timerState.remainingMs, timerState.roundScore, timerState.item);
+    else if (timerState.kind === 'hot-potato') startHotPotato(timerState.prompt, timerState.remainingMs);
+    else if (timerState.kind === 'word-chain') startWordChain(timerState.letter, timerState.remainingMs);
+    setHubPaused(true);
+    setStatus('Laufende Timer-Runde wiederhergestellt und sicher pausiert.');
   }
 
   function renderRandomPlayer() {
     $('#play-content').textContent = 'Drücke auf Drehen, um eine Person zufällig auszuwählen.';
     $('#play-options').append(actionButton('Drehen', () => {
-      const player = randomItem(state.players);
+      const player = randomItem(sessionPlayers());
       $('#play-content').textContent = player || 'Keine Person gespeichert.';
       $('#play-content').classList.add('random-result');
       session.rounds += 1;
+      persistActiveSession();
       navigator.vibrate?.(80);
     }), actionButton('Neu wählen', renderPlayRound, 'secondary'));
+    persistActiveSession();
   }
 
   function renderUtility() {
@@ -733,13 +916,52 @@
       actionButton('W20', () => showUtilityResult(String(1 + randomInt(20))), 'secondary'),
       actionButton('1–100', () => showUtilityResult(String(1 + randomInt(100))), 'secondary')
     );
+    persistActiveSession();
   }
 
   function showUtilityResult(value) {
     $('#play-content').textContent = value;
     $('#play-content').classList.add('random-result');
     session.rounds += 1;
+    persistActiveSession();
     navigator.vibrate?.(60);
+  }
+
+  function offerHubResume(active) {
+    const existing = $('#hub-resume-session');
+    existing?.remove();
+    const game = C.getGame(active.gameId);
+    if (!game) return;
+    const card = makeElement('section', 'panel hub-resume-session');
+    card.id = 'hub-resume-session';
+    card.setAttribute('role', 'region');
+    card.setAttribute('aria-label', 'Gespeicherte Hub-Session');
+    const title = makeElement('strong', '', `${game.icon} ${game.title} fortsetzen?`);
+    const detail = active.timer?.phase === 'running'
+      ? 'Eine laufende Timer-Runde wurde gespeichert. Sie startet nach dem Fortsetzen zunächst pausiert.'
+      : `${active.rounds} abgeschlossene Runden sind lokal gespeichert. Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet.`;
+    const copy = makeElement('p', 'muted', detail);
+    const actions = makeElement('div', 'inline-actions');
+    const resume = actionButton('Session fortsetzen', () => {
+      session = active;
+      card.remove();
+      setHubSessionActive(true);
+      $('#play-layer').hidden = false;
+      if (session.timer) renderStoredTimerSession();
+      else renderPlayRound();
+      persistActiveSession();
+      $('#exit-game').focus();
+    });
+    const discard = actionButton('Gespeicherten Stand verwerfen', () => {
+      if (!window.confirm('Gespeicherten Hub-Spielstand wirklich verwerfen? Er wird nicht als abgeschlossene Session gezählt.')) return;
+      if (!clearActiveSession()) return;
+      card.remove();
+      setStatus('Gespeicherter Hub-Spielstand wurde verworfen.');
+    }, 'secondary');
+    actions.append(resume, discard);
+    card.append(title, copy, actions);
+    const status = $('#hub-status');
+    status?.insertAdjacentElement('afterend', card);
   }
 
   function quickStart() {
@@ -760,7 +982,7 @@
   }
 
   function savePreset() {
-    const name = $('#preset-name').value.trim().replace(/\s+/g, ' ').slice(0, 40);
+    const name = cleanText($('#preset-name').value, 40);
     const players = normalizePlayers($('#hub-players').value);
     if (!name) return setStatus('Bitte einen Preset-Namen eingeben.', true);
     if (!players.length) return setStatus('Das Preset benötigt mindestens eine Person.', true);
@@ -837,10 +1059,14 @@
     window.addEventListener('online', updateConnection);
     window.addEventListener('offline', updateConnection);
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && session && hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+      if (!document.hidden || !session) return;
+      if (hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+      persistActiveSession();
     });
     window.addEventListener('pagehide', () => {
-      if (session && hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+      if (!session) return;
+      if (hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+      persistActiveSession();
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !$('#game-detail').hidden) closeDetail();
@@ -857,4 +1083,6 @@
   renderFavorites();
   renderStats();
   showView('home');
+  const active = loadActiveSession();
+  if (active) offerHubResume(active);
 })();
