@@ -32,13 +32,17 @@ REQUIRED = {
     'package.json', 'playwright.config.js', 'playwright.cross-browser.config.js',
     'tests/engine.test.js', 'tests/storage.test.js', 'tests/role-assignment.test.js',
     'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
-    'tests/hub-timer-contract.test.js', 'tests/party-filter-state.test.js',
-    'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
-    'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
-    'tests/session-ledger-integration.test.js', 'tests/service-worker.test.js',
-    'tests/pwa-update.test.js', 'tests/quick-loader.test.js',
+    'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
+    'tests/mafia-rules.test.js', 'tests/advanced-resume-contract.test.js',
+    'tests/party-filter-state.test.js', 'tests/party-search-assist.test.js',
+    'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
+    'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
+    'tests/service-worker.test.js', 'tests/pwa-update.test.js', 'tests/quick-loader.test.js',
     'tests/e2e/core-game-catalog.spec.js', 'tests/e2e/core-hub-statistics.spec.js',
+    'tests/e2e/core-hub-timers.spec.js', 'tests/e2e/core-hub-resume.spec.js',
     'tests/e2e/advanced-core-smoke.spec.js', 'tests/e2e/advanced-core-abort.spec.js',
+    'tests/e2e/advanced-secret-resume.spec.js', 'tests/e2e/advanced-core-round-flow.spec.js',
+    'tests/e2e/advanced-completion-exact-once.spec.js', 'tests/e2e/mafia-extended.spec.js',
     'tests/e2e/party-filter-state.spec.js', 'tests/e2e/party-search-assist.spec.js',
     'tests/e2e/party-session-controls.spec.js', 'tests/e2e/party-quick-modes.spec.js',
     'tests/e2e/party-mega-modes.spec.js', 'tests/e2e/party-viral-modes.spec.js',
@@ -95,26 +99,21 @@ def audit_html(relative: str, expected_scripts: list[str]) -> str:
     source = read(relative)
     audit = HtmlAudit()
     audit.feed(source)
-
     duplicates = sorted({value for value in audit.ids if audit.ids.count(value) > 1})
     if duplicates:
         raise SystemExit(f'Duplicate ids in {relative}: {", ".join(duplicates)}')
-
     for tag, attrs in audit.controls:
         control_id = attrs.get('id')
         labelled = control_id in audit.labels or attrs.get('aria-label') or attrs.get('aria-labelledby')
         if not labelled:
             raise SystemExit(f'Unlabelled control in {relative}: {tag}#{control_id or "unknown"}')
-
     for asset in audit.assets:
         if asset.startswith(('http:', 'https:', 'data:')):
             raise SystemExit(f'External runtime asset in {relative}: {asset}')
         if not (ROOT / asset.lstrip('./')).is_file():
             raise SystemExit(f'Invalid runtime asset in {relative}: {asset}')
-
     if audit.scripts != expected_scripts:
         raise SystemExit(f'Unexpected script order in {relative}: {audit.scripts}')
-
     for directive in (
         "default-src 'self'", "script-src 'self'", "style-src 'self'",
         "object-src 'none'", "base-uri 'none'", "form-action 'self'",
@@ -206,8 +205,17 @@ module_markers = {
     'hub': (
         'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
         "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
-        'hubTimer.countdown(60, timer', 'hubTimer.countdown(milliseconds / 1000, hiddenClock',
-        'hubTimer.countdown(30, timer', "document.addEventListener('visibilitychange'",
+        "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
+        'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
+        'players: [...state.players]', 'renderStoredTimerSession', 'Session fortsetzen',
+        'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
+        "kind: 'charades', phase: 'running', remainingMs",
+        "kind: 'hot-potato', phase: 'running', remainingMs",
+        "kind: 'word-chain', phase: 'running', remainingMs",
+        'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
+        'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
+        'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
+        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
         'setHubPaused(true)', 'pause-hub-game',
     ),
     'trending': ('trendingGameIds', 'version: 3', 'caption-battle'),
@@ -221,7 +229,10 @@ module_markers = {
         'session-ledger.js', 'party-session-controls.js', 'SecretCircleSessionLedger',
         'SecretCircleSessionControls', 'party-created-modes.js', 'party-viral-modes.js',
     ),
-    'runtime_guard': ('Neue Secret-Circle-Version bereit', 'party-search-assist.js', 'loadPartySearchAssist'),
+    'runtime_guard': (
+        'Neue Secret-Circle-Version bereit', 'party-search-assist.js', 'loadPartySearchAssist',
+        'secret-circle-party-hub-active-v1', 'secret-circle-party-active-v1',
+    ),
     'night': ('buildPlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'),
     'data_tools': ('byteLength', 'replaceEntries', 'secret-circle-complete-backup'),
 }
@@ -309,14 +320,18 @@ for marker in (
     'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
     'party-search-assist.js', 'runtime-guard.js', 'party-hub.js', 'sw.js',
     'tests/core-game-contract.test.js', 'tests/hub-timer-contract.test.js',
+    'tests/hub-resume-contract.test.js', 'tests/mafia-rules.test.js',
+    'tests/advanced-resume-contract.test.js',
 ):
     if marker not in package.get('scripts', {}).get('check', ''):
         raise SystemExit(f'Syntax gate missing: {marker}')
 for marker in (
     'tests/core-game-contract.test.js', 'tests/hub-timer-contract.test.js',
-    'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
-    'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
-    'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
+    'tests/hub-resume-contract.test.js', 'tests/mafia-rules.test.js',
+    'tests/advanced-resume-contract.test.js', 'tests/party-search-assist.test.js',
+    'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
+    'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
+    'tests/pwa-update.test.js',
 ):
     if marker not in package.get('scripts', {}).get('test', ''):
         raise SystemExit(f'Unit gate missing: {marker}')
@@ -326,10 +341,11 @@ if 'scripts/foundation_contract_audit.py' not in package.get('scripts', {}).get(
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 21 or len(e2e_suites) < 33 or not cross_suites:
+if len(unit_tests) < 23 or len(e2e_suites) < 38 or not cross_suites:
     raise SystemExit('Automated test matrix is incomplete.')
 for required in (
-    'core-game-contract.test.js', 'hub-timer-contract.test.js',
+    'core-game-contract.test.js', 'hub-timer-contract.test.js', 'hub-resume-contract.test.js',
+    'mafia-rules.test.js', 'advanced-resume-contract.test.js',
     'party-search-assist.test.js', 'backup-schema-registry.test.js', 'session-ledger.test.js',
     'party-session-controls.test.js', 'session-ledger-integration.test.js',
     'service-worker.test.js', 'pwa-update.test.js',
@@ -337,8 +353,10 @@ for required in (
     if required not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required}')
 for required in (
-    'core-game-catalog.spec.js', 'core-hub-statistics.spec.js',
-    'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
+    'core-game-catalog.spec.js', 'core-hub-statistics.spec.js', 'core-hub-timers.spec.js',
+    'core-hub-resume.spec.js', 'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
+    'advanced-secret-resume.spec.js', 'advanced-core-round-flow.spec.js',
+    'advanced-completion-exact-once.spec.js', 'mafia-extended.spec.js',
     'party-filter-state.spec.js', 'party-search-assist.spec.js', 'party-session-controls.spec.js',
     'game-creator.spec.js', 'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js',
     'party-viral-modes.spec.js', 'offline.spec.js',
@@ -377,6 +395,7 @@ print(json.dumps({
     'shared_session_controls': True,
     'pausable_fast_engine_timers': True,
     'pausable_core_hub_timers': True,
+    'direct_hub_reload_resume': True,
     'unit_test_files': len(unit_tests),
     'e2e_suites': len(e2e_suites),
     'cross_browser_projects': len(cross_suites),
