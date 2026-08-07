@@ -1,6 +1,6 @@
 # Bekannte Einschränkungen
 
-Stand: `1.0.0-beta.3`, 45 eingebaute Spiele, lokaler Creator und Offline-Core `secret-circle-v29`.
+Stand: `1.0.0-beta.3`, 45 eingebaute Spiele, lokaler Creator und Offline-Core `secret-circle-v30`.
 
 ## Gemeinsames Gerät
 
@@ -8,7 +8,7 @@ Secret Circle ist derzeit lokales Pass-and-Play. Es gibt keine Raumcodes, Konten
 
 ## Automatisierter Teststatus
 
-Unit-, E2E-, Offline-, Sicherheits-, Accessibility- und Cross-Browser-Prüfungen sind vorbereitet. Der endgültige v29-Gesamtlauf ist noch nicht grün dokumentiert. GitHub Actions hat zuletzt vor sichtbaren Workflow-Schritten Probleme gezeigt.
+Unit-, E2E-, Offline-, Sicherheits-, Accessibility- und Cross-Browser-Prüfungen sind vorbereitet. Ein vollständiger aktueller Gesamtlauf ist noch nicht grün dokumentiert. GitHub Actions weist dem Workflow derzeit keinen Runner zu und beendet Jobs vor Checkout beziehungsweise sichtbaren Repository-Schritten.
 
 ## 45 eingebaute Spiele
 
@@ -34,9 +34,13 @@ Grenzen:
 
 Der bestehende Pack-Editor unterstützt kompatible einfache Textmodi. Strukturierte Karten bleiben bewusst blockiert. Pro Gerät sind bis zu 30 Packs mit jeweils bis zu 150 Karten vorgesehen.
 
-## Timer nach Neuladen
+## Timer und Neuladen
 
-Aktive Sessions werden wiederhergestellt. Ein bereits laufender Quick-, Trend- oder Viral-Timer startet nach vollständigem Neuladen für die aktuelle Phase erneut, weil die genaue Deadline noch nicht persistiert wird.
+Direkte Hub-Sessions besitzen jetzt einen versionierten lokalen Active-State. Scharade, Heiße Kartoffel und Wortkette speichern ihre aktuelle Restzeit; nach einem vollständigen Reload werden diese Timer bewusst **pausiert** wiederhergestellt und laufen erst nach „Fortsetzen“ weiter. Heiße Kartoffel zeigt ihre zufällige Restzeit weiterhin nicht an.
+
+Private direkte Hub-Inhalte werden nach Reload nicht automatisch geöffnet. Paranoia kehrt beispielsweise zum verdeckten Schritt zurück.
+
+Für andere Enginefamilien gelten deren jeweilige bestehende Resume-Verträge. Der reale Sperrbildschirm-/OS-Hintergrundpfad ist noch nicht auf allen Zielgeräten dokumentiert und bleibt deshalb ein Geräte-Release-Gate.
 
 ## Smart Party Night
 
@@ -60,7 +64,7 @@ Das technische Icon- und Akzentsystem ist vorbereitet. Die endgültigen eigenst�
 
 ## Offline und PWA
 
-Die App muss einmal vollständig online geladen werden. Service Worker und Installation benötigen HTTPS oder `localhost`. Der Update-Pfad auf `secret-circle-v29` ist automatisiert vorbereitet, aber noch nicht auf realen Android- und iOS-Geräten dokumentiert.
+Die App muss einmal vollständig online geladen werden. Service Worker und Installation benötigen HTTPS oder `localhost`. Der kontrollierte Update-Pfad mit Staging-Cache ist automatisiert vorbereitet, aber noch nicht auf realen Android- und iOS-Geräten dokumentiert.
 
 Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck entfernen. Wichtige eigene Spiele und Packs sollten exportiert werden.
 
