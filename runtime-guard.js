@@ -11,6 +11,7 @@
   const PARTY_SEARCH_SOURCE = 'party-search-assist.js';
   const ACTIVE_SESSION_KEYS = [
     'secret-circle-active-v7',
+    'secret-circle-party-hub-active-v1',
     'secret-circle-party-quick-active-v1',
     'secret-circle-party-mega-active-v1',
     'secret-circle-party-viral-active-v1',
