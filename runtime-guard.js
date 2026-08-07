@@ -7,6 +7,8 @@
   const PARTY_RELEASE_STYLE = 'party-release.css';
   const PARTY_RELEASE_SOURCE = 'party-release-structure.js';
   const PARTY_FILTER_SOURCE = 'party-filter-state.js';
+  const PARTY_SEARCH_STYLE = 'party-search.css';
+  const PARTY_SEARCH_SOURCE = 'party-search-assist.js';
   const ACTIVE_SESSION_KEYS = [
     'secret-circle-active-v7',
     'secret-circle-party-quick-active-v1',
@@ -70,12 +72,23 @@
     document.body.append(script);
   }
 
+  function loadPartySearchAssist() {
+    if (!document.querySelector('#game-search')) return;
+    ensureStylesheet(PARTY_SEARCH_STYLE);
+    loadScript(
+      PARTY_SEARCH_SOURCE,
+      'SecretCirclePartySearchAssist',
+      null,
+      'Die erweiterten Suchvorschläge konnten nicht geladen werden. Die normale Katalogsuche bleibt weiterhin nutzbar.'
+    );
+  }
+
   function loadPartyFilterState() {
     if (!document.querySelector('#game-grid')) return;
     loadScript(
       PARTY_FILTER_SOURCE,
       'SecretCirclePartyFilterState',
-      null,
+      loadPartySearchAssist,
       'Gespeicherte Katalogfilter konnten nicht geladen werden. Der Spielekatalog bleibt weiterhin nutzbar.'
     );
   }
@@ -219,12 +232,15 @@
     partyReleaseStyle: PARTY_RELEASE_STYLE,
     partyReleaseSource: PARTY_RELEASE_SOURCE,
     partyFilterSource: PARTY_FILTER_SOURCE,
+    partySearchStyle: PARTY_SEARCH_STYLE,
+    partySearchSource: PARTY_SEARCH_SOURCE,
     activeSessionKeys: Object.freeze([...ACTIVE_SESSION_KEYS]),
     hasActiveSession,
     showRuntimeError,
     showUpdate,
     loadScript,
     loadPartyReleaseStructure,
-    loadPartyFilterState
+    loadPartyFilterState,
+    loadPartySearchAssist
   });
 })(window);
