@@ -46,18 +46,29 @@ assert.equal(release.ageAllows({ age: 'teen' }, 'all'), true);
 
 const runtime = read('runtime-guard.js');
 const worker = read('sw.js');
-const styles = read('party-release.css');
+const tierStyles = read('party-release.css');
+const searchStyles = read('party-search.css');
 assert.match(runtime, /party-release-structure\.js/);
 assert.match(runtime, /party-filter-state\.js/);
+assert.match(runtime, /party-search-assist\.js/);
 assert.match(runtime, /party-release\.css/);
+assert.match(runtime, /party-search\.css/);
 assert.match(runtime, /loadPartyReleaseStructure/);
 assert.match(runtime, /loadPartyFilterState/);
+assert.match(runtime, /loadPartySearchAssist/);
+assert.ok(runtime.indexOf('loadPartyReleaseStructure') < runtime.lastIndexOf('loadPartyFilterState'));
+assert.ok(runtime.indexOf('loadPartyFilterState') < runtime.lastIndexOf('loadPartySearchAssist'));
 assert.match(worker, /\.\/party-release-structure\.js/);
 assert.match(worker, /\.\/party-filter-state\.js/);
+assert.match(worker, /\.\/party-search-assist\.js/);
 assert.match(worker, /\.\/party-release\.css/);
-assert.match(styles, /\.release-tier-overview/);
-assert.match(styles, /\.release-tier-pill/);
-assert.match(styles, /prefers-reduced-motion/);
+assert.match(worker, /\.\/party-search\.css/);
+assert.match(tierStyles, /\.release-tier-overview/);
+assert.match(tierStyles, /\.release-tier-pill/);
+assert.match(tierStyles, /prefers-reduced-motion/);
+assert.match(searchStyles, /\.party-search-suggestions/);
+assert.match(searchStyles, /focus-visible/);
+assert.match(searchStyles, /prefers-reduced-motion/);
 
 console.log(JSON.stringify({
   ok: true,
@@ -68,8 +79,8 @@ console.log(JSON.stringify({
   customGamesClassifiedAsExtended: true,
   plannedGamesClassifiedAsLabs: true,
   ageAndReleaseTierCombined: true,
-  persistentFiltersLoadedAfterTierStructure: true,
-  runtimeLoaderIntegrated: true,
+  runtimeOrder: ['release-structure', 'filter-state', 'search-assist'],
   offlineAssetsIntegrated: true,
-  responsiveTierStyles: true
+  responsiveTierStyles: true,
+  accessibleSearchStyles: true
 }, null, 2));
