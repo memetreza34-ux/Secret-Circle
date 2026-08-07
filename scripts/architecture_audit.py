@@ -68,6 +68,14 @@ for relative in html_pages:
     if "script-src 'self'" not in source or "object-src 'none'" not in source:
         violations.append(f'Strict CSP contract missing in {relative}.')
 
+party_page = read('party.html')
+for marker in (
+    'id="pause-hub-game"', 'id="play-pause-status"',
+    '<script src="session-ledger.js"></script>', '<script src="party-session-controls.js"></script>',
+):
+    if marker not in party_page:
+        violations.append(f'Shared Hub session control missing from party.html: {marker}')
+
 quick_play = read('quick-play.html')
 for marker in (
     'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
@@ -89,6 +97,13 @@ contracts = {
         'createController', 'function countdown', 'function setPaused', 'function setSessionActive',
         '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay', '#quick-next-game',
         'remainingMilliseconds'
+    ],
+    'party-hub.js': [
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
+        "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
+        'hubTimer.countdown(60, timer', 'hubTimer.countdown(milliseconds / 1000, hiddenClock',
+        'hubTimer.countdown(30, timer', "document.addEventListener('visibilitychange'",
+        'setHubPaused(true)', 'pause-hub-game'
     ],
     'party-release-structure.js': [
         'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'",
@@ -181,6 +196,11 @@ for relative in ('party-quick-modes.js', 'party-mega-modes.js', 'party-viral-mod
     if 'let timerId = null' in source or 'const deadline = Date.now() + seconds * 1000' in source:
         violations.append(f'Engine still contains a private non-pausable timer: {relative}')
 
+hub_source = read('party-hub.js')
+for forbidden in ('activeTimer', 'window.setInterval(', 'performance.now()'):
+    if forbidden in hub_source:
+        violations.append(f'Hub still contains a private non-pausable timer: {forbidden}')
+
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or cache.group(1) != '30':
@@ -228,9 +248,10 @@ print(json.dumps({
     'search_assistance': True,
     'shared_session_controls': True,
     'pausable_fast_engine_timers': True,
+    'pausable_core_hub_timers': True,
     'combined_age_and_release_filter': True,
     'backup_schemas': 3,
-    'exact_once_engine_families': 4,
+    'exact_once_engine_families': 5,
     'legacy_guard_removed': True,
     'visible_builtin_games': 45,
     'maximum_local_created_games': 40,
