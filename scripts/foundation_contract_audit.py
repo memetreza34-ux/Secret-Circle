@@ -70,13 +70,25 @@ def direct_engine(source: str, engine: str) -> bool:
 
 
 def hub_engine(source: str) -> bool:
-    return all(marker in source for marker in (
+    markers = (
         'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
         "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
-        'hubTimer.countdown(60, timer', 'hubTimer.countdown(milliseconds / 1000, hiddenClock',
-        'hubTimer.countdown(30, timer', "document.addEventListener('visibilitychange'",
+        "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
+        'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
+        'players: [...state.players]', 'renderStoredTimerSession', 'Session fortsetzen',
+        'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
+        "kind: 'charades', phase: 'running', remainingMs",
+        "kind: 'hot-potato', phase: 'running', remainingMs",
+        "kind: 'word-chain', phase: 'running', remainingMs",
+        'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
+        'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
+        'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
+        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
         'setHubPaused(true)',
-    )) and all(marker not in source for marker in ('activeTimer', 'window.setInterval(', 'performance.now()'))
+    )
+    return all(marker in source for marker in markers) and all(
+        marker not in source for marker in ('activeTimer', 'window.setInterval(', 'performance.now()')
+    )
 
 
 checks = {
@@ -110,7 +122,8 @@ checks = {
         '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
         '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
     )),
-    'hub_exact_once_and_pausable': hub_engine(hub_runtime),
+    'hub_exact_once_pausable_and_resumable': hub_engine(hub_runtime),
+    'hub_active_key_in_pwa_guard': 'secret-circle-party-hub-active-v1' in runtime_guard,
     'creator_exact_once': direct_engine(created_runtime, 'created'),
     'quick_exact_once': direct_engine(quick_runtime, 'quick'),
     'mega_exact_once': direct_engine(mega_runtime, 'mega'),
@@ -161,15 +174,17 @@ checks = {
     'no_install_auto_activation': bool(install_handler) and 'skipWaiting' not in install_handler,
     'foundation_tests_in_unit_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
         'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
-        'tests/hub-timer-contract.test.js', 'tests/party-filter-state.test.js',
-        'tests/party-search-assist.test.js', 'tests/session-ledger.test.js',
-        'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
-        'tests/backup-schema-registry.test.js', 'tests/pwa-update.test.js',
+        'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
+        'tests/party-filter-state.test.js', 'tests/party-search-assist.test.js',
+        'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
+        'tests/session-ledger-integration.test.js', 'tests/backup-schema-registry.test.js',
+        'tests/pwa-update.test.js',
     )),
     'foundation_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
         'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
         'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
-        'party-hub.js', 'tests/hub-timer-contract.test.js', 'runtime-guard.js', 'sw.js',
+        'party-hub.js', 'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
+        'runtime-guard.js', 'sw.js',
     )),
 }
 
@@ -185,6 +200,7 @@ print(json.dumps({
     'shared_session_controls': True,
     'pausable_fast_engine_timers': True,
     'pausable_core_hub_timers': True,
+    'direct_hub_reload_resume': True,
     'combined_age_and_release_filter': True,
     'backup_schemas': ['word-imposter', 'complete', 'creator-library'],
     'maximum_backup_bytes': 1_500_000,
