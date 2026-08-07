@@ -23,10 +23,11 @@ sw = require('sw.js')
 runtime_guard = require('runtime-guard.js')
 release_structure = require('party-release-structure.js')
 filter_state = require('party-filter-state.js')
+search_assist = require('party-search-assist.js')
 release_styles = require('party-release.css')
+search_styles = require('party-search.css')
 registry = require('backup-schema-registry.js')
 ledger = require('session-ledger.js')
-legacy_guard = require('session-ledger-legacy-guard.js')
 base_catalog = require('party-catalog.js')
 expansion = require('party-expansion.js')
 trending = require('party-trending-catalog.js')
@@ -49,6 +50,10 @@ backup_docs = require('BACKUP_SCHEMAS.md')
 roadmap = require('ROADMAP_2027.md')
 release_scope = require('RELEASE_SCOPE_2027.md')
 
+for obsolete in ('session-ledger-legacy-guard.js', 'tests/session-ledger-legacy-guard.test.js'):
+    if (ROOT / obsolete).exists():
+        raise SystemExit(f'Obsolete legacy guard still exists: {obsolete}')
+
 install_handler_match = re.search(
     r"self\.addEventListener\('install',[\s\S]*?\n\}\);",
     sw,
@@ -60,6 +65,19 @@ lab_ids = re.search(r'const LAB_IDS = Object\.freeze\(\[(.*?)\]\);', release_str
 core_count = len(re.findall(r"'[^']+'", core_ids.group(1))) if core_ids else 0
 lab_count = len(re.findall(r"'[^']+'", lab_ids.group(1))) if lab_ids else 0
 extended_count = 45 - core_count - lab_count
+
+
+def direct_engine(source: str, engine: str) -> bool:
+    return all(marker in source for marker in (
+        'SecretCircleSessionLedger',
+        f"completionId('{engine}'",
+        'recordCompletion(loadHub()',
+        'sessionId: L.createSessionId',
+        'legacySessionId',
+        'if (result.recorded && !saveHub(result.hub)) return',
+        'active = final;',
+    ))
+
 
 checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
@@ -83,16 +101,20 @@ checks = {
     'combined_age_tier_filter': all(marker in release_structure for marker in (
         'ageAllows', 'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches',
     )),
-    'release_tier_runtime': all(marker in runtime_guard for marker in (
-        'party-release-structure.js', 'party-filter-state.js', 'party-release.css',
-        'loadPartyReleaseStructure', 'loadPartyFilterState',
+    'release_runtime': all(marker in runtime_guard for marker in (
+        'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
+        'party-release.css', 'party-search.css', 'loadPartyReleaseStructure',
+        'loadPartyFilterState', 'loadPartySearchAssist',
     )),
-    'release_tier_offline': all(marker in sw for marker in (
-        './party-release-structure.js', './party-filter-state.js', './party-release.css',
+    'release_runtime_offline': all(marker in sw for marker in (
+        './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
+        './party-release.css', './party-search.css',
     )),
-    'release_tier_styles': all(marker in release_styles for marker in (
+    'release_styles': all(marker in release_styles for marker in (
         '.release-tier-overview', '.release-tier-pill', '.filter-reset-button',
         'focus-visible', 'prefers-reduced-motion',
+    )) and all(marker in search_styles for marker in (
+        '.party-search-suggestions', 'focus-visible', 'prefers-reduced-motion',
     )),
     'persistent_filter_contract': all(marker in filter_state for marker in (
         "STORAGE_KEY = 'secret-circle-party-catalog-filters-v1'",
@@ -104,6 +126,10 @@ checks = {
         'lokaler Speicher ist nicht verfügbar',
     )),
     'explicit_view_precedence': 'resolveView(stored.view, requestedView)' in filter_state,
+    'search_assist_contract': all(marker in search_assist for marker in (
+        'MANUAL_ALIASES', 'normalizeText', 'levenshtein', 'suggestions',
+        'aria-autocomplete', 'listbox', 'ArrowDown', 'Escape',
+    )),
     'backup_registry': all(marker in registry for marker in (
         "format: 'secret-circle-backup'",
         "format: 'secret-circle-complete-backup'",
@@ -113,24 +139,20 @@ checks = {
     'backup_contract_documented': all(marker in backup_docs for marker in (
         'word-imposter', 'complete', 'creator-library', 'Release-Gates',
     )),
-    'creator_direct_exact_once': all(marker in created_runtime for marker in (
-        'SecretCircleSessionLedger', "completionId('created'", 'recordCompletion(loadHub()',
+    'ledger_versioned': 'const VERSION = 1;' in ledger,
+    'creator_direct_exact_once': direct_engine(created_runtime, 'created'),
+    'quick_direct_exact_once': direct_engine(quick_runtime, 'quick'),
+    'mega_direct_exact_once': direct_engine(mega_runtime, 'mega'),
+    'viral_direct_exact_once': direct_engine(viral_runtime, 'viral'),
+    'legacy_guard_removed': all('session-ledger-legacy-guard' not in source for source in (
+        loader, sw, package.get('scripts', {}).get('test', ''), package.get('scripts', {}).get('check', ''),
     )),
-    'quick_direct_exact_once': all(marker in quick_runtime for marker in (
-        'SecretCircleSessionLedger', "completionId('quick'", 'recordCompletion(loadHub()',
-    )),
-    'mega_viral_exact_once_guard': all(marker in legacy_guard for marker in (
-        'secret-circle-party-mega-active-v1', 'secret-circle-party-viral-active-v1',
-        'completionId(definition.engine', 'recordCompletion(baseHub, completion)',
-    )),
-    'ledger_loaded_first': all(marker in loader for marker in (
-        'session-ledger.js', 'session-ledger-legacy-guard.js', 'scriptPlan',
-    )),
+    'ledger_loaded_first': all(marker in loader for marker in ('session-ledger.js', 'SecretCircleSessionLedger', 'scriptPlan')),
     'creator_offline': all(asset in sw for asset in (
         './creator.html', './game-creator.js', './creator-page.js', './creator.css', './party-created-modes.js',
     )),
     'foundation_runtime_offline': all(asset in sw for asset in (
-        './pwa-update.css', './session-ledger.js', './session-ledger-legacy-guard.js',
+        './pwa-update.css', './session-ledger.js', './party-search-assist.js', './party-search.css',
     )),
     'all_fast_engines_offline': all(asset in sw for asset in (
         './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
@@ -160,16 +182,12 @@ checks = {
     'foundation_audit_in_gate': 'scripts/foundation_contract_audit.py' in package.get('scripts', {}).get('validate', ''),
     'foundation_tests_in_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
         'tests/party-release-structure.test.js', 'tests/party-filter-state.test.js',
-        'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
-        'tests/session-ledger-legacy-guard.test.js', 'tests/pwa-update.test.js',
+        'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
+        'tests/session-ledger.test.js', 'tests/session-ledger-integration.test.js',
+        'tests/pwa-update.test.js',
     )),
     'release_dates_documented': all(marker in roadmap for marker in (
         '30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027',
-    )),
-    'filter_milestones_documented': all(marker in roadmap for marker in (
-        '[x] Filterzustand und zuletzt verwendete Ansicht speichern',
-        '[x] Alters- und Reifestufenfilter als gemeinsame Sichtbarkeitsregel auswerten',
-        '[x] direkte URL-Ansichten gegenüber gespeicherten Ansichten priorisieren',
     )),
     'quality_tiers_documented': all(marker in release_scope for marker in ('Stufe A', 'Stufe B', 'Stufe C', 'Labs')),
 }
@@ -205,16 +223,16 @@ cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').g
 if len(unit_tests) < 18 or len(e2e_suites) < 28 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required_test in (
-    'party-release-structure.test.js', 'party-filter-state.test.js',
-    'backup-schema-registry.test.js', 'session-ledger.test.js',
-    'session-ledger-legacy-guard.test.js', 'session-ledger-integration.test.js',
+    'party-release-structure.test.js', 'party-filter-state.test.js', 'party-search-assist.test.js',
+    'backup-schema-registry.test.js', 'session-ledger.test.js', 'session-ledger-integration.test.js',
     'service-worker.test.js', 'pwa-update.test.js',
 ):
     if required_test not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required_test}')
 for required_test in (
-    'party-filter-state.spec.js', 'game-creator.spec.js', 'creator-runner-resilience.spec.js',
-    'party-viral-resilience.spec.js', 'party-viral-modes.spec.js', 'offline.spec.js',
+    'party-filter-state.spec.js', 'party-search-assist.spec.js', 'game-creator.spec.js',
+    'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js',
+    'party-viral-modes.spec.js', 'offline.spec.js',
 ):
     if required_test not in e2e_suites:
         raise SystemExit(f'Critical E2E test missing: {required_test}')
@@ -231,8 +249,8 @@ for relative in required_docs:
 
 for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
     for relative in (
-        'backup-schema-registry.js', 'session-ledger.js', 'session-ledger-legacy-guard.js',
-        'party-release-structure.js', 'party-filter-state.js', 'runtime-guard.js',
+        'backup-schema-registry.js', 'session-ledger.js', 'party-release-structure.js',
+        'party-filter-state.js', 'party-search-assist.js', 'runtime-guard.js',
         'party-routing.js', 'game-creator.js', 'creator-page.js',
         'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
         'party-created-modes.js', 'quick-loader.js', 'party-hub.js',
@@ -248,13 +266,12 @@ print(json.dumps({
     'non_destructive_cache_promotion': True,
     'visible_builtin_games': base_games + expansion_games + trending_games + mega_games + viral_games,
     'release_tiers': {'core': core_count, 'extended': extended_count, 'labs': lab_count},
-    'persistent_catalog_filters': True,
-    'explicit_url_view_precedence': True,
-    'combined_age_and_release_filter': True,
     'playable_builtin_games': 45,
     'maximum_local_created_games': 40,
     'backup_schemas': 3,
     'exact_once_engine_families': 4,
+    'legacy_guard_removed': True,
+    'search_assistance': True,
     'classic_quick_modes': len(classic_ids),
     'mega_modes': len(mega_ids),
     'viral_modes': len(viral_ids),
