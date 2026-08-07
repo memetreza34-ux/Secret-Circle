@@ -10,12 +10,19 @@ const html = fs.readFileSync(path.join(root, 'party.html'), 'utf8');
 
 assert.ok(hub.includes('const S = window.SecretCircleSessionControls;'));
 assert.ok(hub.includes('const hubTimer = S.createController({ windowRef: window });'));
-assert.ok(hub.includes('hubTimer.countdown(60, timer'));
-assert.ok(hub.includes('hubTimer.countdown(milliseconds / 1000, hiddenClock'));
-assert.ok(hub.includes('hubTimer.countdown(30, timer'));
+assert.ok(hub.includes("kind: 'charades', phase: 'running', remainingMs"));
+assert.ok(hub.includes("kind: 'hot-potato', phase: 'running', remainingMs"));
+assert.ok(hub.includes("kind: 'word-chain', phase: 'running', remainingMs"));
+assert.ok(hub.includes('hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)'));
+assert.ok(hub.includes('hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)'));
+assert.ok(hub.includes('hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)'));
+assert.ok(hub.includes('hubTimer.remainingMilliseconds()'));
+assert.ok(hub.includes('renderStoredTimerSession'));
 assert.ok(hub.includes("document.addEventListener('visibilitychange'"));
+assert.ok(hub.includes("window.addEventListener('pagehide'"));
 assert.ok(hub.includes('setHubPaused(true)'));
 assert.ok(hub.includes("$('#pause-hub-game').addEventListener('click'"));
+assert.ok(hub.includes('syncHubPauseUi();\n      return true;'));
 assert.ok(!hub.includes('activeTimer'));
 assert.ok(!hub.includes('window.setInterval('));
 assert.ok(!hub.includes('performance.now()'));
@@ -31,5 +38,7 @@ console.log(JSON.stringify({
   hubTimerContract: 'PASS',
   sharedController: true,
   pausableCoreTimers: ['charades', 'hot-potato', 'word-chain'],
-  backgroundAutoPause: true
+  persistedRemainingTime: true,
+  backgroundAutoPause: true,
+  reloadResumePaused: true
 }, null, 2));
