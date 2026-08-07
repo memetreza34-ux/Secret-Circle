@@ -9,6 +9,7 @@
   'use strict';
 
   const LEDGER_SOURCE = 'session-ledger.js';
+  const CONTROLS_SOURCE = 'party-session-controls.js';
 
   function selectSource(catalog, gameId) {
     if (!catalog || !gameId) return null;
@@ -19,10 +20,14 @@
     return null;
   }
 
-  function scriptPlan(catalog, gameId, ledgerReady = false) {
+  function scriptPlan(catalog, gameId, ledgerReady = false, controlsReady = false) {
     const source = selectSource(catalog, gameId);
     if (!source) return [];
-    return ledgerReady ? [source] : [LEDGER_SOURCE, source];
+    const plan = [];
+    if (!ledgerReady) plan.push(LEDGER_SOURCE);
+    if (!controlsReady) plan.push(CONTROLS_SOURCE);
+    plan.push(source);
+    return plan;
   }
 
   function showFailure(documentRef, message) {
@@ -62,7 +67,12 @@
       return null;
     }
 
-    const plan = scriptPlan(catalog, gameId, Boolean(windowRef.SecretCircleSessionLedger));
+    const plan = scriptPlan(
+      catalog,
+      gameId,
+      Boolean(windowRef.SecretCircleSessionLedger),
+      Boolean(windowRef.SecretCircleSessionControls)
+    );
 
     const loadNext = index => {
       if (index >= plan.length) return;
@@ -70,18 +80,24 @@
       const isEngine = nextSource === source;
       const attributes = isEngine
         ? { gameEngine: gameId }
-        : { sharedRuntime: 'session-ledger' };
+        : { sharedRuntime: nextSource === LEDGER_SOURCE ? 'session-ledger' : 'session-controls' };
 
       appendScript(documentRef, nextSource, attributes, () => {
         if (nextSource === LEDGER_SOURCE && !windowRef.SecretCircleSessionLedger) {
           showFailure(documentRef, 'Die gemeinsame Sitzungsverwaltung konnte nicht initialisiert werden.');
           return;
         }
+        if (nextSource === CONTROLS_SOURCE && !windowRef.SecretCircleSessionControls) {
+          showFailure(documentRef, 'Die gemeinsame Spielsteuerung konnte nicht initialisiert werden.');
+          return;
+        }
         loadNext(index + 1);
       }, () => {
         const message = isEngine
           ? 'Die Spiel-Engine konnte nicht geladen werden. Bitte Seite neu laden.'
-          : 'Die gemeinsame Sitzungsverwaltung konnte nicht geladen werden. Bitte Seite neu laden.';
+          : nextSource === CONTROLS_SOURCE
+            ? 'Die gemeinsame Spielsteuerung konnte nicht geladen werden. Bitte Seite neu laden.'
+            : 'Die gemeinsame Sitzungsverwaltung konnte nicht geladen werden. Bitte Seite neu laden.';
         showFailure(documentRef, message);
       });
     };
@@ -91,8 +107,9 @@
   }
 
   return Object.freeze({
-    version: 5,
+    version: 6,
     ledgerSource: LEDGER_SOURCE,
+    controlsSource: CONTROLS_SOURCE,
     selectSource,
     scriptPlan,
     showFailure,
