@@ -1,100 +1,148 @@
-# Secret Circle Party Hub – Release-Checkliste
+# Secret Circle – Release-Checkliste Januar 2027
 
-Zielstand: `1.0.0-beta.3`, 45 eingebaute Spiele, lokaler Game-Creator und Offline-Core `secret-circle-v29`.
+Diese Checkliste muss für den unveränderlichen Release-Commit vollständig ausgefüllt werden. „Technisch spielbar“ ersetzt keine Freigabe.
 
-## Automatisierte Gates
+## 1. Repository und CI
 
-- [ ] `npm run check`
-- [ ] `npm test`
-- [ ] `npm run validate`
-- [ ] `npm run test:e2e`
-- [ ] `npm run test:cross-browser`
-- [ ] GitHub Actions mit sichtbaren grünen Schritten
+- [ ] Release-Commit und Tag festgelegt
+- [ ] `npm run ci` vollständig grün
+- [ ] Chromium, Firefox und WebKit vollständig grün
+- [ ] sichtbare GitHub-Actions-Schritte inklusive Checkout vorhanden
+- [ ] Actions-Runner, Minutenbudget und Richtlinien funktionieren
+- [ ] reproduzierbares `package-lock.json` vorhanden
+- [ ] CI verwendet `npm ci`
+- [ ] Branch Protection und verpflichtende Checks aktiv
+- [ ] keine generierten Logs, temporären Dateien oder großen unbekannten Assets committed
+
+## 2. Engine- und Sitzungsintegrität
+
+- [ ] Word-Imposter-Rollen sind unabhängig von der Aufdeckreihenfolge
+- [ ] Creator, Quick, Mega und Viral verwenden direkt `session-ledger.js`
+- [ ] jede neue Session besitzt genau eine stabile Session-ID
+- [ ] ältere aktive Sessions ohne ID werden deterministisch migriert
+- [ ] Verlauf, `plays`, Runden und Bestwert werden pro Session höchstens einmal aktualisiert
+- [ ] Reload zwischen Hub-Speicherung und Sessionbereinigung erzeugt keine Doppelzählung
+- [ ] fehlgeschlagene Sessionbereinigung stellt den letzten aktiven Zustand wieder her
+- [ ] kein globales `Storage.prototype`- oder Engine-Monkey-Patching vorhanden
+- [ ] alle Resume-, Abbruch- und Abschlusswege geprüft
+
+## 3. 15 Kernspiele
+
+Für jedes Kernspiel separat dokumentieren:
+
+- [ ] Start und Spielerlobby funktionieren
+- [ ] Regeln werden in höchstens vier klaren Schritten erklärt
+- [ ] Packauswahl ist gültig und verständlich
+- [ ] Überspringen funktioniert, wo Inhalte unangenehm oder unpassend sein können
+- [ ] Pause beziehungsweise sichere Unterbrechung funktioniert
+- [ ] Abbruch ist eindeutig und löscht nicht versehentlich andere Daten
+- [ ] Wiederholen und nächstes Spiel sind verständlich
+- [ ] Timer über App-Wechsel, Hintergrund und Reload geprüft
+- [ ] Punkte- und Siegerlogik dokumentiert
+- [ ] Statistik und Verlauf korrekt
+- [ ] Tastatur, sichtbarer Fokus, Zoom und Reduced Motion geprüft
+- [ ] reale Gruppe hat das Spiel ohne Entwicklerhilfe abgeschlossen
+
+## 4. Party Hub und Suche
+
+- [ ] 15 Kernspiele, 13 Erweiterungen und 17 Labs korrekt gekennzeichnet
+- [ ] Alters- und Reifestufenfilter arbeiten gemeinsam
+- [ ] Suche, Filter und letzte Ansicht werden korrekt gespeichert
+- [ ] direkte URL-Ansicht hat Vorrang vor gespeichertem Zustand
+- [ ] Filterreset stellt sichere Standards wieder her
+- [ ] blockierter und voller lokaler Speicher werden verständlich gemeldet
+- [ ] Synonyme und bekannte alternative Spielnamen geprüft
+- [ ] typische Tippfehler liefern sinnvolle, begrenzte Vorschläge
+- [ ] Suchvorschläge funktionieren mit Maus, Touch, Pfeiltasten, Enter und Escape
+- [ ] Screenreader erkennt Listbox und aktiven Vorschlag
+- [ ] leere Ergebnisse erklären die nächste Aktion
+
+## 5. Backup und lokale Daten
+
+- [ ] Word-Imposter-, Gesamt- und Creator-Backup entsprechen `BACKUP_SCHEMAS.md`
+- [ ] UTF-8-Dateigrenze von 1.500.000 Bytes wird überall eingehalten
+- [ ] beschädigte, falsche und neuere unbekannte Formate werden sicher abgelehnt
+- [ ] Import validiert vollständig vor dem ersten Schreibvorgang
+- [ ] Quota-Fehler lösen einen Rollback aus
+- [ ] Export lässt sich wieder erfolgreich importieren
+- [ ] Löschen nennt exakt die betroffenen lokalen Daten
+- [ ] Löschung und Wiederherstellung auf mindestens zwei Browsern geprüft
+
+## 6. PWA und Offline
+
+- [ ] normaler Browserstart online
+- [ ] installierte PWA online
+- [ ] Offline-Neustart nach vorheriger Installation
+- [ ] alle Kernseiten offline erreichbar
+- [ ] alle vier schnellen Enginefamilien offline startbar
+- [ ] Release-Tiers, Filterzustand und Suchhilfe offline verfügbar
+- [ ] Query-Routen wie `quick-play.html?game=...` offline korrekt
+- [ ] neue Version wird zuerst vollständig im Staging-Cache vorbereitet
+- [ ] keine automatische Aktivierung mitten in einer laufenden Session
+- [ ] sichtbarer Hinweis „Jetzt aktualisieren“ / „Später“
+- [ ] aktiver Offline-Core bleibt bei fehlgeschlagener Promotion erhalten
+- [ ] Update von mindestens zwei älteren Cacheversionen getestet
+- [ ] Rollbackdeployment getestet
+
+## 7. Accessibility und Geräte
+
+- [ ] aktuelles Android mit Chrome
+- [ ] aktuelles iPhone mit Safari
+- [ ] Tablet beziehungsweise iPad
+- [ ] Smartphone Hoch- und Querformat
+- [ ] kleine Displaybreite
+- [ ] 200-Prozent-Zoom
+- [ ] vollständige Tastaturbedienung
+- [ ] sichtbarer Fokus
+- [ ] Screenreader-Smoke-Test
+- [ ] Touchziele mindestens 44 × 44 Pixel
+- [ ] Safe Areas und Bildschirmtastatur auf iOS
+- [ ] Reduced Motion
+- [ ] Kontrast und Status nicht nur durch Farbe
+
+## 8. Inhalte und Recht
+
+- [ ] jedes Kernspiel redaktionell geprüft
+- [ ] doppelte, schwache und missverständliche Karten entfernt
+- [ ] Altersstufen konsistent
+- [ ] sensible Fragen können übersprungen werden
+- [ ] familienfreundliche Standardauswahl geprüft
+- [ ] Fan-, Marken- und urheberrechtlich sensible Inhalte separat bewertet
+- [ ] keine unzulässigen Bilder, Logos, langen Zitate oder Audios enthalten
+- [ ] Datenschutzerklärung final
+- [ ] Impressum beziehungsweise notwendige Betreiberangaben final
+- [ ] Support- und Sicherheitskontakt final
+- [ ] Lizenz und Drittanbieterhinweise final
+
+## 9. Reale Gruppentests
+
+- [ ] mindestens ein Test mit 3–4 Personen
+- [ ] mindestens ein Test mit 5–8 Personen
+- [ ] mindestens ein Test mit 9–12 Personen
+- [ ] großer Word-Imposter-Test mit mehreren Impostern
+- [ ] mindestens drei vollständige Smart-Party-Night-Abende
+- [ ] Creator-Spiel von unerfahrenen Nutzern erstellt und gespielt
+- [ ] beobachtete Fehler nach Schweregrad dokumentiert
 - [ ] keine offenen kritischen oder hohen Fehler
 
-## Hub und Bedienbarkeit
+## 10. Veröffentlichung
 
-- [ ] 45 eindeutige eingebaute Spiele und 0 irreführend geplante Spiele
-- [ ] Drei-Schritte-Einstieg verständlich
-- [ ] erster-Besuch-Onboarding verständlich und schließbar
-- [ ] kurze Hilfen in allen Hauptbereichen
-- [ ] Spielkarten zeigen klare Aktion, Spielerzahl, Dauer und Kategorie
-- [ ] Spieldetail besitzt verständliche Kurzregeln
-- [ ] Tastatur, Fokus, 200-%-Zoom, Reduced Motion und 44-Pixel-Touchziele
+- [ ] Produktionsdeployment über HTTPS
+- [ ] finale Versionsnummer und Cacheversion
+- [ ] finale Icons und Screenshots
+- [ ] Release Notes und Changelog vollständig
+- [ ] unveränderlicher Release-Tag
+- [ ] Installation und Offlinebetrieb nach Deployment erneut geprüft
+- [ ] Supportkanal und Hotfixprozess vorbereitet
 
-## Game-Creator
+## Freigabe
 
-- [ ] alle sechs Vorlagen funktionieren
-- [ ] Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenspiel erstellen
-- [ ] mehrere Kategorien je Spiel
-- [ ] Icon, Akzent, Gruppe, Dauer und Altersstufe bleiben erhalten
-- [ ] mindestens drei Karten werden erzwungen
-- [ ] Duplikate und Unicode-Varianten werden bereinigt
-- [ ] Auswahlkarten bleiben nach Speichern, Export und Import strukturiert
-- [ ] Bearbeiten, Kopieren und Löschen
-- [ ] eigenes Spiel erscheint im Hub und ist spielbar
-- [ ] bis zu 40 Spiele, 8 Kategorien und 200 Karten geprüft
-- [ ] Speicherfehler löst Rollback aus
-- [ ] beschädigte Creator-Daten werden verworfen
+- Release-Commit: ____________________
+- Release-Tag: ____________________
+- Datum: ____________________
+- getestete Geräte: ____________________
+- offene mittlere/niedrige Risiken: ____________________
+- technische Freigabe: ____________________
+- Produkt-/Inhaltsfreigabe: ____________________
 
-## Spielengines
-
-- [ ] alle 27 Quick-, Trend- und Viral-Modi vollständig
-- [ ] alle 4 Advanced-Spiele vollständig
-- [ ] Word Imposter vollständig
-- [ ] 3-, 5-, 10- und 20-Runden-Sessions
-- [ ] Wiederaufnahme und Spieler-Snapshot
-- [ ] Verlauf und Statistik zählen genau einmal
-- [ ] geheime Rollen, Figuren, Antworten und Missionen bleiben geschützt
-
-## Smart Party Night
-
-- [ ] 15, 30, 45, 60 und 90 Minuten
-- [ ] Alters-, Gruppen- und Stimmungsfilter
-- [ ] Fortschritt aus allen Engine-Familien
-- [ ] Wiederaufnahme nach Neustart
-- [ ] eigene Spiele werden sinnvoll behandelt oder bewusst ausgeschlossen
-
-## Daten und Datenschutz
-
-- [ ] Gesamtexport enthält eigene Spiele, Packs und alle Sessionarten
-- [ ] Creator-Bibliothek separat exportierbar und importierbar
-- [ ] vollständige Löschung aller `secret-circle-*`-Schlüssel
-- [ ] Import-Rollback bei Speicherfehler
-- [ ] keine Analyse-, Werbe- oder Tracking-Dienste
-- [ ] Anime-, Geld-, Preis-, Social- und Creator-Hinweise korrekt
-
-## PWA und Offline
-
-- [ ] nur Cache `secret-circle-v29` aktiv
-- [ ] Hub, Creator, Schnellhilfe und alle Engines offline
-- [ ] Update von älterem Cache auf v29
-- [ ] lokale Spieler, Packs, eigene Spiele und Sessions überstehen Update
-- [ ] Android und iPhone/iPad installiert
-
-## Reale Partytests
-
-- [ ] Gruppe mit 3–4 Personen
-- [ ] Gruppe mit mindestens 8 Personen
-- [ ] alle 45 eingebauten Spiele real geprüft
-- [ ] mindestens drei selbst erstellte Spiele real geprüft
-- [ ] Creator ohne Hilfe von Entwicklern bedienbar
-- [ ] keine kritischen oder hohen Fehler offen
-
-## Bilder, Icons und Animationen
-
-- [ ] eigenes Logo- und Iconsystem
-- [ ] Kategorieillustrationen
-- [ ] Topspiel-Keyvisuals
-- [ ] Animationen beachten Reduced Motion
-- [ ] Assetbudgets aus `ASSET_PLAN.md` eingehalten
-- [ ] keine kopierten Designs oder fremden Medien
-
-## Inhalte und Recht
-
-- [ ] Karten und Altersstufen redaktionell geprüft
-- [ ] Anime-Fan-Content rechtlich geprüft
-- [ ] Creator-Hinweise und Nutzerverantwortung verständlich
-- [ ] Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben vorhanden
-
-Ohne vollständig dokumentierte grüne Gates bleibt der öffentliche Release `NO_GO`.
+**Keine Veröffentlichung**, solange GitHub Actions keine sichtbaren Schritte ausführt, Kern-CI oder Cross-Browser-Tests rot sind, kritische beziehungsweise hohe Fehler offen sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
