@@ -31,7 +31,7 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Synonyme, bekannte alternative Spielnamen und kleine Tippfehler erzeugen gewichtete Suchvorschläge
 - Suchvorschläge unterstützen Maus, Touch, Pfeiltasten, Enter, Escape und Screenreader
 
-### Engine und Daten
+### Engine, Session und Daten
 
 - unabhängige Imposter-Zuweisung direkt in der Engine
 - maximale Zahl von sechs Impostern direkt in der Engine validiert
@@ -45,6 +45,12 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - der alte Mega-/Viral-`plays`-Fehler ist direkt in den Engines beseitigt
 - fehlgeschlagene Abschlussbereinigung stellt den aktiven Abschlusszustand wieder her
 - temporärer Legacy-Guard und sein globales `Storage.prototype`-Patching wurden vollständig entfernt
+- `party-session-controls.js` stellt für Quick-, Mega-, Viral- und Creator-Modi dieselbe Steuerung bereit
+- Pause/Fortsetzen, Runde überspringen, bestätigter Abbruch, Wiederholen und nächstes Spiel sind über dieselbe Oberfläche erreichbar
+- laufende Timer dieser vier Enginefamilien frieren während einer Pause tatsächlich ein und laufen anschließend mit der Restzeit weiter
+- pausierte Rundenaktionen werden mit `inert` und einem sichtbaren Pausenstatus blockiert
+- Abbruch entfernt eine aktive Session nur dann endgültig, wenn die Speicherbereinigung erfolgreich war
+- die vier schnellen Engines besitzen keine eigenen Intervalltimer mehr
 
 ### Backup und Wiederherstellung
 
@@ -65,18 +71,21 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - laufende Sessions werden im Updatehinweis ausdrücklich berücksichtigt
 - aktiver Offline-Cache wird bei der Promotion nicht mehr vorzeitig gelöscht
 - neue Dateien werden zuerst vollständig übernommen; erst danach werden veraltete Cacheeinträge entfernt
-- Party-Hub-Reifestufen, gespeicherte Filter, Suchhilfe und Such-Styles funktionieren auch offline
+- Party-Hub-Reifestufen, gespeicherte Filter, Suchhilfe, Such-Styles und gemeinsame Sessionsteuerung funktionieren auch offline
 - der entfernte Legacy-Guard gehört nicht mehr zum Offline-Core
 
 ### Qualität
 
 - moderne Struktur-, Architektur-, Contract-, Performance- und Release-Audits
-- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe
+- feste Größenbudgets für Registry, Ledger, gemeinsame Sessionsteuerung, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe
 - direkte Genau-einmal-Vertragstests für Creator, Quick, Mega und Viral
+- Unit-Test für pausierbaren Timer, Skip, Abbruch, Replay, Next-Game und ARIA-/`inert`-Zustände
+- Browserprüfung für echte Timerpause, Fortsetzung, Überspringen, bestätigten Abbruch, Wiederholen und nächstes Spiel vorbereitet
 - Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates, Release-Tiers, Filterzustand und Suchhilfe
 - Browserprüfungen für Filterwiederherstellung, Reset, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Maus- und Tastaturbedienung der Suche vorbereitet
+- Validatoren stoppen bei privaten nicht pausierbaren Timern in den vier schnellen Enginefamilien
 - Validatoren stoppen bei einer erneuten Einführung des entfernten Legacy-Guards
-- README, Changelog, Roadmap, Release-Checkliste, Architekturvertrag, Backupvertrag, Releaseumfang und Release-Status aktualisiert
+- README, Changelog, Roadmap, Release-Checkliste, Architekturvertrag, Backupvertrag, Releaseumfang und Release-Status werden auf denselben Foundation-Vertrag ausgerichtet
 
 ## Geprüft beziehungsweise als Testvertrag abgesichert
 
@@ -92,34 +101,34 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - direkte Genau-einmal-Aktualisierung von Verlauf, `plays`, Runden und Bestwert
 - deterministische Migration alter aktiver Mega- und Viral-Sessions
 - Wiederherstellung bei fehlgeschlagener Bereinigung des aktiven Abschlusses
+- gemeinsamer pausierbarer Timervertrag für Quick, Mega, Viral und Creator
+- gemeinsamer Bedienvertrag für Pause, Skip, Abbruch, Replay und nächstes Spiel
 - zentrales Backup-Register und seine Runtime-Verträge
 - feste Katalogverteilung 15 Kernspiele / 13 Erweiterungen / 17 Labs
 - Filterzustand wird normalisiert; ungültige Werte fallen auf sichere Standards zurück
 - nicht verfügbarer oder voller lokaler Speicher wird als Fehler gemeldet
 - Suchnormalisierung, Synonyme, Tippfehlertoleranz und maximal sechs Vorschläge
 
-Ein vollständiger grüner Lauf aller Tests ist weiterhin nicht dokumentiert, da der aktuelle GitHub-Actions-Blocker die Remote-Ausführung verhindert.
+Ein vollständiger grüner Lauf aller Tests ist weiterhin nicht dokumentiert, da der aktuelle GitHub-Actions-Blocker die Remote-Ausführung verhindert. Die neu ergänzte Browserprüfung ist deshalb vorbereitet, aber noch nicht durch einen vertrauenswürdigen Remote-Runner bestätigt.
 
 ## Externer Releaseblocker
 
-Der GitHub-Actions-Lauf **#1401** für Commit `d83e3b509752c989e51a03980148f50a8324d09a` wurde am 7. August 2026 um 03:55 UTC angelegt und bereits nach drei Sekunden als fehlgeschlagen beendet.
-
-Der Job `validate` zeigt eindeutig:
+Die zuletzt geprüften GitHub-Actions-Läufe werden weiterhin vor jedem Repository-Schritt beendet. Der zuletzt bestätigte Lauf für den damaligen PR-Head zeigte erneut:
 
 - `runner_id: 0`
-- leerer Runnername
+- leeren Runnernamen
 - `runner_group_id: 0`
 - `steps: []`
 - kein verfügbares Joblog
 - kein Checkout
 - kein Node-, Python-, npm- oder Playwright-Schritt
 
-Damit ist dies weiterhin **kein Fehler des Repository-Codes**, sondern ein externer Actions-/Abrechnungs-/Richtlinienblocker. Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und mögliche Organisationsrichtlinien geprüft werden. Danach muss der Workflow erneut gestartet werden.
+Damit ist dies weiterhin **kein nachgewiesener Fehler des Repository-Codes**, sondern ein externer Actions-/Abrechnungs-/Richtlinienblocker. Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und mögliche Organisationsrichtlinien geprüft werden. Danach muss der Workflow erneut gestartet werden.
 
 ## Nächste technische Prioritäten
 
-1. gemeinsame Bedienlogik für Pause, Überspringen, Abbruch, Wiederholen und nächstes Spiel
-2. Kernspiele einzeln nach Regeln, Inhalt, Timer, Wiederaufnahme und Accessibility abnehmen
+1. die 15 Kernspiele einzeln nach Regeln, Inhalt, Timer, Wiederaufnahme, Statistik und Accessibility abnehmen
+2. Timer über App-Wechsel, Sperrbildschirm und Neuladen korrekt fortsetzen und auf echten Geräten prüfen
 3. PWA-Update von einer älteren installierten Version auf echten Geräten prüfen
 4. Kerninhalte redaktionell und nach Altersstufen prüfen
 5. Android-, iPhone-, Tablet- und echte Gruppentests
