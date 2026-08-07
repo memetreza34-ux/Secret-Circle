@@ -9,7 +9,6 @@
   'use strict';
 
   const LEDGER_SOURCE = 'session-ledger.js';
-  const LEGACY_GUARD_SOURCE = 'session-ledger-legacy-guard.js';
 
   function selectSource(catalog, gameId) {
     if (!catalog || !gameId) return null;
@@ -20,18 +19,10 @@
     return null;
   }
 
-  function needsLegacyGuard(catalog, gameId) {
-    return Boolean(catalog?.viralGameIds?.includes(gameId) || catalog?.megaGameIds?.includes(gameId));
-  }
-
-  function scriptPlan(catalog, gameId, ledgerReady = false, guardReady = false) {
+  function scriptPlan(catalog, gameId, ledgerReady = false) {
     const source = selectSource(catalog, gameId);
     if (!source) return [];
-    const plan = [];
-    if (!ledgerReady) plan.push(LEDGER_SOURCE);
-    if (needsLegacyGuard(catalog, gameId) && !guardReady) plan.push(LEGACY_GUARD_SOURCE);
-    plan.push(source);
-    return plan;
+    return ledgerReady ? [source] : [LEDGER_SOURCE, source];
   }
 
   function showFailure(documentRef, message) {
@@ -71,12 +62,7 @@
       return null;
     }
 
-    const plan = scriptPlan(
-      catalog,
-      gameId,
-      Boolean(windowRef.SecretCircleSessionLedger),
-      Boolean(windowRef.SecretCircleLegacySessionGuard)
-    );
+    const plan = scriptPlan(catalog, gameId, Boolean(windowRef.SecretCircleSessionLedger));
 
     const loadNext = index => {
       if (index >= plan.length) return;
@@ -84,15 +70,11 @@
       const isEngine = nextSource === source;
       const attributes = isEngine
         ? { gameEngine: gameId }
-        : { sharedRuntime: nextSource === LEDGER_SOURCE ? 'session-ledger' : 'legacy-session-guard' };
+        : { sharedRuntime: 'session-ledger' };
 
       appendScript(documentRef, nextSource, attributes, () => {
         if (nextSource === LEDGER_SOURCE && !windowRef.SecretCircleSessionLedger) {
           showFailure(documentRef, 'Die gemeinsame Sitzungsverwaltung konnte nicht initialisiert werden.');
-          return;
-        }
-        if (nextSource === LEGACY_GUARD_SOURCE && !windowRef.SecretCircleLegacySessionGuard) {
-          showFailure(documentRef, 'Der Schutz vor doppelten Spielabschlüssen konnte nicht initialisiert werden.');
           return;
         }
         loadNext(index + 1);
@@ -109,11 +91,9 @@
   }
 
   return Object.freeze({
-    version: 4,
+    version: 5,
     ledgerSource: LEDGER_SOURCE,
-    legacyGuardSource: LEGACY_GUARD_SOURCE,
     selectSource,
-    needsLegacyGuard,
     scriptPlan,
     showFailure,
     load
