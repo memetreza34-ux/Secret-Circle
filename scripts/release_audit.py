@@ -36,6 +36,7 @@ quick_styles = require('party-quick.css')
 registry = require('backup-schema-registry.js')
 ledger = require('session-ledger.js')
 session_controls = require('party-session-controls.js')
+party_page = require('party.html')
 quick_play = require('quick-play.html')
 base_catalog = require('party-catalog.js')
 expansion = require('party-expansion.js')
@@ -46,6 +47,7 @@ routing = require('party-routing.js')
 creator = require('game-creator.js')
 creator_page = require('creator-page.js')
 guide = require('party-guide.js')
+hub_runtime = require('party-hub.js')
 quick_runtime = require('party-quick-modes.js')
 mega_runtime = require('party-mega-modes.js')
 viral_runtime = require('party-viral-modes.js')
@@ -83,6 +85,18 @@ def direct_engine(source: str, engine: str) -> bool:
     return all(marker in source for marker in markers) \
         and 'let timerId = null' not in source \
         and 'const deadline = Date.now() + seconds * 1000' not in source
+
+
+def hub_engine(source: str) -> bool:
+    markers = (
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
+        "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
+        'hubTimer.countdown(60, timer', 'hubTimer.countdown(milliseconds / 1000, hiddenClock',
+        'hubTimer.countdown(30, timer', "document.addEventListener('visibilitychange'",
+        'setHubPaused(true)',
+    )
+    return all(marker in source for marker in markers) \
+        and all(marker not in source for marker in ('activeTimer', 'window.setInterval(', 'performance.now()'))
 
 
 checks = {
@@ -126,10 +140,15 @@ checks = {
         'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
         'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"', 'id="quick-pause-overlay"',
     )),
+    'hub_controls_surface': all(marker in party_page for marker in (
+        'id="pause-hub-game"', 'id="play-pause-status"',
+        '<script src="session-ledger.js"></script>', '<script src="party-session-controls.js"></script>',
+    )),
     'session_controls_styles': all(marker in quick_styles for marker in (
         '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
         '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
     )),
+    'hub_direct_exact_once_and_pausable': hub_engine(hub_runtime),
     'creator_direct_exact_once': direct_engine(created_runtime, 'created'),
     'quick_direct_exact_once': direct_engine(quick_runtime, 'quick'),
     'mega_direct_exact_once': direct_engine(mega_runtime, 'mega'),
@@ -168,7 +187,8 @@ checks = {
     'cross_browser_ci': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'foundation_audit_in_gate': 'scripts/foundation_contract_audit.py' in package.get('scripts', {}).get('validate', ''),
     'foundation_tests_in_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
-        'tests/party-release-structure.test.js', 'tests/party-filter-state.test.js',
+        'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
+        'tests/hub-timer-contract.test.js', 'tests/party-filter-state.test.js',
         'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
         'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
         'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
@@ -206,16 +226,19 @@ for game_id in viral_ids:
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 19 or len(e2e_suites) < 29 or not cross_suites:
+if len(unit_tests) < 21 or len(e2e_suites) < 33 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required_test in (
-    'party-release-structure.test.js', 'party-filter-state.test.js', 'party-search-assist.test.js',
-    'backup-schema-registry.test.js', 'session-ledger.test.js', 'party-session-controls.test.js',
-    'session-ledger-integration.test.js', 'service-worker.test.js', 'pwa-update.test.js',
+    'party-release-structure.test.js', 'core-game-contract.test.js', 'hub-timer-contract.test.js',
+    'party-filter-state.test.js', 'party-search-assist.test.js', 'backup-schema-registry.test.js',
+    'session-ledger.test.js', 'party-session-controls.test.js', 'session-ledger-integration.test.js',
+    'service-worker.test.js', 'pwa-update.test.js',
 ):
     if required_test not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required_test}')
 for required_test in (
+    'core-game-catalog.spec.js', 'core-hub-statistics.spec.js',
+    'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
     'party-filter-state.spec.js', 'party-search-assist.spec.js', 'party-session-controls.spec.js',
     'game-creator.spec.js', 'creator-runner-resilience.spec.js', 'party-viral-resilience.spec.js',
     'party-viral-modes.spec.js', 'offline.spec.js',
@@ -255,11 +278,12 @@ print(json.dumps({
     'playable_builtin_games': 45,
     'maximum_local_created_games': 40,
     'backup_schemas': 3,
-    'exact_once_engine_families': 4,
+    'exact_once_engine_families': 5,
     'legacy_guard_removed': True,
     'search_assistance': True,
     'shared_session_controls': True,
     'pausable_fast_engine_timers': True,
+    'pausable_core_hub_timers': True,
     'classic_quick_modes': len(classic_ids),
     'mega_modes': len(mega_ids),
     'viral_modes': len(viral_ids),
