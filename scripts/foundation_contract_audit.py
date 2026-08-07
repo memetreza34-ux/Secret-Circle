@@ -25,8 +25,10 @@ creator = require_file('game-creator.js')
 creator_page = require_file('creator-page.js')
 ledger = require_file('session-ledger.js')
 session_controls = require_file('party-session-controls.js')
+party_page = require_file('party.html')
 quick_play = require_file('quick-play.html')
 quick_styles = require_file('party-quick.css')
+hub_runtime = require_file('party-hub.js')
 created_runtime = require_file('party-created-modes.js')
 quick_runtime = require_file('party-quick-modes.js')
 mega_runtime = require_file('party-mega-modes.js')
@@ -67,6 +69,16 @@ def direct_engine(source: str, engine: str) -> bool:
     )) and 'let timerId = null' not in source and 'const deadline = Date.now() + seconds * 1000' not in source
 
 
+def hub_engine(source: str) -> bool:
+    return all(marker in source for marker in (
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
+        "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
+        'hubTimer.countdown(60, timer', 'hubTimer.countdown(milliseconds / 1000, hiddenClock',
+        'hubTimer.countdown(30, timer', "document.addEventListener('visibilitychange'",
+        'setHubPaused(true)',
+    )) and all(marker not in source for marker in ('activeTimer', 'window.setInterval(', 'performance.now()'))
+
+
 checks = {
     'backup_registry_version': 'const VERSION = 1;' in registry,
     'backup_shared_limit': 'const MAX_FILE_BYTES = 1_500_000;' in registry,
@@ -90,10 +102,15 @@ checks = {
         'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"',
         'id="quick-pause-overlay"',
     )),
+    'hub_controls_surface': all(marker in party_page for marker in (
+        'id="pause-hub-game"', 'id="play-pause-status"',
+        '<script src="session-ledger.js"></script>', '<script src="party-session-controls.js"></script>',
+    )),
     'session_controls_accessible_styles': all(marker in quick_styles for marker in (
         '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
         '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
     )),
+    'hub_exact_once_and_pausable': hub_engine(hub_runtime),
     'creator_exact_once': direct_engine(created_runtime, 'created'),
     'quick_exact_once': direct_engine(quick_runtime, 'quick'),
     'mega_exact_once': direct_engine(mega_runtime, 'mega'),
@@ -143,24 +160,16 @@ checks = {
     'install_handler_detected': bool(install_handler),
     'no_install_auto_activation': bool(install_handler) and 'skipWaiting' not in install_handler,
     'foundation_tests_in_unit_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
-        'tests/party-release-structure.test.js',
-        'tests/party-filter-state.test.js',
-        'tests/party-search-assist.test.js',
-        'tests/session-ledger.test.js',
-        'tests/party-session-controls.test.js',
-        'tests/session-ledger-integration.test.js',
-        'tests/backup-schema-registry.test.js',
-        'tests/pwa-update.test.js',
+        'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
+        'tests/hub-timer-contract.test.js', 'tests/party-filter-state.test.js',
+        'tests/party-search-assist.test.js', 'tests/session-ledger.test.js',
+        'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
+        'tests/backup-schema-registry.test.js', 'tests/pwa-update.test.js',
     )),
     'foundation_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
-        'party-release-structure.js',
-        'party-filter-state.js',
-        'party-search-assist.js',
-        'backup-schema-registry.js',
-        'session-ledger.js',
-        'party-session-controls.js',
-        'runtime-guard.js',
-        'sw.js',
+        'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
+        'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
+        'party-hub.js', 'tests/hub-timer-contract.test.js', 'runtime-guard.js', 'sw.js',
     )),
 }
 
@@ -175,10 +184,11 @@ print(json.dumps({
     'search_assistance': True,
     'shared_session_controls': True,
     'pausable_fast_engine_timers': True,
+    'pausable_core_hub_timers': True,
     'combined_age_and_release_filter': True,
     'backup_schemas': ['word-imposter', 'complete', 'creator-library'],
     'maximum_backup_bytes': 1_500_000,
-    'exact_once_engines': ['created', 'quick', 'mega', 'viral'],
+    'exact_once_engines': ['hub', 'created', 'quick', 'mega', 'viral'],
     'legacy_guard_removed': True,
     'controlled_pwa_updates': True,
     'checks': checks,
