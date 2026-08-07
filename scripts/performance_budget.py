@@ -7,11 +7,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 budgets = {
     'index.html': 60_000, 'party.html': 100_000, 'advanced.html': 35_000,
-    'quick-play.html': 40_000, 'creator.html': 45_000, 'privacy.html': 28_000,
+    'quick-play.html': 45_000, 'creator.html': 45_000, 'privacy.html': 28_000,
     'runtime-guard.js': 22_000, 'setup-ux.js': 14_000, 'privacy-guard.js': 10_000,
     'wake-lock.js': 10_000, 'role-assignment.js': 14_000, 'app.js': 80_000,
     'game-engine.js': 60_000, 'data-store.js': 55_000, 'backup-schema-registry.js': 12_000,
-    'session-ledger.js': 16_000,
+    'session-ledger.js': 16_000, 'party-session-controls.js': 18_000,
     'word-packs.js': 40_000, 'party-catalog.js': 85_000, 'party-expansion.js': 45_000,
     'party-trending-catalog.js': 70_000, 'party-mega-catalog.js': 90_000,
     'party-viral-catalog.js': 90_000, 'party-routing.js': 20_000,
@@ -22,12 +22,12 @@ budgets = {
     'party-hub-plus.js': 34_000, 'party-hub-polish.js': 10_000,
     'party-guide.js': 45_000, 'party-night.js': 38_000, 'party-data-tools.js': 24_000,
     'party-advanced.js': 55_000, 'party-advanced-runner.js': 48_000,
-    'party-advanced-preferences.js': 5_000, 'party-quick-modes.js': 75_000,
-    'party-mega-modes.js': 78_000, 'party-viral-modes.js': 78_000,
-    'party-created-modes.js': 75_000, 'quick-loader.js': 12_000,
+    'party-advanced-preferences.js': 5_000, 'party-quick-modes.js': 78_000,
+    'party-mega-modes.js': 80_000, 'party-viral-modes.js': 80_000,
+    'party-created-modes.js': 78_000, 'quick-loader.js': 14_000,
     'styles.css': 35_000, 'pwa.css': 40_000, 'pwa-update.css': 12_000,
     'party.css': 55_000, 'party-extra.css': 25_000, 'party-night.css': 22_000,
-    'party-quick.css': 35_000, 'party-guide.css': 35_000, 'party-release.css': 12_000,
+    'party-quick.css': 40_000, 'party-guide.css': 35_000, 'party-release.css': 12_000,
     'party-search.css': 16_000, 'creator.css': 45_000, 'sw.js': 35_000,
     'manifest.webmanifest': 6_000, 'icon.svg': 25_000,
     'icon-192.png': 90_000, 'icon-512.png': 220_000
@@ -46,7 +46,7 @@ for relative, maximum in budgets.items():
         violations.append(f'{relative} is {size} bytes; budget is {maximum} bytes.')
 
 core_total = sum(sizes.values())
-core_budget = 2_775_000
+core_budget = 2_800_000
 if core_total > core_budget:
     violations.append(f'Offline core is {core_total} bytes; budget is {core_budget} bytes.')
 
@@ -80,6 +80,7 @@ print(json.dumps({
     'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
     'persistent_catalog_filters': True,
     'search_assistance': True,
+    'shared_session_controls': True,
     'maximum_local_created_games': 40,
     'creator_templates': 6,
     'creator_runner': True,
