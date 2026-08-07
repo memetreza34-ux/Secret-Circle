@@ -3,13 +3,16 @@
 (() => {
   const C = window.SecretCirclePartyCatalog;
   const L = window.SecretCircleSessionLedger;
+  const S = window.SecretCircleSessionControls;
   if (!C) throw new Error('Party-Katalog konnte nicht geladen werden.');
   if (!L) throw new Error('Gemeinsames Session-Register für den Party Hub fehlt.');
+  if (!S) throw new Error('Gemeinsame Sessionsteuerung für den Party Hub fehlt.');
 
   const STORAGE_KEY = 'secret-circle-party-hub-v1';
   const MAX_HISTORY = L.maximumHistory;
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
+  const hubTimer = S.createController({ windowRef: window });
 
   const defaults = {
     version: 1,
@@ -25,7 +28,6 @@
   let selectedGameId = null;
   let currentView = 'home';
   let session = null;
-  let activeTimer = null;
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -129,6 +131,42 @@
     if (className) node.className = className;
     if (text !== undefined) node.textContent = text;
     return node;
+  }
+
+  function syncHubPauseUi() {
+    const pause = $('#pause-hub-game');
+    const paused = hubTimer.isPaused();
+    if (pause) {
+      pause.textContent = paused ? 'Fortsetzen' : 'Pause';
+      pause.setAttribute('aria-pressed', paused ? 'true' : 'false');
+      pause.disabled = !session;
+    }
+    const status = $('#play-pause-status');
+    if (status) status.textContent = paused ? 'Spiel pausiert. Der Timer steht und Rundenaktionen sind gesperrt.' : '';
+    for (const selector of ['#play-options', '#play-actions']) {
+      const node = $(selector);
+      if (!node) continue;
+      node.inert = paused;
+      if (paused) node.setAttribute('aria-disabled', 'true');
+      else node.removeAttribute('aria-disabled');
+    }
+  }
+
+  function setHubPaused(value) {
+    if (!session) return false;
+    hubTimer.setSessionActive(true);
+    const result = hubTimer.setPaused(value);
+    syncHubPauseUi();
+    return result;
+  }
+
+  function setHubSessionActive(value) {
+    hubTimer.setSessionActive(value);
+    syncHubPauseUi();
+  }
+
+  function stopHubTimer() {
+    hubTimer.stopTimer();
   }
 
   function gameCard(game, compact = false) {
@@ -424,7 +462,7 @@
       return;
     }
     rememberRecent(game.id);
-    clearActiveTimer();
+    stopHubTimer();
     session = {
       gameId: game.id,
       sessionId: L.createSessionId(game.id),
@@ -437,20 +475,18 @@
       startedAt: new Date().toISOString(),
       running: false
     };
+    setHubSessionActive(true);
+    setHubPaused(false);
     closeDetail();
     $('#play-layer').hidden = false;
     renderPlayRound();
     $('#exit-game').focus();
   }
 
-  function clearActiveTimer() {
-    if (activeTimer !== null) window.clearInterval(activeTimer);
-    activeTimer = null;
-  }
-
   function finishSession() {
     if (!session) return;
-    clearActiveTimer();
+    stopHubTimer();
+    setHubPaused(false);
     const game = C.getGame(session.gameId);
     if (session.rounds > 0) {
       const result = L.recordCompletion(state, {
@@ -471,6 +507,7 @@
       }
     }
     session = null;
+    setHubSessionActive(false);
     $('#play-layer').hidden = true;
     renderHome();
     if (currentView === 'stats') renderStats();
@@ -496,7 +533,8 @@
   }
 
   function resetPlayCard() {
-    clearActiveTimer();
+    stopHubTimer();
+    setHubPaused(false);
     $('#play-eyebrow').textContent = '';
     $('#play-title').textContent = '';
     $('#play-player').textContent = '';
@@ -598,7 +636,6 @@
   function startCharades() {
     session.running = true;
     session.used = [];
-    let seconds = 60;
     let roundScore = 0;
     const content = $('#play-content');
     const options = $('#play-options');
@@ -606,7 +643,7 @@
       const item = pickUnused(contentItems('charades', session.pack));
       content.textContent = item || 'Keine Karte verfügbar.';
     };
-    const timer = makeElement('div', 'timer-display', '01:00');
+    const timer = makeElement('div', 'timer-display', '1:00');
     $('#play-player').textContent = `${currentPlayer()} · ${roundScore} Treffer`;
     clearNode(options);
     options.append(
@@ -615,18 +652,12 @@
     );
     $('#play-actions').append(timer);
     showCard();
-    activeTimer = window.setInterval(() => {
-      seconds -= 1;
-      timer.textContent = `00:${String(seconds).padStart(2, '0')}`;
-      if (seconds <= 0) {
-        clearActiveTimer();
-        navigator.vibrate?.([120, 80, 120]);
-        content.textContent = `Zeit vorbei · ${roundScore} Treffer`;
-        clearNode(options);
-        clearNode($('#play-actions'));
-        $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
-      }
-    }, 1000);
+    hubTimer.countdown(60, timer, () => {
+      content.textContent = `Zeit vorbei · ${roundScore} Treffer`;
+      clearNode(options);
+      clearNode($('#play-actions'));
+      $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
+    });
   }
 
   function renderTaboo() {
@@ -650,23 +681,17 @@
   }
 
   function startHotPotato(prompt) {
-    let milliseconds = 10000 + randomInt(16000);
-    const startedAt = performance.now();
+    const milliseconds = 10000 + randomInt(16000);
     $('#play-content').textContent = prompt;
     clearNode($('#play-options'));
-    const timer = makeElement('div', 'timer-display', '●');
-    $('#play-actions').append(timer);
-    activeTimer = window.setInterval(() => {
-      const elapsed = performance.now() - startedAt;
-      timer.textContent = elapsed % 800 < 400 ? '●' : '○';
-      if (elapsed >= milliseconds) {
-        clearActiveTimer();
-        navigator.vibrate?.([180, 80, 180, 80, 240]);
-        timer.textContent = 'STOPP';
-        $('#play-content').textContent = 'Wer das Gerät jetzt hält, verliert diese Runde.';
-        $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-      }
-    }, 100);
+    const indicator = makeElement('div', 'timer-display', '●');
+    const hiddenClock = makeElement('span', '', '');
+    $('#play-actions').append(indicator);
+    hubTimer.countdown(milliseconds / 1000, hiddenClock, () => {
+      indicator.textContent = 'STOPP';
+      $('#play-content').textContent = 'Wer das Gerät jetzt hält, verliert diese Runde.';
+      $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
+    });
   }
 
   function renderWordChainStart() {
@@ -678,22 +703,15 @@
   }
 
   function startWordChain(letter) {
-    let seconds = 30;
-    const timer = makeElement('div', 'timer-display', '00:30');
+    const timer = makeElement('div', 'timer-display', '0:30');
     clearNode($('#play-options'));
     $('#play-content').textContent = `${session.pack} · Start mit ${letter}`;
     $('#play-actions').append(timer, actionButton('Runde geschafft', () => { session.score += 1; nextSimpleRound(); }, 'secondary'));
-    activeTimer = window.setInterval(() => {
-      seconds -= 1;
-      timer.textContent = `00:${String(seconds).padStart(2, '0')}`;
-      if (seconds <= 0) {
-        clearActiveTimer();
-        navigator.vibrate?.(250);
-        $('#play-content').textContent = 'Zeit vorbei.';
-        clearNode($('#play-actions'));
-        $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-      }
-    }, 1000);
+    hubTimer.countdown(30, timer, () => {
+      $('#play-content').textContent = 'Zeit vorbei.';
+      clearNode($('#play-actions'));
+      $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
+    });
   }
 
   function renderRandomPlayer() {
@@ -807,6 +825,7 @@
     $('#favorite-selected').addEventListener('click', () => toggleFavorite(selectedGameId));
     $('#start-selected-game').addEventListener('click', startSelectedGame);
     $('#exit-game').addEventListener('click', finishSession);
+    $('#pause-hub-game').addEventListener('click', () => setHubPaused(!hubTimer.isPaused()));
     $('#clear-hub-history').addEventListener('click', () => {
       if (!window.confirm('Hub-Verlauf und Hub-Statistik löschen?')) return;
       state.history = [];
@@ -817,7 +836,12 @@
     });
     window.addEventListener('online', updateConnection);
     window.addEventListener('offline', updateConnection);
-    window.addEventListener('pagehide', () => clearActiveTimer());
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && session && hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+    });
+    window.addEventListener('pagehide', () => {
+      if (session && hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+    });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !$('#game-detail').hidden) closeDetail();
       else if (event.key === 'Escape' && !$('#play-layer').hidden) finishSession();
@@ -827,6 +851,7 @@
   populateGroupFilter();
   bindEvents();
   updateConnection();
+  setHubSessionActive(false);
   renderHome();
   renderPlayers();
   renderFavorites();
