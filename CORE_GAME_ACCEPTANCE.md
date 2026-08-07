@@ -29,6 +29,17 @@ Dieses Dokument trennt **technisch vorhanden**, **automatisch abgesichert**, **n
 - das bloße Öffnen eines Hub- oder Link-Spiels erhöht `plays` nicht.
 - direkte Hub-Abschlüsse verwenden `session-ledger.js`.
 
+`tests/hub-timer-contract.test.js` prüft zusätzlich:
+
+- Hub-Timer verwenden `party-session-controls.js`.
+- kein privater `activeTimer`, `window.setInterval` oder `performance.now()` bleibt im Hub-Timerpfad.
+- Scharade verwendet den gemeinsamen 60-Sekunden-Countdown.
+- Heiße Kartoffel verwendet den gemeinsamen verdeckten Zufalls-Countdown.
+- Wortkette verwendet den gemeinsamen 30-Sekunden-Countdown.
+- ein laufender Hub-Timer wird bei `visibilitychange` in den Hintergrund automatisch pausiert.
+
+`tests/e2e/core-hub-timers.spec.js` bildet den Browservertrag für Pause/Fortsetzen ab. Die Suite ist vorhanden, aber wegen des weiterhin blockierten GitHub-Actions-Runners noch nicht als grün dokumentiert.
+
 ## Aktuelle Matrix
 
 | Kernspiel | Engine | Timer | Wiederaufnahme | Statistik/Verlauf | aktueller technischer Status | manuell |
@@ -39,10 +50,10 @@ Dieses Dokument trennt **technisch vorhanden**, **automatisch abgesichert**, **n
 | Wer würde eher? | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
 | Entweder oder | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
 | Paranoia | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT**, Sichtschutz real prüfen | offen |
-| Scharade | direkte Hub-Engine | 60 s | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH OFFEN** – eigener Hub-Timer besitzt noch keinen Pause-/Hintergrund-/Reload-Vertrag | offen |
+| Scharade | direkte Hub-Engine | 60 s | Hintergrund: Pause; Reload: nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer Timer; Browsernachweis vorbereitet | offen |
 | Nicht sagen! / Tabu | direkte Hub-Engine | aktuell nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT**, gewünschte Rundendauer real prüfen | offen |
-| Heiße Kartoffel | direkte Hub-Engine | Zufall 10–25 s | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH OFFEN** – eigener Zufallstimer besitzt noch keinen Pause-/Hintergrund-/Reload-Vertrag | offen |
-| Wortkette | direkte Hub-Engine | 30 s | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH OFFEN** – eigener Hub-Timer besitzt noch keinen Pause-/Hintergrund-/Reload-Vertrag | offen |
+| Heiße Kartoffel | direkte Hub-Engine | Zufall 10–25 s | Hintergrund: Pause; Reload: nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – Zufallsrestzeit bleibt verborgen; Browsernachweis vorbereitet | offen |
+| Wortkette | direkte Hub-Engine | 30 s | Hintergrund: Pause; Reload: nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer Timer; Browsernachweis vorbereitet | offen |
 | Zwei Wahrheiten, eine Lüge | Advanced Runner | rundenabhängig | aktive Advanced-Session | Advanced-Abschlussvertrag | **TECHNISCHE DETAILABNAHME OFFEN** | offen |
 | Question Imposter | Advanced Runner | rundenabhängig | aktive Advanced-Session | Advanced-Abschlussvertrag | **TECHNISCHE DETAILABNAHME OFFEN** | offen |
 | Location Spy | Advanced Runner | rundenabhängig | aktive Advanced-Session | Advanced-Abschlussvertrag | **TECHNISCHE DETAILABNAHME OFFEN** | offen |
@@ -60,15 +71,28 @@ Der Vertrag ist jetzt getrennt:
 3. **Echter Hub-Abschluss:** verwendet `L.completionId('hub', ...)` und `L.recordCompletion(...)`.
 4. **Link-/Advanced-Spiel:** die Zielengine ist allein für den echten Abschluss verantwortlich.
 
+## Behobener Timer-Block
+
+Die drei zeitgesteuerten direkten Hub-Kernspiele verwenden nicht mehr den alten privaten Timerpfad:
+
+1. **Scharade:** `hubTimer.countdown(60, ...)`.
+2. **Heiße Kartoffel:** zufällige 10–25 Sekunden laufen über denselben Controller, die Restzeit wird weiterhin nicht angezeigt.
+3. **Wortkette:** `hubTimer.countdown(30, ...)`.
+4. **Pause/Fortsetzen:** `#pause-hub-game` sperrt Rundenaktionen mit `inert` und lässt die Restzeit stehen.
+5. **App-/Tab-Wechsel:** ein noch laufender Timer pausiert automatisch bei `visibilitychange` beziehungsweise `pagehide`.
+
+**Noch offen:** Ein kompletter Seiten-Reload persistiert direkte Hub-Sessions und ihre Timerrestzeit weiterhin nicht. Das bleibt ein eigener Releasepunkt und darf nicht mit der Hintergrundpause verwechselt werden.
+
 ## Nächster technischer Block
 
 Priorität vor weiterer Inhaltsarbeit:
 
-1. Scharade, Heiße Kartoffel und Wortkette aus dem privaten `activeTimer`-Vertrag lösen.
-2. Pause/Fortsetzen für diese drei zeitgesteuerten Kernspiele anbieten.
-3. Verhalten bei Tab-/App-Wechsel und Reload definieren und automatisiert absichern.
-4. Advanced-Kernspiele einzeln auf Sessionpersistenz, Abbruch, genau-einmal-Statistik und geheime Informationen prüfen.
-5. Danach die zehn nicht zeitgesteuerten Kernspiele auf Skip/Sichtschutz/Punkte und mobile Accessibility prüfen.
+1. Advanced-Kernspiele einzeln auf Sessionpersistenz, Abbruch und genau-einmal-Statistik prüfen.
+2. Question Imposter und Location Spy auf Sichtschutz und geheime Informationen prüfen.
+3. Mafia auf Rollenverteilung, Nacht-/Tag-Zustände, Siegbedingung und Abschluss prüfen.
+4. Zwei Wahrheiten, eine Lüge auf Eingabe, Mischung, Abstimmung und Reload prüfen.
+5. Danach die zehn direkten Hub-Kernspiele auf Skip/Sichtschutz/Punkte und mobile Accessibility prüfen.
+6. Reload-Vertrag für direkte Hub-Sessions separat entscheiden und implementieren.
 
 ## Releasegrenze
 
