@@ -63,7 +63,15 @@
       <div id="quick-content" class="quick-content" aria-live="polite"></div>
       <div id="quick-controls" class="quick-controls"></div>
       <div id="quick-actions" class="quick-actions"></div>
-      <button id="quick-exit" class="ghost-button" type="button">Session beenden</button>
+      <div id="quick-pause-overlay" class="session-pause-overlay" hidden role="status" aria-live="polite">
+        <strong>Spiel pausiert</strong>
+        <span id="quick-pause-state">Spiel pausiert. Der Timer steht.</span>
+      </div>
+      <div id="quick-session-controls" class="session-control-bar" aria-label="Spielsteuerung">
+        <button id="quick-pause" class="secondary" type="button" aria-pressed="false">Pause</button>
+        <button id="quick-skip" class="secondary" type="button">Runde überspringen</button>
+        <button id="quick-exit" class="ghost-button" type="button">Session beenden</button>
+      </div>
     </section>
 
     <section id="quick-result" class="quick-panel" hidden aria-labelledby="quick-result-title">
@@ -71,7 +79,11 @@
       <h2 id="quick-result-title">Ergebnis</h2>
       <div class="quick-result-score"><strong id="quick-final-score">0</strong><span>Punkte</span></div>
       <p id="quick-result-text"></p>
-      <div class="inline-actions"><button id="quick-replay" type="button">Nochmal spielen</button><a class="ghost-button" href="party.html?view=stats">Zum Verlauf</a></div>
+      <div class="inline-actions">
+        <button id="quick-replay" type="button">Wiederholen</button>
+        <a id="quick-next-game" class="ghost-button" href="party.html?view=games">Nächstes Spiel</a>
+        <a class="ghost-button" href="party.html?view=stats">Zum Verlauf</a>
+      </div>
     </section>
   </main>
 
