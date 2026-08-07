@@ -16,13 +16,20 @@
 - Backupgrößen werden als echte UTF-8-Bytes statt als JavaScript-Zeichenanzahl geprüft.
 - Auch als Objekt übergebene Backups werden vor dem Import serialisiert und gegen die Größenbegrenzung geprüft.
 - Creator-, Quick-, Mega- und Viral-Sessions schreiben Verlauf, Spielanzahl, Rundenzahl und Bestwert höchstens einmal pro echter Session.
+- Direkte Hub-Spiele erhöhen `plays` nicht mehr bereits beim Öffnen oder bei einem ungültigen Startversuch; Statistik und Verlauf werden erst beim echten Abschluss geschrieben.
 - Der alte Mega-/Viral-/Quick-Fehler, bei dem `plays` praktisch bei mindestens 1 blieb, ist in allen betroffenen Engines direkt beseitigt.
 - Ältere aktive Mega- und Viral-Sessions erhalten beim Laden eine deterministische kompatible Session-ID.
 - Ein fehlgeschlagenes Entfernen der aktiven Session stellt den letzten Abschlusszustand wieder her, statt eine inkonsistente Oberfläche zu hinterlassen.
 - Der temporäre globale `Storage.prototype`-Guard wurde nach der direkten Engine-Migration vollständig entfernt.
-- Ein manueller Sessionabbruch verliert den letzten aktiven Zustand nicht mehr, wenn dessen Entfernung nicht gespeichert werden kann.
-- Laufende Quick-, Mega-, Viral- und Creator-Timer laufen während einer sichtbaren Pause nicht mehr im Hintergrund weiter.
-- Die vier schnellen Enginefamilien besitzen keine voneinander abweichenden privaten Intervalltimer mehr.
+- Scharade, Heiße Kartoffel und Wortkette verwenden keine privaten Hub-Intervalle mehr, sondern den gemeinsamen pausierbaren Timerkern.
+- Beim Wechsel eines laufenden Hub-Timers in den Hintergrund wird die aktuelle Runde automatisch pausiert.
+- Der PWA-Update-Schutz verwendet jetzt denselben realen Advanced-Speicherschlüssel wie der Advanced Runner.
+- Bereits geöffnete private Question-Imposter-Fragen, Location-Spy-Karten und Mafia-Rollen werden nach einem Reload wieder verdeckt.
+- Eine offene Mafia-Moderatorübersicht benötigt nach Reload erneut die bewusste Moderatorbestätigung.
+- Advanced-Browserverträge wurden auf den tatsächlichen Resume-Flow und den tatsächlichen Speicherschlüssel korrigiert.
+- Mafia skaliert die Zahl der Mafia-Rollen jetzt mit der Gruppengröße statt unabhängig von der Gruppe immer nur eine Mafia zu erzeugen.
+- Die Mafia-Packs `Schnell`, `Klassisch` und `Erweitert` beeinflussen jetzt tatsächlich die Rollenverteilung.
+- Der in `Erweitert` deklarierte Beschützer besitzt jetzt eine echte Nachtaktion und kann nicht dieselbe Person in zwei aufeinanderfolgenden Nächten schützen.
 - Eine neue PWA-Version wird nicht mehr automatisch mitten in einer laufenden Nutzung aktiviert.
 - Der aktive Offline-Cache wird bei einer Aktualisierung nicht mehr vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
 - Veraltete Cacheeinträge werden erst entfernt, nachdem der vorbereitete Offline-Core vollständig übernommen wurde.
@@ -34,10 +41,9 @@
 ### Hinzugefügt
 
 - gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs für Creator, Quick, Mega und Viral
-- gemeinsames `party-session-controls.js` für Pause/Fortsetzen, Runde überspringen, sicheren Abbruch, Wiederholen, nächstes Spiel und pausierbare Timer
-- einheitliche Spielsteuerleiste in `quick-play.html` für Quick-, Mega-, Viral- und Creator-Modi
-- sichtbarer Pausenstatus mit `aria-pressed`, Live-Status und blockierten Rundenaktionen über `inert`
-- deterministische Nächstes-Spiel-Navigation über die spielbaren schnellen Kataloge
+- direkte Hub-Abschlüsse über dasselbe Session-Ledger
+- gemeinsames `party-session-controls.js` für schnelle Engines und Hub-Timer
+- `CORE_GAME_ACCEPTANCE.md` als nachvollziehbare technische und manuelle Abnahmematrix der 15 Kernspiele
 - zentrales `backup-schema-registry.js` für Word-Imposter-, Gesamt- und Creator-Sicherungen
 - `BACKUP_SCHEMAS.md` mit Formatversionen, Größen, Migration, Rollback und Release-Gates
 - sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“
@@ -49,7 +55,7 @@
 - einheitliche Schaltfläche „Filter zurücksetzen“
 - Synonym- und Tippfehlersuche mit bekannten Alternativnamen, gewichteten Vorschlägen und maximal sechs Ergebnissen
 - barrierearme Suchvorschläge mit ARIA-Listbox, Pfeiltasten, Enter, Escape, Maus und Touch
-- responsive Styles für Kernspiele, Erweiterungen, Labs, Filterreset, Suchvorschläge und die gemeinsame Sessionsteuerung
+- responsive Styles für Kernspiele, Erweiterungen, Labs, Filterreset und Suchvorschläge
 - vollständig neu strukturierte Release-Checkliste für CI, Engines, Kernspiele, Hub, Backups, PWA, Geräte, Inhalte und Gruppentests
 
 ### Qualität
@@ -60,11 +66,14 @@
 - Regressionstest für Creator-Zeitstempel ergänzt.
 - Unicode-Regressionstest für mehrbyteige Backupinhalte ergänzt.
 - Direkte Genau-einmal-Vertragstests für Creator, Quick, Mega und Viral ergänzt.
+- Hub-Statistik- und Hub-Timer-Verträge ergänzt.
+- feste 15-Kernspiel-Verträge für Status, Spielergrenzen, Regeln, Packs und Routing ergänzt.
+- Browserkatalog- und Hub-Statistiktests für die Kernspiele ergänzt.
+- Browsertests für pausierbare Scharade-, Heiße-Kartoffel- und Wortkette-Timer ergänzt.
+- Advanced-Smoke-, sichere-Unterbrechungs-, Geheimnis-Resume-, Rundenfluss- und Genau-einmal-Abschlusstests ergänzt.
+- deterministische Mafia-Rollen- und Siegbedingungstests ergänzt.
+- Browservertrag für die erweiterte Mafia mit Arzt, Beschützer und Detektiv ergänzt.
 - Migration älterer aktiver Sessions und Rollback bei fehlgeschlagener Abschlussbereinigung werden geprüft.
-- Isolierter Test für pausierbaren Timer, Pause/Fortsetzen, Skip, Abbruch, Replay, Next-Game und Accessibility-Zustände ergänzt.
-- Playwright-Suite für echte Timerpause, Fortsetzung, Skip, bestätigten Abbruch, Wiederholen und nächstes Spiel ergänzt.
-- Loader-Test verlangt die Reihenfolge Session-Ledger → Sessionsteuerung → genau eine Engine.
-- Architektur-, Foundation-, Struktur- und Release-Gates verbieten private nicht pausierbare Timer in den vier schnellen Enginefamilien.
 - Der Build verbietet eine erneute Einführung des entfernten Legacy-Guards in Loader, Offline-Core oder Testskripten.
 - statische Qualitätsprüfung für sichtbare und kontrollierte PWA-Aktualisierungen ergänzt.
 - Test für nicht-destruktive Cache-Promotion ergänzt.
@@ -73,14 +82,24 @@
 - Unit-Test für Filterzustand, Sanitizing, Speicherfehler und URL-Priorität ergänzt.
 - Browsertests für Filterwiederherstellung, Reset und kombinierte Alters-/Reifestufenfilter ergänzt.
 - Unit- und Browsertests für Synonyme, Tippfehler, Maus-, Tastatur- und Escape-Bedienung ergänzt.
-- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf die direkte Ledger- und gemeinsame Steuerungsarchitektur aktualisiert.
-- feste Größenbudgets für Registry, Ledger, Sessionsteuerung, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe ergänzt.
+- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf gemeinsame Ledger-/Timer-Verträge aktualisiert.
+- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe ergänzt.
 - Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
 
 ### Bekannte externe Blockade
 
-- GitHub Actions weist dem Workflow weiterhin keinen Runner zu; die zuletzt geprüften Jobs enden mit `runner_id: 0`, leerem Runnernamen und `steps: []` vor dem Checkout.
+- GitHub Actions weist dem Workflow weiterhin keinen Runner zu. Lauf #1567 für Commit `6b9a57973a23485542044ac37647b1f8c7a90eb5` endete mit `runner_id: 0`, leerem Runnernamen, `steps: []` und ohne Checkout.
 - Ein reproduzierbares `package-lock.json` und die Umstellung auf `npm ci` bleiben offen, bis Abhängigkeiten in einer funktionierenden CI- oder lokalen npm-Umgebung aufgelöst werden können.
+
+### Noch offen
+
+- sichere Wiederaufnahme direkter Hub-Sessions über vollständigen Seiten-Reload
+- definierter Reload-Vertrag für die Timerrestzeit von Scharade, Heiße Kartoffel und Wortkette
+- Produktentscheidung über einen festen Tabu-Rundentimer
+- vollständiger grüner `npm run ci`- und Cross-Browser-Lauf
+- echte Android-, iOS-, Tablet- und PWA-Update-Prüfung
+- reale Kernspiel- und Gruppentests
+- redaktionelle Inhalts-, Alters-, Fan-Content- und Rechtsprüfung
 
 ## Frühere Entwicklungswelle – Bedienbarkeit, Creator und Offline-Core v29
 
@@ -117,17 +136,6 @@
 - Katalogrouting auf Version 7
 - Custom-Pack-Manager auf Version 4
 - Architektur-, Struktur-, Release- und Performance-Gates auf v29 synchronisiert
-
-### Noch offen
-
-- vollständiger grüner `npm run ci`-Lauf
-- grüner Cross-Browser-Lauf
-- sichtbare grüne GitHub-Actions-Schritte
-- echte Android-, iOS- und PWA-v29-Update-Prüfung
-- reale Creator-Usability-Tests
-- reale Partytests mit allen 45 eingebauten Spielen
-- Produktion der geplanten Icons, Illustrationen und Animationen
-- redaktionelle Inhalts-, Alters-, Fan-Content- und Rechtsprüfung
 
 ## Frühere Erweiterungswellen
 
