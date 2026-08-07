@@ -24,6 +24,9 @@ complete_tools = require_file('party-data-tools.js')
 creator = require_file('game-creator.js')
 creator_page = require_file('creator-page.js')
 ledger = require_file('session-ledger.js')
+session_controls = require_file('party-session-controls.js')
+quick_play = require_file('quick-play.html')
+quick_styles = require_file('party-quick.css')
 created_runtime = require_file('party-created-modes.js')
 quick_runtime = require_file('party-quick-modes.js')
 mega_runtime = require_file('party-mega-modes.js')
@@ -48,13 +51,20 @@ install_handler = install_handler_match.group(0) if install_handler_match else '
 def direct_engine(source: str, engine: str) -> bool:
     return all(marker in source for marker in (
         'SecretCircleSessionLedger',
+        'SecretCircleSessionControls',
+        'S.createController',
+        'sessionControls.countdown',
+        'sessionControls.stopTimer',
+        'onSkip:',
+        'onAbort: abortSession',
+        'onReplay: replaySession',
         f"completionId('{engine}'",
         'recordCompletion(loadHub()',
         'sessionId: L.createSessionId',
         'legacySessionId',
         'if (result.recorded && !saveHub(result.hub)) return',
         'active = final;',
-    ))
+    )) and 'let timerId = null' not in source and 'const deadline = Date.now() + seconds * 1000' not in source
 
 
 checks = {
@@ -69,12 +79,30 @@ checks = {
     'creator_capacity_matches': all(marker in creator for marker in ('MAX_GAMES = 40', 'MAX_PACKS = 8', 'MAX_CARDS = 200')),
     'backup_contract_documented': all(marker in backup_docs for marker in ('word-imposter', 'complete', 'creator-library', '1.500.000 UTF-8-Bytes')),
     'session_ledger_versioned': 'const VERSION = 1;' in ledger,
+    'session_controls_versioned': 'const VERSION = 1;' in session_controls,
+    'session_controls_contract': all(marker in session_controls for marker in (
+        'formatMilliseconds', 'nextGameId', 'createController', 'function countdown',
+        'function setPaused', 'function setSessionActive', 'remainingMilliseconds',
+        '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay', '#quick-next-game',
+    )),
+    'session_controls_surface': all(marker in quick_play for marker in (
+        'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
+        'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"',
+        'id="quick-pause-overlay"',
+    )),
+    'session_controls_accessible_styles': all(marker in quick_styles for marker in (
+        '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
+        '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
+    )),
     'creator_exact_once': direct_engine(created_runtime, 'created'),
     'quick_exact_once': direct_engine(quick_runtime, 'quick'),
     'mega_exact_once': direct_engine(mega_runtime, 'mega'),
     'viral_exact_once': direct_engine(viral_runtime, 'viral'),
     'legacy_guard_removed': all('session-ledger-legacy-guard' not in source for source in (loader, service_worker, package.get('scripts', {}).get('test', ''), package.get('scripts', {}).get('check', ''))),
-    'loader_orders_shared_runtime': all(marker in loader for marker in ('session-ledger.js', 'scriptPlan', 'SecretCircleSessionLedger')),
+    'loader_orders_shared_runtime': all(marker in loader for marker in (
+        'session-ledger.js', 'party-session-controls.js', 'scriptPlan',
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls',
+    )),
     'release_tier_contract': all(marker in release_structure for marker in (
         'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'", 'tierFor', 'ageAllows', 'counts',
     )),
@@ -103,7 +131,7 @@ checks = {
     )),
     'release_runtime_offline': all(marker in service_worker for marker in (
         './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-        './party-release.css', './party-search.css',
+        './party-release.css', './party-search.css', './party-session-controls.js',
     )),
     'release_accessibility_styles': all(marker in release_styles for marker in (
         '.release-tier-overview', '.release-tier-pill', 'focus-visible', 'prefers-reduced-motion',
@@ -119,6 +147,7 @@ checks = {
         'tests/party-filter-state.test.js',
         'tests/party-search-assist.test.js',
         'tests/session-ledger.test.js',
+        'tests/party-session-controls.test.js',
         'tests/session-ledger-integration.test.js',
         'tests/backup-schema-registry.test.js',
         'tests/pwa-update.test.js',
@@ -129,6 +158,7 @@ checks = {
         'party-search-assist.js',
         'backup-schema-registry.js',
         'session-ledger.js',
+        'party-session-controls.js',
         'runtime-guard.js',
         'sw.js',
     )),
@@ -143,6 +173,8 @@ print(json.dumps({
     'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
     'persistent_catalog_filters': True,
     'search_assistance': True,
+    'shared_session_controls': True,
+    'pausable_fast_engine_timers': True,
     'combined_age_and_release_filter': True,
     'backup_schemas': ['word-imposter', 'complete', 'creator-library'],
     'maximum_backup_bytes': 1_500_000,
