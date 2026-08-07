@@ -2,16 +2,20 @@
 
 (() => {
   const C = window.SecretCirclePartyCatalog;
+  const L = window.SecretCircleSessionLedger;
+  if (!C) throw new Error('Party-Katalog für Mega Modes fehlt.');
+  if (!L) throw new Error('Gemeinsames Session-Register für Mega Modes fehlt.');
+
   const gameId = new URLSearchParams(location.search).get('game') || '';
-  const megaIds = new Set(C?.megaGameIds || []);
-  if (!C || !megaIds.has(gameId)) return;
+  const megaIds = new Set(C.megaGameIds || []);
+  if (!megaIds.has(gameId)) return;
   window.SecretCircleMegaModeActive = true;
 
   const game = C.getGame(gameId);
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const ACTIVE_KEY = 'secret-circle-party-mega-active-v1';
   const VERSION = 1;
-  const MAX_HISTORY = 50;
+  const MAX_HISTORY = L.maximumHistory;
   const $ = selector => document.querySelector(selector);
   let hub = loadHub();
   let active = loadActive();
@@ -60,9 +64,11 @@
     if (!Array.isArray(value.players) || !players.length || players.length !== value.players.length) return null;
     const pack = String(value.pack ?? '');
     if (!C.getPackNames(gameId).includes(pack)) return null;
+    const startedAt = String(value.startedAt ?? new Date().toISOString());
     return {
       version: VERSION,
       gameId,
+      sessionId: L.normalizeSessionId(value.sessionId) || L.legacySessionId(gameId, startedAt, value.targetRounds),
       pack,
       targetRounds: value.targetRounds,
       round: value.round,
@@ -73,7 +79,7 @@
       current: value.current && typeof value.current === 'object' && !Array.isArray(value.current) ? value.current : null,
       phase: String(value.phase ?? 'ready').slice(0, 30),
       players,
-      startedAt: String(value.startedAt ?? new Date().toISOString()),
+      startedAt,
       completedRecorded: Boolean(value.completedRecorded)
     };
   }
@@ -463,9 +469,14 @@
     }
     const pack = $('#quick-pack').value || C.getPackNames(game.id)[0];
     const targetRounds = Number($('#quick-rounds').value);
+    if (!C.getPackNames(game.id).includes(pack) || ![3, 5, 10, 20].includes(targetRounds)) {
+      setStatus('Kategorie oder Rundenzahl ist ungültig.', true);
+      return;
+    }
     active = {
       version: VERSION,
       gameId: game.id,
+      sessionId: L.createSessionId(game.id),
       pack,
       targetRounds,
       round: 1,
@@ -491,31 +502,24 @@
     stopTimer();
     if (!active) return;
     if (!active.completedRecorded) {
-      const entry = {
-        id: `mega-${Date.now()}-${randomInt(1_000_000)}`,
+      const result = L.recordCompletion(loadHub(), {
+        id: L.completionId('mega', game.id, active.sessionId),
         gameId: game.id,
         title: game.title,
         endedAt: new Date().toISOString(),
         rounds: active.targetRounds,
         score: active.totalScore
-      };
-      const nextHub = clone(loadHub());
-      nextHub.history = [entry, ...(Array.isArray(nextHub.history) ? nextHub.history : [])].slice(0, MAX_HISTORY);
-      nextHub.recent = [game.id, ...(Array.isArray(nextHub.recent) ? nextHub.recent.filter(id => id !== game.id) : [])].slice(0, 8);
-      nextHub.stats = nextHub.stats || {};
-      const stats = nextHub.stats[game.id] || { plays: 0, rounds: 0, best: 0 };
-      nextHub.stats[game.id] = {
-        plays: Math.max(1, Number(stats.plays) || 0),
-        rounds: Math.max(0, Number(stats.rounds) || 0) + active.targetRounds,
-        best: Math.max(Number(stats.best) || 0, active.totalScore)
-      };
-      if (!saveHub(nextHub)) return;
+      });
+      if (result.recorded && !saveHub(result.hub)) return;
       active.completedRecorded = true;
-      saveActive();
+      if (!saveActive()) return;
     }
     const final = clone(active);
     active = null;
-    saveActive();
+    if (!saveActive()) {
+      active = final;
+      return;
+    }
     $('#quick-play').hidden = true;
     $('#quick-result').hidden = false;
     $('#quick-final-score').textContent = String(final.totalScore);
