@@ -38,61 +38,105 @@ Dieses Dokument trennt **technisch vorhanden**, **automatisch abgesichert**, **n
 - Wortkette verwendet den gemeinsamen 30-Sekunden-Countdown.
 - ein laufender Hub-Timer wird bei `visibilitychange` in den Hintergrund automatisch pausiert.
 
-`tests/e2e/core-hub-timers.spec.js` bildet den Browservertrag für Pause/Fortsetzen ab. Die Suite ist vorhanden, aber wegen des weiterhin blockierten GitHub-Actions-Runners noch nicht als grün dokumentiert.
+`tests/advanced-resume-contract.test.js` schützt den Advanced-Wiederaufnahmevertrag:
+
+- Runtime Guard und Advanced Runner verwenden denselben Schlüssel `secret-circle-party-active-v1`.
+- geöffnete private Fragen, Orte und Rollen werden nach Reload wieder verdeckt.
+- eine offene Mafia-Moderatorübersicht verlangt nach Reload erneut die bewusste Bestätigung.
+
+`tests/mafia-rules.test.js` schützt den Mafia-Regelvertrag:
+
+- 6–7 Personen: 1 Mafia.
+- 8–11 Personen: 2 Mafia.
+- 12–15 Personen: 3 Mafia.
+- 16–20 Personen: 4 Mafia.
+- `Schnell`: Mafia, Detektiv, Dorfbewohner.
+- `Klassisch`: zusätzlich Arzt ab passender Gruppengröße.
+- `Erweitert`: zusätzlich echter Beschützer mit eigener Nachtaktion.
+
+Vorbereitete Browserverträge:
+
+- `tests/e2e/core-hub-timers.spec.js`
+- `tests/e2e/advanced-core-smoke.spec.js`
+- `tests/e2e/advanced-core-abort.spec.js`
+- `tests/e2e/advanced-secret-resume.spec.js`
+- `tests/e2e/advanced-core-round-flow.spec.js`
+- `tests/e2e/advanced-completion-exact-once.spec.js`
+- `tests/e2e/mafia-extended.spec.js`
+
+Sie sind wegen des weiterhin blockierten GitHub-Actions-Runners noch nicht als grün dokumentiert.
 
 ## Aktuelle Matrix
 
 | Kernspiel | Engine | Timer | Wiederaufnahme | Statistik/Verlauf | aktueller technischer Status | manuell |
 |---|---|---|---|---|---|---|
 | Word Imposter | `game-engine.js` / `app.js` | ja | eigener v7-Spielstand | eigene geprüfte Engine | **TECHNISCH ABGESICHERT** – Rollenfairness und v7-Verträge vorhanden | offen |
-| Wahrheit oder Pflicht | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – Startversuch zählt nicht mehr als Play | offen |
-| Ich habe noch nie | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
-| Wer würde eher? | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
-| Entweder oder | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
-| Paranoia | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT**, Sichtschutz real prüfen | offen |
-| Scharade | direkte Hub-Engine | 60 s | Hintergrund: Pause; Reload: nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer Timer; Browsernachweis vorbereitet | offen |
-| Nicht sagen! / Tabu | direkte Hub-Engine | aktuell nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT**, gewünschte Rundendauer real prüfen | offen |
-| Heiße Kartoffel | direkte Hub-Engine | Zufall 10–25 s | Hintergrund: Pause; Reload: nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – Zufallsrestzeit bleibt verborgen; Browsernachweis vorbereitet | offen |
-| Wortkette | direkte Hub-Engine | 30 s | Hintergrund: Pause; Reload: nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer Timer; Browsernachweis vorbereitet | offen |
-| Zwei Wahrheiten, eine Lüge | Advanced Runner | rundenabhängig | aktive Advanced-Session | Advanced-Abschlussvertrag | **TECHNISCHE DETAILABNAHME OFFEN** | offen |
-| Question Imposter | Advanced Runner | rundenabhängig | aktive Advanced-Session | Advanced-Abschlussvertrag | **TECHNISCHE DETAILABNAHME OFFEN** | offen |
-| Location Spy | Advanced Runner | rundenabhängig | aktive Advanced-Session | Advanced-Abschlussvertrag | **TECHNISCHE DETAILABNAHME OFFEN** | offen |
-| Mafia | Advanced Runner | phasenabhängig | aktive Advanced-Session | Advanced-Abschlussvertrag | **TECHNISCHE DETAILABNAHME OFFEN** | offen |
-| Nur falsche Antworten | direkte Hub-Engine | nein | nicht persistiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
+| Wahrheit oder Pflicht | direkte Hub-Engine | nein | Reload noch offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – Startversuch zählt nicht mehr als Play | offen |
+| Ich habe noch nie | direkte Hub-Engine | nein | Reload noch offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
+| Wer würde eher? | direkte Hub-Engine | nein | Reload noch offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
+| Entweder oder | direkte Hub-Engine | nein | Reload noch offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
+| Paranoia | direkte Hub-Engine | nein | Reload noch offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT**, Sichtschutz real prüfen | offen |
+| Scharade | direkte Hub-Engine | 60 s | Hintergrund: Pause; Reload offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer Timer | offen |
+| Nicht sagen! / Tabu | direkte Hub-Engine | aktuell nein | Reload noch offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT**, gewünschte Rundendauer real prüfen | offen |
+| Heiße Kartoffel | direkte Hub-Engine | Zufall 10–25 s | Hintergrund: Pause; Reload offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – Zufallsrestzeit bleibt verborgen | offen |
+| Wortkette | direkte Hub-Engine | 30 s | Hintergrund: Pause; Reload offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer Timer | offen |
+| Zwei Wahrheiten, eine Lüge | Advanced Runner | rundenabhängig | aktive Advanced-Session | stabiler Advanced-Abschluss | **TECHNISCH ABGESICHERT** – Eingabe/Mischen/Abstimmung als Browservertrag vorbereitet | offen |
+| Question Imposter | Advanced Runner | rundenabhängig | sichere aktive Advanced-Session | stabiler Advanced-Abschluss | **TECHNISCH ABGESICHERT** – geöffnete Geheimfrage wird nach Reload wieder verdeckt | offen |
+| Location Spy | Advanced Runner | rundenabhängig | sichere aktive Advanced-Session | stabiler Advanced-Abschluss | **TECHNISCH ABGESICHERT** – geöffneter Ort/Spionzustand wird nach Reload wieder geschützt | offen |
+| Mafia | Advanced Runner | phasenabhängig | sichere aktive Advanced-Session | stabiler Advanced-Abschluss | **TECHNISCH ABGESICHERT** – skalierte Mafia, Packregeln, Arzt/Detektiv/Beschützer, sichere Moderator-Wiederaufnahme | offen |
+| Nur falsche Antworten | direkte Hub-Engine | nein | Reload noch offen | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** | offen |
 
-## Bereits gefundener und behobener Kernspiel-Fehler
+## Behobene Kernspiel-Fehler
 
-Vor dieser Abnahme erhöhte `party-hub.js` in `rememberRecent()` den Wert `plays` bereits beim Öffnen beziehungsweise Startversuch eines Spiels. Das passierte vor der eigentlichen Session und auch bei Link-Spielen. Dadurch konnten insbesondere Advanced-Spiele beim Öffnen und später beim Abschluss zweimal gezählt werden.
+### Hub-Statistik
 
-Der Vertrag ist jetzt getrennt:
+Vor der Abnahme erhöhte `party-hub.js` `plays` bereits beim Öffnen beziehungsweise Startversuch. Dadurch konnten insbesondere Advanced-Spiele doppelt gezählt werden.
+
+Jetzt gilt:
 
 1. **Öffnen:** aktualisiert ausschließlich `recent`.
 2. **Direktes Hub-Spiel starten:** erhält eine stabile `sessionId`.
 3. **Echter Hub-Abschluss:** verwendet `L.completionId('hub', ...)` und `L.recordCompletion(...)`.
 4. **Link-/Advanced-Spiel:** die Zielengine ist allein für den echten Abschluss verantwortlich.
 
-## Behobener Timer-Block
+### Hub-Timer
 
-Die drei zeitgesteuerten direkten Hub-Kernspiele verwenden nicht mehr den alten privaten Timerpfad:
+- Scharade: gemeinsamer 60-Sekunden-Countdown.
+- Heiße Kartoffel: gemeinsamer verdeckter Zufalls-Countdown.
+- Wortkette: gemeinsamer 30-Sekunden-Countdown.
+- Pause/Fortsetzen sperrt Rundenaktionen mit `inert`.
+- App-/Tab-Wechsel pausiert einen noch laufenden Timer automatisch.
 
-1. **Scharade:** `hubTimer.countdown(60, ...)`.
-2. **Heiße Kartoffel:** zufällige 10–25 Sekunden laufen über denselben Controller, die Restzeit wird weiterhin nicht angezeigt.
-3. **Wortkette:** `hubTimer.countdown(30, ...)`.
-4. **Pause/Fortsetzen:** `#pause-hub-game` sperrt Rundenaktionen mit `inert` und lässt die Restzeit stehen.
-5. **App-/Tab-Wechsel:** ein noch laufender Timer pausiert automatisch bei `visibilitychange` beziehungsweise `pagehide`.
+### Advanced-Wiederaufnahme und PWA
 
-**Noch offen:** Ein kompletter Seiten-Reload persistiert direkte Hub-Sessions und ihre Timerrestzeit weiterhin nicht. Das bleibt ein eigener Releasepunkt und darf nicht mit der Hintergrundpause verwechselt werden.
+- Der PWA-Update-Schutz verwendete zuvor einen anderen Advanced-Speicherschlüssel als der Runner. Beide verwenden jetzt `secret-circle-party-active-v1`.
+- `revealed: true` wird beim Laden einer privaten Reveal-Phase auf `false` zurückgesetzt.
+- Eine persistierte Mafia-Moderatorübersicht fällt beim Resume wieder auf den geschützten Moderator-Schritt zurück.
+- Die vorbereiteten E2E-Verträge verwenden jetzt ebenfalls den echten Schlüssel und die ausdrücklich notwendige Schaltfläche „Session fortsetzen“.
+
+### Mafia
+
+- Die frühere Rolleinteilung erzeugte unabhängig von der Gruppengröße genau eine Mafia.
+- Der ausgewählte Mafia-Packtyp beeinflusste die Rollen nicht.
+- `Erweitert` deklarierte einen Beschützer, ohne eine Beschützer-Mechanik zu besitzen.
+
+Jetzt skaliert die Mafiaanzahl mit der Gruppe; Schnell, Klassisch und Erweitert besitzen unterschiedliche Rollenverträge. Der Beschützer ist als Nachtaktion umgesetzt und kann nicht dieselbe Person in zwei aufeinanderfolgenden Nächten schützen.
+
+## Noch technisch offen
+
+1. Direkte Hub-Sessions werden bei einem vollständigen Seiten-Reload noch nicht wiederhergestellt.
+2. Damit wird auch die exakte Timerrestzeit direkter Hub-Spiele über Reload noch nicht persistiert.
+3. Tabu benötigt noch eine Produktentscheidung, ob eine feste Rundenuhr Teil des Kernmodus sein soll.
+4. Automatisierte Browserverträge benötigen einen tatsächlich laufenden Playwright-/Actions-Runner.
+5. Reale Geräte-, Accessibility-, Inhalts- und Gruppentests sind noch offen.
 
 ## Nächster technischer Block
 
-Priorität vor weiterer Inhaltsarbeit:
-
-1. Advanced-Kernspiele einzeln auf Sessionpersistenz, Abbruch und genau-einmal-Statistik prüfen.
-2. Question Imposter und Location Spy auf Sichtschutz und geheime Informationen prüfen.
-3. Mafia auf Rollenverteilung, Nacht-/Tag-Zustände, Siegbedingung und Abschluss prüfen.
-4. Zwei Wahrheiten, eine Lüge auf Eingabe, Mischung, Abstimmung und Reload prüfen.
-5. Danach die zehn direkten Hub-Kernspiele auf Skip/Sichtschutz/Punkte und mobile Accessibility prüfen.
-6. Reload-Vertrag für direkte Hub-Sessions separat entscheiden und implementieren.
+1. sicheren Reload-/Resume-Vertrag für direkte Hub-Sessions implementieren.
+2. dabei Paranoia und andere private Zustände nach Reload standardmäßig verdeckt halten.
+3. Timerzustände für Scharade, Heiße Kartoffel und Wortkette über Reload definiert wiederherstellen oder bewusst als neue Runde starten.
+4. danach direkte Hub-Kernspiele auf Skip, Punkte, Fokus und mobile Bedienung prüfen.
+5. anschließend Inhalts- und Altersprüfung starten.
 
 ## Releasegrenze
 
