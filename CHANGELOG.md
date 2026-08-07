@@ -15,21 +15,22 @@
 - Word-Imposter-Backups verwenden jetzt dieselbe 1,5-MB-Grenze wie die Gesamtsicherung.
 - Backupgrößen werden als echte UTF-8-Bytes statt als JavaScript-Zeichenanzahl geprüft.
 - Auch als Objekt übergebene Backups werden vor dem Import serialisiert und gegen die Größenbegrenzung geprüft.
-- Creator- und klassische Quick-Sessions schreiben Verlauf, Spielanzahl und Rundenzahl höchstens einmal.
-- Mega- und Viral-Abschlüsse werden über einen eng begrenzten Kompatibilitätsschutz dedupliziert.
-- Der alte Mega-/Viral-/Quick-Fehler, bei dem `plays` praktisch bei mindestens 1 blieb, wird im gemeinsamen Abschlussregister korrekt behandelt.
-- Liegengebliebene Sessions einer anderen Engine blockieren die Zuordnung eines aktuellen Abschlusses nicht mehr.
+- Creator-, Quick-, Mega- und Viral-Sessions schreiben Verlauf, Spielanzahl, Rundenzahl und Bestwert höchstens einmal pro echter Session.
+- Der alte Mega-/Viral-/Quick-Fehler, bei dem `plays` praktisch bei mindestens 1 blieb, ist in allen betroffenen Engines direkt beseitigt.
+- Ältere aktive Mega- und Viral-Sessions erhalten beim Laden eine deterministische kompatible Session-ID.
+- Ein fehlgeschlagenes Entfernen der aktiven Session stellt den letzten Abschlusszustand wieder her, statt eine inkonsistente Oberfläche zu hinterlassen.
+- Der temporäre globale `Storage.prototype`-Guard wurde nach der direkten Engine-Migration vollständig entfernt.
 - Eine neue PWA-Version wird nicht mehr automatisch mitten in einer laufenden Nutzung aktiviert.
 - Der aktive Offline-Cache wird bei einer Aktualisierung nicht mehr vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
 - Veraltete Cacheeinträge werden erst entfernt, nachdem der vorbereitete Offline-Core vollständig übernommen wurde.
 - Alters- und Reifestufenfilter können sich nicht mehr gegenseitig aufheben.
 - Eine ausdrücklich per URL angeforderte Hub-Ansicht überschreibt korrekt die zuvor gespeicherte Ansicht.
 - Fehlender oder blockierter lokaler Speicher wird bei Katalogfiltern nicht mehr fälschlich als erfolgreicher Schreibvorgang behandelt.
+- Suchhilfe und Such-Styles werden jetzt tatsächlich in der kontrollierten Hub-Ladekette geladen und offline gespeichert.
 
 ### Hinzugefügt
 
-- gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs
-- `session-ledger-legacy-guard.js` für die schrittweise Migration großer Alt-Engines
+- gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs für Creator, Quick, Mega und Viral
 - zentrales `backup-schema-registry.js` für Word-Imposter-, Gesamt- und Creator-Sicherungen
 - `BACKUP_SCHEMAS.md` mit Formatversionen, Größen, Migration, Rollback und Release-Gates
 - sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“
@@ -39,7 +40,9 @@
 - Reifestufenfilter, Schnellwahlkarten und sichtbare Qualitätsbadges im Spielekatalog
 - dauerhafte Speicherung von Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzter Hub-Ansicht
 - einheitliche Schaltfläche „Filter zurücksetzen“
-- responsive und barrierearme Styles für Kernspiele, Erweiterungen, Labs und Filterreset
+- Synonym- und Tippfehlersuche mit bekannten Alternativnamen, gewichteten Vorschlägen und maximal sechs Ergebnissen
+- barrierearme Suchvorschläge mit ARIA-Listbox, Pfeiltasten, Enter, Escape, Maus und Touch
+- responsive Styles für Kernspiele, Erweiterungen, Labs, Filterreset und Suchvorschläge
 
 ### Qualität
 
@@ -48,16 +51,18 @@
 - Fairnessprüfung mit 200 deterministischen Rollenstichproben ergänzt.
 - Regressionstest für Creator-Zeitstempel ergänzt.
 - Unicode-Regressionstest für mehrbyteige Backupinhalte ergänzt.
-- Genau-einmal-Tests für Creator, Quick, Mega und Viral ergänzt.
-- Erststart-, Retry- und liegengebliebene-Session-Fälle für den Abschlussguard ergänzt.
+- Direkte Genau-einmal-Vertragstests für Creator, Quick, Mega und Viral ergänzt.
+- Migration älterer aktiver Sessions und Rollback bei fehlgeschlagener Abschlussbereinigung werden geprüft.
+- Der Build verbietet eine erneute Einführung des entfernten Legacy-Guards in Loader, Offline-Core oder Testskripten.
 - statische Qualitätsprüfung für sichtbare und kontrollierte PWA-Aktualisierungen ergänzt.
 - Test für nicht-destruktive Cache-Promotion ergänzt.
 - Contract-Test für alle drei Backupformate ergänzt.
 - feste Prüfung der Katalogverteilung 15 / 13 / 17 ergänzt.
 - Unit-Test für Filterzustand, Sanitizing, Speicherfehler und URL-Priorität ergänzt.
 - Browsertests für Filterwiederherstellung, Reset und kombinierte Alters-/Reifestufenfilter ergänzt.
-- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf die Foundation-Architektur aktualisiert.
-- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur und Filterzustand ergänzt.
+- Unit- und Browsertests für Synonyme, Tippfehler, Maus-, Tastatur- und Escape-Bedienung ergänzt.
+- Struktur-, Architektur-, Contract-, Performance- und Release-Audits auf die direkte Ledger-Architektur aktualisiert.
+- feste Größenbudgets für Registry, Ledger, PWA-Update, Release-Struktur, Filterzustand und Suchhilfe ergänzt.
 - Verbindlicher Releasefahrplan und qualitätsbasierter Releaseumfang für Januar 2027 ergänzt.
 
 ### Bekannte externe Blockade
