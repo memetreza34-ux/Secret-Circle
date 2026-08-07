@@ -2,10 +2,12 @@
 
 (() => {
   const C = window.SecretCirclePartyCatalog;
+  const L = window.SecretCircleSessionLedger;
   if (!C) throw new Error('Party-Katalog konnte nicht geladen werden.');
+  if (!L) throw new Error('Gemeinsames Session-Register für den Party Hub fehlt.');
 
   const STORAGE_KEY = 'secret-circle-party-hub-v1';
-  const MAX_HISTORY = 50;
+  const MAX_HISTORY = L.maximumHistory;
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
 
@@ -401,19 +403,17 @@
   }
 
   function rememberRecent(gameId) {
-    state.recent = [gameId, ...state.recent.filter(id => id !== gameId)].slice(0, 8);
-    const stats = state.stats[gameId] || { plays: 0, rounds: 0, best: 0 };
-    stats.plays += 1;
-    state.stats[gameId] = stats;
-    saveState();
-    renderHome();
+    state.recent = [gameId, ...state.recent.filter(id => id !== gameId)].slice(0, L.maximumRecent);
+    const saved = saveState();
+    if (saved) renderHome();
+    return saved;
   }
 
   function startSelectedGame() {
     const game = C.getGame(selectedGameId);
     if (!game || game.status !== 'playable') return;
-    rememberRecent(game.id);
     if (game.mode === 'link') {
+      rememberRecent(game.id);
       window.location.href = game.href;
       return;
     }
@@ -423,9 +423,11 @@
       setStatus(`${game.title} benötigt ${game.minPlayers}–${game.maxPlayers} Personen. Bitte passe die aktive Gruppe an.`, true);
       return;
     }
+    rememberRecent(game.id);
     clearActiveTimer();
     session = {
       gameId: game.id,
+      sessionId: L.createSessionId(game.id),
       pack: $('#pack-select').value || C.getPackNames(game.id)[0] || null,
       rounds: 0,
       score: 0,
@@ -451,20 +453,22 @@
     clearActiveTimer();
     const game = C.getGame(session.gameId);
     if (session.rounds > 0) {
-      state.history.unshift({
-        id: `${Date.now()}-${randomInt(1_000_000)}`,
+      const result = L.recordCompletion(state, {
+        id: L.completionId('hub', game.id, session.sessionId),
         gameId: game.id,
         title: game.title,
         endedAt: new Date().toISOString(),
         rounds: session.rounds,
         score: session.score
       });
-      state.history = state.history.slice(0, MAX_HISTORY);
-      const stats = state.stats[game.id] || { plays: 1, rounds: 0, best: 0 };
-      stats.rounds += session.rounds;
-      stats.best = Math.max(stats.best || 0, session.score || 0);
-      state.stats[game.id] = stats;
-      saveState();
+      if (result.recorded) {
+        const previous = state;
+        state = result.hub;
+        if (!saveState()) {
+          state = previous;
+          return;
+        }
+      }
     }
     session = null;
     $('#play-layer').hidden = true;
