@@ -15,7 +15,7 @@
     'secret-circle-party-mega-active-v1',
     'secret-circle-party-viral-active-v1',
     'secret-circle-party-created-active-v1',
-    'secret-circle-party-advanced-active-v1'
+    'secret-circle-party-active-v1'
   ];
   let fatalMessageShown = false;
   let waitingWorker = null;
