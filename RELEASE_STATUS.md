@@ -16,7 +16,7 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 ### Release und Struktur
 
 - separater Release-Foundation-Branch
-- verbindlicher Fahrplan bis Januar 2027
+- verbindlicher Fahrplan und moderne Release-Checkliste bis Januar 2027
 - qualitätsbasierter Umfang mit Kernrelease, erweitertem Release und Labs
 - Party Hub in **15 Kernspiele**, **13 Erweiterungen** und **17 Labs-Modi** gegliedert
 - eigener Reifestufenfilter und sichtbare Qualitätsbadges auf Spielkarten
@@ -76,7 +76,7 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates, Release-Tiers, Filterzustand und Suchhilfe
 - Browserprüfungen für Filterwiederherstellung, Reset, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Maus- und Tastaturbedienung der Suche vorbereitet
 - Validatoren stoppen bei einer erneuten Einführung des entfernten Legacy-Guards
-- README, Changelog, Roadmap, Architekturvertrag, Backupvertrag, Releaseumfang und Release-Status aktualisiert
+- README, Changelog, Roadmap, Release-Checkliste, Architekturvertrag, Backupvertrag, Releaseumfang und Release-Status aktualisiert
 
 ## Geprüft beziehungsweise als Testvertrag abgesichert
 
