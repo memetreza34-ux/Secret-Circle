@@ -1,6 +1,6 @@
 # Secret Circle – Releasefahrplan bis Januar 2027
 
-Stand: 6. August 2026
+Stand: 7. August 2026
 
 ## Verbindliches Ziel
 
@@ -50,8 +50,10 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] UTF-8-Bytegrenzen für alle aktuell unterstützten Importwege vereinheitlichen
 - [x] Creator-Zeitstempel korrigieren
 - [x] wiederholte Sessionabschlüsse in Creator und klassischer Quick-Engine verhindern
-- [x] Mega- und Viral-Abschlüsse über einen begrenzten Migrationsguard deduplizieren
-- [ ] Mega- und Viral-Engines direkt auf das Session-Ledger umstellen
+- [x] Mega- und Viral-Abschlüsse während der Migration vorübergehend deduplizieren
+- [x] Mega- und Viral-Engines direkt auf das Session-Ledger umstellen
+- [x] deterministische Migration älterer aktiver Mega- und Viral-Sessions ergänzen
+- [x] temporären Legacy-Guard und globales Storage-Patching entfernen
 - [x] PWA-Updatefluss mit sichtbarer neuer-Version-Meldung ergänzen
 - [x] aktive Cacheversion bei fehlgeschlagener Promotion vor vorzeitigem Löschen schützen
 
@@ -68,7 +70,8 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] fertige, erweiterte und experimentelle Spiele eindeutig kennzeichnen
 - [x] Katalog in 15 Kernspiele, 13 Erweiterungen und 17 Labs gliedern
 - [x] Reifestufenfilter und Schnellwahl ergänzen
-- [ ] Suchbegriffe, Synonyme und Tippfehler besser unterstützen
+- [x] Suchbegriffe, Synonyme und kleine Tippfehler besser unterstützen
+- [x] Suchvorschläge mit Maus, Touch und Tastatur bedienbar machen
 - [ ] gemeinsame Spielerlobby in alle kompatiblen Spiele integrieren
 - [ ] verständliche leere Zustände und Fehlermeldungen prüfen
 
