@@ -34,7 +34,7 @@ Verbindliche Dokumente:
 
 - `ROADMAP_2027.md`: Zeitplan, Arbeitsphasen und Releaseverbote
 - `RELEASE_SCOPE_2027.md`: Kernspiele, Erweiterungen und Labs
-- `RELEASE_CHECKLIST.md`: abschließende technische und organisatorische Freigabe
+- `RELEASE_CHECKLIST.md`: technische, organisatorische, Geräte-, Inhalts- und Gruppentest-Freigabe
 - `RELEASE_STATUS.md`: aktueller Entwicklungs- und Blockerstatus
 - `BACKUP_SCHEMAS.md`: Sicherungsformate, Versionen, Migrationen und Rollbackregeln
 
@@ -138,6 +138,8 @@ npm run test:cross-browser
 
 `npm run validate` umfasst Repository-Hygiene, Architektur, Foundation-Verträge, Struktur, Performance und Release-Gates. Die Gates verlangen direkte Genau-einmal-Integration für alle vier schnellen Enginefamilien und verhindern eine erneute Einführung des entfernten Legacy-Guards.
 
+Die vollständige Freigabe erfolgt anhand von `RELEASE_CHECKLIST.md`; dort werden CI, Engines, 15 Kernspiele, Hub, Backups, PWA, Accessibility, Geräte, Inhalte, Recht und reale Gruppentests einzeln bestätigt.
+
 ## Produkt- und Designpläne
 
 - `MODE_UNIVERSE.md`: langfristiges 122-Modi-Universum
@@ -147,4 +149,4 @@ npm run test:cross-browser
 
 ## Aktueller Freigabestatus
 
-Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions weiterhin keinen verlässlichen Runnerlauf mit sichtbaren Schritten liefert. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
+Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions weiterhin keinen verlässlichen Runnerlauf mit sichtbaren Schritten liefert. Der aktuelle Lauf #1401 endete vor dem Checkout mit `runner_id: 0` und `steps: []`. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
