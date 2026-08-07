@@ -10,6 +10,7 @@ function read(file) {
 
 const runtime = read('runtime-guard.js');
 const advancedRunner = read('party-advanced-runner.js');
+const hub = read('party-hub.js');
 const worker = read('sw.js');
 const styles = read('pwa-update.css');
 const installHandler = worker.match(/self\.addEventListener\('install',[\s\S]*?\n\}\);/)?.[0] || '';
@@ -24,8 +25,10 @@ assert.match(runtime, /registration\.waiting/);
 assert.match(runtime, /updatefound/);
 assert.match(runtime, /hasActiveSession/);
 assert.match(runtime, /pwa-update\.css/);
+assert.match(runtime, /secret-circle-party-hub-active-v1/);
 assert.match(runtime, /secret-circle-party-active-v1/);
 assert.doesNotMatch(runtime, /secret-circle-party-advanced-active-v1/);
+assert.match(hub, /const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';/);
 assert.match(advancedRunner, /const ACTIVE_KEY = 'secret-circle-party-active-v1';/);
 assert.doesNotMatch(runtime, /const controlledAtStartup/);
 
@@ -50,6 +53,7 @@ console.log(JSON.stringify({
   visibleUpdateBanner: true,
   explicitUserActivation: true,
   activeSessionMessage: true,
+  directHubSessionKeyProtected: true,
   advancedSessionKeyAligned: true,
   controlledSingleReload: true,
   stagedOfflineCore: true,
