@@ -81,6 +81,7 @@ print(json.dumps({
     'persistent_catalog_filters': True,
     'search_assistance': True,
     'shared_session_controls': True,
+    'direct_hub_reload_resume': True,
     'maximum_local_created_games': 40,
     'creator_templates': 6,
     'creator_runner': True,
@@ -88,7 +89,7 @@ print(json.dumps({
     'mega_trend_modes': 9,
     'viral_modes': 8,
     'backup_schemas': 3,
-    'exact_once_engine_families': 4,
+    'exact_once_engine_families': 5,
     'legacy_guard_removed': True,
     'controlled_pwa_updates': True,
     'asset_sizes': sizes
