@@ -101,8 +101,17 @@ contracts = {
     'party-hub.js': [
         'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
         "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
-        'hubTimer.countdown(60, timer', 'hubTimer.countdown(milliseconds / 1000, hiddenClock',
-        'hubTimer.countdown(30, timer', "document.addEventListener('visibilitychange'",
+        "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
+        'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
+        'players: [...state.players]', 'renderStoredTimerSession', 'Session fortsetzen',
+        'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
+        "kind: 'charades', phase: 'running', remainingMs",
+        "kind: 'hot-potato', phase: 'running', remainingMs",
+        "kind: 'word-chain', phase: 'running', remainingMs",
+        'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
+        'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
+        'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
+        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
         'setHubPaused(true)', 'pause-hub-game'
     ],
     'party-release-structure.js': [
@@ -123,6 +132,7 @@ contracts = {
     'runtime-guard.js': [
         'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession',
         "waitingWorker.postMessage({ type: 'SKIP_WAITING' })",
+        'secret-circle-party-hub-active-v1', 'secret-circle-party-active-v1',
         'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
         'party-release.css', 'party-search.css', 'loadPartyReleaseStructure',
         'loadPartyFilterState', 'loadPartySearchAssist'
@@ -201,6 +211,12 @@ for forbidden in ('activeTimer', 'window.setInterval(', 'performance.now()'):
     if forbidden in hub_source:
         violations.append(f'Hub still contains a private non-pausable timer: {forbidden}')
 
+for marker in ('tests/hub-resume-contract.test.js', 'tests/hub-timer-contract.test.js'):
+    if marker not in package.get('scripts', {}).get('test', ''):
+        violations.append(f'Hub release test missing from npm test: {marker}')
+    if marker not in package.get('scripts', {}).get('check', ''):
+        violations.append(f'Hub release test missing from syntax gate: {marker}')
+
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or cache.group(1) != '30':
@@ -249,6 +265,7 @@ print(json.dumps({
     'shared_session_controls': True,
     'pausable_fast_engine_timers': True,
     'pausable_core_hub_timers': True,
+    'direct_hub_reload_resume': True,
     'combined_age_and_release_filter': True,
     'backup_schemas': 3,
     'exact_once_engine_families': 5,
