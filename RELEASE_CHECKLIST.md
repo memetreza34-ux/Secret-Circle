@@ -18,22 +18,18 @@ Diese Checkliste muss für den unveränderlichen Release-Commit vollständig aus
 
 - [ ] Word-Imposter-Rollen sind unabhängig von der Aufdeckreihenfolge
 - [ ] Creator, Quick, Mega und Viral verwenden direkt `session-ledger.js`
-- [ ] Creator, Quick, Mega und Viral verwenden direkt `party-session-controls.js`
-- [ ] Loader lädt Session-Ledger und gemeinsame Sessionsteuerung vor der ausgewählten schnellen Engine
-- [ ] jede neue Session besitzt genau eine stabile Session-ID
-- [ ] ältere aktive Sessions ohne ID werden deterministisch migriert
+- [ ] direkte Hub-Abschlüsse verwenden `session-ledger.js`
+- [ ] jede neue Ledger-Session besitzt genau eine stabile Session-ID
+- [ ] ältere schnelle aktive Sessions ohne ID werden deterministisch migriert
 - [ ] Verlauf, `plays`, Runden und Bestwert werden pro Session höchstens einmal aktualisiert
 - [ ] Reload zwischen Hub-Speicherung und Sessionbereinigung erzeugt keine Doppelzählung
 - [ ] fehlgeschlagene Sessionbereinigung stellt den letzten aktiven Zustand wieder her
-- [ ] bestätigter manueller Abbruch verliert die aktive Session bei einem Speicherfehler nicht
+- [ ] Advanced Runner und PWA-Update-Schutz verwenden beide `secret-circle-party-active-v1`
+- [ ] Advanced-Abschluss mit derselben Session-ID kann Verlauf und Statistik nicht doppelt erhöhen
+- [ ] private Advanced-Reveal-Zustände werden nach Reload wieder verdeckt
+- [ ] Mafia-Moderatorübersicht erfordert nach Reload erneut bewusste Bestätigung
 - [ ] kein globales `Storage.prototype`- oder Engine-Monkey-Patching vorhanden
-- [ ] keine der vier schnellen Enginefamilien besitzt einen privaten Intervalltimer
-- [ ] Pause/Fortsetzen friert einen laufenden Timer ein und setzt ihn mit der Restzeit fort
-- [ ] pausierte Rundenaktionen sind nicht bedienbar und der Pausenstatus ist wahrnehmbar
-- [ ] Runde überspringen verhält sich in allen vier schnellen Enginefamilien konsistent
-- [ ] Wiederholen startet eine neue Session statt den alten Abschluss erneut zu verwenden
-- [ ] „Nächstes Spiel“ führt zu einem anderen technisch spielbaren schnellen Modus oder sicher zum Katalog
-- [ ] alle Resume-, Abbruch- und Abschlusswege geprüft
+- [ ] alle Resume-, Unterbrechungs- und Abschlusswege geprüft
 
 ## 3. 15 Kernspiele
 
@@ -44,13 +40,26 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Packauswahl ist gültig und verständlich
 - [ ] Überspringen funktioniert, wo Inhalte unangenehm oder unpassend sein können
 - [ ] Pause beziehungsweise sichere Unterbrechung funktioniert
-- [ ] Abbruch ist eindeutig und löscht nicht versehentlich andere Daten
-- [ ] Wiederholen und nächstes Spiel sind verständlich
+- [ ] Abbruch/Verlassen ist eindeutig und löscht nicht versehentlich andere Daten
+- [ ] Wiederholen und nächstes Spiel sind verständlich, wo vorgesehen
 - [ ] Timer über App-Wechsel, Hintergrund und Reload geprüft
 - [ ] Punkte- und Siegerlogik dokumentiert
 - [ ] Statistik und Verlauf korrekt
 - [ ] Tastatur, sichtbarer Fokus, Zoom und Reduced Motion geprüft
 - [ ] reale Gruppe hat das Spiel ohne Entwicklerhilfe abgeschlossen
+
+Zusätzliche Kernspielverträge:
+
+- [ ] Scharade friert ihren 60-Sekunden-Timer während Pause ein
+- [ ] Heiße Kartoffel pausiert den Zufallstimer ohne Offenlegung der Restzeit
+- [ ] Wortkette friert ihren 30-Sekunden-Timer während Pause ein
+- [ ] Zwei Wahrheiten: private Eingabe, Mischung, Abstimmung und Reload geprüft
+- [ ] Question Imposter: private Reveal-Kette bleibt über Reload geschützt
+- [ ] Location Spy: Ort und Spion bleiben über Reload geschützt
+- [ ] Mafia: skalierte Mafiaanzahl für 6–20 Personen geprüft
+- [ ] Mafia-Packs Schnell/Klassisch/Erweitert erzeugen die vorgesehenen Rollen
+- [ ] Mafia-Erweitert: Arzt, Detektiv und Beschützer-Nachtaktionen geprüft
+- [ ] Beschützer kann dieselbe Person nicht zwei Nächte hintereinander schützen
 
 ## 4. Party Hub und Suche
 
@@ -65,6 +74,7 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Suchvorschläge funktionieren mit Maus, Touch, Pfeiltasten, Enter und Escape
 - [ ] Screenreader erkennt Listbox und aktiven Vorschlag
 - [ ] leere Ergebnisse erklären die nächste Aktion
+- [ ] direkte Hub-Session über vollständigen Reload besitzt einen dokumentierten sicheren Vertrag
 
 ## 5. Backup und lokale Daten
 
@@ -74,6 +84,7 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Import validiert vollständig vor dem ersten Schreibvorgang
 - [ ] Quota-Fehler lösen einen Rollback aus
 - [ ] Export lässt sich wieder erfolgreich importieren
+- [ ] Gesamtsicherung enthält aktive Advanced-Session
 - [ ] Löschen nennt exakt die betroffenen lokalen Daten
 - [ ] Löschung und Wiederherstellung auf mindestens zwei Browsern geprüft
 
@@ -84,12 +95,12 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Offline-Neustart nach vorheriger Installation
 - [ ] alle Kernseiten offline erreichbar
 - [ ] alle vier schnellen Enginefamilien offline startbar
-- [ ] `party-session-controls.js` ist offline verfügbar
-- [ ] Pause, Skip, Abbruch, Replay und nächstes Spiel funktionieren auch offline
+- [ ] Advanced-Kernspiele offline startbar und wiederaufnehmbar
 - [ ] Release-Tiers, Filterzustand und Suchhilfe offline verfügbar
 - [ ] Query-Routen wie `quick-play.html?game=...` offline korrekt
 - [ ] neue Version wird zuerst vollständig im Staging-Cache vorbereitet
 - [ ] keine automatische Aktivierung mitten in einer laufenden Session
+- [ ] Advanced-Session wird vom Update-Schutz erkannt
 - [ ] sichtbarer Hinweis „Jetzt aktualisieren“ / „Später“
 - [ ] aktiver Offline-Core bleibt bei fehlgeschlagener Promotion erhalten
 - [ ] Update von mindestens zwei älteren Cacheversionen getestet
@@ -110,7 +121,6 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Safe Areas und Bildschirmtastatur auf iOS
 - [ ] Reduced Motion
 - [ ] Kontrast und Status nicht nur durch Farbe
-- [ ] Pausenknopf meldet seinen Zustand nachvollziehbar und Fokus bleibt erreichbar
 
 ## 8. Inhalte und Recht
 
@@ -132,6 +142,7 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] mindestens ein Test mit 5–8 Personen
 - [ ] mindestens ein Test mit 9–12 Personen
 - [ ] großer Word-Imposter-Test mit mehreren Impostern
+- [ ] Mafia-Test mit mindestens 8 Personen und mehreren Mafia-Rollen
 - [ ] mindestens drei vollständige Smart-Party-Night-Abende
 - [ ] Creator-Spiel von unerfahrenen Nutzern erstellt und gespielt
 - [ ] beobachtete Fehler nach Schweregrad dokumentiert
