@@ -1,117 +1,110 @@
-# Secret Circle – Releaseumfang Januar 2027
+# Releaseumfang Januar 2027
 
-Stand: 6. August 2026
+Dieses Dokument trennt den sichtbaren Funktionsumfang von der tatsächlichen Releasepriorität. „Technisch spielbar“ ist kein Freigabesiegel.
 
-## Ziel
+## Stufe A – 15 Kernspiele
 
-Die App darf beim Release viele Funktionen besitzen, muss aber klar zwischen vollständig geprüften Kernspielen und noch nicht ausreichend getesteten Erweiterungen unterscheiden. Ein technisch startbarer Modus gilt nicht automatisch als releasefertig.
+Diese Spiele erhalten vor Januar 2027 die strengste Abnahme für Regeln, Inhalt, Bedienung, Offlinebetrieb, Wiederaufnahme, Statistik, Barrierefreiheit und reale Gruppentests:
 
-Der Party Hub bildet diese Regel sichtbar ab:
+1. Word Imposter
+2. Wahrheit oder Pflicht
+3. Ich habe noch nie
+4. Wer würde eher?
+5. Entweder oder
+6. Paranoia
+7. Scharade
+8. Nicht sagen!
+9. Heiße Kartoffel
+10. Wortkette
+11. Zwei Wahrheiten, eine Lüge
+12. Question Imposter
+13. Location Spy
+14. Mafia
+15. Nur falsche Antworten
 
-- **15 Kernspiele**
-- **13 Erweiterungen**
-- **17 Labs-Modi**
+Kernspiel bedeutet Priorität, nicht bereits bestandene Releaseabnahme.
 
-Diese Verteilung wird automatisiert geprüft. Eine Änderung der Einstufung benötigt eine bewusste Produkt- und Releaseentscheidung.
+## Stufe B – 13 Erweiterungen
 
-## Stufe A – Kernrelease
+Diese Spiele und Werkzeuge bleiben sichtbar und spielbar, werden aber erst nach den Kernspielen priorisiert:
 
-Diese Spiele erhalten höchste Priorität bei Regeln, Inhalten, Design, Offlinefähigkeit, Accessibility, Wiederaufnahme und realen Gruppentests:
+- Hot Takes
+- Flaschendrehen
+- Würfel & Münze
+- Wellenlänge
+- Zeichnen & Raten
+- Schnellfeuer
+- Geräusche erraten
+- Handy an die Stirn
+- Buchstaben-Kategorien
+- Nicht lachen
+- Lied summen
+- Schnitzeljagd
+- Caption Battle
 
-1. **Word Imposter**
-2. **Wahrheit oder Pflicht**
-3. **Ich habe noch nie**
-4. **Wer würde eher?**
-5. **Entweder oder**
-6. **Paranoia**
-7. **Scharade**
-8. **Nicht sagen!**
-9. **Heiße Kartoffel**
-10. **Wortkette**
-11. **Zwei Wahrheiten, eine Lüge**
-12. **Question Imposter**
-13. **Location Spy**
-14. **Mafia**
-15. **Nur falsche Antworten**
+Selbst erstellte Creator-Spiele werden ebenfalls als Erweiterungen eingeordnet.
 
-### Definition „releasefertig“
+## Stufe C – 17 Labs-Modi
 
-Ein Kernspiel ist erst releasefertig, wenn:
+Diese Modi sind experimentell und nicht automatisch Teil des Kernrelease:
 
-- Regeln ohne zusätzliche Erklärung verstanden werden,
-- alle notwendigen Zustände vollständig implementiert sind,
-- Abbruch, Überspringen, Wiederholen und nächstes Spiel klar funktionieren,
-- Inhalte redaktionell geprüft wurden,
-- Altersstufe und sensible Themen dokumentiert sind,
-- lokale Wiederaufnahme sicher funktioniert, sofern eine Session gespeichert wird,
-- Verlauf und Statistik genau einmal geschrieben werden,
-- Offlinebetrieb funktioniert,
-- Tastatur und Touch funktionieren,
-- mindestens ein kleiner und ein größerer Gruppentest bestanden wurden,
-- keine kritischen oder hohen Fehler offen sind.
+- Wer bin ich?
+- Anime-Figuren erraten
+- hypothetische Geld-Challenge
+- Blind Ranking
+- Emoji Quiz
+- Pass das Handy
+- Red Flag oder Green Flag
+- Geheime Mission
+- Tier List Battle
+- Finger runter
+- Preis schätzen
+- Höher oder tiefer
+- Wer kennt mich am besten?
+- Hear Me Out
+- Hot Seat
+- Story Chain
+- Satz beenden
 
-Die sichtbare Kennzeichnung als Kernspiel bedeutet Priorität und Releaseabsicht. Sie ist noch kein Beweis, dass alle Kriterien bereits bestanden wurden.
+Labs bleiben funktional erreichbar, werden aber klar gekennzeichnet. Ein Labs-Modus darf später in Erweiterungen oder Kernspiele aufsteigen, sobald Inhalt, Regeln, Geräteverhalten, Accessibility und reale Gruppentests bestanden sind.
 
-## Stufe B – Erweiterter Release
+## Gemeinsame Plattformfunktionen
 
-Aktuell sind 13 eingebaute Spiele beziehungsweise Werkzeuge als Erweiterungen eingestuft. Zusätzlich werden selbst erstellte Creator-Spiele in dieser Stufe angezeigt.
+Für Januar 2027 gehören folgende Funktionen zur Releasegrundlage:
 
-Diese Funktionen können im Januar-Release enthalten sein, wenn ihre automatisierten und realen Tests rechtzeitig bestehen:
-
+- lokale Spielergruppe und Presets
+- Favoriten, Verlauf und Statistiken
 - Smart Party Night
-- Game Creator mit sechs Vorlagen
-- eigene Text-Packs
-- Favoriten
-- Spieler-Presets
-- Verlauf und Statistiken
-- Erfolge
-- vollständiges Backup und Wiederherstellung
-- lokale Datenlöschung
-- PWA-Installation
-- ausgewählte Quick-, Trend- und Viral-Modi
+- No-Code-Game-Creator
+- versionierte Backups und atomische Wiederherstellung
+- gespeicherte Katalogfilter und letzte Ansicht
+- Synonym- und Tippfehlersuche
+- kontrollierte PWA-Aktualisierung
+- Offlinebetrieb aller Kernseiten und Spielengines
+- gemeinsames Session-Ledger für Creator, Quick, Mega und Viral
 
-Erweiterungen bleiben im normalen Katalog erreichbar, werden aber nicht als gleichwertig zu vollständig abgenommenen Kernspielen dargestellt.
+## Technische Freigaberegeln
 
-## Stufe C – Labs
+Ein Spiel gilt erst als releasefähig, wenn:
 
-17 experimentelle Trend- und Viral-Modi sind aktuell als **Labs** eingestuft. Nicht vollständig geprüfte Modi bleiben sichtbar nur unter einer eindeutigen Kennzeichnung wie **„Labs“**, **„Beta“** oder **„In Prüfung“**. Sie dürfen nicht als gleichwertig zu den Kernspielen erscheinen.
+- Start, Pause beziehungsweise Unterbrechung, Überspringen, Abbruch und Abschluss verständlich funktionieren,
+- ein Reload keinen doppelten Verlaufseintrag oder zusätzliche Statistik erzeugt,
+- ältere aktive Sessions sicher migriert werden,
+- Offlinebetrieb und PWA-Update getestet wurden,
+- Regeln in höchstens vier klaren Schritten erklärt werden,
+- Touch, Tastatur, Fokus, Zoom und Reduced Motion geprüft sind,
+- Inhalte redaktionell, nach Altersstufe und rechtlich geprüft sind,
+- echte Gruppen das Spiel ohne Entwicklerhilfe erfolgreich abgeschlossen haben.
 
-Für Labs gilt:
+## Releaseverbote
 
-- standardmäßig nicht im Schnellstart,
-- nicht automatisch in Smart Party Night,
-- klare Kennzeichnung auf Karte und Detailseite,
-- Feedbackmöglichkeit nach der Session,
-- keine Veröffentlichung sensibler oder rechtlich ungeprüfter Inhalte,
-- keine Aufnahme in die Kernrelease-Metriken.
+Nicht veröffentlichen, wenn:
 
-## Auswahlkriterien für weitere Kernspiele
-
-Ein Labs- oder Erweiterungsspiel wird erst zum Kernspiel, wenn es:
-
-1. eine erkennbare eigene Mechanik besitzt,
-2. nicht nur ein umbenannter Prompt-Modus ist,
-3. mindestens drei hochwertige Inhaltspakete hat,
-4. von realen Gruppen wiederholt freiwillig erneut gespielt wurde,
-5. keine übermäßige Wartezeit erzeugt,
-6. auf Smartphone und Tablet verständlich funktioniert,
-7. die Release-Definition vollständig erfüllt.
-
-## Nicht im Januar erzwingen
-
-Diese Bereiche dürfen den Release nicht verzögern und werden nur bei nachgewiesener Reife aktiviert:
-
-- Raumcodes und Mehrgeräte-Synchronisierung
-- verpflichtende Konten
-- Cloud-Speicherung
-- KI-generierte Live-Inhalte
-- Kamera- oder AR-Aufgaben
-- Creator-Marktplatz
-- öffentliche Nutzerprofile
-- Live-Audience-Voting
-- TV- oder Casting-Hostansicht
-- vollständige 122-Modi-Umsetzung
-
-## Produktregel
-
-Der Januar-Release soll sich wie eine vollständige, übersichtliche Party-App anfühlen – nicht wie eine Sammlung aus 45 unfertigen Experimenten. Umfang bleibt ein Vorteil, solange Qualität, Navigation und Vertrauen nicht darunter leiden.
+- GitHub Actions keine sichtbaren Repository-Schritte ausführt,
+- Kern-CI oder Cross-Browser-Tests rot sind,
+- eine Engine Sessionabschlüsse doppelt zählen kann,
+- ein globales Browser- oder Storage-Monkey-Patch Fachlogik korrigieren muss,
+- Offline-Start oder kontrolliertes Update auf einem Zielgerät scheitert,
+- Kernspiele nicht mit realen Gruppen getestet wurden,
+- kritische oder hohe Fehler offen sind,
+- Datenschutz-, Betreiber- oder Lizenzangaben fehlen.
