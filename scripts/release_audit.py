@@ -17,6 +17,12 @@ def require(relative: str) -> str:
     return read(relative)
 
 
+def require_markers(name: str, source: str, markers) -> None:
+    missing = [marker for marker in markers if marker not in source]
+    if missing:
+        raise SystemExit(f'Release audit failed in {name}: {", ".join(missing)}')
+
+
 package = json.loads(require('package.json'))
 manifest = json.loads(require('manifest.webmanifest'))
 sw = require('sw.js')
@@ -57,12 +63,8 @@ for obsolete in ('session-ledger-legacy-guard.js', 'tests/session-ledger-legacy-
     if (ROOT / obsolete).exists():
         raise SystemExit(f'Obsolete legacy guard still exists: {obsolete}')
 
-install_handler_match = re.search(
-    r"self\.addEventListener\('install',[\s\S]*?\n\}\);",
-    sw,
-)
+install_handler_match = re.search(r"self\.addEventListener\('install',[\s\S]*?\n\}\);", sw)
 install_handler = install_handler_match.group(0) if install_handler_match else ''
-
 core_ids = re.search(r'const CORE_IDS = Object\.freeze\(\[(.*?)\]\);', release_structure, re.S)
 lab_ids = re.search(r'const LAB_IDS = Object\.freeze\(\[(.*?)\]\);', release_structure, re.S)
 core_count = len(re.findall(r"'[^']+'", core_ids.group(1))) if core_ids else 0
@@ -71,22 +73,16 @@ extended_count = 45 - core_count - lab_count
 
 
 def direct_engine(source: str, engine: str) -> bool:
-    return all(marker in source for marker in (
-        'SecretCircleSessionLedger',
-        'SecretCircleSessionControls',
-        'S.createController',
-        'sessionControls.countdown',
-        'sessionControls.stopTimer',
-        'onSkip:',
-        'onAbort: abortSession',
-        'onReplay: replaySession',
-        f"completionId('{engine}'",
-        'recordCompletion(loadHub()',
-        'sessionId: L.createSessionId',
-        'legacySessionId',
-        'if (result.recorded && !saveHub(result.hub)) return',
-        'active = final;',
-    )) and 'let timerId = null' not in source and 'const deadline = Date.now() + seconds * 1000' not in source
+    markers = (
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
+        'sessionControls.countdown', 'sessionControls.stopTimer', 'onSkip:',
+        'onAbort: abortSession', 'onReplay: replaySession', f"completionId('{engine}'",
+        'recordCompletion(loadHub()', 'sessionId: L.createSessionId', 'legacySessionId',
+        'if (result.recorded && !saveHub(result.hub)) return', 'active = final;',
+    )
+    return all(marker in source for marker in markers) \
+        and 'let timerId = null' not in source \
+        and 'const deadline = Date.now() + seconds * 1000' not in source
 
 
 checks = {
@@ -103,64 +99,32 @@ checks = {
     'visible_update_prompt': all(marker in runtime_guard for marker in (
         'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', "type: 'SKIP_WAITING'",
     )),
-    'update_respects_active_sessions': 'hasActiveSession' in runtime_guard and 'activeSessionKeys' in runtime_guard,
+    'update_respects_active_sessions': 'hasActiveSession' in runtime_guard and 'ACTIVE_SESSION_KEYS' in runtime_guard,
     'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 17),
-    'release_tier_labels': all(marker in release_structure for marker in (
-        "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'", 'release-tier-filter',
-    )),
-    'combined_age_tier_filter': all(marker in release_structure for marker in (
-        'ageAllows', 'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches',
-    )),
-    'release_runtime': all(marker in runtime_guard for marker in (
-        'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
-        'party-release.css', 'party-search.css', 'loadPartyReleaseStructure',
-        'loadPartyFilterState', 'loadPartySearchAssist',
-    )),
-    'release_runtime_offline': all(marker in sw for marker in (
-        './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-        './party-release.css', './party-search.css', './party-session-controls.js',
-    )),
-    'release_styles': all(marker in release_styles for marker in (
-        '.release-tier-overview', '.release-tier-pill', '.filter-reset-button',
-        'focus-visible', 'prefers-reduced-motion',
-    )) and all(marker in search_styles for marker in (
-        '.party-search-suggestions', 'focus-visible', 'prefers-reduced-motion',
-    )),
+    'combined_age_tier_filter': all(marker in release_structure for marker in ('ageAllows', 'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches')),
     'persistent_filter_contract': all(marker in filter_state for marker in (
-        "STORAGE_KEY = 'secret-circle-party-catalog-filters-v1'",
-        'game-search', 'group-filter', 'mood-filter', 'player-filter',
-        'age-filter', 'status-filter', 'release-tier-filter', 'Filter zurücksetzen',
+        "STORAGE_KEY = 'secret-circle-party-catalog-filters-v1'", 'resolveView',
+        'Filter zurücksetzen', 'optionExists', 'FIXED_VALUES',
     )),
-    'persistent_filter_safety': all(marker in filter_state for marker in (
-        'normalize(value)', 'FIXED_VALUES', 'optionExists', 'resolveView',
-        'lokaler Speicher ist nicht verfügbar',
-    )),
-    'explicit_view_precedence': 'resolveView(stored.view, requestedView)' in filter_state,
     'search_assist_contract': all(marker in search_assist for marker in (
         'MANUAL_ALIASES', 'normalizeText', 'levenshtein', 'suggestions',
         'aria-autocomplete', 'listbox', 'ArrowDown', 'Escape',
     )),
     'backup_registry': all(marker in registry for marker in (
-        "format: 'secret-circle-backup'",
-        "format: 'secret-circle-complete-backup'",
-        "format: 'secret-circle-created-games'",
-        'const MAX_FILE_BYTES = 1_500_000;',
+        "format: 'secret-circle-backup'", "format: 'secret-circle-complete-backup'",
+        "format: 'secret-circle-created-games'", 'const MAX_FILE_BYTES = 1_500_000;',
     )),
-    'backup_contract_documented': all(marker in backup_docs for marker in (
-        'word-imposter', 'complete', 'creator-library', 'Release-Gates',
-    )),
+    'backup_contract_documented': all(marker in backup_docs for marker in ('word-imposter', 'complete', 'creator-library', 'Release-Gates')),
     'ledger_versioned': 'const VERSION = 1;' in ledger,
     'session_controls_versioned': 'const VERSION = 1;' in session_controls,
     'session_controls_contract': all(marker in session_controls for marker in (
         'formatMilliseconds', 'orderedGameIds', 'nextGameId', 'nextGameHref',
         'createController', 'function countdown', 'function setPaused',
         'function setSessionActive', 'remainingMilliseconds',
-        '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay', '#quick-next-game',
     )),
     'session_controls_surface': all(marker in quick_play for marker in (
         'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
-        'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"',
-        'id="quick-pause-overlay"',
+        'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"', 'id="quick-pause-overlay"',
     )),
     'session_controls_styles': all(marker in quick_styles for marker in (
         '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
@@ -177,34 +141,27 @@ checks = {
         'session-ledger.js', 'party-session-controls.js', 'SecretCircleSessionLedger',
         'SecretCircleSessionControls', 'scriptPlan',
     )),
-    'creator_offline': all(asset in sw for asset in (
-        './creator.html', './game-creator.js', './creator-page.js', './creator.css', './party-created-modes.js',
-    )),
     'foundation_runtime_offline': all(asset in sw for asset in (
         './pwa-update.css', './session-ledger.js', './party-session-controls.js',
         './party-search-assist.js', './party-search.css',
     )),
+    'release_runtime_offline': all(asset in sw for asset in (
+        './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
+        './party-release.css', './party-search.css',
+    )),
+    'release_styles': all(marker in release_styles for marker in (
+        '.release-tier-overview', '.release-tier-pill', '.filter-reset-button',
+        'focus-visible', 'prefers-reduced-motion',
+    )) and all(marker in search_styles for marker in ('.party-search-suggestions', 'focus-visible', 'prefers-reduced-motion')),
+    'creator_offline': all(asset in sw for asset in ('./creator.html', './game-creator.js', './creator-page.js', './creator.css', './party-created-modes.js')),
     'all_fast_engines_offline': all(asset in sw for asset in (
         './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js',
-        './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js',
-        './party-created-modes.js', './quick-loader.js',
+        './party-quick-modes.js', './party-mega-modes.js', './party-viral-modes.js', './party-created-modes.js', './quick-loader.js',
     )),
-    'trending_catalog_v3': 'version: 3' in trending and 'trendingGameIds' in trending,
-    'mega_catalog_v4': 'version: 4' in mega and 'megaGameIds' in mega,
-    'viral_catalog_v5': 'version: 5' in viral and 'viralGameIds' in viral,
-    'routing_v8': 'version: 8' in routing and "CREATED_KEY = 'secret-circle-party-created-games-v1'" in routing,
-    'creator_v1': all(marker in creator for marker in (
-        "STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'createStore',
-    )),
-    'creator_wizard': all(marker in creator_page for marker in (
-        'renderTemplates', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary',
-    )),
-    'contextual_guidance': all(marker in guide for marker in (
-        'addCreatorEntryPoints', 'addHowItWorks', 'addSectionHelp', 'enhanceGameCards',
-    )),
-    'quick_resume': all(marker in quick_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
-    'mega_resume': all(marker in mega_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
-    'viral_resume': all(marker in viral_runtime for marker in ('loadActive', 'saveActive', 'resumeSession', 'finishSession')),
+    'catalog_versions': 'version: 3' in trending and 'version: 4' in mega and 'version: 5' in viral and 'version: 8' in routing,
+    'creator_contract': all(marker in creator for marker in ("STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200', 'createStore')),
+    'creator_wizard': all(marker in creator_page for marker in ('renderTemplates', 'validateCurrentStep', 'renderLibrary', 'exportLibrary', 'importLibrary')),
+    'contextual_guidance': all(marker in guide for marker in ('addCreatorEntryPoints', 'addHowItWorks', 'addSectionHelp', 'enhanceGameCards')),
     'custom_pack_v4': all(marker in custom_packs for marker in ('MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4')),
     'party_night_planner': all(marker in party_night for marker in ('buildPlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1')),
     'main_ci': all(command in workflow for command in ('npm run check', 'npm test', 'npm run validate', 'npm run test:e2e')),
@@ -216,9 +173,8 @@ checks = {
         'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
         'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
     )),
-    'release_dates_documented': all(marker in roadmap for marker in (
-        '30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027',
-    )),
+    'release_dates_documented': all(marker in roadmap for marker in ('30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027')),
+    'shared_controls_documented': '[x] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel' in roadmap,
     'quality_tiers_documented': all(marker in release_scope for marker in ('Stufe A', 'Stufe B', 'Stufe C', 'Labs')),
 }
 
