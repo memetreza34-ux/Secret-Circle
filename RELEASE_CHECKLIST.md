@@ -18,12 +18,21 @@ Diese Checkliste muss für den unveränderlichen Release-Commit vollständig aus
 
 - [ ] Word-Imposter-Rollen sind unabhängig von der Aufdeckreihenfolge
 - [ ] Creator, Quick, Mega und Viral verwenden direkt `session-ledger.js`
+- [ ] Creator, Quick, Mega und Viral verwenden direkt `party-session-controls.js`
+- [ ] Loader lädt Session-Ledger und gemeinsame Sessionsteuerung vor der ausgewählten schnellen Engine
 - [ ] jede neue Session besitzt genau eine stabile Session-ID
 - [ ] ältere aktive Sessions ohne ID werden deterministisch migriert
 - [ ] Verlauf, `plays`, Runden und Bestwert werden pro Session höchstens einmal aktualisiert
 - [ ] Reload zwischen Hub-Speicherung und Sessionbereinigung erzeugt keine Doppelzählung
 - [ ] fehlgeschlagene Sessionbereinigung stellt den letzten aktiven Zustand wieder her
+- [ ] bestätigter manueller Abbruch verliert die aktive Session bei einem Speicherfehler nicht
 - [ ] kein globales `Storage.prototype`- oder Engine-Monkey-Patching vorhanden
+- [ ] keine der vier schnellen Enginefamilien besitzt einen privaten Intervalltimer
+- [ ] Pause/Fortsetzen friert einen laufenden Timer ein und setzt ihn mit der Restzeit fort
+- [ ] pausierte Rundenaktionen sind nicht bedienbar und der Pausenstatus ist wahrnehmbar
+- [ ] Runde überspringen verhält sich in allen vier schnellen Enginefamilien konsistent
+- [ ] Wiederholen startet eine neue Session statt den alten Abschluss erneut zu verwenden
+- [ ] „Nächstes Spiel“ führt zu einem anderen technisch spielbaren schnellen Modus oder sicher zum Katalog
 - [ ] alle Resume-, Abbruch- und Abschlusswege geprüft
 
 ## 3. 15 Kernspiele
@@ -75,6 +84,8 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Offline-Neustart nach vorheriger Installation
 - [ ] alle Kernseiten offline erreichbar
 - [ ] alle vier schnellen Enginefamilien offline startbar
+- [ ] `party-session-controls.js` ist offline verfügbar
+- [ ] Pause, Skip, Abbruch, Replay und nächstes Spiel funktionieren auch offline
 - [ ] Release-Tiers, Filterzustand und Suchhilfe offline verfügbar
 - [ ] Query-Routen wie `quick-play.html?game=...` offline korrekt
 - [ ] neue Version wird zuerst vollständig im Staging-Cache vorbereitet
@@ -99,6 +110,7 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Safe Areas und Bildschirmtastatur auf iOS
 - [ ] Reduced Motion
 - [ ] Kontrast und Status nicht nur durch Farbe
+- [ ] Pausenknopf meldet seinen Zustand nachvollziehbar und Fokus bleibt erreichbar
 
 ## 8. Inhalte und Recht
 
