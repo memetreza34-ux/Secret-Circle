@@ -85,7 +85,8 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Browserprüfungen für Filterwiederherstellung, Reset, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Maus- und Tastaturbedienung der Suche vorbereitet
 - Validatoren stoppen bei privaten nicht pausierbaren Timern in den vier schnellen Enginefamilien
 - Validatoren stoppen bei einer erneuten Einführung des entfernten Legacy-Guards
-- README, Changelog, Roadmap, Release-Checkliste, Architekturvertrag, Backupvertrag, Releaseumfang und Release-Status werden auf denselben Foundation-Vertrag ausgerichtet
+- alter falscher Release-Audit-Marker `activeSessionKeys` auf den tatsächlichen Runtime-Vertrag `ACTIVE_SESSION_KEYS` korrigiert
+- README, Changelog, Roadmap, Release-Checkliste, Architekturvertrag und manueller Testplan auf den aktuellen Foundation-Stand synchronisiert
 
 ## Geprüft beziehungsweise als Testvertrag abgesichert
 
@@ -103,6 +104,7 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Wiederherstellung bei fehlgeschlagener Bereinigung des aktiven Abschlusses
 - gemeinsamer pausierbarer Timervertrag für Quick, Mega, Viral und Creator
 - gemeinsamer Bedienvertrag für Pause, Skip, Abbruch, Replay und nächstes Spiel
+- isolierter Controller-Smoke-Test lokal grün
 - zentrales Backup-Register und seine Runtime-Verträge
 - feste Katalogverteilung 15 Kernspiele / 13 Erweiterungen / 17 Labs
 - Filterzustand wird normalisiert; ungültige Werte fallen auf sichere Standards zurück
@@ -113,17 +115,18 @@ Ein vollständiger grüner Lauf aller Tests ist weiterhin nicht dokumentiert, da
 
 ## Externer Releaseblocker
 
-Die zuletzt geprüften GitHub-Actions-Läufe werden weiterhin vor jedem Repository-Schritt beendet. Der zuletzt bestätigte Lauf für den damaligen PR-Head zeigte erneut:
+Der aktuelle GitHub-Actions-Lauf **#1487** für Commit `57f64ab94ea13a49bfb737e4853e57c721e7eba2` wurde am 7. August 2026 bereits nach zwei Sekunden beendet.
+
+Der Job `validate` zeigt erneut:
 
 - `runner_id: 0`
 - leeren Runnernamen
 - `runner_group_id: 0`
 - `steps: []`
-- kein verfügbares Joblog
 - kein Checkout
-- kein Node-, Python-, npm- oder Playwright-Schritt
+- kein ausgeführter Repository-Befehl
 
-Damit ist dies weiterhin **kein nachgewiesener Fehler des Repository-Codes**, sondern ein externer Actions-/Abrechnungs-/Richtlinienblocker. Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und mögliche Organisationsrichtlinien geprüft werden. Danach muss der Workflow erneut gestartet werden.
+Damit ist weiterhin **kein Repository-Test fehlgeschlagen**; der Code wurde von GitHub Actions gar nicht ausgeführt. Vor Merge und Release müssen Actions, Abrechnung beziehungsweise Minutenbudget und mögliche Organisationsrichtlinien außerhalb des Repository-Codes korrigiert werden.
 
 ## Nächste technische Prioritäten
 
