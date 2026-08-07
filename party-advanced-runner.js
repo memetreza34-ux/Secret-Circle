@@ -187,6 +187,14 @@
     return null;
   }
 
+  function protectSensitiveResume(candidate) {
+    const advanced = candidate?.advanced;
+    if (!advanced || typeof advanced !== 'object' || Array.isArray(advanced)) return candidate;
+    if (advanced.stage === 'reveal' && advanced.revealed === true) advanced.revealed = false;
+    if (candidate.gameId === 'mafia' && advanced.stage === 'overview') advanced.stage = 'moderator';
+    return candidate;
+  }
+
   function loadActive() {
     try {
       const value = JSON.parse(localStorage.getItem(ACTIVE_KEY));
@@ -215,6 +223,7 @@
         : [];
       candidate.playerIndex %= players.length;
       candidate.startedAt = cleanText(candidate.startedAt, 40) || new Date().toISOString();
+      protectSensitiveResume(candidate);
       return candidate;
     } catch {
       return rejectActive('Ein beschädigter aktiver Spielstand wurde verworfen.');
@@ -379,6 +388,7 @@
     session = active;
     $('#advanced-setup').hidden = true;
     $('#advanced-play-layer').hidden = false;
+    persistActive();
     if (session.rounds >= session.targetRounds) renderSessionSummary();
     else render();
   }
