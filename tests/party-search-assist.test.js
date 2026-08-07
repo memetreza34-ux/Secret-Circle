@@ -8,6 +8,7 @@ assert.equal(Search.version, 1);
 assert.equal(Search.maximumSuggestions, 6);
 assert.equal(Search.normalizeText('  Heiße   Kartoffel! '), 'heisse kartoffel');
 assert.equal(Search.normalizeText('WÖRTER-Kette'), 'worter kette');
+assert.equal(Search.normalizeText('Straße & Spaß'), 'strasse spass');
 assert.equal(Search.levenshtein('mafia', 'mafia'), 0);
 assert.equal(Search.levenshtein('maifa', 'mafia', 2), 2);
 assert.ok(Search.scoreAlias('werwolf', 'werwolf') > Search.scoreAlias('werwolf', 'mafia'));
@@ -32,14 +33,22 @@ assert.equal(first('maifa'), 'mafia');
 assert.equal(first('impsoter'), 'imposter');
 assert.deepEqual(Search.suggestions(catalog.games, 'a', 6), []);
 assert.ok(Search.suggestions(catalog.games, 'spiel', 100).length <= 10);
+assert.ok(Search.suggestions(catalog.games, 'wer', 6).length <= Search.maximumSuggestions);
 assert.ok(Search.aliasesFor(catalog.getGame('mafia')).includes('werwolf'));
+
+for (const suggestion of Search.suggestions(catalog.games, 'werwolf', 6)) {
+  assert.ok(suggestion.game);
+  assert.equal(typeof suggestion.score, 'number');
+  assert.ok(suggestion.score > 0);
+}
 
 console.log(JSON.stringify({
   ok: true,
   searchAssistVersion: Search.version,
   synonyms: true,
-  umlautNormalization: true,
+  umlautAndSharpSNormalization: true,
   typoTolerance: true,
+  weightedResults: true,
   maximumSuggestions: Search.maximumSuggestions,
   keyboardReadyListboxContract: true
 }, null, 2));
