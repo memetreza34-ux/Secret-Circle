@@ -76,7 +76,7 @@ Secret Circle besitzt bereits einen großen Funktionsumfang. Der Januar-Release 
 - Regressionstests für Offline-Routing, Quick Loader, Rollenfairness, Creator-Zeitstempel, Unicode-Backups, Sessionabschlüsse, PWA-Updates, Release-Tiers, Filterzustand und Suchhilfe
 - Browserprüfungen für Filterwiederherstellung, Reset, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Maus- und Tastaturbedienung der Suche vorbereitet
 - Validatoren stoppen bei einer erneuten Einführung des entfernten Legacy-Guards
-- README, Changelog, Roadmap, Backupvertrag, Releaseumfang und Release-Status aktualisiert
+- README, Changelog, Roadmap, Architekturvertrag, Backupvertrag, Releaseumfang und Release-Status aktualisiert
 
 ## Geprüft beziehungsweise als Testvertrag abgesichert
 
@@ -102,16 +102,19 @@ Ein vollständiger grüner Lauf aller Tests ist weiterhin nicht dokumentiert, da
 
 ## Externer Releaseblocker
 
-Frühere GitHub-Actions-Läufe erhielten weiterhin keinen Runner und blieben ohne sichtbare Schritte. Für zuletzt geprüfte PR-Heads wurde kein Workflowlauf zurückgegeben.
+Der GitHub-Actions-Lauf **#1401** für Commit `d83e3b509752c989e51a03980148f50a8324d09a` wurde am 7. August 2026 um 03:55 UTC angelegt und bereits nach drei Sekunden als fehlgeschlagen beendet.
 
-Damit existiert weiterhin kein vertrauenswürdiger grüner Remote-Lauf:
+Der Job `validate` zeigt eindeutig:
 
-- frühere Jobs ohne zugewiesenen Runner
+- `runner_id: 0`
 - leerer Runnername
+- `runner_group_id: 0`
 - `steps: []`
-- zuletzt geprüfte Heads ohne gefundenen Workflowlauf
+- kein verfügbares Joblog
+- kein Checkout
+- kein Node-, Python-, npm- oder Playwright-Schritt
 
-Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und Organisationsrichtlinien geprüft werden.
+Damit ist dies weiterhin **kein Fehler des Repository-Codes**, sondern ein externer Actions-/Abrechnungs-/Richtlinienblocker. Vor Merge und Release müssen Repository-Actions, Abrechnung beziehungsweise Minutenbudget und mögliche Organisationsrichtlinien geprüft werden. Danach muss der Workflow erneut gestartet werden.
 
 ## Nächste technische Prioritäten
 
