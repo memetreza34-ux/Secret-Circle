@@ -15,13 +15,21 @@ Dieses Dokument trennt **technisch vorhanden**, **automatisch abgesichert**, **n
 
 `tests/core-game-contract.test.js` prüft für alle 15 Kernspiele unter anderem Katalogstatus, Spielergrenzen, Altersstufe, Regeln, Packs, Routing und den genau-einmal-Abschluss direkter Hub-Spiele.
 
+Die direkten Hub-Timer besitzen eine feste Modulgrenze:
+
+- `party-hub.js` besitzt Session, Ledger, Navigation, globale Bedienung und nicht zeitgesteuerte Hub-Spiele.
+- `party-hub-timers.js` besitzt Timer-State-Normalisierung sowie Scharade, Tabu, Heiße Kartoffel und Wortkette.
+- `party.html` lädt `party-session-controls.js` vor `party-hub-timers.js` und dieses wiederum vor `party-hub.js`.
+- beide Produktionsmodule müssen unter 1.000 Zeilen bleiben; die Performancebudgets liegen bei 50 KB beziehungsweise 18 KB.
+
 `tests/hub-timer-contract.test.js` schützt die vier zeitgesteuerten Hub-Kernspiele:
 
 - Scharade, Tabu, Heiße Kartoffel und Wortkette verwenden `party-session-controls.js`.
-- kein privater `activeTimer`, `window.setInterval` oder `performance.now()` bleibt im Hub-Timerpfad.
+- kein privater `activeTimer`, `window.setInterval` oder `performance.now()` bleibt in einem der beiden Hub-Module.
 - die aktuelle Restzeit wird über `remainingMilliseconds()` serialisiert.
 - Hintergrundwechsel pausieren laufende Timer.
 - wiederhergestellte Timer starten bewusst pausiert.
+- der Test schützt zusätzlich den Modul-Split und die Script-Reihenfolge.
 
 `tests/hub-resume-contract.test.js` schützt den direkten Hub-Wiederaufnahmevertrag:
 
@@ -86,10 +94,10 @@ Sie sind wegen des weiterhin blockierten GitHub-Actions-Runners noch nicht als g
 | Wer würde eher? | direkte Hub-Engine | nein | aktiver Hub-Spielstand + explizites Resume | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – globaler Skip/Abbruch vorhanden | offen |
 | Entweder oder | direkte Hub-Engine | nein | aktiver Hub-Spielstand + explizites Resume | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – globaler Skip/Abbruch vorhanden | offen |
 | Paranoia | direkte Hub-Engine | nein | Resume; Geheimfrage nach Reload wieder verdeckt | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT**, Sichtschutz real prüfen | offen |
-| Scharade | direkte Hub-Engine | 60 s | Restzeit + Treffer + Karte; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer/resumierbarer Timer | offen |
-| Nicht sagen! / Tabu | direkte Hub-Engine | 60 s | Restzeit + Treffer + aktuelle Karte; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer/resumierbarer Timer | offen |
-| Heiße Kartoffel | direkte Hub-Engine | Zufall 10–25 s | versteckte Restzeit; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – Restzeit bleibt verborgen | offen |
-| Wortkette | direkte Hub-Engine | 30 s | Buchstabe + Restzeit; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer/resumierbarer Timer | offen |
+| Scharade | `party-hub-timers.js` | 60 s | Restzeit + Treffer + Karte; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer/resumierbarer Timer | offen |
+| Nicht sagen! / Tabu | `party-hub-timers.js` | 60 s | Restzeit + Treffer + aktuelle Karte; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer/resumierbarer Timer | offen |
+| Heiße Kartoffel | `party-hub-timers.js` | Zufall 10–25 s | versteckte Restzeit; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – Restzeit bleibt verborgen | offen |
+| Wortkette | `party-hub-timers.js` | 30 s | Buchstabe + Restzeit; Resume pausiert | Hub-Ledger beim Abschluss | **TECHNISCH ABGESICHERT** – gemeinsamer pausierbarer/resumierbarer Timer | offen |
 | Zwei Wahrheiten, eine Lüge | Advanced Runner | rundenabhängig | aktive Advanced-Session | stabiler Advanced-Abschluss | **TECHNISCH ABGESICHERT** – Eingabe/Mischen/Abstimmung als Browservertrag vorbereitet | offen |
 | Question Imposter | Advanced Runner | rundenabhängig | sichere aktive Advanced-Session | stabiler Advanced-Abschluss | **TECHNISCH ABGESICHERT** – geöffnete Geheimfrage wird nach Reload wieder verdeckt | offen |
 | Location Spy | Advanced Runner | rundenabhängig | sichere aktive Advanced-Session | stabiler Advanced-Abschluss | **TECHNISCH ABGESICHERT** – privater Reveal wird nach Reload wieder geschützt | offen |
@@ -114,11 +122,12 @@ Früher erhöhte `party-hub.js` `plays` bereits beim Öffnen beziehungsweise Sta
 
 ### Hub-Timer und Reload
 
+- die vier Timermechaniken wurden aus `party-hub.js` nach `party-hub-timers.js` ausgelagert, damit die 1.000-Zeilen-Modulgrenze bestehen bleibt.
 - alle direkten Hub-Sessions besitzen einen versionierten aktiven Spielstand.
 - eine Session speichert ihre eigene Spielergruppe, damit spätere Lobbyänderungen die laufende Runde nicht verändern.
 - Reload zeigt zunächst eine Wiederaufnahme-Karte statt automatisch das Spiel zu öffnen.
 - Scharade speichert Restzeit, Rundentreffer und aktuelle Karte.
-- Tabu läuft nun 60 Sekunden und speichert Restzeit, Rundentreffer, aktuellen Begriff und verbotene Wörter.
+- Tabu läuft 60 Sekunden und speichert Restzeit, Rundentreffer, aktuellen Begriff und verbotene Wörter.
 - Heiße Kartoffel speichert intern die zufällige Restzeit, ohne einen Countdown anzuzeigen.
 - Wortkette speichert Restzeit und Buchstaben.
 - Timer werden nach Wiederaufnahme pausiert rekonstruiert und laufen erst nach „Fortsetzen“ weiter.
