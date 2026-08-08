@@ -10,14 +10,18 @@ const html = fs.readFileSync(path.join(root, 'party.html'), 'utf8');
 
 assert.ok(hub.includes('const S = window.SecretCircleSessionControls;'));
 assert.ok(hub.includes('const hubTimer = S.createController({ windowRef: window });'));
+assert.ok(hub.includes("TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])"));
 assert.ok(hub.includes("kind: 'charades', phase: 'running', remainingMs"));
+assert.ok(hub.includes("kind: 'taboo', phase: 'running', remainingMs"));
 assert.ok(hub.includes("kind: 'hot-potato', phase: 'running', remainingMs"));
 assert.ok(hub.includes("kind: 'word-chain', phase: 'running', remainingMs"));
 assert.ok(hub.includes('hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)'));
+assert.ok(hub.includes('hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer)'));
 assert.ok(hub.includes('hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)'));
 assert.ok(hub.includes('hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)'));
 assert.ok(hub.includes('hubTimer.remainingMilliseconds()'));
 assert.ok(hub.includes('renderStoredTimerSession'));
+assert.ok(hub.includes("timerState.kind === 'taboo') startTaboo"));
 assert.ok(hub.includes("document.addEventListener('visibilitychange'"));
 assert.ok(hub.includes("window.addEventListener('pagehide'"));
 assert.ok(hub.includes('setHubPaused(true)'));
@@ -37,7 +41,7 @@ assert.ok(ledgerIndex >= 0 && controlsIndex > ledgerIndex && hubIndex > controls
 console.log(JSON.stringify({
   hubTimerContract: 'PASS',
   sharedController: true,
-  pausableCoreTimers: ['charades', 'hot-potato', 'word-chain'],
+  pausableCoreTimers: ['charades', 'taboo', 'hot-potato', 'word-chain'],
   persistedRemainingTime: true,
   backgroundAutoPause: true,
   reloadResumePaused: true
