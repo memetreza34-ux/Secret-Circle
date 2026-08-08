@@ -138,6 +138,12 @@
     return Object.freeze({ ...game, instructions, competition });
   }
 
+  function flattenItems(value) {
+    if (Array.isArray(value)) return value;
+    if (!value || typeof value !== 'object') return [];
+    return Object.values(value).flatMap(flattenItems);
+  }
+
   function createCatalog(sourceStorage = storage) {
     const routedBase = base.games.map(sourceGame => {
       const game = applyCoreRules(sourceGame);
@@ -194,8 +200,8 @@
     function getItems(id, pack) {
       const value = content[id];
       if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
-      if (pack && Array.isArray(value[pack])) return value[pack];
-      return Object.values(value).flatMap(items => Array.isArray(items) ? items : []);
+      if (pack && Object.prototype.hasOwnProperty.call(value, pack)) return flattenItems(value[pack]);
+      return flattenItems(value);
     }
 
     function itemCount(id) {
