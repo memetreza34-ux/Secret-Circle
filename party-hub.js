@@ -13,7 +13,7 @@
   const ACTIVE_VERSION = 1;
   const MAX_HISTORY = L.maximumHistory;
   const MAX_ACTIVE_USED = 500;
-  const TIMER_KINDS = new Set(['charades', 'hot-potato', 'word-chain']);
+  const TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain']);
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const hubTimer = S.createController({ windowRef: window });
@@ -121,7 +121,9 @@
       roundScore: safeInteger(value.roundScore, 10_000),
       item: cleanText(value.item, 240),
       prompt: cleanText(value.prompt, 400),
-      letter: cleanText(value.letter, 12)
+      letter: cleanText(value.letter, 12),
+      word: cleanText(value.word, 120),
+      banned: Array.isArray(value.banned) ? value.banned.slice(0, 12).map(item => cleanText(item, 80)).filter(Boolean) : []
     };
   }
 
@@ -239,12 +241,18 @@
 
   function syncHubPauseUi() {
     const pause = $('#pause-hub-game');
+    const skip = $('#skip-hub-round');
+    const finish = $('#finish-hub-game');
+    const abort = $('#abort-hub-game');
     const paused = hubTimer.isPaused();
     if (pause) {
       pause.textContent = paused ? 'Fortsetzen' : 'Pause';
       pause.setAttribute('aria-pressed', paused ? 'true' : 'false');
       pause.disabled = !session || hubTimer.remainingMilliseconds() <= 0;
     }
+    if (skip) skip.disabled = !session || paused;
+    if (finish) finish.disabled = !session;
+    if (abort) abort.disabled = !session;
     const status = $('#play-pause-status');
     if (status) status.textContent = paused ? 'Spiel pausiert. Der Timer steht und Rundenaktionen sind gesperrt.' : '';
     for (const selector of ['#play-options', '#play-actions']) {
@@ -254,6 +262,14 @@
       if (paused) node.setAttribute('aria-disabled', 'true');
       else node.removeAttribute('aria-disabled');
     }
+  }
+
+  function focusPlayPrimary() {
+    window.requestAnimationFrame?.(() => {
+      const primary = [...document.querySelectorAll('#play-options button, #play-actions button')]
+        .find(button => !button.disabled && !button.closest('[inert]'));
+      (primary || $('#play-title'))?.focus?.();
+    });
   }
 
   function setHubPaused(value) {
@@ -567,7 +583,7 @@
     $('#play-layer').hidden = false;
     persistActiveSession();
     renderPlayRound();
-    $('#exit-game').focus();
+    focusPlayPrimary();
   }
 
   function finishSession() {
@@ -576,13 +592,15 @@
     hubTimer.setPaused(false);
     syncHubPauseUi();
     const game = C.getGame(session.gameId);
-    if (session.rounds > 0) {
+    const activeTimedRound = Boolean(session.timer && (session.running || session.timer.phase === 'ended'));
+    const completedRounds = session.rounds + (activeTimedRound ? 1 : 0);
+    if (completedRounds > 0) {
       const result = L.recordCompletion(state, {
         id: L.completionId('hub', game.id, session.sessionId),
         gameId: game.id,
         title: game.title,
         endedAt: new Date().toISOString(),
-        rounds: session.rounds,
+        rounds: completedRounds,
         score: session.score
       });
       if (result.recorded) {
@@ -601,7 +619,24 @@
     $('#play-layer').hidden = true;
     renderHome();
     if (currentView === 'stats') renderStats();
-    setStatus('Session lokal im Verlauf gespeichert.');
+    setStatus(completedRounds > 0 ? 'Session lokal im Verlauf gespeichert.' : 'Session beendet. Es war noch keine Runde abgeschlossen.');
+    $('#quick-start')?.focus?.();
+  }
+
+  function abortSession() {
+    if (!session) return false;
+    if (!window.confirm('Session wirklich abbrechen? Bisheriger Fortschritt wird verworfen und nicht als abgeschlossen gezählt.')) return false;
+    if (!clearActiveSession()) return false;
+    stopHubTimer();
+    hubTimer.setPaused(false);
+    session = null;
+    setHubSessionActive(false);
+    $('#play-layer').hidden = true;
+    renderHome();
+    if (currentView === 'stats') renderStats();
+    setStatus('Session abgebrochen. Fortschritt wurde nicht gespeichert.');
+    $('#quick-start')?.focus?.();
+    return true;
   }
 
   function pickUnused(items) {
@@ -640,7 +675,7 @@
     clearNode($('#play-content'));
     clearNode($('#play-options'));
     clearNode($('#play-actions'));
-    $('#play-progress').textContent = `${session.rounds} Karten`;
+    $('#play-progress').textContent = `${session.rounds} Runden`;
     $('#play-score').textContent = session.score ? `${session.score} Punkte` : '';
   }
 
@@ -668,19 +703,33 @@
     renderPlayRound();
   }
 
+  function skipHubRound() {
+    if (!session || hubTimer.isPaused()) return false;
+    stopHubTimer();
+    session.timer = null;
+    session.running = false;
+    session.rounds += 1;
+    advancePlayer();
+    persistActiveSession();
+    renderPlayRound();
+    setStatus('Runde übersprungen. Dafür wurde kein Punkt vergeben.');
+    return true;
+  }
+
   function renderPlayRound() {
     if (!session) return;
     const game = preparePlayCard();
-    if (game.mode === 'truth-dare') return renderTruthDare();
-    if (game.mode === 'prompt') return renderPromptGame();
-    if (game.mode === 'choice') return renderChoiceGame();
-    if (game.mode === 'paranoia') return renderParanoia();
-    if (game.mode === 'charades') return renderCharadesStart();
-    if (game.mode === 'taboo') return renderTaboo();
-    if (game.mode === 'hot-potato') return renderHotPotatoStart();
-    if (game.mode === 'word-chain') return renderWordChainStart();
-    if (game.mode === 'random-player') return renderRandomPlayer();
-    if (game.mode === 'utility') return renderUtility();
+    if (game.mode === 'truth-dare') renderTruthDare();
+    else if (game.mode === 'prompt') renderPromptGame();
+    else if (game.mode === 'choice') renderChoiceGame();
+    else if (game.mode === 'paranoia') renderParanoia();
+    else if (game.mode === 'charades') renderCharadesStart();
+    else if (game.mode === 'taboo') renderTabooStart();
+    else if (game.mode === 'hot-potato') renderHotPotatoStart();
+    else if (game.mode === 'word-chain') renderWordChainStart();
+    else if (game.mode === 'random-player') renderRandomPlayer();
+    else if (game.mode === 'utility') renderUtility();
+    focusPlayPrimary();
   }
 
   function renderTruthDare() {
@@ -701,6 +750,7 @@
     $('#play-content').textContent = value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Erledigt · nächste Person', nextSimpleRound));
     persistActiveSession();
+    focusPlayPrimary();
   }
 
   function renderPromptGame() {
@@ -735,6 +785,7 @@
         persistActiveSession();
       }));
       persistActiveSession();
+      focusPlayPrimary();
     }));
     persistActiveSession();
   }
@@ -756,6 +807,7 @@
     clearNode($('#play-actions'));
     $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
     syncHubPauseUi();
+    focusPlayPrimary();
   }
 
   function startCharades(remainingMs = 60_000, restoredScore = 0, restoredItem = '') {
@@ -796,18 +848,69 @@
     persistActiveSession();
   }
 
-  function renderTaboo() {
-    const card = pickUnused(contentItems('taboo', session.pack));
+  function renderTabooStart() {
     $('#play-player').textContent = `${currentPlayer()} erklärt`;
-    const word = makeElement('strong', 'taboo-word', card?.word || 'Keine Karte');
-    const banned = makeElement('div', 'banned-list');
-    (card?.banned || []).forEach(item => banned.append(makeElement('span', '', item)));
-    $('#play-content').append(word, banned);
-    $('#play-options').append(
-      actionButton('Treffer', () => { session.score += 1; nextSimpleRound(); }),
-      actionButton('Überspringen', nextSimpleRound, 'secondary')
-    );
+    $('#play-content').textContent = '60 Sekunden. Erkläre möglichst viele Begriffe, ohne eines der verbotenen Wörter zu sagen.';
+    $('#play-options').append(actionButton('60-Sekunden-Runde starten', () => startTaboo(60_000, 0, '', [])));
     persistActiveSession();
+  }
+
+  function renderTabooCard(word, bannedItems) {
+    clearNode($('#play-content'));
+    $('#play-content').append(makeElement('strong', 'taboo-word', word || 'Keine Karte'));
+    const banned = makeElement('div', 'banned-list');
+    (bannedItems || []).forEach(item => banned.append(makeElement('span', '', item)));
+    $('#play-content').append(banned);
+  }
+
+  function finishTabooTimer() {
+    const roundScore = session.timer?.roundScore || 0;
+    session.running = false;
+    session.timer = { ...(session.timer || {}), kind: 'taboo', phase: 'ended', remainingMs: 0, roundScore };
+    persistActiveSession();
+    $('#play-content').textContent = `Zeit vorbei · ${roundScore} Treffer`;
+    clearNode($('#play-options'));
+    clearNode($('#play-actions'));
+    $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
+    syncHubPauseUi();
+    focusPlayPrimary();
+  }
+
+  function startTaboo(remainingMs = 60_000, restoredScore = 0, restoredWord = '', restoredBanned = []) {
+    session.running = true;
+    session.used = Array.isArray(session.used) ? session.used : [];
+    session.timer = {
+      kind: 'taboo', phase: 'running', remainingMs,
+      roundScore: safeInteger(restoredScore, 10_000), item: '', prompt: '', letter: '',
+      word: cleanText(restoredWord, 120),
+      banned: Array.isArray(restoredBanned) ? restoredBanned.slice(0, 12).map(item => cleanText(item, 80)).filter(Boolean) : []
+    };
+    const timer = makeElement('div', 'timer-display', S.formatMilliseconds(remainingMs));
+    const showCard = () => {
+      const card = pickUnused(contentItems('taboo', session.pack));
+      session.timer.word = cleanText(card?.word, 120);
+      session.timer.banned = Array.isArray(card?.banned) ? card.banned.slice(0, 12).map(item => cleanText(item, 80)).filter(Boolean) : [];
+      renderTabooCard(session.timer.word, session.timer.banned);
+      persistActiveSession();
+    };
+    $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
+    clearNode($('#play-options'));
+    $('#play-options').append(
+      actionButton('Treffer', () => {
+        session.timer.roundScore += 1;
+        session.score += 1;
+        $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
+        showCard();
+      }),
+      actionButton('Begriff überspringen', showCard, 'secondary')
+    );
+    clearNode($('#play-actions'));
+    $('#play-actions').append(timer);
+    if (session.timer.word) renderTabooCard(session.timer.word, session.timer.banned);
+    else showCard();
+    hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer);
+    persistActiveSession();
+    focusPlayPrimary();
   }
 
   function renderHotPotatoStart() {
@@ -827,6 +930,7 @@
     $('#play-content').textContent = 'Wer das Gerät jetzt hält, verliert diese Runde.';
     $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
     syncHubPauseUi();
+    focusPlayPrimary();
   }
 
   function startHotPotato(prompt, remainingMs) {
@@ -862,6 +966,7 @@
     clearNode($('#play-actions'));
     $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
     syncHubPauseUi();
+    focusPlayPrimary();
   }
 
   function startWordChain(letter, remainingMs) {
@@ -886,10 +991,12 @@
     session.timer = timerState;
     if (timerState.phase === 'ended') {
       if (timerState.kind === 'charades') return finishCharadesTimer();
+      if (timerState.kind === 'taboo') return finishTabooTimer();
       if (timerState.kind === 'hot-potato') return finishHotPotatoTimer();
       if (timerState.kind === 'word-chain') return finishWordChainTimer();
     }
     if (timerState.kind === 'charades') startCharades(timerState.remainingMs, timerState.roundScore, timerState.item);
+    else if (timerState.kind === 'taboo') startTaboo(timerState.remainingMs, timerState.roundScore, timerState.word, timerState.banned);
     else if (timerState.kind === 'hot-potato') startHotPotato(timerState.prompt, timerState.remainingMs);
     else if (timerState.kind === 'word-chain') startWordChain(timerState.letter, timerState.remainingMs);
     setHubPaused(true);
@@ -950,7 +1057,7 @@
       if (session.timer) renderStoredTimerSession();
       else renderPlayRound();
       persistActiveSession();
-      $('#exit-game').focus();
+      focusPlayPrimary();
     });
     const discard = actionButton('Gespeicherten Stand verwerfen', () => {
       if (!window.confirm('Gespeicherten Hub-Spielstand wirklich verwerfen? Er wird nicht als abgeschlossene Session gezählt.')) return;
@@ -1045,8 +1152,10 @@
     $('#game-detail').addEventListener('click', event => { if (event.target === $('#game-detail')) closeDetail(); });
     $('#favorite-selected').addEventListener('click', () => toggleFavorite(selectedGameId));
     $('#start-selected-game').addEventListener('click', startSelectedGame);
-    $('#exit-game').addEventListener('click', finishSession);
+    $('#finish-hub-game').addEventListener('click', finishSession);
+    $('#skip-hub-round').addEventListener('click', skipHubRound);
     $('#pause-hub-game').addEventListener('click', () => setHubPaused(!hubTimer.isPaused()));
+    $('#abort-hub-game').addEventListener('click', abortSession);
     $('#clear-hub-history').addEventListener('click', () => {
       if (!window.confirm('Hub-Verlauf und Hub-Statistik löschen?')) return;
       state.history = [];
@@ -1069,7 +1178,7 @@
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !$('#game-detail').hidden) closeDetail();
-      else if (event.key === 'Escape' && !$('#play-layer').hidden) finishSession();
+      else if (event.key === 'Escape' && !$('#play-layer').hidden) abortSession();
     });
   }
 
