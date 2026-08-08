@@ -42,6 +42,7 @@ creator = require('game-creator.js')
 creator_page = require('creator-page.js')
 guide = require('party-guide.js')
 hub_runtime = require('party-hub.js')
+hub_timers = require('party-hub-timers.js')
 quick_runtime = require('party-quick-modes.js')
 mega_runtime = require('party-mega-modes.js')
 viral_runtime = require('party-viral-modes.js')
@@ -81,26 +82,35 @@ def direct_engine(source: str, engine: str) -> bool:
         and 'const deadline = Date.now() + seconds * 1000' not in source
 
 
-def hub_engine(source: str) -> bool:
-    markers = (
-        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
+def hub_engine(runtime: str, timers: str) -> bool:
+    runtime_markers = (
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'SecretCirclePartyHubTimers',
+        'S.createController', 'T.createTimerGames', 'timerGames.renderStoredTimerSession',
         "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
         "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
         'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
-        'players: [...state.players]', 'renderStoredTimerSession', 'Session fortsetzen',
-        'Gespeicherten Stand verwerfen',
+        'players: [...state.players]', 'Session fortsetzen', 'Gespeicherten Stand verwerfen',
         'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
+        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
+        'setHubPaused(true)', 'skipHubRound', 'abortSession',
+    )
+    timer_markers = (
+        "TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])",
+        'normalizeTimerState', 'createTimerGames',
         "kind: 'charades', phase: 'running', remainingMs",
+        "kind: 'taboo', phase: 'running', remainingMs",
         "kind: 'hot-potato', phase: 'running', remainingMs",
         "kind: 'word-chain', phase: 'running', remainingMs",
         'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
+        'hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer)',
         'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
         'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
-        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
-        'setHubPaused(true)',
+        'renderStoredTimerSession',
     )
-    return all(marker in source for marker in markers) \
-        and all(marker not in source for marker in ('activeTimer', 'window.setInterval(', 'performance.now()'))
+    forbidden = ('activeTimer', 'window.setInterval(', 'performance.now()')
+    return all(marker in runtime for marker in runtime_markers) \
+        and all(marker in timers for marker in timer_markers) \
+        and all(marker not in source for source in (runtime, timers) for marker in forbidden)
 
 
 checks = {
@@ -148,14 +158,17 @@ checks = {
         'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"', 'id="quick-pause-overlay"',
     )),
     'hub_controls_surface': all(marker in party_page for marker in (
-        'id="pause-hub-game"', 'id="play-pause-status"',
+        'id="finish-hub-game"', 'id="skip-hub-round"', 'id="pause-hub-game"',
+        'id="abort-hub-game"', 'id="play-pause-status"',
         '<script src="session-ledger.js"></script>', '<script src="party-session-controls.js"></script>',
+        '<script src="party-hub-timers.js"></script>', '<script src="party-hub.js"></script>',
     )),
+    'hub_split_load_order': party_page.index('party-session-controls.js') < party_page.index('party-hub-timers.js') < party_page.index('party-hub.js'),
     'session_controls_styles': all(marker in quick_styles for marker in (
         '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
         '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
     )),
-    'hub_direct_exact_once_pausable_resumable': hub_engine(hub_runtime),
+    'hub_direct_exact_once_pausable_resumable': hub_engine(hub_runtime, hub_timers),
     'creator_direct_exact_once': direct_engine(created_runtime, 'created'),
     'quick_direct_exact_once': direct_engine(quick_runtime, 'quick'),
     'mega_direct_exact_once': direct_engine(mega_runtime, 'mega'),
@@ -169,7 +182,7 @@ checks = {
     )),
     'foundation_runtime_offline': all(asset in sw for asset in (
         './pwa-update.css', './session-ledger.js', './party-session-controls.js',
-        './party-search-assist.js', './party-search.css',
+        './party-hub-timers.js', './party-search-assist.js', './party-search.css',
     )),
     'release_runtime_offline': all(asset in sw for asset in (
         './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
@@ -193,15 +206,17 @@ checks = {
     'main_ci': all(command in workflow for command in ('npm run check', 'npm test', 'npm run validate', 'npm run test:e2e')),
     'cross_browser_ci': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'foundation_audit_in_gate': 'scripts/foundation_contract_audit.py' in package.get('scripts', {}).get('validate', ''),
+    'hub_control_audit_in_gate': 'scripts/hub_control_audit.py' in package.get('scripts', {}).get('validate', ''),
     'foundation_tests_in_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
         'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
         'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
-        'tests/mafia-rules.test.js', 'tests/advanced-resume-contract.test.js',
-        'tests/party-filter-state.test.js', 'tests/party-search-assist.test.js',
-        'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
-        'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
-        'tests/pwa-update.test.js',
+        'tests/hub-control-contract.test.js', 'tests/mafia-rules.test.js',
+        'tests/advanced-resume-contract.test.js', 'tests/party-filter-state.test.js',
+        'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
+        'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
+        'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
     )),
+    'split_hub_syntax_gate': 'node --check party-hub-timers.js' in package.get('scripts', {}).get('check', ''),
     'release_dates_documented': all(marker in roadmap for marker in ('30. November 2026', '5. Dezember 2026', '15. Dezember 2026', '4.–15. Januar 2027')),
     'shared_controls_documented': '[x] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel' in roadmap,
     'quality_tiers_documented': all(marker in release_scope for marker in ('Stufe A', 'Stufe B', 'Stufe C', 'Labs')),
@@ -235,20 +250,21 @@ for game_id in viral_ids:
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 21 or len(e2e_suites) < 33 or not cross_suites:
+if len(unit_tests) < 24 or len(e2e_suites) < 40 or not cross_suites:
     raise SystemExit('Release test matrix is incomplete.')
 for required_test in (
     'party-release-structure.test.js', 'core-game-contract.test.js', 'hub-timer-contract.test.js',
-    'hub-resume-contract.test.js', 'mafia-rules.test.js', 'advanced-resume-contract.test.js',
-    'party-filter-state.test.js', 'party-search-assist.test.js', 'backup-schema-registry.test.js',
-    'session-ledger.test.js', 'party-session-controls.test.js', 'session-ledger-integration.test.js',
-    'service-worker.test.js', 'pwa-update.test.js',
+    'hub-resume-contract.test.js', 'hub-control-contract.test.js', 'mafia-rules.test.js',
+    'advanced-resume-contract.test.js', 'party-filter-state.test.js', 'party-search-assist.test.js',
+    'backup-schema-registry.test.js', 'session-ledger.test.js', 'party-session-controls.test.js',
+    'session-ledger-integration.test.js', 'service-worker.test.js', 'pwa-update.test.js',
 ):
     if required_test not in unit_tests:
         raise SystemExit(f'Critical unit test missing: {required_test}')
 for required_test in (
     'core-game-catalog.spec.js', 'core-hub-statistics.spec.js', 'core-hub-timers.spec.js',
-    'core-hub-resume.spec.js', 'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
+    'core-hub-resume.spec.js', 'core-hub-controls.spec.js', 'taboo-timer.spec.js',
+    'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
     'advanced-secret-resume.spec.js', 'advanced-core-round-flow.spec.js',
     'advanced-completion-exact-once.spec.js', 'mafia-extended.spec.js',
     'party-filter-state.spec.js', 'party-search-assist.spec.js', 'party-session-controls.spec.js',
@@ -274,7 +290,7 @@ for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
         'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
         'runtime-guard.js', 'party-routing.js', 'game-creator.js', 'creator-page.js',
         'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-        'party-created-modes.js', 'quick-loader.js', 'party-hub.js',
+        'party-created-modes.js', 'quick-loader.js', 'party-hub-timers.js', 'party-hub.js',
     ):
         if forbidden in read(relative):
             raise SystemExit(f'Forbidden release pattern {forbidden} in {relative}')
@@ -294,6 +310,7 @@ print(json.dumps({
     'legacy_guard_removed': True,
     'search_assistance': True,
     'shared_session_controls': True,
+    'split_direct_hub_timer_module': True,
     'pausable_fast_engine_timers': True,
     'pausable_core_hub_timers': True,
     'direct_hub_reload_resume': True,
