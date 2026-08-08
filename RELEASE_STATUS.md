@@ -62,9 +62,12 @@ Secret Circle besitzt 45 eingebaute Spiele, davon 15 priorisierte Kernspiele. F�
 - Fokus wird nach Runden-/Reveal-Wechseln auf die nächste sinnvolle Aktion beziehungsweise die Spielüberschrift gesetzt
 - Hub-Steuerungen besitzen mindestens 44-Pixel-Touchziele und stapeln sich auf kleinen Displays
 
-### Gemeinsame Timer
+### Gemeinsame Timer und Modulgrenze
 
-- `party-session-controls.js` für Quick/Mega/Viral/Creator und direkte Hub-Timer
+- `party-session-controls.js` stellt den gemeinsamen pausierbaren Timer bereit
+- die vier direkten Hub-Timermechaniken liegen jetzt in **`party-hub-timers.js`** statt die Haupt-Hub-Datei weiter anwachsen zu lassen
+- `party-hub.js` besitzt Session-, Ledger-, Navigation- und nicht zeitgesteuerte Spiellogik; `party-hub-timers.js` besitzt Scharade, Tabu, Heiße Kartoffel, Wortkette und Timer-State-Normalisierung
+- `party.html` lädt strikt **Session Controls → Hub Timer Module → Hub Runtime**
 - Scharade: pausierbarer 60-Sekunden-Timer; Restzeit, Rundentreffer und aktuelle Karte werden gespeichert
 - **Tabu: pausierbarer 60-Sekunden-Timer; Restzeit, Rundentreffer, Begriff und verbotene Wörter werden gespeichert**
 - Heiße Kartoffel: pausierbarer verdeckter Zufallstimer; interne Restzeit wird gespeichert, aber nicht angezeigt
@@ -72,7 +75,10 @@ Secret Circle besitzt 45 eingebaute Spiele, davon 15 priorisierte Kernspiele. F�
 - wiederhergestellte Hub-Timer starten bewusst pausiert und laufen erst nach „Fortsetzen“ weiter
 - Hub-Rundenaktionen werden während Pause per `inert` gesperrt
 - laufende Hub-Timer pausieren beim Wechsel in den Hintergrund
-- private Intervalltimer wurden aus den schnellen Engines und dem Hub-Timerpfad entfernt
+- private Intervalltimer wurden aus den schnellen Engines und beiden Hub-Modulen entfernt
+- die Architekturgrenze von **maximal 1.000 Zeilen pro Produktionsmodul** wurde nicht aufgeweicht
+- Performancebudget wurde verschärft: **`party-hub.js` maximal 50 KB**, **`party-hub-timers.js` maximal 18 KB**
+- der Service Worker hält beide Module im Offline-Core
 
 ### Advanced-Kernspiele
 
@@ -131,7 +137,7 @@ Neu beziehungsweise erweitert:
 - `tests/e2e/mafia-extended.spec.js`
 - `scripts/hub_control_audit.py`
 
-Der neue Hub-Control-Audit ist Bestandteil von `npm run validate`. Das bestehende 65-KB-Budget für `party-hub.js` wurde nicht gelockert; der aktuelle Hub-Runtime bleibt deutlich darunter.
+`validate_project.py`, Architektur-, Foundation-, Hub-Control-, Release- und Performance-Audit kennen den Split. `npm run check` prüft `party-hub-timers.js` separat; der Service-Worker-Test verlangt das Modul im Offline-Core.
 
 ## Noch technisch beziehungsweise produktseitig offen
 
