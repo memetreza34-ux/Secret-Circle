@@ -1,6 +1,6 @@
 # Secret Circle – Releasefahrplan bis Januar 2027
 
-Stand: 7. August 2026
+Stand: 8. August 2026
 
 ## Verbindliches Ziel
 
@@ -58,7 +58,7 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] PWA-Updatefluss mit sichtbarer neuer-Version-Meldung ergänzen
 - [x] aktive Cacheversion bei fehlgeschlagener Promotion vor vorzeitigem Löschen schützen
 - [x] direkte Hub-Sessions versioniert speichern und nach Reload explizit wiederaufnehmbar machen
-- [x] direkte Hub-Timerrestzeit für Scharade, Heiße Kartoffel und Wortkette über Reload sichern
+- [x] direkte Hub-Timerrestzeit für Scharade, Tabu, Heiße Kartoffel und Wortkette über Reload sichern
 - [x] private Hub-/Advanced-Reveal-Zustände nach Reload standardmäßig wieder verdecken
 
 ## September 2026 – Bedienung und Kernspiele
@@ -86,11 +86,12 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel für Quick-, Mega-, Viral- und Creator-Modi vereinheitlichen
 - [x] laufende Timer dieser vier Enginefamilien während einer Pause tatsächlich einfrieren
 - [x] direkte Hub-Timer über Hintergrund und Neuladen technisch pausierbar/wiederaufnehmbar machen
+- [x] direkte Hub-Sessions in **Beenden & speichern** und bestätigtes **Abbrechen & verwerfen** trennen
+- [x] globales Überspringen ohne Punkt, Fokusführung und mobile Hub-Steuerung vereinheitlichen
+- [x] Tabu als pausierbare 60-Sekunden-Runde mit Trefferzählung und Reload-Resume festlegen
 - [ ] Wartezeiten und Übergaben bei großen Gruppen reduzieren
-- [ ] Punkte und Siegerlogik pro Spiel dokumentieren
+- [ ] Punkte und Siegerlogik pro Spiel vollständig dokumentieren
 - [ ] Timer über Sperrbildschirm auf echten Zielgeräten korrekt fortsetzen
-- [ ] Skip, Fokus und mobile Accessibility der direkten Hub-Kernspiele vereinheitlichen
-- [ ] Produktentscheidung über eine feste Tabu-Rundenuhr abschließen
 
 ## Oktober 2026 – Inhalte, Creator und Design
 
