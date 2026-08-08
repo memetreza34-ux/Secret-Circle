@@ -12,6 +12,65 @@
   const CREATED_KEY = 'secret-circle-party-created-games-v1';
   const advancedModes = new Set(['two-truths', 'question-imposter', 'location-spy', 'mafia']);
   const templateModes = Object.freeze({ prompt: 'prompt', choice: 'choice', guess: 'charades', challenge: 'prompt', story: 'prompt', debate: 'prompt' });
+  const CORE_RULES = Object.freeze({
+    imposter: Object.freeze({
+      scoreMode: 'individual-match', scoreLabel: 'Matchpunkte', winnerMode: 'round-side+leaderboard',
+      scoreRule: 'Unschuldige erhalten je +1 bei erfolgreicher Enttarnung ohne richtigen Begriffsguess; Imposter erhalten je +2 bei Entkommen oder richtigem Begriffsguess.',
+      winnerRule: 'Jede Runde gewinnt Unschuldige oder Imposter; nach der Matchlänge sortiert die App die individuelle Rangliste.'
+    }),
+    'truth-dare': Object.freeze({ scoreMode: 'none', scoreLabel: '', winnerMode: 'none', scoreRule: 'Keine Punkte.', winnerRule: 'Kein App-Sieger.' }),
+    'never-have': Object.freeze({ scoreMode: 'none', scoreLabel: '', winnerMode: 'none', scoreRule: 'Keine Punkte.', winnerRule: 'Kein App-Sieger.' }),
+    'most-likely': Object.freeze({ scoreMode: 'none', scoreLabel: '', winnerMode: 'none', scoreRule: 'Keine Punkte.', winnerRule: 'Kein App-Sieger.' }),
+    'would-rather': Object.freeze({ scoreMode: 'none', scoreLabel: '', winnerMode: 'none', scoreRule: 'Keine Punkte.', winnerRule: 'Kein App-Sieger.' }),
+    paranoia: Object.freeze({ scoreMode: 'none', scoreLabel: '', winnerMode: 'none', scoreRule: 'Keine Punkte.', winnerRule: 'Kein App-Sieger.' }),
+    charades: Object.freeze({
+      scoreMode: 'hit-counter', scoreLabel: 'Treffer', winnerMode: 'none',
+      scoreRule: 'Jeder bestätigte Treffer in der 60-Sekunden-Runde zählt +1; Begriffe überspringen gibt keinen Treffer.',
+      winnerRule: 'Die App führt keinen Team- oder Einzel-Gesamtsieger.',
+      instructions: Object.freeze(['Aktive Person festlegen und Pack auswählen.', '60-Sekunden-Runde starten.', 'Treffer bestätigen oder einzelne Begriffe überspringen.', 'Nach Ablauf zur nächsten Person wechseln.'])
+    }),
+    taboo: Object.freeze({
+      scoreMode: 'hit-counter', scoreLabel: 'Treffer', winnerMode: 'none',
+      scoreRule: 'Jeder bestätigte Treffer in der 60-Sekunden-Runde zählt +1; Begriffe überspringen gibt keinen Treffer.',
+      winnerRule: 'Die App führt keinen Team- oder Einzel-Gesamtsieger.',
+      instructions: Object.freeze(['Aktive Person und Pack festlegen.', '60-Sekunden-Runde starten.', 'Zielwort erklären, ohne die verbotenen Wörter zu sagen.', 'Treffer bestätigen oder Begriff überspringen; danach Person wechseln.'])
+    }),
+    'hot-potato': Object.freeze({
+      scoreMode: 'none', scoreLabel: '', winnerMode: 'manual-round-loser',
+      scoreRule: 'Keine kumulativen Punkte.', winnerRule: 'Wer das Gerät beim verdeckten Timerende hält, verliert die Runde.',
+      instructions: Object.freeze(['Kategorie öffnen.', 'Verdeckten Zufallstimer starten.', 'Passenden Begriff nennen und das Gerät sofort weitergeben.', 'Wer das Gerät bei STOPP hält, verliert die Runde.'])
+    }),
+    'word-chain': Object.freeze({
+      scoreMode: 'completed-round-counter', scoreLabel: 'Geschaffte Runden', winnerMode: 'none',
+      scoreRule: 'Eine bestätigte geschaffte Runde zählt +1; Zeitablauf oder globaler Skip gibt keinen Punkt.',
+      winnerRule: 'Die App führt keinen individuellen oder Team-Gesamtsieger.'
+    }),
+    'two-truths': Object.freeze({
+      scoreMode: 'success-counter', scoreLabel: 'Erkannte Lügen', winnerMode: 'round-outcome',
+      scoreRule: 'Findet die Gruppe die Lüge, steigt der Session-Zähler um 1.',
+      winnerRule: 'Bei richtiger Wahl gewinnt die Gruppe die Runde, sonst hat die aktive Person erfolgreich getäuscht.'
+    }),
+    'question-imposter': Object.freeze({
+      scoreMode: 'success-counter', scoreLabel: 'Erfolgspunkte', winnerMode: 'round-outcome',
+      scoreRule: 'Eine korrekte Imposter-Wahl erhöht den Session-Zähler um 2.',
+      winnerRule: 'Bei korrekter Wahl gewinnt die Gruppe die Runde, sonst entkommt der Question Imposter.'
+    }),
+    'location-spy': Object.freeze({
+      scoreMode: 'success-counter', scoreLabel: 'Erfolgspunkte', winnerMode: 'round-outcome',
+      scoreRule: 'Korrekte Gruppenenttarnung oder ein korrekter Ortsguess erhöht den globalen Session-Zähler aktuell jeweils um 2.',
+      winnerRule: 'Der Spion gewinnt bei richtigem Ortsguess oder falscher Gruppenwahl; sonst gewinnt die Gruppe.'
+    }),
+    mafia: Object.freeze({
+      scoreMode: 'success-counter', scoreLabel: 'Dorf-Erfolgspunkte', winnerMode: 'role-side',
+      scoreRule: 'Eine per Tageswahl eliminierte Mafia-Rolle erhöht den Session-Zähler um 3.',
+      winnerRule: 'Dorf gewinnt bei null lebenden Mafia; Mafia gewinnt, sobald lebende Mafia mindestens so zahlreich wie das übrige Dorf ist.'
+    }),
+    'wrong-answers': Object.freeze({
+      scoreMode: 'none', scoreLabel: '', winnerMode: 'manual-round-loser',
+      scoreRule: 'Die App speichert keine individuellen Verlust- oder Siegpunkte.',
+      winnerRule: 'Wer korrekt antwortet oder nach Gruppenregel zu lange braucht, verliert die Runde; die Gruppe entscheidet manuell.'
+    })
+  });
 
   function clean(value, maximum = 180) {
     return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
@@ -65,16 +124,32 @@
     }
   }
 
+  function applyCoreRules(game) {
+    const contract = CORE_RULES[game.id];
+    if (!contract) return game;
+    const instructions = contract.instructions || game.instructions;
+    const competition = Object.freeze({
+      scoreMode: contract.scoreMode,
+      scoreLabel: contract.scoreLabel,
+      scoreRule: contract.scoreRule,
+      winnerMode: contract.winnerMode,
+      winnerRule: contract.winnerRule
+    });
+    return Object.freeze({ ...game, instructions, competition });
+  }
+
   function createCatalog(sourceStorage = storage) {
-    const routedBase = base.games.map(game => advancedModes.has(game.mode)
-      ? Object.freeze({
-          ...game,
-          advancedMode: game.mode,
-          mode: 'link',
-          href: `advanced.html?game=${encodeURIComponent(game.id)}`
-        })
-      : game
-    );
+    const routedBase = base.games.map(sourceGame => {
+      const game = applyCoreRules(sourceGame);
+      return advancedModes.has(game.mode)
+        ? Object.freeze({
+            ...game,
+            advancedMode: game.mode,
+            mode: 'link',
+            href: `advanced.html?game=${encodeURIComponent(game.id)}`
+          })
+        : game;
+    });
     const created = safeCreatedGames(sourceStorage);
     const createdGames = created.map(game => Object.freeze({
       id: game.id,
@@ -136,6 +211,7 @@
       getPackNames,
       getItems,
       itemCount,
+      coreRules: CORE_RULES,
       createdGameIds: Object.freeze(createdGames.map(game => game.id)),
       createdStorageKey: CREATED_KEY,
       createCatalog
