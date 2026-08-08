@@ -53,13 +53,16 @@ Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert v
 - `party-release-structure.js`: 15 Kernspiele, 13 Erweiterungen, 17 Labs und kombinierter Altersfilter
 - `party-filter-state.js`: normalisierte lokale Katalogfilter und letzte Hub-Ansicht
 - `party-search-assist.js`: Synonyme, Tippfehlertoleranz und barrierearme Suchvorschläge
-- `party-hub.js`: Katalog und einfache Spiele
+- `party-hub.js`: Hub-Session, Ledger-Anbindung, Navigation, gemeinsame Bedienung und nicht zeitgesteuerte direkte Hub-Spiele
+- `party-hub-timers.js`: Timer-State-Normalisierung und die zeitgesteuerten direkten Hub-Spiele Scharade, Tabu, Heiße Kartoffel und Wortkette
 - `party-hub-plus.js`: Einstellungen, Statistik, Erfolge und Installation
 - `party-hub-polish.js`: kontextabhängige Aktionen und Hilfelader
 - `party-guide.js`: Onboarding, kurze Erklärungen und Creator-Einstiege
 - `party-custom-packs.js`: eigene Packs mit Transaktionsschutz
 - `party-night.js`: Planung und Fortschritt
 - `party-data-tools.js`: Gesamtsicherung und Löschung
+
+Für direkte Hub-Timer gilt eine feste Lade- und Eigentumsreihenfolge: `party-session-controls.js` stellt die generische pausierbare Uhr bereit, `party-hub-timers.js` implementiert die spielabhängigen Timermechaniken, `party-hub.js` besitzt die Session und delegiert an das Timer-Modul. Diese Reihenfolge wird in `party.html`, Architektur-Audit, Projektvalidator und Unit-Verträgen erzwungen.
 
 Der Hub lädt Erweiterungen in kontrollierter Reihenfolge: Reifestufenstruktur, gespeicherter Filterzustand, Suchhilfe. Fällt eine Komfortschicht aus, bleibt der Basiskatalog nutzbar.
 
@@ -86,9 +89,11 @@ Der Creator unterstützt Fragen, Auswahl, Erraten, Challenges, Story und Debatte
 
 Creator, Quick, Mega und Viral verwenden denselben direkten Abschluss- und Bedienvertrag. Keine Engine erzeugt beim wiederholten Abschlussversuch eine neue zufällige Verlaufs-ID. Keine dieser vier Enginefamilien besitzt einen privaten Intervalltimer; zeitgesteuerte Runden verwenden `party-session-controls.js`, damit eine sichtbare Pause auch die verbleibende Zeit tatsächlich einfriert.
 
+Auch die direkte Hub-Engine besitzt keinen privaten Intervalltimer. `party-hub-timers.js` verwendet ausschließlich den Controller aus `party-session-controls.js`; Restzeit wird aus dem gemeinsamen Controller serialisiert und bei Wiederaufnahme bewusst pausiert rekonstruiert. Timermechaniken dürfen nicht zurück in `party-hub.js` dupliziert werden.
+
 Ein globales Überschreiben von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik ist verboten.
 
-Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB.
+Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB. Zusätzlich gelten die engeren Performancebudgets aus `scripts/performance_budget.py`; für die direkte Hub-Aufteilung sind aktuell 50 KB für `party-hub.js` und 18 KB für `party-hub-timers.js` festgelegt.
 
 ## 5. Reine Logik vor DOM-Logik
 
@@ -124,6 +129,7 @@ Ein manueller Sessionabbruch entfernt den gespeicherten aktiven Zustand nur dann
 - progressive Offenlegung statt langer Formulare auf einmal
 - Nutzer können jederzeit zurück, abbrechen oder Daten sichern
 - Quick-, Mega-, Viral- und Creator-Modi zeigen Pause/Fortsetzen, Runde überspringen und Session beenden an derselben Position
+- direkte Hub-Spiele trennen **Beenden & speichern** von **Abbrechen & verwerfen** und besitzen eine gemeinsame Runde-überspringen-Aktion ohne Punktvergabe
 - nach einem Abschluss stehen Wiederholen und nächstes Spiel an derselben Stelle bereit
 - Pause blockiert die Rundenaktionen und friert einen aktiven Timer ein; Fortsetzen nimmt ihn mit der Restzeit wieder auf
 - Suchvorschläge bleiben optional und vollständig per Tastatur bedienbar
@@ -146,7 +152,7 @@ Ein manueller Sessionabbruch entfernt den gespeicherten aktiven Zustand nur dann
 
 Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: `secret-circle-v30`.
 
-Creator, Hilfesystem, Release-Tiers, Filterzustand, Suchhilfe, Session-Ledger, gemeinsame Sessionsteuerung, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core. Nicht mehr verwendete Übergangsmodule werden aus Code, Tests, Loader und Cache entfernt.
+Creator, Hilfesystem, Release-Tiers, Filterzustand, Suchhilfe, Session-Ledger, gemeinsame Sessionsteuerung, `party-hub-timers.js`, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core. Nicht mehr verwendete Übergangsmodule werden aus Code, Tests, Loader und Cache entfernt.
 
 Eine neue Version wird zuerst in einem Staging-Cache vollständig vorbereitet. Sie wird erst nach sichtbarer Zustimmung aktiviert. Der aktive Offline-Core wird nicht vor erfolgreicher Übernahme gelöscht.
 
@@ -180,13 +186,15 @@ Sessiontests prüfen alle vier schnellen Enginefamilien auf stabile Session-IDs,
 
 Der gemeinsame Sessioncontroller besitzt einen isolierten Test mit kontrollierter Uhr. Browserprüfungen müssen zusätzlich nachweisen, dass ein sichtbarer Timer während einer Pause unverändert bleibt, nach Fortsetzen weiterläuft, Skip und bestätigter Abbruch funktionieren und Replay beziehungsweise nächstes Spiel erreichbar sind.
 
+Die direkten Hub-Verträge prüfen `party-hub.js` und `party-hub-timers.js` gemeinsam: Script-Reihenfolge, vier pausierbare Timerarten, sichere Reload-Wiederaufnahme, getrennten Abschluss/Abbruch, Skip ohne Punkt, Fokusführung und Offline-Verfügbarkeit des Timer-Moduls.
+
 Creator-spezifische E2E-Prüfungen decken Wizard, strukturierte Karten, Offline-Start, Wiederaufnahme, Sanitizing, exakte Verlaufseinträge und wiederholte Statistik ab. Hub-E2E-Prüfungen decken Filterwiederherstellung, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Suchvorschläge mit Maus und Tastatur ab.
 
 ## 14. Performancebudget
 
 Neue Module und Assets erhalten eigene Budgets. Keine großen Frameworks, Videos oder Mediendateien ohne messbaren Nutzen, Kompression und Audit. Wachstum des Offline-Cores bleibt sichtbar.
 
-`party-session-controls.js` besitzt ein eigenes Größenbudget und darf nicht als Vorwand dienen, spielabhängige Logik in einen unübersichtlichen globalen Controller zu verschieben.
+`party-session-controls.js` besitzt ein eigenes Größenbudget und darf nicht als Vorwand dienen, spielabhängige Logik in einen unübersichtlichen globalen Controller zu verschieben. Dasselbe gilt für `party-hub-timers.js`: Es enthält nur die vier zeitgesteuerten direkten Hub-Mechaniken und darf keine Session-, Katalog- oder Statistikverantwortung übernehmen.
 
 ## 15. Erweiterungspunkte
 
