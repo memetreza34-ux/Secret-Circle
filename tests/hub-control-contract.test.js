@@ -6,6 +6,7 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const hub = fs.readFileSync(path.join(root, 'party-hub.js'), 'utf8');
+const timers = fs.readFileSync(path.join(root, 'party-hub-timers.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'party.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'party.css'), 'utf8');
 
@@ -37,14 +38,17 @@ assert.match(hub, /const activeTimedRound = Boolean\(session\.timer/);
 assert.match(hub, /const completedRounds = session\.rounds \+ \(activeTimedRound \? 1 : 0\)/);
 assert.match(hub, /rounds: completedRounds/);
 assert.match(hub, /\$\('#play-progress'\)\.textContent = `\$\{session\.rounds\} Runden`/);
+assert.match(hub, /const T = window\.SecretCirclePartyHubTimers/);
+assert.match(hub, /T\.createTimerGames\(/);
+assert.match(hub, /game\.mode === 'taboo'\) timerGames\.renderTabooStart\(\)/);
+assert.match(hub, /timerGames\.renderStoredTimerSession\(\)/);
 
-assert.match(hub, /TIMER_KINDS = new Set\(\['charades', 'taboo', 'hot-potato', 'word-chain'\]\)/);
-assert.match(hub, /game\.mode === 'taboo'\) renderTabooStart\(\)/);
-assert.match(hub, /function startTaboo\(remainingMs = 60_000/);
-assert.match(hub, /hubTimer\.countdown\(remainingMs \/ 1000, timer, finishTabooTimer\)/);
-assert.match(hub, /timerState\.kind === 'taboo'\) startTaboo/);
-assert.match(hub, /word: cleanText\(value\.word, 120\)/);
-assert.match(hub, /banned: Array\.isArray\(value\.banned\)/);
+assert.match(timers, /TIMER_KINDS = new Set\(\['charades', 'taboo', 'hot-potato', 'word-chain'\]\)/);
+assert.match(timers, /function startTaboo\(remainingMs = 60_000/);
+assert.match(timers, /hubTimer\.countdown\(remainingMs \/ 1000, timer, finishTabooTimer\)/);
+assert.match(timers, /timerState\.kind === 'taboo'\) startTaboo/);
+assert.match(timers, /word: cleanText\(value\.word, 120\)/);
+assert.match(timers, /banned: Array\.isArray\(value\.banned\)/);
 
 assert.match(css, /\.hub-session-controls/);
 assert.match(css, /\.hub-abort-button/);
@@ -53,6 +57,7 @@ assert.match(css, /@media \(max-width:480px\)[\s\S]*\.hub-session-controls\{grid
 
 console.log(JSON.stringify({
   hubControlContract: 'PASS',
+  splitTimerModule: true,
   distinctFinishAndAbort: true,
   roundSkipWithoutPoint: true,
   focusManagement: true,
