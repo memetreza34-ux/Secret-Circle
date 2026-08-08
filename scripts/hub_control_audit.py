@@ -13,6 +13,7 @@ def read(relative: str) -> str:
 
 
 hub = read('party-hub.js')
+timers = read('party-hub-timers.js')
 html = read('party.html')
 css = read('party.css')
 package = json.loads(read('package.json'))
@@ -27,6 +28,11 @@ checks = {
         'role="group" aria-label="Spielsteuerung"',
         '<h1 id="play-title" tabindex="-1"></h1>',
     )) and 'id="exit-game"' not in html,
+    'split_timer_module_loaded': all(marker in html for marker in (
+        '<script src="party-session-controls.js"></script>',
+        '<script src="party-hub-timers.js"></script>',
+        '<script src="party-hub.js"></script>',
+    )) and html.index('party-session-controls.js') < html.index('party-hub-timers.js') < html.index('party-hub.js'),
     'distinct_finish_abort': all(marker in hub for marker in (
         'function finishSession()', 'function abortSession()',
         'Bisheriger Fortschritt wird verworfen und nicht als abgeschlossen gezählt.',
@@ -50,6 +56,10 @@ checks = {
         'function focusPlayPrimary()', "primary || $('#play-title')", 'requestAnimationFrame',
     )),
     'taboo_shared_timer': all(marker in hub for marker in (
+        'const T = window.SecretCirclePartyHubTimers;', 'T.createTimerGames({',
+        "game.mode === 'taboo') timerGames.renderTabooStart()",
+        'timerGames.renderStoredTimerSession()',
+    )) and all(marker in timers for marker in (
         "TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])",
         'function renderTabooStart()', 'function startTaboo(remainingMs = 60_000',
         'finishTabooTimer', 'hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer)',
@@ -71,14 +81,19 @@ checks = {
         'Taboo reload restores the same private card and remaining time paused',
     )),
     'unit_gate': 'tests/hub-control-contract.test.js' in package.get('scripts', {}).get('test', ''),
-    'syntax_gate': 'tests/hub-control-contract.test.js' in package.get('scripts', {}).get('check', ''),
+    'syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
+        'party-hub-timers.js', 'tests/hub-control-contract.test.js',
+    )),
 }
 
-# Stronger semantic check: the abort function body itself may never call recordCompletion.
 abort_start = hub.find('function abortSession()')
 abort_end = hub.find('\n  function pickUnused', abort_start)
 if abort_start < 0 or abort_end < 0 or 'recordCompletion' in hub[abort_start:abort_end]:
     checks['abort_never_records'] = False
+
+for source in (hub, timers):
+    if any(marker in source for marker in ('activeTimer', 'window.setInterval(', 'performance.now()')):
+        checks['taboo_shared_timer'] = False
 
 failed = [name for name, passed in checks.items() if not passed]
 if failed:
@@ -86,6 +101,7 @@ if failed:
 
 print(json.dumps({
     'hub_control_audit': 'PASS',
+    'split_timer_module': True,
     'distinct_finish_and_abort': True,
     'global_skip_without_point': True,
     'focus_management': True,
