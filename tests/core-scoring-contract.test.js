@@ -7,7 +7,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-const catalog = require(path.join(root, 'party-catalog.js'));
+const catalog = require(path.join(root, 'party-routing.js'));
 const engine = read('game-engine.js');
 const hub = read('party-hub.js');
 const timers = read('party-hub-timers.js');
@@ -33,11 +33,36 @@ const CORE = Object.freeze({
 });
 
 const expectedIds = Object.keys(CORE).sort();
-for (const id of expectedIds) {
-  assert.ok(catalog.getGame(id), `Core game missing from catalog: ${id}`);
-  assert.ok(rulesDoc.includes(`| ${catalog.getGame(id).title}`) || rulesDoc.includes(`| Nicht sagen! / Tabu`), `Scoring documentation missing: ${id}`);
-}
 assert.equal(expectedIds.length, 15);
+assert.equal(Object.keys(catalog.coreRules).length, 15);
+for (const id of expectedIds) {
+  const game = catalog.getGame(id);
+  assert.ok(game, `Core game missing from catalog: ${id}`);
+  assert.ok(game.competition, `Machine-readable competition contract missing: ${id}`);
+  assert.equal(game.competition.scoreMode, CORE[id].score, `Score mode drift: ${id}`);
+  assert.equal(game.competition.winnerMode, CORE[id].winner, `Winner mode drift: ${id}`);
+  assert.equal(typeof game.competition.scoreRule, 'string');
+  assert.ok(game.competition.scoreRule.length >= 6);
+  assert.equal(typeof game.competition.winnerRule, 'string');
+  assert.ok(game.competition.winnerRule.length >= 6);
+  if (game.competition.scoreMode === 'none') assert.equal(game.competition.scoreLabel, '');
+  else assert.ok(game.competition.scoreLabel.length >= 3);
+  assert.ok(rulesDoc.includes(`| ${game.title}`) || rulesDoc.includes('| Nicht sagen! / Tabu'), `Scoring documentation missing: ${id}`);
+}
+
+assert.deepEqual(catalog.getGame('charades').instructions, [
+  'Aktive Person festlegen und Pack auswählen.',
+  '60-Sekunden-Runde starten.',
+  'Treffer bestätigen oder einzelne Begriffe überspringen.',
+  'Nach Ablauf zur nächsten Person wechseln.'
+]);
+assert.deepEqual(catalog.getGame('taboo').instructions, [
+  'Aktive Person und Pack festlegen.',
+  '60-Sekunden-Runde starten.',
+  'Zielwort erklären, ohne die verbotenen Wörter zu sagen.',
+  'Treffer bestätigen oder Begriff überspringen; danach Person wechseln.'
+]);
+assert.equal(catalog.getGame('hot-potato').instructions.at(-1), 'Wer das Gerät bei STOPP hält, verliert die Runde.');
 
 // Word Imposter is the only core game with an individual persistent match scoreboard.
 assert.match(engine, /scores: Object\.fromEntries\(players\.map\(name => \[name, 0\]\)\)/);
@@ -77,7 +102,6 @@ assert.match(advanced, /if \(data\.roles\[eliminated\] === 'Mafia'\) session\.sc
 assert.match(advanced, /if \(mafiaAlive === 0\) return 'Dorf'/);
 assert.match(advanced, /if \(mafiaAlive >= villageAlive\) return 'Mafia'/);
 
-// The human-readable contract must explicitly prevent interpreting generic scores as universal winners.
 for (const marker of [
   'Ein Zähler ist nicht automatisch ein Siegerpunktestand.',
   'Score und Sieger dürfen nicht vermischt werden',
@@ -91,6 +115,8 @@ for (const marker of [
 console.log(JSON.stringify({
   coreScoringContract: 'PASS',
   coreGames: expectedIds.length,
+  machineReadableCatalogRules: true,
+  correctedRuleCopy: ['charades', 'taboo', 'hot-potato'],
   individualMatchScoring: ['imposter'],
   scorelessCoreGames: expectedIds.filter(id => CORE[id].score === 'none'),
   counterOnlyCoreGames: ['charades', 'taboo', 'word-chain'],
