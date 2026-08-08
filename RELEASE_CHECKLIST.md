@@ -29,6 +29,10 @@ Diese Checkliste muss für den unveränderlichen Release-Commit vollständig aus
 - [ ] beschädigter direkter Hub-Spielstand wird sicher verworfen
 - [ ] direkte Hub-Wiederaufnahme erfolgt explizit und öffnet keine privaten Inhalte automatisch
 - [ ] verworfener Hub-Spielstand erzeugt keinen Verlauf und keine Statistik
+- [ ] **Beenden & speichern** und **Abbrechen & verwerfen** sind im direkten Hub eindeutig getrennt
+- [ ] bestätigter Hub-Abbruch und Escape schreiben weder Verlauf noch Statistik
+- [ ] globales Hub-Überspringen vergibt keinen Punkt und wechselt sauber zur nächsten Runde/Person
+- [ ] ein bewusst gespeicherter bereits gestarteter Timerdurchgang verliert keine erzielten Treffer
 - [ ] Advanced Runner und PWA-Update-Schutz verwenden beide `secret-circle-party-active-v1`
 - [ ] Advanced-Abschluss mit derselben Session-ID kann Verlauf und Statistik nicht doppelt erhöhen
 - [ ] private Advanced-Reveal-Zustände werden nach Reload wieder verdeckt
@@ -57,6 +61,9 @@ Zusätzliche Kernspielverträge:
 
 - [ ] Scharade friert ihren 60-Sekunden-Timer während Pause ein
 - [ ] Scharade stellt Restzeit, Rundentreffer und aktuelle Karte nach Reload pausiert wieder her
+- [ ] Tabu läuft als 60-Sekunden-Runde mit Trefferzählung
+- [ ] Tabu pausiert und stellt Restzeit, Rundentreffer, Begriff und verbotene Wörter nach Reload wieder her
+- [ ] Tabu-Begriff überspringen verändert den Punktestand nicht
 - [ ] Heiße Kartoffel pausiert den Zufallstimer ohne Offenlegung der Restzeit
 - [ ] Heiße Kartoffel stellt dieselbe interne Zufallsrestzeit nach Reload pausiert wieder her
 - [ ] Wortkette friert ihren 30-Sekunden-Timer während Pause ein
@@ -84,6 +91,8 @@ Zusätzliche Kernspielverträge:
 - [ ] Screenreader erkennt Listbox und aktiven Vorschlag
 - [ ] leere Ergebnisse erklären die nächste Aktion
 - [ ] direkte Hub-Session über vollständigen Reload besitzt den dokumentierten sicheren Resume-Vertrag
+- [ ] Spielsteuerung besitzt auf kleinen Smartphones mindestens 44-Pixel-Touchziele
+- [ ] Fokus landet nach Runden-/Reveal-Wechseln auf einer sinnvollen nächsten Aktion
 
 ## 5. Backup und lokale Daten
 
