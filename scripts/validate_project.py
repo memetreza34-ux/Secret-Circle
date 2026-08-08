@@ -24,7 +24,7 @@ REQUIRED = {
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
     'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
     'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
-    'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
+    'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js', 'party-advanced-runner.js',
     'party-advanced-preferences.js', 'party-quick-modes.js', 'party-mega-modes.js',
     'party-viral-modes.js', 'party-created-modes.js', 'quick-loader.js',
@@ -33,13 +33,15 @@ REQUIRED = {
     'tests/engine.test.js', 'tests/storage.test.js', 'tests/role-assignment.test.js',
     'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
     'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
-    'tests/mafia-rules.test.js', 'tests/advanced-resume-contract.test.js',
-    'tests/party-filter-state.test.js', 'tests/party-search-assist.test.js',
-    'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
-    'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
-    'tests/service-worker.test.js', 'tests/pwa-update.test.js', 'tests/quick-loader.test.js',
+    'tests/hub-control-contract.test.js', 'tests/mafia-rules.test.js',
+    'tests/advanced-resume-contract.test.js', 'tests/party-filter-state.test.js',
+    'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
+    'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
+    'tests/session-ledger-integration.test.js', 'tests/service-worker.test.js',
+    'tests/pwa-update.test.js', 'tests/quick-loader.test.js',
     'tests/e2e/core-game-catalog.spec.js', 'tests/e2e/core-hub-statistics.spec.js',
     'tests/e2e/core-hub-timers.spec.js', 'tests/e2e/core-hub-resume.spec.js',
+    'tests/e2e/core-hub-controls.spec.js', 'tests/e2e/taboo-timer.spec.js',
     'tests/e2e/advanced-core-smoke.spec.js', 'tests/e2e/advanced-core-abort.spec.js',
     'tests/e2e/advanced-secret-resume.spec.js', 'tests/e2e/advanced-core-round-flow.spec.js',
     'tests/e2e/advanced-completion-exact-once.spec.js', 'tests/e2e/mafia-extended.spec.js',
@@ -49,7 +51,8 @@ REQUIRED = {
     'tests/e2e/party-viral-resilience.spec.js', 'tests/e2e/game-creator.spec.js',
     'tests/e2e/creator-runner-resilience.spec.js', 'tests/e2e/offline.spec.js',
     'scripts/repo_hygiene.py', 'scripts/architecture_audit.py',
-    'scripts/foundation_contract_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py',
+    'scripts/foundation_contract_audit.py', 'scripts/hub_control_audit.py',
+    'scripts/performance_budget.py', 'scripts/release_audit.py',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
     'README.md', 'ARCHITECTURE.md', 'BACKUP_SCHEMAS.md', 'MODE_UNIVERSE.md',
     'TREND_FORMATS.md', 'ASSET_PLAN.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
@@ -130,8 +133,8 @@ index = audit_html('index.html', [
 party = audit_html('party.html', [
     'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js', 'party-custom-packs.js',
-    'session-ledger.js', 'party-session-controls.js', 'party-hub.js', 'party-hub-plus.js',
-    'party-hub-polish.js', 'party-night.js', 'party-data-tools.js',
+    'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
+    'party-hub-plus.js', 'party-hub-polish.js', 'party-night.js', 'party-data-tools.js',
 ])
 advanced = audit_html('advanced.html', [
     'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
@@ -147,7 +150,8 @@ audit_html('privacy.html', [])
 
 for marker in (
     'game-detail', 'play-layer', 'party-viral-catalog.js', 'party-hub-polish.js',
-    'pause-hub-game', 'play-pause-status', 'session-ledger.js', 'party-session-controls.js',
+    'pause-hub-game', 'play-pause-status', 'finish-hub-game', 'skip-hub-round',
+    'abort-hub-game', 'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js',
 ):
     if marker not in party:
         raise SystemExit(f'Party Hub marker missing: {marker}')
@@ -178,11 +182,12 @@ sources = {
         'creator': 'game-creator.js', 'custom': 'party-custom-packs.js',
         'release': 'party-release-structure.js', 'filters': 'party-filter-state.js',
         'search': 'party-search-assist.js', 'controls': 'party-session-controls.js',
-        'hub': 'party-hub.js', 'quick_runtime': 'party-quick-modes.js',
-        'mega_runtime': 'party-mega-modes.js', 'viral_runtime': 'party-viral-modes.js',
-        'created_runtime': 'party-created-modes.js', 'ledger': 'session-ledger.js',
-        'loader': 'quick-loader.js', 'runtime_guard': 'runtime-guard.js',
-        'night': 'party-night.js', 'data_tools': 'party-data-tools.js',
+        'hub': 'party-hub.js', 'hub_timers': 'party-hub-timers.js',
+        'quick_runtime': 'party-quick-modes.js', 'mega_runtime': 'party-mega-modes.js',
+        'viral_runtime': 'party-viral-modes.js', 'created_runtime': 'party-created-modes.js',
+        'ledger': 'session-ledger.js', 'loader': 'quick-loader.js',
+        'runtime_guard': 'runtime-guard.js', 'night': 'party-night.js',
+        'data_tools': 'party-data-tools.js',
     }.items()
 }
 
@@ -203,20 +208,28 @@ module_markers = {
         'function setSessionActive', 'remainingMilliseconds',
     ),
     'hub': (
-        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'SecretCirclePartyHubTimers',
+        'S.createController', 'T.createTimerGames', 'timerGames.renderStoredTimerSession',
         "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
         "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
         'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
-        'players: [...state.players]', 'renderStoredTimerSession', 'Session fortsetzen',
+        'players: [...state.players]', 'Session fortsetzen',
         'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
+        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
+        'setHubPaused(true)', 'pause-hub-game', 'skipHubRound', 'abortSession',
+    ),
+    'hub_timers': (
+        'SecretCirclePartyHubTimers', 'normalizeTimerState', 'createTimerGames',
+        "TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])",
         "kind: 'charades', phase: 'running', remainingMs",
+        "kind: 'taboo', phase: 'running', remainingMs",
         "kind: 'hot-potato', phase: 'running', remainingMs",
         "kind: 'word-chain', phase: 'running', remainingMs",
         'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
+        'hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer)',
         'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
         'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
-        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
-        'setHubPaused(true)', 'pause-hub-game',
+        'renderStoredTimerSession',
     ),
     'trending': ('trendingGameIds', 'version: 3', 'caption-battle'),
     'mega': ('megaGameIds', 'quickGameIds', 'version: 4', 'anime-guess', 'money-challenge'),
@@ -258,9 +271,10 @@ for name, source, engine in (
     if 'let timerId = null' in source or 'const deadline = Date.now() + seconds * 1000' in source:
         raise SystemExit(f'Private non-pausable timer remains in {name}.')
 
-for forbidden in ('activeTimer', 'window.setInterval(', 'performance.now()'):
-    if forbidden in sources['hub']:
-        raise SystemExit(f'Private Hub timer implementation remains: {forbidden}')
+for source_name in ('hub', 'hub_timers'):
+    for forbidden in ('activeTimer', 'window.setInterval(', 'performance.now()'):
+        if forbidden in sources[source_name]:
+            raise SystemExit(f'Private Hub timer implementation remains in {source_name}: {forbidden}')
 
 for relative in ('quick-loader.js', 'sw.js', 'package.json'):
     source = read(relative)
@@ -289,8 +303,8 @@ for required_asset in (
     './party.html', './advanced.html', './quick-play.html', './creator.html',
     './pwa-update.css', './party-release.css', './party-search.css',
     './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-    './session-ledger.js', './party-session-controls.js', './party-viral-catalog.js',
-    './party-routing.js', './game-creator.js', './party-guide.js',
+    './session-ledger.js', './party-session-controls.js', './party-hub-timers.js',
+    './party-viral-catalog.js', './party-routing.js', './game-creator.js', './party-guide.js',
     './party-created-modes.js', './quick-loader.js',
 ):
     if required_asset not in core:
@@ -318,34 +332,35 @@ if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('n
     raise SystemExit('Package metadata invalid.')
 for marker in (
     'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
-    'party-search-assist.js', 'runtime-guard.js', 'party-hub.js', 'sw.js',
+    'party-search-assist.js', 'runtime-guard.js', 'party-hub-timers.js', 'party-hub.js', 'sw.js',
     'tests/core-game-contract.test.js', 'tests/hub-timer-contract.test.js',
-    'tests/hub-resume-contract.test.js', 'tests/mafia-rules.test.js',
-    'tests/advanced-resume-contract.test.js',
+    'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js',
+    'tests/mafia-rules.test.js', 'tests/advanced-resume-contract.test.js',
 ):
     if marker not in package.get('scripts', {}).get('check', ''):
         raise SystemExit(f'Syntax gate missing: {marker}')
 for marker in (
     'tests/core-game-contract.test.js', 'tests/hub-timer-contract.test.js',
-    'tests/hub-resume-contract.test.js', 'tests/mafia-rules.test.js',
-    'tests/advanced-resume-contract.test.js', 'tests/party-search-assist.test.js',
-    'tests/backup-schema-registry.test.js', 'tests/session-ledger.test.js',
-    'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
-    'tests/pwa-update.test.js',
+    'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js',
+    'tests/mafia-rules.test.js', 'tests/advanced-resume-contract.test.js',
+    'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
+    'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
+    'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
 ):
     if marker not in package.get('scripts', {}).get('test', ''):
         raise SystemExit(f'Unit gate missing: {marker}')
-if 'scripts/foundation_contract_audit.py' not in package.get('scripts', {}).get('validate', ''):
-    raise SystemExit('Foundation contract audit missing from validation gate.')
+for marker in ('scripts/foundation_contract_audit.py', 'scripts/hub_control_audit.py'):
+    if marker not in package.get('scripts', {}).get('validate', ''):
+        raise SystemExit(f'Validation audit missing: {marker}')
 
 unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
 e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
 cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 23 or len(e2e_suites) < 38 or not cross_suites:
+if len(unit_tests) < 24 or len(e2e_suites) < 40 or not cross_suites:
     raise SystemExit('Automated test matrix is incomplete.')
 for required in (
     'core-game-contract.test.js', 'hub-timer-contract.test.js', 'hub-resume-contract.test.js',
-    'mafia-rules.test.js', 'advanced-resume-contract.test.js',
+    'hub-control-contract.test.js', 'mafia-rules.test.js', 'advanced-resume-contract.test.js',
     'party-search-assist.test.js', 'backup-schema-registry.test.js', 'session-ledger.test.js',
     'party-session-controls.test.js', 'session-ledger-integration.test.js',
     'service-worker.test.js', 'pwa-update.test.js',
@@ -354,7 +369,8 @@ for required in (
         raise SystemExit(f'Critical unit test missing: {required}')
 for required in (
     'core-game-catalog.spec.js', 'core-hub-statistics.spec.js', 'core-hub-timers.spec.js',
-    'core-hub-resume.spec.js', 'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
+    'core-hub-resume.spec.js', 'core-hub-controls.spec.js', 'taboo-timer.spec.js',
+    'advanced-core-smoke.spec.js', 'advanced-core-abort.spec.js',
     'advanced-secret-resume.spec.js', 'advanced-core-round-flow.spec.js',
     'advanced-completion-exact-once.spec.js', 'mafia-extended.spec.js',
     'party-filter-state.spec.js', 'party-search-assist.spec.js', 'party-session-controls.spec.js',
@@ -378,7 +394,8 @@ for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
         'runtime-guard.js', 'backup-schema-registry.js', 'session-ledger.js',
         'party-session-controls.js', 'quick-loader.js', 'party-created-modes.js',
         'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-        'party-search-assist.js', 'party-hub.js', 'game-creator.js', 'creator-page.js',
+        'party-search-assist.js', 'party-hub-timers.js', 'party-hub.js',
+        'game-creator.js', 'creator-page.js',
     ):
         if forbidden in read(relative):
             raise SystemExit(f'Forbidden pattern {forbidden} in {relative}')
@@ -393,6 +410,7 @@ print(json.dumps({
     'legacy_guard_removed': True,
     'search_assistance': True,
     'shared_session_controls': True,
+    'split_direct_hub_timer_module': True,
     'pausable_fast_engine_timers': True,
     'pausable_core_hub_timers': True,
     'direct_hub_reload_resume': True,
