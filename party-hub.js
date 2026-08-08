@@ -4,16 +4,17 @@
   const C = window.SecretCirclePartyCatalog;
   const L = window.SecretCircleSessionLedger;
   const S = window.SecretCircleSessionControls;
+  const T = window.SecretCirclePartyHubTimers;
   if (!C) throw new Error('Party-Katalog konnte nicht geladen werden.');
   if (!L) throw new Error('Gemeinsames Session-Register für den Party Hub fehlt.');
   if (!S) throw new Error('Gemeinsame Sessionsteuerung für den Party Hub fehlt.');
+  if (!T) throw new Error('Timer-Modul für den Party Hub fehlt.');
 
   const STORAGE_KEY = 'secret-circle-party-hub-v1';
   const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
   const ACTIVE_VERSION = 1;
   const MAX_HISTORY = L.maximumHistory;
   const MAX_ACTIVE_USED = 500;
-  const TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain']);
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const hubTimer = S.createController({ windowRef: window });
@@ -112,19 +113,7 @@
   }
 
   function normalizeTimerState(value) {
-    if (!value || typeof value !== 'object' || Array.isArray(value) || !TIMER_KINDS.has(value.kind)) return null;
-    const phase = value.phase === 'ended' ? 'ended' : 'running';
-    return {
-      kind: value.kind,
-      phase,
-      remainingMs: phase === 'running' ? Math.max(250, Math.min(3_600_000, Number(value.remainingMs) || 0)) : 0,
-      roundScore: safeInteger(value.roundScore, 10_000),
-      item: cleanText(value.item, 240),
-      prompt: cleanText(value.prompt, 400),
-      letter: cleanText(value.letter, 12),
-      word: cleanText(value.word, 120),
-      banned: Array.isArray(value.banned) ? value.banned.slice(0, 12).map(item => cleanText(item, 80)).filter(Boolean) : []
-    };
+    return T.normalizeTimerState(value, { safeInteger, cleanText });
   }
 
   function normalizeActiveSession(value) {
@@ -703,6 +692,31 @@
     renderPlayRound();
   }
 
+  const timerGames = T.createTimerGames({
+    controls: S,
+    hubTimer,
+    $,
+    makeElement,
+    clearNode,
+    cleanText,
+    safeInteger,
+    contentItems,
+    pickUnused,
+    persistActiveSession,
+    currentPlayer,
+    actionButton,
+    nextSimpleRound,
+    syncHubPauseUi,
+    focusPlayPrimary,
+    setHubPaused,
+    setStatus,
+    preparePlayCard,
+    randomInt,
+    randomItem,
+    getSession: () => session,
+    renderPlayRound
+  });
+
   function skipHubRound() {
     if (!session || hubTimer.isPaused()) return false;
     stopHubTimer();
@@ -723,10 +737,10 @@
     else if (game.mode === 'prompt') renderPromptGame();
     else if (game.mode === 'choice') renderChoiceGame();
     else if (game.mode === 'paranoia') renderParanoia();
-    else if (game.mode === 'charades') renderCharadesStart();
-    else if (game.mode === 'taboo') renderTabooStart();
-    else if (game.mode === 'hot-potato') renderHotPotatoStart();
-    else if (game.mode === 'word-chain') renderWordChainStart();
+    else if (game.mode === 'charades') timerGames.renderCharadesStart();
+    else if (game.mode === 'taboo') timerGames.renderTabooStart();
+    else if (game.mode === 'hot-potato') timerGames.renderHotPotatoStart();
+    else if (game.mode === 'word-chain') timerGames.renderWordChainStart();
     else if (game.mode === 'random-player') renderRandomPlayer();
     else if (game.mode === 'utility') renderUtility();
     focusPlayPrimary();
@@ -790,219 +804,6 @@
     persistActiveSession();
   }
 
-  function renderCharadesStart() {
-    $('#play-player').textContent = `${currentPlayer()} stellt dar`;
-    $('#play-content').textContent = '60 Sekunden. Begriffe dürfen nicht gesprochen oder buchstabiert werden.';
-    $('#play-options').append(actionButton('Runde starten', () => startCharades(60_000, 0, '')));
-    persistActiveSession();
-  }
-
-  function finishCharadesTimer() {
-    const roundScore = session.timer?.roundScore || 0;
-    session.running = false;
-    session.timer = { ...(session.timer || {}), kind: 'charades', phase: 'ended', remainingMs: 0, roundScore };
-    persistActiveSession();
-    $('#play-content').textContent = `Zeit vorbei · ${roundScore} Treffer`;
-    clearNode($('#play-options'));
-    clearNode($('#play-actions'));
-    $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
-    syncHubPauseUi();
-    focusPlayPrimary();
-  }
-
-  function startCharades(remainingMs = 60_000, restoredScore = 0, restoredItem = '') {
-    session.running = true;
-    session.used = Array.isArray(session.used) ? session.used : [];
-    const content = $('#play-content');
-    const options = $('#play-options');
-    const timer = makeElement('div', 'timer-display', S.formatMilliseconds(remainingMs));
-    session.timer = {
-      kind: 'charades', phase: 'running', remainingMs,
-      roundScore: safeInteger(restoredScore, 10_000), item: cleanText(restoredItem, 240), prompt: '', letter: ''
-    };
-    const showCard = () => {
-      const item = pickUnused(contentItems('charades', session.pack));
-      session.timer.item = cleanText(item, 240);
-      content.textContent = item || 'Keine Karte verfügbar.';
-      persistActiveSession();
-    };
-    const showStoredOrNew = () => {
-      if (session.timer.item) content.textContent = session.timer.item;
-      else showCard();
-    };
-    $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
-    clearNode(options);
-    options.append(
-      actionButton('Treffer', () => {
-        session.timer.roundScore += 1;
-        session.score += 1;
-        $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
-        showCard();
-      }),
-      actionButton('Überspringen', showCard, 'secondary')
-    );
-    clearNode($('#play-actions'));
-    $('#play-actions').append(timer);
-    showStoredOrNew();
-    hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer);
-    persistActiveSession();
-  }
-
-  function renderTabooStart() {
-    $('#play-player').textContent = `${currentPlayer()} erklärt`;
-    $('#play-content').textContent = '60 Sekunden. Erkläre möglichst viele Begriffe, ohne eines der verbotenen Wörter zu sagen.';
-    $('#play-options').append(actionButton('60-Sekunden-Runde starten', () => startTaboo(60_000, 0, '', [])));
-    persistActiveSession();
-  }
-
-  function renderTabooCard(word, bannedItems) {
-    clearNode($('#play-content'));
-    $('#play-content').append(makeElement('strong', 'taboo-word', word || 'Keine Karte'));
-    const banned = makeElement('div', 'banned-list');
-    (bannedItems || []).forEach(item => banned.append(makeElement('span', '', item)));
-    $('#play-content').append(banned);
-  }
-
-  function finishTabooTimer() {
-    const roundScore = session.timer?.roundScore || 0;
-    session.running = false;
-    session.timer = { ...(session.timer || {}), kind: 'taboo', phase: 'ended', remainingMs: 0, roundScore };
-    persistActiveSession();
-    $('#play-content').textContent = `Zeit vorbei · ${roundScore} Treffer`;
-    clearNode($('#play-options'));
-    clearNode($('#play-actions'));
-    $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
-    syncHubPauseUi();
-    focusPlayPrimary();
-  }
-
-  function startTaboo(remainingMs = 60_000, restoredScore = 0, restoredWord = '', restoredBanned = []) {
-    session.running = true;
-    session.used = Array.isArray(session.used) ? session.used : [];
-    session.timer = {
-      kind: 'taboo', phase: 'running', remainingMs,
-      roundScore: safeInteger(restoredScore, 10_000), item: '', prompt: '', letter: '',
-      word: cleanText(restoredWord, 120),
-      banned: Array.isArray(restoredBanned) ? restoredBanned.slice(0, 12).map(item => cleanText(item, 80)).filter(Boolean) : []
-    };
-    const timer = makeElement('div', 'timer-display', S.formatMilliseconds(remainingMs));
-    const showCard = () => {
-      const card = pickUnused(contentItems('taboo', session.pack));
-      session.timer.word = cleanText(card?.word, 120);
-      session.timer.banned = Array.isArray(card?.banned) ? card.banned.slice(0, 12).map(item => cleanText(item, 80)).filter(Boolean) : [];
-      renderTabooCard(session.timer.word, session.timer.banned);
-      persistActiveSession();
-    };
-    $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
-    clearNode($('#play-options'));
-    $('#play-options').append(
-      actionButton('Treffer', () => {
-        session.timer.roundScore += 1;
-        session.score += 1;
-        $('#play-player').textContent = `${currentPlayer()} · ${session.timer.roundScore} Treffer`;
-        showCard();
-      }),
-      actionButton('Begriff überspringen', showCard, 'secondary')
-    );
-    clearNode($('#play-actions'));
-    $('#play-actions').append(timer);
-    if (session.timer.word) renderTabooCard(session.timer.word, session.timer.banned);
-    else showCard();
-    hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer);
-    persistActiveSession();
-    focusPlayPrimary();
-  }
-
-  function renderHotPotatoStart() {
-    const prompt = pickUnused(contentItems('hot-potato', session.pack));
-    $('#play-content').textContent = prompt || 'Keine Aufgabe verfügbar.';
-    $('#play-player').textContent = `${currentPlayer()} beginnt mit dem Gerät`;
-    $('#play-options').append(actionButton('Zufallstimer starten', () => startHotPotato(prompt, 10000 + randomInt(16000))));
-    persistActiveSession();
-  }
-
-  function finishHotPotatoTimer() {
-    session.running = false;
-    session.timer = { ...(session.timer || {}), kind: 'hot-potato', phase: 'ended', remainingMs: 0 };
-    persistActiveSession();
-    const indicator = $('#play-actions .timer-display');
-    if (indicator) indicator.textContent = 'STOPP';
-    $('#play-content').textContent = 'Wer das Gerät jetzt hält, verliert diese Runde.';
-    $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-    syncHubPauseUi();
-    focusPlayPrimary();
-  }
-
-  function startHotPotato(prompt, remainingMs) {
-    session.running = true;
-    session.timer = {
-      kind: 'hot-potato', phase: 'running', remainingMs,
-      roundScore: 0, item: '', prompt: cleanText(prompt, 400), letter: ''
-    };
-    $('#play-content').textContent = session.timer.prompt || 'Keine Aufgabe verfügbar.';
-    clearNode($('#play-options'));
-    clearNode($('#play-actions'));
-    const indicator = makeElement('div', 'timer-display', '●');
-    const hiddenClock = makeElement('span', '', '');
-    hiddenClock.hidden = true;
-    $('#play-actions').append(indicator, hiddenClock);
-    hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer);
-    persistActiveSession();
-  }
-
-  function renderWordChainStart() {
-    const letter = randomItem(contentItems('word-chain', session.pack)) || 'A';
-    $('#play-content').textContent = `Kategorie: ${session.pack} · Startbuchstabe: ${letter}`;
-    $('#play-player').textContent = `${currentPlayer()} beginnt`;
-    $('#play-options').append(actionButton('30-Sekunden-Runde starten', () => startWordChain(letter, 30_000)));
-    persistActiveSession();
-  }
-
-  function finishWordChainTimer() {
-    session.running = false;
-    session.timer = { ...(session.timer || {}), kind: 'word-chain', phase: 'ended', remainingMs: 0 };
-    persistActiveSession();
-    $('#play-content').textContent = 'Zeit vorbei.';
-    clearNode($('#play-actions'));
-    $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-    syncHubPauseUi();
-    focusPlayPrimary();
-  }
-
-  function startWordChain(letter, remainingMs) {
-    session.running = true;
-    session.timer = {
-      kind: 'word-chain', phase: 'running', remainingMs,
-      roundScore: 0, item: '', prompt: '', letter: cleanText(letter, 12) || 'A'
-    };
-    const timer = makeElement('div', 'timer-display', S.formatMilliseconds(remainingMs));
-    clearNode($('#play-options'));
-    clearNode($('#play-actions'));
-    $('#play-content').textContent = `${session.pack} · Start mit ${session.timer.letter}`;
-    $('#play-actions').append(timer, actionButton('Runde geschafft', () => { session.score += 1; nextSimpleRound(); }, 'secondary'));
-    hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer);
-    persistActiveSession();
-  }
-
-  function renderStoredTimerSession() {
-    if (!session?.timer) return renderPlayRound();
-    const timerState = clone(session.timer);
-    preparePlayCard();
-    session.timer = timerState;
-    if (timerState.phase === 'ended') {
-      if (timerState.kind === 'charades') return finishCharadesTimer();
-      if (timerState.kind === 'taboo') return finishTabooTimer();
-      if (timerState.kind === 'hot-potato') return finishHotPotatoTimer();
-      if (timerState.kind === 'word-chain') return finishWordChainTimer();
-    }
-    if (timerState.kind === 'charades') startCharades(timerState.remainingMs, timerState.roundScore, timerState.item);
-    else if (timerState.kind === 'taboo') startTaboo(timerState.remainingMs, timerState.roundScore, timerState.word, timerState.banned);
-    else if (timerState.kind === 'hot-potato') startHotPotato(timerState.prompt, timerState.remainingMs);
-    else if (timerState.kind === 'word-chain') startWordChain(timerState.letter, timerState.remainingMs);
-    setHubPaused(true);
-    setStatus('Laufende Timer-Runde wiederhergestellt und sicher pausiert.');
-  }
-
   function renderRandomPlayer() {
     $('#play-content').textContent = 'Drücke auf Drehen, um eine Person zufällig auszuwählen.';
     $('#play-options').append(actionButton('Drehen', () => {
@@ -1054,7 +855,7 @@
       card.remove();
       setHubSessionActive(true);
       $('#play-layer').hidden = false;
-      if (session.timer) renderStoredTimerSession();
+      if (session.timer) timerGames.renderStoredTimerSession();
       else renderPlayRound();
       persistActiveSession();
       focusPlayPrimary();
