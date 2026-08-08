@@ -14,7 +14,7 @@ production_js = [
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-routing.js',
     'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
     'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
-    'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
+    'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
     'party-night.js', 'party-data-tools.js', 'party-advanced.js',
     'party-advanced-runner.js', 'party-advanced-preferences.js',
     'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
@@ -72,9 +72,15 @@ party_page = read('party.html')
 for marker in (
     'id="pause-hub-game"', 'id="play-pause-status"',
     '<script src="session-ledger.js"></script>', '<script src="party-session-controls.js"></script>',
+    '<script src="party-hub-timers.js"></script>', '<script src="party-hub.js"></script>',
 ):
     if marker not in party_page:
         violations.append(f'Shared Hub session control missing from party.html: {marker}')
+controls_index = party_page.find('<script src="party-session-controls.js"></script>')
+timers_index = party_page.find('<script src="party-hub-timers.js"></script>')
+hub_index = party_page.find('<script src="party-hub.js"></script>')
+if not (controls_index >= 0 and controls_index < timers_index < hub_index):
+    violations.append('Party Hub timer module must load after shared controls and before party-hub.js.')
 
 quick_play = read('quick-play.html')
 for marker in (
@@ -99,20 +105,28 @@ contracts = {
         'remainingMilliseconds'
     ],
     'party-hub.js': [
-        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
+        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'SecretCirclePartyHubTimers',
+        'S.createController', 'T.createTimerGames', 'timerGames.renderStoredTimerSession',
         "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
         "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
         'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
-        'players: [...state.players]', 'renderStoredTimerSession', 'Session fortsetzen',
+        'players: [...state.players]', 'Session fortsetzen',
         'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
+        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
+        'setHubPaused(true)', 'pause-hub-game', 'skipHubRound', 'abortSession'
+    ],
+    'party-hub-timers.js': [
+        'SecretCirclePartyHubTimers', 'normalizeTimerState', 'createTimerGames',
+        "TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])",
         "kind: 'charades', phase: 'running', remainingMs",
+        "kind: 'taboo', phase: 'running', remainingMs",
         "kind: 'hot-potato', phase: 'running', remainingMs",
         "kind: 'word-chain', phase: 'running', remainingMs",
         'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
+        'hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer)',
         'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
         'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
-        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
-        'setHubPaused(true)', 'pause-hub-game'
+        'renderStoredTimerSession'
     ],
     'party-release-structure.js': [
         'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'",
@@ -206,16 +220,19 @@ for relative in ('party-quick-modes.js', 'party-mega-modes.js', 'party-viral-mod
     if 'let timerId = null' in source or 'const deadline = Date.now() + seconds * 1000' in source:
         violations.append(f'Engine still contains a private non-pausable timer: {relative}')
 
-hub_source = read('party-hub.js')
-for forbidden in ('activeTimer', 'window.setInterval(', 'performance.now()'):
-    if forbidden in hub_source:
-        violations.append(f'Hub still contains a private non-pausable timer: {forbidden}')
+for relative in ('party-hub.js', 'party-hub-timers.js'):
+    source = read(relative)
+    for forbidden in ('activeTimer', 'window.setInterval(', 'performance.now()'):
+        if forbidden in source:
+            violations.append(f'Hub still contains a private non-pausable timer in {relative}: {forbidden}')
 
-for marker in ('tests/hub-resume-contract.test.js', 'tests/hub-timer-contract.test.js'):
+for marker in ('tests/hub-resume-contract.test.js', 'tests/hub-timer-contract.test.js', 'tests/hub-control-contract.test.js'):
     if marker not in package.get('scripts', {}).get('test', ''):
         violations.append(f'Hub release test missing from npm test: {marker}')
     if marker not in package.get('scripts', {}).get('check', ''):
         violations.append(f'Hub release test missing from syntax gate: {marker}')
+if 'node --check party-hub-timers.js' not in package.get('scripts', {}).get('check', ''):
+    violations.append('Dedicated Hub timer module is missing from npm syntax gate.')
 
 sw = read('sw.js')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
@@ -230,8 +247,8 @@ for asset in [
     './party-night.js', './party-advanced-runner.js', './quick-play.html', './creator.html',
     './pwa-update.css', './party-release.css', './party-search.css',
     './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-    './session-ledger.js', './party-session-controls.js', './party-trending-catalog.js',
-    './party-mega-catalog.js', './party-viral-catalog.js', './party-quick-modes.js',
+    './session-ledger.js', './party-session-controls.js', './party-hub-timers.js',
+    './party-trending-catalog.js', './party-mega-catalog.js', './party-viral-catalog.js', './party-quick-modes.js',
     './party-mega-modes.js', './party-viral-modes.js', './party-created-modes.js',
     './quick-loader.js', './game-creator.js', './creator-page.js', './party-guide.js',
     './party-guide.css', './creator.css'
@@ -263,6 +280,7 @@ print(json.dumps({
     'persistent_catalog_filters': True,
     'search_assistance': True,
     'shared_session_controls': True,
+    'split_direct_hub_timer_module': True,
     'pausable_fast_engine_timers': True,
     'pausable_core_hub_timers': True,
     'direct_hub_reload_resume': True,
