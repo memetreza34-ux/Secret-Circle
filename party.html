@@ -193,13 +193,18 @@
 
   <section id="play-layer" class="play-layer" hidden aria-labelledby="play-title">
     <div class="play-topbar">
-      <div class="inline-actions"><button id="exit-game" class="ghost-button" type="button">Spiel verlassen</button><button id="pause-hub-game" class="ghost-button" type="button" aria-pressed="false" disabled>Pause</button></div>
+      <div class="hub-session-controls" role="group" aria-label="Spielsteuerung">
+        <button id="finish-hub-game" class="ghost-button" type="button" disabled>Beenden &amp; speichern</button>
+        <button id="skip-hub-round" class="ghost-button" type="button" disabled>Runde überspringen</button>
+        <button id="pause-hub-game" class="ghost-button" type="button" aria-pressed="false" disabled>Pause</button>
+        <button id="abort-hub-game" class="ghost-button hub-abort-button" type="button" disabled>Abbrechen &amp; verwerfen</button>
+      </div>
       <div><span id="play-progress"></span><strong id="play-score"></strong></div>
     </div>
     <div class="play-card">
       <p id="play-pause-status" class="muted" role="status" aria-live="polite"></p>
       <p id="play-eyebrow" class="eyebrow"></p>
-      <h1 id="play-title"></h1>
+      <h1 id="play-title" tabindex="-1"></h1>
       <p id="play-player" class="active-player"></p>
       <div id="play-content" class="play-content" aria-live="polite"></div>
       <div id="play-options" class="play-options"></div>
