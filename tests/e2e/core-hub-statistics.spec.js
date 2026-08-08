@@ -37,7 +37,7 @@ test('opening an Advanced core game updates recent but never plays', async ({ pa
   expect(state.history).toHaveLength(0);
 });
 
-test('a completed direct Hub round counts once and a zero-round exit counts zero', async ({ page }) => {
+test('a completed direct Hub round counts once and a zero-round finish counts zero', async ({ page }) => {
   await seedHub(page);
 
   await page.locator('[data-open-game="truth-dare"]').first().click();
@@ -47,8 +47,8 @@ test('a completed direct Hub round counts once and a zero-round exit counts zero
 
   await page.getByRole('button', { name: 'Wahrheit' }).click();
   await page.getByRole('button', { name: /Erledigt.*nächste Person/ }).click();
-  await expect(page.locator('#play-progress')).toContainText('1 Karten');
-  await page.getByRole('button', { name: 'Spiel verlassen' }).click();
+  await expect(page.locator('#play-progress')).toContainText('1 Runden');
+  await page.getByRole('button', { name: 'Beenden & speichern' }).click();
   await expect(page.locator('#play-layer')).toBeHidden();
 
   let state = await hubState(page);
@@ -60,7 +60,7 @@ test('a completed direct Hub round counts once and a zero-round exit counts zero
 
   await page.locator('[data-open-game="truth-dare"]').first().click();
   await page.locator('#start-selected-game').click();
-  await page.getByRole('button', { name: 'Spiel verlassen' }).click();
+  await page.getByRole('button', { name: 'Beenden & speichern' }).click();
 
   state = await hubState(page);
   expect(state.history).toHaveLength(1);
