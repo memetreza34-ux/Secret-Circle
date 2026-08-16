@@ -44,11 +44,12 @@ Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert v
 
 ### Katalog und Hub
 
-- `party-catalog.js`: Basisspiele
-- `party-expansion.js`: Advanced-Erweiterung
+- `party-catalog.js`: Basisspiele und kompakte Ausgangsinhalte
+- `party-expansion.js`: Advanced-Erweiterung plus erste strukturierte Release-Content-Erweiterungen
 - `party-trending-catalog.js`: klassische Quick Modes
 - `party-mega-catalog.js`: Anime-, Geld-, Ranking- und Social-Trends
 - `party-viral-catalog.js`: Viral-, Preis-, Wissens- und Storyformate
+- `party-core-release-catalog.js`: zusätzliche redaktionelle Releaseinhalte der Core-Games; erweitert vorhandene Packs ohne Spiellogik zu duplizieren
 - `party-routing.js`: Routingfassade plus Integration selbst erstellter Spiele
 - `party-release-structure.js`: 15 Kernspiele, 13 Erweiterungen, 17 Labs und kombinierter Altersfilter
 - `party-filter-state.js`: normalisierte lokale Katalogfilter und letzte Hub-Ansicht
@@ -62,9 +63,15 @@ Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert v
 - `party-night.js`: Planung und Fortschritt
 - `party-data-tools.js`: Gesamtsicherung und Löschung
 
+Für den vollständigen Party-Hub-Katalog gilt die Ladefolge:
+
+`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-routing.js`
+
+`party-core-release-catalog.js` darf ausschließlich Built-in-Content erweitern und Katalog-Lesefunktionen auf den erweiterten Inhalt zeigen lassen. Es darf keine Session-, DOM-, Scoring-, Routing- oder Persistenzlogik übernehmen. Dadurch kann die redaktionelle Inhaltsmenge wachsen, ohne `party-expansion.js` oder die Engine-Module zu Monolithen zu machen.
+
 Für direkte Hub-Timer gilt eine feste Lade- und Eigentumsreihenfolge: `party-session-controls.js` stellt die generische pausierbare Uhr bereit, `party-hub-timers.js` implementiert die spielabhängigen Timermechaniken, `party-hub.js` besitzt die Session und delegiert an das Timer-Modul. Diese Reihenfolge wird in `party.html`, Architektur-Audit, Projektvalidator und Unit-Verträgen erzwungen.
 
-Der Hub lädt Erweiterungen in kontrollierter Reihenfolge: Reifestufenstruktur, gespeicherter Filterzustand, Suchhilfe. Fällt eine Komfortschicht aus, bleibt der Basiskatalog nutzbar.
+Der Hub lädt Komforterweiterungen in kontrollierter Reihenfolge: Reifestufenstruktur, gespeicherter Filterzustand, Suchhilfe. Fällt eine Komfortschicht aus, bleibt der Basiskatalog nutzbar.
 
 ### Game-Creator
 
@@ -93,7 +100,7 @@ Auch die direkte Hub-Engine besitzt keinen privaten Intervalltimer. `party-hub-t
 
 Ein globales Überschreiben von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik ist verboten.
 
-Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB. Zusätzlich gelten die engeren Performancebudgets aus `scripts/performance_budget.py`; für die direkte Hub-Aufteilung sind aktuell 50 KB für `party-hub.js` und 18 KB für `party-hub-timers.js` festgelegt.
+Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB. Zusätzlich gelten die engeren Performancebudgets aus `scripts/performance_budget.py`; aktuell gelten insbesondere 50 KB für `party-hub.js`, 18 KB für `party-hub-timers.js` und 65 KB für `party-core-release-catalog.js`.
 
 ## 5. Reine Logik vor DOM-Logik
 
@@ -150,9 +157,9 @@ Ein manueller Sessionabbruch entfernt den gespeicherten aktiven Zustand nur dann
 
 ## 9. Offline- und Updatevertrag
 
-Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: `secret-circle-v30`.
+Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: **`secret-circle-v31`**.
 
-Creator, Hilfesystem, Release-Tiers, Filterzustand, Suchhilfe, Session-Ledger, gemeinsame Sessionsteuerung, `party-hub-timers.js`, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core. Nicht mehr verwendete Übergangsmodule werden aus Code, Tests, Loader und Cache entfernt.
+Creator, Hilfesystem, Release-Tiers, Filterzustand, Suchhilfe, Core-Release-Content, Session-Ledger, gemeinsame Sessionsteuerung, `party-hub-timers.js`, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core. Nicht mehr verwendete Übergangsmodule werden aus Code, Tests, Loader und Cache entfernt.
 
 Eine neue Version wird zuerst in einem Staging-Cache vollständig vorbereitet. Sie wird erst nach sichtbarer Zustimmung aktiviert. Der aktive Offline-Core wird nicht vor erfolgreicher Übernahme gelöscht.
 
@@ -173,6 +180,7 @@ Der Pausenknopf meldet seinen Zustand über `aria-pressed`; pausierte Rundenakti
 - strukturierte Modi verwenden strukturierte Daten
 - Nutzerpacks und selbst erstellte Spiele bleiben von eingebauten Inhalten getrennt
 - öffentliche oder kommerzielle Fan-Inhalte benötigen eigene Rechtsprüfung
+- steigende Contentmengen werden in dedizierten Contentmodulen gehalten und dürfen keine Engine-Verantwortung aufnehmen
 
 ## 12. Asset- und Animationsvertrag
 
@@ -188,6 +196,8 @@ Der gemeinsame Sessioncontroller besitzt einen isolierten Test mit kontrollierte
 
 Die direkten Hub-Verträge prüfen `party-hub.js` und `party-hub-timers.js` gemeinsam: Script-Reihenfolge, vier pausierbare Timerarten, sichere Reload-Wiederaufnahme, getrennten Abschluss/Abbruch, Skip ohne Punkt, Fokusführung und Offline-Verfügbarkeit des Timer-Moduls.
 
+Core-Content-Verträge verwenden den finalen `party-routing.js`-Pfad, damit `party-expansion.js` und `party-core-release-catalog.js` gemeinsam geprüft werden. Dabei werden Packdrift, Mindestmengen, exakte Duplikate, strukturierte Karten, Altersstufen und Offline-Verfügbarkeit geschützt.
+
 Creator-spezifische E2E-Prüfungen decken Wizard, strukturierte Karten, Offline-Start, Wiederaufnahme, Sanitizing, exakte Verlaufseinträge und wiederholte Statistik ab. Hub-E2E-Prüfungen decken Filterwiederherstellung, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Suchvorschläge mit Maus und Tastatur ab.
 
 ## 14. Performancebudget
@@ -195,6 +205,8 @@ Creator-spezifische E2E-Prüfungen decken Wizard, strukturierte Karten, Offline-
 Neue Module und Assets erhalten eigene Budgets. Keine großen Frameworks, Videos oder Mediendateien ohne messbaren Nutzen, Kompression und Audit. Wachstum des Offline-Cores bleibt sichtbar.
 
 `party-session-controls.js` besitzt ein eigenes Größenbudget und darf nicht als Vorwand dienen, spielabhängige Logik in einen unübersichtlichen globalen Controller zu verschieben. Dasselbe gilt für `party-hub-timers.js`: Es enthält nur die vier zeitgesteuerten direkten Hub-Mechaniken und darf keine Session-, Katalog- oder Statistikverantwortung übernehmen.
+
+`party-core-release-catalog.js` darf das Contentbudget nur für redaktionelle Built-in-Inhalte verwenden. Wenn es sein 65-KB-Budget erreicht, werden Inhalte nach klaren mechanischen oder thematischen Grenzen in weitere reine Contentmodule getrennt; das Budget wird nicht einfach angehoben.
 
 ## 15. Erweiterungspunkte
 
