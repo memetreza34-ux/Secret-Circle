@@ -12,8 +12,8 @@ required = [
     'party-core-release-catalog.js', 'party-core-classic-content.js',
     'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
     'backup-schema-registry.js', 'party-data-tools.js',
-    'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'ACCESSIBILITY.md',
-    'LEGAL_CHECKLIST.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
+    'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'ACCESSIBILITY.md', 'BETA_TEST_PLAN.md',
+    'LEGAL_CHECKLIST.md', 'THIRD_PARTY_NOTICES.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
     'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
     'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/accessibility-contract.test.js',
     'tests/backup-schema-registry.test.js', 'tests/e2e/accessibility-core.spec.js',
@@ -43,7 +43,9 @@ content_test = read('tests/core-content-quality.test.js')
 content_policy = read('CONTENT_AGE_POLICY.md')
 content_review = read('CORE_CONTENT_REVIEW.md')
 accessibility = read('ACCESSIBILITY.md')
+beta_plan = read('BETA_TEST_PLAN.md')
 legal = read('LEGAL_CHECKLIST.md')
+third_party = read('THIRD_PARTY_NOTICES.md')
 support = read('SUPPORT.md')
 incident = read('INCIDENT_RESPONSE.md')
 maintenance = read('MAINTENANCE.md')
@@ -113,12 +115,17 @@ checks = {
     'quantitative_content_targets': 'quantitativeTargetsMet: true' in content_test and 'assert.deepEqual(editorialShortfalls, []' in content_test,
     'privacy_content_regressions': 'privateDevicePromptsRemoved: true' in content_test,
     'content_policy_complete_quantities': 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in content_policy,
-    'content_review_has_15_core_rows': content_review.count('| PREPARED |') + content_review.count('| IN PROGRESS |') >= 15,
+    'content_review_has_15_core_rows': content_review.count('| PREPARED |') >= 15 and '15/15 Core-Quellpass' in content_review,
     'accessibility_contract_in_unit_gate': 'tests/accessibility-contract.test.js' in unit_gate,
     'accessibility_contract_in_syntax_gate': 'tests/accessibility-contract.test.js' in syntax_gate,
     'accessibility_e2e_in_syntax_gate': 'tests/e2e/accessibility-core.spec.js' in syntax_gate,
     'accessibility_manual_limits_explicit': 'PREPARED – reale Abnahme offen' in accessibility and '200 %' in accessibility and 'VoiceOver' in accessibility and 'TalkBack' in accessibility,
+    'beta_plan_has_required_groups': all(marker in beta_plan for marker in ('G1', 'G2', 'G3', 'G4', 'G5', 'PN1', 'PN2', 'PN3')),
+    'beta_plan_has_device_and_update_gates': all(marker in beta_plan for marker in ('Android', 'iPhone', 'VoiceOver', 'TalkBack', 'PWA-Update-Test', 'Rollback-Test')),
+    'beta_plan_no_go_until_real': 'reale Durchführung offen' in beta_plan and 'öffentliche Release **NO_GO**' in beta_plan,
     'legal_stays_no_go': 'LEGAL NO_GO' in legal and '20. Juli 2025' in legal and 'TDDDG' in legal,
+    'third_party_inventory_explicit': all(marker in third_party for marker in ('@playwright/test', 'icon.svg', 'icon-192.png', 'icon-512.png', 'BLOCKED FOR FINAL SIGN-OFF')),
+    'third_party_does_not_guess_asset_origin': 'kein Herkunfts-/Lizenznachweis gefunden' in third_party and 'nicht automatisch als eigenes Werk' in third_party,
     'support_has_real_contact_gate': 'TBD vor RC' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
     'incident_runbook_present': 'SEV-0' in incident and 'SEV-1' in incident and 'PRODUCTION NO_GO' in incident,
     'maintenance_contract_present': 'backup-schema-registry.js' in maintenance and 'PWA-/Service-Worker-Wartung' in maintenance,
@@ -142,9 +149,11 @@ print(json.dumps({
     'backup_registry': 'v2',
     'core_content_modules': 2,
     'quantitative_core_content_targets': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
-    'manual_content_review': 'IN_PROGRESS',
+    'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
     'accessibility': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
+    'beta_plan': 'PREPARED_NOT_EXECUTED',
+    'third_party_inventory': 'IN_PROGRESS_PROVENANCE_OPEN',
     'legal_support_operations': 'PREPARED_NOT_FINAL',
-    'public_release': 'NO_GO until CI, device, accessibility, party, content, legal and operations gates pass',
+    'public_release': 'NO_GO until CI, device, accessibility, party, content, rights, legal and operations gates pass',
     'checks': checks,
 }, ensure_ascii=False, indent=2))
