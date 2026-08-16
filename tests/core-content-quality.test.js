@@ -17,66 +17,38 @@ const expectedCore = [
 ];
 
 const expectedAges = Object.freeze({
-  imposter: 'all',
-  'truth-dare': 'teen',
-  'never-have': 'teen',
-  'most-likely': 'all',
-  'would-rather': 'all',
-  paranoia: 'teen',
-  charades: 'all',
-  taboo: 'all',
-  'hot-potato': 'all',
-  'word-chain': 'all',
-  'two-truths': 'all',
-  'question-imposter': 'all',
-  'location-spy': 'all',
-  mafia: 'teen',
-  'wrong-answers': 'all'
+  imposter: 'all', 'truth-dare': 'teen', 'never-have': 'teen', 'most-likely': 'all',
+  'would-rather': 'all', paranoia: 'teen', charades: 'all', taboo: 'all',
+  'hot-potato': 'all', 'word-chain': 'all', 'two-truths': 'all',
+  'question-imposter': 'all', 'location-spy': 'all', mafia: 'teen', 'wrong-answers': 'all'
 });
 
 const hardMinimums = Object.freeze({
-  'truth-dare': 24,
-  'never-have': 24,
-  'most-likely': 24,
-  'would-rather': 24,
-  paranoia: 20,
-  charades: 30,
-  taboo: 24,
-  'hot-potato': 20,
-  'word-chain': 10,
-  'two-truths': 16,
-  'question-imposter': 16,
-  'location-spy': 16,
-  mafia: 3,
+  'truth-dare': 24, 'never-have': 24, 'most-likely': 24, 'would-rather': 24,
+  paranoia: 20, charades: 30, taboo: 24, 'hot-potato': 20, 'word-chain': 10,
+  'two-truths': 16, 'question-imposter': 16, 'location-spy': 16, mafia: 3,
   'wrong-answers': 24
 });
-
 const editorialTargets = Object.freeze({ ...hardMinimums });
 
 function normalizeText(value) {
   return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ');
 }
-
 function canonicalText(value) {
   return normalizeText(value).toLocaleLowerCase('de-DE');
 }
-
 function collectStrings(value, output = []) {
   if (typeof value === 'string') output.push(value);
   else if (Array.isArray(value)) value.forEach(item => collectStrings(item, output));
   else if (value && typeof value === 'object') Object.values(value).forEach(item => collectStrings(item, output));
   return output;
 }
-
 function canonicalItem(value) {
   if (typeof value === 'string') return canonicalText(value);
   if (Array.isArray(value)) return `[${value.map(canonicalItem).join('|')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.keys(value).sort().map(key => `${key}:${canonicalItem(value[key])}`).join('|')}}`;
-  }
+  if (value && typeof value === 'object') return `{${Object.keys(value).sort().map(key => `${key}:${canonicalItem(value[key])}`).join('|')}}`;
   return String(value);
 }
-
 function assertSafeText(value, context, { minimum = 1, maximum = 240 } = {}) {
   assert.equal(typeof value, 'string', `${context} must be text.`);
   const text = normalizeText(value);
@@ -85,7 +57,6 @@ function assertSafeText(value, context, { minimum = 1, maximum = 240 } = {}) {
   assert.doesNotMatch(text, /<\s*\/?\s*(script|style|iframe|object|embed|svg|img|video|audio|link|meta|form)\b/i, `${context} contains HTML/script markup.`);
   assert.doesNotMatch(text, /\bon\w+\s*=/i, `${context} contains an inline event-handler pattern.`);
 }
-
 function assertUniqueItems(items, context) {
   const canonical = items.map(canonicalItem);
   assert.equal(new Set(canonical).size, canonical.length, `${context} contains exact normalized duplicates.`);
@@ -94,48 +65,36 @@ function assertUniqueItems(items, context) {
 assert.deepEqual([...release.coreIds], expectedCore);
 assert.equal(Object.keys(expectedAges).length, 15);
 assert.equal(releaseContent.coreReleaseContentVersion, 1);
-assert.deepEqual(
-  new Set(releaseContent.coreReleaseContentGames),
-  new Set(['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers'])
-);
+assert.deepEqual(new Set(releaseContent.coreReleaseContentGames), new Set(['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers']));
 assert.equal(classicContent.coreClassicContentVersion, 1);
-assert.deepEqual(
-  new Set(classicContent.coreClassicContentGames),
-  new Set(['truth-dare', 'charades', 'taboo', 'hot-potato'])
-);
+assert.deepEqual(new Set(classicContent.coreClassicContentGames), new Set(['truth-dare', 'charades', 'taboo', 'hot-potato']));
+assert.equal(classicContent.editorialReplacementCount, 2);
 
 const editorialShortfalls = [];
 let routedCoreItems = 0;
-
 for (const id of expectedCore) {
   const game = catalog.getGame(id);
   assert.ok(game, `Missing core game: ${id}`);
   assert.equal(game.age, expectedAges[id], `Unexpected age level: ${id}`);
-
   if (id === 'imposter') continue;
-
   const packNames = catalog.getPackNames(id);
   assert.deepEqual(packNames, game.packs, `Pack metadata/content drift: ${id}`);
-
   for (const pack of packNames) {
     const raw = catalog.content[id][pack];
     const items = catalog.getItems(id, pack);
     assert.ok(items.length >= hardMinimums[id], `Core pack fell below release content minimum: ${id}/${pack} (${items.length} < ${hardMinimums[id]}).`);
     assertUniqueItems(items, `${id}/${pack}`);
     routedCoreItems += items.length;
-
     for (const [index, text] of collectStrings(raw).entries()) {
       const minimum = id === 'word-chain' ? 1 : 2;
       assertSafeText(text, `${id}/${pack} text ${index + 1}`, { minimum });
     }
-
     const target = editorialTargets[id];
     if (target && items.length < target) editorialShortfalls.push({ id, pack, count: items.length, target });
   }
 }
 assert.deepEqual(editorialShortfalls, [], 'All quantitative core content targets must now be met.');
 
-// Truth or Dare keeps its nested semantic structure while final routing flattens generic consumers.
 for (const pack of catalog.getPackNames('truth-dare')) {
   const raw = catalog.content['truth-dare'][pack];
   assert.ok(raw && typeof raw === 'object' && !Array.isArray(raw), `Truth/Dare pack must stay structured: ${pack}`);
@@ -147,7 +106,12 @@ for (const pack of catalog.getPackNames('truth-dare')) {
 }
 assert.equal(catalog.itemCount('truth-dare'), 96);
 
-// Would Rather cards are exactly two distinct options.
+const finalCoreText = collectStrings(Object.fromEntries(expectedCore.filter(id => id !== 'imposter').map(id => [id, catalog.content[id]]))).map(canonicalText);
+assert.ok(!finalCoreText.includes(canonicalText('Was ist das Seltsamste in deiner Kamerarolle?')), 'Core content must not prompt users to inspect private camera-roll material.');
+assert.ok(!finalCoreText.includes(canonicalText('Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.')), 'Core content must not expose private third-party messages.');
+assert.ok(finalCoreText.includes(canonicalText('Welches Foto-Motiv findest du besonders lustig?')));
+assert.ok(finalCoreText.includes(canonicalText('Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.')));
+
 for (const pack of catalog.getPackNames('would-rather')) {
   for (const [index, pair] of catalog.content['would-rather'][pack].entries()) {
     assert.ok(Array.isArray(pair) && pair.length === 2, `Would Rather pair malformed: ${pack} #${index + 1}`);
@@ -156,7 +120,6 @@ for (const pack of catalog.getPackNames('would-rather')) {
   }
 }
 
-// Taboo requires one target and exactly three distinct banned words.
 for (const pack of catalog.getPackNames('taboo')) {
   for (const [index, card] of catalog.content.taboo[pack].entries()) {
     assert.ok(card && typeof card === 'object' && !Array.isArray(card), `Taboo card malformed: ${pack} #${index + 1}`);
@@ -169,7 +132,6 @@ for (const pack of catalog.getPackNames('taboo')) {
   }
 }
 
-// Question Imposter keeps two similar but non-identical questions.
 for (const pack of catalog.getPackNames('question-imposter')) {
   for (const [index, pair] of catalog.content['question-imposter'][pack].entries()) {
     assert.ok(pair && typeof pair === 'object' && !Array.isArray(pair), `Question Imposter pair malformed: ${pack} #${index + 1}`);
@@ -179,21 +141,15 @@ for (const pack of catalog.getPackNames('question-imposter')) {
   }
 }
 
-for (const pack of catalog.getPackNames('location-spy')) {
-  assertUniqueItems(catalog.content['location-spy'][pack], `location-spy/${pack}`);
-}
-for (const pack of catalog.getPackNames('mafia')) {
-  assertUniqueItems(catalog.content.mafia[pack], `mafia/${pack}`);
-}
+for (const pack of catalog.getPackNames('location-spy')) assertUniqueItems(catalog.content['location-spy'][pack], `location-spy/${pack}`);
+for (const pack of catalog.getPackNames('mafia')) assertUniqueItems(catalog.content.mafia[pack], `mafia/${pack}`);
 assert.deepEqual(catalog.content.mafia.Schnell, ['Mafia', 'Detektiv', 'Dorfbewohner']);
 assert.deepEqual(catalog.content.mafia.Klassisch, ['Mafia', 'Detektiv', 'Arzt', 'Dorfbewohner']);
 assert.deepEqual(catalog.content.mafia.Erweitert, ['Mafia', 'Detektiv', 'Arzt', 'Beschützer', 'Dorfbewohner']);
 
 for (const pack of catalog.getPackNames('word-chain')) {
   assert.ok(catalog.content['word-chain'][pack].length >= 10, `Word Chain release pack too small: ${pack}`);
-  for (const letter of catalog.content['word-chain'][pack]) {
-    assert.match(letter, /^\p{L}$/u, `Word Chain start must be one letter: ${pack}/${letter}`);
-  }
+  for (const letter of catalog.content['word-chain'][pack]) assert.match(letter, /^\p{L}$/u, `Word Chain start must be one letter: ${pack}/${letter}`);
 }
 
 assert.ok(wordContent && wordContent.categories, 'Word Imposter content runtime missing.');
@@ -216,21 +172,15 @@ for (const [categoryId, category] of wordCategories) {
 assert.equal(wordImposterWords, 168);
 
 console.log(JSON.stringify({
-  coreContentQuality: 'PASS',
-  coreGames: expectedCore.length,
-  ageContract: expectedAges,
-  hardMinimums,
-  quantitativeTargetsMet: true,
+  coreContentQuality: 'PASS', coreGames: expectedCore.length, ageContract: expectedAges,
+  hardMinimums, quantitativeTargetsMet: true, privateDevicePromptsRemoved: true,
   coreReleaseContentVersion: releaseContent.coreReleaseContentVersion,
   coreReleaseContentGames: releaseContent.coreReleaseContentGames,
   coreClassicContentVersion: classicContent.coreClassicContentVersion,
   coreClassicContentGames: classicContent.coreClassicContentGames,
-  wordImposterCategories: wordCategories.length,
-  wordImposterWords,
-  routedCoreItemsExcludingWordImposter: routedCoreItems,
-  truthDareCards: 96,
+  editorialReplacementCount: classicContent.editorialReplacementCount,
+  wordImposterCategories: wordCategories.length, wordImposterWords,
+  routedCoreItemsExcludingWordImposter: routedCoreItems, truthDareCards: 96,
   structuredContentValidated: ['truth-dare', 'would-rather', 'taboo', 'question-imposter', 'location-spy', 'mafia', 'word-chain'],
-  markupRejected: true,
-  exactNormalizedDuplicatesRejected: true,
-  editorialDepthShortfalls
+  markupRejected: true, exactNormalizedDuplicatesRejected: true, editorialDepthShortfalls
 }, null, 2));
