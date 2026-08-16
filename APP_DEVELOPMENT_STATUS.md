@@ -25,10 +25,10 @@ Grund: CI-Nachweis, reale Geräte/PWA-Tests, Content-/Altersprüfung, Accessibil
 |---|---|---|---|---|
 | 0 | Produktziel / Releasegrenze | DONE | `PRODUCT_BRIEF.md`, `RELEASE_SCOPE_2027.md` | bei Scopeänderung aktualisieren |
 | A | Querschnittsverträge | PREPARED | Master-Anleitung, `ARCHITECTURE.md` | Security/A11y/Testdetail konsolidieren |
-| 1 | Discovery / Problem / Nutzer | IN PROGRESS | `PRODUCT_BRIEF.md`, `USER_SCENARIOS.md` | aktuelle Marktanalyse |
-| 2 | Produktstrategie / Scope | PREPARED | `RELEASE_SCOPE_2027.md`, `ROADMAP_2027.md` | Erfolgskriterien später mit realen Tests validieren |
+| 1 | Discovery / Problem / Nutzer / Markt | DONE | `PRODUCT_BRIEF.md`, `USER_SCENARIOS.md`, `MARKET_RESEARCH.md` | vor Monetarisierung/Storeentscheidung erneut aktualisieren |
+| 2 | Produktstrategie / Scope | PREPARED | `RELEASE_SCOPE_2027.md`, `ROADMAP_2027.md`, marktvalidierter Product Brief | Erfolgskriterien später mit realen Tests validieren |
 | 3 | Plattformstrategie | PREPARED | `PLATFORM_STRATEGY.md` | reale Zielgeräte später abnehmen |
-| 4 | Requirements / Akzeptanz | PREPARED | Contracts, `CORE_GAME_ACCEPTANCE.md`, `CORE_SCORING_RULES.md` | `REQUIREMENTS.md` konsolidieren |
+| 4 | Requirements / Akzeptanz | IN PROGRESS | Contracts, `CORE_GAME_ACCEPTANCE.md`, `CORE_SCORING_RULES.md` | `REQUIREMENTS.md` konsolidieren |
 | 5 | UX / IA / Design | OPEN | verteilt | `UX_FLOW.md`, danach `DESIGN_SYSTEM.md` |
 | 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | Datenmodell konsolidieren; ADRs nur bei Bedarf |
 | 7 | Security / Threat Model | OPEN | Teile in Architektur/Guards | `SECURITY.md` + `THREAT_MODEL.md` |
@@ -55,9 +55,9 @@ Grund: CI-Nachweis, reale Geräte/PWA-Tests, Content-/Altersprüfung, Accessibil
 ### P1
 
 2. `package-lock.json` und `npm ci`
-3. Markt-/Positionierungsanalyse abschließen
-4. Requirements konsolidieren
-5. UX-Flow der Kernaufgaben
+3. Requirements konsolidieren
+4. UX-Flow der Kernaufgaben
+5. Designsystem der Kernoberflächen
 6. Security/Threat Model
 7. Inhalts-/Altersaudit der 15 Kernspiele
 8. Accessibility-Abnahme
@@ -65,17 +65,28 @@ Grund: CI-Nachweis, reale Geräte/PWA-Tests, Content-/Altersprüfung, Accessibil
 10. reale Gruppentests
 11. Recht/Support/Lizenz
 
+## Erledigte Foundation-Arbeit aus der Master-Anleitung
+
+- Master-Anleitung auf Secret Circle zugeschnitten
+- Querschnittsverträge für Security, Privacy, Accessibility, Testing, Performance und Datenintegrität eingeführt
+- `PRODUCT_BRIEF.md` erstellt und nach Marktanalyse nachgeschärft
+- `USER_SCENARIOS.md` mit 20 realen Szenarien erstellt
+- `RISK_REGISTER.md` mit priorisierten Release-/Produkt-/Marktrisiken erstellt
+- `PLATFORM_STRATEGY.md` für PWA/Browser/Zielgeräte erstellt
+- `MARKET_RESEARCH.md` mit aktuellen direkten und indirekten Wettbewerbern erstellt
+- Basis-USP korrigiert: Offline/No-account/One-device ist Marktbaseline, nicht alleinige Differenzierung
+
 ## Arbeitsregel
 
-Wir arbeiten grundsätzlich von oben nach unten. Ein P0/P1-Risiko darf die Reihenfolge vorziehen. Jede neue Erkenntnis kann Master-Anleitung, Risikoregister, Architektur, Roadmap oder Release-Gates verändern.
+Wir arbeiten grundsätzlich von oben nach unten. Ein P0/P1-Risiko darf die Reihenfolge vorziehen. Jede neue Erkenntnis kann Master-Anleitung, Risikoregister, Product Brief, Architektur, Roadmap oder Release-Gates verändern.
 
 ## Nächster geplanter Block
 
-1. `MARKET_RESEARCH.md`
-2. `REQUIREMENTS.md`
-3. `UX_FLOW.md`
-4. `DESIGN_SYSTEM.md`
-5. `SECURITY.md` + `THREAT_MODEL.md`
-6. Core-Content-/Altersaudit
+1. `REQUIREMENTS.md`
+2. `UX_FLOW.md`
+3. `DESIGN_SYSTEM.md`
+4. `SECURITY.md` + `THREAT_MODEL.md`
+5. Core-Content-/Altersaudit
+6. CI-/Lockfile-/Branch-Protection-Blocker
 
-Danach werden die technischen Releaseblocker und realen Abnahmen systematisch geschlossen.
+Danach werden die realen Geräte-, Accessibility-, Gruppen-, Rechts- und Releaseabnahmen systematisch geschlossen.
