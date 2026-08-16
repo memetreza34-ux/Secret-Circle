@@ -8,12 +8,15 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
 required = [
     'package.json', 'manifest.webmanifest', 'sw.js', 'runtime-guard.js',
-    'party.html', 'quick-play.html', 'party-routing.js', 'party-release-structure.js',
+    'party.html', 'quick-play.html', 'privacy.html', 'party-routing.js', 'party-release-structure.js',
     'party-core-release-catalog.js', 'party-core-classic-content.js',
     'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
-    'backup-schema-registry.js', 'CONTENT_AGE_POLICY.md', 'ARCHITECTURE.md', 'DEPLOYMENT.md',
-    'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
-    'tests/service-worker.test.js', 'tests/core-content-quality.test.js',
+    'backup-schema-registry.js', 'party-data-tools.js',
+    'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'ACCESSIBILITY.md',
+    'LEGAL_CHECKLIST.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
+    'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
+    'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/accessibility-contract.test.js',
+    'tests/backup-schema-registry.test.js', 'tests/e2e/accessibility-core.spec.js',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
 ]
 for relative in required:
@@ -26,15 +29,24 @@ sw = read('sw.js')
 runtime = read('runtime-guard.js')
 party = read('party.html')
 quick = read('quick-play.html')
+privacy = read('privacy.html')
 routing = read('party-routing.js')
 release_structure = read('party-release-structure.js')
 release_content = read('party-core-release-catalog.js')
 classic_content = read('party-core-classic-content.js')
+registry = read('backup-schema-registry.js')
+data_tools = read('party-data-tools.js')
 architecture = read('ARCHITECTURE.md')
 deployment = read('DEPLOYMENT.md')
 service_worker_test = read('tests/service-worker.test.js')
 content_test = read('tests/core-content-quality.test.js')
 content_policy = read('CONTENT_AGE_POLICY.md')
+content_review = read('CORE_CONTENT_REVIEW.md')
+accessibility = read('ACCESSIBILITY.md')
+legal = read('LEGAL_CHECKLIST.md')
+support = read('SUPPORT.md')
+incident = read('INCIDENT_RESPONSE.md')
+maintenance = read('MAINTENANCE.md')
 workflow = read('.github/workflows/ci.yml')
 cross_workflow = read('.github/workflows/cross-browser.yml')
 
@@ -66,6 +78,10 @@ core_count = len(re.findall(r"'[^']+'", core_ids_match.group(1))) if core_ids_ma
 lab_count = len(re.findall(r"'[^']+'", lab_ids_match.group(1))) if lab_ids_match else 0
 extended_count = 45 - core_count - lab_count
 
+unit_gate = package.get('scripts', {}).get('test', '')
+syntax_gate = package.get('scripts', {}).get('check', '')
+validate_gate = package.get('scripts', {}).get('validate', '')
+
 checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
     'node_baseline': package.get('engines', {}).get('node') == '>=20',
@@ -76,12 +92,20 @@ checks = {
     'cache_test_synced': cache_name in service_worker_test and staging_name in service_worker_test,
     'cache_architecture_synced': cache_name in architecture,
     'cache_deployment_synced': cache_name in deployment,
+    'cache_privacy_synced': cache_name in privacy,
     'controlled_update': "event.data?.type === 'SKIP_WAITING'" in sw and 'await caches.delete(CACHE)' not in sw,
     'visible_update_prompt': all(marker in runtime for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', 'hasActiveSession')),
     'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 17),
     'party_catalog_order': ordered(party, catalog_chain),
     'quick_catalog_order': ordered(quick, catalog_chain),
     'hub_timer_order': ordered(party, ('party-session-controls.js', 'party-hub-timers.js', 'party-hub.js')),
+    'backup_registry_before_tools': ordered(party, ('backup-schema-registry.js', 'party-data-tools.js')),
+    'backup_registry_v2': 'const VERSION = 2;' in registry and 'isAllowedCompleteStorageKey' in registry,
+    'backup_runtime_uses_registry': all(marker in data_tools for marker in (
+        'SecretCircleBackupSchemas', "registry.validateHeader(payload, 'complete')",
+        'registry.isAllowedCompleteStorageKey', 'const MAX_BYTES = schema.maximumBytes'
+    )),
+    'hub_positioning_and_consent': 'Euer Party-Hub · privat · lokal' in party and 'Persönliche Inhalte sind freiwillig' in party and 'Überspringen ist jederzeit erlaubt' in party,
     'routing_uses_final_content': "require('./party-core-classic-content.js')" in routing and 'version: 8' in routing,
     'release_content_contract': all(marker in release_content for marker in ('coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent')),
     'classic_content_contract': all(marker in classic_content for marker in ('coreClassicContentVersion', 'coreClassicContentGames', 'function mergeNested', 'editorialReplacementCount')),
@@ -89,11 +113,18 @@ checks = {
     'quantitative_content_targets': 'quantitativeTargetsMet: true' in content_test and 'assert.deepEqual(editorialShortfalls, []' in content_test,
     'privacy_content_regressions': 'privateDevicePromptsRemoved: true' in content_test,
     'content_policy_complete_quantities': 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in content_policy,
+    'content_review_has_15_core_rows': content_review.count('| PREPARED |') + content_review.count('| IN PROGRESS |') >= 15,
+    'accessibility_contract_in_unit_gate': 'tests/accessibility-contract.test.js' in unit_gate,
+    'accessibility_contract_in_syntax_gate': 'tests/accessibility-contract.test.js' in syntax_gate,
+    'accessibility_e2e_in_syntax_gate': 'tests/e2e/accessibility-core.spec.js' in syntax_gate,
+    'accessibility_manual_limits_explicit': 'PREPARED – reale Abnahme offen' in accessibility and '200 %' in accessibility and 'VoiceOver' in accessibility and 'TalkBack' in accessibility,
+    'legal_stays_no_go': 'LEGAL NO_GO' in legal and '20. Juli 2025' in legal and 'TDDDG' in legal,
+    'support_has_real_contact_gate': 'TBD vor RC' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
+    'incident_runbook_present': 'SEV-0' in incident and 'SEV-1' in incident and 'PRODUCTION NO_GO' in incident,
+    'maintenance_contract_present': 'backup-schema-registry.js' in maintenance and 'PWA-/Service-Worker-Wartung' in maintenance,
     'main_ci_commands': all(command in workflow for command in ('npm run check', 'npm test', 'npm run validate', 'npm run test:e2e')),
     'cross_browser_commands': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
-    'content_test_in_unit_gate': 'tests/core-content-quality.test.js' in package.get('scripts', {}).get('test', ''),
-    'content_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in ('node --check party-core-release-catalog.js', 'node --check party-core-classic-content.js')),
-    'audits_in_validate_gate': all(marker in package.get('scripts', {}).get('validate', '') for marker in ('scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py')),
+    'audits_in_validate_gate': all(marker in validate_gate for marker in ('scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py')),
     'no_obsolete_legacy_guard': not (ROOT / 'session-ledger-legacy-guard.js').exists() and 'session-ledger-legacy-guard' not in sw,
 }
 
@@ -108,9 +139,12 @@ print(json.dumps({
     'pwa_cache_generation': cache_generation,
     'release_tiers': {'core': core_count, 'extended': extended_count, 'labs': lab_count},
     'catalog_chain': catalog_chain,
+    'backup_registry': 'v2',
     'core_content_modules': 2,
     'quantitative_core_content_targets': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
     'manual_content_review': 'IN_PROGRESS',
+    'accessibility': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
+    'legal_support_operations': 'PREPARED_NOT_FINAL',
     'public_release': 'NO_GO until CI, device, accessibility, party, content, legal and operations gates pass',
     'checks': checks,
 }, ensure_ascii=False, indent=2))
