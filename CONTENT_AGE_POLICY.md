@@ -6,28 +6,28 @@ Stand: 16. August 2026
 
 Diese Richtlinie definiert die redaktionelle Qualitäts- und Alterslogik für eingebaute Secret-Circle-Inhalte. Sie ersetzt keine gesetzliche Altersfreigabe oder Store-Einstufung. Vor einer späteren Store-Veröffentlichung müssen die dann aktuellen offiziellen Einstufungsregeln separat geprüft werden.
 
-Für Januar 2027 dienen die internen Werte `all` und `teen` primär als **Produktfilter und redaktionelle Freigabestufe**.
+Für Januar 2027 dienen `all` und `teen` als interne Produktfilter und redaktionelle Freigabestufen.
 
-## 2. Grundregeln für alle eingebauten Inhalte
+## 2. Grundregeln
 
-Jede eingebaute Karte, Frage, Aufgabe, Rolle oder Begriff muss:
+Jede eingebaute Karte, Frage, Aufgabe, Rolle oder jeder Begriff muss:
 
 - einen klaren spielerischen Zweck haben
-- verständlich formuliert sein
-- innerhalb des vorgesehenen Packs sinnvoll passen
+- verständlich und smartphone-tauglich formuliert sein
+- zum vorgesehenen Pack passen
 - sich ausreichend von anderen Karten unterscheiden
-- keine eingebetteten HTML-/Scriptfragmente enthalten
+- frei von eingebetteten HTML-/Scriptfragmenten sein
 - keine fremden geschützten Texte, Logos, Bilder oder Audios kopieren
 - ohne unnötige Demütigung, Zwang oder gefährliche Aufgaben auskommen
-- überspringbar sein, wenn Inhalt persönlich oder unangenehm werden kann
+- überspringbar sein, wenn persönliche oder unangenehme Inhalte vorkommen können
+
+Menge allein ist kein Qualitätsnachweis.
 
 ## 3. Interne Altersstufen
 
 ### `all`
 
-Bedeutung für Secret Circle:
-
-- Standardinhalt für gemischte Gruppen
+- Standard für gemischte Gruppen
 - keine sexualisierten Aufgaben
 - keine Trinkpflicht
 - keine gefährlichen Challenges
@@ -36,23 +36,13 @@ Bedeutung für Secret Circle:
 - keine Aufforderung zu illegalem Verhalten
 - persönliche Fragen bleiben leicht oder freiwillig
 
-`all` bedeutet **nicht automatisch „für jedes Kind jeder Altersstufe geeignet“**. Es ist eine interne familienfreundlichere Produktkategorie und muss vor einer offiziellen Store-Altersfreigabe erneut bewertet werden.
+`all` bedeutet nicht automatisch „für jedes Kind jeder Altersstufe geeignet“.
 
 ### `teen`
 
-Darf:
+Darf persönlichere Fragen, tiefere soziale Themen, peinliche Alltagserfahrungen sowie stärkere Täuschungs-/Konfliktmechaniken enthalten. Auch `teen` erlaubt keine sexuellen, gefährlichen, diskriminierenden oder stark übergriffigen Built-ins.
 
-- persönlichere Fragen
-- tiefere soziale Themen
-- peinliche Alltagserfahrungen
-- stärkere Täuschungs-/Konfliktmechaniken
-- Mafia-/Eliminationssprache im spielerischen Kontext
-
-enthalten, solange keine unnötig expliziten oder riskanten Aufgaben eingebaut werden.
-
-Auch `teen` ist kein Freibrief für sexuelle, gefährliche, diskriminierende oder stark übergriffige Inhalte.
-
-## 4. Aktuelle Alterszuordnung der 15 Kernspiele
+## 4. Alterszuordnung der 15 Kernspiele
 
 ### `teen`
 
@@ -75,16 +65,16 @@ Auch `teen` ist kein Freibrief für sexuelle, gefährliche, diskriminierende ode
 - Location Spy (`location-spy`)
 - Nur falsche Antworten (`wrong-answers`)
 
-Diese Zuordnung wird durch `tests/core-content-quality.test.js` geschützt.
+`tests/core-content-quality.test.js` schützt diese Zuordnung als technischen Vertrag. Die finale redaktionelle Altersfreigabe bleibt manuell.
 
-## 5. Persönliche und sensible Inhalte
+## 5. Sensible Inhalte
 
-Folgende Arten benötigen besondere Vorsicht:
+Besondere Vorsicht gilt bei:
 
-- Geheimnisse
+- Geheimnissen
 - Beziehungen
-- körperliche Themen
-- psychische Gesundheit
+- körperlichen Themen
+- psychischer Gesundheit
 - Familie
 - Geld
 - Religion
@@ -93,41 +83,35 @@ Folgende Arten benötigen besondere Vorsicht:
 - Alkohol/Drogen
 - Trauma
 - Aussehen/Körper
-- soziale Ausgrenzung
+- sozialer Ausgrenzung
 
-Für Januar 2027 gilt:
+Regeln:
 
-- solche Themen nicht beiläufig in familienfreundliche Standardpacks mischen
-- sensible Inhalte klar in passend bezeichnete Packs einordnen
-- Skip jederzeit ermöglichen, wenn die Mechanik persönliche Antworten verlangt
-- niemand muss erklären, warum eine Karte übersprungen wird
+- nicht beiläufig in `all`-Standardpacks mischen
+- sensible Inhalte klar einordnen
+- freiwilliges Überspringen ermöglichen
+- niemand muss einen Skip begründen
 
 ## 6. Challenges / Pflichten
 
-Nicht erlaubt als Built-in:
+Nicht als Built-in zulässig:
 
 - gefährliche körperliche Aufgaben
 - Zerstörung von Eigentum
-- Belästigung fremder Personen
+- Belästigung Dritter
 - Veröffentlichung privater Inhalte
-- Zwang zu Kontaktaufnahme/Nachrichten an Dritte
-- Essen/Trinken mit Gesundheitsrisiko
+- Zwang zu Nachrichten/Kontakten mit Dritten
+- riskantes Essen/Trinken
 - Alkoholzwang
 - sexuelle Handlungen
 - Demütigung/Bloßstellung
 - illegale Handlungen
 
-Bevorzugt:
-
-- kurze Darstellung
-- Stimme/Mimik
-- harmlose Kreativaufgabe
-- Bewegung mit sehr niedrigem Risiko
-- positives Gruppenfeedback
+Bevorzugt werden kurze Darstellung, Stimme/Mimik, harmlose Kreativaufgaben, niedrig-riskante Bewegung und positives Gruppenfeedback.
 
 ## 7. Datenschutz innerhalb von Karten
 
-Built-in-Karten dürfen nicht verlangen:
+Built-ins dürfen nicht verlangen:
 
 - Passwörter zu zeigen
 - private Chats vollständig vorzulesen
@@ -135,11 +119,9 @@ Built-in-Karten dürfen nicht verlangen:
 - Telefonnummern/Adressen preiszugeben
 - Kontodaten zu nennen
 
-Bestehende Truth/Dare-Karte „Lies die letzte Nachricht ... ohne Namen zu nennen“ wird vor finaler Contentfreigabe nochmals redaktionell bewertet, weil auch ohne Namen privater Drittinhalt betroffen sein kann.
+Die bestehende Truth/Dare-Karte zum Vorlesen der letzten Nachricht bleibt als konkreter redaktioneller Privacy-Fund markiert und muss vor `CONTENT PASS` entfernt oder so umformuliert werden, dass kein Drittinhalt offengelegt werden muss.
 
 ## 8. Marken, Fan- und Popkultur
-
-Allgemeine Begriffe und allgemein bekannte Kategorien können redaktionell verwendet werden, aber:
 
 - keine fremden Logos
 - keine kopierten Karten aus Konkurrenzapps
@@ -147,203 +129,139 @@ Allgemeine Begriffe und allgemein bekannte Kategorien können redaktionell verwe
 - keine geschützten Bilder/Audios
 - keine täuschende offizielle Partnerschaft
 
-Word Imposter verwendet aktuell generische Anime-/Gaming-/Filmbegriffe statt konkreter Franchise-Karten. Extended/Labs mit stärkerem Fanbezug werden separat vor öffentlicher Vermarktung geprüft.
+Word Imposter verwendet überwiegend generische Anime-/Gaming-/Filmbegriffe. Extended/Labs mit stärkerem Fanbezug benötigen vor öffentlicher Vermarktung ein separates Review.
 
-## 9. Qualitätsbudgets – harte Mindestwerte
+## 9. Quantitative Release-Gates
 
-Harte Mindestwerte werden nach erfolgreichem Ausbau **angehoben**. Ein späterer Commit darf einen bereits erreichten Contentstand nicht still zurücksetzen.
+Die folgenden Werte sind nach Content-Welle 3 **erreichte harte Regression-Gates**:
 
-| Mechanik | aktuelles hartes Minimum pro Pack |
+| Mechanik | Minimum pro Pack |
 |---|---:|
-| Truth/Dare | 16 kombinierte Karten; mindestens 8 Truth + 8 Dare |
+| Truth/Dare | **24 kombiniert = mindestens 12 Truth + 12 Dare** |
 | Never Have | **24** |
 | Most Likely | **24** |
-| Would Rather | **24** |
+| Would Rather | **24 Paare** |
 | Paranoia | **20** |
 | Wrong Answers | **24** |
-| Charades | 12 |
-| Taboo | **16** |
-| Hot Potato | **16** |
-| Word Chain | **10 Startbuchstaben** |
-| Two Truths prompts | **16** |
+| Charades | **30** |
+| Taboo | **24** |
+| Hot Potato | **20** |
+| Word Chain | **10 Starts** |
+| Two Truths | **16 Prompts** |
 | Question Imposter | **16 Paare** |
 | Location Spy | **16 Orte** |
-| Mafia | mindestens 3 eindeutige Rollen je Pack |
-| Word Imposter | 12 Begriffe je Built-in-Kategorie |
+| Mafia | mindestens **3 eindeutige Rollen**, zusätzlich Balanceprüfung |
+| Word Imposter | **12 Begriffe je 14 Built-in-Kategorien** |
 
-Diese Mindestwerte werden automatisiert in `tests/core-content-quality.test.js` geprüft.
+`tests/core-content-quality.test.js` verlangt, dass kein quantitatives Core-Ziel mehr unterschritten wird.
 
-## 10. Redaktionelle Releaseziele
+## 10. Content-Wellen
 
-Vor finaler Januar-2027-Inhaltsfreigabe gelten folgende Zielwerte, sofern reale Tests keinen besseren mechanikspezifischen Wert ergeben:
+### Ausgangsbasis
 
-- Truth/Dare und klassische Prompt-/Choice-Packs: Ziel **mindestens 20–24** hochwertige Karten pro Pack
-- Paranoia: Ziel **mindestens 20** pro Pack
-- Charades: Ziel **mindestens 30** Begriffe pro Pack
-- Taboo: Ziel **mindestens 24** Karten pro Pack
-- Hot Potato: Ziel **mindestens 20** Aufgaben/Kategorien pro Pack
-- Word Chain: Ziel **mindestens 10** sinnvolle Startbuchstaben pro Pack oder eine bessere dynamische Startlogik
-- Two Truths: Ziel **mindestens 16** Inspirationsprompts pro Pack
-- Question Imposter: Ziel **mindestens 16** hochwertige Fragepaare pro Pack
-- Location Spy: Ziel **mindestens 16** Orte pro Pack
-- Word Imposter: 12 Begriffe × 14 Kategorien bleiben die aktuelle Releasebasis; Wiederholungsrate real testen
+- Word Imposter: 14 × 12 = 168 Begriffe
+- Truth/Dare: 4 × 16
+- Charades: 4 × 12
+- viele weitere Core-Packs nur 8 Einträge
 
-Mafia wird über Rollenbalance statt Kartenmenge bewertet.
+### Welle 1 – strukturierte/kleine Pools
 
-### Bereits auf Zielniveau
+In `party-expansion.js`:
 
-- Never Have: 24 Aussagen je Pack
-- Most Likely: 24 Fragen je Pack
-- Would Rather: 24 Paare je Pack
-- Paranoia: 20 Fragen je Pack
-- Wrong Answers: 24 Fragen je Pack
-- Word Chain: 10 Starts je Pack
-- Two Truths: 16 Prompts je Pack
-- Question Imposter: 16 Paare je Pack
-- Location Spy: 16 Orte je Pack
-- Word Imposter: 14 × 12 Begriffe
+- Taboo: 8 → 16
+- Hot Potato: 8 → 16
+- Word Chain: 5 → 10
+- Two Truths: 8 → 16
+- Question Imposter: 8 → 16
+- Location Spy: 8 → 16
 
-### Verbessert, aber noch unter Endziel
+### Welle 2 – soziale Prompt-/Choice-Spiele
 
-- Taboo: 16 je Pack; Ziel 24
-- Hot Potato: 16 je Pack; Ziel 20
+In `party-core-release-catalog.js`:
 
-### Noch unter Endziel
+- Never Have: 8 → 24
+- Most Likely: 8 → 24
+- Would Rather: 8 → 24
+- Paranoia: 8 → 20
+- Wrong Answers: 8 → 24
 
-- Truth/Dare: 16 je Pack; Ziel 20–24
-- Charades: 12 je Pack; Ziel 30
+### Welle 3 – klassische Core-Spiele
+
+In `party-core-classic-content.js`:
+
+- Truth/Dare: 16 → **24** je Pack
+- Charades: 12 → **30** je Pack
+- Taboo: 16 → **24** je Pack
+- Hot Potato: 16 → **20** je Pack
+
+Damit haben **alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht**.
 
 ## 11. Strukturverträge
 
 ### Truth/Dare
 
-- jedes Pack besitzt getrennte `truth`- und `dare`-Listen
-- mindestens 8 + 8
-- keine Duplikate innerhalb des Packs
+- getrennte `truth`- und `dare`-Listen
+- mindestens 12 + 12 pro Pack
+- keine exakten normalisierten Duplikate
 
 ### Would Rather
 
-- genau zwei Optionen
-- beide nicht leer
-- Optionen dürfen nicht identisch sein
+- genau zwei nicht-leere, unterschiedliche Optionen
 
 ### Taboo
 
-Jede Karte:
-
 - genau ein Zielwort
-- genau drei verbotene Wörter
-- alle drei verbotenen Wörter eindeutig
-- Zielwort ist nicht selbst verbotene Vokabel
+- genau drei eindeutige verbotene Wörter
+- Zielwort nicht selbst verboten
 
 ### Question Imposter
 
 - `main` und `imposter` vorhanden
-- beide verständlich
-- nicht identisch
-- sollten ähnlich genug sein, dass Antworten vergleichbar bleiben
-
-Der letzte Punkt bleibt redaktionell und kann nicht vollständig automatisiert bewertet werden.
+- verständlich und nicht identisch
+- redaktionell ähnlich genug für vergleichbare Antworten
 
 ### Location Spy
 
 - Orte innerhalb eines Packs eindeutig
-- keine leeren Orte
 
 ### Mafia
 
 - Rollen innerhalb eines Packs eindeutig
-- Packnamen entsprechen tatsächlicher Enginevariante
-- Balance wird zusätzlich in realen Gruppen geprüft
+- Packname entspricht Enginevariante
+- reale Balanceprüfung bleibt Pflicht
 
 ### Word Imposter
 
-- jeder Eintrag besteht aus Begriff + Hinweis/Kontext
+- Begriff + Kontext
 - 14 Built-in-Kategorien
 - 12 Einträge je Kategorie
 - keine Duplikate innerhalb derselben Kategorie
 
-## 12. Duplikatregel
+## 12. Duplikat- und Textregeln
 
-Automatisch blockiert werden exakte Duplikate nach:
+Automatisch blockiert werden exakte Duplikate nach Unicode-Normalisierung, Trimmen, Zusammenfassen von Leerzeichen und Kleinschreibung.
 
-- Unicode-Normalisierung
-- Trimmen
-- Zusammenfassen mehrfacher Leerzeichen
-- Kleinschreibung
+Semantisch fast gleiche Karten, unpassender Ton oder langweilige Wiederholungen benötigen weiterhin menschliches Review.
 
-Semantisch fast gleiche Karten benötigen weiterhin manuelles Review.
+Built-in-Texte müssen außerdem innerhalb der in `tests/core-content-quality.test.js` definierten Längen- und Markup-Grenzen bleiben.
 
-## 13. Textlängen
+## 13. Quantitativer Status
 
-Built-in-Texte sollen kurz genug für Smartphone/Partyfluss bleiben.
+**QUANTITY TARGET: PREPARED / vollständig implementiert, aber wegen des externen CI-Runnerblockers noch nicht als ausgeführter PASS dokumentiert.**
 
-Automatischer Vertrag:
+Der Code-/Contractstand verlangt keine bekannten quantitativen Shortfalls mehr.
 
-- keine leeren Strings
-- normale Karten keine extrem langen Texte
-- einzelne Begriffe dürfen kurz sein
-- strukturierte Fragen/Prompts werden auf sinnvolle Obergrenzen geprüft
+## 14. Was für CONTENT PASS noch fehlt
 
-Das visuelle 200-%-Zoom-/Small-Screen-Review bleibt trotzdem nötig.
+- [ ] Core-Content-Test auf funktionierendem Runner tatsächlich grün
+- [ ] jeden Core-Pack manuell vollständig lesen
+- [ ] semantische Doppelungen entfernen
+- [ ] Ton und Verständlichkeit prüfen
+- [ ] Altersstufen redaktionell bestätigen
+- [ ] Privacy-Fund in Truth/Dare schließen
+- [ ] sensible Inhalte und Skip-Flows prüfen
+- [ ] mindestens ein realer Gruppentest pro Kernspiel
+- [ ] Wiederholungsrate in längeren Sessions beobachten
+- [ ] Fan-/Marken-/Urheberrechtsprüfung abschließen
 
-## 14. Content-Ausbau – aktueller Stand
-
-### Solide Ausgangsbasis
-
-- Word Imposter: 14 Kategorien × 12 Begriffe = 168
-- Truth/Dare: 4 Packs × 16 = 64
-- Charades: 4 Packs × 12 = 48
-
-### Release-Welle 1
-
-`party-expansion.js` erweitert die mechanisch kleinsten strukturierten Pools:
-
-- Taboo: 8 → **16** Karten je Pack
-- Hot Potato: 8 → **16** Einträge je Pack
-- Word Chain: 5 → **10** Startbuchstaben je Pack
-- Two Truths: 8 → **16** Prompts je Pack
-- Question Imposter: 8 → **16** Fragepaare je Pack
-- Location Spy: 8 → **16** Orte je Pack
-
-### Release-Welle 2
-
-`party-core-release-catalog.js` trennt größere redaktionelle Releaseinhalte von Spiellogik und erweitert den finalen Katalog:
-
-- Never Have: 8 → **24** Aussagen je Pack
-- Most Likely: 8 → **24** Fragen je Pack
-- Would Rather: 8 → **24** Paare je Pack
-- Paranoia: 8 → **20** Fragen je Pack
-- Wrong Answers: 8 → **24** Fragen je Pack
-
-Das Modul liegt zwischen `party-viral-catalog.js` und `party-routing.js`, besitzt ein eigenes Performancebudget, gehört zum Offline-Core und wird durch Syntax-/Content-Audits geschützt.
-
-### Noch auszubauen
-
-- Truth/Dare: 16 → Ziel 20–24
-- Charades: 12 → Ziel 30
-- Taboo: 16 → Ziel 24
-- Hot Potato: 16 → Ziel 20
-
-### Aktueller Gesamtbefund
-
-**Die meisten Core-Packs haben ihre Zielmenge erreicht; redaktionell bleibt Content weiterhin IN PROGRESS.**
-
-Mengen allein sind keine Freigabe. Alle Inhalte müssen noch manuell auf Ton, semantische Wiederholungen, Altersstufe, sensible Themen und tatsächlichen Spielspaß geprüft werden.
-
-## 15. Releasefreigabe Content
-
-Vor `CONTENT PASS`:
-
-- [ ] automatischer Core-Content-Test grün auf funktionierendem Runner
-- [ ] keine strukturellen Kartenfehler
-- [ ] keine exakten Duplikate
-- [ ] jeder Core-Pack manuell gelesen
-- [ ] semantische Wiederholungen entfernt
-- [ ] Altersstufen bestätigt
-- [ ] sensible Inhalte/Skip geprüft
-- [ ] Content-Tiefe auf Zielniveau oder bewusst begründet
-- [ ] mindestens ein realer Test pro Kernspiel
-- [ ] Fan-/Marken-/Urheberrechtsprüfung abgeschlossen
-
-Bis dahin bleibt Content **IN PROGRESS**.
+Bis diese Punkte nachgewiesen sind, bleibt Content **IN PROGRESS** und nicht `CONTENT PASS`.
