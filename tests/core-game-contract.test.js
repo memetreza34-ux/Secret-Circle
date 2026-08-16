@@ -4,6 +4,10 @@ const assert = require('node:assert/strict');
 const catalog = require('../party-routing.js');
 const release = require('../party-release-structure.js');
 
+delete globalThis.SecretCircleContent;
+require('../word-packs.js');
+const wordContent = globalThis.SecretCircleContent;
+
 const expectedCore = [
   'imposter', 'truth-dare', 'never-have', 'most-likely', 'would-rather',
   'paranoia', 'charades', 'taboo', 'hot-potato', 'word-chain',
@@ -27,6 +31,10 @@ assert.deepEqual([...release.coreIds], expectedCore);
 assert.equal(new Set(expectedCore).size, 15);
 assert.equal(catalog.games.length, 45);
 
+assert.ok(wordContent && typeof wordContent === 'object', 'Word Imposter content runtime must load.');
+assert.equal(Object.keys(wordContent.categories).length, 14, 'Word Imposter must expose 14 built-in categories.');
+assert.equal(Object.values(wordContent.categories).reduce((sum, category) => sum + category.entries.length, 0), 168, 'Word Imposter must expose 168 built-in words.');
+
 for (const id of expectedCore) {
   const game = catalog.getGame(id);
   assert.ok(game, `Core game missing: ${id}`);
@@ -42,15 +50,20 @@ for (const id of expectedCore) {
     assert.ok(rule.trim().length >= 6 && rule.trim().length <= 180, `Rule ${index + 1} has invalid length: ${id}`);
   });
   assert.ok(Array.isArray(game.packs) && game.packs.length >= 1, `Core game requires at least one pack: ${id}`);
+
+  if (id === 'imposter') {
+    assert.equal(game.mode, 'link');
+    assert.equal(game.href, 'index.html');
+    assert.deepEqual(game.packs, ['14 Kategorien', '168 Begriffe', 'Eigene Packs']);
+    continue;
+  }
+
   assert.deepEqual(catalog.getPackNames(id), game.packs, `Catalog packs must match game metadata: ${id}`);
   for (const pack of game.packs) {
     assert.ok(catalog.getItems(id, pack).length >= 1, `Core pack must contain content: ${id}/${pack}`);
   }
 
-  if (id === 'imposter') {
-    assert.equal(game.mode, 'link');
-    assert.equal(game.href, 'index.html');
-  } else if (advanced.has(id)) {
+  if (advanced.has(id)) {
     assert.equal(game.mode, 'link', `Advanced core game must route through advanced.html: ${id}`);
     assert.equal(game.advancedMode, id);
     assert.equal(game.href, `advanced.html?game=${encodeURIComponent(id)}`);
@@ -74,7 +87,10 @@ console.log(JSON.stringify({
   directHubCoreGames: hubModes.size,
   advancedCoreGames: advanced.size,
   wordImposterCoreGames: 1,
+  wordImposterCategories: Object.keys(wordContent.categories).length,
+  wordImposterWords: Object.values(wordContent.categories).reduce((sum, category) => sum + category.entries.length, 0),
   maximumRuleSteps: 4,
-  allCorePacksNonEmpty: true,
+  allRoutedCorePacksNonEmpty: true,
+  wordImposterUsesDedicatedContentRuntime: true,
   hubPlayCountOnlyOnCompletion: true
 }, null, 2));
