@@ -9,7 +9,7 @@
   'use strict';
   if (!base) throw new Error('Core-Release-Katalog für klassische Inhalte fehlt.');
 
-  const VERSION = 1;
+  const VERSION = 2;
   const additions = {
     'truth-dare': {
       Locker: {
@@ -148,6 +148,46 @@
     'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.': 'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.'
   });
 
+  const referenceSafeGameOverrides = Object.freeze({
+    'anime-guess': Object.freeze({
+      title: 'Anime-Archetypen erraten',
+      group: 'Anime-Quiz',
+      description: 'Ein eigenständiges Anime-Archetypen-Quiz ohne konkrete Franchise-Figuren, Logos, Bilder oder Zitate.',
+      instructions: Object.freeze([
+        'Archetypen-Pack wählen.',
+        'Gerät von der ratenden Person weg halten.',
+        'Archetyp erklären, ohne die Bezeichnung zu nennen.',
+        'Treffer oder Überspringen markieren.'
+      ]),
+      packs: Object.freeze(['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games'])
+    })
+  });
+
+  const referenceSafeContent = Object.freeze({
+    'anime-guess': Object.freeze({
+      'Action & Abenteuer': Object.freeze([
+        'Ehrgeiziger Kampfkunst-Schüler', 'Optimistische Abenteuerkapitänin', 'Ruhiger Schwertkämpfer',
+        'Taktische Bogenschützin', 'Hitzköpfiger Feuerkämpfer', 'Blitzschnelle Rivalin',
+        'Beschützender Team-Anführer', 'Hartnäckige Nachwuchsheldin', 'Gelassene Meisterin', 'Mysteriöser Einzelgänger'
+      ]),
+      'Magie & Mystery': Object.freeze([
+        'Fluchjägerin', 'Magieschüler mit verbotener Rune', 'Dämonenforscherin', 'Zeitreisende Detektivin',
+        'Geisterseher', 'Alchemistischer Tüftler', 'Mondmagierin', 'Schattenbeschwörer', 'Heilerin mit Geheimnis',
+        'Bibliothekarin verbotener Magie'
+      ]),
+      'Fantasy & Alltag': Object.freeze([
+        'Schüchterne Schulsprecherin mit Doppelleben', 'Chaotischer Café-Mitarbeiter', 'Prinzessin auf geheimer Reise',
+        'Roboterpilot wider Willen', 'Tiergeist-Begleiterin', 'Koch mit legendärem Rezept', 'Reisende Apothekerin',
+        'Dorfheld ohne Superkraft', 'Musikerin mit magischem Instrument', 'Erfinder mit lebendigem Gadget'
+      ]),
+      'Sport & Games': Object.freeze([
+        'Volleyball-Springer', 'Präzise Fußballstürmerin', 'Eiskunstlauf-Talent', 'Basketball-Taktikerin',
+        'E-Sport-Kapitän', 'Rennfahrerin mit Nerven aus Stahl', 'Schachgenie an der Schule',
+        'Ausdauerläufer mit Rivalen', 'Bogenschützin im Turnier', 'Teammanager mit großer Strategie'
+      ])
+    })
+  });
+
   function mergeNested(baseValue, extraValue, context) {
     if (Array.isArray(baseValue) && Array.isArray(extraValue)) return [...baseValue, ...extraValue];
     if (
@@ -198,9 +238,15 @@
   }
 
   const content = replaceEditorialText(mergeContent(base.content, additions));
+  for (const [gameId, packs] of Object.entries(referenceSafeContent)) content[gameId] = packs;
+
+  const games = Object.freeze(base.games.map(game => {
+    const override = referenceSafeGameOverrides[game.id];
+    return override ? Object.freeze({ ...game, ...override }) : game;
+  }));
 
   function getGame(id) {
-    return base.games.find(game => game.id === id) || null;
+    return games.find(game => game.id === id) || null;
   }
 
   function getPackNames(id) {
@@ -221,6 +267,7 @@
 
   return Object.freeze({
     ...base,
+    games,
     content,
     getGame,
     getPackNames,
@@ -228,6 +275,8 @@
     itemCount,
     coreClassicContentVersion: VERSION,
     coreClassicContentGames: Object.freeze(Object.keys(additions)),
-    editorialReplacementCount: Object.keys(editorialReplacements).length
+    editorialReplacementCount: Object.keys(editorialReplacements).length,
+    referenceSafeGameIds: Object.freeze(Object.keys(referenceSafeGameOverrides)),
+    referenceSafeRemovedConcreteNames: 40
   });
 });
