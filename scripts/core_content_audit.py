@@ -30,14 +30,13 @@ checks = {
     'policy_has_quantity_contract': 'Quantitative Release-Gates' in policy and 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in policy,
     'policy_has_privacy_contract': 'SC-CONTENT-PRIV-001' in policy and 'private Chats oder Nachrichten' in policy,
     'core_source_review_15_of_15': '15/15 Core-Quellpass' in review and review.count('| PREPARED |') >= 15,
-    'fan_review_documents_option_b': 'Option B' in fan_review and 'generisch' in fan_review and '40' in fan_review,
     'final_routing_uses_classic_content': "require('./party-core-classic-content.js')" in routing,
     'release_content_module_contract': all(marker in release_content for marker in ('coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent')),
     'classic_content_module_contract': all(marker in classic_content for marker in (
         'coreClassicContentVersion', 'coreClassicContentGames', 'function mergeNested', 'editorialReplacementCount',
         'referenceSafeGameOverrides', 'referenceSafeContent', 'referenceSafeRemovedConcreteNames'
     )),
-    'classic_content_version_2': 'const VERSION = 2;' in classic_content,
+    'classic_content_version_3': 'const VERSION = 3;' in classic_content,
     'privacy_replacements_defined': all(marker in classic_content for marker in (
         'Was ist das Seltsamste in deiner Kamerarolle?',
         'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.',
@@ -45,7 +44,7 @@ checks = {
         'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.'
     )),
     'privacy_regression_test': all(marker in test for marker in (
-        'privateDevicePromptsRemoved: true', 'editorialReplacementCount, 2',
+        'privateDevicePromptsRemoved: true', 'editorialReplacementCount, 3',
         'Core content must not expose private third-party messages',
         'Core content must not prompt users to inspect private camera-roll material'
     )),
@@ -56,6 +55,9 @@ checks = {
         'referenceSafeRemovedConcreteNames: 40'
     )),
     'anime_reference_regression_test': 'concreteAnimeFanNamesRemoved: true' in test and all(marker in test for marker in ('Son Goku', 'Naruto Uzumaki', 'Pikachu', 'Subaru Natsuki')),
+    'browser_brand_removed': "Chrome: 'Tab'" in classic_content and 'chromeReferenceRemoved: true' in test and 'browserCard.banned.includes(\'Tab\')' in test,
+    'spectrum_branding_removed': all(marker in classic_content for marker in ('wavelength: Object.freeze({', "title: 'Spektrum-Tipp'")) and 'wavelengthBrandingRemoved: true' in test,
+    'reference_safe_ids_cover_anime_and_spectrum': "new Set(['anime-guess', 'wavelength'])" in test,
     'all_quantitative_targets_required': 'assert.deepEqual(editorialShortfalls, []' in test and 'quantitativeTargetsMet: true' in test,
     'truth_dare_12_plus_12': 'raw.truth.length >= 12' in test and 'raw.dare.length >= 12' in test,
     'word_imposter_14x12': 'wordCategories.length, 14' in test and 'entries.length === 12' in test and 'wordImposterWords, 168' in test,
@@ -76,6 +78,8 @@ print(json.dumps({
     'privacy_findings_closed': ['SC-CONTENT-PRIV-001'],
     'generic_core_reference_terms': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
     'anime_reference_safe_runtime': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
-    'fan_content_review': 'OPTION_B_IMPLEMENTED_FINAL_EXTENDED_LABS_SCAN_OPEN',
+    'chrome_reference_cleanup': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
+    'spectrum_branding_cleanup': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
+    'fan_content_review': 'FINAL_EXTENDED_LABS_SCAN_IN_PROGRESS',
     'checks': checks,
 }, ensure_ascii=False, indent=2))
