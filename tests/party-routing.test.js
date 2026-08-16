@@ -9,7 +9,7 @@ assert.equal(typeof C.itemCount, 'function');
 assert.equal(typeof C.coreRules, 'object');
 
 const truthPacks = C.getPackNames('truth-dare');
-assert.deepEqual(truthPacks, ['Locker', 'Lustig', 'Tief', 'Chaos']);
+assert.deepEqual(truthPacks, ['Locker', 'Lustig', 'Tiefer', 'Chaos']);
 for (const pack of truthPacks) {
   const items = C.getItems('truth-dare', pack);
   assert.equal(items.length, 16, `Structured Truth/Dare pack must flatten to 16 cards: ${pack}`);
@@ -17,7 +17,22 @@ for (const pack of truthPacks) {
 }
 assert.equal(C.itemCount('truth-dare'), 64);
 
-for (const id of ['would-rather', 'charades', 'taboo', 'two-truths', 'question-imposter', 'location-spy', 'mafia']) {
+const expectedAdvancedPacks = {
+  'two-truths': ['Locker', 'Reise', 'Schule & Arbeit'],
+  'question-imposter': ['Alltag', 'Meinungen', 'Schätzfragen'],
+  'location-spy': ['Reise', 'Alltag', 'Fantasieorte'],
+  mafia: ['Schnell', 'Klassisch', 'Erweitert']
+};
+
+for (const [id, packs] of Object.entries(expectedAdvancedPacks)) {
+  const game = C.getGame(id);
+  assert.ok(game, `Missing routed game: ${id}`);
+  assert.deepEqual(game.packs, packs, `Advanced metadata packs drifted: ${id}`);
+  assert.deepEqual(C.getPackNames(id), packs, `Advanced content packs drifted: ${id}`);
+  for (const pack of packs) assert.ok(C.getItems(id, pack).length > 0, `Routed pack must expose items: ${id}/${pack}`);
+}
+
+for (const id of ['would-rather', 'charades', 'taboo']) {
   const game = C.getGame(id);
   assert.ok(game, `Missing routed game: ${id}`);
   for (const pack of C.getPackNames(id)) {
@@ -35,5 +50,6 @@ console.log(JSON.stringify({
   structuredTruthDarePacks: truthPacks.length,
   truthDareCards: C.itemCount('truth-dare'),
   recursiveStructuredPackFlattening: true,
+  advancedPackMetadataAligned: true,
   machineReadableCoreRules: true
 }, null, 2));
