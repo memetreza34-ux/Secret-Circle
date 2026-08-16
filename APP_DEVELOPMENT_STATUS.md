@@ -36,12 +36,12 @@ Grund: belastbarer CI-Nachweis, Lockfile/`npm ci`, reale Geräte/PWA-Tests, voll
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | pro Restfeature weiter anwenden |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | reale Browser-/Quota-/Updateabnahme |
 | 11 | Tests / CI | BLOCKED | `package.json`, `.github/workflows`, Content-Gates | funktionierenden Actions-Runner nachweisen |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker, Resume-Contracts | echte Geräte + alte→neue Updates |
-| 13 | Content / Alter / Rechte | IN PROGRESS | `CONTENT_AGE_POLICY.md`, `tests/core-content-quality.test.js`, `scripts/core_content_audit.py`, Content-Welle 1 | verbleibende Core-Packs auf Zielniveau ausbauen + manuell abnehmen |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker v31, Resume-Contracts | echte Geräte + alte→neue Updates |
+| 13 | Content / Alter / Rechte | IN PROGRESS | `CONTENT_AGE_POLICY.md`, `party-core-release-catalog.js`, Content-Gates, Wellen 1–2 | letzte vier Core-Pools auf Zielniveau + manuelles Review |
 | 14 | Beta / reale Gruppen | OPEN | `USER_SCENARIOS.md`, Releasecheckliste | 3–4 / 5–8 / 9–12 Personen testen |
 | 15 | Datenschutz / Recht / Support | OPEN | Privacy-/Security-Grundlage vorhanden | Legal-/Support-/Third-Party-Dokumente finalisieren |
 | 16 | Release Management / RC | PREPARED | Roadmap/Checklist | erst nach Gates finalisieren |
-| 17 | Deployment / Veröffentlichung | PREPARED | `DEPLOYMENT.md`, `PLATFORM_STRATEGY.md` | veraltete Angaben synchronisieren; HTTPS-Staging |
+| 17 | Deployment / Veröffentlichung | PREPARED | `DEPLOYMENT.md`, `PLATFORM_STRATEGY.md` | Cache-/Staging-Dokumentation synchronisieren; HTTPS-Staging |
 | 18 | Operations / Incident | OPEN | Security-Meldeweg + Rollbackgrundlage | `SUPPORT.md`, `INCIDENT_RESPONSE.md` |
 | 19 | Wartung / Migration | PREPARED | Architektur, Backup-Schemas, Changelog | `MAINTENANCE.md` in Releasephase |
 | 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | bei jedem Fund aktualisieren |
@@ -91,7 +91,7 @@ Grund: belastbarer CI-Nachweis, Lockfile/`npm ci`, reale Geräte/PWA-Tests, voll
 
 ### Content-Welle 1
 
-Erste reale Inhaltsvergrößerung ist in `party-expansion.js` umgesetzt und durch neue Regression-Gates geschützt:
+In `party-expansion.js` umgesetzt und als Regression-Gate geschützt:
 
 - Taboo: **8 → 16** Karten je Pack
 - Hot Potato: **8 → 16** Einträge je Pack
@@ -100,13 +100,40 @@ Erste reale Inhaltsvergrößerung ist in `party-expansion.js` umgesetzt und durc
 - Question Imposter: **8 → 16** Fragepaare je Pack
 - Location Spy: **8 → 16** Orte je Pack
 
-`party-expansion.js` steht dafür jetzt auf Version 4. `tests/party-expansion.test.js` verlangt die neuen Mengen explizit. `tests/core-content-quality.test.js` hebt die harten Mindestwerte für diese Mechaniken entsprechend an.
+`party-expansion.js` steht dafür auf Version 4.
+
+### Content-Welle 2
+
+Größere redaktionelle Releaseinhalte wurden bewusst aus der Spiellogik in `party-core-release-catalog.js` ausgelagert. Das Modul liegt im finalen Katalogpfad zwischen Viral-Katalog und Routing, besitzt ein eigenes Größenbudget und gehört zum Offline-Core.
+
+Erreicht:
+
+- Never Have: **8 → 24** Aussagen je Pack
+- Most Likely: **8 → 24** Fragen je Pack
+- Would Rather: **8 → 24** Paare je Pack
+- Paranoia: **8 → 20** Fragen je Pack
+- Wrong Answers: **8 → 24** Fragen je Pack
+
+Die neuen Werte sind harte Regression-Minima in `tests/core-content-quality.test.js`. `scripts/core_content_audit.py` verlangt das Release-Content-Modul im Routing-, Syntax- und Offlinepfad.
+
+### PWA-Auswirkung von Welle 2
+
+- `party.html` und `quick-play.html` laden `party-core-release-catalog.js` vor `party-routing.js`
+- `party-routing.js` verwendet im Node-Pfad denselben Release-Katalog
+- Service-Worker-Cachegeneration wurde wegen der neuen Offline-Core-Datei auf **`secret-circle-v31`** angehoben
+- `tests/service-worker.test.js` verlangt v31 und das neue Content-Modul
+- `scripts/performance_budget.py` besitzt ein eigenes 65-KB-Budget für das Modul
 
 ## Aktueller Core-Content-Befund
 
 ### Auf aktuellem Zielniveau
 
 - Word Imposter: 14 Kategorien × 12 Begriffe = 168
+- Never Have: 4 × 24
+- Most Likely: 4 × 24
+- Would Rather: 4 × 24
+- Paranoia: 3 × 20
+- Wrong Answers: 3 × 24
 - Word Chain: 4 × 10 Starts
 - Two Truths: 3 × 16 Prompts
 - Question Imposter: 3 × 16 Fragepaare
@@ -119,15 +146,7 @@ Erste reale Inhaltsvergrößerung ist in `party-expansion.js` umgesetzt und durc
 - Taboo: 3 × 16; Ziel 24
 - Hot Potato: 3 × 16; Ziel 20
 
-### Noch deutlich zu dünn
-
-- Never Have: 4 × 8
-- Most Likely: 4 × 8
-- Would Rather: 4 × 8
-- Paranoia: 3 × 8
-- Wrong Answers: 3 × 8
-
-Diese Mengen gelten **nicht** als finale Inhaltsfreigabe. `CONTENT_AGE_POLICY.md` definiert die höheren redaktionellen Zielwerte.
+Diese Mengen gelten **noch nicht** als finale Inhaltsfreigabe. Nach Welle 3 folgt das manuelle redaktionelle Review aller Core-Packs.
 
 ## Aktuell höchste Prioritäten
 
@@ -137,18 +156,17 @@ Diese Mengen gelten **nicht** als finale Inhaltsfreigabe. `CONTENT_AGE_POLICY.md
 
 ### P1/P2 in sinnvoller Arbeitsreihenfolge
 
-2. Content-Welle 2: Never Have / Most Likely / Would Rather / Paranoia / Wrong Answers ausbauen
-3. Content-Welle 3: Truth/Dare / Charades / Taboo / Hot Potato auf Endziel bringen
-4. semantische/manuelle Content-/Altersprüfung
-5. Hero-/Startseitenpositionierung und restliche UX-Korrekturen
-6. SEC-F01/SEC-F02 entscheiden/härten
-7. `package-lock.json` + `npm ci`
-8. Branch Protection
-9. Accessibility-Abnahme
-10. reale Android-/iPhone-/Tablet-/PWA-Tests
-11. reale Gruppentests
-12. Recht/Support/Lizenz
-13. Deployment/Staging synchronisieren
+2. Content-Welle 3: Truth/Dare / Charades / Taboo / Hot Potato auf Endziel bringen
+3. semantische/manuelle Content-/Altersprüfung
+4. Hero-/Startseitenpositionierung und restliche UX-Korrekturen
+5. SEC-F01/SEC-F02 entscheiden/härten
+6. `package-lock.json` + `npm ci`
+7. Branch Protection
+8. Accessibility-Abnahme
+9. reale Android-/iPhone-/Tablet-/PWA-Tests
+10. reale Gruppentests
+11. Recht/Support/Lizenz
+12. Deployment/Staging synchronisieren
 
 ## Wichtig: Was NICHT als bestanden gilt
 
@@ -159,18 +177,18 @@ Insbesondere nicht behaupten:
 - `npm run ci` grün
 - Cross-Browser grün
 - Content-Test grün
-- neue Content-Welle durch CI bestätigt
+- Content-Welle 2 durch CI bestätigt
+- Cache-v31-Update auf realen PWAs bestätigt
 - neue Touchziele visuell auf Zielgeräten bestätigt
 
 ## Nächster Arbeitsblock
 
-1. Content-Welle 2: fünf verbliebene 8-Karten-Core-Gruppen ausbauen
-2. Content-Welle 3: restliche Packs auf Endziel bringen
-3. manuelle redaktionelle Alters-/Privacy-Prüfung
-4. Hero-/Startseitencopy an neue Marktpositionierung anpassen
-5. SEC-F01/SEC-F02 hardenen
-6. danach CI-/Lockfile-/Branch-Protection-Blocker
-7. anschließend reale Geräte/A11y/Gruppen/Legal
+1. Content-Welle 3: Truth/Dare / Charades / Taboo / Hot Potato auf Endziel
+2. semantisches/manuelles Core-Content-Review
+3. Hero-/Startseitencopy an neue Marktpositionierung anpassen
+4. SEC-F01/SEC-F02 hardenen
+5. danach CI-/Lockfile-/Branch-Protection-Blocker
+6. anschließend reale Geräte/A11y/Gruppen/Legal
 
 ## Arbeitsregel
 
