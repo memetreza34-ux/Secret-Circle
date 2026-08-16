@@ -5,23 +5,13 @@ Status: **IN PROGRESS – Assetherkunft und finale Rechteprüfung offen**
 
 ## 1. Zweck
 
-Dieses Dokument inventarisiert externe Software, gebündelte Assets, Fan-/Markenbezüge und eigene Projektbestandteile, die vor dem Januar-2027-Release auf Herkunft und Nutzungsrechte geprüft werden müssen.
+Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcontent und eigene Projektbestandteile, die vor dem Januar-2027-Release auf Herkunft und Nutzungsrechte geprüft werden müssen.
 
 Ein Eintrag ohne belegte Herkunft wird **nicht** automatisch als eigenes Werk behandelt.
 
-## 2. Aktuelle Runtime-Abhängigkeiten
+## 2. Runtime-Abhängigkeiten
 
-`package.json` enthält derzeit **keine npm-Runtime-Dependencies**.
-
-Die Production-PWA lädt außerdem keine externen:
-
-- JavaScript-CDNs
-- Webfonts
-- Analyse-SDKs
-- Werbe-SDKs
-- Remote-Spielassets
-
-Das reduziert die Third-Party-Fläche, ersetzt aber nicht die Prüfung gebündelter Dateien und Entwicklungswerkzeuge.
+`package.json` enthält derzeit **keine npm-Runtime-Dependencies**. Die Production-PWA lädt außerdem keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets.
 
 ## 3. Entwicklungsabhängigkeiten
 
@@ -29,150 +19,114 @@ Das reduziert die Third-Party-Fläche, ersetzt aber nicht die Prüfung gebündel
 |---|---:|---|---|---|---|
 | `@playwright/test` | `1.54.2` | E2E-/Cross-Browser-Tests | Nein | **Apache-2.0** | **UPSTREAM VERIFIED** |
 
-### Playwright-Nachweis
-
 Direkt im offiziellen `microsoft/playwright`-Repository am Tag `v1.54.2` geprüft:
 
-- `packages/playwright-test/package.json` deklariert exakt Version `1.54.2`
-- Autor: Microsoft Corporation
-- Lizenzfeld: `Apache-2.0`
-- Upstream-Root enthält die Apache License 2.0
-- Upstream-Root enthält eine `NOTICE`-Datei mit Microsoft-Hinweis und Hinweis auf aus dem Puppeteer-Projekt abgeleiteten Code
+- Paketversion exakt 1.54.2
+- Autor Microsoft Corporation
+- Lizenzfeld Apache-2.0
+- Root-LICENSE Apache License 2.0
+- NOTICE mit Microsoft-Hinweis und Hinweis auf abgeleiteten Puppeteer-Code
 
-Vor einer eventuellen Weiterverteilung von Playwright-Bestandteilen werden die für den konkreten Distributionsweg erforderlichen License-/NOTICE-Pflichten beibehalten. Secret Circle nutzt Playwright aktuell nur als Entwicklungs-/Testabhängigkeit, nicht als Browser-Runtime der ausgelieferten PWA.
+Noch offen: Ohne `package-lock.json` existiert kein reproduzierbarer transitive Dependency-Snapshot.
 
-**Noch offen:** Ein echtes `package-lock.json` fehlt, daher ist der vollständige transitive npm-Abhängigkeitsbestand noch nicht als reproduzierbarer Release-Snapshot inventarisiert.
+## 4. Maschinenlesbare Asset-Provenienz
 
-Wenn neue Dependencies hinzukommen:
-
-1. Zweck dokumentieren
-2. Version pinnen/Lockfile aktualisieren
-3. Lizenz prüfen
-4. bekannte Sicherheitsrisiken prüfen
-5. Production- oder Dev-only kennzeichnen
-6. Notice-Pflichten ergänzen
-
-## 4. Gebündelte App-Assets
-
-| Datei | Zweck | Aktueller Herkunftsnachweis | Release-Status |
-|---|---|---|---|
-| `icon.svg` | App-/PWA-Icon, Vektorquelle | **im Repo kein Herkunfts-/Lizenznachweis gefunden** | **BLOCKED FOR FINAL SIGN-OFF** |
-| `icon-192.png` | PWA-/Apple-Touch-Icon | Rasterableitung wirkt technisch plausibel, aber Herkunft/Ableitung ist im Repo nicht belegt | **BLOCKED FOR FINAL SIGN-OFF** |
-| `icon-512.png` | PWA-Icon | Rasterableitung wirkt technisch plausibel, aber Herkunft/Ableitung ist im Repo nicht belegt | **BLOCKED FOR FINAL SIGN-OFF** |
-
-### Vor RC für jedes Asset dokumentieren
-
-- Urheber/Ersteller
-- Erstellungsquelle oder Originaldatei
-- Datum/Projektkontext, soweit verfügbar
-- Lizenz beziehungsweise Bestätigung „eigenes Werk“
-- ob KI-/Template-/Stock-Werkzeug beteiligt war
-- falls Drittanbieter: konkrete Nutzungsbedingungen und kommerzielle Freigabe
-- ob Bearbeitung/Attribution erforderlich ist
-
-**Wichtig:** Aus dem SVG-Code oder visueller Ähnlichkeit allein lässt sich die Rechtekette nicht beweisen.
-
-## 5. Emoji und Systemglyphen
-
-Im UI stehen Unicode-Emoji-Zeichen in Text/Markup. Secret Circle bündelt dafür derzeit keine eigene Emoji-Fontdatei. Die Darstellung erfolgt durch die auf dem jeweiligen Betriebssystem/Browser vorhandene Schrift-/Emoji-Implementierung.
-
-Vor einem späteren Export von Emoji-Glyphen als eigene Raster-/Vektorgrafiken wäre die Rechtefrage neu zu prüfen.
-
-## 6. Built-in Content
-
-### Core
-
-Die 15 Kernspiele besitzen einen ersten redaktionellen Quellpass in `CORE_CONTENT_REVIEW.md`.
-
-Regel:
-
-- keine Karten aus konkurrierenden Partyapps kopieren
-- keine längeren fremden Texte/Zitate übernehmen
-- allgemein bekannte Mechaniken selbst formulieren
-- Marken-/Franchisenamen nur nach gesonderter Bewertung
-
-### Extended / Labs / Fan-Bezug
-
-Besonders zu prüfen:
-
-- Anime-/Fan-Quiz
-- konkrete Figuren-/Serien-/Game-Namen
-- Musik-/Film-/Popkulturbezug
-- mögliche Marken-/Titelnutzung
-
-Aktuelle Schutzregel aus `ASSET_PLAN.md`:
-
-- keine bekannten Charakterbilder nachzeichnen
-- keine Logos, Panels, Screenshots, Audios oder Videos übernehmen
-- Fan-Quiz visuell nur mit eigenständigen generischen Motiven begleiten
-
-Der Hinweis „inoffiziell“ allein ersetzt keine Rechteprüfung.
-
-## 7. Geplante neue Designassets
-
-`ASSET_PLAN.md` beschreibt zukünftige:
-
-- Navigationsicons
-- Mechanikicons
-- Hero-/Kategorieillustrationen
-- Kartenrückseiten
-- Hintergründe
-- Motionassets
-
-Noch nicht produzierte Assets dürfen erst in den Release-Core aufgenommen werden, wenn ihre Herkunft im selben Commit oder in einem nachvollziehbaren Assetmanifest dokumentiert ist.
-
-Empfohlene spätere Datei:
+Neu verbindlich:
 
 `assets/manifests/asset-provenance.json`
 
-mit mindestens:
+Schema-Version: **1**.
 
-```text
-path
-creator
-source
-created_at
-license
-commercial_use
-attribution
-notes
-```
+`scripts/asset_provenance_audit.py` ist Teil von `npm run validate` und prüft:
 
-## 8. Projektlizenz / Quellcodefreigabe
+- jeder inventarisierte Pfad existiert
+- keine doppelten Pfade
+- nur erlaubte Statuswerte
+- alle drei aktuellen Release-Icons besitzen einen Manifest-Eintrag
+- `derivedFrom` zeigt nur auf bekannte Manifest-Einträge
+- ein Asset darf nicht als `verified-own` oder `verified-third-party` markiert werden, wenn Creator, Quelle, Rechtebasis/Lizenz oder kommerzielle Nutzung fehlen
 
-Im aktuellen Repository wurde keine Root-Datei `LICENSE` gefunden.
+Der Validator darf `unresolved` während der Entwicklung akzeptieren, meldet dann aber `final_asset_signoff: BLOCKED`. Dadurch bleibt die tatsächliche offene Rechtefrage sichtbar, ohne Entwicklungsaudits durch erfundene Angaben zu umgehen.
 
-Das bedeutet nicht automatisch, dass eine Open-Source-Lizenz benötigt wird. Vor öffentlicher Quellcodeverteilung muss aber bewusst entschieden werden:
+## 5. Aktuelle App-Assets
 
-- bleibt der Quellcode proprietär/nicht lizenziert für Weiterverwendung?
-- oder wird eine konkrete Open-Source-Lizenz gewählt?
+| Datei | Manifeststatus | Release-Status |
+|---|---|---|
+| `icon.svg` | `unresolved` | **BLOCKED FOR FINAL SIGN-OFF** |
+| `icon-192.png` | `unresolved`, `derivedFrom: icon.svg` | **BLOCKED FOR FINAL SIGN-OFF** |
+| `icon-512.png` | `unresolved`, `derivedFrom: icon.svg` | **BLOCKED FOR FINAL SIGN-OFF** |
 
-Keine Lizenzdatei aus Gewohnheit hinzufügen, ohne die gewünschte Rechtevergabe zu verstehen.
+Vor RC müssen echte Angaben ergänzt werden:
 
-## 9. Hosting- und Plattformkomponenten
+- Urheber/Ersteller
+- Quelle/Originaldatei
+- Erstellungsdatum oder Projektkontext, soweit verfügbar
+- Lizenz/Rechtebasis beziehungsweise belegte Eigenproduktion
+- KI-/Template-/Stock-Werkzeug, falls beteiligt
+- kommerzielle Nutzbarkeit
+- Attribution, falls erforderlich
 
-Der Hostinganbieter kann eigene technische Komponenten und Bedingungen mitbringen. Nach Auswahl der Production-Plattform prüfen:
+Aus SVG-Code oder visueller Ähnlichkeit allein lässt sich die Rechtekette nicht beweisen.
+
+## 6. Emoji und Systemglyphen
+
+Im UI stehen Unicode-Emoji-Zeichen. Secret Circle bündelt dafür keine eigene Emoji-Fontdatei; Darstellung erfolgt durch Browser/Betriebssystem. Ein späterer Export von Emoji-Glyphen als eigene Bildassets würde eine neue Rechteprüfung auslösen.
+
+## 7. Built-in- und Referenzcontent
+
+### Core
+
+`CORE_CONTENT_REVIEW.md` dokumentiert den 15/15-Core-Quellpass. Word Imposter verwendet nach v36 generische Ersatzbegriffe statt drei unnötig konkreter Referenzen.
+
+### Anime-/Fan-Bezug
+
+`FAN_CONTENT_REVIEW.md` dokumentiert Option B für `anime-guess`: Der **finale Runtime-Katalog** liefert nur `Anime-Archetypen erraten` mit 40 generischen Archetypen. Keine konkreten Charakterbilder, Logos, Screenshots, Audio-/Videodateien oder Zitate sind vorgesehen.
+
+### Viral
+
+v38 ersetzt drei unnötig konkrete Sport-/Eventformulierungen durch generische Fragen mit identischen Zahlenwerten.
+
+Der restliche Extended-/Labs-/Marketing-/Visualpass bleibt offen.
+
+## 8. Zukünftige Designassets
+
+`ASSET_PLAN.md` beschreibt Navigationsicons, Mechanikicons, Illustrationen, Hintergründe und Motionassets.
+
+Ab jetzt gilt: Ein neues gebündeltes Release-Asset wird **im selben Arbeitsblock** in `assets/manifests/asset-provenance.json` inventarisiert. Kein „später nachtragen“ als Standardprozess.
+
+## 9. Projektlizenz / Quellcodefreigabe
+
+Es existiert weiterhin keine Root-Datei `LICENSE`.
+
+Das bedeutet nicht automatisch, dass eine Open-Source-Lizenz benötigt wird. Vor öffentlicher Quellcodeverteilung muss bewusst entschieden werden, ob der Code proprietär/nicht zur Weiterverwendung lizenziert bleibt oder unter eine konkrete Open-Source-Lizenz gestellt wird.
+
+Der historische konkrete Anime-Basisblock in `party-mega-catalog.js` wird im finalen Runtime-Pfad überschrieben. Falls der Quellcode später öffentlich verteilt wird, ist zusätzlich zu entscheiden, ob dieser historische Basisblock vor Quellcodeveröffentlichung vollständig bereinigt wird.
+
+## 10. Hosting- und Plattformkomponenten
+
+Nach Auswahl der Production-Plattform prüfen:
 
 - Hosting-AGB
 - Datenschutz-/Logverarbeitung
-- erforderliche Attribution/Notices, falls überhaupt
-- Build-/Deploy-Actions und deren Third-Party-Lizenzen
+- Build-/Deploy-Actions
+- erforderliche License-/NOTICE-/Attribution-Pflichten
 
-## 10. Release-Gates
+## 11. Release-Gates
 
 Vor `THIRD-PARTY / ASSET PASS`:
 
 - [ ] `package-lock.json` vorhanden und vollständiger Dependencybestand verifiziert
-- [x] direkte Dev-Dependency `@playwright/test` 1.54.2 und Upstream-Lizenz verifiziert
-- [ ] transitive Dependencies aus dem finalen Lockfile inventarisiert
-- [ ] erforderliche Playwright-License-/NOTICE-Behandlung für den finalen Distributionsweg bestätigt
-- [ ] `icon.svg` Herkunft belegt
+- [x] direkte Dev-Dependency `@playwright/test` 1.54.2 / Apache-2.0 verifiziert
+- [ ] transitive Dependencies aus finalem Lockfile inventarisiert
+- [x] maschinenlesbares Asset-Provenienzmanifest vorhanden
+- [x] Asset-Provenienzvalidator in `npm run validate`
+- [ ] `icon.svg` von `unresolved` auf belegten Status gesetzt
 - [ ] `icon-192.png` Herkunft/Ableitung belegt
 - [ ] `icon-512.png` Herkunft/Ableitung belegt
-- [ ] alle später hinzugefügten Bilder/Icons/Motionassets inventarisiert
-- [ ] Fan-/Marken-/Franchise-Inhalte final geprüft
+- [ ] alle späteren Releaseassets inventarisiert und belegt
+- [ ] restlicher Fan-/Marken-/Franchise-Pass abgeschlossen
 - [ ] keine fremden Logos/Screenshots/Audios/Videos ohne Freigabe
-- [ ] erforderliche Attributionen/Notices in finaler Form vorhanden
-- [ ] bewusste Entscheidung zur Projekt-/Quellcodelizenz getroffen, falls Quellcode öffentlich verteilt wird
+- [ ] erforderliche Attributionen/Notices final
+- [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
 
 Bis dahin bleibt R-029 **OFFEN** und der öffentliche Release **NO_GO**.
