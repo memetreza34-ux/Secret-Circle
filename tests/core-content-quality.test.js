@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const catalog = require('../party-routing.js');
 const release = require('../party-release-structure.js');
 const releaseContent = require('../party-core-release-catalog.js');
+const classicContent = require('../party-core-classic-content.js');
 
 delete globalThis.SecretCircleContent;
 require('../word-packs.js');
@@ -34,23 +35,6 @@ const expectedAges = Object.freeze({
 });
 
 const hardMinimums = Object.freeze({
-  'truth-dare': 16,
-  'never-have': 24,
-  'most-likely': 24,
-  'would-rather': 24,
-  paranoia: 20,
-  charades: 12,
-  taboo: 16,
-  'hot-potato': 16,
-  'word-chain': 10,
-  'two-truths': 16,
-  'question-imposter': 16,
-  'location-spy': 16,
-  mafia: 3,
-  'wrong-answers': 24
-});
-
-const editorialTargets = Object.freeze({
   'truth-dare': 24,
   'never-have': 24,
   'most-likely': 24,
@@ -63,8 +47,11 @@ const editorialTargets = Object.freeze({
   'two-truths': 16,
   'question-imposter': 16,
   'location-spy': 16,
+  mafia: 3,
   'wrong-answers': 24
 });
+
+const editorialTargets = Object.freeze({ ...hardMinimums });
 
 function normalizeText(value) {
   return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ');
@@ -111,6 +98,11 @@ assert.deepEqual(
   new Set(releaseContent.coreReleaseContentGames),
   new Set(['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers'])
 );
+assert.equal(classicContent.coreClassicContentVersion, 1);
+assert.deepEqual(
+  new Set(classicContent.coreClassicContentGames),
+  new Set(['truth-dare', 'charades', 'taboo', 'hot-potato'])
+);
 
 const editorialShortfalls = [];
 let routedCoreItems = 0;
@@ -128,7 +120,7 @@ for (const id of expectedCore) {
   for (const pack of packNames) {
     const raw = catalog.content[id][pack];
     const items = catalog.getItems(id, pack);
-    assert.ok(items.length >= hardMinimums[id], `Core pack fell below hard content minimum: ${id}/${pack} (${items.length} < ${hardMinimums[id]}).`);
+    assert.ok(items.length >= hardMinimums[id], `Core pack fell below release content minimum: ${id}/${pack} (${items.length} < ${hardMinimums[id]}).`);
     assertUniqueItems(items, `${id}/${pack}`);
     routedCoreItems += items.length;
 
@@ -141,18 +133,19 @@ for (const id of expectedCore) {
     if (target && items.length < target) editorialShortfalls.push({ id, pack, count: items.length, target });
   }
 }
+assert.deepEqual(editorialShortfalls, [], 'All quantitative core content targets must now be met.');
 
-// Truth or Dare keeps its nested semantic structure even though final routing flattens cards for generic consumers.
+// Truth or Dare keeps its nested semantic structure while final routing flattens generic consumers.
 for (const pack of catalog.getPackNames('truth-dare')) {
   const raw = catalog.content['truth-dare'][pack];
   assert.ok(raw && typeof raw === 'object' && !Array.isArray(raw), `Truth/Dare pack must stay structured: ${pack}`);
   assert.deepEqual(Object.keys(raw), ['truth', 'dare']);
-  assert.ok(Array.isArray(raw.truth) && raw.truth.length >= 8, `Truth list too small: ${pack}`);
-  assert.ok(Array.isArray(raw.dare) && raw.dare.length >= 8, `Dare list too small: ${pack}`);
+  assert.ok(Array.isArray(raw.truth) && raw.truth.length >= 12, `Truth release list too small: ${pack}`);
+  assert.ok(Array.isArray(raw.dare) && raw.dare.length >= 12, `Dare release list too small: ${pack}`);
   assertUniqueItems([...raw.truth, ...raw.dare], `truth-dare/${pack}`);
   assert.equal(catalog.getItems('truth-dare', pack).length, raw.truth.length + raw.dare.length);
 }
-assert.equal(catalog.itemCount('truth-dare'), 64);
+assert.equal(catalog.itemCount('truth-dare'), 96);
 
 // Would Rather cards are exactly two distinct options.
 for (const pack of catalog.getPackNames('would-rather')) {
@@ -186,7 +179,6 @@ for (const pack of catalog.getPackNames('question-imposter')) {
   }
 }
 
-// Location Spy locations and Mafia roles are unique inside each pack.
 for (const pack of catalog.getPackNames('location-spy')) {
   assertUniqueItems(catalog.content['location-spy'][pack], `location-spy/${pack}`);
 }
@@ -197,7 +189,6 @@ assert.deepEqual(catalog.content.mafia.Schnell, ['Mafia', 'Detektiv', 'Dorfbewoh
 assert.deepEqual(catalog.content.mafia.Klassisch, ['Mafia', 'Detektiv', 'Arzt', 'Dorfbewohner']);
 assert.deepEqual(catalog.content.mafia.Erweitert, ['Mafia', 'Detektiv', 'Arzt', 'Beschützer', 'Dorfbewohner']);
 
-// Word Chain now keeps at least ten explicit starts per release pack.
 for (const pack of catalog.getPackNames('word-chain')) {
   assert.ok(catalog.content['word-chain'][pack].length >= 10, `Word Chain release pack too small: ${pack}`);
   for (const letter of catalog.content['word-chain'][pack]) {
@@ -205,7 +196,6 @@ for (const pack of catalog.getPackNames('word-chain')) {
   }
 }
 
-// Word Imposter has its own dedicated content runtime.
 assert.ok(wordContent && wordContent.categories, 'Word Imposter content runtime missing.');
 const wordCategories = Object.entries(wordContent.categories);
 assert.equal(wordCategories.length, 14);
@@ -230,14 +220,17 @@ console.log(JSON.stringify({
   coreGames: expectedCore.length,
   ageContract: expectedAges,
   hardMinimums,
+  quantitativeTargetsMet: true,
   coreReleaseContentVersion: releaseContent.coreReleaseContentVersion,
   coreReleaseContentGames: releaseContent.coreReleaseContentGames,
+  coreClassicContentVersion: classicContent.coreClassicContentVersion,
+  coreClassicContentGames: classicContent.coreClassicContentGames,
   wordImposterCategories: wordCategories.length,
   wordImposterWords,
   routedCoreItemsExcludingWordImposter: routedCoreItems,
-  truthDareCards: 64,
+  truthDareCards: 96,
   structuredContentValidated: ['truth-dare', 'would-rather', 'taboo', 'question-imposter', 'location-spy', 'mafia', 'word-chain'],
   markupRejected: true,
   exactNormalizedDuplicatesRejected: true,
-  editorialDepthShortfalls: editorialShortfalls
+  editorialDepthShortfalls
 }, null, 2));
