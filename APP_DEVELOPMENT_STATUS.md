@@ -17,7 +17,9 @@ Dieses Dokument ist der operative Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_
 
 **Öffentliche Releasefreigabe: NO_GO**
 
-Die quantitativen Core-Content-Ziele sind implementiert. Security-/Backup-Hardening, manuelle Core-Review-Matrix, Accessibility-Grundlage sowie Legal/Support/Incident/Maintenance sind vorbereitet. Offen bleiben insbesondere echter CI-Nachweis, Lockfile/`npm ci`, finale Content-/Rechteabnahme, reale Accessibility-/Geräte-/PWA-Tests, Gruppentests, echte Betreiber-/Supportangaben und HTTPS-Staging.
+Die technische Releasegrundlage ist weit fortgeschritten. Quantitative Core-Content-Ziele sind implementiert, der erste Core-Quellpass steht bei 15/15, Security-/Backup-Hardening und Accessibility sind vorbereitet, und inzwischen existieren konkrete Verträge für Legal, Support, Incident Response, Maintenance, Beta/Realgeräte, Third-Party/Assets und getrennte Staging-/Production-Umgebungen.
+
+Offen bleiben insbesondere echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, finale Rechte-/Assetherkunft, reale Accessibility-/Geräte-/PWA-/Gruppentests, echte Betreiber-/Supportangaben und eine konkrete HTTPS-Staging-Origin.
 
 ## A-bis-Z-Tracker
 
@@ -32,20 +34,21 @@ Die quantitativen Core-Content-Ziele sind implementiert. Security-/Backup-Harden
 | 5 | UX / IA / Design | PREPARED | `UX_FLOW.md`, `DESIGN_SYSTEM.md`, neuer Hub-Hero | reale UX-Tests |
 | 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | ADRs bei neuen Grundsatzentscheidungen |
 | 7 | Security / Threat Model | PREPARED | `SECURITY.md`, `THREAT_MODEL.md`, Registry v2 | SEC-F01/F02 runner-/browserverifizieren |
-| 8 | Repo / Environments / Git | BLOCKED | Workflows | Runner, Lockfile, `npm ci`, Branch Protection |
+| 8 | Repo / Git / Build | BLOCKED | Workflows | Runner, Lockfile, `npm ci`, Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | Restarbeit so fortführen |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | reale Quota-/Updateabnahme |
 | 11 | Tests / CI | BLOCKED | Testmatrix/Workflows | funktionierenden Actions-Runner |
 | 12 | Offline / PWA / Resume | PREPARED | Service Worker **v35** | echte Geräte + alte→neue Updates |
-| 13 | Content / Alter / Rechte | IN PROGRESS | drei Content-Wellen + `CORE_CONTENT_REVIEW.md` | reale Gruppen + finale Rechte-/Semantikabnahme |
-| 14 | Beta / reale Gruppen | OPEN | Scenarios/Checklist | 3–4 / 5–8 / 9–12 |
+| 13 | Content / Alter | IN PROGRESS | drei Content-Wellen + 15/15 `CORE_CONTENT_REVIEW.md` | reale Gruppen + finaler Sign-off |
+| 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md` | G1–G5 + PN1–PN3 real durchführen |
 | 15 | Datenschutz / Recht / Support | PREPARED | `privacy.html`, `LEGAL_CHECKLIST.md`, `SUPPORT.md` | echte Betreiber-/Kontakt-/Hostingangaben |
 | 16 | Release Management / RC | PREPARED | Roadmap/Checklist | nach Gates |
-| 17 | Deployment | PREPARED | `DEPLOYMENT.md` | HTTPS-Staging + Update/Rollback real |
+| 17 | Deployment / Environments | PREPARED | `DEPLOYMENT.md`, `ENVIRONMENTS.md` | konkrete getrennte HTTPS-Staging-Origin + Rollback real |
 | 18 | Operations / Incident | PREPARED | `SUPPORT.md`, `INCIDENT_RESPONSE.md` | reale Verantwortliche + Probeincident |
 | 19 | Wartung / Migration | PREPARED | `MAINTENANCE.md`, Backups, Changelog | Lockfile/operative Routine nachziehen |
 | 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | laufend aktualisieren |
 | 21 | Accessibility | PREPARED | `ACCESSIBILITY.md`, Contract + E2E-Suite | 200 %, VoiceOver, TalkBack, reale Geräte |
+| 22 | Third Party / Assetrechte | IN PROGRESS | `THIRD_PARTY_NOTICES.md`, `ASSET_PLAN.md` | Icon-Herkunft + Dependency-/Lizenznachweis finalisieren |
 
 ## Content – quantitative Arbeit abgeschlossen
 
@@ -77,7 +80,7 @@ Kein Core-Pack besitzt nach unserem Vertrag noch einen bekannten quantitativen S
 
 ## Manuelles Core-Content-/Privacy-Review
 
-`CORE_CONTENT_REVIEW.md` enthält jetzt die 15-Spiel-Matrix.
+`CORE_CONTENT_REVIEW.md` enthält den ersten vollständigen **15/15-Core-Quellpass**.
 
 Geschlossener konkreter Fund:
 
@@ -86,9 +89,9 @@ Geschlossener konkreter Fund:
 - beide durch harmlose selbstbestimmte Alternativen ersetzt
 - Regression im Core-Content-Test geschützt
 
-Zusätzlich ist Freiwilligkeit jetzt in Hub und Advanced sichtbar: persönliche Inhalte dürfen übersprungen werden, ohne Begründung.
+Freiwilligkeit ist in Hub und Advanced sichtbar: persönliche Inhalte dürfen übersprungen werden, ohne Begründung.
 
-Das gesamte Content-Gate bleibt trotzdem **IN PROGRESS**, bis reale Gruppen-, Rechte- und finale Semantikabnahme abgeschlossen sind.
+Das Gesamtgate bleibt trotzdem **IN PROGRESS**, bis reale Gruppen, Fan-/Marken-/Rechteprüfung und finaler Content-Sign-off abgeschlossen sind.
 
 ## Security / Backup
 
@@ -100,7 +103,7 @@ Doppelte Complete-Backup-Konstanten beseitigt. `party-data-tools.js` liest Forma
 
 Complete-Import akzeptiert nur registrierte versionierte Word-Imposter- und `secret-circle-party-*`-Key-Familien. Unbekannte `secret-circle-*`-Namespaces werden abgelehnt.
 
-Registry steht auf Version 2. `BACKUP_SCHEMAS.md` dokumentiert den zentralen Vertrag.
+Registry steht auf Version 2. `BACKUP_SCHEMAS.md` dokumentiert den zentralen Vertrag. `party.html` lädt die Registry vor den Datentools.
 
 Status beider Funde: **CLOSED IN CODE / RUNNER + REAL BROWSER VERIFICATION OPEN**.
 
@@ -125,18 +128,61 @@ Noch nicht als PASS:
 - komplette Tastaturrunden
 - Screenreader bei privaten Reveals
 
+## Beta / Realgeräte
+
+`BETA_TEST_PLAN.md` übersetzt die Releasecheckliste in konkrete Sessions:
+
+- G1: 3–4 Personen
+- G2: 5–8 Personen
+- G3: 9–12 Personen
+- G4: Mafia ab 8 Personen
+- G5: Creator mit unerfahrener Person
+- PN1–PN3: drei komplette Smart-Party-Night-Abende
+- Android, iPhone, Tablet, Desktop/Zoom
+- VoiceOver/TalkBack
+- zwei reale PWA-Upgrades
+- HTTPS-Rollbackprobe
+
+Status: **PREPARED – reale Durchführung offen**.
+
+## Third Party / Assets
+
+`THIRD_PARTY_NOTICES.md` hält aktuell fest:
+
+- keine npm-Runtime-Dependencies
+- Dev-Dependency `@playwright/test` 1.54.2
+- Herkunft/Lizenz der drei App-Icons ist im Repo noch nicht belegt
+- keine Root-`LICENSE`-Datei gefunden; Projektlizenz wird nicht geraten
+- Fan-/Marken-/Franchise-Inhalte benötigen finale Rechteprüfung
+
+R-029 bleibt daher P1 bis zur Herkunfts-/Lizenzfreigabe offen.
+
 ## Recht / Support / Operations
 
-Neu vorbereitet:
+Vorbereitet:
 
 - `LEGAL_CHECKLIST.md`
 - `SUPPORT.md`
 - `INCIDENT_RESPONSE.md`
 - `MAINTENANCE.md`
 
-Legal-Check berücksichtigt Stand August 2026 unter anderem DDG, TDDDG, DSGVO, VSBG und dass die frühere EU-OS-Plattform seit 20. Juli 2025 eingestellt ist.
+Keine Betreiberadresse, Support-Mail oder Rechtsform wurde erfunden. Diese Daten bleiben Releaseblocker, bis sie real feststehen.
 
-Keine Betreiberadresse, Support-Mail oder Rechtsform wurde erfunden. Diese Daten bleiben Releaseblocker bis sie real feststehen.
+## Environments / Staging
+
+`ENVIRONMENTS.md` definiert:
+
+**Local → CI/Test → HTTPS-Staging → Release Candidate → Production**
+
+Staging und Production sollen getrennte Origins besitzen, damit `localStorage`, Service Worker und installierte PWA-Zustände isoliert bleiben.
+
+Noch offen:
+
+- konkrete Staging-Origin
+- konkrete Production-Origin
+- Staging-Smoke
+- echte Upgradepfade
+- HTTPS-Rollbackprobe
 
 ## PWA / Audit-Synchronität
 
@@ -144,13 +190,25 @@ Aktuell: **`secret-circle-v35`**.
 
 v35 bündelt:
 
-- tatsächlich neue Hub-Positionierung
-- sichtbare Freiwilligkeitsregel im Hub
-- korrekte Registry-v2-Ladereihenfolge vor `party-data-tools.js`
+- neue Hub-Positionierung
+- sichtbare Freiwilligkeitsregel
+- Registry-v2-Ladereihenfolge
 - aktualisierte Privacy-Seite
 - Backup-Allowlist-Dokumentation
 
-Service-Worker-Test erwartet v35. Architektur und Deployment sind auf v35 synchronisiert. Dynamische Audits leiten die Cachegeneration aus `sw.js` ab und sollen nicht an alten hart codierten Generationen hängen.
+Service-Worker-Test erwartet v35. Architektur, Deployment und Privacy sind auf v35 synchronisiert. Release-Audits leiten die Cachegeneration aus `sw.js` ab und verlangen inzwischen Beta-, Third-Party- und Environment-Verträge.
+
+## CI / Lockfile
+
+Neuester geprüfter Actions-Lauf: **Run #1905**.
+
+- Job `validate`
+- Ergebnis failure
+- `steps: []`
+- kein Checkout
+- kein Repository-Code ausgeführt
+
+`package-lock.json` fehlt weiterhin. Eine lokale `npm install --package-lock-only`-Erzeugung konnte wegen externem Paketnetzwerk/Timeout nicht abgeschlossen werden. Es wurde kein Lockfile erfunden und CI wird noch nicht verfrüht auf `npm ci` umgestellt.
 
 ## Aktuell höchste Prioritäten
 
@@ -160,31 +218,34 @@ Service-Worker-Test erwartet v35. Architektur und Deployment sind auf v35 synchr
 
 ### P1/P2 danach beziehungsweise parallel ohne Runner
 
-2. `package-lock.json` + `npm ci`
+2. echtes `package-lock.json` + `npm ci`
 3. Branch Protection / Required Checks
-4. finale Content-/Marken-/Rechteabnahme
-5. HTTPS-Staging
-6. reale Accessibility-/Gerätetests
-7. reale PWA-Update-/Rollbacktests
-8. reale Gruppentests
+4. Icon-/Asset-Herkunft und Third-Party-Lizenzen finalisieren
+5. konkrete HTTPS-Staging-Origin festlegen
+6. Staging-Smoke + PWA-Upgrade-/Rollbacktests
+7. reale Accessibility-/Gerätetests
+8. reale Gruppentests nach `BETA_TEST_PLAN.md`
 9. echte Betreiber-/Support-/Hostingangaben
-10. Third-Party-/Lizenzinventar
-11. Probeincident + Wartungsroutine
+10. Probeincident + Wartungsroutine
+11. finaler Rechte-/Content-Sign-off
 12. Release Candidate
 
 ## Was weiterhin NICHT als bestanden gilt
 
-Wegen des externen Runnerproblems und fehlender Realtests nicht behaupten:
+Wegen Runnerblocker und fehlender Realtests nicht behaupten:
 
 - `npm run ci` grün
 - Cross-Browser grün
 - Accessibility-Contract tatsächlich grün
-- neue Accessibility-E2E-Suite tatsächlich grün
+- Accessibility-E2E tatsächlich grün
 - Content-Test tatsächlich grün
 - v35-Update auf real installierten PWAs bestätigt
 - Registry-v2-Import im echten Browser vollständig bestätigt
 - VoiceOver/TalkBack/200-%-Zoom bestanden
+- Beta-/Gruppentest bestanden
+- Third-Party-/Assetrechte final
 - Legal/Support final
+- HTTPS-Staging bestanden
 
 ## Arbeitsregel
 
