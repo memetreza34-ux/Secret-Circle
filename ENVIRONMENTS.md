@@ -57,14 +57,14 @@ Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum vor Produ
 
 ### Muss eine getrennte Origin besitzen
 
-Empfohlen:
+Empfohlenes Schema:
 
 ```text
 https://staging.example.invalid/
 https://app.example.invalid/
 ```
 
-Das konkrete Domainbeispiel ist nur schematisch. Die tatsächlichen Domains werden vor Deployment festgelegt.
+Das Domainbeispiel ist nur schematisch. Die tatsächlichen Domains werden vor Deployment festgelegt.
 
 Warum getrennte Origin:
 
@@ -113,7 +113,7 @@ Vor Promotion:
 - Geräte/A11y grün
 - PWA Upgrade/Rollback geprüft
 - reale Gruppen abgeschlossen
-- Legal/Support/Third-Party final
+- Legal/Support/Third-Party/Fan-Content final
 - keine offenen Critical/High Bugs
 
 Production darf nicht als Ort für den ersten echten Service-Worker-Test dienen.
@@ -141,7 +141,9 @@ Beim bewussten Cross-Environment-Test:
 
 ## 8. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt eine definierte Cachegeneration, derzeit `secret-circle-v35`.
+Der Quellcode besitzt eine definierte Cachegeneration, derzeit **`secret-circle-v36`**.
+
+v36 enthält den redaktionellen Word-Imposter-Core-Rechtepass und muss wie jede Offline-Core-Änderung real aus einer älteren installierten Version aktualisiert werden.
 
 Bei einem echten RC muss dieselbe statische Version auf Staging geprüft werden, bevor sie Production erreicht.
 
