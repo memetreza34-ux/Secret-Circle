@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v35`**
+- aktueller Offline-Core: **`secret-circle-v36`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -46,7 +46,9 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - alle 15 Kernspiele bestehen `CORE_GAME_ACCEPTANCE.md`
 - Scoring-/Winner-Vertrag bestätigt
 - quantitative Core-Content-Gates erfüllt
-- manuelles semantisches Content-/Alters-/Privacy-Review abgeschlossen
+- 15/15 Core-Quellreview dokumentiert
+- Fan-/Marken-/Franchise-Entscheidungen aus `FAN_CONTENT_REVIEW.md` final
+- Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
 
 ### Geräte und Accessibility
@@ -62,10 +64,11 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v35`** bestätigt
+- Offline-Start aus **`secret-circle-v36`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
 - `party-core-release-catalog.js` offline verfügbar
 - `party-core-classic-content.js` offline verfügbar
+- Word-Imposter-Core enthält die regressionsgesicherten generischen Ersatzbegriffe
 - Update von mindestens zwei älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
@@ -86,7 +89,8 @@ Vor Production final:
 - Datenschutz auf tatsächliches Hosting angepasst
 - gegebenenfalls Impressum/Anbieterkennzeichnung final
 - Hostingangaben final
-- Lizenz-/Third-Party-Inventar final
+- `THIRD_PARTY_NOTICES.md` final
+- `FAN_CONTENT_REVIEW.md` final entschieden
 - echter Supportweg nach `SUPPORT.md`
 - Incident-/Hotfixprozess nach `INCIDENT_RESPONSE.md`
 - Wartungsprozess nach `MAINTENANCE.md`
@@ -131,7 +135,7 @@ Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und al
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v35`**
+- aktiver Cache: **`secret-circle-v36`**
 - Backup-Registry und beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
@@ -177,6 +181,6 @@ Detaillierter Incidentablauf: `INCIDENT_RESPONSE.md`.
 
 ## Produktionsfreigabe
 
-Ein öffentlicher Release bleibt blockiert, bis Produkt-, CI-, Cross-Browser-, PWA-, Geräte-, Accessibility-, Daten-, Inhalts-, Gruppen-, Rechts- und Betriebs-Gates auf demselben unveränderten Release Candidate bestätigt sind.
+Ein öffentlicher Release bleibt blockiert, bis Produkt-, CI-, Cross-Browser-, PWA-, Geräte-, Accessibility-, Daten-, Inhalts-, Rechte-, Gruppen-, Rechts- und Betriebs-Gates auf demselben unveränderten Release Candidate bestätigt sind.
 
 Aktueller Status: **NO_GO**.
