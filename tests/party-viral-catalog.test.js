@@ -45,6 +45,24 @@ assert.ok(viral.getItems('higher-lower', 'Wissen').every(item => Array.isArray(i
 assert.ok(viral.getItems('know-me-best', 'Reisen').every(item => Array.isArray(item) && item.length === 4));
 assert.ok(viral.getItems('hot-seat', 'Kreativ').every(item => typeof item === 'string'));
 
+const higherLowerSport = viral.getItems('higher-lower', 'Sport');
+const higherLowerLabels = higherLowerSport.map(item => item[0]);
+for (const removed of [
+  'Ringe im olympischen Symbol',
+  'Bahnen eines olympischen 400-Meter-Stadions häufig',
+  'Sätze zum Sieg im Herren-Grand-Slam-Tennis'
+]) {
+  assert.ok(!higherLowerLabels.includes(removed), `Unnecessary concrete sport reference returned: ${removed}`);
+}
+assert.deepEqual(
+  higherLowerSport.filter(item => ['Ecken eines Fünfecks', 'Bahnen einer typischen 400-Meter-Leichtathletikanlage', 'Gewinnsätze in einem Best-of-five-Tennismatch'].includes(item[0])),
+  [
+    ['Ecken eines Fünfecks', 5],
+    ['Bahnen einer typischen 400-Meter-Leichtathletikanlage', 8],
+    ['Gewinnsätze in einem Best-of-five-Tennismatch', 3]
+  ]
+);
+
 assert.equal(routed.version, 8);
 assert.equal(routed.games.length, 45);
 assert.equal(routed.createdGameIds.length, 0);
@@ -63,5 +81,6 @@ console.log(JSON.stringify({
   structuredPriceCards: true,
   structuredHigherLowerCards: true,
   privatePreferenceCards: true,
-  categoryBreadthValidated: true
+  categoryBreadthValidated: true,
+  unnecessarySportReferenceTermsRemoved: true
 }, null, 2));
