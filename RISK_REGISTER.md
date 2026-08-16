@@ -57,6 +57,7 @@ Dieses Dokument macht Produkt-, Technik-, Inhalts-, Rechts- und Release-Risiken 
 | R-023 | Game Creator akzeptiert problematische/extreme Eingaben, die UI oder Speicherung belasten | Creator/Security | niedrig-mittel | mittel-hoch | P2 | Limits, Sanitizing, Quota-/Fuzz-/E2E-Tests | technisch weitgehend abgesichert; reale Abnahme offen |
 | R-024 | Fehlender Support-/Incidentprozess erschwert Reaktion nach öffentlichem Release | Betrieb | hoch | hoch | P1 | `SUPPORT.md` + `INCIDENT_RESPONSE.md` vor RC | offen |
 | R-025 | Umfang von 45 eingebauten Spielen lenkt Zeit von 15 Kernspielen ab | Scope | mittel | hoch | P1 | Core/Extended/Labs konsequent priorisieren; keine neuen Releasefeatures vor Kernabnahme | kontrolliert, weiter beobachten |
+| R-026 | Direkte Wettbewerber bieten bereits denselben Basisnutzen „viele Spiele + offline + kein Account + ein Gerät“ | Produkt/Markt | hoch | hoch | P2 | Positionierung auf Party-Hub-Tiefe, sichere Reveals/Resume, Creator, lokale Datenkontrolle und Contentqualität verschieben; mit Nutzern validieren | Marktanalyse abgeschlossen, Differenzierung angepasst |
 
 ## 4. Releaseblocker aktuell
 
@@ -82,6 +83,7 @@ Vor jeder größeren neuen Funktion wird geprüft:
 - fügt sie eine Dependency hinzu?
 - erhöht sie Offline-Core/Performancekosten?
 - verändert sie Alters-/Rechtslage?
+- verändert sie die Marktpositionierung oder macht bestehende Differenzierung austauschbar?
 
 Wenn ja, wird vor Implementierung mindestens ein neuer Risikoeintrag oder eine dokumentierte Bewertung ergänzt.
 
