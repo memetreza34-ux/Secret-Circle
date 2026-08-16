@@ -1,6 +1,6 @@
 # Secret Circle Party Hub
 
-Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert nicht nur Funktionsmenge, sondern sichere private Übergaben, Wiederaufnahme nach Unterbrechungen, lokale Datenkontrolle, eigene Spiele und belastbare Release-Gates.
+Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere private Übergaben, Wiederaufnahme nach Unterbrechungen, lokale Datenkontrolle, eigene Spiele und belastbare Release-Gates.
 
 ## Aktueller Funktionsumfang
 
@@ -20,8 +20,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - Synonym-/Tippfehlersuche mit ARIA-/Tastaturunterstützung
 - gemeinsame Pause-/Skip-/Abbruch-/Replay-/Next-Game-Steuerung
 - pausierbare Timer und sichere Reload-Wiederaufnahme
-- installierbare Offline-PWA
-- sichtbare, kontrollierte PWA-Aktualisierung
+- installierbare Offline-PWA mit kontrollierter Aktualisierung
 - kein verpflichtendes Konto
 - keine Analyse-, Werbe- oder Trackingdienste
 
@@ -29,37 +28,37 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 
 ## Produktpositionierung
 
-Der Hub soll nicht nur mit „viele Spiele + offline + ein Gerät“ konkurrieren. Der aktuelle Produktfokus liegt auf:
+Secret Circle soll nicht nur über „viele Spiele + offline + ein Gerät“ konkurrieren. Der Fokus liegt auf:
 
-- einem zusammenhängenden Party-Hub statt isolierten Minispielen
-- 15 besonders priorisierten Kernspielen
+- zusammenhängendem Party-Hub statt isolierten Minispielen
+- 15 besonders priorisierten Core-Games
 - sicheren geheimen Pass-and-Play-Zuständen
 - Resume nach Reload/Unterbrechung
 - lokaler Datenkontrolle ohne Konto/Cloudzwang
-- eigenen Spielen über den lokalen Creator
+- eigenen Spielen über den Creator
 - klarer Core/Extended/Labs-Reifegradtrennung
 
-Persönliche Inhalte sind freiwillig. In relevanten Flows wird sichtbar kommuniziert, dass Überspringen jederzeit erlaubt ist und nicht begründet werden muss.
+Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und muss nicht begründet werden.
 
 ## Releaseziel
 
-- funktionsfertig bis spätestens **30. November 2026**
-- Code Freeze am **5. Dezember 2026**
-- Release Candidate bis spätestens **15. Dezember 2026**
-- öffentlicher Release zwischen **4. und 15. Januar 2027**
+- funktionsfertig bis **30. November 2026**
+- Code Freeze **5. Dezember 2026**
+- Release Candidate bis **15. Dezember 2026**
+- öffentlicher Release **4.–15. Januar 2027**
 
-Aktueller Offline-Core: **`secret-circle-v35`**.
+Aktueller Offline-Core: **`secret-circle-v37`**.
 
 ## Zentrale A-bis-Z-Unterlagen
 
 ### Master und Status
 
-- `APP_ENTWICKLUNG_VON_A_BIS_Z.md` – vollständiger wiederverwendbarer App-Lifecycle
-- `APP_DEVELOPMENT_STATUS.md` – operativer Secret-Circle-A-bis-Z-Tracker
-- `RELEASE_STATUS.md` – aktueller Release-/Blockerstand
-- `ROADMAP_2027.md` – Zeitplan
-- `RELEASE_SCOPE_2027.md` – Core/Extended/Labs-Scope
-- `RELEASE_CHECKLIST.md` – finale RC-/Production-Freigabe
+- `APP_ENTWICKLUNG_VON_A_BIS_Z.md`
+- `APP_DEVELOPMENT_STATUS.md`
+- `RELEASE_STATUS.md`
+- `ROADMAP_2027.md`
+- `RELEASE_SCOPE_2027.md`
+- `RELEASE_CHECKLIST.md`
 
 ### Produkt, UX und Architektur
 
@@ -81,10 +80,11 @@ Aktueller Offline-Core: **`secret-circle-v35`**.
 - `BACKUP_SCHEMAS.md`
 - `DEPLOYMENT.md`
 
-### Content und Accessibility
+### Content, Rechte und Accessibility
 
 - `CONTENT_AGE_POLICY.md`
 - `CORE_CONTENT_REVIEW.md`
+- `FAN_CONTENT_REVIEW.md`
 - `CORE_GAME_ACCEPTANCE.md`
 - `CORE_SCORING_RULES.md`
 - `ACCESSIBILITY.md`
@@ -98,19 +98,9 @@ Aktueller Offline-Core: **`secret-circle-v35`**.
 - `INCIDENT_RESPONSE.md`
 - `MAINTENANCE.md`
 
-## Spielekatalog und Reifestufen
-
-Der Party Hub trennt:
-
-- **Core:** höchste Januar-2027-Priorität
-- **Extended:** spielbare Zusatzfunktionen
-- **Labs:** experimentelle Modi
-
-Filter kombinieren unter anderem Reifestufe, Altersstufe, Gruppe, Stimmung und Status. Direkte URL-Ansichten haben Vorrang vor der gespeicherten letzten Ansicht.
-
 ## Core-Content-Stand
 
-Die drei redaktionellen Ausbauwellen haben die definierten quantitativen Ziele erreicht.
+Die drei Ausbauwellen haben die definierten quantitativen Ziele erreicht. `CORE_CONTENT_REVIEW.md` enthält den ersten **15/15-Core-Quellpass**.
 
 Beispiele:
 
@@ -123,102 +113,95 @@ Beispiele:
 - Two Truths / Question Imposter / Location Spy: 16 je Pack
 - Word Imposter: 14 × 12 Begriffe
 
-`CORE_CONTENT_REVIEW.md` enthält den ersten **15/15-Core-Quellpass**. Das ist noch kein finaler Content-Pass: reale Gruppen, Rechte-/Markenprüfung und finaler redaktioneller Sign-off bleiben offen.
+Reale Gruppen, finale Semantik-/Altersfreigabe und Runnernachweis bleiben offen.
+
+## Reference-Safe-Content
+
+### Word Imposter
+
+Drei unnötig konkrete Begriffe wurden generisch ersetzt:
+
+- Bluetooth → Funkverbindung
+- Oscar → Filmpreis
+- Formel 1 → Motorsport
+
+### Anime-Quiz
+
+Für die stabile ID `anime-guess` wurde **Option B** umgesetzt. Im finalen Runtime-Katalog erscheint:
+
+**Anime-Archetypen erraten**
+
+mit vier generischen Packs und insgesamt **40 eigenständigen Archetypen**. Die 40 zuvor inventarisierten konkreten Figuren-/Franchisereferenzen werden durch die finale Classic-Content-Schicht v2 nicht mehr ausgeliefert.
+
+Tests/Audits schützen diesen finalen Runtime-Vertrag. Der restliche Extended-/Labs-Referenzscan bleibt offen.
 
 ## Session-, Resume- und Timergrundlage
 
 - stabile Session- und Completion-IDs
 - Exact-once-Verlauf/Statistik
-- direkte Hub-Session über `secret-circle-party-hub-active-v1`
-- Advanced über `secret-circle-party-active-v1`
-- private Inhalte werden nach Reload nicht automatisch geöffnet
-- bewusstes **Beenden & speichern** getrennt von **Abbrechen & verwerfen**
-- Skip vergibt keinen künstlichen Punkt
-- `party-session-controls.js` liefert gemeinsame pausierbare Timer
-- `party-hub-timers.js` besitzt die direkten Hub-Timermechaniken
-- Scharade: 60 s
-- Tabu: 60 s
-- Hot Potato: zufällige 10–25 s, Restzeit bleibt verborgen
-- Wortkette: 30 s
+- direkte Hub-Session: `secret-circle-party-hub-active-v1`
+- Advanced: `secret-circle-party-active-v1`
+- private Inhalte nach Reload wieder verdeckt
+- **Beenden & speichern** getrennt von **Abbrechen & verwerfen**
+- Skip ohne künstlichen Punkt
+- gemeinsame pausierbare Sessionsteuerung
+- Scharade 60 s
+- Tabu 60 s
+- Hot Potato 10–25 s verdeckt
+- Wortkette 30 s
 
 ## Backup- und Datenvertrag
 
-`backup-schema-registry.js` ist Registry **v2** und zentraler Vertragsmittelpunkt.
+`backup-schema-registry.js` ist Registry **v2**.
 
-- drei registrierte Backupformate
-- maximale Datei: 1.500.000 UTF-8-Bytes
-- Complete-Backup-Runtime liest Format/Grenzen aus der Registry
-- Complete-Import akzeptiert nur bekannte versionierte Word-Imposter- und `secret-circle-party-*`-Key-Familien
+- maximale Backupdatei: 1.500.000 UTF-8-Bytes
+- Complete-Backup-Format/Grenzen zentral
+- nur registrierte Word-Imposter- und `secret-circle-party-*`-Key-Familien importierbar
 - unbekannte Secret-Circle-Namespaces werden abgelehnt
-- vollständiges Löschen bleibt bewusst breiter und entfernt alle `secret-circle-*`-Reste
-- `party.html` lädt die Registry vor `party-data-tools.js`
+- vollständiges Löschen entfernt bewusst alle `secret-circle-*`-Reste
+- Registry wird vor `party-data-tools.js` geladen
 
 ## PWA und Offline
 
 Aktuell:
 
-- `secret-circle-v35`
-- `secret-circle-v35-staging`
+- `secret-circle-v37`
+- `secret-circle-v37-staging`
 
-Updates werden zuerst in einem Staging-Cache vorbereitet. Aktivierung erfolgt bewusst über den sichtbaren Updatehinweis. Der aktive Offline-Core wird vor erfolgreicher Promotion nicht destruktiv gelöscht.
+Updates werden zuerst vollständig in einem Staging-Cache vorbereitet und erst nach sichtbarer Nutzerentscheidung aktiviert. Der aktive Offline-Core wird vor erfolgreicher Promotion nicht destruktiv entfernt.
 
-`ENVIRONMENTS.md` verlangt für spätere reale Deployments getrennte Origins für HTTPS-Staging und Production, damit Service Worker und lokale Daten nicht kollidieren.
+`ENVIRONMENTS.md` verlangt getrennte Origins für HTTPS-Staging und Production.
 
 ## Accessibility
 
 Vorbereitet:
 
-- semantische Struktur/Skip-Links
+- semantische Struktur / Skip-Links
 - sichtbarer Fokus
 - 44px kritische Touchziele
 - Reduced Motion
 - ARIA-Autocomplete/Listbox
 - `tests/accessibility-contract.test.js`
 - `tests/e2e/accessibility-core.spec.js`
-- 320-CSS-px-Reflow-Testbasis
+- 320-CSS-px-Reflowbasis
 
-Noch real erforderlich:
-
-- 200-%-Zoom
-- VoiceOver
-- TalkBack
-- private Reveal-Flows mit Screenreader
-- reale Smartphone-/Tablet-Touchbedienung
+Real offen: 200-%-Zoom, VoiceOver, TalkBack, private Reveal-Flows und reale Touchbedienung.
 
 ## Beta- und Realtestplan
 
-`BETA_TEST_PLAN.md` definiert:
-
-- G1: 3–4 Personen
-- G2: 5–8 Personen
-- G3: 9–12 Personen
-- G4: Mafia ab 8 Personen
-- G5: Creator mit unerfahrener Person
-- PN1–PN3: drei Smart-Party-Night-Abende
-- Android / iPhone / Tablet
-- VoiceOver / TalkBack / 200-%-Zoom
-- zwei reale PWA-Upgrades
-- HTTPS-Rollbackprobe
+`BETA_TEST_PLAN.md` definiert G1–G5, PN1–PN3, Android/iPhone/Tablet, VoiceOver/TalkBack, zwei reale PWA-Upgrades und eine HTTPS-Rollbackprobe.
 
 Diese Tests sind **vorbereitet, noch nicht durchgeführt**.
 
 ## Third Party und Assetrechte
 
-`package.json` besitzt derzeit keine npm-Runtime-Dependencies. Dev-Dependency ist `@playwright/test` 1.54.2.
-
-`THIRD_PARTY_NOTICES.md` hält bewusst offene Punkte fest:
-
-- Herkunft/Lizenz von `icon.svg`
-- Herkunft/Ableitung von `icon-192.png`
-- Herkunft/Ableitung von `icon-512.png`
-- finale Fan-/Marken-/Franchise-Prüfung
-- bewusste Projektlizenzentscheidung, falls Quellcode öffentlich verteilt wird
-
-Im Root wurde aktuell keine `LICENSE`-Datei gefunden. Es wird keine Lizenz oder Assetherkunft geraten.
+- keine npm-Runtime-Dependencies
+- `@playwright/test` 1.54.2 upstream als **Apache-2.0** verifiziert
+- vollständige transitive Inventur wartet auf `package-lock.json`
+- Herkunft/Lizenz von `icon.svg`, `icon-192.png`, `icon-512.png` ist noch nicht belegt
+- keine Root-`LICENSE`; Projektlizenz wird nicht geraten
 
 ## Lokal starten
-
-Die App über HTTP statt direkt über `file://` öffnen:
 
 ```bash
 python -m http.server 8080
@@ -232,7 +215,7 @@ Beispiele:
 - Advanced: `http://localhost:8080/advanced.html?game=question-imposter`
 - Quick/Trend/Viral: `http://localhost:8080/quick-play.html?game=guess-the-price`
 
-## Qualitätsbefehle – aktueller Übergangszustand
+## Qualitätsbefehle – Übergangszustand
 
 Solange kein echtes Lockfile vorliegt:
 
@@ -249,38 +232,32 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-**Final vor Release muss auf `package-lock.json` + `npm ci` umgestellt werden.**
+Final vor Release muss ein echtes `package-lock.json` vorhanden sein und CI auf `npm ci` laufen.
 
 ## Aktuelle Blocker
 
 ### P0 – GitHub Actions
 
-Neuester geprüfter Lauf: **Run #1905**.
-
-- Job `validate`
-- failure
-- `steps: []`
-- kein Checkout
-- kein Repository-Code ausgeführt
-
-Daher sind neue Tests/Audits **nicht als grün bestätigt**.
+Neuester belastbar geprüfter Lauf: **Run #1905** – Job `validate`, failure, **`steps: []`**, kein Checkout und kein Repository-Code ausgeführt.
 
 ### P1
 
-- echtes `package-lock.json` + `npm ci`
+- `package-lock.json` + `npm ci`
 - Branch Protection / Required Checks
-- Icon-/Asset-Herkunft und Third-Party-Rechte
+- Classic-Content-v2-Performancebudget bestätigen
+- restlicher Extended/Labs-Referenzscan
+- Icon-/Asset-Herkunft
 - konkrete HTTPS-Staging-Origin
 - reale PWA-Upgrades/Rollback
 - Android/iPhone/Tablet
 - VoiceOver/TalkBack/200 %
 - reale Gruppentests
-- echte Betreiber-/Support-/Hostingangaben
-- finale Rechte-/Contentfreigabe
+- Betreiber-/Support-/Hostingangaben
+- finaler Rechte-/Content-Sign-off
 
 ## Freigabestatus
 
 - öffentlicher Release: **NO_GO**
 - PR #13: **Draft, nicht mergen**
 - kontrollierte Entwicklungsbeta: möglich
-- Releaseziel Januar 2027: weiterhin erreichbar, wenn die externen und realen Gates rechtzeitig geschlossen werden
+- Releaseziel Januar 2027: weiter erreichbar, wenn externe und reale Gates rechtzeitig geschlossen werden
