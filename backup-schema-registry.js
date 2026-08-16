@@ -5,8 +5,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createBackupSchemaRegistry() {
   'use strict';
 
-  const VERSION = 1;
+  const VERSION = 2;
   const MAX_FILE_BYTES = 1_500_000;
+  const WORD_STORAGE_KEY = /^secret-circle-(active|custom|history|settings)-v\d+$/;
+  const PARTY_STORAGE_KEY = /^secret-circle-party-[a-z0-9-]+-v\d+$/;
 
   const schemas = Object.freeze({
     wordImposter: Object.freeze({
@@ -25,7 +27,11 @@
       maximumEntries: 100,
       maximumValueBytes: 1_000_000,
       storagePrefix: 'secret-circle-',
-      scope: 'Alle lokalen Secret-Circle-Daten',
+      allowedKeyFamilies: Object.freeze([
+        'secret-circle-(active|custom|history|settings)-v<version>',
+        'secret-circle-party-<name>-v<version>'
+      ]),
+      scope: 'Alle anerkannten lokalen Secret-Circle-Daten',
       extension: '.json'
     }),
     creatorLibrary: Object.freeze({
@@ -78,6 +84,12 @@
     return bytes;
   }
 
+  function isAllowedCompleteStorageKey(value) {
+    const key = String(value ?? '');
+    if (!key || key.length > 120) return false;
+    return WORD_STORAGE_KEY.test(key) || PARTY_STORAGE_KEY.test(key);
+  }
+
   return Object.freeze({
     version: VERSION,
     maximumFileBytes: MAX_FILE_BYTES,
@@ -87,6 +99,7 @@
     get,
     identify,
     validateHeader,
-    assertSize
+    assertSize,
+    isAllowedCompleteStorageKey
   });
 });
