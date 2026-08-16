@@ -25,6 +25,10 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 
 „Technisch spielbar“ bedeutet noch nicht automatisch releasefertig. Für Januar 2027 werden Kernspiele, Erweiterungen und experimentelle Modi nach klaren Qualitätskriterien getrennt.
 
+## Zentrale Entwicklungsanleitung
+
+`APP_ENTWICKLUNG_VON_A_BIS_Z.md` beschreibt den vollständigen App-Lifecycle von der ersten Idee bis zur Veröffentlichung und Wartung. Die Anleitung ist als wiederverwendbarer Master-Prozess für Secret Circle und zukünftige App-Projekte gedacht und enthält Produkt-, UX-, Architektur-, Daten-, Sicherheits-, Test-, Accessibility-, Release-, Store-, Rollback- und Wartungsphasen sowie eine aktuelle Secret-Circle-Gap-Liste.
+
 ## Releaseziel
 
 - funktionsfertig bis spätestens **30. November 2026**
@@ -34,6 +38,7 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 
 Verbindliche Dokumente:
 
+- `APP_ENTWICKLUNG_VON_A_BIS_Z.md`: übergeordneter Prozess von Idee bis Veröffentlichung und Wartung
 - `ROADMAP_2027.md`: Zeitplan, Arbeitsphasen und Releaseverbote
 - `RELEASE_SCOPE_2027.md`: Kernspiele, Erweiterungen und Labs
 - `RELEASE_CHECKLIST.md`: technische, organisatorische, Geräte-, Inhalts- und Gruppentest-Freigabe
