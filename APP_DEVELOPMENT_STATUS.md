@@ -35,9 +35,9 @@ Grund: belastbarer CI-Nachweis, Lockfile/`npm ci`, reale Geräte/PWA-Tests, voll
 | 8 | Repo / Environments / Git | BLOCKED | Workflows vorhanden | Runner, Lockfile, `npm ci`, Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | pro Restfeature weiter anwenden |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | reale Browser-/Quota-/Updateabnahme |
-| 11 | Tests / CI | BLOCKED | `package.json`, `.github/workflows`, neue Content-Gates | funktionierenden Actions-Runner nachweisen |
+| 11 | Tests / CI | BLOCKED | `package.json`, `.github/workflows`, Content-Gates | funktionierenden Actions-Runner nachweisen |
 | 12 | Offline / PWA / Resume | PREPARED | Service Worker, Resume-Contracts | echte Geräte + alte→neue Updates |
-| 13 | Content / Alter / Rechte | IN PROGRESS | `CONTENT_AGE_POLICY.md`, `tests/core-content-quality.test.js`, `scripts/core_content_audit.py` | Core-Packs ausbauen + manuell redaktionell abnehmen |
+| 13 | Content / Alter / Rechte | IN PROGRESS | `CONTENT_AGE_POLICY.md`, `tests/core-content-quality.test.js`, `scripts/core_content_audit.py`, Content-Welle 1 | verbleibende Core-Packs auf Zielniveau ausbauen + manuell abnehmen |
 | 14 | Beta / reale Gruppen | OPEN | `USER_SCENARIOS.md`, Releasecheckliste | 3–4 / 5–8 / 9–12 Personen testen |
 | 15 | Datenschutz / Recht / Support | OPEN | Privacy-/Security-Grundlage vorhanden | Legal-/Support-/Third-Party-Dokumente finalisieren |
 | 16 | Release Management / RC | PREPARED | Roadmap/Checklist | erst nach Gates finalisieren |
@@ -89,32 +89,45 @@ Grund: belastbarer CI-Nachweis, Lockfile/`npm ci`, reale Geräte/PWA-Tests, voll
   - Mafia: `Schnell`, `Klassisch`, `Erweitert`
 - veraltete Expansion-/Routing-Testversionen synchronisiert
 
+### Content-Welle 1
+
+Erste reale Inhaltsvergrößerung ist in `party-expansion.js` umgesetzt und durch neue Regression-Gates geschützt:
+
+- Taboo: **8 → 16** Karten je Pack
+- Hot Potato: **8 → 16** Einträge je Pack
+- Word Chain: **5 → 10** Startbuchstaben je Pack
+- Two Truths: **8 → 16** Prompts je Pack
+- Question Imposter: **8 → 16** Fragepaare je Pack
+- Location Spy: **8 → 16** Orte je Pack
+
+`party-expansion.js` steht dafür jetzt auf Version 4. `tests/party-expansion.test.js` verlangt die neuen Mengen explizit. `tests/core-content-quality.test.js` hebt die harten Mindestwerte für diese Mechaniken entsprechend an.
+
 ## Aktueller Core-Content-Befund
 
-### solide Basis
+### Auf aktuellem Zielniveau
 
 - Word Imposter: 14 Kategorien × 12 Begriffe = 168
-- Truth/Dare: 4 × 16 = 64 Karten
-- Charades: 4 × 12 = 48 Begriffe
+- Word Chain: 4 × 10 Starts
+- Two Truths: 3 × 16 Prompts
+- Question Imposter: 3 × 16 Fragepaare
+- Location Spy: 3 × 16 Orte
 
-### redaktionell noch zu dünn
+### Solide, aber noch auszubauen
 
-Viele Kernpacks besitzen derzeit nur 8 Einträge:
+- Truth/Dare: 4 × 16; Ziel 20–24
+- Charades: 4 × 12; Ziel 30
+- Taboo: 3 × 16; Ziel 24
+- Hot Potato: 3 × 16; Ziel 20
 
-- Never Have
-- Most Likely
-- Would Rather
-- Paranoia
-- Taboo
-- Hot Potato
-- Two Truths
-- Question Imposter
-- Location Spy
-- Wrong Answers
+### Noch deutlich zu dünn
 
-Word Chain besitzt aktuell nur 5 Startbuchstaben je Pack.
+- Never Have: 4 × 8
+- Most Likely: 4 × 8
+- Would Rather: 4 × 8
+- Paranoia: 3 × 8
+- Wrong Answers: 3 × 8
 
-Diese Mengen bleiben technisch als harte Regression-Minima geschützt, gelten aber **nicht** als finale Inhaltsfreigabe. `CONTENT_AGE_POLICY.md` definiert höhere redaktionelle Zielwerte.
+Diese Mengen gelten **nicht** als finale Inhaltsfreigabe. `CONTENT_AGE_POLICY.md` definiert die höheren redaktionellen Zielwerte.
 
 ## Aktuell höchste Prioritäten
 
@@ -124,17 +137,18 @@ Diese Mengen bleiben technisch als harte Regression-Minima geschützt, gelten ab
 
 ### P1/P2 in sinnvoller Arbeitsreihenfolge
 
-2. Core-Content auf Release-Zieltiefe ausbauen
-3. semantische/manuelle Content-/Altersprüfung
-4. Hero-/Startseitenpositionierung und restliche UX-Korrekturen
-5. SEC-F01/SEC-F02 entscheiden/härten
-6. `package-lock.json` + `npm ci`
-7. Branch Protection
-8. Accessibility-Abnahme
-9. reale Android-/iPhone-/Tablet-/PWA-Tests
-10. reale Gruppentests
-11. Recht/Support/Lizenz
-12. Deployment/Staging synchronisieren
+2. Content-Welle 2: Never Have / Most Likely / Would Rather / Paranoia / Wrong Answers ausbauen
+3. Content-Welle 3: Truth/Dare / Charades / Taboo / Hot Potato auf Endziel bringen
+4. semantische/manuelle Content-/Altersprüfung
+5. Hero-/Startseitenpositionierung und restliche UX-Korrekturen
+6. SEC-F01/SEC-F02 entscheiden/härten
+7. `package-lock.json` + `npm ci`
+8. Branch Protection
+9. Accessibility-Abnahme
+10. reale Android-/iPhone-/Tablet-/PWA-Tests
+11. reale Gruppentests
+12. Recht/Support/Lizenz
+13. Deployment/Staging synchronisieren
 
 ## Wichtig: Was NICHT als bestanden gilt
 
@@ -145,15 +159,18 @@ Insbesondere nicht behaupten:
 - `npm run ci` grün
 - Cross-Browser grün
 - Content-Test grün
+- neue Content-Welle durch CI bestätigt
 - neue Touchziele visuell auf Zielgeräten bestätigt
 
 ## Nächster Arbeitsblock
 
-1. Core-Content systematisch ausbauen, beginnend bei den 8-Karten-Packs
-2. Hero-/Startseitencopy an neue Marktpositionierung anpassen
-3. SEC-F01/SEC-F02 hardenen
-4. danach CI-/Lockfile-/Branch-Protection-Blocker
-5. anschließend reale Geräte/A11y/Gruppen/Legal
+1. Content-Welle 2: fünf verbliebene 8-Karten-Core-Gruppen ausbauen
+2. Content-Welle 3: restliche Packs auf Endziel bringen
+3. manuelle redaktionelle Alters-/Privacy-Prüfung
+4. Hero-/Startseitencopy an neue Marktpositionierung anpassen
+5. SEC-F01/SEC-F02 hardenen
+6. danach CI-/Lockfile-/Branch-Protection-Blocker
+7. anschließend reale Geräte/A11y/Gruppen/Legal
 
 ## Arbeitsregel
 
