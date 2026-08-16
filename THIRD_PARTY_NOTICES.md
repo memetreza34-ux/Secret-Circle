@@ -1,7 +1,7 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
 Stand: 16. August 2026  
-Status: **IN PROGRESS – Herkunft einzelner Assets und finale Lizenzprüfung offen**
+Status: **IN PROGRESS – Assetherkunft und finale Rechteprüfung offen**
 
 ## 1. Zweck
 
@@ -25,9 +25,23 @@ Das reduziert die Third-Party-Fläche, ersetzt aber nicht die Prüfung gebündel
 
 ## 3. Entwicklungsabhängigkeiten
 
-| Paket | Version | Verwendung | Production Runtime? | Lizenz-/Notice-Status |
-|---|---:|---|---|---|
-| `@playwright/test` | `1.54.2` | E2E-/Cross-Browser-Tests | Nein | **vor RC gegen Upstream-/Paketmetadaten verifizieren und erforderlichen Hinweis dokumentieren** |
+| Paket | Version | Verwendung | Production Runtime? | Upstream-Lizenz | Status |
+|---|---:|---|---|---|---|
+| `@playwright/test` | `1.54.2` | E2E-/Cross-Browser-Tests | Nein | **Apache-2.0** | **UPSTREAM VERIFIED** |
+
+### Playwright-Nachweis
+
+Direkt im offiziellen `microsoft/playwright`-Repository am Tag `v1.54.2` geprüft:
+
+- `packages/playwright-test/package.json` deklariert exakt Version `1.54.2`
+- Autor: Microsoft Corporation
+- Lizenzfeld: `Apache-2.0`
+- Upstream-Root enthält die Apache License 2.0
+- Upstream-Root enthält eine `NOTICE`-Datei mit Microsoft-Hinweis und Hinweis auf aus dem Puppeteer-Projekt abgeleiteten Code
+
+Vor einer eventuellen Weiterverteilung von Playwright-Bestandteilen werden die für den konkreten Distributionsweg erforderlichen License-/NOTICE-Pflichten beibehalten. Secret Circle nutzt Playwright aktuell nur als Entwicklungs-/Testabhängigkeit, nicht als Browser-Runtime der ausgelieferten PWA.
+
+**Noch offen:** Ein echtes `package-lock.json` fehlt, daher ist der vollständige transitive npm-Abhängigkeitsbestand noch nicht als reproduzierbarer Release-Snapshot inventarisiert.
 
 Wenn neue Dependencies hinzukommen:
 
@@ -43,8 +57,8 @@ Wenn neue Dependencies hinzukommen:
 | Datei | Zweck | Aktueller Herkunftsnachweis | Release-Status |
 |---|---|---|---|
 | `icon.svg` | App-/PWA-Icon, Vektorquelle | **im Repo kein Herkunfts-/Lizenznachweis gefunden** | **BLOCKED FOR FINAL SIGN-OFF** |
-| `icon-192.png` | PWA-/Apple-Touch-Icon | vermutlich Rasterableitung des App-Icons, aber im Repo nicht belegt | **BLOCKED FOR FINAL SIGN-OFF** |
-| `icon-512.png` | PWA-Icon | vermutlich Rasterableitung des App-Icons, aber im Repo nicht belegt | **BLOCKED FOR FINAL SIGN-OFF** |
+| `icon-192.png` | PWA-/Apple-Touch-Icon | Rasterableitung wirkt technisch plausibel, aber Herkunft/Ableitung ist im Repo nicht belegt | **BLOCKED FOR FINAL SIGN-OFF** |
+| `icon-512.png` | PWA-Icon | Rasterableitung wirkt technisch plausibel, aber Herkunft/Ableitung ist im Repo nicht belegt | **BLOCKED FOR FINAL SIGN-OFF** |
 
 ### Vor RC für jedes Asset dokumentieren
 
@@ -56,7 +70,7 @@ Wenn neue Dependencies hinzukommen:
 - falls Drittanbieter: konkrete Nutzungsbedingungen und kommerzielle Freigabe
 - ob Bearbeitung/Attribution erforderlich ist
 
-**Wichtig:** Aus dem SVG-Code allein lässt sich die Rechtekette nicht beweisen.
+**Wichtig:** Aus dem SVG-Code oder visueller Ähnlichkeit allein lässt sich die Rechtekette nicht beweisen.
 
 ## 5. Emoji und Systemglyphen
 
@@ -148,8 +162,10 @@ Der Hostinganbieter kann eigene technische Komponenten und Bedingungen mitbringe
 
 Vor `THIRD-PARTY / ASSET PASS`:
 
-- [ ] `package-lock.json` vorhanden und Dependencybestand verifiziert
-- [ ] Lizenzstatus aller direkten Dependencies dokumentiert
+- [ ] `package-lock.json` vorhanden und vollständiger Dependencybestand verifiziert
+- [x] direkte Dev-Dependency `@playwright/test` 1.54.2 und Upstream-Lizenz verifiziert
+- [ ] transitive Dependencies aus dem finalen Lockfile inventarisiert
+- [ ] erforderliche Playwright-License-/NOTICE-Behandlung für den finalen Distributionsweg bestätigt
 - [ ] `icon.svg` Herkunft belegt
 - [ ] `icon-192.png` Herkunft/Ableitung belegt
 - [ ] `icon-512.png` Herkunft/Ableitung belegt
