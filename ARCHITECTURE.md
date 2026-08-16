@@ -16,11 +16,15 @@ Spiel-IDs, Pack-IDs, Creator-Spiel-IDs, Session-IDs, Abschluss-IDs, Speicherprä
 
 Jede wiederaufnehmbare Session erhält genau eine stabile `sessionId`. Abschluss-IDs werden aus Engine, Spiel und Session abgeleitet. Reload oder wiederholter Abschluss dürfen keinen zweiten Verlaufseintrag erzeugen.
 
-## 3. Versionierte Daten
+## 3. Versionierte Daten und Backups
 
 Persistierte Bereiche besitzen explizite Versionen. Beschädigte Daten werden normalisiert oder isoliert verworfen. Unbekannte neuere Versionen werden nicht blind überschrieben. Persistenzänderungen benötigen Migrations-, Korruptions-, Quota- und Rollbacktests.
 
 Aktuelle wichtige Verträge umfassen Word-Imposter-Schema v7, Advanced-Session v2 sowie Hub, Party Night, Filter, Quick/Mega/Viral/Creator, Session-Ledger, eigene Packs, selbst erstellte Spiele und Gesamtsicherung in ihren dokumentierten Versionen.
+
+`backup-schema-registry.js` ist der zentrale Backup-Vertragsmittelpunkt und steht auf Registry-Version 2. Complete-Backup-Format, Größenlimits und erlaubte Storage-Key-Familien werden dort definiert. `party-data-tools.js` darf diese Werte nicht separat duplizieren.
+
+Complete-Imports akzeptieren nur bekannte versionierte Word-Imposter-Key-Familien sowie versionierte `secret-circle-party-*`-Familien. Vollständiges Löschen bleibt absichtlich breiter und entfernt weiterhin alle `secret-circle-*`-Reste.
 
 ## 4. Katalog- und Contentarchitektur
 
@@ -49,6 +53,8 @@ Die beiden Core-Contentmodule dürfen keine DOM-, Session-, Statistik-, Scoring-
 
 Ladereihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub.js`.
 
+Für Datenverwaltung gilt zusätzlich: `backup-schema-registry.js` muss vor `party-data-tools.js` geladen sein.
+
 Direkte Hub-Spiele trennen **Beenden & speichern** von **Abbrechen & verwerfen**. Skip vergibt keinen künstlichen Punkt. Timermechaniken dürfen nicht zurück in `party-hub.js` dupliziert werden.
 
 ## 6. Weitere Modulgrenzen
@@ -70,18 +76,19 @@ Ein Abschluss verwendet eine stabile Completion-ID, schreibt Verlauf/Statistik g
 - keine externen Fonts zur Laufzeit
 - restriktive CSP
 - Nutzerdaten bevorzugt über `textContent`
-- Importgrenzen nach Format, Größe und Struktur
+- Importgrenzen nach Format, Größe, Key-Allowlist und Struktur
 - geheime Inhalte nach Hintergrundwechsel/Reload nicht automatisch sichtbar
 - lokale Daten auffindbar, exportierbar und löschbar
 - Built-in-Content darf keine privaten Nachrichten/Fotos als Spielmaterial verlangen
+- persönliche Inhalte bleiben freiwillig und überspringbar
 
-`SECURITY.md` und `THREAT_MODEL.md` ergänzen diesen Vertrag verbindlich.
+`SECURITY.md`, `THREAT_MODEL.md` und `BACKUP_SCHEMAS.md` ergänzen diesen Vertrag verbindlich.
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v33`**.
+Aktueller Offline-Core: **`secret-circle-v35`**.
 
-Zum Offline-Core gehören Kernseiten, Word Imposter, Creator, Release-Tiers, Filter/Suche, beide Core-Contentmodule, Session-Ledger, gemeinsame Sessionsteuerung, Hub-Timermodul, benötigte Engines und Datenschutzseite.
+Zum Offline-Core gehören Kernseiten, Word Imposter, Creator, Release-Tiers, Filter/Suche, beide Core-Contentmodule, Backup-Registry, Session-Ledger, gemeinsame Sessionsteuerung, Hub-Timermodul, benötigte Engines und Datenschutzseite.
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -95,7 +102,9 @@ Bei jeder offline benötigten Dateiänderung:
 
 ## 10. Accessibility als Definition of Done
 
-Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 px wichtige Touchziele, Reduced Motion, 200-%-Zoom, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
+Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 px wichtige Touchziele, Reduced Motion, 200-%-Zoom/Reflow, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
+
+`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js` und `tests/e2e/accessibility-core.spec.js` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
 
 ## 11. Inhaltsvertrag
 
@@ -108,13 +117,13 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 - Nutzerinhalte bleiben von Built-ins getrennt
 - wachsende Contentmengen liegen in dedizierten Contentmodulen
 
-`CONTENT_AGE_POLICY.md` definiert Mengen-, Safety- und redaktionelle Gates.
+`CONTENT_AGE_POLICY.md` und `CORE_CONTENT_REVIEW.md` definieren Mengen-, Safety- und redaktionelle Gates.
 
 ## 12. Testpyramide
 
-Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Performancebudget und Release-Audit.
+Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Accessibility-Contract, Performancebudget und Release-Audit.
 
-Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Accessibility und reale Partygruppen.
+Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Screenreader/Zoom und reale Partygruppen.
 
 Core-Contenttests verwenden den finalen `party-routing.js`-Pfad und prüfen dadurch Expansion plus beide Core-Contentmodule gemeinsam.
 
@@ -129,7 +138,9 @@ Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Bu
 
 Wenn ein Modul sein Budget erreicht, wird entlang klarer Verantwortungsgrenzen getrennt statt das Budget reflexartig anzuheben.
 
-## 14. Deprecation, Rollback und Erweiterung
+## 14. Betrieb, Deprecation und Rollback
+
+`SUPPORT.md`, `INCIDENT_RESPONSE.md`, `MAINTENANCE.md` und `DEPLOYMENT.md` definieren den Betriebsvertrag nach Release.
 
 Veraltete Funktionen werden dokumentiert migriert und nicht still entfernt. Keine Force-Pushes auf stabile Release-Basen. Rollback muss persistierte Daten kompatibel halten und benötigt bei PWA-Dateiänderungen erneut eine höhere Cachegeneration.
 
