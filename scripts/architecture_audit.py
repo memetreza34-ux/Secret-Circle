@@ -101,9 +101,9 @@ contracts = {
     'party-session-controls.js': ['createController', 'remainingMilliseconds', 'function setPaused'],
     'party-core-release-catalog.js': ['coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent'],
     'party-core-classic-content.js': [
-        'const VERSION = 2;', 'coreClassicContentVersion', 'coreClassicContentGames',
+        'const VERSION = 3;', 'coreClassicContentVersion', 'coreClassicContentGames',
         'referenceSafeGameOverrides', 'referenceSafeContent', 'Anime-Archetypen erraten',
-        'referenceSafeRemovedConcreteNames: 40'
+        "title: 'Spektrum-Tipp'", "Chrome: 'Tab'", 'referenceSafeRemovedConcreteNames: 40'
     ],
     'party-routing.js': ["require('./party-core-classic-content.js')", 'createCatalog', 'version: 8'],
     'party-hub.js': [
@@ -146,7 +146,10 @@ for module in ('party-core-release-catalog.js', 'party-core-classic-content.js',
 for test in ('tests/core-content-quality.test.js', 'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js'):
     if test not in unit_gate:
         violations.append(f'Critical architecture test missing from npm test: {test}')
-for audit in ('scripts/core_content_audit.py', 'scripts/release_audit.py', 'scripts/performance_budget.py'):
+for audit in (
+    'scripts/core_content_audit.py', 'scripts/asset_provenance_audit.py',
+    'scripts/public_release_placeholder_audit.py', 'scripts/release_audit.py', 'scripts/performance_budget.py'
+):
     if audit not in validate_gate:
         violations.append(f'Critical audit missing from npm validate: {audit}')
 
@@ -191,8 +194,10 @@ print(json.dumps({
     'module_size_limit_bytes': 100000,
     'pwa_cache': cache.group(1) if cache else None,
     'catalog_chain': catalog_chain,
-    'core_classic_content_version': 2,
+    'core_classic_content_version': 3,
     'reference_safe_anime_runtime': True,
+    'spectrum_visible_name': 'Spektrum-Tipp',
+    'browser_brand_reference_removed': True,
     'backup_registry_version': 2,
     'shared_session_controls': True,
     'split_hub_timer_module': True,
