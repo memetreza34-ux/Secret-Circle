@@ -13,37 +13,22 @@ Verbindliche Reihenfolge:
 
 ## 2. Local
 
-Zweck:
+Zweck: Entwicklung, schnelle Syntax-/Unit-/Validatorläufe und lokaler Playwright-Webserver. Keine Releasefreigabe.
 
-- Entwicklung
-- schnelle Syntax-/Unit-/Validatorläufe
-- lokaler Playwright-Webserver
-- keine Releasefreigabe
-
-Aktueller lokaler Testserver:
-
-`http://127.0.0.1:4173`
+Aktueller lokaler Testserver: `http://127.0.0.1:4173`.
 
 Regeln:
 
 - keine Productiondaten verwenden
 - keine echten privaten Backups als Standard-Testfixture
-- lokale Browserdaten dürfen jederzeit Testzustand enthalten
 - lokale erfolgreiche Tests ersetzen CI/Realgeräte nicht
 
 ## 3. CI/Test
 
-Zweck:
-
-- reproduzierbare Syntax-/Unit-/Audit-/Playwright-Ausführung
-- keine dauerhaften Nutzerdaten
-- jeder Lauf beginnt aus kontrolliertem Checkout
-
 Releaseanforderung:
 
 - echter GitHub-Actions-Runner
-- sichtbarer Checkout
-- sichtbare Steps
+- sichtbarer Checkout und sichtbare Steps
 - `package-lock.json`
 - `npm ci`
 - `npm run ci`
@@ -53,18 +38,16 @@ Aktuell: **BLOCKED**, da geprüfte Actions-Läufe weiterhin vor Repository-Steps
 
 ## 4. HTTPS-Staging
 
-Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum vor Production.
+Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum vor Production und muss eine **getrennte Origin** besitzen.
 
-### Muss eine getrennte Origin besitzen
-
-Empfohlenes Schema:
+Schematisches Beispiel:
 
 ```text
 https://staging.example.invalid/
 https://app.example.invalid/
 ```
 
-Das Domainbeispiel ist nur schematisch. Die tatsächlichen Domains werden vor Deployment festgelegt.
+Die tatsächlichen Domains werden vor Deployment festgelegt.
 
 Warum getrennte Origin:
 
@@ -73,25 +56,11 @@ Warum getrennte Origin:
 - installierte PWA-Zustände vermischen sich nicht
 - Staging-Tests löschen/überschreiben nicht versehentlich Productiondaten
 
-**Nicht empfohlen:** Staging und Production nur über unterschiedliche Queryparameter derselben Origin unterscheiden.
-
-### Staging darf
-
-- Testdaten enthalten
-- bewusst alte Cachegenerationen für Updatepfade verwenden
-- Rollbacks testen
-- Debugging über Browsertools erlauben
-
-### Staging darf nicht
-
-- als Production beworben werden
-- echte Betreiber-/Legal-Platzhalter als final darstellen
-- automatisch in Suchmaschinen als fertige App vermarktet werden
-- dasselbe reale Nutzerprofil wie Production voraussetzen
+Nicht empfohlen: Staging und Production nur über Queryparameter derselben Origin unterscheiden.
 
 ## 5. Release Candidate
 
-Ein RC ist **kein eigener Codezweig mit zusätzlichen Fixes nach der Freigabe**.
+Ein RC ist kein eigener Codezweig mit zusätzlichen Fixes nach der Freigabe.
 
 RC-Vertrag:
 
@@ -100,11 +69,9 @@ RC-Vertrag:
 - exakte Cachegeneration dokumentiert
 - Tests beziehen sich auf denselben Commit
 - nach einem Fix entsteht ein neuer RC-Kandidat
-- Production soll denselben freigegebenen statischen Stand erhalten
+- Production erhält denselben freigegebenen statischen Stand
 
 ## 6. Production
-
-Production ist die öffentliche stabile Umgebung.
 
 Vor Promotion:
 
@@ -120,32 +87,15 @@ Production darf nicht als Ort für den ersten echten Service-Worker-Test dienen.
 
 ## 7. Datenisolation
 
-### Testdaten
+Für Local/Staging bevorzugt neutrale Spielernamen und generische Creator-Karten; keine echten privaten Nachrichten/Fotos und keine sensiblen personenbezogenen Testbackups.
 
-Für Local/Staging bevorzugt:
-
-- neutrale Spielernamen (`Alex`, `Sam`, `Mika`, `Lina`)
-- generische Creator-Karten
-- keine echten privaten Nachrichten/Fotos
-- keine sensiblen personenbezogenen Testbackups
-
-### Backups
-
-Ein Staging-Backup soll nicht automatisch als Productionbackup betrachtet werden, auch wenn das Dateiformat kompatibel ist.
-
-Beim bewussten Cross-Environment-Test:
-
-- Datei kopieren statt Original überschreiben
-- personenbezogene Testinhalte vermeiden
-- Quellumgebung/Commit notieren
+Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cross-Environment-Test Datei kopieren, personenbezogene Testinhalte vermeiden und Quellumgebung/Commit notieren.
 
 ## 8. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt eine definierte Cachegeneration, derzeit **`secret-circle-v36`**.
+Der Quellcode besitzt aktuell **`secret-circle-v37`**.
 
-v36 enthält den redaktionellen Word-Imposter-Core-Rechtepass und muss wie jede Offline-Core-Änderung real aus einer älteren installierten Version aktualisiert werden.
-
-Bei einem echten RC muss dieselbe statische Version auf Staging geprüft werden, bevor sie Production erreicht.
+v37 enthält den Reference-Safe-Pass für das Anime-Archetypen-Quiz und muss wie jede Offline-Core-Änderung real aus einer älteren installierten Version aktualisiert werden.
 
 Regeln:
 
@@ -158,15 +108,7 @@ Regeln:
 
 V1 benötigt derzeit keine Runtime-Secrets und kein Backend-Environment-File.
 
-Falls später hinzugefügt werden:
-
-- `.env.example` ohne Geheimnisse
-- getrennte Werte für dev/test/staging/prod
-- keine Production-Keys in Test
-- Secret Store statt Commit
-- Rotation/Revoke-Prozess
-
-Eine solche Einführung gilt als Architektur-/Securityänderung.
+Falls später hinzugefügt werden: `.env.example` ohne Geheimnisse, getrennte dev/test/staging/prod-Werte, keine Production-Keys in Test, Secret Store statt Commit und Rotation/Revoke-Prozess.
 
 ## 10. Staging-Smoke-Test
 
@@ -178,6 +120,7 @@ Mindestens:
 - Installation möglich
 - Offline-Neustart
 - finaler Katalog
+- `anime-guess` zeigt nur generische Archetypen
 - Hub-Datenbereich startet ohne Registryfehler
 - Export/Import mit neutralen Daten
 - ein direktes Hub-Core-Spiel
