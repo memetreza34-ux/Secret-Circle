@@ -39,12 +39,12 @@ const hardMinimums = Object.freeze({
   'would-rather': 8,
   paranoia: 8,
   charades: 12,
-  taboo: 8,
-  'hot-potato': 8,
-  'word-chain': 5,
-  'two-truths': 8,
-  'question-imposter': 8,
-  'location-spy': 8,
+  taboo: 16,
+  'hot-potato': 16,
+  'word-chain': 10,
+  'two-truths': 16,
+  'question-imposter': 16,
+  'location-spy': 16,
   mafia: 3,
   'wrong-answers': 8
 });
@@ -191,8 +191,9 @@ assert.deepEqual(catalog.content.mafia.Schnell, ['Mafia', 'Detektiv', 'Dorfbewoh
 assert.deepEqual(catalog.content.mafia.Klassisch, ['Mafia', 'Detektiv', 'Arzt', 'Dorfbewohner']);
 assert.deepEqual(catalog.content.mafia.Erweitert, ['Mafia', 'Detektiv', 'Arzt', 'Beschützer', 'Dorfbewohner']);
 
-// Word Chain currently uses explicit single-letter starts.
+// Word Chain now keeps at least ten explicit starts per release pack.
 for (const pack of catalog.getPackNames('word-chain')) {
+  assert.ok(catalog.content['word-chain'][pack].length >= 10, `Word Chain release pack too small: ${pack}`);
   for (const letter of catalog.content['word-chain'][pack]) {
     assert.match(letter, /^\p{L}$/u, `Word Chain start must be one letter: ${pack}/${letter}`);
   }
@@ -222,6 +223,7 @@ console.log(JSON.stringify({
   coreContentQuality: 'PASS',
   coreGames: expectedCore.length,
   ageContract: expectedAges,
+  hardMinimums,
   wordImposterCategories: wordCategories.length,
   wordImposterWords,
   routedCoreItemsExcludingWordImposter: routedCoreItems,
