@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v38`**
+- aktueller Offline-Core: **`secret-circle-v39`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -47,9 +47,10 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - Scoring-/Winner-Vertrag bestätigt
 - quantitative Core-Content-Gates erfüllt
 - 15/15 Core-Quellreview dokumentiert
-- Word-Imposter-Core-Rechtepass regressionsgesichert
-- `anime-guess` liefert final nur 40 eigenständige Archetypen, keine konkreten Figuren
+- Word-Imposter-Rechtepass regressionsgesichert
+- `anime-guess` liefert final nur 40 eigenständige Archetypen
 - Viral-`higher-lower` enthält die generischen Sportfragen aus v38
+- Classic Content v3 liefert `Chrome → Tab` und sichtbares **Spektrum-Tipp** statt Wellenlänge
 - übrige Extended/Labs final auf vermeidbare Marken-/Franchisereferenzen geprüft
 - Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
@@ -67,7 +68,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v38`** bestätigt
+- Offline-Start aus **`secret-circle-v39`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
 - beide Core-Contentmodule offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
@@ -92,6 +93,8 @@ Vor Production final:
 - Hostingangaben final
 - `THIRD_PARTY_NOTICES.md` final
 - `FAN_CONTENT_REVIEW.md` final synchronisiert
+- Asset-Provenienz ohne `unresolved` Releaseassets
+- öffentlicher Placeholder-Audit grün
 - echter Supportweg nach `SUPPORT.md`
 - Incident-/Hotfixprozess nach `INCIDENT_RESPONSE.md`
 - Wartungsprozess nach `MAINTENANCE.md`
@@ -117,9 +120,16 @@ GitHub Pages ist eine mögliche Route. Eine andere HTTPS-Plattform ist zulässig
 
 Browserfolge:
 
-`party-catalog → expansion → trending → mega → viral → core-release → core-classic(v2) → routing`
+`party-catalog → expansion → trending → mega → viral → core-release → core-classic(v3) → routing`
 
-Online und offline müssen dieselben finalen Inhalte verfügbar sein. `anime-guess` muss als **Anime-Archetypen erraten** mit vier generischen 10er-Packs erscheinen. Im Viral-Sportpack dürfen die drei ersetzten olympisch/Grand-Slam-spezifischen Texte nicht wieder auftauchen.
+Online und offline müssen dieselben finalen Inhalte verfügbar sein.
+
+Zusätzliche sichtbare Checks:
+
+- `anime-guess` → **Anime-Archetypen erraten** mit vier generischen 10er-Packs
+- stabile ID `wavelength` → sichtbarer Titel **Spektrum-Tipp**
+- Browser-Tabu-Karte enthält `Tab`, nicht `Chrome`
+- im Viral-Sportpack tauchen die drei entfernten olympisch/Grand-Slam-spezifischen Texte nicht wieder auf
 
 ### Hub, Creator und Engines
 
@@ -136,7 +146,7 @@ Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und al
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v38`**
+- aktiver Cache: **`secret-circle-v39`**
 - Backup-Registry und beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
