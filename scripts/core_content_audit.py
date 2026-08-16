@@ -10,7 +10,9 @@ required = [
     'tests/core-content-quality.test.js',
     'party-routing.js',
     'party-expansion.js',
+    'party-core-release-catalog.js',
     'word-packs.js',
+    'sw.js',
     'package.json',
 ]
 for relative in required:
@@ -21,7 +23,9 @@ policy = read('CONTENT_AGE_POLICY.md')
 test = read('tests/core-content-quality.test.js')
 routing = read('party-routing.js')
 expansion = read('party-expansion.js')
+release_content = read('party-core-release-catalog.js')
 word_packs = read('word-packs.js')
+service_worker = read('sw.js')
 package = json.loads(read('package.json'))
 
 core_ids = [
@@ -38,6 +42,7 @@ checks = {
     'policy_requires_skip_for_sensitive_content': 'Skip jederzeit ermöglichen' in policy,
     'test_uses_final_routing': "require('../party-routing.js')" in test,
     'test_has_15_age_contracts': "assert.equal(Object.keys(expectedAges).length, 15);" in test,
+    'test_checks_release_content_module': "require('../party-core-release-catalog.js')" in test and 'coreReleaseContentVersion' in test,
     'test_checks_duplicates': 'assertUniqueItems' in test and 'exactNormalizedDuplicatesRejected' in test,
     'test_checks_markup': 'contains HTML/script markup' in test and 'markupRejected' in test,
     'test_checks_truth_dare_structure': "catalog.content['truth-dare']" in test and "['truth', 'dare']" in test,
@@ -48,7 +53,12 @@ checks = {
     'test_checks_mafia_roles': "catalog.content.mafia.Schnell" in test and "catalog.content.mafia.Erweitert" in test,
     'test_checks_word_chain_letters': "Word Chain start must be one letter" in test,
     'test_checks_word_imposter_14x12': 'wordCategories.length, 14' in test and 'entries.length === 12' in test and 'wordImposterWords, 168' in test,
+    'routing_uses_release_content_catalog': "require('./party-core-release-catalog.js')" in routing,
     'routing_recursively_flattens_structured_packs': 'function flattenItems(value)' in routing and 'Object.values(value).flatMap(flattenItems)' in routing,
+    'release_content_has_five_social_core_games': all(marker in release_content for marker in (
+        "'never-have': {", "'most-likely': {", "'would-rather': {", 'paranoia: {', "'wrong-answers': {"
+    )),
+    'release_content_preserves_base_and_appends': 'merged[packName] = [...current[packName], ...extraItems];' in release_content,
     'advanced_pack_names_aligned': all(marker in expansion for marker in (
         "'two-truths': Object.freeze(['Locker', 'Reise', 'Schule & Arbeit'])",
         "'question-imposter': Object.freeze(['Alltag', 'Meinungen', 'Schätzfragen'])",
@@ -56,6 +66,8 @@ checks = {
         'Schätzfragen: [',
     )),
     'word_imposter_has_14_category_definitions': word_packs.count("label:") == 14,
+    'release_content_in_offline_core': "'./party-core-release-catalog.js'" in service_worker,
+    'release_content_in_syntax_gate': 'node --check party-core-release-catalog.js' in package.get('scripts', {}).get('check', ''),
     'contract_in_unit_gate': 'tests/core-content-quality.test.js' in package.get('scripts', {}).get('test', ''),
     'contract_in_syntax_gate': 'tests/core-content-quality.test.js' in package.get('scripts', {}).get('check', ''),
     'audit_in_validate_gate': 'scripts/core_content_audit.py' in package.get('scripts', {}).get('validate', ''),
@@ -73,6 +85,7 @@ print(json.dumps({
         'truth-dare', 'would-rather', 'taboo', 'question-imposter',
         'location-spy', 'mafia', 'word-chain', 'imposter'
     ],
+    'release_content_games': ['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers'],
     'hard_minimums_are_regression_gates': True,
     'higher_editorial_targets_remain_manual_release_work': True,
     'checks': checks,
