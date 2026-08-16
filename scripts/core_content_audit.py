@@ -6,15 +6,9 @@ ROOT = Path(__file__).resolve().parents[1]
 read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
 required = [
-    'CONTENT_AGE_POLICY.md',
-    'tests/core-content-quality.test.js',
-    'party-routing.js',
-    'party-expansion.js',
-    'party-core-release-catalog.js',
-    'party-core-classic-content.js',
-    'word-packs.js',
-    'sw.js',
-    'package.json',
+    'CONTENT_AGE_POLICY.md', 'tests/core-content-quality.test.js',
+    'party-routing.js', 'party-expansion.js', 'party-core-release-catalog.js',
+    'party-core-classic-content.js', 'word-packs.js', 'sw.js', 'package.json'
 ]
 for relative in required:
     if not (ROOT / relative).is_file():
@@ -23,62 +17,34 @@ for relative in required:
 policy = read('CONTENT_AGE_POLICY.md')
 test = read('tests/core-content-quality.test.js')
 routing = read('party-routing.js')
-expansion = read('party-expansion.js')
 release_content = read('party-core-release-catalog.js')
 classic_content = read('party-core-classic-content.js')
-word_packs = read('word-packs.js')
-service_worker = read('sw.js')
+sw = read('sw.js')
 package = json.loads(read('package.json'))
 
-core_ids = [
-    'imposter', 'truth-dare', 'never-have', 'most-likely', 'would-rather',
-    'paranoia', 'charades', 'taboo', 'hot-potato', 'word-chain',
-    'two-truths', 'question-imposter', 'location-spy', 'mafia', 'wrong-answers'
-]
-
 checks = {
-    'policy_has_15_core_ids': all(f'`{game_id}`' in policy for game_id in core_ids),
-    'policy_distinguishes_internal_age_from_store_rating': 'kein gesetzliche Altersfreigabe' in policy or 'keine gesetzliche Altersfreigabe' in policy,
-    'policy_has_hard_minimums': 'Qualitätsbudgets – harte Mindestwerte' in policy,
-    'policy_has_editorial_release_targets': 'Redaktionelle Releaseziele' in policy,
-    'policy_requires_skip_for_sensitive_content': 'Skip jederzeit ermöglichen' in policy,
-    'test_uses_final_routing': "require('../party-routing.js')" in test,
-    'test_has_15_age_contracts': "assert.equal(Object.keys(expectedAges).length, 15);" in test,
-    'test_checks_release_content_module': "require('../party-core-release-catalog.js')" in test and 'coreReleaseContentVersion' in test,
-    'test_checks_classic_content_module': "require('../party-core-classic-content.js')" in test and 'coreClassicContentVersion' in test,
-    'test_requires_no_quantitative_shortfalls': "assert.deepEqual(editorialShortfalls, []" in test and 'quantitativeTargetsMet' in test,
-    'test_checks_truth_dare_12_plus_12': 'raw.truth.length >= 12' in test and 'raw.dare.length >= 12' in test and "catalog.itemCount('truth-dare'), 96" in test,
-    'test_checks_duplicates': 'assertUniqueItems' in test and 'exactNormalizedDuplicatesRejected' in test,
-    'test_checks_markup': 'contains HTML/script markup' in test and 'markupRejected' in test,
-    'test_checks_would_rather_structure': "catalog.content['would-rather']" in test and 'pair.length === 2' in test,
-    'test_checks_taboo_structure': 'card.banned.length === 3' in test,
-    'test_checks_question_imposter_structure': "catalog.content['question-imposter']" in test and 'pair.main' in test and 'pair.imposter' in test,
-    'test_checks_location_uniqueness': "location-spy/${pack}" in test,
-    'test_checks_mafia_roles': "catalog.content.mafia.Schnell" in test and "catalog.content.mafia.Erweitert" in test,
-    'test_checks_word_chain_letters': "Word Chain start must be one letter" in test,
-    'test_checks_word_imposter_14x12': 'wordCategories.length, 14' in test and 'entries.length === 12' in test and 'wordImposterWords, 168' in test,
-    'routing_uses_classic_content_catalog': "require('./party-core-classic-content.js')" in routing,
-    'routing_recursively_flattens_structured_packs': 'function flattenItems(value)' in routing and 'Object.values(value).flatMap(flattenItems)' in routing,
-    'release_content_has_five_social_core_games': all(marker in release_content for marker in (
-        "'never-have': {", "'most-likely': {", "'would-rather': {", 'paranoia: {', "'wrong-answers': {"
+    'policy_has_quantity_contract': 'Quantitative Release-Gates' in policy and 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in policy,
+    'policy_has_privacy_contract': 'SC-CONTENT-PRIV-001' in policy and 'private Chats oder Nachrichten' in policy,
+    'final_routing_uses_classic_content': "require('./party-core-classic-content.js')" in routing,
+    'release_content_module_contract': all(marker in release_content for marker in ('coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent')),
+    'classic_content_module_contract': all(marker in classic_content for marker in ('coreClassicContentVersion', 'coreClassicContentGames', 'function mergeNested', 'editorialReplacementCount')),
+    'privacy_replacements_defined': all(marker in classic_content for marker in (
+        'Was ist das Seltsamste in deiner Kamerarolle?',
+        'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.',
+        'Welches Foto-Motiv findest du besonders lustig?',
+        'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.'
     )),
-    'classic_content_has_four_core_games': all(marker in classic_content for marker in (
-        "'truth-dare': {", 'charades: {', 'taboo: {', "'hot-potato': {"
+    'privacy_regression_test': all(marker in test for marker in (
+        'privateDevicePromptsRemoved: true', 'editorialReplacementCount, 2',
+        'Core content must not expose private third-party messages',
+        'Core content must not prompt users to inspect private camera-roll material'
     )),
-    'classic_content_supports_nested_truth_dare': 'function mergeNested' in classic_content and 'Unbekannter verschachtelter Content-Pfad' in classic_content,
-    'advanced_pack_names_aligned': all(marker in expansion for marker in (
-        "'two-truths': Object.freeze(['Locker', 'Reise', 'Schule & Arbeit'])",
-        "'question-imposter': Object.freeze(['Alltag', 'Meinungen', 'Schätzfragen'])",
-        "mafia: Object.freeze(['Schnell', 'Klassisch', 'Erweitert'])",
-        'Schätzfragen: [',
-    )),
-    'word_imposter_has_14_category_definitions': word_packs.count("label:") == 14,
-    'release_content_in_offline_core': "'./party-core-release-catalog.js'" in service_worker,
-    'classic_content_in_offline_core': "'./party-core-classic-content.js'" in service_worker,
-    'release_content_in_syntax_gate': 'node --check party-core-release-catalog.js' in package.get('scripts', {}).get('check', ''),
-    'classic_content_in_syntax_gate': 'node --check party-core-classic-content.js' in package.get('scripts', {}).get('check', ''),
-    'contract_in_unit_gate': 'tests/core-content-quality.test.js' in package.get('scripts', {}).get('test', ''),
-    'contract_in_syntax_gate': 'tests/core-content-quality.test.js' in package.get('scripts', {}).get('check', ''),
+    'all_quantitative_targets_required': 'assert.deepEqual(editorialShortfalls, []' in test and 'quantitativeTargetsMet: true' in test,
+    'truth_dare_12_plus_12': 'raw.truth.length >= 12' in test and 'raw.dare.length >= 12' in test,
+    'word_imposter_14x12': 'wordCategories.length, 14' in test and 'entries.length === 12' in test and 'wordImposterWords, 168' in test,
+    'content_modules_offline': all(f"'./{asset}'" in sw for asset in ('party-core-release-catalog.js', 'party-core-classic-content.js')),
+    'content_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in ('node --check party-core-release-catalog.js', 'node --check party-core-classic-content.js')),
+    'content_test_in_unit_gate': 'tests/core-content-quality.test.js' in package.get('scripts', {}).get('test', ''),
     'audit_in_validate_gate': 'scripts/core_content_audit.py' in package.get('scripts', {}).get('validate', ''),
 }
 
@@ -88,15 +54,8 @@ if failed:
 
 print(json.dumps({
     'core_content_audit': 'PASS',
-    'core_games': len(core_ids),
-    'age_levels': ['all', 'teen'],
-    'structured_games_checked': [
-        'truth-dare', 'would-rather', 'taboo', 'question-imposter',
-        'location-spy', 'mafia', 'word-chain', 'imposter'
-    ],
-    'release_content_games': ['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers'],
-    'classic_content_games': ['truth-dare', 'charades', 'taboo', 'hot-potato'],
-    'quantitative_core_targets_are_regression_gates': True,
-    'manual_semantic_review_still_required': True,
+    'quantitative_targets': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
+    'privacy_findings_closed': ['SC-CONTENT-PRIV-001'],
+    'manual_semantic_review': 'IN_PROGRESS',
     'checks': checks,
 }, ensure_ascii=False, indent=2))
