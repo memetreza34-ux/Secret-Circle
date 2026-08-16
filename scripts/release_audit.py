@@ -14,7 +14,7 @@ required = [
     'backup-schema-registry.js', 'party-data-tools.js',
     'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'ACCESSIBILITY.md', 'BETA_TEST_PLAN.md',
     'LEGAL_CHECKLIST.md', 'THIRD_PARTY_NOTICES.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
-    'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
+    'ENVIRONMENTS.md', 'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
     'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/accessibility-contract.test.js',
     'tests/backup-schema-registry.test.js', 'tests/e2e/accessibility-core.spec.js',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
@@ -38,6 +38,7 @@ registry = read('backup-schema-registry.js')
 data_tools = read('party-data-tools.js')
 architecture = read('ARCHITECTURE.md')
 deployment = read('DEPLOYMENT.md')
+environments = read('ENVIRONMENTS.md')
 service_worker_test = read('tests/service-worker.test.js')
 content_test = read('tests/core-content-quality.test.js')
 content_policy = read('CONTENT_AGE_POLICY.md')
@@ -122,7 +123,10 @@ checks = {
     'accessibility_manual_limits_explicit': 'PREPARED – reale Abnahme offen' in accessibility and '200 %' in accessibility and 'VoiceOver' in accessibility and 'TalkBack' in accessibility,
     'beta_plan_has_required_groups': all(marker in beta_plan for marker in ('G1', 'G2', 'G3', 'G4', 'G5', 'PN1', 'PN2', 'PN3')),
     'beta_plan_has_device_and_update_gates': all(marker in beta_plan for marker in ('Android', 'iPhone', 'VoiceOver', 'TalkBack', 'PWA-Update-Test', 'Rollback-Test')),
-    'beta_plan_no_go_until_real': 'reale Durchführung offen' in beta_plan and 'öffentliche Release **NO_GO**' in beta_plan,
+    'beta_plan_no_go_until_real': 'reale Durchführung offen' in beta_plan and 'Release **NO_GO**' in beta_plan,
+    'environment_chain_documented': 'Local → CI/Test → HTTPS-Staging → Release Candidate → Production' in environments,
+    'staging_origin_isolated': 'getrennte Origin' in environments and 'localStorage' in environments and 'Service-Worker' in environments,
+    'environment_stays_no_go': 'konkrete HTTPS-Staging-URL offen' in environments and 'Production **NO_GO**' in environments,
     'legal_stays_no_go': 'LEGAL NO_GO' in legal and '20. Juli 2025' in legal and 'TDDDG' in legal,
     'third_party_inventory_explicit': all(marker in third_party for marker in ('@playwright/test', 'icon.svg', 'icon-192.png', 'icon-512.png', 'BLOCKED FOR FINAL SIGN-OFF')),
     'third_party_does_not_guess_asset_origin': 'kein Herkunfts-/Lizenznachweis gefunden' in third_party and 'nicht automatisch als eigenes Werk' in third_party,
@@ -152,6 +156,7 @@ print(json.dumps({
     'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
     'accessibility': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
     'beta_plan': 'PREPARED_NOT_EXECUTED',
+    'environments': 'PREPARED_STAGING_URL_OPEN',
     'third_party_inventory': 'IN_PROGRESS_PROVENANCE_OPEN',
     'legal_support_operations': 'PREPARED_NOT_FINAL',
     'public_release': 'NO_GO until CI, device, accessibility, party, content, rights, legal and operations gates pass',
