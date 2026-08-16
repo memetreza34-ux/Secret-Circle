@@ -47,7 +47,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-028 | Backupkonstanten driften | Security/Maintenance | niedrig nach Fix | hoch | P1 | Registry als einzige Quelle | CLOSED IN CODE; CI offen |
 | R-029 | Herkunft/Lizenz gebündelter Icons/Assets unklar | Recht/Supply Chain | mittel | hoch | P1 | Asset-Provenance dokumentieren | **OFFEN – Icon-Herkunft vor RC** |
 | R-030 | Support-/Legal-Platzhalter gelangen in Production | Recht/Betrieb | mittel | hoch | P1 | Platzhalter-Scan + Releaseaudit | offen, bewusst TBD |
-| R-031 | Classic-Content-v2 überschreitet Modul-/Offlinebudget | Performance/Architektur | niedrig-mittel | mittel | P1 | Größe gegen 45 KB prüfen; bei Bedarf splitten, Budget nicht blind erhöhen | **IN PRÜFUNG** |
+| R-031 | Classic-Content-v2 überschreitet Modul-/Offlinebudget | Performance/Architektur | sehr niedrig | mittel | P1 | tatsächliche Tree-Größe gegen 45 KB prüfen | **CLOSED – GitHub-Tree: 12.954 Bytes bei 45.000-Byte-Budget; kein Split/keine Budgetlockerung nötig** |
 
 ## 3. Aktuelle Releaseblocker
 
@@ -60,7 +60,6 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 7. R-013/R-015 – reale UX/Accessibility
 8. R-019 – HTTPS-Staging
 9. R-024 – Incident-/Support-Drill
-10. R-031 – Performancebudget von Classic Content v2 bestätigen
 
 ## 4. Fortschritt Fan-/Referenzcontent
 
@@ -72,24 +71,28 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 
 ### `anime-guess`
 
-Die 40 konkreten Figuren des tieferen Basiscontents wurden vor der finalen Runtime-Schicht inventarisiert. Für Production wurde **Option B** gewählt:
+Für Production wurde **Option B** umgesetzt:
 
-- stabile ID bleibt `anime-guess`
+- stabile ID `anime-guess`
 - finaler Titel `Anime-Archetypen erraten`
 - vier generische Packs / 40 eigenständige Archetypen
-- Test enumeriert die 40 alten Namen und verlangt ihre Abwesenheit im finalen Runtime-Content
+- Test enumeriert die 40 früheren konkreten Namen und verlangt ihre Abwesenheit im finalen Runtime-Content
 
 R-011 bleibt nur wegen Restscan der übrigen Extended/Labs-/Marketing-/Visualpfade offen.
 
-## 5. Security/Backup
+## 5. Performance-Nachweis
+
+`party-core-classic-content.js` besitzt nach Reference-Safe-Ausbau laut GitHub-Tree **12.954 Bytes**. Das bestehende Budget in `scripts/performance_budget.py` bleibt unverändert bei **45.000 Bytes**. Damit besteht großer Abstand zum Modulbudget; ein künstliches Anheben oder Splitten wäre aktuell nicht gerechtfertigt.
+
+## 6. Security/Backup
 
 Registry v2 schließt im Code R-027/R-028. Endgültige Schließung erst nach tatsächlich ausgeführten Tests und echtem Browserimport/-rollback.
 
-## 6. Risiko-Regel für neue Features
+## 7. Risiko-Regel für neue Features
 
 Vor jeder größeren Funktion prüfen: Netzwerk, personenbezogene Daten, Berechtigungen, Persistenz/Migration, geheime Inhalte, Dependencies, Storage-Key-Familien, Offline-Core/Performance, Accessibility, Alter/Rechte, Marktpositionierung.
 
-## 7. Schließregel
+## 8. Schließregel
 
 P0/P1 erst geschlossen mit belastbarem Nachweis, z. B. grünem unverändertem CI-Commit, Testreport, realem Gerät, realer Gruppe, ausgefüllter Releasecheckliste oder finalen Rechts-/Lizenzunterlagen.
 
