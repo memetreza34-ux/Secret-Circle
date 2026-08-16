@@ -20,8 +20,6 @@ Jede wiederaufnehmbare Session erhält genau eine stabile `sessionId`. Abschluss
 
 Persistierte Bereiche besitzen explizite Versionen. Beschädigte Daten werden normalisiert oder isoliert verworfen. Unbekannte neuere Versionen werden nicht blind überschrieben. Persistenzänderungen benötigen Migrations-, Korruptions-, Quota- und Rollbacktests.
 
-Aktuelle wichtige Verträge umfassen Word-Imposter-Schema v7, Advanced-Session v2 sowie Hub, Party Night, Filter, Quick/Mega/Viral/Creator, Session-Ledger, eigene Packs, selbst erstellte Spiele und Gesamtsicherung in ihren dokumentierten Versionen.
-
 `backup-schema-registry.js` ist der zentrale Backup-Vertragsmittelpunkt und steht auf Registry-Version 2. Complete-Backup-Format, Größenlimits und erlaubte Storage-Key-Familien werden dort definiert. `party-data-tools.js` darf diese Werte nicht separat duplizieren.
 
 Complete-Imports akzeptieren nur bekannte versionierte Word-Imposter-Key-Familien sowie versionierte `secret-circle-party-*`-Familien. Vollständiges Löschen bleibt absichtlich breiter und entfernt weiterhin alle `secret-circle-*`-Reste.
@@ -40,10 +38,10 @@ Verantwortung:
 - `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate
 - `party-viral-catalog.js`: Viral-/Preis-/Wissens-/Storyformate
 - `party-core-release-catalog.js`: soziale Core-Releaseinhalte aus Welle 2
-- `party-core-classic-content.js`: klassische Core-Releaseinhalte aus Welle 3 und finale redaktionelle Built-in-Ersetzungen
+- `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Ersetzungen
 - `party-routing.js`: finale Routingfassade, Competition-Metadaten und lokale Creator-Spiele
 
-Die beiden Core-Contentmodule dürfen keine DOM-, Session-, Statistik-, Scoring-, Persistenz-, Netzwerk- oder Timerlogik übernehmen.
+`party-core-classic-content.js` steht auf Version 2. Es ersetzt im finalen Runtime-Pfad außerdem den Labs-Modus `anime-guess` durch **40 eigenständige Anime-/Manga-Archetypen** und behält dabei die stabile Spiel-ID.
 
 ## 5. Hub- und Timergrenzen
 
@@ -55,8 +53,6 @@ Ladereihenfolge: `party-session-controls.js → party-hub-timers.js → party-hu
 
 Für Datenverwaltung gilt zusätzlich: `backup-schema-registry.js` muss vor `party-data-tools.js` geladen sein.
 
-Direkte Hub-Spiele trennen **Beenden & speichern** von **Abbrechen & verwerfen**. Skip vergibt keinen künstlichen Punkt. Timermechaniken dürfen nicht zurück in `party-hub.js` dupliziert werden.
-
 ## 6. Weitere Modulgrenzen
 
 Word Imposter trennt Fachlogik (`game-engine.js`), Rollen (`role-assignment.js`), Speicherung (`data-store.js`) und UI (`app.js`). Der Game Creator trennt Daten-/Validierungslogik (`game-creator.js`), Wizard (`creator-page.js`) und Laufzeit (`party-created-modes.js`). Quick/Mega/Viral/Creator verwenden die gemeinsame Sessionsteuerung statt privater Intervalltimer.
@@ -65,9 +61,7 @@ Globale Monkey-Patches von `Storage.prototype`, Engine-Methoden oder Browser-API
 
 ## 7. Lokale Transaktionen und Exact-once
 
-Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Zustand wieder her. Das gilt insbesondere für Import, Löschung, eigene Packs, eigene Spiele und Sessionabschlüsse.
-
-Ein Abschluss verwendet eine stabile Completion-ID, schreibt Verlauf/Statistik genau einmal und entfernt den aktiven Zustand erst nach erfolgreicher Verbuchung.
+Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Zustand wieder her. Ein Abschluss verwendet eine stabile Completion-ID, schreibt Verlauf/Statistik genau einmal und entfernt den aktiven Zustand erst nach erfolgreicher Verbuchung.
 
 ## 8. Datenschutz und Security durch Architektur
 
@@ -86,11 +80,9 @@ Ein Abschluss verwendet eine stabile Completion-ID, schreibt Verlauf/Statistik g
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v36`**.
+Aktueller Offline-Core: **`secret-circle-v37`**.
 
-Zum Offline-Core gehören Kernseiten, Word Imposter, Creator, Release-Tiers, Filter/Suche, beide Core-Contentmodule, Backup-Registry, Session-Ledger, gemeinsame Sessionsteuerung, Hub-Timermodul, benötigte Engines und Datenschutzseite.
-
-v36 enthält zusätzlich den redaktionellen Core-Rechtepass für Word Imposter: vermeidbare konkrete Marken-/Awardbegriffe wurden durch generische Begriffe ersetzt und regressionsgesichert.
+v37 enthält den Reference-Safe-Pass für `anime-guess`: konkrete Figuren-/Franchisereferenzen aus dem finalen Runtime-Katalog werden durch generische Archetypen ersetzt. v36 hatte zuvor bereits unnötige konkrete Word-Imposter-Begriffe generisch gemacht.
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -99,7 +91,7 @@ Bei jeder offline benötigten Dateiänderung:
 1. CORE-Liste prüfen
 2. Cachegeneration erhöhen
 3. Service-Worker-Test aktualisieren
-4. Architektur/Deployment synchronisieren
+4. Architektur/Deployment/Privacy/Environment synchronisieren
 5. reales alte→neue Update später testen
 
 ## 10. Accessibility als Definition of Done
@@ -113,23 +105,19 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 - keine kopierten proprietären Karten anderer Apps
 - keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
 - vermeidbare konkrete Marken-/Awardbegriffe im Core werden generisch formuliert
-- Fan-/Franchise-Inhalte werden separat inventarisiert und vor Production bewusst freigegeben, generisch ersetzt oder aus dem öffentlichen Build genommen
+- konkrete Fan-/Franchise-Namen werden aus dem finalen Runtime-Content entfernt, sofern sie keinen zwingenden Produktnutzen haben
 - keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter oder Adressen
 - jede Built-in-Karte besitzt einen redaktionellen Zweck
 - Altersstufe und sensible Themen werden dokumentiert
-- strukturierte Mechaniken verwenden strukturierte Daten
 - Nutzerinhalte bleiben von Built-ins getrennt
-- wachsende Contentmengen liegen in dedizierten Contentmodulen
 
-`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md` und `THIRD_PARTY_NOTICES.md` definieren Mengen-, Safety-, redaktionelle und Rechte-Gates.
+`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md` und `THIRD_PARTY_NOTICES.md` definieren die Release-Gates.
 
 ## 12. Testpyramide
 
 Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Accessibility-Contract, Performancebudget und Release-Audit.
 
 Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Screenreader/Zoom und reale Partygruppen.
-
-Core-Contenttests verwenden den finalen `party-routing.js`-Pfad und prüfen dadurch Expansion plus beide Core-Contentmodule gemeinsam.
 
 ## 13. Performance und Assets
 
