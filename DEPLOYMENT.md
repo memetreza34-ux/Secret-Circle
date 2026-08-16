@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v37`**
+- aktueller Offline-Core: **`secret-circle-v38`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -49,6 +49,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - 15/15 Core-Quellreview dokumentiert
 - Word-Imposter-Core-Rechtepass regressionsgesichert
 - `anime-guess` liefert final nur 40 eigenständige Archetypen, keine konkreten Figuren
+- Viral-`higher-lower` enthält die generischen Sportfragen aus v38
 - übrige Extended/Labs final auf vermeidbare Marken-/Franchisereferenzen geprüft
 - Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
@@ -66,7 +67,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v37`** bestätigt
+- Offline-Start aus **`secret-circle-v38`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
 - beide Core-Contentmodule offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
@@ -118,7 +119,7 @@ Browserfolge:
 
 `party-catalog → expansion → trending → mega → viral → core-release → core-classic(v2) → routing`
 
-Online und offline müssen dieselben finalen Inhalte verfügbar sein. `anime-guess` muss als **Anime-Archetypen erraten** mit vier generischen 10er-Packs erscheinen.
+Online und offline müssen dieselben finalen Inhalte verfügbar sein. `anime-guess` muss als **Anime-Archetypen erraten** mit vier generischen 10er-Packs erscheinen. Im Viral-Sportpack dürfen die drei ersetzten olympisch/Grand-Slam-spezifischen Texte nicht wieder auftauchen.
 
 ### Hub, Creator und Engines
 
@@ -135,7 +136,7 @@ Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und al
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v37`**
+- aktiver Cache: **`secret-circle-v38`**
 - Backup-Registry und beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
