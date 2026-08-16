@@ -1,153 +1,99 @@
-# Änderungsverlauf
+# Changelog
 
-## In Entwicklung – Release Foundation Januar 2027
+Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
-### Behoben
+## Unreleased – Januar-2027 Release Foundation
 
-- Offline-Navigation für dynamische Spiel-URLs wie `quick-play.html?game=...` verwendet einen kanonischen Cache-Schlüssel ohne Query-Parameter.
-- Unbekannte oder beschädigte Quick-Game-IDs laden nicht stillschweigend die falsche Spiel-Engine.
-- Word-Imposter-Rollen werden unabhängig von der Karten-Aufdeckreihenfolge erzeugt; maximal sechs Imposter werden direkt in der Hauptengine validiert.
-- Das nachträgliche Überschreiben von Engine-Methoden durch `role-assignment.js` wurde entfernt.
-- Creator-Zeitstempel bleiben beim Laden, Exportieren und Importieren stabil; `updatedAt` ändert sich nur bei einer echten Bearbeitung.
-- Word-Imposter- und Gesamtbackups verwenden dieselbe 1,5-MB-Grenze als echte UTF-8-Bytes.
-- Creator-, Quick-, Mega- und Viral-Sessions schreiben Verlauf, Spielanzahl, Rundenzahl und Bestwert höchstens einmal pro echter Session.
-- Direkte Hub-Spiele erhöhen `plays` nicht mehr beim Öffnen oder Startversuch; Statistik und Verlauf entstehen erst beim echten Abschluss.
-- Ältere aktive Mega- und Viral-Sessions erhalten deterministische kompatible Session-IDs; der temporäre globale Storage-Guard wurde entfernt.
-- Scharade, Heiße Kartoffel und Wortkette verwenden keine privaten Hub-Intervalle mehr, sondern den gemeinsamen pausierbaren Timerkern.
-- Beim App-/Tab-Wechsel wird eine laufende Hub-Timerrunde automatisch pausiert.
-- Direkte Hub-Sessions besitzen jetzt den versionierten Active-State `secret-circle-party-hub-active-v1` und können nach einem vollständigen Reload ausdrücklich fortgesetzt werden.
-- Laufende Hub-Sessions speichern einen eigenen Spieler-Snapshot, damit spätere Lobbyänderungen eine bestehende Session nicht verändern.
-- Beschädigte Hub-Active-States werden validiert und verworfen, statt ungeprüft geladen zu werden.
-- Ein Reload öffnet direkte Hub-Spiele nicht automatisch; die Wiederaufnahme erfolgt über „Session fortsetzen“.
-- Private Hub-Inhalte werden nach Reload nicht automatisch wieder offengelegt; insbesondere Paranoia kehrt zum verdeckten Schritt zurück.
-- Scharade speichert über Reload Restzeit, Rundentreffer und aktuelle Karte und wird pausiert wiederhergestellt.
-- Heiße Kartoffel speichert die interne zufällige Restzeit, zeigt sie aber auch nach Wiederaufnahme nicht an.
-- Wortkette speichert Buchstabe und Restzeit und wird pausiert wiederhergestellt.
-- Das Verwerfen eines gespeicherten Hub-Spielstands erzeugt keinen fertigen Verlaufseintrag und keine Statistikbuchung.
-- Der PWA-Update-Schutz erkennt jetzt auch aktive direkte Hub-Sessions.
-- Der PWA-Update-Schutz verwendet denselben realen Advanced-Speicherschlüssel wie der Advanced Runner.
-- Bereits geöffnete private Question-Imposter-Fragen, Location-Spy-Karten und Mafia-Rollen werden nach Reload wieder verdeckt.
-- Eine offene Mafia-Moderatorübersicht benötigt nach Reload erneut die bewusste Moderatorbestätigung.
-- Advanced-Browserverträge wurden auf den tatsächlichen Resume-Flow und Speicherschlüssel korrigiert.
-- Mafia skaliert die Zahl der Mafia-Rollen mit der Gruppengröße statt unabhängig von der Gruppe immer nur eine Mafia zu erzeugen.
-- Die Mafia-Packs `Schnell`, `Klassisch` und `Erweitert` beeinflussen tatsächlich die Rollenverteilung.
-- Der in `Erweitert` deklarierte Beschützer besitzt eine echte Nachtaktion und kann nicht dieselbe Person in zwei aufeinanderfolgenden Nächten schützen.
-- Eine neue PWA-Version wird nicht automatisch mitten in einer laufenden Nutzung aktiviert.
-- Der aktive Offline-Cache wird bei einer Aktualisierung nicht vor dem erfolgreichen Kopieren der neuen Dateien gelöscht.
-- Alters- und Reifestufenfilter können sich nicht gegenseitig aufheben; eine URL-Ansicht hat Vorrang vor der gespeicherten Ansicht.
-- Fehlender oder blockierter lokaler Speicher wird bei Katalogfiltern nicht fälschlich als erfolgreicher Schreibvorgang behandelt.
-- Suchhilfe und Such-Styles werden in der kontrollierten Hub-Ladekette geladen und offline gespeichert.
+### Release-/A-bis-Z-Prozess
 
-### Hinzugefügt
+- `APP_ENTWICKLUNG_VON_A_BIS_Z.md` als Masterprozess von Discovery bis Maintenance eingeführt und Secret-Circle-spezifisch erweitert.
+- Operativer Tracker `APP_DEVELOPMENT_STATUS.md`, Risikoregister, Produktbrief, Nutzerszenarien, Marktanalyse, Requirements, UX-Flow, Designsystem, Security/Threat Model, Accessibility, Beta, Legal, Support, Incident Response, Maintenance und Environment-Vertrag ergänzt.
+- Release-Audit verlangt inzwischen Content-, Accessibility-, Asset-Provenienz-, Placeholder-, Legal-/Support-/Operations- und Environment-Nachweise.
 
-- gemeinsames `session-ledger.js` mit stabilen Session- und Abschluss-IDs
-- direkte Hub-Abschlüsse über dasselbe Session-Ledger
-- gemeinsames `party-session-controls.js` für schnelle Engines und Hub-Timer
-- versionierter direkter Hub-Wiederaufnahmezustand mit explizitem Resume und sicherem Verwerfen
-- `CORE_GAME_ACCEPTANCE.md` als technische und manuelle Abnahmematrix der 15 Kernspiele
-- zentrales `backup-schema-registry.js` für Word-Imposter-, Gesamt- und Creator-Sicherungen
-- sichtbarer PWA-Updatehinweis mit „Jetzt aktualisieren“ und „Später“ sowie separater Staging-Cache
-- Party-Hub-Reifestufen mit 15 Kernspielen, 13 Erweiterungen und 17 Labs-Modi
-- dauerhafte Speicherung von Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzter Hub-Ansicht
-- Synonym- und Tippfehlersuche mit ARIA-Listbox, Tastatur, Maus und Touch
-- vollständig neu strukturierte Release-Checkliste bis Januar 2027
+### Core-Content
 
-### Qualität
+- alle 15 priorisierten Core-Games auf definierte quantitative Releaseziele gebracht.
+- 15/15 erster manueller Core-Quellpass dokumentiert.
+- private Truth/Dare-Prompts entfernt, die Kamerarolle oder letzte private Handy-Nachricht als Spielmaterial verwenden konnten.
+- sichtbare Freiwilligkeits-/Skip-Regel im Hub und Advanced-Bereich ergänzt.
 
-- Regressionstests für Service-Worker-Navigation, Quick-Routing, Rollenfairness, Creator-Zeitstempel und Unicode-Backups.
-- direkte Genau-einmal-Vertragstests für Creator, Quick, Mega, Viral und Hub-Abschlüsse.
-- `tests/core-game-contract.test.js` für die 15 Kernspiele.
-- `tests/hub-timer-contract.test.js` für den gemeinsamen pausierbaren Hub-Timer und die serialisierte Restzeit.
-- `tests/hub-resume-contract.test.js` für Active-State, Spieler-Snapshot, sichere Wiederaufnahme, Geheimnis-Schutz und PWA-Update-Erkennung.
-- `tests/e2e/core-hub-resume.spec.js` für Paranoia, Scharade, Heiße Kartoffel, Wortkette und das sichere Verwerfen gespeicherter Sessions.
-- Browserkatalog- und Hub-Statistiktests für die Kernspiele.
-- Advanced-Smoke-, Unterbrechungs-, Geheimnis-Resume-, Rundenfluss- und Genau-einmal-Abschlusstests.
-- deterministische Mafia-Rollen- und Siegbedingungstests sowie Browservertrag für die erweiterte Mafia.
-- Contract-Test für alle drei Backupformate.
-- Unit-/Browser-Verträge für Filterzustand, kombinierte Alters-/Reifestufenfilter, Synonyme und Tippfehler.
-- Struktur-, Architektur-, Foundation-, Performance- und Release-Audits auf gemeinsame Ledger-, Timer- und Hub-Resume-Verträge aktualisiert.
-- das bestehende 65-KB-Budget für `party-hub.js` wurde trotz zusätzlicher Resume-Logik nicht gelockert.
+### Reference-Safe-Content
 
-### Bekannte externe Blockade
+#### PWA v36
 
-- GitHub Actions weist dem Workflow weiterhin keinen Runner zu. Die zuletzt überprüften Läufe endeten mit `runner_id: 0`, leerem Runnernamen, `steps: []` und ohne Checkout.
-- Deshalb sind die neu ergänzten Node-/Playwright-Verträge vorbereitet, aber noch nicht durch einen vertrauenswürdigen vollständigen Remote-Lauf als grün dokumentiert.
-- Ein reproduzierbares `package-lock.json` und die Umstellung auf `npm ci` bleiben offen, bis Abhängigkeiten in einer funktionierenden CI- oder lokalen npm-Umgebung aufgelöst werden können.
+- Word Imposter: `Bluetooth` → `Funkverbindung`.
+- Word Imposter: `Oscar` → `Filmpreis`.
+- Word Imposter: `Formel 1` → `Motorsport`.
 
-### Noch offen
+#### PWA v37
 
-- Produktentscheidung über einen festen Tabu-Rundentimer
-- systematische Vereinheitlichung von Skip, Fokus, Punkteverhalten und mobiler Accessibility in den direkten Hub-Kernspielen
-- vollständiger grüner `npm run ci`- und Cross-Browser-Lauf
-- echte Android-, iOS-, Tablet-, Sperrbildschirm- und PWA-Update-Prüfung
-- reale Kernspiel- und Gruppentests
-- redaktionelle Inhalts-, Alters-, Fan-Content- und Rechtsprüfung
+- `anime-guess` final als **Anime-Archetypen erraten** mit vier generischen Packs und 40 eigenständigen Archetypen ausgeliefert.
+- finale Runtime-Schicht blockiert die 40 früher inventarisierten konkreten Figuren im ausgespielten Katalog.
 
-## Frühere Entwicklungswelle – Bedienbarkeit, Creator und Offline-Core v29
+#### PWA v38
 
-### Hinzugefügt
+- Viral `higher-lower`: drei unnötig konkrete olympisch/Grand-Slam-bezogene Sportformulierungen durch neutrale Fragen mit denselben Zahlenwerten ersetzt.
 
-- Party Hub mit 45 eingebauten technisch spielbaren Spielen
-- 27 Quick-, Trend- und Viral-Modi
-- Drei-Schritte-Einstieg für neue Gruppen
-- kontextabhängige Kurz-Hilfen in allen Hauptbereichen
-- erster-Besuch-Onboarding
-- „Kurz erklärt“-Regeln direkt im Spieldetail
-- eigener lokaler No-Code-Game-Creator
-- sechs Creator-Vorlagen: Fragen, Auswahl, Erraten, Challenges, Story und Debatte
-- Live-Vorschau mit Icon, Akzent, Spielerzahl und Dauer
-- bis zu 40 selbst erstellte Spiele
-- bis zu 8 Kategorien und 200 Karten je eigener Kategorie
-- Bearbeiten, Kopieren, Löschen, Exportieren und Importieren eigener Spiele
-- Integration selbst erstellter Spiele in Suche, Filter, Favoriten, Verlauf und einfache Hub-Engines
-- Creator- und Guidance-E2E-Tests
-- Creator-Unit-Test mit Unicode-, Struktur-, Export-, Import- und Rollback-Prüfung
-- `ASSET_PLAN.md` für Icons, Illustrationen und Animationen
-- Offline-Core `secret-circle-v29`
+#### PWA v39
 
-### Verbessert
+- Tabu-Browserkarte: `Chrome` → `Tab`.
+- stabile interne ID `wavelength` bleibt kompatibel, sichtbarer Titel wird **Spektrum-Tipp** statt Wellenlänge.
+- `party-core-classic-content.js` auf Version 3 angehoben.
+- Unit-/Content-/Architektur-/Release-Verträge für die v39-Reference-Safe-Änderungen nachgezogen.
 
-- klarere Buttons: „Spielen“, „Jetzt spielen“, „Eigenes Spiel starten“ und engineabhängige Aktionen
-- verständlichere Spielkarten mit Mechanik- oder Kategorielabel
-- neue Creator-Einstiege in Navigation, Hero und Startseite
-- leere Zustände erklären die nächste Aktion
-- eigene Spiele werden validiert und transaktionssicher gespeichert
-- strukturierte Entweder-oder-Karten bleiben über Speichern, Export und Import erhalten
-- Gesamtsicherung und Datenlöschung nennen und enthalten selbst erstellte Spiele
-- Datenschutzseite erklärt Creator-, Social-, Anime-, Geld- und Preisdaten
-- Katalogrouting auf Version 7
-- Custom-Pack-Manager auf Version 4
-- Architektur-, Struktur-, Release- und Performance-Gates auf v29 synchronisiert
+### Backup / Security
 
-## Frühere Erweiterungswellen
+- `backup-schema-registry.js` auf Registry v2 als zentrale Quelle für Complete-Backup-Format, Größenlimits und zulässige Storage-Key-Familien erweitert.
+- `party-data-tools.js` konsumiert das zentrale Registry-Schema statt kritische Grenzen zu duplizieren.
+- unbekannte `secret-circle-*`-Namespaces werden beim Complete-Import abgelehnt.
+- vollständiges Löschen bleibt bewusst breit und entfernt auch alte/verwaiste Secret-Circle-Schlüssel.
+- `party.html` lädt Backup-Registry vor den Datentools.
 
-### Viral- und Trend-Modi
+### PWA / Offline
 
-- Wer bin ich?
-- Anime-Figuren erraten
-- hypothetische Geld-Challenge
-- Blind Ranking
-- Emoji Quiz
-- Pass das Handy
-- Red Flag oder Green Flag
-- Geheime Mission
-- Tier List Battle
-- Finger runter
-- Preis schätzen
-- Höher oder tiefer
-- Wer kennt mich am besten?
-- Hear Me Out
-- Hot Seat
-- Story Chain
-- Satz beenden
+- kontrollierte staged Updates mit sichtbarer Nutzeraktivierung und nicht-destruktiver Promotion beibehalten.
+- aktueller Offline-Core: **`secret-circle-v39`** / `secret-circle-v39-staging`.
+- Cachegeneration, Privacy, Architektur, Deployment, Environment und Service-Worker-Vertrag synchronisiert.
 
-### Word Imposter und Plattformkern
+### Accessibility
 
-- vollständiger Rollen-, Timer-, Abstimmungs-, Rate- und Punkteablauf
-- Smart Party Night
-- Advanced-Spiele
-- lokale Speicherung und Sicherung
-- installierbare Offline-PWA
-- 14 Imposter-Kategorien mit 168 Begriff-Hinweis-Paaren
-- Content Security Policy und Laufzeit-Fehlerschutz
-- keine Anmeldung, Analyse-, Werbe- oder Tracking-Dienste
+- `ACCESSIBILITY.md` eingeführt.
+- `tests/accessibility-contract.test.js` in Unit-/Syntax-Gates integriert.
+- `tests/e2e/accessibility-core.spec.js` als Playwright-Basis ergänzt.
+- 44px-kritische Touchziele, Fokus, Reduced Motion, ARIA und Reflow-Verträge verschärft.
+
+### Third Party / Assets / Legal
+
+- `THIRD_PARTY_NOTICES.md` eingeführt.
+- `@playwright/test` 1.54.2 upstream als Apache-2.0 verifiziert.
+- `assets/manifests/asset-provenance.json` ergänzt; die drei bestehenden App-Icons bleiben ausdrücklich `unresolved`, bis Herkunft/Rechte belegt sind.
+- `scripts/asset_provenance_audit.py` in `npm run validate` integriert.
+- `scripts/public_release_placeholder_audit.py` ergänzt, um typische Dummywerte in öffentlichen Runtime-Dateien zu blockieren.
+- `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md` ergänzt.
+
+### Sessions / Hub / Timer
+
+- gemeinsame Exact-once-Session-Ledger-Grundlage für Hub/Creator/Quick/Mega/Viral weiter abgesichert.
+- direkte Hub-Sessions mit sicherem Resume, Spieler-Snapshot und explizitem Verwerfen.
+- **Beenden & speichern** klar von **Abbrechen & verwerfen** getrennt.
+- gemeinsame Pause-/Skip-Steuerung und Fokusführung.
+- Timermechaniken in `party-hub-timers.js` ausgelagert.
+- Scharade 60 s, Tabu 60 s, Hot Potato 10–25 s verdeckt, Wortkette 30 s mit pausiertem Resume.
+
+### Advanced / Mafia
+
+- private Advanced-Reveals werden nach Reload wieder verdeckt.
+- Mafia skaliert Mafiaanzahl mit Gruppengröße und unterstützt Schnell/Klassisch/Erweitert mit Arzt/Detektiv/Beschützer.
+- Beschützer darf dieselbe Person nicht zwei Nächte nacheinander schützen.
+
+### CI / Build – noch offen
+
+- GitHub Actions weist geprüften Jobs weiterhin keinen funktionierenden Runner zu; bestätigtes Muster `runner_id: 0`, `steps: []`, kein Checkout.
+- `package-lock.json` fehlt; keine Integrity-Werte wurden erfunden.
+- CI bleibt vorläufig auf Installationsübergang und wird erst mit echtem Lockfile auf `npm ci` umgestellt.
+- Branch Protection/Required Checks bleiben offen.
+
+### Release-Status
+
+- PR #13 bleibt Draft und ungemergt.
+- öffentlicher Release bleibt **NO_GO**, bis CI, Lockfile, Branch Protection, reale Geräte/PWA-Upgrades, Accessibility, reale Gruppen, Asset-/Rechte-, Legal-/Support- und Staging-Gates bestanden sind.
