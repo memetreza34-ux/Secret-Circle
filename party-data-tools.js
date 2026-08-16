@@ -1,17 +1,22 @@
 'use strict';
 
 (() => {
-  const PREFIX = 'secret-circle-';
-  const FORMAT = 'secret-circle-complete-backup';
-  const VERSION = 3;
-  const MAX_BYTES = 1_500_000;
-  const MAX_ENTRIES = 100;
-  const MAX_VALUE_BYTES = 1_000_000;
+  const registry = window.SecretCircleBackupSchemas;
+  const schema = registry?.get?.('complete');
+  if (!registry || !schema || typeof registry.isAllowedCompleteStorageKey !== 'function') {
+    throw new Error('Zentrales Secret-Circle-Backup-Schema fehlt.');
+  }
+
+  const PREFIX = schema.storagePrefix;
+  const FORMAT = schema.format;
+  const FORMAT_VERSION = schema.version;
+  const MAX_BYTES = schema.maximumBytes;
+  const MAX_ENTRIES = schema.maximumEntries;
+  const MAX_VALUE_BYTES = schema.maximumValueBytes;
+  const VERSION = 4;
 
   function byteLength(value) {
-    const text = String(value ?? '');
-    if (typeof TextEncoder === 'function') return new TextEncoder().encode(text).byteLength;
-    return new Blob([text]).size;
+    return registry.byteLength(value);
   }
 
   function setStatus(message, error = false) {
@@ -21,7 +26,7 @@
     node.classList.toggle('error', error);
   }
 
-  function storageKeys() {
+  function allSecretCircleKeys() {
     const keys = [];
     for (let index = 0; index < localStorage.length; index += 1) {
       const key = localStorage.key(index);
@@ -30,17 +35,30 @@
     return keys;
   }
 
+  function backupKeys() {
+    return allSecretCircleKeys().filter(key => registry.isAllowedCompleteStorageKey(key));
+  }
+
   function collectEntries() {
     const entries = Object.create(null);
-    for (const key of storageKeys()) {
+    for (const key of backupKeys()) {
       const value = localStorage.getItem(key);
       if (value !== null) entries[key] = value;
     }
     return entries;
   }
 
-  function clearEntries() {
-    for (const key of storageKeys()) localStorage.removeItem(key);
+  function snapshotAllEntries() {
+    const entries = Object.create(null);
+    for (const key of allSecretCircleKeys()) {
+      const value = localStorage.getItem(key);
+      if (value !== null) entries[key] = value;
+    }
+    return entries;
+  }
+
+  function clearAllSecretCircleEntries() {
+    for (const key of allSecretCircleKeys()) localStorage.removeItem(key);
   }
 
   function writeEntries(entries) {
@@ -49,14 +67,14 @@
 
   function replaceEntries(entries) {
     const target = Array.isArray(entries) ? entries : Object.entries(entries || {});
-    const snapshot = collectEntries();
+    const snapshot = snapshotAllEntries();
     try {
-      clearEntries();
+      clearAllSecretCircleEntries();
       writeEntries(target);
       return { ok: true, replaced: target.length };
     } catch (error) {
       try {
-        clearEntries();
+        clearAllSecretCircleEntries();
         writeEntries(Object.entries(snapshot));
       } catch (rollbackError) {
         throw new Error(`Import und Rollback sind fehlgeschlagen. Bitte Browserdaten nicht weiter verändern: ${rollbackError?.message || 'unbekannter Rollback-Fehler'}`);
@@ -66,10 +84,10 @@
   }
 
   function validateBackup(payload, rawBytes) {
-    if (!Number.isFinite(rawBytes) || rawBytes < 0 || rawBytes > MAX_BYTES) throw new Error('Die Sicherungsdatei ist größer als 1,5 MB.');
-    if (!payload || typeof payload !== 'object' || Array.isArray(payload) || payload.format !== FORMAT || payload.version !== 1) {
-      throw new Error('Das ist keine unterstützte Secret-Circle-Gesamtsicherung.');
+    if (!Number.isFinite(rawBytes) || rawBytes < 0 || rawBytes > MAX_BYTES) {
+      throw new Error('Die Sicherungsdatei ist größer als 1,5 MB.');
     }
+    registry.validateHeader(payload, 'complete');
     if (!payload.entries || typeof payload.entries !== 'object' || Array.isArray(payload.entries)) {
       throw new Error('Die Sicherung enthält keine gültigen Datensätze.');
     }
@@ -77,8 +95,12 @@
     if (entries.length > MAX_ENTRIES) throw new Error('Die Sicherung enthält zu viele Datensätze.');
     const seen = new Set();
     for (const [key, value] of entries) {
-      if (!key.startsWith(PREFIX) || key.length > 120 || seen.has(key)) throw new Error(`Ungültiger Speicherschlüssel: ${key}`);
-      if (typeof value !== 'string' || byteLength(value) > MAX_VALUE_BYTES) throw new Error(`Ungültiger Wert für ${key}`);
+      if (!registry.isAllowedCompleteStorageKey(key) || seen.has(key)) {
+        throw new Error(`Nicht unterstützter Speicherschlüssel: ${key}`);
+      }
+      if (typeof value !== 'string' || byteLength(value) > MAX_VALUE_BYTES) {
+        throw new Error(`Ungültiger Wert für ${key}`);
+      }
       seen.add(key);
       const trimmed = value.trim();
       if (trimmed.startsWith('{') || trimmed.startsWith('[')) JSON.parse(value);
@@ -87,11 +109,13 @@
   }
 
   function exportData() {
+    const entries = collectEntries();
+    const unsupported = allSecretCircleKeys().filter(key => !registry.isAllowedCompleteStorageKey(key));
     const payload = {
       format: FORMAT,
-      version: 1,
+      version: FORMAT_VERSION,
       exportedAt: new Date().toISOString(),
-      entries: collectEntries()
+      entries
     };
     const text = JSON.stringify(payload, null, 2);
     if (byteLength(text) > MAX_BYTES) throw new Error('Die lokalen Daten sind zu groß für eine einzelne Sicherungsdatei.');
@@ -104,7 +128,10 @@
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
-    setStatus(`${Object.keys(payload.entries).length} lokale Datensätze exportiert – einschließlich eigener Spiele.`);
+    const suffix = unsupported.length
+      ? ` ${unsupported.length} unbekannte alte Namespace-Datensätze wurden aus Sicherheitsgründen nicht exportiert.`
+      : '';
+    setStatus(`${Object.keys(entries).length} anerkannte lokale Datensätze exportiert.${suffix}`);
   }
 
   async function importData(file) {
@@ -121,20 +148,22 @@
     }
     const entries = validateBackup(payload, bytes);
     replaceEntries(entries);
-    setStatus(`${entries.length} Datensätze importiert. Eigene Spiele und der Hub werden neu geladen.`);
+    setStatus(`${entries.length} anerkannte Datensätze importiert. Eigene Spiele und der Hub werden neu geladen.`);
     window.setTimeout(() => window.location.reload(), 350);
   }
 
   function deleteAll() {
     if (!window.confirm('Alle Secret-Circle-Daten löschen? Dazu gehören Word Imposter, Hub-Spieler, Favoriten, Presets, Verlauf, Statistiken, aktive Sessions, eigene Packs und selbst erstellte Spiele.')) return;
-    const count = storageKeys().length;
+    const count = allSecretCircleKeys().length;
+    const snapshot = snapshotAllEntries();
     try {
-      replaceEntries([]);
+      clearAllSecretCircleEntries();
     } catch (error) {
+      try { writeEntries(Object.entries(snapshot)); } catch {}
       setStatus(`Datenlöschung abgebrochen. Der vorherige Zustand wurde soweit möglich wiederhergestellt: ${error.message}`, true);
       return;
     }
-    setStatus(`${count} lokale Datensätze einschließlich eigener Spiele vollständig gelöscht.`);
+    setStatus(`${count} lokale Secret-Circle-Datensätze vollständig gelöscht.`);
     window.setTimeout(() => window.location.reload(), 350);
   }
 
@@ -160,8 +189,11 @@
   window.SecretCirclePartyDataTools = Object.freeze({
     version: VERSION,
     format: FORMAT,
+    formatVersion: FORMAT_VERSION,
     maximumBytes: MAX_BYTES,
     byteLength,
+    allSecretCircleKeys,
+    backupKeys,
     collectEntries,
     validateBackup,
     replaceEntries,
