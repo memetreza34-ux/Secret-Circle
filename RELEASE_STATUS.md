@@ -9,18 +9,16 @@ Draft-PR: #13
 
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v37`**
+**Offline-Core:** **`secret-circle-v38`**
 
 Die technische Grundlage ist weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, Accessibility-Basis und Betriebs-/Legal-Verträge sind vorbereitet.
 
-Neu im Rechtepass:
+Neu im Rechte-/Referenzpass:
 
 - Word-Imposter-Core: drei unnötige konkrete Referenzen generisch ersetzt
-- `anime-guess`: **Option B** umgesetzt
-- finaler Runtime-Titel: **Anime-Archetypen erraten**
-- 40 konkrete Figurenreferenzen werden durch 40 eigenständige Archetypen ersetzt
-- `party-core-classic-content.js` Version 2
-- PWA deshalb auf **v37**
+- `anime-guess`: Option B umgesetzt, final **Anime-Archetypen erraten** mit 40 generischen Archetypen
+- Viral `higher-lower`: drei unnötige olympisch/Grand-Slam-bezogene Sporttexte generisch ersetzt
+- Classic Content v2: 12.954 Bytes bei 45.000-Byte-Budget; Performance-Risiko geschlossen
 
 Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, realer Device-/PWA-/Accessibility-/Gruppentest, Assetherkunft, restlicher Extended/Labs-Rechtepass, Betreiber-/Supportangaben und HTTPS-Staging.
 
@@ -37,11 +35,7 @@ Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protectio
 
 Alle definierten quantitativen Mindestziele sind implementiert. `CORE_CONTENT_REVIEW.md` dokumentiert 15/15 Core-Spiele als ersten Quellpass.
 
-Privacy-Fund geschlossen:
-
-- keine letzte private Nachricht vorlesen
-- keine Kamerarolle als Spielmaterial durchsuchen
-- Regression geschützt
+Privacy-Fund geschlossen: keine letzte private Nachricht vorlesen, keine Kamerarolle als Spielmaterial durchsuchen; Regression geschützt.
 
 ## Reference-Safe-Pass
 
@@ -53,15 +47,18 @@ Privacy-Fund geschlossen:
 
 ### Anime-Quiz
 
-Stabile ID `anime-guess`, aber final:
+- stabile ID `anime-guess`
+- finaler Titel `Anime-Archetypen erraten`
+- 4 generische Packs / 40 Archetypen
+- 40 frühere konkrete Figuren im finalen Runtime-Content ausgeschlossen
 
-- Titel `Anime-Archetypen erraten`
-- Gruppe `Anime-Quiz`
-- 4 generische Packs
-- 10 Archetypen je Pack
-- 40 konkrete frühere Figuren im finalen Runtime-Content ausgeschlossen
+### Viral Sport
 
-`tests/core-content-quality.test.js`, `scripts/core_content_audit.py`, Architektur- und Release-Audit schützen den Vertrag. **Nicht runnerverifiziert.**
+- `Ringe im olympischen Symbol` → `Ecken eines Fünfecks`
+- `Bahnen eines olympischen 400-Meter-Stadions häufig` → `Bahnen einer typischen 400-Meter-Leichtathletikanlage`
+- `Sätze zum Sieg im Herren-Grand-Slam-Tennis` → `Gewinnsätze in einem Best-of-five-Tennismatch`
+
+Die Werte 5 / 8 / 3 bleiben unverändert. `tests/party-viral-catalog.test.js` schützt diese Entscheidung.
 
 ## Sessions / Resume / Timer
 
@@ -77,70 +74,36 @@ Stabile ID `anime-guess`, aber final:
 
 ## Security / Backup
 
-Registry v2:
-
-- zentrale Complete-Backup-Grenzen
-- erlaubte versionierte Word-/Party-Key-Familien
-- unbekannte Namespaces beim Import abgelehnt
-- breite Komplettlöschung bleibt bewusst erhalten
-- Registry lädt vor Datentools
+Registry v2 zentralisiert Complete-Backup-Grenzen und erlaubte versionierte Word-/Party-Key-Familien. Unbekannte Namespaces werden beim Import abgelehnt; breite Komplettlöschung bleibt bewusst erhalten. Registry lädt vor Datentools.
 
 SEC-F01/F02: **CLOSED IN CODE / REAL VERIFICATION OPEN**.
 
 ## PWA / Offline
 
-- `secret-circle-v37`
-- `secret-circle-v37-staging`
+- `secret-circle-v38`
+- `secret-circle-v38-staging`
 - staged update
 - bewusste Nutzeraktivierung
 - aktiver Core wird nicht vor erfolgreicher Promotion zerstört
-- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v37 synchronisiert
+- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v38 synchronisiert
 
-Offen: reale Altversion→v37-Upgrades, iOS/Android-PWA, Rollback und Sperrbildschirmtests.
+Offen: reale Altversion→v38-Upgrades, iOS/Android-PWA, Rollback und Sperrbildschirmtests.
 
-## Accessibility
+## Accessibility / Beta
 
-Vorbereitet:
+Accessibility-Dokument, statischer Contract, Playwright-E2E-Basis, 320px-Reflow, Fokus, Reduced Motion, ARIA und Touchzielverträge sind vorbereitet. `BETA_TEST_PLAN.md` definiert Geräte-/Gruppen-/Update-/Rollback-Sessions.
 
-- Accessibility-Dokument
-- statischer Contract-Test
-- Playwright-E2E-Basis
-- 320px Reflow
-- Fokus, Reduced Motion, ARIA, Touchzielverträge
-
-Real offen: 200 % Zoom, VoiceOver, TalkBack, echte Touchbedienung und private Reveal-Smokes.
+Real offen: 200 % Zoom, VoiceOver, TalkBack, echte Touchbedienung, private Reveal-Smokes und reale Gruppen.
 
 ## Legal / Third Party / Betrieb
 
-Vorhanden:
+Vorhanden: `LEGAL_CHECKLIST.md`, `THIRD_PARTY_NOTICES.md`, `FAN_CONTENT_REVIEW.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md`, `MAINTENANCE.md`, `BETA_TEST_PLAN.md`, `ENVIRONMENTS.md`.
 
-- `LEGAL_CHECKLIST.md`
-- `THIRD_PARTY_NOTICES.md`
-- `FAN_CONTENT_REVIEW.md`
-- `SUPPORT.md`
-- `INCIDENT_RESPONSE.md`
-- `MAINTENANCE.md`
-- `BETA_TEST_PLAN.md`
-- `ENVIRONMENTS.md`
-
-Noch real offen:
-
-- Betreiber-/Kontakt-/Hostingangaben
-- Icon-Herkunft
-- transitive Dependencyinventur nach Lockfile
-- restlicher Extended/Labs-Referenzscan
-- Support-/Incident-Verantwortliche
-- Staging-/Production-Origin
+Noch real offen: Betreiber-/Kontakt-/Hostingangaben, Icon-Herkunft, transitive Dependencyinventur nach Lockfile, restlicher Extended/Labs-Referenzscan, Support-/Incident-Verantwortliche und Staging-/Production-Origin.
 
 ## CI – P0
 
-Neuester belastbar geprüfter Lauf: **#1905**.
-
-- `validate`
-- failure
-- `steps: []`
-- kein Checkout
-- kein Repository-Code ausgeführt
+Neuester belastbar geprüfter Lauf: **#1905** – `validate`, failure, `steps: []`, kein Checkout, kein Repository-Code ausgeführt.
 
 Daher kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis.
 
@@ -153,16 +116,15 @@ Daher kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis.
 1. Actions-Runner
 2. Lockfile + `npm ci`
 3. Branch Protection
-4. Classic-Content-v2-Performancebudget
-5. restlicher Extended/Labs-Referenzscan
-6. Assetherkunft
-7. HTTPS-Staging
-8. reale Upgrade-/Rollback-/Gerätetests
-9. reale Accessibilitytests
-10. reale Gruppentests
-11. Betreiber-/Supportdaten
-12. Incident-Drill
-13. unveränderter RC + Tag
+4. restlicher Extended/Labs-Referenzscan
+5. Asset-Provenienz / Icon-Herkunft
+6. HTTPS-Staging
+7. reale Upgrade-/Rollback-/Gerätetests
+8. reale Accessibilitytests
+9. reale Gruppentests
+10. Betreiber-/Supportdaten
+11. Incident-Drill
+12. unveränderter RC + Tag
 
 ## Releaseentscheidung
 
