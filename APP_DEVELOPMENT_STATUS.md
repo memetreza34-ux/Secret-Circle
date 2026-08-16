@@ -2,140 +2,114 @@
 
 Stand: 16. August 2026
 
-Dieses Dokument ist der operative Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`. Es sagt nicht nur, ob eine Datei existiert, sondern ob der jeweilige Bereich wirklich releaseabgenommen ist.
+Dieses Dokument ist der operative Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
 ## Statuswerte
 
-- **DONE** – dokumentiert und für den aktuellen Entwicklungsstand ausreichend abgeschlossen
+- **DONE** – für aktuellen Entwicklungsstand abgeschlossen
 - **IN PROGRESS** – aktiv in Bearbeitung
-- **PREPARED** – technische/dokumentarische Grundlage vorhanden, reale/finale Abnahme fehlt
+- **PREPARED** – Grundlage vorhanden, reale/finale Abnahme fehlt
 - **OPEN** – noch nicht systematisch bearbeitet
-- **BLOCKED** – kann wegen eines bekannten Blockers nicht abgeschlossen werden
-- **N/A V1** – bewusst nicht Teil des Januar-2027-Releases
+- **BLOCKED** – externer oder technischer Blocker
+- **N/A V1** – bewusst nicht Teil Januar 2027
 
 ## Gesamtstatus
 
 **Öffentliche Releasefreigabe: NO_GO**
 
-Die quantitativen Core-Content-Ziele sind implementiert. Offen bleiben insbesondere: belastbarer CI-Nachweis, Lockfile/`npm ci`, manuelles Content-/Alters-/Privacy-Review, Accessibility, reale Geräte/PWA-Updates, reale Gruppentests sowie finale Rechts-/Supportangaben.
+Die quantitativen Core-Content-Ziele sind implementiert. Offen bleiben vor allem CI/Lockfile, manuelles Content-/Alters-/Privacy-Review, Security-Hardening, Accessibility, reale Geräte/PWA-Updates, Gruppentests, Recht/Support und Operations.
 
 ## A-bis-Z-Tracker
 
 | # | Bereich | Status | Hauptnachweis | Nächste Aktion |
 |---|---|---|---|---|
-| 0 | Produktziel / Releasegrenze | DONE | `PRODUCT_BRIEF.md`, `RELEASE_SCOPE_2027.md` | bei Scopeänderung aktualisieren |
-| A | Querschnittsverträge | PREPARED | Master-Anleitung, `ARCHITECTURE.md`, `SECURITY.md`, `REQUIREMENTS.md` | reale A11y/Security/Performance-Abnahme |
-| 1 | Discovery / Problem / Nutzer / Markt | DONE | `PRODUCT_BRIEF.md`, `USER_SCENARIOS.md`, `MARKET_RESEARCH.md` | bei Produktänderung aktualisieren |
-| 2 | Produktstrategie / Scope | PREPARED | Release-Scope, Roadmap, Product Brief | mit realen Nutzern validieren |
-| 3 | Plattformstrategie | PREPARED | `PLATFORM_STRATEGY.md` | reale Zielgeräte abnehmen |
-| 4 | Requirements / Akzeptanz | PREPARED | `REQUIREMENTS.md`, Core-Contracts | Traceability mit realen Nachweisen schließen |
-| 5 | UX / IA / Design | PREPARED | `UX_FLOW.md`, `DESIGN_SYSTEM.md` | Hero/Startseite + reale Erstnutzer-/Mobile-/Zoom-Tests |
-| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | Datenmodell konsolidieren; ADRs bei Grundsatzentscheidungen |
-| 7 | Security / Threat Model | PREPARED | `SECURITY.md`, `THREAT_MODEL.md` | SEC-F01/SEC-F02 schließen |
-| 8 | Repo / Environments / Git | BLOCKED | Workflows vorhanden | Runner, Lockfile, `npm ci`, Branch Protection |
-| 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | weiter auf Restarbeit anwenden |
-| 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | reale Browser-/Quota-/Updateabnahme |
-| 11 | Tests / CI | BLOCKED | `package.json`, Workflows, Content-Gates | funktionierenden Actions-Runner nachweisen |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker **v32**, Resume-Contracts | echte Geräte + alte→neue Updates |
-| 13 | Content / Alter / Rechte | IN PROGRESS | drei Content-Wellen + `CONTENT_AGE_POLICY.md` + Tests/Audit | manuelles semantisches/Alters-/Privacy-Review |
-| 14 | Beta / reale Gruppen | OPEN | Szenarien/Releasecheckliste | 3–4 / 5–8 / 9–12 Personen testen |
-| 15 | Datenschutz / Recht / Support | OPEN | Privacy-/Security-Grundlage | Legal-/Support-/Third-Party-Dokumente finalisieren |
-| 16 | Release Management / RC | PREPARED | Roadmap/Checklist | erst nach Gates finalisieren |
-| 17 | Deployment / Veröffentlichung | PREPARED | `DEPLOYMENT.md`, Plattformstrategie | HTTPS-Staging + reale Update-/Rollbacktests |
-| 18 | Operations / Incident | OPEN | Security-Meldeweg + Rollbackgrundlage | `SUPPORT.md`, `INCIDENT_RESPONSE.md` |
-| 19 | Wartung / Migration | PREPARED | Architektur, Backup-Schemas, Changelog | `MAINTENANCE.md` |
-| 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | bei jedem neuen Fund aktualisieren |
+| 0 | Produktziel / Releasegrenze | DONE | Product Brief, Release Scope | bei Scopeänderung aktualisieren |
+| A | Querschnittsverträge | PREPARED | Master-Anleitung, Architektur, Security, Requirements | reale Gates schließen |
+| 1 | Discovery / Nutzer / Markt | DONE | Product Brief, Scenarios, Market Research | bei Produktänderung aktualisieren |
+| 2 | Produktstrategie / Scope | PREPARED | Scope, Roadmap, Positionierung | reale Nutzer validieren |
+| 3 | Plattformstrategie | PREPARED | `PLATFORM_STRATEGY.md` | reale Zielgeräte |
+| 4 | Requirements / Akzeptanz | PREPARED | `REQUIREMENTS.md`, Core Contracts | Traceability real schließen |
+| 5 | UX / IA / Design | PREPARED | `UX_FLOW.md`, `DESIGN_SYSTEM.md` | Hero/Startseite + reale UX-Tests |
+| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | Datenmodell/ADRs bei Bedarf |
+| 7 | Security / Threat Model | PREPARED | `SECURITY.md`, `THREAT_MODEL.md` | SEC-F01/SEC-F02 |
+| 8 | Repo / Environments / Git | BLOCKED | Workflows | Runner, Lockfile, `npm ci`, Branch Protection |
+| 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | Restarbeit so fortführen |
+| 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | reale Quota-/Updateabnahme |
+| 11 | Tests / CI | BLOCKED | Testmatrix/Workflows | funktionierenden Actions-Runner |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker **v33** | echte Geräte + alte→neue Updates |
+| 13 | Content / Alter / Rechte | IN PROGRESS | drei Content-Wellen + Content-Gates | manuelles Review fortsetzen |
+| 14 | Beta / reale Gruppen | OPEN | Scenarios/Checklist | 3–4 / 5–8 / 9–12 |
+| 15 | Datenschutz / Recht / Support | OPEN | Privacy-/Security-Grundlage | Legal/Support/Third Party |
+| 16 | Release Management / RC | PREPARED | Roadmap/Checklist | nach Gates |
+| 17 | Deployment | PREPARED | `DEPLOYMENT.md` | HTTPS-Staging + Update/Rollback real |
+| 18 | Operations / Incident | OPEN | Security-Meldeweg | Support + Incident Response |
+| 19 | Wartung / Migration | PREPARED | Architektur/Backups/Changelog | Maintenance-Dokument |
+| 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | laufend aktualisieren |
 
-## Content-Arbeit abgeschlossen: quantitative Wellen
+## Content – quantitative Arbeit abgeschlossen
 
-### Welle 1 – strukturierte/kleine Pools
+### Welle 1
 
-- Taboo: 8 → 16
-- Hot Potato: 8 → 16
-- Word Chain: 5 → 10
-- Two Truths: 8 → 16
-- Question Imposter: 8 → 16
-- Location Spy: 8 → 16
+- Taboo 8 → 16
+- Hot Potato 8 → 16
+- Word Chain 5 → 10
+- Two Truths 8 → 16
+- Question Imposter 8 → 16
+- Location Spy 8 → 16
 
-### Welle 2 – soziale Prompt-/Choice-Spiele
+### Welle 2
 
-`party-core-release-catalog.js`:
+- Never Have 8 → 24
+- Most Likely 8 → 24
+- Would Rather 8 → 24
+- Paranoia 8 → 20
+- Wrong Answers 8 → 24
 
-- Never Have: 8 → 24
-- Most Likely: 8 → 24
-- Would Rather: 8 → 24
-- Paranoia: 8 → 20
-- Wrong Answers: 8 → 24
+### Welle 3
 
-### Welle 3 – klassische Core-Spiele
+- Truth/Dare 16 → 24 je Pack
+- Charades 12 → 30 je Pack
+- Taboo 16 → 24 je Pack
+- Hot Potato 16 → 20 je Pack
 
-`party-core-classic-content.js`:
+Kein Core-Pack besitzt nach unserem Vertrag noch einen bekannten quantitativen Shortfall.
 
-- Truth/Dare: 16 → **24 je Pack**
-- Charades: 12 → **30 je Pack**
-- Taboo: 16 → **24 je Pack**
-- Hot Potato: 16 → **20 je Pack**
+## Manuelles Content-/Privacy-Review – begonnen
 
-Damit besitzt kein Kernspiel mehr einen bekannten quantitativen Shortfall gegenüber `CONTENT_AGE_POLICY.md`.
+Erster konkreter Fund wurde geschlossen:
 
-## Technische Integration der Content-Wellen
+- entfernt aus dem finalen Runtime-Content: Aufforderung, die letzte private Handy-Nachricht vorzulesen
+- entfernt aus dem finalen Runtime-Content: Frage nach dem seltsamsten Inhalt der Kamerarolle
+- ersetzt durch harmlose, selbstbestimmte Alternativen
+- `tests/core-content-quality.test.js` blockiert die beiden alten Texte als Regression
 
-- finaler Node-Katalog: `party-core-classic-content.js → party-routing.js`
-- Browserfolge: Base → Expansion → Trending → Mega → Viral → Release Content → Classic Content → Routing
-- beide Contentmodule liegen im Offline-Core
-- Service Worker steht wegen Welle 3 auf **`secret-circle-v32`**
-- `tests/service-worker.test.js` erwartet v32
-- `tests/core-content-quality.test.js` verlangt alle finalen Mengen und `editorialShortfalls = []`
-- Truth/Dare muss technisch mindestens 12 Truth + 12 Dare je Pack besitzen
-- `scripts/core_content_audit.py` schützt beide Contentmodule
-- beide Module besitzen Syntax- und Performance-Gates
+Damit ist der konkrete Privacy-Fund geschlossen, aber **das gesamte manuelle Review ist noch nicht fertig**.
 
-## Content ist trotzdem noch nicht PASS
+## PWA / Audit-Synchronität
 
-Quantität ist nur ein Teil der Abnahme. Noch offen:
+Aktuell: **`secret-circle-v33`**.
 
-1. alle Core-Packs vollständig manuell lesen
-2. semantische Wiederholungen entfernen
-3. Ton/Verständlichkeit prüfen
-4. Altersstufen redaktionell bestätigen
-5. sensible Inhalte und Skip-Flows prüfen
-6. bekannten Truth/Dare-Privacy-Fund schließen
-7. Fan-/Marken-/Urheberrechtsreview
-8. reale Gruppentests und Wiederholungsrate
-9. automatischen Contentvertrag auf einem funktionierenden Runner tatsächlich ausführen
+- beide Core-Contentmodule im Offline-Core
+- Service-Worker-Test erwartet v33
+- Architektur und Deployment auf v33 synchronisiert
+- `scripts/release_audit.py` leitet Cachegeneration jetzt dynamisch aus `sw.js` ab statt v30/v32 einzubrennen
+- `scripts/architecture_audit.py` und `scripts/validate_project.py` verwenden ebenfalls den tatsächlichen Cachevertrag
 
-## Bereits umgesetzte A-bis-Z-Foundation
+## Nächste Arbeitsreihenfolge
 
-- produktbezogene Master-Anleitung
-- Product Brief, Nutzer-Szenarien, Marktanalyse, Risk Register, Plattformstrategie
-- zentrale Requirements
-- UX Flow und Designsystem
-- Security Policy + Threat Model
-- Touchziel-Korrekturen
-- Scoring-/Winner-Verträge
-- Session-/Resume-/Backup-/PWA-Grundlage
-- Content-/Altersvertrag und drei Content-Wellen
-- Deploymentdokument auf PR #13, Stagingprozess und aktuellen PWA-Stand korrigiert
-
-## Aktuell höchste Prioritäten
-
-### P0
-
-1. GitHub-Actions-Runner: echte Jobs mit Checkout/Steps ermöglichen
-
-### Nächste Arbeitsreihenfolge
-
-2. manuelles Core-Content-/Alters-/Privacy-Review und konkrete Funde beheben
-3. Hero-/Startseitenpositionierung auf den echten USP umstellen
-4. SEC-F01/SEC-F02 härten
-5. `package-lock.json` + `npm ci`
-6. Branch Protection
-7. Accessibility-Abnahme
-8. reale Android-/iPhone-/Tablet-/PWA-Tests
-9. reale Gruppentests
-10. Recht/Support/Lizenz
-11. Operations/Incident/Maintenance
-12. RC/Production
+1. manuelles Core-Content-/Alters-/Safety-Review vollständig durchführen
+2. `CORE_CONTENT_REVIEW.md` als nachvollziehbare 15-Spiel-Matrix erstellen
+3. weitere konkrete Content-Funde beheben und regressionssichern
+4. Hero-/Startseitenpositionierung auf echten USP umstellen
+5. SEC-F01/SEC-F02 härten
+6. Lockfile + `npm ci`
+7. Branch Protection
+8. Accessibility
+9. reale Geräte/PWA-Updates
+10. reale Gruppen
+11. Recht/Support/Lizenz
+12. Operations/Maintenance
+13. RC/Production
 
 ## Was weiterhin NICHT als bestanden gilt
 
@@ -143,10 +117,10 @@ Wegen des externen Runnerproblems nicht behaupten:
 
 - `npm run ci` grün
 - Cross-Browser grün
-- Content-Test grün
-- Cache-v32-Update auf realen PWAs bestätigt
+- Content-Test tatsächlich grün
+- v33-Update auf realen installierten PWAs bestätigt
 - Accessibility/Touchziele auf Zielgeräten bestätigt
 
 ## Arbeitsregel
 
-Wir arbeiten grundsätzlich die A-bis-Z-Anleitung weiter nach unten. Ein neues P0/P1-Risiko darf die Reihenfolge vorziehen. Jede Erkenntnis darf Product Brief, Requirements, UX, Architektur, Tests, Risk Register, Roadmap und Release-Gates verändern.
+Wir arbeiten die A-bis-Z-Anleitung weiter nach unten. Neue P0/P1-Funde dürfen die Reihenfolge vorziehen. Jede Erkenntnis darf Produkt-, Architektur-, Test-, Risiko- und Releaseverträge ändern.
