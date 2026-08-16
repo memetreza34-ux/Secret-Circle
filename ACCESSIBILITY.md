@@ -5,7 +5,7 @@ Status: **PREPARED – reale Abnahme offen**
 
 ## 1. Ziel
 
-Secret Circle soll die 15 Kernspiele auch bei Tastaturbedienung, vergrößerter Darstellung, Reduced Motion und assistiven Technologien verständlich halten. Accessibility ist kein später Designcheck, sondern ein Querschnittsvertrag.
+Secret Circle soll die 15 Kernspiele sowie zentrale Extended-/Labs-/Creator-Flows auch bei Tastaturbedienung, vergrößerter Darstellung, Reduced Motion und assistiven Technologien verständlich halten. Accessibility ist ein Querschnittsvertrag.
 
 ## 2. Automatisch geschützte Grundlage
 
@@ -13,44 +13,52 @@ Secret Circle soll die 15 Kernspiele auch bei Tastaturbedienung, vergrößerter 
 
 - `lang="de"`
 - responsiver Viewport mit `viewport-fit=cover`
-- Skip-Link auf den zentralen Inhalt der Hauptoberflächen
+- Skip-Link auf zentrale Inhalte
 - semantische Überschriften und `main`
-- Dialoge mit `role="dialog"`, `aria-modal` und beschrifteter Überschrift
+- Dialoge mit Rolle/Beschriftung
 
 ### Formulare
 
-- Inputs/Selects/Textareas besitzen sichtbares `<label for>` oder ARIA-Beschriftung
+- Inputs/Selects/Textareas besitzen sichtbares Label oder ARIA-Beschriftung
 - Statusfelder nutzen `role="status"`/`aria-live`, wo dynamische Rückmeldung wichtig ist
 
 ### Fokus und Tastatur
 
 - sichtbarer `:focus-visible`-Ring
-- Suchvorschläge besitzen ARIA-Listbox/Autocomplete
-- Pfeiltasten, Enter und Escape für Suchvorschläge
-- Skip-Link wird bei Fokus sichtbar
-- dynamische Spielübergänge sollen Fokus auf die nächste sinnvolle Aktion oder Überschrift setzen
+- Suchvorschläge mit ARIA-Listbox/Autocomplete
+- Pfeiltasten, Enter, Escape
+- dynamische Übergänge setzen Fokus sinnvoll
 
 ### Touch
 
-Wichtige interaktive Controls: mindestens **44 × 44 CSS-Pixel**. Primäre Buttons sind größer. Frühere 36–42px-Ausnahmen wurden im Designpass angehoben.
+Wichtige interaktive Controls: mindestens **44 × 44 CSS-Pixel**.
 
 ### Bewegung
 
-- `prefers-reduced-motion: reduce` wird respektiert
-- keine Funktion darf von Animation abhängig sein
-- Timer laufen unabhängig von visueller Bewegung
+- `prefers-reduced-motion: reduce`
+- keine Funktion hängt von Animation ab
+- Timer laufen fachlich unabhängig von visueller Bewegung
 
 ### Persönliche Inhalte
 
-Hub und Advanced-Setup erklären sichtbar:
+Hub und Advanced erklären sichtbar:
 
-- persönliche Angaben sind freiwillig
-- Runden dürfen übersprungen werden
-- niemand muss einen Skip begründen
+- persönliche Angaben freiwillig
+- Runden überspringbar
+- keine Begründung nötig
 
-Das ist sowohl Safety als auch kognitive/soziale Accessibility.
+## 3. Anzeigenamen und Screenreader
 
-## 3. Core-Flow-Matrix
+Technische IDs sind kein Nutzerlabel.
+
+Aktuell müssen sichtbare/angesagte Titel dem finalen Katalog entsprechen:
+
+- `anime-guess` → **Anime-Archetypen erraten**
+- `wavelength` → **Spektrum-Tipp**
+
+Ein Screenreader soll nicht versehentlich interne IDs oder veraltete sichtbare Namen als Hauptbezeichnung erhalten.
+
+## 4. Core-/Hub-Flow-Matrix
 
 | Flow | Automatische Grundlage | Manuelle Abnahme |
 |---|---|---|
@@ -61,57 +69,55 @@ Das ist sowohl Safety als auch kognitive/soziale Accessibility.
 | private Reveals | verdeckter Zustand/Status | Übergabe mit Screenreader real |
 | Timer | Pausezustand, Live-Status | Sperrbildschirm + Reduced Motion |
 | Advanced | semantischer Setup-Bereich | private Rollen/Abstimmung per Screenreader |
-| Quick Modes | Labels/Status/Sessioncontrols | Touch + Tastatur + Zoom |
+| Quick/Extended | Labels/Status/Sessioncontrols | Spektrum-Tipp + andere Flows real |
 | Creator | Labels, Wizardstruktur | kompletter Wizard ohne Maus |
 | Daten/Backup | Labels, Status, Bestätigung | Dateiimport mit assistiver Technik |
 
-## 4. Manuelle Release-Gates
+## 5. Manuelle Release-Gates
 
 Vor `ACCESSIBILITY PASS`:
 
 - [ ] gesamte App bei 200 % Browserzoom ohne verlorene Kernfunktion
-- [ ] kleine Smartphonebreite ohne horizontale Pflichtnavigation in Kernflows
+- [ ] kleine Smartphonebreite ohne horizontale Pflichtnavigation
 - [ ] vollständiger Hub-Kernflow nur Tastatur
 - [ ] mindestens ein Core-Spiel nur Tastatur
 - [ ] Word-Imposter-Reveal mit Screenreader-Smoke
 - [ ] Advanced-Private-Reveal mit Screenreader-Smoke
+- [ ] Spektrum-Tipp verständlich benannt/bedienbar
 - [ ] Creator-Wizard nur Tastatur
-- [ ] VoiceOver auf iPhone oder iPad
+- [ ] VoiceOver auf iPhone/iPad
 - [ ] TalkBack auf Android
 - [ ] Reduced Motion real geprüft
-- [ ] sichtbarer Fokus auf allen kritischen Controls
+- [ ] sichtbarer Fokus auf kritischen Controls
 - [ ] keine Information ausschließlich durch Farbe
-- [ ] Touchziele auf realem Smartphone geprüft
+- [ ] Touchziele real geprüft
 
-## 5. Screenreader-Prüffragen
-
-Bei jedem dynamischen Zustand prüfen:
+## 6. Screenreader-Prüffragen
 
 1. Ist klar, welche Seite/Phase geöffnet ist?
 2. Wird die aktive Person verständlich benannt?
-3. Wird ein privater Inhalt nicht versehentlich angesagt, bevor er bewusst geöffnet wurde?
+3. Wird privater Inhalt nicht vor bewusstem Reveal angesagt?
 4. Ist nach einer Aktion klar, was passiert ist?
 5. Ist die nächste Aktion auffindbar?
 6. Wird Pause/Fortsetzen programmatisch vermittelt?
 7. Bleibt nach Dialogschluss ein sinnvoller Fokuspunkt?
+8. Wird der aktuelle sichtbare Produktname statt einer technischen ID angesagt?
 
-## 6. Zoom-/Reflow-Prüfung
+## 7. Zoom-/Reflow-Prüfung
 
 Bei 200 % Zoom:
 
 - Texte nicht abgeschnitten
 - Buttons nicht überlagert
 - Dialoge scrollbar
-- Timer und zentrale Spielkarte sichtbar erreichbar
-- Sessioncontrols weiterhin bedienbar
+- Timer und zentrale Spielkarte erreichbar
+- Sessioncontrols bedienbar
 - keine wichtige horizontale Scrollpflicht
-- Safe Areas auf mobilen Standalone-PWAs berücksichtigt
+- Safe Areas berücksichtigt
 
-## 7. Grenzen der Automatisierung
+## 8. Grenzen der Automatisierung
 
-Ein statischer Test kann vorhandene Attribute und CSS-Verträge prüfen, aber nicht beweisen, dass VoiceOver/TalkBack sinnvoll klingen oder ein reales 200-%-Layout verständlich ist.
-
-Deshalb gilt:
+Ein statischer Test kann Attribute/CSS-Verträge prüfen, aber nicht beweisen, dass VoiceOver/TalkBack sinnvoll klingen oder ein reales 200-%-Layout verständlich ist.
 
 **`tests/accessibility-contract.test.js` grün ≠ ACCESSIBILITY PASS.**
 
