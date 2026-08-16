@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v33`**
+- aktueller Offline-Core: **`secret-circle-v35`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -56,17 +56,20 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - mindestens ein Tablet
 - PWA-Installation, Standalone und Offline-Neustart
 - Sperrbildschirm/OS-Hintergrund bei Timern
-- Tastatur, Fokus, 200-%-Zoom, Reduced Motion
-- Screenreader-Smoke-Test
+- Tastatur, Fokus, 200-%-Zoom/Reflow, Reduced Motion
+- VoiceOver-/TalkBack-Smoke-Test
+- `tests/e2e/accessibility-core.spec.js` auf funktionierendem Runner ausgeführt
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v33`** bestätigt
+- Offline-Start aus **`secret-circle-v35`** bestätigt
+- `backup-schema-registry.js` vor `party-data-tools.js` geladen
 - `party-core-release-catalog.js` offline verfügbar
 - `party-core-classic-content.js` offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
+- Complete-Import lehnt unbekannte Storage-Key-Familien ab
 - Quota-/Korruptions-/Rollbackpfade geprüft
 - Rollbackdeployment vorbereitet
 
@@ -76,7 +79,17 @@ Dokumentierte Tests mindestens mit 3–4, 5–8 und 9–12 Personen sowie große
 
 ### Recht und Betrieb
 
-Vor Production final: Betreiber-/Kontaktangaben, Datenschutz, gegebenenfalls Impressum, Hostingangaben, Lizenz-/Third-Party-Inventar, Supportweg sowie Incident-/Hotfixprozess.
+Vor Production final:
+
+- `LEGAL_CHECKLIST.md` abgearbeitet
+- Betreiber-/Kontaktangaben final
+- Datenschutz auf tatsächliches Hosting angepasst
+- gegebenenfalls Impressum/Anbieterkennzeichnung final
+- Hostingangaben final
+- Lizenz-/Third-Party-Inventar final
+- echter Supportweg nach `SUPPORT.md`
+- Incident-/Hotfixprozess nach `INCIDENT_RESPONSE.md`
+- Wartungsprozess nach `MAINTENANCE.md`
 
 ## GitHub Pages / statisches Hosting
 
@@ -105,12 +118,21 @@ Online und offline müssen dieselben finalen Core-Inhalte verfügbar sein.
 
 ### Hub, Creator und Engines
 
-Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und alle relevanten Enginefamilien starten. Abschluss und Verwerfen bleiben getrennt. Private Inhalte bleiben nach Unterbrechung verdeckt. Verlauf/Statistik zählen Abschlüsse genau einmal.
+Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und alle relevanten Enginefamilien starten. Abschluss und Verwerfen bleiben getrennt. Private Inhalte bleiben nach Unterbrechung verdeckt. Persönliche Inhalte sind sichtbar freiwillig/überspringbar. Verlauf/Statistik zählen Abschlüsse genau einmal.
+
+### Daten
+
+- `backup-schema-registry.js` lädt vor `party-data-tools.js`
+- Registry-Version 2 aktiv
+- Export enthält nur registrierte Key-Familien
+- unbekannter `secret-circle-*`-Namespace wird beim Import abgelehnt
+- vollständiges Löschen entfernt weiterhin alle Secret-Circle-Reste
+- Importfehler stellt vorherigen Zustand soweit möglich wieder her
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v33`**
-- beide Core-Contentmodule verfügbar
+- aktiver Cache: **`secret-circle-v35`**
+- Backup-Registry und beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
 - lokale Daten bleiben bei Update erhalten
@@ -150,6 +172,8 @@ Bei jeder offline benötigten Dateiveränderung:
 ## Rollback
 
 Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert/Hotfix erstellen, Cachegeneration erneut erhöhen, persistierte Daten rückwärtsverträglich halten oder migrieren, betroffene Kernflows und Datenpfade auf HTTPS-Staging testen und anschließend Production aktualisieren. Kein Force-Push auf die stabile Production-Basis.
+
+Detaillierter Incidentablauf: `INCIDENT_RESPONSE.md`.
 
 ## Produktionsfreigabe
 
