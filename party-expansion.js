@@ -15,10 +15,22 @@
     'location-spy': 'location-spy',
     mafia: 'mafia'
   };
+  const playablePacks = Object.freeze({
+    'two-truths': Object.freeze(['Locker', 'Reise', 'Schule & Arbeit']),
+    'question-imposter': Object.freeze(['Alltag', 'Meinungen', 'Schätzfragen']),
+    'location-spy': Object.freeze(['Reise', 'Alltag', 'Fantasieorte']),
+    mafia: Object.freeze(['Schnell', 'Klassisch', 'Erweitert'])
+  });
 
   const games = base.games.map(game => {
     const mode = playableModes[game.id];
-    return mode ? Object.freeze({ ...game, status: 'playable', mode, featured: game.id === 'question-imposter' }) : game;
+    return mode ? Object.freeze({
+      ...game,
+      status: 'playable',
+      mode,
+      featured: game.id === 'question-imposter',
+      packs: playablePacks[game.id]
+    }) : game;
   });
 
   games.push(
@@ -91,7 +103,7 @@
         { main: 'Was sollte man früher lernen?', imposter: 'Was sollte man später verlernen?' },
         { main: 'Welche Gewohnheit zeigt Disziplin?', imposter: 'Welche Gewohnheit zeigt Kreativität?' }
       ],
-      Schätzen: [
+      Schätzfragen: [
         { main: 'Wie viele Minuten nutzt du täglich dein Handy?', imposter: 'Wie viele Minuten hörst du täglich Musik?' },
         { main: 'Wie viele Länder möchtest du noch besuchen?', imposter: 'Wie viele Städte möchtest du noch besuchen?' },
         { main: 'Wie viele Stunden Schlaf brauchst du idealerweise?', imposter: 'Wie viele freie Stunden brauchst du idealerweise?' },
@@ -108,8 +120,8 @@
       Fantasieorte: ['Raumstation', 'Drachenhöhle', 'Unterwasserstadt', 'Zauberschule', 'Zeitmaschine', 'Geheimes Labor', 'Wolkenpalast', 'Roboterfabrik']
     },
     mafia: {
-      Klassisch: ['Mafia', 'Detektiv', 'Arzt', 'Dorfbewohner'],
       Schnell: ['Mafia', 'Detektiv', 'Dorfbewohner'],
+      Klassisch: ['Mafia', 'Detektiv', 'Arzt', 'Dorfbewohner'],
       Erweitert: ['Mafia', 'Detektiv', 'Arzt', 'Beschützer', 'Dorfbewohner']
     }
   };
@@ -146,7 +158,7 @@
   }
 
   return Object.freeze({
-    version: 2,
+    version: 3,
     games: Object.freeze(games),
     content,
     getGame,
