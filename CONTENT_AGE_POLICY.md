@@ -156,7 +156,11 @@ Harte Mindestwerte werden nach erfolgreichem Ausbau **angehoben**. Ein späterer
 | Mechanik | aktuelles hartes Minimum pro Pack |
 |---|---:|
 | Truth/Dare | 16 kombinierte Karten; mindestens 8 Truth + 8 Dare |
-| Never Have / Most Likely / Would Rather / Paranoia / Wrong Answers | 8 |
+| Never Have | **24** |
+| Most Likely | **24** |
+| Would Rather | **24** |
+| Paranoia | **20** |
+| Wrong Answers | **24** |
 | Charades | 12 |
 | Taboo | **16** |
 | Hot Potato | **16** |
@@ -186,8 +190,13 @@ Vor finaler Januar-2027-Inhaltsfreigabe gelten folgende Zielwerte, sofern reale 
 
 Mafia wird über Rollenbalance statt Kartenmenge bewertet.
 
-### Bereits auf Zielniveau nach Content-Welle 1
+### Bereits auf Zielniveau
 
+- Never Have: 24 Aussagen je Pack
+- Most Likely: 24 Fragen je Pack
+- Would Rather: 24 Paare je Pack
+- Paranoia: 20 Fragen je Pack
+- Wrong Answers: 24 Fragen je Pack
 - Word Chain: 10 Starts je Pack
 - Two Truths: 16 Prompts je Pack
 - Question Imposter: 16 Paare je Pack
@@ -196,10 +205,13 @@ Mafia wird über Rollenbalance statt Kartenmenge bewertet.
 
 ### Verbessert, aber noch unter Endziel
 
-- Taboo: 16 statt vorher 8 je Pack; Ziel 24
-- Hot Potato: 16 statt vorher 8 je Pack; Ziel 20
+- Taboo: 16 je Pack; Ziel 24
+- Hot Potato: 16 je Pack; Ziel 20
 
-Die restlichen dünnen Core-Packs folgen in den nächsten Content-Wellen.
+### Noch unter Endziel
+
+- Truth/Dare: 16 je Pack; Ziel 20–24
+- Charades: 12 je Pack; Ziel 30
 
 ## 11. Strukturverträge
 
@@ -277,15 +289,15 @@ Das visuelle 200-%-Zoom-/Small-Screen-Review bleibt trotzdem nötig.
 
 ## 14. Content-Ausbau – aktueller Stand
 
-### Solide Basis
+### Solide Ausgangsbasis
 
 - Word Imposter: 14 Kategorien × 12 Begriffe = 168
 - Truth/Dare: 4 Packs × 16 = 64
 - Charades: 4 Packs × 12 = 48
 
-### Release-Welle 1 umgesetzt
+### Release-Welle 1
 
-`party-expansion.js` erweitert bestehende Inhalte, ohne die Spielmechaniken zu verändern:
+`party-expansion.js` erweitert die mechanisch kleinsten strukturierten Pools:
 
 - Taboo: 8 → **16** Karten je Pack
 - Hot Potato: 8 → **16** Einträge je Pack
@@ -294,25 +306,30 @@ Das visuelle 200-%-Zoom-/Small-Screen-Review bleibt trotzdem nötig.
 - Question Imposter: 8 → **16** Fragepaare je Pack
 - Location Spy: 8 → **16** Orte je Pack
 
-Die neuen Werte sind nicht nur dokumentiert, sondern in `tests/party-expansion.test.js` und `tests/core-content-quality.test.js` als Regression-Gates festgeschrieben.
+### Release-Welle 2
+
+`party-core-release-catalog.js` trennt größere redaktionelle Releaseinhalte von Spiellogik und erweitert den finalen Katalog:
+
+- Never Have: 8 → **24** Aussagen je Pack
+- Most Likely: 8 → **24** Fragen je Pack
+- Would Rather: 8 → **24** Paare je Pack
+- Paranoia: 8 → **20** Fragen je Pack
+- Wrong Answers: 8 → **24** Fragen je Pack
+
+Das Modul liegt zwischen `party-viral-catalog.js` und `party-routing.js`, besitzt ein eigenes Performancebudget, gehört zum Offline-Core und wird durch Syntax-/Content-Audits geschützt.
 
 ### Noch auszubauen
 
 - Truth/Dare: 16 → Ziel 20–24
-- Never Have: 8 → Ziel 20–24
-- Most Likely: 8 → Ziel 20–24
-- Would Rather: 8 → Ziel 20–24
-- Paranoia: 8 → Ziel 20
 - Charades: 12 → Ziel 30
 - Taboo: 16 → Ziel 24
 - Hot Potato: 16 → Ziel 20
-- Wrong Answers: 8 → Ziel 20–24
 
 ### Aktueller Gesamtbefund
 
-**Strukturell deutlich verbessert, redaktionell weiterhin IN PROGRESS.**
+**Die meisten Core-Packs haben ihre Zielmenge erreicht; redaktionell bleibt Content weiterhin IN PROGRESS.**
 
-Content wird weiter in kontrollierten Wellen ausgebaut und anschließend mit realen Gruppen auf Wiederholungsrate, Verständlichkeit, Ton und tatsächlichen Spielspaß geprüft.
+Mengen allein sind keine Freigabe. Alle Inhalte müssen noch manuell auf Ton, semantische Wiederholungen, Altersstufe, sensible Themen und tatsächlichen Spielspaß geprüft werden.
 
 ## 15. Releasefreigabe Content
 
