@@ -9,7 +9,7 @@
   'use strict';
   if (!base) throw new Error('Core-Release-Katalog für klassische Inhalte fehlt.');
 
-  const VERSION = 2;
+  const VERSION = 3;
   const additions = {
     'truth-dare': {
       Locker: {
@@ -145,7 +145,8 @@
 
   const editorialReplacements = Object.freeze({
     'Was ist das Seltsamste in deiner Kamerarolle?': 'Welches Foto-Motiv findest du besonders lustig?',
-    'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.': 'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.'
+    'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.': 'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.',
+    Chrome: 'Tab'
   });
 
   const referenceSafeGameOverrides = Object.freeze({
@@ -160,6 +161,17 @@
         'Treffer oder Überspringen markieren.'
       ]),
       packs: Object.freeze(['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games'])
+    }),
+    wavelength: Object.freeze({
+      title: 'Spektrum-Tipp',
+      group: 'Einschätzen',
+      description: 'Ein geheimer Zielwert liegt zwischen zwei Polen. Eine Person gibt einen kurzen Hinweis, die Gruppe setzt ihre Position auf dem Spektrum.',
+      instructions: Object.freeze([
+        'Spektrum und geheimen Zielwert ansehen.',
+        'Einen kurzen passenden Hinweis geben.',
+        'Ziel verbergen und die Gruppe eine Position festlegen lassen.',
+        'Abstand aufdecken und Punkte vergeben.'
+      ])
     })
   });
 
