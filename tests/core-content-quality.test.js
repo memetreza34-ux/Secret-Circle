@@ -66,10 +66,10 @@ assert.deepEqual([...release.coreIds], expectedCore);
 assert.equal(Object.keys(expectedAges).length, 15);
 assert.equal(releaseContent.coreReleaseContentVersion, 1);
 assert.deepEqual(new Set(releaseContent.coreReleaseContentGames), new Set(['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers']));
-assert.equal(classicContent.coreClassicContentVersion, 2);
+assert.equal(classicContent.coreClassicContentVersion, 3);
 assert.deepEqual(new Set(classicContent.coreClassicContentGames), new Set(['truth-dare', 'charades', 'taboo', 'hot-potato']));
-assert.equal(classicContent.editorialReplacementCount, 2);
-assert.deepEqual([...classicContent.referenceSafeGameIds], ['anime-guess']);
+assert.equal(classicContent.editorialReplacementCount, 3);
+assert.deepEqual(new Set(classicContent.referenceSafeGameIds), new Set(['anime-guess', 'wavelength']));
 assert.equal(classicContent.referenceSafeRemovedConcreteNames, 40);
 
 const editorialShortfalls = [];
@@ -133,6 +133,10 @@ for (const pack of catalog.getPackNames('taboo')) {
     assert.ok(!banned.includes(canonicalText(card.word)), `Taboo target may not also be banned: ${pack} #${index + 1}`);
   }
 }
+const browserCard = catalog.content.taboo.Technik.find(card => card.word === 'Browser');
+assert.ok(browserCard, 'Browser Taboo card missing.');
+assert.ok(!browserCard.banned.includes('Chrome'), 'Concrete browser brand must not remain in final Taboo content.');
+assert.ok(browserCard.banned.includes('Tab'), 'Generic Browser Taboo replacement must be present.');
 
 for (const pack of catalog.getPackNames('question-imposter')) {
   for (const [index, pair] of catalog.content['question-imposter'][pack].entries()) {
@@ -175,6 +179,12 @@ for (const removed of [
   assert.ok(!finalAnimeTerms.includes(canonicalText(removed)), `Concrete fan reference returned to final anime quiz: ${removed}`);
 }
 
+const spectrumGame = catalog.getGame('wavelength');
+assert.ok(spectrumGame, 'Spectrum mode is missing.');
+assert.equal(spectrumGame.title, 'Spektrum-Tipp');
+assert.equal(spectrumGame.group, 'Einschätzen');
+assert.doesNotMatch(spectrumGame.title, /Wellenlänge/i);
+
 assert.ok(wordContent && wordContent.categories, 'Word Imposter content runtime missing.');
 const wordCategories = Object.entries(wordContent.categories);
 assert.equal(wordCategories.length, 14);
@@ -206,6 +216,7 @@ console.log(JSON.stringify({
   coreContentQuality: 'PASS', coreGames: expectedCore.length, ageContract: expectedAges,
   hardMinimums, quantitativeTargetsMet: true, privateDevicePromptsRemoved: true,
   unnecessaryCoreReferenceTermsRemoved: true, concreteAnimeFanNamesRemoved: true,
+  chromeReferenceRemoved: true, wavelengthBrandingRemoved: true,
   coreReleaseContentVersion: releaseContent.coreReleaseContentVersion,
   coreReleaseContentGames: releaseContent.coreReleaseContentGames,
   coreClassicContentVersion: classicContent.coreClassicContentVersion,
