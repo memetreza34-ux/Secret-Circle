@@ -1,6 +1,8 @@
 # Secret Circle – Release-Checkliste Januar 2027
 
-Diese Checkliste muss für den unveränderlichen Release-Commit vollständig ausgefüllt werden. „Technisch spielbar“ ersetzt keine Freigabe.
+Stand: 16. August 2026
+
+Diese Checkliste muss für den unveränderlichen Release-Commit vollständig ausgefüllt werden. „Technisch spielbar“, „Test vorhanden“ oder „Dokument vorhanden“ ersetzt keine Freigabe.
 
 ## 1. Repository und CI
 
@@ -48,6 +50,7 @@ Für jedes Kernspiel separat dokumentieren:
 - [ ] Regeln werden in höchstens vier klaren Schritten erklärt
 - [ ] Packauswahl ist gültig und verständlich
 - [ ] Überspringen funktioniert, wo Inhalte unangenehm oder unpassend sein können
+- [ ] persönliche Inhalte kommunizieren Freiwilligkeit vor der Antwort
 - [ ] Pause beziehungsweise sichere Unterbrechung funktioniert
 - [ ] Abbruch/Verlassen ist eindeutig und löscht nicht versehentlich andere Daten
 - [ ] Wiederholen und nächstes Spiel sind verständlich, wo vorgesehen
@@ -80,6 +83,7 @@ Zusätzliche Kernspielverträge:
 ## 4. Party Hub und Suche
 
 - [ ] 15 Kernspiele, 13 Erweiterungen und 17 Labs korrekt gekennzeichnet
+- [ ] Startseite kommuniziert Party-Hub-Tiefe statt nur „offline/ein Gerät“
 - [ ] Alters- und Reifestufenfilter arbeiten gemeinsam
 - [ ] Suche, Filter und letzte Ansicht werden korrekt gespeichert
 - [ ] direkte URL-Ansicht hat Vorrang vor gespeichertem Zustand
@@ -96,22 +100,31 @@ Zusätzliche Kernspielverträge:
 
 ## 5. Backup und lokale Daten
 
+- [ ] `backup-schema-registry.js` steht auf dem freigegebenen dokumentierten Vertrag
+- [ ] `backup-schema-registry.js` wird im Hub vor `party-data-tools.js` geladen
 - [ ] Word-Imposter-, Gesamt- und Creator-Backup entsprechen `BACKUP_SCHEMAS.md`
+- [ ] Complete-Runtime dupliziert Format-/Größenlimits nicht außerhalb der Registry
 - [ ] UTF-8-Dateigrenze von 1.500.000 Bytes wird überall eingehalten
 - [ ] beschädigte, falsche und neuere unbekannte Formate werden sicher abgelehnt
+- [ ] unbekannte `secret-circle-*`-Storage-Key-Familien werden beim Complete-Import abgelehnt
+- [ ] gültige versionierte Word-Imposter-Keys werden akzeptiert
+- [ ] gültige versionierte `secret-circle-party-*`-Keys werden akzeptiert
 - [ ] Import validiert vollständig vor dem ersten Schreibvorgang
 - [ ] Quota-Fehler lösen einen Rollback aus
 - [ ] Export lässt sich wieder erfolgreich importieren
-- [ ] Gesamtsicherung enthält aktive Hub- und Advanced-Sessions
-- [ ] Löschen nennt exakt die betroffenen lokalen Daten
+- [ ] Gesamtsicherung enthält relevante aktive Hub- und Advanced-Sessions
+- [ ] vollständiges Löschen entfernt auch alte/verwaiste Secret-Circle-Keys
 - [ ] Löschung und Wiederherstellung auf mindestens zwei Browsern geprüft
 
 ## 6. PWA und Offline
 
+- [ ] finaler Cache-/Stagingname stimmt in Code, Test, Architektur, Deployment und Privacy überein
 - [ ] normaler Browserstart online
 - [ ] installierte PWA online
 - [ ] Offline-Neustart nach vorheriger Installation
 - [ ] alle Kernseiten offline erreichbar
+- [ ] Backup-Registry offline verfügbar
+- [ ] beide Core-Contentmodule offline verfügbar
 - [ ] alle vier schnellen Enginefamilien offline startbar
 - [ ] direkte Hub- und Advanced-Kernspiele offline startbar und wiederaufnehmbar
 - [ ] Release-Tiers, Filterzustand und Suchhilfe offline verfügbar
@@ -127,15 +140,20 @@ Zusätzliche Kernspielverträge:
 
 ## 7. Accessibility und Geräte
 
+- [ ] `tests/accessibility-contract.test.js` tatsächlich grün
+- [ ] `tests/e2e/accessibility-core.spec.js` tatsächlich grün
+- [ ] Chromium-/Cross-Browser-A11y-relevante E2E-Flows grün
 - [ ] aktuelles Android mit Chrome
 - [ ] aktuelles iPhone mit Safari
 - [ ] Tablet beziehungsweise iPad
 - [ ] Smartphone Hoch- und Querformat
-- [ ] kleine Displaybreite
+- [ ] kleine Displaybreite / Reflow bei 320 CSS px
 - [ ] 200-Prozent-Zoom
 - [ ] vollständige Tastaturbedienung
 - [ ] sichtbarer Fokus
-- [ ] Screenreader-Smoke-Test
+- [ ] VoiceOver-Smoke-Test
+- [ ] TalkBack-Smoke-Test
+- [ ] private Reveal-Flows mit Screenreader bewusst geprüft
 - [ ] Touchziele mindestens 44 × 44 Pixel
 - [ ] Safe Areas und Bildschirmtastatur auf iOS
 - [ ] Reduced Motion
@@ -144,15 +162,20 @@ Zusätzliche Kernspielverträge:
 
 ## 8. Inhalte und Recht
 
-- [ ] jedes Kernspiel redaktionell geprüft
-- [ ] doppelte, schwache und missverständliche Karten entfernt
+- [ ] `CORE_CONTENT_REVIEW.md`: 15/15 erster Core-Quellpass abgeschlossen
+- [ ] jedes Kernspiel in realer Gruppe redaktionell beobachtet
+- [ ] semantisch doppelte, schwache und missverständliche Karten entfernt
 - [ ] Altersstufen konsistent
 - [ ] sensible Fragen können übersprungen werden
 - [ ] familienfreundliche Standardauswahl geprüft
 - [ ] Fan-, Marken- und urheberrechtlich sensible Inhalte separat bewertet
 - [ ] keine unzulässigen Bilder, Logos, langen Zitate oder Audios enthalten
-- [ ] Datenschutzerklärung final
-- [ ] Impressum beziehungsweise notwendige Betreiberangaben final
+- [ ] `LEGAL_CHECKLIST.md` mit echtem Betreiber-/Release-Modell abgearbeitet
+- [ ] Datenschutzerklärung auf tatsächliches Hosting angepasst
+- [ ] Impressum beziehungsweise notwendige Betreiberangaben final, falls erforderlich
+- [ ] TDDDG-/lokale-Speicher-Bewertung final
+- [ ] Verbraucherstreitbeilegung aktuell bewertet
+- [ ] kein veralteter Link zur eingestellten EU-OS-Plattform verwendet
 - [ ] Support- und Sicherheitskontakt final
 - [ ] Lizenz und Drittanbieterhinweise final
 
@@ -168,15 +191,27 @@ Zusätzliche Kernspielverträge:
 - [ ] beobachtete Fehler nach Schweregrad dokumentiert
 - [ ] keine offenen kritischen oder hohen Fehler
 
-## 10. Veröffentlichung
+## 10. Support, Incident und Wartung
+
+- [ ] `SUPPORT.md`: echter erreichbarer Kontakt statt `TBD`
+- [ ] Probe-Supportfall vollständig durchgespielt
+- [ ] Security-/Privacy-Meldeweg festgelegt
+- [ ] `INCIDENT_RESPONSE.md`: Incident Lead/Owner real festgelegt
+- [ ] Probe-SEV-1 durchgespielt
+- [ ] Nutzerkommunikationsweg im Incidentfall festgelegt
+- [ ] `MAINTENANCE.md`: Verantwortliche für Updates bekannt
+- [ ] Changelog-/Hotfix-/Dependencyroutine festgelegt
+- [ ] Rollbackprobe auf HTTPS-Staging durchgeführt
+
+## 11. Veröffentlichung
 
 - [ ] Produktionsdeployment über HTTPS
 - [ ] finale Versionsnummer und Cacheversion
-- [ ] finale Icons und Screenshots
+- [ ] finale Icons und Screenshots samt Herkunft/Nutzungsrechten
 - [ ] Release Notes und Changelog vollständig
 - [ ] unveränderlicher Release-Tag
 - [ ] Installation und Offlinebetrieb nach Deployment erneut geprüft
-- [ ] Supportkanal und Hotfixprozess vorbereitet
+- [ ] Supportkanal und Hotfixprozess aktiv
 
 ## Freigabe
 
@@ -187,5 +222,7 @@ Zusätzliche Kernspielverträge:
 - offene mittlere/niedrige Risiken: ____________________
 - technische Freigabe: ____________________
 - Produkt-/Inhaltsfreigabe: ____________________
+- Accessibility-Freigabe: ____________________
+- Legal-/Betriebsfreigabe: ____________________
 
-**Keine Veröffentlichung**, solange GitHub Actions keine sichtbaren Schritte ausführt, Kern-CI oder Cross-Browser-Tests rot sind, kritische beziehungsweise hohe Fehler offen sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
+**Keine Veröffentlichung**, solange GitHub Actions keine sichtbaren Schritte ausführt, Kern-CI oder Cross-Browser-Tests rot sind, kritische beziehungsweise hohe Fehler offen sind, Accessibility/Legal/Betrieb nicht finalisiert sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
