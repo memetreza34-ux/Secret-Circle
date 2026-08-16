@@ -15,7 +15,7 @@ required = [
     'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'FAN_CONTENT_REVIEW.md', 'ACCESSIBILITY.md', 'BETA_TEST_PLAN.md',
     'LEGAL_CHECKLIST.md', 'THIRD_PARTY_NOTICES.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
     'ENVIRONMENTS.md', 'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
-    'assets/manifests/asset-provenance.json', 'scripts/asset_provenance_audit.py',
+    'assets/manifests/asset-provenance.json', 'scripts/asset_provenance_audit.py', 'scripts/public_release_placeholder_audit.py',
     'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/party-viral-catalog.test.js',
     'tests/accessibility-contract.test.js', 'tests/backup-schema-registry.test.js', 'tests/e2e/accessibility-core.spec.js',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
@@ -56,6 +56,7 @@ support = read('SUPPORT.md')
 incident = read('INCIDENT_RESPONSE.md')
 maintenance = read('MAINTENANCE.md')
 asset_audit = read('scripts/asset_provenance_audit.py')
+placeholder_audit = read('scripts/public_release_placeholder_audit.py')
 workflow = read('.github/workflows/ci.yml')
 cross_workflow = read('.github/workflows/cross-browser.yml')
 
@@ -119,9 +120,14 @@ checks = {
     'hub_positioning_and_consent': 'Euer Party-Hub · privat · lokal' in party and 'Persönliche Inhalte sind freiwillig' in party and 'Überspringen ist jederzeit erlaubt' in party,
     'routing_uses_final_content': "require('./party-core-classic-content.js')" in routing and 'version: 8' in routing,
     'release_content_contract': all(marker in release_content for marker in ('coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent')),
-    'classic_content_v2_reference_safe': all(marker in classic_content for marker in (
-        'const VERSION = 2;', 'coreClassicContentVersion', 'referenceSafeGameOverrides',
-        'Anime-Archetypen erraten', 'referenceSafeRemovedConcreteNames: 40'
+    'classic_content_v3_reference_safe': all(marker in classic_content for marker in (
+        'const VERSION = 3;', 'coreClassicContentVersion', 'referenceSafeGameOverrides',
+        'Anime-Archetypen erraten', "title: 'Spektrum-Tipp'", "Chrome: 'Tab'",
+        'referenceSafeRemovedConcreteNames: 40'
+    )),
+    'classic_v3_regression_test': all(marker in content_test for marker in (
+        'coreClassicContentVersion, 3', 'editorialReplacementCount, 3',
+        'chromeReferenceRemoved: true', 'wavelengthBrandingRemoved: true', "new Set(['anime-guess', 'wavelength'])"
     )),
     'viral_reference_cleanup': all(marker in viral_content for marker in (
         'Ecken eines Fünfecks', 'Bahnen einer typischen 400-Meter-Leichtathletikanlage',
@@ -156,6 +162,8 @@ checks = {
     'asset_provenance_statuses_valid': all(status in {'unresolved', 'verified-own', 'verified-third-party'} for status in asset_statuses.values()),
     'asset_provenance_audit_in_validate': 'scripts/asset_provenance_audit.py' in validate_gate,
     'asset_provenance_audit_contract': all(marker in asset_audit for marker in ('unresolved', 'verified-own', 'verified-third-party', 'final_asset_signoff')),
+    'public_placeholder_audit_in_validate': 'scripts/public_release_placeholder_audit.py' in validate_gate,
+    'public_placeholder_audit_contract': all(marker in placeholder_audit for marker in ('PUBLIC_FILES', 'example-domain', 'REPLACE_ME', 'public_release_placeholder_audit')),
     'third_party_inventory_explicit': all(marker in third_party for marker in ('@playwright/test', 'Apache-2.0', 'asset-provenance.json', 'asset_provenance_audit.py')),
     'third_party_does_not_guess_asset_origin': 'nicht automatisch als eigenes Werk' in third_party and 'unresolved' in third_party,
     'support_has_real_contact_gate': 'TBD vor RC' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
@@ -165,7 +173,7 @@ checks = {
     'cross_browser_commands': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'audits_in_validate_gate': all(marker in validate_gate for marker in (
         'scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/asset_provenance_audit.py',
-        'scripts/performance_budget.py', 'scripts/release_audit.py'
+        'scripts/public_release_placeholder_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py'
     )),
     'no_obsolete_legacy_guard': not (ROOT / 'session-ledger-legacy-guard.js').exists() and 'session-ledger-legacy-guard' not in sw,
 }
@@ -183,9 +191,10 @@ print(json.dumps({
     'release_tiers': {'core': core_count, 'extended': extended_count, 'labs': lab_count},
     'catalog_chain': catalog_chain,
     'backup_registry': 'v2',
-    'core_classic_content_version': 2,
-    'reference_cleanup': 'V38_IMPLEMENTED_NOT_RUNNER_VERIFIED',
+    'core_classic_content_version': 3,
+    'reference_cleanup': 'CLASSIC_V3_PLUS_VIRAL_IMPLEMENTED_NOT_RUNNER_VERIFIED',
     'asset_provenance': {'inventoried': len(asset_entries), 'unresolved': unresolved_assets},
+    'public_placeholder_leak_gate': 'PREPARED_NOT_RUNNER_VERIFIED',
     'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
     'fan_content_review': 'REMAINING_EXTENDED_LABS_SCAN_OPEN',
     'accessibility': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
