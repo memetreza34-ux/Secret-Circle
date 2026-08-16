@@ -1,248 +1,173 @@
 # Release-Status – Secret Circle
 
-Stand: 16. August 2026
-Zielrelease: 4.–15. Januar 2027
-Arbeitsbranch: `agent/release-foundation-2027`
+Stand: 16. August 2026  
+Zielrelease: 4.–15. Januar 2027  
+Arbeitsbranch: `agent/release-foundation-2027`  
 Draft-PR: #13
 
-## Aktueller Gesamtstatus
+## Gesamtstatus
 
-**Phase:** Release-Härtung nach technischer Core-Grundlage  
+**Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Aktueller Offline-Core:** **`secret-circle-v35`**
+**Offline-Core:** **`secret-circle-v37`**
 
-Secret Circle besitzt 45 eingebaute Spiele, davon 15 priorisierte Kernspiele. Die technische Releasegrundlage ist weit fortgeschritten. Quantitative Core-Content-Ziele sind erreicht, der erste redaktionelle Quellpass steht bei 15/15, Security-/Backup-Verträge wurden gehärtet und Accessibility-, Legal-, Support-, Incident- und Maintenance-Verträge sind vorbereitet.
+Die technische Grundlage ist weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, Accessibility-Basis und Betriebs-/Legal-Verträge sind vorbereitet.
 
-Nicht abgeschlossen sind insbesondere echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, reale Geräte-/PWA-/Accessibilitytests, Gruppentests, finale Rechteprüfung, tatsächliche Betreiber-/Support-/Hostingangaben und HTTPS-Staging.
+Neu im Rechtepass:
 
-## Implementiert und vorbereitet
+- Word-Imposter-Core: drei unnötige konkrete Referenzen generisch ersetzt
+- `anime-guess`: **Option B** umgesetzt
+- finaler Runtime-Titel: **Anime-Archetypen erraten**
+- 40 konkrete Figurenreferenzen werden durch 40 eigenständige Archetypen ersetzt
+- `party-core-classic-content.js` Version 2
+- PWA deshalb auf **v37**
 
-### Release und Katalog
+Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, realer Device-/PWA-/Accessibility-/Gruppentest, Assetherkunft, restlicher Extended/Labs-Rechtepass, Betreiber-/Supportangaben und HTTPS-Staging.
 
-- 15 Core, 13 Extended, 17 Labs
-- Reifestufen-, Alters-, Gruppen-, Stimmungs- und Statusfilter
-- gespeicherte Filter und URL-Priorität
-- Synonym-/Tippfehlersuche mit Tastaturunterstützung
-- `CORE_GAME_ACCEPTANCE.md`
-- `CORE_SCORING_RULES.md`
-- finaler Katalogpfad:
-  `base → expansion → trending → mega → viral → core-release → core-classic → routing`
+## Produkt / Katalog
 
-### Core-Content
+- 45 technisch spielbare Built-ins
+- 15 Core / 13 Extended / 17 Labs
+- Filter für Reifestufe, Alter, Gruppe, Stimmung und Status
+- Synonym-/Tippfehlersuche
+- sichtbare Freiwilligkeits-/Skip-Regel
+- finaler Katalogpfad: `base → expansion → trending → mega → viral → core-release → core-classic(v2) → routing`
 
-Drei Ausbauwellen schließen die definierten quantitativen Core-Ziele:
+## Core-Content
 
-- Never Have / Most Likely / Would Rather: 24 je Pack
-- Paranoia: 20 je Pack
-- Wrong Answers: 24 je Pack
-- Truth/Dare: 24 je Pack
-- Charades: 30 je Pack
-- Taboo: 24 je Pack
-- Hot Potato: 20 je Pack
-- Word Chain: 10 Startbuchstaben je Pack
-- Two Truths / Question Imposter / Location Spy: 16 je Pack
-- Word Imposter: 14 Kategorien × 12 Begriffe
+Alle definierten quantitativen Mindestziele sind implementiert. `CORE_CONTENT_REVIEW.md` dokumentiert 15/15 Core-Spiele als ersten Quellpass.
 
-`CORE_CONTENT_REVIEW.md` dokumentiert den ersten **15/15-Core-Quellpass**. Alle 15 Kernspiele stehen dort auf `PREPARED`; reale Gruppen-, Rechte- und finale Semantikabnahme bleiben offen.
+Privacy-Fund geschlossen:
 
-Geschlossener Privacy-Fund:
+- keine letzte private Nachricht vorlesen
+- keine Kamerarolle als Spielmaterial durchsuchen
+- Regression geschützt
 
-- keine Built-in-Aufforderung mehr, die letzte private Nachricht vorzulesen
-- keine Built-in-Frage mehr nach dem seltsamsten Kamerarolleninhalt
-- beide Alttexte als Regression blockiert
-
-### Sichtbare Freiwilligkeit
-
-Persönliche Inhalte sind nicht mehr nur technisch überspringbar:
-
-- Hub-Spieldetail erklärt sichtbar, dass persönliche Inhalte freiwillig sind
-- Skip darf ohne Begründung verwendet werden
-- Advanced-Setup erklärt dieselbe Grundregel
+## Reference-Safe-Pass
 
 ### Word Imposter
 
-- unabhängige Rollen-/Reveal-/Begriffszufallslogik
-- maximal sechs Imposter
-- kein Rollen-Monkey-Patching
-- eigener individueller Match-Punktestand
-- versionierte Daten-/Backupverträge
+- Bluetooth → Funkverbindung
+- Oscar → Filmpreis
+- Formel 1 → Motorsport
 
-### Sessions, Statistik und Resume
+### Anime-Quiz
 
-- gemeinsames `session-ledger.js`
+Stabile ID `anime-guess`, aber final:
+
+- Titel `Anime-Archetypen erraten`
+- Gruppe `Anime-Quiz`
+- 4 generische Packs
+- 10 Archetypen je Pack
+- 40 konkrete frühere Figuren im finalen Runtime-Content ausgeschlossen
+
+`tests/core-content-quality.test.js`, `scripts/core_content_audit.py`, Architektur- und Release-Audit schützen den Vertrag. **Nicht runnerverifiziert.**
+
+## Sessions / Resume / Timer
+
 - stabile Session-/Completion-IDs
-- Exact-once-Vertrag für Hub, Creator, Quick, Mega und Viral
-- Advanced-Abschluss gegen Doppelzählung abgesichert
-- direkte Hub-Sessions speichern Spieler-Snapshot
-- explizite Wiederaufnahme statt automatischem Öffnen
-- private Zustände bleiben nach Reload verdeckt
-- Verwerfen erzeugt keine Statistik/History
+- Exact-once History/Stats
+- direkter Hub Active-State + Spieler-Snapshot
+- Advanced Active-State
+- private Inhalte nach Reload wieder verdeckt
+- Beenden & speichern getrennt von Abbrechen & verwerfen
+- Skip ohne Punkt
+- pausierbare gemeinsame Timer
+- Scharade 60 s, Tabu 60 s, Hot Potato 10–25 s verdeckt, Wortkette 30 s
 
-### Direkte Hub-Steuerung
+## Security / Backup
 
-- **Beenden & speichern** getrennt von **Abbrechen & verwerfen**
-- bestätigter Abbruch schreibt keine Statistik
-- Escape folgt demselben Abbruchpfad
-- globales Runde-überspringen ohne Punkt
-- Fokusführung nach Reveal-/Rundenwechseln
-- kritische Controls mindestens 44 px
+Registry v2:
 
-### Timer
+- zentrale Complete-Backup-Grenzen
+- erlaubte versionierte Word-/Party-Key-Familien
+- unbekannte Namespaces beim Import abgelehnt
+- breite Komplettlöschung bleibt bewusst erhalten
+- Registry lädt vor Datentools
 
-- gemeinsamer pausierbarer Timer über `party-session-controls.js`
-- `party-hub-timers.js` als getrennte Modulgrenze
-- Scharade 60 s
-- Tabu 60 s
-- Hot Potato zufällige 10–25 s, Restzeit verborgen
-- Wortkette 30 s
-- wiederhergestellte Timer starten pausiert
-- Hintergrundwechsel pausiert laufende Hub-Timer
-
-### Advanced / Mafia
-
-- private Advanced-Reveals nach Reload wieder verdeckt
-- Mafia-Moderatoransicht benötigt erneute Bestätigung
-- Mafiaanzahl skaliert 1/2/3/4
-- Schnell/Klassisch/Erweitert getrennt
-- Arzt/Detektiv/Beschützer-Regeln vorbereitet
-- Beschützer darf dieselbe Person nicht zwei Nächte hintereinander schützen
-
-## Security und Backup
-
-### Registry v2
-
-`backup-schema-registry.js` ist zentraler Vertragsmittelpunkt.
-
-- Complete-Backup-Format und Limits werden nicht mehr in `party-data-tools.js` dupliziert
-- Complete-Import akzeptiert nur registrierte versionierte Word-Imposter- und `secret-circle-party-*`-Key-Familien
-- unbekannte `secret-circle-*`-Namespaces werden beim Import abgelehnt
-- vollständiges Löschen bleibt bewusst breiter und entfernt alle Secret-Circle-Reste
-- `party.html` lädt `backup-schema-registry.js` vor `party-data-tools.js`
-
-SEC-F01/F02: **CLOSED IN CODE / RUNNER + REAL BROWSER VERIFICATION OPEN**.
+SEC-F01/F02: **CLOSED IN CODE / REAL VERIFICATION OPEN**.
 
 ## PWA / Offline
 
-Aktueller Cache:
+- `secret-circle-v37`
+- `secret-circle-v37-staging`
+- staged update
+- bewusste Nutzeraktivierung
+- aktiver Core wird nicht vor erfolgreicher Promotion zerstört
+- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v37 synchronisiert
 
-- `secret-circle-v35`
-- `secret-circle-v35-staging`
-
-v35 enthält und synchronisiert unter anderem:
-
-- aktuellen Hub-Hero
-- sichtbare Freiwilligkeitsregel
-- Backup-Registry-v2-Ladereihenfolge
-- aktualisierte Privacy-Seite
-- beide Core-Contentmodule
-
-Der Service Worker staged Updates zuerst und zerstört den aktiven Core nicht vor erfolgreicher Promotion.
-
-Noch offen:
-
-- reale Altversion → v35 Updates
-- installierte iOS-/Android-PWA
-- Rollback auf HTTPS-Staging
-- Sperrbildschirm/Background auf echten Geräten
+Offen: reale Altversion→v37-Upgrades, iOS/Android-PWA, Rollback und Sperrbildschirmtests.
 
 ## Accessibility
 
 Vorbereitet:
 
-- `ACCESSIBILITY.md`
-- `tests/accessibility-contract.test.js`
-- `tests/e2e/accessibility-core.spec.js`
-- Contract in `npm test` und `npm run check`
-- Reflow-Basis bei 320 CSS px
-- Skip-Link-/Tastatur-/Autocomplete-Verträge
-- Reduced-Motion-/Focus-/Touchziel-Verträge
+- Accessibility-Dokument
+- statischer Contract-Test
+- Playwright-E2E-Basis
+- 320px Reflow
+- Fokus, Reduced Motion, ARIA, Touchzielverträge
 
-Nicht als PASS behaupten:
+Real offen: 200 % Zoom, VoiceOver, TalkBack, echte Touchbedienung und private Reveal-Smokes.
 
-- 200-%-Zoom real
-- VoiceOver
-- TalkBack
-- reale Touchbedienung
-- private Reveals mit Screenreader
+## Legal / Third Party / Betrieb
 
-## Legal, Support und Betrieb
-
-Neu vorbereitet:
+Vorhanden:
 
 - `LEGAL_CHECKLIST.md`
+- `THIRD_PARTY_NOTICES.md`
+- `FAN_CONTENT_REVIEW.md`
 - `SUPPORT.md`
 - `INCIDENT_RESPONSE.md`
 - `MAINTENANCE.md`
+- `BETA_TEST_PLAN.md`
+- `ENVIRONMENTS.md`
 
-Noch zwingend real einzutragen/zu prüfen:
+Noch real offen:
 
-- Betreiber/Verantwortlicher
-- ladungsfähige Anschrift, soweit erforderlich
-- echter Support-/Security-Kontakt
-- tatsächlicher Hostinganbieter und Log-/Privacyrealität
-- Third-Party-/Lizenzinventar
-- Incident Owner
-- Probe-SEV-1
-- Rollbackprobe auf HTTPS-Staging
+- Betreiber-/Kontakt-/Hostingangaben
+- Icon-Herkunft
+- transitive Dependencyinventur nach Lockfile
+- restlicher Extended/Labs-Referenzscan
+- Support-/Incident-Verantwortliche
+- Staging-/Production-Origin
 
-Es wurden bewusst **keine** Betreiber- oder Supportdaten erfunden.
+## CI – P0
 
-## Qualität und Release-Audits
+Neuester belastbar geprüfter Lauf: **#1905**.
 
-Vorhanden beziehungsweise erweitert:
-
-- Core-Game-/Scoring-/Content-Verträge
-- Hub Timer/Resume/Control Contracts
-- Advanced/Mafia Contracts
-- Backup Registry Contract
-- Accessibility Contract + E2E-Suite
-- Architektur-/Foundation-/Hub-/Scoring-/Content-/Performance-/Release-Audits
-
-`scripts/release_audit.py` verlangt inzwischen Accessibility, Legal, Support, Incident und Maintenance als Releaseverträge.
-
-## Externer P0-Blocker: GitHub Actions
-
-Neuester geprüfter CI-Lauf:
-
-- Workflow: `Secret Circle CI`
-- Run #1905
-- Job: `validate`
-- Ergebnis: failure
-- ausgeführte Repository-Schritte: **0**
+- `validate`
+- failure
 - `steps: []`
+- kein Checkout
+- kein Repository-Code ausgeführt
 
-Damit wurde erneut weder Checkout noch `npm run check`, `npm test`, `npm run validate` oder Playwright ausgeführt.
+Daher kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis.
 
-**Folge:** Kein neuer Test/Audit darf als tatsächlich grün bezeichnet werden.
+## Build – P1
 
-## P1-Blocker: Lockfile / npm ci
+`package-lock.json` fehlt. Lokale Generierung scheiterte am externen Paketnetzwerk/Timeout. Es wurden keine Integritätswerte erfunden. Erst mit echtem Lockfile wird CI auf `npm ci` umgestellt.
 
-- `package-lock.json` fehlt weiterhin
-- im Repository wurde kein bestehendes Lockfile gefunden
-- lokale Erzeugung über `npm install --package-lock-only` konnte wegen externem Paketnetzwerk/Timeout nicht abgeschlossen werden
-- kein Lockfile wurde erfunden
-- Workflow bleibt deshalb vorerst auf seinem Übergangspfad; Umstellung auf `npm ci` erfolgt erst mit echtem geprüftem Lockfile
+## Nächste Releaseblöcke
 
-## Aktuell offene Releaseblöcke
-
-1. **CI Runner / sichtbarer Checkout** – P0
-2. **`package-lock.json` + `npm ci`** – P1
-3. **Branch Protection / Required Checks** – P1
-4. **finales Marken-/Urheber-/Third-Party-Review** – P1
-5. **HTTPS-Staging** – P1
-6. **reale Android-/iPhone-/Tablet-/PWA-Tests** – P1
-7. **VoiceOver/TalkBack/200-%-Zoom** – P1
-8. **reale Gruppen 3–4 / 5–8 / 9–12** – P1/P2
-9. **große Word-Imposter-/Mafia-Sessions** – P1/P2
-10. **echte Betreiber-/Support-/Hostingangaben** – P1
-11. **Incident-/Rollbackprobe** – P1
-12. **unveränderter RC + Release-Tag** – nach allen Gates
+1. Actions-Runner
+2. Lockfile + `npm ci`
+3. Branch Protection
+4. Classic-Content-v2-Performancebudget
+5. restlicher Extended/Labs-Referenzscan
+6. Assetherkunft
+7. HTTPS-Staging
+8. reale Upgrade-/Rollback-/Gerätetests
+9. reale Accessibilitytests
+10. reale Gruppentests
+11. Betreiber-/Supportdaten
+12. Incident-Drill
+13. unveränderter RC + Tag
 
 ## Releaseentscheidung
 
-- **Öffentlicher Release heute:** Nein
-- **Entwicklungsstand:** weit fortgeschrittene Release-Härtung
-- **Kontrollierte interne/Entwicklungsbeta:** möglich
-- **Merge von PR #13 heute:** Nein
-- **PR #13 bleibt Draft:** Ja
-- **Releaseziel Januar 2027:** weiterhin erreichbar, sofern CI-/Lockfile-/Realtest-/Legal-Gates rechtzeitig geschlossen werden
+- öffentlicher Release heute: **Nein**
+- PR #13 mergen: **Nein**
+- PR #13 bleibt Draft: **Ja**
+- kontrollierte Entwicklungsbeta: möglich
+- Januar-2027-Ziel: weiterhin erreichbar, sofern die offenen externen und realen Gates geschlossen werden
