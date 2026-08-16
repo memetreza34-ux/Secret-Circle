@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v30'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v30-staging'/);
+assert.match(source, /const CACHE='secret-circle-v31'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v31-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -24,6 +24,7 @@ assert.match(source, /party-release-structure\.js/);
 assert.match(source, /party-filter-state\.js/);
 assert.match(source, /party-search-assist\.js/);
 assert.match(source, /party-search\.css/);
+assert.match(source, /party-core-release-catalog\.js/);
 assert.match(source, /session-ledger\.js/);
 assert.match(source, /party-session-controls\.js/);
 assert.match(source, /party-hub-timers\.js/);
@@ -34,7 +35,7 @@ assert.doesNotMatch(source, /cache\.put\(request,response\.clone\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 30,
+  cacheContract: 31,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -43,6 +44,7 @@ console.log(JSON.stringify({
   releaseStructureOffline: true,
   persistentCatalogFiltersOffline: true,
   searchAssistanceOffline: true,
+  coreReleaseContentOffline: true,
   exactOnceLedgerOffline: true,
   sharedSessionControlsOffline: true,
   splitHubTimerModuleOffline: true,
