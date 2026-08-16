@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-16",
+  "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
+  "assets": [
+    {
+      "path": "icon.svg",
+      "kind": "app-icon-source",
+      "status": "unresolved",
+      "creator": null,
+      "source": null,
+      "createdAt": null,
+      "license": null,
+      "commercialUse": null,
+      "attribution": null,
+      "derivedFrom": null,
+      "notes": "Existing vector app icon. Repository currently contains no reliable provenance or license evidence. Do not infer ownership from file contents."
+    },
+    {
+      "path": "icon-192.png",
+      "kind": "pwa-icon-raster",
+      "status": "unresolved",
+      "creator": null,
+      "source": null,
+      "createdAt": null,
+      "license": null,
+      "commercialUse": null,
+      "attribution": null,
+      "derivedFrom": "icon.svg",
+      "notes": "Appears intended as a raster variant of the app icon, but the derivation/provenance has not been evidenced."
+    },
+    {
+      "path": "icon-512.png",
+      "kind": "pwa-icon-raster",
+      "status": "unresolved",
+      "creator": null,
+      "source": null,
+      "createdAt": null,
+      "license": null,
+      "commercialUse": null,
+      "attribution": null,
+      "derivedFrom": "icon.svg",
+      "notes": "Appears intended as a raster variant of the app icon, but the derivation/provenance has not been evidenced."
+    }
+  ]
+}
