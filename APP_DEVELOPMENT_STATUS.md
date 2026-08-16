@@ -17,14 +17,16 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
 **Öffentliche Releasefreigabe: NO_GO**
 
-Die technische Releasegrundlage ist weit fortgeschritten. Alle quantitativen Core-Content-Ziele sind implementiert, der erste Core-Quellpass steht bei 15/15, Security-/Backup-Hardening, Accessibility, Legal, Support, Incident Response, Maintenance, Beta/Realgeräte und Environment-Verträge sind vorbereitet.
+Die technische Releasegrundlage ist weit fortgeschritten. Quantitative Core-Content-Ziele sind implementiert, der erste Core-Quellpass steht bei 15/15, Security-/Backup-Hardening, Accessibility, Legal, Support, Incident Response, Maintenance, Beta/Realgeräte und Environment-Verträge sind vorbereitet.
 
-Seit dem Rechtepass gilt zusätzlich:
+Aktueller Offline-Core: **`secret-circle-v38`**.
 
-- Word-Imposter-Core ohne die drei unnötigen konkreten Referenzbegriffe
-- `anime-guess` im **finalen Runtime-Katalog vollständig reference-safe**
-- Classic-Content-Schicht Version 2
-- aktueller Offline-Core **`secret-circle-v37`**
+Rechte-/Referenzfortschritt:
+
+- Word Imposter: drei unnötig konkrete Referenzen generisch ersetzt
+- `anime-guess`: final als **Anime-Archetypen erraten** mit 40 generischen Archetypen
+- Viral `higher-lower`: drei unnötig konkrete olympisch/Grand-Slam-bezogene Sporttexte durch generische Fragen ersetzt
+- Classic-Content-v2 liegt mit **12.954 Bytes** deutlich unter dem 45-KB-Budget
 
 Offen bleiben vor allem echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, Assetherkunft, restlicher Extended/Labs-Referenzscan, reale Accessibility-/Geräte-/PWA-/Gruppentests, Betreiber-/Supportangaben und HTTPS-Staging.
 
@@ -40,12 +42,12 @@ Offen bleiben vor allem echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection
 | 4 | Requirements / Akzeptanz | PREPARED | `REQUIREMENTS.md`, Core Contracts | Traceability real schließen |
 | 5 | UX / IA / Design | PREPARED | `UX_FLOW.md`, `DESIGN_SYSTEM.md` | reale UX-Tests |
 | 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | ADRs bei Grundsatzentscheidungen |
-| 7 | Security / Threat Model | PREPARED | `SECURITY.md`, `THREAT_MODEL.md`, Registry v2 | Runner + echter Browser |
+| 7 | Security / Threat Model | PREPARED | Security, Threat Model, Registry v2 | Runner + echter Browser |
 | 8 | Repo / Git / Build | BLOCKED | Workflows | Runner, Lockfile, `npm ci`, Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | Restarbeit nach Guide |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | Quota-/Updateabnahme real |
 | 11 | Tests / CI | BLOCKED | Testmatrix/Workflows | funktionierender Actions-Runner |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker **v37** | echte Geräte + alte→neue Updates |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker **v38** | echte Geräte + alte→neue Updates |
 | 13 | Content / Alter | IN PROGRESS | drei Content-Wellen + 15/15 Review | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md` | G1–G5 + PN1–PN3 real |
 | 15 | Datenschutz / Recht / Support | PREPARED | Privacy, Legal, Support | echte Betreiber-/Hostingangaben |
@@ -55,23 +57,23 @@ Offen bleiben vor allem echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection
 | 19 | Wartung / Migration | PREPARED | Maintenance, Backups, Changelog | operative Routine real |
 | 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | laufend aktualisieren |
 | 21 | Accessibility | PREPARED | Contract + E2E-Suite | 200 %, VoiceOver, TalkBack, Geräte |
-| 22 | Third Party / Assetrechte | IN PROGRESS | `THIRD_PARTY_NOTICES.md` | Icon-Herkunft + Lockfile-Inventar |
+| 22 | Third Party / Assetrechte | IN PROGRESS | `THIRD_PARTY_NOTICES.md` | Icon-Provenienz + Lockfile-Inventar |
 | 23 | Fan-/Referenzcontent | IN PROGRESS | `FAN_CONTENT_REVIEW.md` | restlichen Extended/Labs-Pass abschließen |
 
-## Core-Content
+## Core- und Privacy-Content
 
-Drei Ausbauwellen haben alle definierten quantitativen Core-Ziele erreicht. `CORE_CONTENT_REVIEW.md` enthält den ersten vollständigen **15/15-Core-Quellpass**.
+Alle definierten quantitativen Core-Ziele sind erreicht. `CORE_CONTENT_REVIEW.md` enthält 15/15 Core-Spiele als ersten Quellpass.
 
 Geschlossener Privacy-Fund:
 
-- keine Aufforderung mehr, letzte private Handy-Nachricht vorzulesen
-- keine Frage mehr nach Kamerarolleninhalt
+- keine letzte private Nachricht als Pflicht
+- keine Kamerarolle als Fragequelle
 - harmlose Alternativen
-- Regression im Contenttest
+- Regression geschützt
 
 Persönliche Inhalte sind im Hub und Advanced sichtbar freiwillig und ohne Begründung überspringbar.
 
-## Rechtepass: v36 → v37
+## Reference-Safe-Pass
 
 ### v36 – Word Imposter
 
@@ -81,79 +83,63 @@ Persönliche Inhalte sind im Hub und Advanced sichtbar freiwillig und ohne Begr�
 
 ### v37 – Anime-Quiz
 
-Für `anime-guess` wurde **Option B** umgesetzt:
-
-- stabile technische ID bleibt `anime-guess`
-- sichtbarer Titel: **Anime-Archetypen erraten**
+- stabile ID `anime-guess`
+- finaler Titel `Anime-Archetypen erraten`
 - vier generische Packs
-- 10 Archetypen je Pack / 40 gesamt
-- die 40 zuvor inventarisierten konkreten Figuren werden im finalen Runtime-Katalog nicht mehr ausgeliefert
-- `party-core-classic-content.js` steht auf **Version 2**
-- `tests/core-content-quality.test.js` regressionssichert die Entfernung
-- `scripts/core_content_audit.py` und Release-/Architektur-Audits kennen den Vertrag
+- 40 eigenständige Archetypen
+- 40 frühere konkrete Figuren im finalen Runtime-Katalog ausgeschlossen
+- `party-core-classic-content.js` Version 2
 
-Status: **IMPLEMENTED / RUNNER VERIFICATION OPEN**.
+### v38 – Viral Sport
+
+Im `higher-lower`-Sportpack wurden drei unnötig konkrete Referenzformulierungen ersetzt:
+
+- olympisches Ringsymbol → Ecken eines Fünfecks
+- olympisches 400-m-Stadion → typische 400-m-Leichtathletikanlage
+- Herren-Grand-Slam-Tennis → Best-of-five-Tennismatch
+
+Die Zahlenwerte 5 / 8 / 3 bleiben erhalten. `tests/party-viral-catalog.test.js` regressionssichert die Änderungen.
+
+## Performance
+
+Classic Content v2: **12.954 Bytes** laut GitHub-Tree bei unverändertem **45.000-Byte-Budget**. Kein Split und keine Budgetlockerung nötig. R-031 ist geschlossen.
 
 ## Security / Backup
 
-- Registry v2 ist zentrale Quelle für Complete-Backup-Format und Limits
-- `party-data-tools.js` dupliziert diese Werte nicht
+- Registry v2 als zentrale Complete-Backup-Quelle
+- keine duplizierten Complete-Grenzen in Datentools
 - nur registrierte Word-/Party-Key-Familien importierbar
-- unbekannte Secret-Circle-Namespaces werden abgelehnt
+- unbekannte Namespaces abgelehnt
 - Registry lädt vor Datentools
 
 SEC-F01/F02: **CLOSED IN CODE / RUNNER + REAL BROWSER VERIFICATION OPEN**.
 
 ## Accessibility
 
-Vorhanden:
+Vorbereitet: `ACCESSIBILITY.md`, statischer Contract, Playwright-E2E-Basis, 320-CSS-px-Reflow, Fokus, Reduced Motion, ARIA und Touchzielverträge.
 
-- `ACCESSIBILITY.md`
-- `tests/accessibility-contract.test.js`
-- `tests/e2e/accessibility-core.spec.js`
-- Contract in `npm test` und `npm run check`
-- 320-CSS-px-Reflowbasis
-- Skip-Link-/Tastatur-/Autocomplete-Gates
-
-Offen: reales 200-%-Zoom, VoiceOver, TalkBack, Touchziele, komplette Tastaturrunden und private Reveals mit Screenreader.
-
-## Beta / Realgeräte
-
-`BETA_TEST_PLAN.md`: G1–G5, PN1–PN3, Android, iPhone, Tablet, VoiceOver/TalkBack, zwei PWA-Upgrades und HTTPS-Rollbackprobe.
-
-Status: **PREPARED – reale Durchführung offen**.
+Offen: reales 200-%-Zoom, VoiceOver, TalkBack, Touchbedienung, komplette Tastaturrunden und private Reveals mit Screenreader.
 
 ## Third Party / Assets
 
 - keine npm-Runtime-Dependencies
 - `@playwright/test` 1.54.2 upstream als Apache-2.0 verifiziert
-- transitive Dependencyinventur wartet auf echtes Lockfile
-- Herkunft/Lizenz der drei App-Icons ist im Repo nicht belegt
+- transitive Inventur wartet auf echtes Lockfile
+- Herkunft/Lizenz von `icon.svg`, `icon-192.png`, `icon-512.png` noch nicht belegt
 - keine Root-`LICENSE`; Projektlizenz wird nicht geraten
 
 ## Environments / PWA
 
-`ENVIRONMENTS.md`: **Local → CI/Test → HTTPS-Staging → RC → Production** mit getrennten Origins für Staging und Production.
-
-Aktuell:
-
-- Cache: **`secret-circle-v37`**
-- Staging-Cache: **`secret-circle-v37-staging`**
-- Privacy, Architektur, Deployment, Environment und Service-Worker-Test sind darauf synchronisiert
-
-Offen: konkrete Origins, Staging-Smoke, reale Upgradepfade und Rollbackprobe.
+- Cache: **`secret-circle-v38`**
+- Staging-Cache: **`secret-circle-v38-staging`**
+- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v38 synchronisiert
+- konkrete Staging-/Production-Origin, Smoke, reale Upgrades und Rollback weiter offen
 
 ## CI / Lockfile
 
-Neuester belastbar geprüfter Actions-Lauf: **Run #1905**.
+Neuester belastbar geprüfter Actions-Lauf: **Run #1905** – `validate`, failure, `steps: []`, kein Checkout, kein Repository-Code ausgeführt.
 
-- Job `validate`
-- failure
-- `steps: []`
-- kein Checkout
-- kein Repository-Code ausgeführt
-
-`package-lock.json` fehlt. Lokale Erzeugung scheiterte am externen Paketnetzwerk/Timeout; nichts wurde erfunden. CI wird erst mit echtem geprüftem Lockfile auf `npm ci` umgestellt.
+`package-lock.json` fehlt. Lokale Erzeugung scheiterte am externen Paketnetzwerk/Timeout; keine Integritätswerte wurden erfunden. CI wird erst mit echtem Lockfile auf `npm ci` umgestellt.
 
 ## Aktuell höchste Prioritäten
 
@@ -165,23 +151,22 @@ Neuester belastbar geprüfter Actions-Lauf: **Run #1905**.
 
 2. echtes `package-lock.json` + `npm ci`
 3. Branch Protection / Required Checks
-4. Classic-Content-v2-Performancebudget bestätigen
-5. restlicher Extended/Labs-Referenzscan
-6. Icon-/Asset-Herkunft finalisieren
-7. konkrete HTTPS-Staging-Origin
-8. Staging-Smoke + PWA-Upgrade-/Rollbacktests
-9. reale Accessibility-/Gerätetests
-10. reale Gruppentests
-11. Betreiber-/Support-/Hostingangaben
-12. Probeincident + Wartungsroutine
-13. finaler Content-/Rechte-Sign-off
-14. Release Candidate
+4. restlicher Extended/Labs-Referenzscan
+5. Asset-Provenienz / Icon-Herkunft
+6. konkrete HTTPS-Staging-Origin
+7. Staging-Smoke + PWA-Upgrade-/Rollbacktests
+8. reale Accessibility-/Gerätetests
+9. reale Gruppentests
+10. Betreiber-/Support-/Hostingangaben
+11. Probeincident + Wartungsroutine
+12. finaler Content-/Rechte-Sign-off
+13. Release Candidate
 
 ## Nicht als bestanden behaupten
 
 - `npm run ci` / Cross-Browser
 - neue Unit-/Audit-/E2E-Verträge
-- v37-Update auf real installierter PWA
+- v38-Update auf real installierter PWA
 - Registry-v2-Import im echten Browser
 - VoiceOver/TalkBack/200-%-Zoom
 - Beta-/Gruppentests
