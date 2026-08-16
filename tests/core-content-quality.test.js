@@ -66,9 +66,11 @@ assert.deepEqual([...release.coreIds], expectedCore);
 assert.equal(Object.keys(expectedAges).length, 15);
 assert.equal(releaseContent.coreReleaseContentVersion, 1);
 assert.deepEqual(new Set(releaseContent.coreReleaseContentGames), new Set(['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers']));
-assert.equal(classicContent.coreClassicContentVersion, 1);
+assert.equal(classicContent.coreClassicContentVersion, 2);
 assert.deepEqual(new Set(classicContent.coreClassicContentGames), new Set(['truth-dare', 'charades', 'taboo', 'hot-potato']));
 assert.equal(classicContent.editorialReplacementCount, 2);
+assert.deepEqual([...classicContent.referenceSafeGameIds], ['anime-guess']);
+assert.equal(classicContent.referenceSafeRemovedConcreteNames, 40);
 
 const editorialShortfalls = [];
 let routedCoreItems = 0;
@@ -152,6 +154,27 @@ for (const pack of catalog.getPackNames('word-chain')) {
   for (const letter of catalog.content['word-chain'][pack]) assert.match(letter, /^\p{L}$/u, `Word Chain start must be one letter: ${pack}/${letter}`);
 }
 
+const animeGame = catalog.getGame('anime-guess');
+assert.ok(animeGame);
+assert.equal(animeGame.title, 'Anime-Archetypen erraten');
+assert.equal(animeGame.group, 'Anime-Quiz');
+assert.deepEqual(animeGame.packs, ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']);
+assert.equal(catalog.itemCount('anime-guess'), 40);
+for (const pack of animeGame.packs) {
+  const items = catalog.getItems('anime-guess', pack);
+  assert.equal(items.length, 10, `Reference-safe anime pack must contain 10 archetypes: ${pack}`);
+  assertUniqueItems(items, `anime-guess/${pack}`);
+}
+const finalAnimeTerms = collectStrings(catalog.content['anime-guess']).map(canonicalText);
+for (const removed of [
+  'Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Ichigo Kurosaki', 'Edward Elric', 'Gon Freecss', 'Killua Zoldyck', 'Kenshin Himura', 'Natsu Dragneel', 'Yusuke Urameshi',
+  'Tanjiro Kamado', 'Nezuko Kamado', 'Satoru Gojo', 'Yuji Itadori', 'Denji', 'Power', 'Eren Jäger', 'Mikasa Ackerman', 'Izuku Midoriya', 'Shoto Todoroki',
+  'Sailor Moon', 'Light Yagami', 'L', 'Spike Spiegel', 'Inuyasha', 'Kagome Higurashi', 'Frieren', 'Anya Forger', 'Loid Forger', 'Totoro',
+  'Ash Ketchum', 'Pikachu', 'Hinata Shoyo', 'Kageyama Tobio', 'Yoichi Isagi', 'Meguru Bachira', 'Tsubasa Ozora', 'Kirito', 'Asuna', 'Subaru Natsuki'
+]) {
+  assert.ok(!finalAnimeTerms.includes(canonicalText(removed)), `Concrete fan reference returned to final anime quiz: ${removed}`);
+}
+
 assert.ok(wordContent && wordContent.categories, 'Word Imposter content runtime missing.');
 const wordCategories = Object.entries(wordContent.categories);
 assert.equal(wordCategories.length, 14);
@@ -182,12 +205,13 @@ for (const generic of ['Funkverbindung', 'Filmpreis', 'Motorsport']) {
 console.log(JSON.stringify({
   coreContentQuality: 'PASS', coreGames: expectedCore.length, ageContract: expectedAges,
   hardMinimums, quantitativeTargetsMet: true, privateDevicePromptsRemoved: true,
-  unnecessaryCoreReferenceTermsRemoved: true,
+  unnecessaryCoreReferenceTermsRemoved: true, concreteAnimeFanNamesRemoved: true,
   coreReleaseContentVersion: releaseContent.coreReleaseContentVersion,
   coreReleaseContentGames: releaseContent.coreReleaseContentGames,
   coreClassicContentVersion: classicContent.coreClassicContentVersion,
   coreClassicContentGames: classicContent.coreClassicContentGames,
   editorialReplacementCount: classicContent.editorialReplacementCount,
+  referenceSafeRemovedConcreteNames: classicContent.referenceSafeRemovedConcreteNames,
   wordImposterCategories: wordCategories.length, wordImposterWords,
   routedCoreItemsExcludingWordImposter: routedCoreItems, truthDareCards: 96,
   structuredContentValidated: ['truth-dare', 'would-rather', 'taboo', 'question-imposter', 'location-spy', 'mafia', 'word-chain'],
