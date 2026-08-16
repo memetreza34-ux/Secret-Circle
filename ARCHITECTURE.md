@@ -1,223 +1,284 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Dieses Dokument definiert die Regeln, die Secret Circle auch nach vielen Jahren verständlich, migrierbar, offline nutzbar und testbar halten sollen.
+Stand: 16. August 2026
+
+Dieses Dokument definiert die technischen Grenzen, die Secret Circle langfristig verständlich, migrierbar, offline nutzbar und testbar halten.
 
 ## 1. Produktgrenzen
 
-Secret Circle bleibt offline-first, ohne verpflichtendes Konto, ohne externe Laufzeitabhängigkeiten, als statische PWA auslieferbar und auf einem gemeinsam genutzten Gerät vollständig spielbar. Spätere Online-, KI-, Kamera- oder Mehrgerätefunktionen bleiben optionale getrennte Module.
+Secret Circle bleibt für den Januar-2027-Release:
+
+- offline-first
+- ohne verpflichtendes Konto
+- ohne Backend oder eigene Server-API
+- ohne Analyse-, Werbe- oder Trackingdienste
+- ohne externe Laufzeit-CDNs
+- als statische PWA auslieferbar
+- vollständig auf einem gemeinsam genutzten Gerät spielbar
+
+Online-Multiplayer, Cloud-Sync, KI-Live-Inhalte, Kamera/Mikrofon und Mehrgerätefunktionen benötigen vor Einführung einen neuen Produkt-, Datenschutz-, Security- und Architekturentscheid.
 
 ## 2. Stabile Identitäten
 
-Spiel-IDs, Pack-IDs, Creator-Spiel-IDs, Session-IDs, Abschluss-IDs, Speicherpräfix `secret-circle-`, Backupformat, Manifest-ID und PWA-Scope sind interne Verträge. Anzeigenamen dürfen sich ändern; persistierte IDs benötigen bei Änderungen eine Migration.
+Spiel-IDs, Pack-IDs, Creator-Spiel-IDs, Session-IDs, Abschluss-IDs, Speicherpräfix `secret-circle-`, Backupformate, Manifest-ID und PWA-Scope sind interne Verträge.
 
-Jede wiederaufnehmbare Session erhält beim Start genau eine stabile `sessionId`. Ältere aktive Sessions ohne dieses Feld erhalten über `legacySessionId` eine deterministische kompatible Identität. Abschluss-IDs werden ausschließlich aus Engine, Spiel-ID und Session-ID abgeleitet.
+Anzeigenamen dürfen sich ändern. Persistierte IDs dürfen nur mit Migration verändert werden.
+
+Jede wiederaufnehmbare Session erhält genau eine stabile `sessionId`. Abschluss-IDs werden aus Engine, Spiel und Session abgeleitet; Reload oder wiederholter Abschluss dürfen keinen zweiten Verlaufseintrag erzeugen.
 
 ## 3. Versionierte Daten
 
-Aktuelle Bereiche:
+Aktuelle persistierte Verträge umfassen unter anderem:
 
 - Word-Imposter-Schema Version 7
 - Advanced-Session Version 2
 - Party Hub Version 1
 - Party Night Version 1
 - Katalogfilter Version 1
-- klassische Quick-Session Version 1
-- Mega-Trend-Session Version 1
-- Viral-Session Version 1
-- Creator-Session Version 1
-- gemeinsames Session-Ledger Version 1
-- gemeinsame schnelle Sessionsteuerung Version 1
-- eigene Hub-Packs Speicherschema Version 1, Manager Version 4
+- Quick-/Mega-/Viral-/Creator-Session Version 1
+- Session-Ledger Version 1
+- gemeinsame Sessionsteuerung Version 1
+- eigene Hub-Packs Schema Version 1
 - selbst erstellte Spiele Version 1
 - Gesamtsicherung Version 1
 
-Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert verworfen oder auf begrenzte sichere Werte normalisiert. Unbekannte neuere Versionen werden nicht blind überschrieben. Migrationen benötigen realistische alte Snapshots.
+Neue Felder erhalten sichere Defaults. Beschädigte Daten werden normalisiert oder isoliert verworfen. Unbekannte neuere Versionen werden nicht blind überschrieben. Persistenzänderungen benötigen Migrations- und Rollbacktests.
 
-## 4. Modulgrenzen
+## 4. Katalog- und Contentarchitektur
+
+### Katalogkette
+
+Der vollständige Party-Katalog wird in dieser Reihenfolge aufgebaut:
+
+`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-core-classic-content.js → party-routing.js`
+
+Verantwortung:
+
+- `party-catalog.js`: Basisspiele und kompakte Ausgangsinhalte
+- `party-expansion.js`: Advanced-Spiele sowie strukturierte Welle-1-Core-Erweiterungen
+- `party-trending-catalog.js`: klassische Quick Modes
+- `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate
+- `party-viral-catalog.js`: Viral-, Preis-, Wissens- und Storyformate
+- `party-core-release-catalog.js`: größere soziale Core-Releaseinhalte aus Content-Welle 2
+- `party-core-classic-content.js`: klassische Core-Releaseinhalte aus Content-Welle 3, inklusive verschachteltem Truth/Dare-Merge
+- `party-routing.js`: finale Routingfassade, Scoringmetadaten und lokale Creator-Spiele
+
+### Contentmodule dürfen nicht zu Engines werden
+
+`party-core-release-catalog.js` und `party-core-classic-content.js` dürfen ausschließlich Built-in-Content erweitern und Lesefunktionen auf den erweiterten Content zeigen lassen.
+
+Sie dürfen keine:
+
+- DOM-Logik
+- Sessionlogik
+- Statistik
+- Scoringlogik
+- Persistenz
+- Netzwerklogik
+- eigene Timer
+
+übernehmen.
+
+Dadurch kann die Inhaltsmenge wachsen, ohne Engine- oder Hubmodule zu Monolithen zu machen.
+
+## 5. Hub- und Timergrenzen
+
+- `party-hub.js`: Session, Navigation, Ledger-Anbindung, Fokus und nicht zeitgesteuerte direkte Hub-Spiele
+- `party-hub-timers.js`: Scharade, Tabu, Heiße Kartoffel und Wortkette sowie deren Timer-State
+- `party-session-controls.js`: generischer pausierbarer Timer und gemeinsame Sessionaktionen
+
+Ladereihenfolge:
+
+`party-session-controls.js → party-hub-timers.js → party-hub.js`
+
+Timermechaniken dürfen nicht zurück in `party-hub.js` kopiert werden. Direkte Hub-Spiele trennen **Beenden & speichern** von **Abbrechen & verwerfen**. Skip vergibt keinen künstlichen Punkt.
+
+## 6. Weitere Module
 
 ### Word Imposter
 
-- `game-engine.js`: Regeln und Zustandsübergänge
-- `role-assignment.js`: unabhängige Rollenverteilung
-- `data-store.js`: Migration, Validierung und Sicherung
-- `app.js`: Browseroberfläche
+- `game-engine.js`: Fachlogik
+- `role-assignment.js`: Rollenverteilung
+- `data-store.js`: Speicherung/Migration/Backup
+- `app.js`: Browser-UI
 
-### Katalog und Hub
+### Game Creator
 
-- `party-catalog.js`: Basisspiele und kompakte Ausgangsinhalte
-- `party-expansion.js`: Advanced-Erweiterung plus erste strukturierte Release-Content-Erweiterungen
-- `party-trending-catalog.js`: klassische Quick Modes
-- `party-mega-catalog.js`: Anime-, Geld-, Ranking- und Social-Trends
-- `party-viral-catalog.js`: Viral-, Preis-, Wissens- und Storyformate
-- `party-core-release-catalog.js`: zusätzliche redaktionelle Releaseinhalte der Core-Games; erweitert vorhandene Packs ohne Spiellogik zu duplizieren
-- `party-routing.js`: Routingfassade plus Integration selbst erstellter Spiele
-- `party-release-structure.js`: 15 Kernspiele, 13 Erweiterungen, 17 Labs und kombinierter Altersfilter
-- `party-filter-state.js`: normalisierte lokale Katalogfilter und letzte Hub-Ansicht
-- `party-search-assist.js`: Synonyme, Tippfehlertoleranz und barrierearme Suchvorschläge
-- `party-hub.js`: Hub-Session, Ledger-Anbindung, Navigation, gemeinsame Bedienung und nicht zeitgesteuerte direkte Hub-Spiele
-- `party-hub-timers.js`: Timer-State-Normalisierung und die zeitgesteuerten direkten Hub-Spiele Scharade, Tabu, Heiße Kartoffel und Wortkette
-- `party-hub-plus.js`: Einstellungen, Statistik, Erfolge und Installation
-- `party-hub-polish.js`: kontextabhängige Aktionen und Hilfelader
-- `party-guide.js`: Onboarding, kurze Erklärungen und Creator-Einstiege
-- `party-custom-packs.js`: eigene Packs mit Transaktionsschutz
-- `party-night.js`: Planung und Fortschritt
-- `party-data-tools.js`: Gesamtsicherung und Löschung
+- `game-creator.js`: Validierung, Speicherung, Import/Export, Katalogabbildung
+- `creator-page.js`: Wizard und Bibliothek
+- `party-created-modes.js`: wiederaufnehmbare Creator-Spielengine
 
-Für den vollständigen Party-Hub-Katalog gilt die Ladefolge:
+### Weitere Enginefamilien
 
-`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-routing.js`
+- `party-advanced.js` / `party-advanced-runner.js`
+- `party-quick-modes.js`
+- `party-mega-modes.js`
+- `party-viral-modes.js`
+- `party-created-modes.js`
+- `quick-loader.js`
 
-`party-core-release-catalog.js` darf ausschließlich Built-in-Content erweitern und Katalog-Lesefunktionen auf den erweiterten Inhalt zeigen lassen. Es darf keine Session-, DOM-, Scoring-, Routing- oder Persistenzlogik übernehmen. Dadurch kann die redaktionelle Inhaltsmenge wachsen, ohne `party-expansion.js` oder die Engine-Module zu Monolithen zu machen.
+Alle schnellen Enginefamilien verwenden `party-session-controls.js` statt privater Intervalltimer.
 
-Für direkte Hub-Timer gilt eine feste Lade- und Eigentumsreihenfolge: `party-session-controls.js` stellt die generische pausierbare Uhr bereit, `party-hub-timers.js` implementiert die spielabhängigen Timermechaniken, `party-hub.js` besitzt die Session und delegiert an das Timer-Modul. Diese Reihenfolge wird in `party.html`, Architektur-Audit, Projektvalidator und Unit-Verträgen erzwungen.
+## 7. Modulgrößen
 
-Der Hub lädt Komforterweiterungen in kontrollierter Reihenfolge: Reifestufenstruktur, gespeicherter Filterzustand, Suchhilfe. Fällt eine Komfortschicht aus, bleibt der Basiskatalog nutzbar.
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB. Engere Budgets aus `scripts/performance_budget.py` haben Vorrang.
 
-### Game-Creator
+Besonders:
 
-- `game-creator.js`: reine Validierung, Speicherung, Export, Import und Katalogabbildung
-- `creator-page.js`: vierstufiger Wizard und lokale Bibliothek
-- `creator.html`: semantische Creator-Oberfläche
-- `creator.css`: responsive Vorschau und Bedienung
-- `party-created-modes.js`: eigene wiederaufnehmbare Spielengine für alle sechs Vorlagen
+- `party-hub.js`: max. 50 KB
+- `party-hub-timers.js`: max. 18 KB
+- `party-core-release-catalog.js`: max. 65 KB
+- `party-core-classic-content.js`: max. 45 KB
 
-Der Creator unterstützt Fragen, Auswahl, Erraten, Challenges, Story und Debatte. Neue Creator-Vorlagen werden nur ergänzt, wenn sie auf einer klaren Engine basieren und migrationsfähig bleiben.
+Wenn ein Contentmodul sein Budget erreicht, wird entlang klarer mechanischer/thematischer Grenzen getrennt; das Budget wird nicht reflexartig erhöht.
 
-### Spielengines, Abschlussregister und gemeinsame Steuerung
+## 8. Reine Logik vor DOM-Logik
 
-- `session-ledger.js`: stabile Session- und Abschluss-IDs sowie genau-einmal-Aktualisierung von Verlauf, zuletzt gespielt und Statistik
-- `party-session-controls.js`: gemeinsame Pause/Fortsetzen-, Überspringen-, Abbruch-, Wiederholen- und Nächstes-Spiel-Steuerung sowie pausierbarer Timer für schnelle Engines
-- `party-advanced.js` und `party-advanced-runner.js`: komplexe Rollen- und Täuschungsspiele
-- `party-quick-modes.js`: zehn klassische Quick Modes
-- `party-mega-modes.js`: neun Trend-Modi
-- `party-viral-modes.js`: acht Viral-Modi
-- `party-created-modes.js`: selbst erstellte Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenspiele
-- `quick-loader.js`: lädt zuerst das gemeinsame Session-Ledger, danach die gemeinsame Sessionsteuerung und erst anschließend genau eine passende Engine
+Planung, Validierung, Katalog, Suche, Migration und Zustandsübergänge sollen ohne Browser testbar bleiben.
 
-Creator, Quick, Mega und Viral verwenden denselben direkten Abschluss- und Bedienvertrag. Keine Engine erzeugt beim wiederholten Abschlussversuch eine neue zufällige Verlaufs-ID. Keine dieser vier Enginefamilien besitzt einen privaten Intervalltimer; zeitgesteuerte Runden verwenden `party-session-controls.js`, damit eine sichtbare Pause auch die verbleibende Zeit tatsächlich einfriert.
+DOM-Code verbindet Eingaben und Darstellung, dupliziert aber keine abweichenden Fachregeln.
 
-Auch die direkte Hub-Engine besitzt keinen privaten Intervalltimer. `party-hub-timers.js` verwendet ausschließlich den Controller aus `party-session-controls.js`; Restzeit wird aus dem gemeinsamen Controller serialisiert und bei Wiederaufnahme bewusst pausiert rekonstruiert. Timermechaniken dürfen nicht zurück in `party-hub.js` dupliziert werden.
+Globale Monkey-Patches von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik sind verboten.
 
-Ein globales Überschreiben von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik ist verboten.
+## 9. Lokale Transaktionen und Exact-once
 
-Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB. Zusätzlich gelten die engeren Performancebudgets aus `scripts/performance_budget.py`; aktuell gelten insbesondere 50 KB für `party-hub.js`, 18 KB für `party-hub-timers.js` und 65 KB für `party-core-release-catalog.js`.
+Kritische Vorgänge:
 
-## 5. Reine Logik vor DOM-Logik
+1. validieren Eingaben
+2. erfassen den vorherigen Zustand
+3. schreiben vollständig
+4. stellen bei Fehlern den vorherigen Zustand wieder her
 
-Planung, Validierung, Suche, Migration und Zustandsübergänge sollen ohne Browser testbar sein. DOM-Code erstellt Elemente, verbindet Ereignisse und zeigt Status; er dupliziert keine abweichenden Regeln.
+Das gilt insbesondere für Import, Löschung, eigene Packs, eigene Spiele und Sessionabschlüsse.
 
-Der gemeinsame Sessioncontroller hält Timerlogik, Pausenzustand und die generischen Navigationsaktionen getrennt von der eigentlichen Spielmechanik. Engines liefern nur ihre callbackspezifischen Aktionen wie nächste Runde, Abbruch und Replay.
+Ein Sessionabschluss:
 
-## 6. Lokale Transaktionen
+1. verwendet eine stabile Abschluss-ID
+2. berechnet den nächsten Ledgerzustand
+3. speichert Verlauf/Statistik
+4. markiert den Abschluss als verbucht
+5. entfernt erst danach die aktive Session
+6. stellt bei fehlgeschlagener Bereinigung einen sicheren Zustand wieder her
 
-Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Stand wieder her. Das gilt für Import, Löschung, Sessionabschluss, eigene Packs, eigene Spiele und Inhaltsmigrationen.
+## 10. Datenschutz und Security durch Architektur
 
-Sessionabschlüsse schreiben Verlauf und Statistik genau einmal. Der Ablauf lautet:
-
-1. stabile Abschluss-ID aus Engine, Spiel und Session erzeugen,
-2. nächsten Hub-Zustand rein über `recordCompletion` berechnen,
-3. Hub atomar speichern,
-4. aktiven Abschluss als verbucht speichern,
-5. aktive Session entfernen,
-6. bei fehlgeschlagener Bereinigung den letzten aktiven Zustand wiederherstellen.
-
-Jede neue echte Session erhöht `plays` genau um eins; ein Neuladen oder wiederholter Abschlussversuch erzeugt weder einen zweiten Verlaufseintrag noch zusätzliche Runden.
-
-Ein manueller Sessionabbruch entfernt den gespeicherten aktiven Zustand nur dann endgültig, wenn dieser Schreibvorgang erfolgreich ist. Bei Speicherfehlern bleibt der letzte aktive Zustand wiederherstellbar.
-
-## 7. Bedienbarkeitsvertrag
-
-- Hauptaufgaben sind in höchstens drei bis vier klaren Schritten erreichbar
-- jede Seite erklärt kurz ihren Zweck
-- Fachbegriffe erhalten direkte Hilfen
-- Buttons benennen die konkrete nächste Aktion
-- leere Zustände erklären, wie Inhalte entstehen
-- wichtige Regeln stehen vor dem Start in Kurzform
-- progressive Offenlegung statt langer Formulare auf einmal
-- Nutzer können jederzeit zurück, abbrechen oder Daten sichern
-- Quick-, Mega-, Viral- und Creator-Modi zeigen Pause/Fortsetzen, Runde überspringen und Session beenden an derselben Position
-- direkte Hub-Spiele trennen **Beenden & speichern** von **Abbrechen & verwerfen** und besitzen eine gemeinsame Runde-überspringen-Aktion ohne Punktvergabe
-- nach einem Abschluss stehen Wiederholen und nächstes Spiel an derselben Stelle bereit
-- Pause blockiert die Rundenaktionen und friert einen aktiven Timer ein; Fortsetzen nimmt ihn mit der Restzeit wieder auf
-- Suchvorschläge bleiben optional und vollständig per Tastatur bedienbar
-- direkte URL-Navigation besitzt Vorrang vor einer gespeicherten letzten Ansicht
-
-## 8. Datenschutz durch Architektur
-
-- keine Analyse- oder Werbeskripte
-- keine externen Schriftarten oder Laufzeit-CDNs
+- keine Analytics-/Ads-Skripte
 - keine versteckten Netzwerkaufrufe
-- dynamische Nutzerdaten über `textContent`
-- restriktive Content Security Policy
-- alle App-Daten über `secret-circle-` auffindbar und löschbar
-- Creator lädt keine Bilder automatisch hoch
-- Fan-Quiz enthält keine fremden Bilder, Logos, Zitate oder Mediendateien
-- Geld-Challenges bleiben hypothetisch
-- Preisfragen verwenden feste Spielwerte
+- keine externen Fonts zur Laufzeit
+- restriktive CSP
+- dynamische Nutzerdaten bevorzugt über `textContent`
+- Imports besitzen Format-/Größen-/Strukturgrenzen
+- geheime Inhalte werden bei Hintergrundwechsel/Reload nicht automatisch wieder sichtbar
+- alle lokalen Appdaten bleiben identifizierbar und löschbar
+- Creator lädt keine Medien automatisch hoch
 
-## 9. Offline- und Updatevertrag
+`SECURITY.md` und `THREAT_MODEL.md` sind verbindliche Ergänzungen dieses Architekturvertrags.
 
-Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: **`secret-circle-v31`**.
+## 11. Offline- und Updatevertrag
 
-Creator, Hilfesystem, Release-Tiers, Filterzustand, Suchhilfe, Core-Release-Content, Session-Ledger, gemeinsame Sessionsteuerung, `party-hub-timers.js`, alle Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core. Nicht mehr verwendete Übergangsmodule werden aus Code, Tests, Loader und Cache entfernt.
+Aktueller Offline-Core: **`secret-circle-v32`**.
 
-Eine neue Version wird zuerst in einem Staging-Cache vollständig vorbereitet. Sie wird erst nach sichtbarer Zustimmung aktiviert. Der aktive Offline-Core wird nicht vor erfolgreicher Übernahme gelöscht.
+Zum Offline-Core gehören unter anderem:
 
-## 10. Accessibility als Definition of Done
+- Kernseiten
+- Word Imposter
+- Creator
+- Release-Tiers
+- Filter und Suche
+- beide Core-Contentmodule
+- Session-Ledger
+- gemeinsame Sessionsteuerung
+- Hub-Timermodul
+- benötigte Engines
+- Datenschutzseite
 
-Jede Oberfläche benötigt semantische Überschriften, beschriftete Felder, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 Pixel große Touchziele, Reduced Motion, 200-Prozent-Zoom, verständliche Statusmeldungen sowie Smartphone- und Desktopprüfung. Farbe allein darf keinen Status erklären.
+Eine neue PWA-Version wird zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
-Dynamische Suchvorschläge verwenden eine ARIA-Listbox, einen nachvollziehbaren aktiven Eintrag und die Tasten Pfeil hoch, Pfeil runter, Enter und Escape.
+Bei jeder neuen offline benötigten Datei:
 
-Der Pausenknopf meldet seinen Zustand über `aria-pressed`; pausierte Rundenaktionen werden über `inert` aus der Bedienung genommen und ein sichtbarer Live-Status erklärt, dass Spiel und Timer pausiert sind.
+1. CORE-Liste ändern
+2. Cachegeneration erhöhen
+3. Service-Worker-Test ändern
+4. Architektur/Deployment synchronisieren
+5. reales alte→neue Update später testen
 
-## 11. Inhaltsvertrag
+## 12. Accessibility als Definition of Done
 
-- keine proprietären Karten, Texte, Bilder, Logos, Zitate oder Audios anderer Apps kopieren
-- allgemein bekannte Namen nur in klar inoffiziellem textbasiertem Fan-Kontext
-- jede Karte besitzt ein eigenes redaktionelles Ziel
+Jede Kernoberfläche benötigt:
+
+- semantische Struktur
+- beschriftete Felder
+- vollständige Tastaturbedienung
+- sichtbaren Fokus
+- mindestens 44 × 44 px wichtige Touchziele
+- Reduced Motion
+- 200-%-Zoom
+- verständliche Statusmeldungen
+- Smartphone-/Tablet-/Desktopprüfung
+- Status nicht nur über Farbe
+
+Dynamische Suchvorschläge benötigen ARIA-Listbox und nachvollziehbare Tastaturnavigation. Pausenstatus wird sichtbar und programmatisch kommuniziert.
+
+## 13. Inhaltsvertrag
+
+- keine kopierten proprietären Karten anderer Apps
+- keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
+- jede Built-in-Karte besitzt einen eigenen redaktionellen Zweck
 - Altersstufe und sensible Themen werden dokumentiert
-- strukturierte Modi verwenden strukturierte Daten
-- Nutzerpacks und selbst erstellte Spiele bleiben von eingebauten Inhalten getrennt
-- öffentliche oder kommerzielle Fan-Inhalte benötigen eigene Rechtsprüfung
-- steigende Contentmengen werden in dedizierten Contentmodulen gehalten und dürfen keine Engine-Verantwortung aufnehmen
+- strukturierte Mechaniken verwenden strukturierte Daten
+- Nutzerinhalte bleiben von Built-ins getrennt
+- steigende Contentmengen liegen in dedizierten Contentmodulen
 
-## 12. Asset- und Animationsvertrag
+`CONTENT_AGE_POLICY.md` definiert die aktuellen quantitativen und redaktionellen Release-Gates.
 
-`ASSET_PLAN.md` definiert Icons, Illustrationen, Motion, Budgets und Dateistruktur. Kernfunktionen bleiben ohne Bilder und Animationen verständlich. Animationen blockieren keine Eingabe und beachten Reduced Motion.
+## 14. Testpyramide
 
-## 13. Testpyramide
+Bei jedem Commit vorgesehen:
 
-Bei jedem Commit: Syntax, Unit-Tests, Strukturvalidator, Release-Audit und Performancebudget. Bei Release Candidates zusätzlich Chromium, Firefox, WebKit, Android-/iPhone-Simulation, echte Geräte, Offline-Update sowie kleine und große Partytests. Datenänderungen benötigen Korruptions-, Quota-, Rollback- und Größenprüfungen.
+- Syntaxchecks
+- Unit-/Contracttests
+- Strukturvalidatoren
+- Content-/Scoring-Audits
+- Performancebudget
+- Release-Audit
 
-Sessiontests prüfen alle vier schnellen Enginefamilien auf stabile Session-IDs, deterministische Migration alter Sessions, genau einen Verlaufseintrag, genau eine Statistikaktualisierung und Wiederherstellung bei fehlgeschlagener Bereinigung.
+Bei Release Candidates zusätzlich:
 
-Der gemeinsame Sessioncontroller besitzt einen isolierten Test mit kontrollierter Uhr. Browserprüfungen müssen zusätzlich nachweisen, dass ein sichtbarer Timer während einer Pause unverändert bleibt, nach Fortsetzen weiterläuft, Skip und bestätigter Abbruch funktionieren und Replay beziehungsweise nächstes Spiel erreichbar sind.
+- Chromium
+- Firefox
+- WebKit
+- echte Android-/iPhone-/Tablet-Tests
+- Offline-Update
+- Accessibility
+- reale Partygruppen
 
-Die direkten Hub-Verträge prüfen `party-hub.js` und `party-hub-timers.js` gemeinsam: Script-Reihenfolge, vier pausierbare Timerarten, sichere Reload-Wiederaufnahme, getrennten Abschluss/Abbruch, Skip ohne Punkt, Fokusführung und Offline-Verfügbarkeit des Timer-Moduls.
+Contenttests verwenden den finalen `party-routing.js`-Pfad und prüfen damit Expansion + beide Core-Contentmodule gemeinsam.
 
-Core-Content-Verträge verwenden den finalen `party-routing.js`-Pfad, damit `party-expansion.js` und `party-core-release-catalog.js` gemeinsam geprüft werden. Dabei werden Packdrift, Mindestmengen, exakte Duplikate, strukturierte Karten, Altersstufen und Offline-Verfügbarkeit geschützt.
+## 15. Performance und Assets
 
-Creator-spezifische E2E-Prüfungen decken Wizard, strukturierte Karten, Offline-Start, Wiederaufnahme, Sanitizing, exakte Verlaufseinträge und wiederholte Statistik ab. Hub-E2E-Prüfungen decken Filterwiederherstellung, URL-Priorität, kombinierte Alters-/Reifestufenfilter sowie Suchvorschläge mit Maus und Tastatur ab.
+Keine großen Frameworks, Videos oder Mediendateien ohne messbaren Produktnutzen, Kompression und explizites Budget. Wachstum des Offline-Cores bleibt über `scripts/performance_budget.py` sichtbar.
 
-## 14. Performancebudget
+`ASSET_PLAN.md` definiert visuelle Assets. Kernfunktionalität muss ohne dekorative Bilder/Animationen verständlich bleiben.
 
-Neue Module und Assets erhalten eigene Budgets. Keine großen Frameworks, Videos oder Mediendateien ohne messbaren Nutzen, Kompression und Audit. Wachstum des Offline-Cores bleibt sichtbar.
+## 16. Deprecation, Rollback und Erweiterung
 
-`party-session-controls.js` besitzt ein eigenes Größenbudget und darf nicht als Vorwand dienen, spielabhängige Logik in einen unübersichtlichen globalen Controller zu verschieben. Dasselbe gilt für `party-hub-timers.js`: Es enthält nur die vier zeitgesteuerten direkten Hub-Mechaniken und darf keine Session-, Katalog- oder Statistikverantwortung übernehmen.
+Veraltete Funktionen werden dokumentiert migriert und nicht still entfernt. Keine Force-Pushes auf stabile Release-Basen.
 
-`party-core-release-catalog.js` darf das Contentbudget nur für redaktionelle Built-in-Inhalte verwenden. Wenn es sein 65-KB-Budget erreicht, werden Inhalte nach klaren mechanischen oder thematischen Grenzen in weitere reine Contentmodule getrennt; das Budget wird nicht einfach angehoben.
+Rollback muss persistierte Daten kompatibel halten und benötigt bei PWA-Dateiänderungen erneut eine höhere Cachegeneration.
 
-## 15. Erweiterungspunkte
-
-Lokalisierte Inhalte, optionale Sounds, strukturierte Editoren, Teams, Turniere, Tageschallenges, Raumcodes, moderierte Inhaltsupdates und lokale Kartenbewertungen dürfen den vollständig lokalen Modus nicht ersetzen.
-
-## 16. Deprecation und Rollback
-
-Veraltete Funktionen werden markiert, migriert, mindestens einen Beta-Zyklus beobachtet, dokumentiert entfernt und mit Rollback geprüft. Keine Force-Pushes auf Release-Branches und keine stillen nicht migrierbaren Datenlöschungen.
-
-Ein Übergangsmodul darf nur existieren, solange die Zielmodule noch nicht direkt migriert sind. Nach direkter Migration wird es aus Runtime, Offline-Core, Tests, Budgets und Dokumentation entfernt.
+Spätere Lokalisierung, Sounds, Teams, Turniere, Tageschallenges oder Onlinefunktionen dürfen den lokalen Offline-Kern nicht unabsichtlich ersetzen.
 
 ## 17. Releaseentscheidung
 
-Eine Funktion ist erst fertig, wenn Verhalten und Fehlerzustände implementiert, Datenmigration geklärt, Offline-Betrieb und Accessibility geprüft, relevante Tests vorhanden, Dokumentation und Datenschutz angepasst und reale Nutzung beobachtet wurden.
+Eine Funktion ist erst fertig, wenn:
+
+- Happy Path und Fehlerfälle funktionieren
+- Daten-/Migrationsverhalten geklärt ist
+- Security/Privacy berücksichtigt ist
+- Offlineverhalten passt
+- Accessibility berücksichtigt ist
+- relevante Tests vorhanden und tatsächlich ausgeführt sind
+- Dokumentation synchron ist
+- reale Nutzung bei releasekritischen Flows beobachtet wurde
+
+„Code vorhanden“ ist kein Release-Nachweis.
