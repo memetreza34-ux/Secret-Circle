@@ -86,9 +86,11 @@ Ein Abschluss verwendet eine stabile Completion-ID, schreibt Verlauf/Statistik g
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v35`**.
+Aktueller Offline-Core: **`secret-circle-v36`**.
 
 Zum Offline-Core gehören Kernseiten, Word Imposter, Creator, Release-Tiers, Filter/Suche, beide Core-Contentmodule, Backup-Registry, Session-Ledger, gemeinsame Sessionsteuerung, Hub-Timermodul, benötigte Engines und Datenschutzseite.
+
+v36 enthält zusätzlich den redaktionellen Core-Rechtepass für Word Imposter: vermeidbare konkrete Marken-/Awardbegriffe wurden durch generische Begriffe ersetzt und regressionsgesichert.
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -106,10 +108,12 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 
 `ACCESSIBILITY.md`, `tests/accessibility-contract.test.js` und `tests/e2e/accessibility-core.spec.js` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
 
-## 11. Inhaltsvertrag
+## 11. Inhalts- und Rechtevertrag
 
 - keine kopierten proprietären Karten anderer Apps
 - keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
+- vermeidbare konkrete Marken-/Awardbegriffe im Core werden generisch formuliert
+- Fan-/Franchise-Inhalte werden separat inventarisiert und vor Production bewusst freigegeben, generisch ersetzt oder aus dem öffentlichen Build genommen
 - keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter oder Adressen
 - jede Built-in-Karte besitzt einen redaktionellen Zweck
 - Altersstufe und sensible Themen werden dokumentiert
@@ -117,7 +121,7 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 - Nutzerinhalte bleiben von Built-ins getrennt
 - wachsende Contentmengen liegen in dedizierten Contentmodulen
 
-`CONTENT_AGE_POLICY.md` und `CORE_CONTENT_REVIEW.md` definieren Mengen-, Safety- und redaktionelle Gates.
+`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md` und `THIRD_PARTY_NOTICES.md` definieren Mengen-, Safety-, redaktionelle und Rechte-Gates.
 
 ## 12. Testpyramide
 
