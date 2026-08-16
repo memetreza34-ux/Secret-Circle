@@ -16,10 +16,8 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v32`**
+- aktueller Offline-Core: **`secret-circle-v33`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
-
-Die vollständige individuelle Produktabnahme priorisiert die 15 Kernspiele. Extended/Labs müssen weiterhin gemeinsame Stabilitäts-, Daten-, Security- und Offlineverträge erfüllen.
 
 ## Deployment-Reihenfolge
 
@@ -33,7 +31,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ## Voraussetzungen vor Production
 
-### Build/Repository
+### Build und Repository
 
 - unveränderter Release-Commit festgelegt
 - `package-lock.json` vorhanden
@@ -43,28 +41,27 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - GitHub Actions zeigt echten Checkout und echte Steps; `steps: []` zählt nicht
 - Required Checks/Branch Protection eingerichtet
 
-### Produkt/Content
+### Produkt und Content
 
 - alle 15 Kernspiele bestehen `CORE_GAME_ACCEPTANCE.md`
 - Scoring-/Winner-Vertrag bestätigt
 - quantitative Core-Content-Gates erfüllt
 - manuelles semantisches Content-/Alters-/Privacy-Review abgeschlossen
-- Extended/Labs besitzen mindestens technische Smoke-Abnahme
 - keine offenen kritischen/hohen Releasefehler
 
-### Geräte/Accessibility
+### Geräte und Accessibility
 
 - reales Android-Smartphone
 - reales iPhone
 - mindestens ein Tablet
-- PWA-Installation/Standalone/Offline-Neustart
-- Sperrbildschirm und OS-Hintergrund bei Timern
+- PWA-Installation, Standalone und Offline-Neustart
+- Sperrbildschirm/OS-Hintergrund bei Timern
 - Tastatur, Fokus, 200-%-Zoom, Reduced Motion
 - Screenreader-Smoke-Test
 
-### Daten/PWA
+### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v32`** bestätigt
+- Offline-Start aus **`secret-circle-v33`** bestätigt
 - `party-core-release-catalog.js` offline verfügbar
 - `party-core-classic-content.js` offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
@@ -75,89 +72,48 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Reale Gruppen
 
-Dokumentierte Tests mindestens mit:
+Dokumentierte Tests mindestens mit 3–4, 5–8 und 9–12 Personen sowie großer Word-Imposter-Runde, Mafia mit mehreren Rollen, Smart Party Night mehrfach und Creator mit einer Person ohne Entwicklerwissen.
 
-- 3–4 Personen
-- 5–8 Personen
-- 9–12 Personen
-- großer Word-Imposter-Runde
-- Mafia mit mehreren Rollen
-- Smart Party Night mehrfach
-- Creator mit einer Person ohne Entwicklerwissen
+### Recht und Betrieb
 
-### Recht/Betrieb
-
-Vor Production final:
-
-- Betreiber-/Kontaktangaben
-- Datenschutz
-- gegebenenfalls Impressum
-- Hostingangaben
-- Lizenz-/Third-Party-Inventar
-- Supportweg
-- Incident-/Hotfixprozess
+Vor Production final: Betreiber-/Kontaktangaben, Datenschutz, gegebenenfalls Impressum, Hostingangaben, Lizenz-/Third-Party-Inventar, Supportweg sowie Incident-/Hotfixprozess.
 
 ## GitHub Pages / statisches Hosting
 
 GitHub Pages ist eine mögliche Route. Eine andere HTTPS-Plattform ist zulässig, wenn dieselben PWA-/Cache-/Rollbackverträge gelten.
 
-Für GitHub Pages:
-
 1. **PR #13 nicht vor Releasefreigabe mergen.**
 2. freigegebenen Commit in stabile Zielbasis übernehmen
-3. Pages-Deploymentquelle festlegen
+3. Deploymentquelle festlegen
 4. HTTPS-Adresse prüfen
 5. vollständigen Production-Smoke-Test durchführen
 6. Deploymentcommit/-zeitpunkt dokumentieren
-
-Keine Production-Freigabe von einem ungeprüften Arbeitscommit.
 
 ## Production-Smoke-Test
 
 ### Seiten
 
-- `party.html`
-- `creator.html`
-- `advanced.html`
-- `quick-play.html`
-- `index.html`
-- `privacy.html`
-
-liefern Status 200.
-
-Zusätzlich:
-
-- Manifest/Icons korrekt
-- keine kritischen Browser-/Netzwerkfehler
-- CSP blockiert keine benötigten lokalen Dateien
+`party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200. Manifest/Icons sind korrekt, CSP blockiert keine benötigten lokalen Dateien und Browser-/Netzwerkansicht zeigen keine kritischen Fehler.
 
 ### Katalog
 
-Die Browserfolge muss vollständig laden:
+Browserfolge:
 
 `party-catalog → expansion → trending → mega → viral → core-release → core-classic → routing`
 
-Die finalen Core-Inhalte müssen online und offline dieselben Mengen liefern.
+Online und offline müssen dieselben finalen Core-Inhalte verfügbar sein.
 
-### Hub/Creator/Engines
+### Hub, Creator und Engines
 
-- Release-Tiers korrekt
-- Suche/Filter/Favoriten/Spieler/Presets/Verlauf/Party Night funktionieren
-- direkte URL-Navigation korrekt
-- Abschluss vs. Verwerfen klar getrennt
-- Creator: alle sechs Vorlagen, Bearbeiten/Kopieren/Löschen/Import/Export
-- direkte Hub-, Quick-, Mega-, Viral-, Advanced-, Creator- und Word-Imposter-Flows starten
-- aktive Sessions nach Reload sicher fortsetzbar
-- private Inhalte nach Unterbrechung verdeckt
-- Verlauf/Statistik genau einmal
+Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und alle relevanten Enginefamilien starten. Abschluss und Verwerfen bleiben getrennt. Private Inhalte bleiben nach Unterbrechung verdeckt. Verlauf/Statistik zählen Abschlüsse genau einmal.
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v32`**
+- aktiver Cache: **`secret-circle-v33`**
 - beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
-- Query-Navigation besitzt Offline-Fallback
-- ältere lokale Daten bleiben bei Update erhalten
+- Query-Navigation besitzt Fallback
+- lokale Daten bleiben bei Update erhalten
 
 ## Lokale Befehle – Übergangszustand
 
@@ -193,20 +149,7 @@ Bei jeder offline benötigten Dateiveränderung:
 
 ## Rollback
 
-Bei kritischem Fehler:
-
-1. Veröffentlichung stoppen
-2. betroffenen Releasecommit identifizieren
-3. gezielten Revert/Hotfix erstellen
-4. Cachegeneration erneut erhöhen
-5. persistierte Daten rückwärtsverträglich halten oder migrieren
-6. betroffene Kernflows testen
-7. Daten-/Updatepfade prüfen
-8. Rollback auf HTTPS-Staging testen
-9. Production aktualisieren
-10. Vorfall dokumentieren
-
-Kein Force-Push auf die stabile Production-Basis.
+Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert/Hotfix erstellen, Cachegeneration erneut erhöhen, persistierte Daten rückwärtsverträglich halten oder migrieren, betroffene Kernflows und Datenpfade auf HTTPS-Staging testen und anschließend Production aktualisieren. Kein Force-Push auf die stabile Production-Basis.
 
 ## Produktionsfreigabe
 
