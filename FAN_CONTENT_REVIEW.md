@@ -1,7 +1,7 @@
 # Secret Circle – Fan-, Marken- und Referenzcontent-Review
 
 Stand: 16. August 2026  
-Status: **IN PROGRESS – Option B für Anime-Quiz umgesetzt; restlicher Extended/Labs-Pass offen**
+Status: **IN PROGRESS – Core/Anime/Viral bereinigt; restlicher Extended/Labs-Pass offen**
 
 ## 1. Zweck
 
@@ -9,47 +9,33 @@ Dieses Dokument trennt generischen Partycontent von konkreten fremden Namen, Mar
 
 Grundregel: Wenn eine konkrete Fremdreferenz keinen zwingenden Produktnutzen hat, wird sie vor Production generisch formuliert oder aus dem finalen Runtime-Pfad entfernt.
 
-## 2. Core – Word Imposter
-
-Am 16. August 2026 wurden drei nicht benötigte konkrete Begriffe in `word-packs.js` generisch ersetzt:
+## 2. Word Imposter – v36
 
 | vorher | jetzt | Grund |
 |---|---|---|
-| `Bluetooth` | `Funkverbindung` | konkreter Markenname für Mechanik unnötig |
-| `Oscar` | `Filmpreis` | konkreter Awardname für Mechanik unnötig |
-| `Formel 1` | `Motorsport` | konkrete Wettbewerbsbezeichnung für Mechanik unnötig |
+| `Bluetooth` | `Funkverbindung` | konkreter Markenname unnötig |
+| `Oscar` | `Filmpreis` | konkreter Awardname unnötig |
+| `Formel 1` | `Motorsport` | konkrete Wettbewerbsbezeichnung unnötig |
 
-Die 14 Word-Imposter-Kategorien bleiben mit 12 Einträgen je Kategorie unverändert tief. `tests/core-content-quality.test.js` schützt die drei Ersetzungen.
+Die 14 Kategorien mit je 12 Einträgen bleiben erhalten. Der Test schützt die Ersetzungen.
 
 ## 3. `who-am-i`
 
 Das Pack `Anime-Archetypen` verwendet generische Rollenbeschreibungen statt konkreter Figuren. Andere Packs enthalten generische Berufe/Tiere sowie historische, mythologische oder allgemein bekannte Namen.
 
-Keine bekannten Charakterbilder, Logos, Screenshots oder Zitate sind für diesen Modus vorgesehen.
+Historische Personen werden nicht automatisch wie aktuelle Marken-/Franchisereferenzen behandelt. Keine bekannten Charakterbilder, Logos, Screenshots oder Zitate sind für diesen Modus vorgesehen.
 
-## 4. Früherer `anime-guess`-Befund
+## 4. `anime-guess` – v37
 
-Der Labs-Modus enthielt ursprünglich 40 konkrete bekannte Figuren-/Franchisereferenzen in vier Packs.
+Der Labs-Modus enthielt im tieferen Basiscontent ursprünglich 40 konkrete bekannte Figuren-/Franchisereferenzen. Diese wurden vor der Releaseentscheidung inventarisiert.
 
-Beispiele aus dem früheren Basisinhalt waren unter anderem Son Goku, Naruto Uzumaki, Pikachu und Totoro. Diese Liste wurde inventarisiert, bevor eine Releaseentscheidung getroffen wurde.
+Für den **finalen Runtime-Pfad** wurde Option B gewählt: komplett generisch.
 
-## 5. Entscheidung: Option B umgesetzt
+Stabile ID: `anime-guess`  
+Finaler Titel: **Anime-Archetypen erraten**  
+Gruppe: **Anime-Quiz**
 
-Für den finalen Runtime-Pfad wurde **Option B – komplett generisch machen** gewählt.
-
-Die stabile technische Spiel-ID bleibt:
-
-`anime-guess`
-
-Der sichtbare Modus heißt jetzt:
-
-**Anime-Archetypen erraten**
-
-Gruppe:
-
-**Anime-Quiz**
-
-Vier finale Packs:
+Finale Packs:
 
 1. Action & Abenteuer
 2. Magie & Mystery
@@ -58,46 +44,29 @@ Vier finale Packs:
 
 Jedes Pack enthält 10 eigenständige Archetypen, insgesamt 40.
 
-Beispiele:
+`party-core-classic-content.js` Version 2 überschreibt dafür Titel, Beschreibung, Regeln, Packs und Content. `tests/core-content-quality.test.js` enumeriert die 40 früheren Namen und verlangt ihre Abwesenheit im finalen Runtime-Content.
 
-- Ehrgeiziger Kampfkunst-Schüler
-- Optimistische Abenteuerkapitänin
-- Fluchjägerin
-- Zeitreisende Detektivin
-- Prinzessin auf geheimer Reise
-- Roboterpilot wider Willen
-- Volleyball-Springer
-- Rennfahrerin mit Nerven aus Stahl
+Status: **CLOSED IN CODE / RUNNER VERIFICATION OPEN**.
 
-## 6. Technische Umsetzung
+### Source-Distribution-Hinweis
 
-`party-core-classic-content.js` ist als finale Built-in-Redaktionsschicht auf Version 2 angehoben.
+Die tiefer liegende Datei `party-mega-catalog.js` enthält den historischen Basisblock weiterhin, obwohl er im finalen Runtime-Pfad überschrieben wird. Für die ausgelieferte App ist die finale Route reference-safe. Falls der Quellcode später öffentlich verteilt wird, muss vor dieser Quellcodeveröffentlichung zusätzlich entschieden werden, ob auch der historische Basisblock vollständig bereinigt werden soll.
 
-Sie:
+## 5. Viral `higher-lower` – v38
 
-- behält die stabile ID `anime-guess`
-- überschreibt Titel, Gruppe, Beschreibung, Regeln und Packnamen
-- ersetzt den finalen `anime-guess`-Content vollständig durch 40 generische Archetypen
-- liefert `referenceSafeGameIds`
-- dokumentiert `referenceSafeRemovedConcreteNames: 40`
+Im Sportpack wurden drei unnötig konkrete Event-/Award-nahe Formulierungen ersetzt, ohne die Zahlenlogik zu verändern:
 
-Damit können gespeicherte/routbare IDs stabil bleiben, während der sichtbare öffentliche Runtime-Content reference-safe wird.
+| vorher | jetzt | Wert |
+|---|---|---:|
+| Ringe im olympischen Symbol | Ecken eines Fünfecks | 5 |
+| Bahnen eines olympischen 400-Meter-Stadions häufig | Bahnen einer typischen 400-Meter-Leichtathletikanlage | 8 |
+| Sätze zum Sieg im Herren-Grand-Slam-Tennis | Gewinnsätze in einem Best-of-five-Tennismatch | 3 |
 
-## 7. Regression
+`tests/party-viral-catalog.test.js` verlangt die neuen Einträge und blockiert die alten Formulierungen.
 
-`tests/core-content-quality.test.js` prüft:
+Status: **CLOSED IN CODE / RUNNER VERIFICATION OPEN**.
 
-- sichtbarer Titel `Anime-Archetypen erraten`
-- vier erwartete Packnamen
-- 10 Archetypen pro Pack
-- insgesamt 40 Einträge
-- keine der 40 früher inventarisierten konkreten Figuren im finalen Runtime-Content
-
-`scripts/core_content_audit.py` prüft zusätzlich die Reference-Safe-Metadaten und den Testvertrag.
-
-Status dieser Teilentscheidung: **CLOSED IN CODE / RUNNER VERIFICATION OPEN**.
-
-## 8. Visuelle Fancontent-Regeln
+## 6. Visuelle Fancontent-Regeln
 
 Weiterhin verbindlich:
 
@@ -108,9 +77,9 @@ Weiterhin verbindlich:
 - visuelle Anime-Begleitung nur über eigenständige generische Archetypen
 - ein generiertes Bild darf nicht gezielt wie eine konkrete bekannte Figur aussehen
 
-## 9. Restlicher Extended-/Labs-Pass
+## 7. Restlicher Extended-/Labs-Pass
 
-Noch offen ist der vollständige finale Quellpass auf vermeidbare konkrete:
+Noch offen ist der finale Quellpass auf vermeidbare konkrete:
 
 - Plattformnamen
 - Produkt-/Markennamen
@@ -119,21 +88,23 @@ Noch offen ist der vollständige finale Quellpass auf vermeidbare konkrete:
 - geschützte Figuren
 - fremde Slogans/Zitate
 
-Bisher inspizierte Trending-/Viral-Pfade verwenden überwiegend generische Kategorien und selbst formulierte Situationen.
+Aktuell direkt inspizierte Mega-/Viral-Pfade verwenden außerhalb des historisch überschriebenen Anime-Basisblocks überwiegend generische Kategorien, historische Personen und selbst formulierte Situationen. GitHub-Code-Suche allein gilt wegen Branch-/Indexgrenzen nicht als Freigabenachweis; maßgeblich bleibt die direkte Prüfung der Working-Branch-Dateien und des finalen Routingpfads.
 
-## 10. Release-Gates
+## 8. Release-Gates
 
 Vor `FAN / REFERENCE CONTENT PASS`:
 
 - [x] Word-Imposter-Core auf unnötige konkrete Referenzen geprüft
 - [x] drei Core-Begriffe generisch ersetzt
 - [x] konkrete frühere `anime-guess`-Figuren inventarisiert
-- [x] **Option B** für `anime-guess` entschieden
+- [x] Option B für `anime-guess` umgesetzt
 - [x] 40 konkrete Figuren aus dem finalen Runtime-Katalog entfernt
-- [x] Reference-Safe-Regressionstest vorbereitet
-- [ ] übrige Extended/Labs final auf vermeidbare Marken-/Franchisereferenzen durchgesehen
+- [x] Viral-Sportreferenzen aus v38 generisch ersetzt
+- [x] Regressionstests für diese Änderungen vorbereitet
+- [ ] übrige Extended/Labs final direkt auf vermeidbare Marken-/Franchisereferenzen durchgesehen
 - [ ] keine fremden Bilder/Logos/Screenshots/Audios/Videos im finalen Build bestätigt
 - [ ] Marketingtexte auf keine offizielle Partnerschaft/Irreführung geprüft
+- [ ] Source-Distribution-Entscheidung für historischen Anime-Basisblock getroffen, falls Repo öffentlich wird
 - [ ] `THIRD_PARTY_NOTICES.md` und `LEGAL_CHECKLIST.md` final synchronisiert
 - [ ] Tests auf funktionierendem Runner tatsächlich ausgeführt
 
