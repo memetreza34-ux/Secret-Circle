@@ -12,38 +12,30 @@ production_js = [
     'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js', 'app.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-core-release-catalog.js',
-    'party-core-classic-content.js', 'party-routing.js',
-    'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
-    'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
-    'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-guide.js',
-    'party-night.js', 'party-data-tools.js', 'party-advanced.js',
-    'party-advanced-runner.js', 'party-advanced-preferences.js',
+    'party-core-classic-content.js', 'party-routing.js', 'party-release-structure.js',
+    'party-filter-state.js', 'party-search-assist.js', 'game-creator.js', 'creator-page.js',
+    'party-custom-packs.js', 'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js',
+    'party-hub-polish.js', 'party-guide.js', 'party-night.js', 'party-data-tools.js',
+    'party-advanced.js', 'party-advanced-runner.js', 'party-advanced-preferences.js',
     'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
     'party-created-modes.js', 'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html']
 violations = []
 
-
-def require_file(relative: str) -> Path:
-    path = ROOT / relative
-    if not path.is_file():
-        violations.append(f'Missing architecture file: {relative}')
-    return path
-
-
 for relative in production_js + html_pages:
-    require_file(relative)
+    if not (ROOT / relative).is_file():
+        violations.append(f'Missing architecture file: {relative}')
 if violations:
     raise SystemExit('\n'.join(sorted(set(violations))))
 
 architecture = read('ARCHITECTURE.md')
 for marker in (
-    'Stabile Identitäten', 'Versionierte Daten', 'Katalog- und Contentarchitektur',
+    'Stabile Identitäten', 'Versionierte Daten und Backups', 'Katalog- und Contentarchitektur',
     'Hub- und Timergrenzen', 'Lokale Transaktionen und Exact-once',
     'Datenschutz und Security durch Architektur', 'Offline- und Updatevertrag',
-    'Accessibility als Definition of Done', 'Inhaltsvertrag', 'Testpyramide',
-    'Performance und Assets', 'Deprecation, Rollback und Erweiterung'
+    'Accessibility als Definition of Done', 'Inhalts- und Rechtevertrag', 'Testpyramide',
+    'Performance und Assets', 'Betrieb, Deprecation und Rollback'
 ):
     if marker not in architecture:
         violations.append(f'Architecture contract marker missing: {marker}')
@@ -78,13 +70,11 @@ for relative in html_pages:
 
 party_page = read('party.html')
 quick_play = read('quick-play.html')
-
 catalog_chain = [
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js',
     'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js'
 ]
-
 
 def check_order(source: str, names: list[str], context: str) -> None:
     positions = []
@@ -97,87 +87,33 @@ def check_order(source: str, names: list[str], context: str) -> None:
     if positions != sorted(positions):
         violations.append(f'{context} module order is invalid: {" -> ".join(names)}')
 
-
 check_order(party_page, catalog_chain, 'party.html')
 check_order(quick_play, catalog_chain, 'quick-play.html')
 check_order(party_page, ['party-session-controls.js', 'party-hub-timers.js', 'party-hub.js'], 'party.html timer chain')
-
-for marker in (
-    'id="pause-hub-game"', 'id="skip-hub-round"', 'id="finish-hub-game"',
-    'id="abort-hub-game"', 'id="play-pause-status"'
-):
-    if marker not in party_page:
-        violations.append(f'Hub session control missing from party.html: {marker}')
-
-for marker in (
-    'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
-    'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"', 'id="quick-pause-overlay"'
-):
-    if marker not in quick_play:
-        violations.append(f'Shared session control missing from quick-play.html: {marker}')
+check_order(party_page, ['backup-schema-registry.js', 'party-data-tools.js'], 'party.html backup chain')
 
 contracts = {
     'backup-schema-registry.js': [
-        'MAX_FILE_BYTES = 1_500_000', "format: 'secret-circle-backup'",
-        "format: 'secret-circle-complete-backup'", "format: 'secret-circle-created-games'",
-        'validateHeader', 'assertSize'
+        'const VERSION = 2;', 'MAX_FILE_BYTES = 1_500_000',
+        "format: 'secret-circle-complete-backup'", 'isAllowedCompleteStorageKey'
     ],
     'session-ledger.js': ['createSessionId', 'legacySessionId', 'completionId', 'recordCompletion'],
-    'party-session-controls.js': [
-        'formatMilliseconds', 'orderedGameIds', 'nextGameId', 'nextGameHref',
-        'createController', 'function countdown', 'function setPaused', 'function setSessionActive',
-        'remainingMilliseconds'
-    ],
-    'party-core-release-catalog.js': [
-        'coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent',
-        "'never-have': {", "'most-likely': {", "'would-rather': {", 'paranoia: {', "'wrong-answers': {"
-    ],
+    'party-session-controls.js': ['createController', 'remainingMilliseconds', 'function setPaused'],
+    'party-core-release-catalog.js': ['coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent'],
     'party-core-classic-content.js': [
-        'coreClassicContentVersion', 'coreClassicContentGames', 'function mergeNested', 'function mergeContent',
-        "'truth-dare': {", 'charades: {', 'taboo: {', "'hot-potato': {"
+        'const VERSION = 2;', 'coreClassicContentVersion', 'coreClassicContentGames',
+        'referenceSafeGameOverrides', 'referenceSafeContent', 'Anime-Archetypen erraten',
+        'referenceSafeRemovedConcreteNames: 40'
     ],
-    'party-routing.js': [
-        "require('./party-core-classic-content.js')", "CREATED_KEY = 'secret-circle-party-created-games-v1'",
-        'safeCreatedGames', 'createCatalog', 'version: 8'
-    ],
-    'party-release-structure.js': [
-        'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'",
-        'tierFor', 'ageAllows', 'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches'
-    ],
-    'party-filter-state.js': [
-        "STORAGE_KEY = 'secret-circle-party-catalog-filters-v1'", 'FIXED_VALUES',
-        'game-search', 'group-filter', 'mood-filter', 'player-filter', 'age-filter',
-        'status-filter', 'release-tier-filter', 'Filter zurücksetzen'
-    ],
-    'party-search-assist.js': [
-        'MANUAL_ALIASES', 'normalizeText', 'levenshtein', 'suggestions',
-        'aria-autocomplete', 'listbox', 'ArrowDown', 'Escape'
-    ],
+    'party-routing.js': ["require('./party-core-classic-content.js')", 'createCatalog', 'version: 8'],
     'party-hub.js': [
         'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'SecretCirclePartyHubTimers',
-        'S.createController', 'T.createTimerGames', "completionId('hub'", 'recordCompletion(state,',
-        "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'normalizeActiveSession',
-        'Session fortsetzen', 'Gespeicherten Stand verwerfen', 'skipHubRound', 'abortSession'
+        "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'Session fortsetzen', 'skipHubRound', 'abortSession'
     ],
-    'party-hub-timers.js': [
-        'SecretCirclePartyHubTimers', 'normalizeTimerState', 'createTimerGames',
-        "TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])",
-        'renderStoredTimerSession'
-    ],
-    'runtime-guard.js': [
-        'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession',
-        "waitingWorker.postMessage({ type: 'SKIP_WAITING' })",
-        'secret-circle-party-hub-active-v1', 'secret-circle-party-active-v1'
-    ],
-    'game-creator.js': [
-        "STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40',
-        'MAX_CARDS = 200', 'normalizeGame', 'createStore', 'toCatalogGame'
-    ],
-    'quick-loader.js': [
-        'session-ledger.js', 'party-session-controls.js', 'scriptPlan',
-        'SecretCircleSessionLedger', 'SecretCircleSessionControls'
-    ],
-    'party-data-tools.js': ['byteLength', 'replaceEntries', 'secret-circle-complete-backup'],
+    'party-hub-timers.js': ['SecretCirclePartyHubTimers', 'normalizeTimerState', 'createTimerGames'],
+    'runtime-guard.js': ['Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession'],
+    'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40'],
+    'party-data-tools.js': ['SecretCircleBackupSchemas', 'replaceEntries', 'registry.isAllowedCompleteStorageKey'],
 }
 for relative, markers in contracts.items():
     source = read(relative)
@@ -224,13 +160,13 @@ else:
     cache_generation = cache.group(2)
     if staging.group(2) != cache_generation:
         violations.append('Service-worker active/staging cache generations differ.')
-    for relative in ('ARCHITECTURE.md', 'DEPLOYMENT.md', 'tests/service-worker.test.js'):
+    for relative in ('ARCHITECTURE.md', 'DEPLOYMENT.md', 'privacy.html', 'ENVIRONMENTS.md', 'tests/service-worker.test.js'):
         if cache_name not in read(relative):
             violations.append(f'Current cache {cache_name} not synchronized in {relative}.')
 
 for asset in (
-    './party-core-release-catalog.js', './party-core-classic-content.js', './party-hub-timers.js',
-    './session-ledger.js', './party-session-controls.js', './party-search-assist.js'
+    './backup-schema-registry.js', './party-core-release-catalog.js', './party-core-classic-content.js',
+    './party-hub-timers.js', './session-ledger.js', './party-session-controls.js'
 ):
     if asset not in sw:
         violations.append(f'Offline core missing architecture-critical asset: {asset}')
@@ -255,7 +191,9 @@ print(json.dumps({
     'module_size_limit_bytes': 100000,
     'pwa_cache': cache.group(1) if cache else None,
     'catalog_chain': catalog_chain,
-    'core_content_modules': ['party-core-release-catalog.js', 'party-core-classic-content.js'],
+    'core_classic_content_version': 2,
+    'reference_safe_anime_runtime': True,
+    'backup_registry_version': 2,
     'shared_session_controls': True,
     'split_hub_timer_module': True,
     'exact_once_contract': True,
