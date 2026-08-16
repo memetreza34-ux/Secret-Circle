@@ -1,99 +1,115 @@
-# GitHub Actions – Fehler vor dem ersten Schritt
+# Secret Circle – CI Troubleshooting
 
-## Beobachtung
+Stand: 16. August 2026
 
-GitHub-Actions-Läufe können als Fehler enden, bevor `actions/checkout` oder ein anderer Workflow-Schritt sichtbar wird. Eine leere Schrittliste und fehlende normale Job-Logs sind kein konkreter Beweis für einen JavaScript-, Unit-, Validator- oder Playwright-Fehler.
+## Aktueller Befund
 
-Der aktuelle Stand erwartet:
+Secret Circle besitzt vorbereitete GitHub-Actions-Workflows, aber die aktuell geprüften Jobs erreichen **keinen Repository-Schritt**.
 
-- 45 eingebaute technisch spielbare Spiele
-- 27 Quick-, Trend- und Viral-Modi
-- 4 Advanced-Spiele
-- lokaler Game-Creator mit 6 Vorlagen und bis zu 40 eigenen Spielen
-- Smart Party Night
-- Offline-Core `secret-circle-v29`
-- mindestens 13 Unit-Testdateien
-- mindestens 27 E2E-Suiten
-- fünf Browser-/Geräteprojekte
+Zuletzt belastbar geprüft: **Run #1905** / Job `validate`.
 
-## Externe Ursachen prüfen
+Beobachtetes Muster:
 
-`Settings → Actions → General`:
+- Job endet `failure`
+- `runner_id: 0`
+- leerer Runnername
+- `runner_group_id: 0`
+- `steps: []`
+- kein Checkout
+- kein Node-/Python-Setup
+- kein `npm install`
+- kein `npm test`
+- kein `npm run validate`
+- kein Playwright
+- kein verwertbarer Repository-Step-Log
 
-- Actions ist erlaubt.
-- offizielle Actions sind zugelassen.
-- Workflow besitzt Lesezugriff auf Repository-Inhalte.
-- Repository ist nicht archiviert.
+Das ist **kein Beweis für einen Codefehler** im Repository. Der Code wird in diesen Läufen nicht ausgeführt.
 
-`Settings → Billing and licensing`:
+## Was nicht auf Verdacht geändert wird
 
-- kein erreichtes Actions-Limit
-- keine blockierte Zahlungsmethode
-- private Repository-Nutzung zulässig
-- kein Organisationsbudget blockiert Runner
+Solange GitHub dem Job keinen Runner zuweist, werden keine funktionierenden Testbefehle, Audit-Gates oder Browserprüfungen entfernt, nur um einen roten Status zu vermeiden.
 
-Zusätzlich GitHub-Status, Konto- und Organisationsbenachrichtigungen prüfen.
+Insbesondere nicht:
 
-## Erneut auslösen
+- Tests deaktivieren
+- Audits aus `npm run validate` entfernen
+- `continue-on-error` auf Releasegates setzen
+- Checkout umgehen
+- Required Checks künstlich grün markieren
 
-1. Draft-PR #11 öffnen.
-2. `Checks` oder `Actions` öffnen.
-3. fehlgeschlagenen Lauf erneut starten.
-4. kontrollieren, dass `Check out repository` erscheint.
-5. anschließend den ersten roten Schritt auswerten.
+## Workflow-Baseline
 
-## Lokale Ersatzprüfung
+Der Hauptworkflow muss weiterhin mindestens enthalten:
+
+1. Checkout
+2. Node-Setup
+3. Python-Setup
+4. Dependencies installieren
+5. Playwright Chromium installieren
+6. `npm run check`
+7. `npm test`
+8. `npm run validate`
+9. `npm run test:e2e`
+
+Cross-Browser separat:
+
+- Chromium
+- Firefox
+- WebKit
+- `npm run test:cross-browser`
+
+## Wahrscheinliche externe Prüfflächen
+
+Weil der Fehler vor dem ersten Step liegt, müssen außerhalb des Repositorycodes geprüft werden:
+
+- GitHub Actions für Repository/Account aktiviert
+- zulässige Actions-/Workflow-Policy
+- GitHub-hosted Runner für das private Repository verfügbar
+- Minuten-/Billing-/Accountlimits
+- Organisation-/Enterprise-Richtlinien, falls relevant
+- Repository-Sperren oder Accountzustand
+- temporäre GitHub-Actions-Störung
+
+Diese Punkte dürfen erst als Ursache bezeichnet werden, wenn GitHub sie konkret bestätigt.
+
+## Lockfile separat
+
+Unabhängig vom Runner fehlt noch `package-lock.json`.
+
+Aktueller Zustand:
+
+- `@playwright/test` ist exakt auf `1.54.2` gepinnt
+- lokaler Versuch `npm install --package-lock-only` konnte wegen Paketnetzwerk/Timeout kein belastbares Lockfile erzeugen
+- keine Integrity-Hashes wurden erfunden
+- Workflow bleibt deshalb vorläufig bei Installation ohne Lockfile
+
+Vor Release:
 
 ```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npx playwright install --with-deps chromium
+npm ci
 npm run ci
-```
-
-Cross-Browser:
-
-```bash
-npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-## Erwartete lokale Prüfpunkte
+## Nach Wiederherstellung des Runners
 
-- Syntax aller Produktionsmodule
-- Engine und Speicher Version 7
-- Katalogschichten mit 45 eingebauten Spielen
-- Routing Version 7
-- Creator-Speicher Version 1
-- sechs Creator-Vorlagen
-- strukturierte Auswahlkarten bleiben nach Export und Import erhalten
-- Creator-Rollback bei Speicherfehler
-- kurze Hilfen und Creator-Einstiege im Hub
-- Quick-, Trend-, Viral- und Advanced-Sessions
-- Backup und vollständige Löschung einschließlich eigener Spiele
-- Manifest, CSP, Icons und Accessibility
-- Cache `secret-circle-v29` vollständig und exklusiv
-- Hub, Creator, Hilfesystem, alle Engines, Word Imposter und Datenschutz offline
+Erster erfolgreicher Runnerlauf wird **nicht sofort als Release-PASS** interpretiert. Reihenfolge:
 
-## Typische Repository-Fehler
+1. sichtbaren Checkout bestätigen
+2. echte Step-Liste dokumentieren
+3. ersten tatsächlichen Fehler isolieren
+4. `npm run check` beheben
+5. Unit-/Contracttests beheben
+6. Validatoren/Audits beheben
+7. Chromium E2E beheben
+8. Cross-Browser beheben
+9. Lockfile erzeugen und verifizieren
+10. Workflow auf `npm ci` umstellen
+11. denselben unveränderten Commit erneut vollständig testen
+12. erst danach Required Checks/Branch Protection als Releasegate verwenden
 
-- Syntax: `npm run check`
-- Unit-Tests: `npm test`
-- Struktur, Cache oder Dokumentation: `npm run validate`
-- Chromium: `npm run test:e2e`
-- Firefox/WebKit: `npm run test:cross-browser`
-- veralteter Cache: Ziel `secret-circle-v29`
-- veraltete Routingversion: Ziel 7
-- veralteter Custom-Pack-Manager: Ziel 4
-- fehlende Creator-Dateien: `creator.html`, `game-creator.js`, `creator-page.js`, `creator.css`
-- fehlende Guidance-Dateien: `party-guide.js`, `party-guide.css`
+## Release-Regel
 
-## Tracking
+Ein Workflowlauf mit `steps: []` zählt weder als grün noch als negativer Code-Test.
 
-- Issue #7: externer GitHub-Actions-Runner-Blocker
-- Issue #8: reale Geräte-, Rollen- und Partytests
-- Issue #10: Party-Hub-Expansion
-- Draft-PR #11: aktueller Expansions-, UX- und Creator-Stand
-
-## Freigabe
-
-Ein grüner lokaler Lauf ist ein starkes technisches Signal, ersetzt aber nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit. Merge, realer Betatest und öffentlicher Release bleiben bis zu den jeweiligen Gates blockiert.
+Öffentlicher Release und Merge von PR #13 bleiben **NO_GO**, bis ein echter Runner den unveränderten Release Candidate vollständig ausgeführt hat.
