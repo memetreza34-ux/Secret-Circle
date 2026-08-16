@@ -12,31 +12,19 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - 4 Advanced-Kernspiele
 - Word Imposter
 - Smart Party Night
-- gemeinsamer lokaler Spielerpool
-- Favoriten, Presets, Verlauf, Statistiken und Erfolge
-- lokaler No-Code-Game-Creator mit 6 Vorlagen
-- bis zu 40 selbst erstellte Spiele
-- gespeicherte Katalogfilter und letzte Hub-Ansicht
-- Synonym-/Tippfehlersuche mit ARIA-/Tastaturunterstützung
+- lokaler Spielerpool, Favoriten, Presets, Verlauf, Statistiken und Erfolge
+- lokaler No-Code-Game-Creator mit 6 Vorlagen und bis zu 40 eigenen Spielen
+- gespeicherte Filter und Synonym-/Tippfehlersuche
 - gemeinsame Pause-/Skip-/Abbruch-/Replay-/Next-Game-Steuerung
-- pausierbare Timer und sichere Reload-Wiederaufnahme
+- sichere Reload-Wiederaufnahme und pausierbare Timer
 - installierbare Offline-PWA mit kontrollierter Aktualisierung
-- kein verpflichtendes Konto
-- keine Analyse-, Werbe- oder Trackingdienste
+- kein verpflichtendes Konto, keine Analyse-, Werbe- oder Trackingdienste
 
 „Technisch spielbar“ bedeutet **nicht automatisch releasefertig**.
 
 ## Produktpositionierung
 
-Secret Circle soll nicht nur über „viele Spiele + offline + ein Gerät“ konkurrieren. Der Fokus liegt auf:
-
-- zusammenhängendem Party-Hub statt isolierten Minispielen
-- 15 besonders priorisierten Core-Games
-- sicheren geheimen Pass-and-Play-Zuständen
-- Resume nach Reload/Unterbrechung
-- lokaler Datenkontrolle ohne Konto/Cloudzwang
-- eigenen Spielen über den Creator
-- klarer Core/Extended/Labs-Reifegradtrennung
+Secret Circle soll nicht nur über „viele Spiele + offline + ein Gerät“ konkurrieren. Der Fokus liegt auf einem zusammenhängenden Party-Hub, 15 besonders priorisierten Core-Games, sicheren geheimen Pass-and-Play-Zuständen, Resume nach Reload, lokaler Datenkontrolle und eigenen Spielen über den Creator.
 
 Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und muss nicht begründet werden.
 
@@ -47,7 +35,7 @@ Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und mu
 - Release Candidate bis **15. Dezember 2026**
 - öffentlicher Release **4.–15. Januar 2027**
 
-Aktueller Offline-Core: **`secret-circle-v37`**.
+Aktueller Offline-Core: **`secret-circle-v38`**.
 
 ## Zentrale A-bis-Z-Unterlagen
 
@@ -85,76 +73,62 @@ Aktueller Offline-Core: **`secret-circle-v37`**.
 - `CONTENT_AGE_POLICY.md`
 - `CORE_CONTENT_REVIEW.md`
 - `FAN_CONTENT_REVIEW.md`
+- `THIRD_PARTY_NOTICES.md`
 - `CORE_GAME_ACCEPTANCE.md`
 - `CORE_SCORING_RULES.md`
 - `ACCESSIBILITY.md`
 - `BETA_TEST_PLAN.md`
 
-### Recht und Betrieb
+### Betrieb
 
 - `LEGAL_CHECKLIST.md`
-- `THIRD_PARTY_NOTICES.md`
 - `SUPPORT.md`
 - `INCIDENT_RESPONSE.md`
 - `MAINTENANCE.md`
 
-## Core-Content-Stand
+## Core-Content
 
-Die drei Ausbauwellen haben die definierten quantitativen Ziele erreicht. `CORE_CONTENT_REVIEW.md` enthält den ersten **15/15-Core-Quellpass**.
-
-Beispiele:
-
-- Truth/Dare: 24 je Pack
-- Never Have / Most Likely / Would Rather: 24 je Pack
-- Paranoia: 20 je Pack
-- Charades: 30 je Pack
-- Taboo: 24 je Pack
-- Hot Potato: 20 je Pack
-- Two Truths / Question Imposter / Location Spy: 16 je Pack
-- Word Imposter: 14 × 12 Begriffe
-
-Reale Gruppen, finale Semantik-/Altersfreigabe und Runnernachweis bleiben offen.
+Die drei Ausbauwellen haben die definierten quantitativen Ziele erreicht. `CORE_CONTENT_REVIEW.md` enthält den ersten **15/15-Core-Quellpass**. Reale Gruppen, finale Semantik-/Altersfreigabe und Runnernachweis bleiben offen.
 
 ## Reference-Safe-Content
 
-### Word Imposter
-
-Drei unnötig konkrete Begriffe wurden generisch ersetzt:
+### v36 – Word Imposter
 
 - Bluetooth → Funkverbindung
 - Oscar → Filmpreis
 - Formel 1 → Motorsport
 
-### Anime-Quiz
+### v37 – Anime-Quiz
 
-Für die stabile ID `anime-guess` wurde **Option B** umgesetzt. Im finalen Runtime-Katalog erscheint:
+Für die stabile ID `anime-guess` wurde **Option B** umgesetzt. Im finalen Runtime-Katalog erscheint **Anime-Archetypen erraten** mit vier generischen Packs und **40 eigenständigen Archetypen**. Die 40 zuvor inventarisierten konkreten Figuren-/Franchisereferenzen werden final nicht ausgeliefert.
 
-**Anime-Archetypen erraten**
+### v38 – Viral Sport
 
-mit vier generischen Packs und insgesamt **40 eigenständigen Archetypen**. Die 40 zuvor inventarisierten konkreten Figuren-/Franchisereferenzen werden durch die finale Classic-Content-Schicht v2 nicht mehr ausgeliefert.
+Im `higher-lower`-Sportpack wurden drei unnötig konkrete olympisch/Grand-Slam-bezogene Formulierungen durch neutrale Fragen ersetzt, ohne die Zahlenwerte 5 / 8 / 3 zu verändern.
 
-Tests/Audits schützen diesen finalen Runtime-Vertrag. Der restliche Extended-/Labs-Referenzscan bleibt offen.
+Tests/Audits schützen diese Verträge. Der restliche Extended-/Labs-Referenzscan bleibt offen.
+
+## Performance
+
+`party-core-classic-content.js` Version 2 besitzt laut GitHub-Tree **12.954 Bytes** bei einem unveränderten Budget von **45.000 Bytes**. Ein Split oder höheres Budget ist aktuell nicht nötig.
 
 ## Session-, Resume- und Timergrundlage
 
 - stabile Session- und Completion-IDs
 - Exact-once-Verlauf/Statistik
-- direkte Hub-Session: `secret-circle-party-hub-active-v1`
-- Advanced: `secret-circle-party-active-v1`
+- direkte Hub-Session `secret-circle-party-hub-active-v1`
+- Advanced `secret-circle-party-active-v1`
 - private Inhalte nach Reload wieder verdeckt
 - **Beenden & speichern** getrennt von **Abbrechen & verwerfen**
 - Skip ohne künstlichen Punkt
 - gemeinsame pausierbare Sessionsteuerung
-- Scharade 60 s
-- Tabu 60 s
-- Hot Potato 10–25 s verdeckt
-- Wortkette 30 s
+- Scharade 60 s, Tabu 60 s, Hot Potato 10–25 s verdeckt, Wortkette 30 s
 
 ## Backup- und Datenvertrag
 
 `backup-schema-registry.js` ist Registry **v2**.
 
-- maximale Backupdatei: 1.500.000 UTF-8-Bytes
+- maximale Backupdatei 1.500.000 UTF-8-Bytes
 - Complete-Backup-Format/Grenzen zentral
 - nur registrierte Word-Imposter- und `secret-circle-party-*`-Key-Familien importierbar
 - unbekannte Secret-Circle-Namespaces werden abgelehnt
@@ -165,40 +139,25 @@ Tests/Audits schützen diesen finalen Runtime-Vertrag. Der restliche Extended-/L
 
 Aktuell:
 
-- `secret-circle-v37`
-- `secret-circle-v37-staging`
+- `secret-circle-v38`
+- `secret-circle-v38-staging`
 
 Updates werden zuerst vollständig in einem Staging-Cache vorbereitet und erst nach sichtbarer Nutzerentscheidung aktiviert. Der aktive Offline-Core wird vor erfolgreicher Promotion nicht destruktiv entfernt.
 
 `ENVIRONMENTS.md` verlangt getrennte Origins für HTTPS-Staging und Production.
 
-## Accessibility
+## Accessibility und Beta
 
-Vorbereitet:
+Vorbereitet sind `ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/e2e/accessibility-core.spec.js` sowie `BETA_TEST_PLAN.md` mit G1–G5, PN1–PN3, Android/iPhone/Tablet, VoiceOver/TalkBack, zwei echten PWA-Upgrades und einer HTTPS-Rollbackprobe.
 
-- semantische Struktur / Skip-Links
-- sichtbarer Fokus
-- 44px kritische Touchziele
-- Reduced Motion
-- ARIA-Autocomplete/Listbox
-- `tests/accessibility-contract.test.js`
-- `tests/e2e/accessibility-core.spec.js`
-- 320-CSS-px-Reflowbasis
-
-Real offen: 200-%-Zoom, VoiceOver, TalkBack, private Reveal-Flows und reale Touchbedienung.
-
-## Beta- und Realtestplan
-
-`BETA_TEST_PLAN.md` definiert G1–G5, PN1–PN3, Android/iPhone/Tablet, VoiceOver/TalkBack, zwei reale PWA-Upgrades und eine HTTPS-Rollbackprobe.
-
-Diese Tests sind **vorbereitet, noch nicht durchgeführt**.
+Real offen: 200-%-Zoom, VoiceOver, TalkBack, private Reveal-Flows, Touchbedienung, Geräte- und Gruppentests.
 
 ## Third Party und Assetrechte
 
 - keine npm-Runtime-Dependencies
 - `@playwright/test` 1.54.2 upstream als **Apache-2.0** verifiziert
-- vollständige transitive Inventur wartet auf `package-lock.json`
-- Herkunft/Lizenz von `icon.svg`, `icon-192.png`, `icon-512.png` ist noch nicht belegt
+- transitive Inventur wartet auf `package-lock.json`
+- Herkunft/Lizenz von `icon.svg`, `icon-192.png`, `icon-512.png` noch nicht belegt
 - keine Root-`LICENSE`; Projektlizenz wird nicht geraten
 
 ## Lokal starten
@@ -206,8 +165,6 @@ Diese Tests sind **vorbereitet, noch nicht durchgeführt**.
 ```bash
 python -m http.server 8080
 ```
-
-Beispiele:
 
 - Party Hub: `http://localhost:8080/party.html`
 - Word Imposter: `http://localhost:8080/index.html`
@@ -244,9 +201,8 @@ Neuester belastbar geprüfter Lauf: **Run #1905** – Job `validate`, failure, *
 
 - `package-lock.json` + `npm ci`
 - Branch Protection / Required Checks
-- Classic-Content-v2-Performancebudget bestätigen
 - restlicher Extended/Labs-Referenzscan
-- Icon-/Asset-Herkunft
+- Icon-/Asset-Provenienz
 - konkrete HTTPS-Staging-Origin
 - reale PWA-Upgrades/Rollback
 - Android/iPhone/Tablet
