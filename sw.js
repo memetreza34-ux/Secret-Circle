@@ -1,7 +1,7 @@
 'use strict';
 
-const CACHE='secret-circle-v32';
-const STAGING_CACHE='secret-circle-v32-staging';
+const CACHE='secret-circle-v33';
+const STAGING_CACHE='secret-circle-v33-staging';
 const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./pwa-update.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./party-release.css','./party-search.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-core-release-catalog.js','./party-core-classic-content.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub-timers.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-guide.js','./party-release-structure.js','./party-filter-state.js','./party-search-assist.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./party-advanced-runner.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./session-ledger.js','./party-session-controls.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 function stripSearch(value) {
