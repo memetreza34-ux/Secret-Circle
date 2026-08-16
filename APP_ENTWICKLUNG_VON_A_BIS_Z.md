@@ -1,1423 +1,996 @@
-# App-Entwicklung von A bis Z
+# Secret Circle – App-Entwicklung von A bis Z
 
-> Master-Anleitung für die Entwicklung einer App von der ersten Idee bis zur öffentlichen Veröffentlichung und Wartung.
->
-> Diese Datei ist absichtlich allgemein gehalten, damit sie für **Secret Circle** und zukünftige App-Projekte wiederverwendet werden kann. Secret Circle dient dabei als konkretes Beispiel.
+> Verbindlicher Entwicklungsstandard für Secret Circle vom Produktgedanken bis Betrieb und Wartung. Diese Datei darf weiterentwickelt werden, wenn neue Erkenntnisse entstehen. Sie ist kein statisches Tutorial, sondern der übergeordnete Arbeitsprozess des Projekts.
+
+## 0. Produktziel und Releasegrenze
+
+Secret Circle ist eine **offline-first Partyspiel-PWA für Gruppen, die gemeinsam auf einem Gerät spielen**. Der Januar-2027-Release priorisiert Qualität, Einfachheit, Privatsphäre, sichere geheime Inhalte, Wiederaufnahme und reale Gruppentauglichkeit vor maximaler Funktionsmenge.
+
+Aktuelle Zieltermine:
+
+- Funktionsfertig: **30. November 2026**
+- Code Freeze: **5. Dezember 2026**
+- Release Candidate: **15. Dezember 2026**
+- öffentlicher Release: **4.–15. Januar 2027**
+
+Für diesen Release gelten aktuell bewusst folgende Produktgrenzen:
+
+- statische Web-App / installierbare PWA
+- offline-first
+- ein gemeinsam genutztes Gerät
+- kein verpflichtendes Konto
+- kein Backend als Releasevoraussetzung
+- keine Cloud-Datenbank als Releasevoraussetzung
+- keine Werbung
+- keine Analytics-/Trackingdienste
+- keine Zahlungen oder Abonnements
+- keine native Android-/iOS-Store-App als Releasevoraussetzung
+- keine externen Laufzeit-CDNs oder fremden Schriftarten
+
+Wenn eine dieser Grenzen später geändert wird, müssen Architektur, Datenschutz, Security, Tests, Deployment und Release-Scope neu bewertet werden.
 
 ---
 
-## 0. Ziel dieser Anleitung
+# A. Querschnittsverträge – gelten ab der ersten Zeile Code
 
-Eine App ist nicht fertig, sobald sie „funktioniert“. Für eine belastbare Veröffentlichung müssen Produkt, Technik, Design, Datenschutz, Inhalte, Tests, Geräte, Deployment, Support und Wartung gemeinsam vorbereitet sein.
+Diese Themen sind **keine späten Phasen**. Jede Produkt-, Design- und Codeentscheidung muss sie berücksichtigen.
 
-Diese Anleitung beantwortet deshalb für jede Phase:
+## A1. Security
 
-1. **Was ist das Ziel?**
-2. **Was muss konkret erledigt werden?**
-3. **Welche Dokumente oder Dateien brauchen wir im GitHub-Repository?**
-4. **Wann darf die nächste Phase beginnen?**
-5. **Welche typischen Fehler müssen vermieden werden?**
+- alle Nutzereingaben sind grundsätzlich nicht vertrauenswürdig
+- keine Secrets im Repository oder Clientcode
+- Dateiimporte vollständig vor dem Schreiben validieren
+- HTML-/Script-Injection verhindern
+- externe URLs und Netzwerkzugriffe bewusst begrenzen
+- Berechtigungen minimieren
+- kritische Datenänderungen rollbackfähig machen
+- Abhängigkeiten und deren Risiken bewusst verwalten
 
-Die Reihenfolge lautet:
+Für neue Angriffsflächen wird ein Threat Model ergänzt.
 
-**Idee → Problem → Zielgruppe → Plattform → Scope → Produktplan → UX → Architektur → Repository → Entwicklung → Daten → Sicherheit → Tests → Accessibility → Performance → Beta → Release Candidate → Veröffentlichung → Monitoring → Wartung**
+## A2. Datenschutz
+
+- nur Daten speichern, die für das Produkt notwendig sind
+- lokale Speicherung bevorzugen
+- Datenflüsse dokumentieren
+- Löschung und Export ermöglichen, wo Daten persistiert werden
+- keine versteckten Drittanbieter oder Netzwerkaufrufe
+- neue externe Dienste erfordern vor Integration eine Datenschutzprüfung
+
+## A3. Accessibility
+
+Ab Wireframe und Komponentenentwurf berücksichtigen:
+
+- semantische Struktur
+- Labels
+- Tastaturbedienung
+- sichtbarer Fokus
+- ausreichender Kontrast
+- Status nicht nur über Farbe
+- mindestens 44 × 44 Pixel Touchziele
+- 200 % Zoom
+- Reduced Motion
+- Screenreader-Smoke-Test
+- Safe Areas und Bildschirmtastatur
+
+## A4. Testing
+
+Testing beginnt mit der Anforderung, nicht nach Fertigstellung.
+
+Für jedes Feature wird vor Implementierung geklärt:
+
+- welche reine Logik Unit-Tests braucht
+- welche Architekturregeln Contract-Tests brauchen
+- welche Integrationen gemeinsam geprüft werden müssen
+- welcher echte Nutzerflow E2E benötigt
+- welche manuellen Geräte-/Gruppentests nötig sind
+
+## A5. Performance
+
+- Größenbudgets vor Wachstum definieren
+- keine große Bibliothek ohne messbaren Nutzen
+- keine schweren Assets ohne Kompression und Begründung
+- Module statt Monolithen
+- Offline-Core-Größe sichtbar halten
+
+## A6. Datenintegrität
+
+- stabile IDs
+- versionierte Schemas
+- Validierung vor Schreiben
+- Migrationen für alte Daten
+- unbekannte neuere Versionen nicht blind überschreiben
+- exakte Einmaligkeit bei Abschlüssen
+- Rollback bei fehlgeschlagenen kritischen Schreibvorgängen
 
 ---
 
-# PHASE 1 – Idee und Problem definieren
+# 1. Discovery – Problem, Zielgruppe und Positionierung
 
 ## Ziel
 
-Bevor Code geschrieben wird, muss klar sein, **welches Problem die App löst und warum jemand sie benutzen sollte**.
+Bevor weitere Produktarbeit erfolgt, muss klar sein, welches Problem Secret Circle löst, für wen und warum die App gegenüber Alternativen relevant ist.
 
 ## Aufgaben
 
-- App-Idee in einem Satz beschreiben.
-- Hauptproblem definieren.
-- Zielnutzer definieren.
-- Hauptnutzen definieren.
-- erklären, warum vorhandene Lösungen nicht ausreichen.
-- festlegen, welchen konkreten Erfolg die App für den Nutzer erzeugt.
-- prüfen, ob die Idee technisch und wirtschaftlich grundsätzlich realistisch ist.
+- Produktversprechen in maximal drei Sätzen definieren
+- primäre und sekundäre Zielgruppen festlegen
+- reale Nutzungssituationen beschreiben
+- Hauptprobleme und Abbruchgründe erfassen
+- direkte und indirekte Alternativen analysieren
+- klare Positionierung formulieren
+- Risiken früh identifizieren
 
-## Pflichtfragen
+## Pflichtdokumente
 
-- Wer benutzt die App?
-- Welches Problem hat diese Person?
-- Wie löst die App dieses Problem?
-- Warum sollte die Person diese App statt einer Alternative benutzen?
-- Was ist die eine wichtigste Funktion?
-- Was darf die erste Version ausdrücklich **nicht** enthalten?
+- `PRODUCT_BRIEF.md`
+- `USER_SCENARIOS.md`
+- `MARKET_RESEARCH.md`
+- `RISK_REGISTER.md`
 
-## Empfohlene GitHub-Datei
+## Exit
 
-`PRODUCT_BRIEF.md`
-
-Inhalt:
-
-- Produktname
-- Problem
-- Zielgruppe
-- Kernnutzen
-- Hauptfunktionen
-- Nicht-Ziele
-- Erfolgskriterien
-- Risiken
-
-## Exit-Kriterium
-
-Die App lässt sich in höchstens drei klaren Sätzen erklären.
+Problem, Zielgruppe, Kernnutzen und wichtigste Risiken sind schriftlich eindeutig.
 
 ---
 
-# PHASE 2 – Zielgruppe und Nutzungsszenarien
+# 2. Produktstrategie – Scope, Erfolg und Nicht-Ziele
 
 ## Ziel
 
-Nicht für „alle“ entwickeln, sondern für konkrete Nutzer und reale Situationen.
+Klar definieren, was Januar 2027 sein soll und was bewusst später kommt.
 
 ## Aufgaben
 
-- primäre Zielgruppe definieren.
-- sekundäre Zielgruppen definieren.
-- Alter, technische Erfahrung und Geräte berücksichtigen.
-- typische Nutzungssituationen beschreiben.
-- Probleme, Wünsche und Abbruchgründe sammeln.
-- 5–10 reale Kern-Szenarien formulieren.
+- MUSS / SOLL / SPÄTER / NICHT GEPLANT trennen
+- Kernspiele und Reifestufen definieren
+- Releaseverbote festlegen
+- Produkt-Erfolgskriterien definieren
+- Qualitätsmetriken festlegen
+- Monetarisierung bewusst entscheiden
+- Mehrsprachigkeit bewusst entscheiden
 
-## Beispiel
+## Secret Circle – aktuelle Entscheidungen
 
-Secret Circle:
+### Monetarisierung
 
-- Gruppe sitzt gemeinsam in einem Raum.
-- ein Smartphone wird geteilt.
-- Internet kann fehlen.
-- Nutzer wollen ohne Konto sofort spielen.
-- Übergaben und geheime Inhalte müssen sicher funktionieren.
+Für Januar 2027: **keine Werbung, keine In-App-Käufe, kein Abo**. Eine spätere Monetarisierung ist eine neue Produkt-/Rechts-/Architekturentscheidung.
 
-## Empfohlene GitHub-Datei
+### Lokalisierung
 
-`USER_SCENARIOS.md`
+Primärer Release: **Deutsch**. Weitere Sprachen erst nach einem eigenen Lokalisierungsvertrag; UI darf deshalb nicht unnötig von festen Textlängen abhängen.
 
-## Exit-Kriterium
-
-Für jede Kernfunktion existiert mindestens ein nachvollziehbares Nutzungsszenario.
-
----
-
-# PHASE 3 – Markt, Konkurrenz und Positionierung
-
-## Ziel
-
-Verstehen, wo die App im Markt steht.
-
-## Aufgaben
-
-- direkte Konkurrenten auflisten.
-- indirekte Alternativen auflisten.
-- Funktionen vergleichen.
-- Preis- und Geschäftsmodelle vergleichen.
-- Nutzerbewertungen analysieren.
-- häufige Beschwerden identifizieren.
-- eigenes Alleinstellungsmerkmal formulieren.
-
-## Prüfen
-
-- Was machen Konkurrenten besser?
-- Was machen sie schlecht?
-- Was können wir einfacher machen?
-- Was können wir lokal, schneller, sicherer oder günstiger machen?
-
-## Empfohlene GitHub-Datei
-
-`MARKET_RESEARCH.md`
-
-## Exit-Kriterium
-
-Die App besitzt mindestens einen klaren Grund, warum Nutzer sie wählen könnten.
-
----
-
-# PHASE 4 – Plattform und Veröffentlichungsweg festlegen
-
-## Ziel
-
-Vor Architekturentscheidungen muss klar sein, **wo die App laufen und veröffentlicht werden soll**.
-
-## Mögliche Wege
-
-### Web-App / PWA
-
-Benötigt typischerweise:
-
-- Webhosting
-- HTTPS
-- Domain oder Hosting-URL
-- responsive Oberfläche
-- Web App Manifest
-- Service Worker bei Offline-/PWA-Funktionen
-- Icons
-- Datenschutz- und Betreiberinformationen
-- Browser- und Gerätetests
-
-### Native Android-App
-
-Zusätzlich typischerweise:
-
-- Android-Projekt
-- eindeutige App-ID / Package-ID
-- Signierung
-- Release-Build
-- Store-Eintrag
-- Screenshots und App-Icon
-- Datenschutzangaben
-- Testtracks / Beta
-- Store-Prüfung
-
-### Native iOS-App
-
-Zusätzlich typischerweise:
-
-- iOS-Projekt
-- Bundle Identifier
-- Signing / Zertifikate / Provisioning
-- Release-Build
-- Store-Eintrag
-- Screenshots und App-Icon
-- Datenschutzangaben
-- TestFlight oder vergleichbarer Betaweg
-- Store-Prüfung
-
-### Hybrid / Wrapper
-
-Eine Web-App kann später in eine native Hülle überführt werden. Dieser Weg darf jedoch nicht ungeplant eingeführt werden, weil Store-Regeln, Berechtigungen, Signing, Navigation und Offlineverhalten zusätzliche Verträge erzeugen.
-
-## Secret Circle aktuell
-
-Secret Circle ist als **statische offline-first PWA** ausgelegt und benötigt für den geplanten Web/PWA-Release keine native Store-App als Voraussetzung.
-
-## Empfohlene GitHub-Datei
-
-`PLATFORM_STRATEGY.md`
-
-## Exit-Kriterium
-
-Primäre Plattform, Releaseweg und unterstützte Mindestgeräte sind festgelegt.
-
----
-
-# PHASE 5 – MVP und Release-Scope festlegen
-
-## Ziel
-
-Eine kleine, klare erste Version definieren statt endlos Funktionen hinzuzufügen.
-
-## Kategorien
-
-- **MUSS**: Ohne diese Funktion kann nicht veröffentlicht werden.
-- **SOLL**: Wichtig, aber bei Bedarf verschiebbar.
-- **SPÄTER**: bewusst nach Release.
-- **NICHT GEPLANT**: gehört nicht zum Produkt.
-
-## Aufgaben
-
-- Kernfunktionen festlegen.
-- optionale Funktionen trennen.
-- experimentelle Funktionen markieren.
-- Releaseverbote definieren.
-- Funktionsfreeze-Datum festlegen.
-
-## Empfohlene GitHub-Dateien
-
-- `RELEASE_SCOPE.md`
-- `ROADMAP.md`
-
-Secret Circle besitzt dafür bereits:
+## Pflichtdokumente
 
 - `RELEASE_SCOPE_2027.md`
 - `ROADMAP_2027.md`
+- `PRODUCT_BRIEF.md`
 
-## Exit-Kriterium
+## Exit
 
-Jede geplante Funktion gehört eindeutig zu einer Reifestufe.
+Jede sichtbare Funktion gehört eindeutig zum Release, zu einer Erweiterung, zu Labs oder zu später.
 
 ---
 
-# PHASE 6 – Anforderungen schreiben
+# 3. Plattformstrategie
 
 ## Ziel
 
-Nicht nur Funktionen benennen, sondern definieren, **wie sie sich korrekt verhalten müssen**.
+Vor weiteren technischen Entscheidungen ist der Veröffentlichungsweg verbindlich.
 
-## Für jede Funktion dokumentieren
+## Secret Circle – Januar 2027
+
+Primärplattform:
+
+- responsive Web-App
+- installierbare PWA
+- HTTPS in Produktion
+- Offlinebetrieb nach Installation/Vorladung
+
+Zielgeräte:
+
+- aktuelles Android/Chrome
+- aktuelles iPhone/Safari
+- Tablet/iPad
+- Desktop-Browser für Entwicklung und optionale Nutzung
+
+Nicht Releasevoraussetzung:
+
+- Google Play Store
+- Apple App Store
+- nativer Wrapper
+
+## Pflichtdokument
+
+- `PLATFORM_STRATEGY.md`
+
+## Exit
+
+Zielplattform, Mindestgeräte, Browser und Deploymentweg sind eindeutig.
+
+---
+
+# 4. Anforderungen und Akzeptanzkriterien
+
+## Ziel
+
+Jede Kernfunktion erhält überprüfbares Verhalten statt nur einen Funktionsnamen.
+
+Für jede Funktion dokumentieren:
 
 - Zweck
 - Eingaben
 - Ausgaben
-- normale Abläufe
+- Normalablauf
 - Fehlerfälle
 - Abbruch
 - Wiederaufnahme
 - Datenschutz
 - Offlineverhalten
 - Accessibility
-- Grenzen
+- Performancegrenze
 - Akzeptanzkriterien
 
-## Beispiel Akzeptanzkriterium
+Beispiel:
 
-Nicht:
+Nicht: „Timer soll pausierbar sein.“
 
-> „Timer soll pausierbar sein.“
+Sondern: „Wenn Pause aktiviert wird, darf sich die sichtbare Restzeit nicht verändern. Fortsetzen verwendet dieselbe Restzeit. Ein Reload stellt die Runde bewusst pausiert wieder her.“
 
-Sondern:
-
-> „Wenn der Nutzer Pause drückt, darf sich die sichtbare Restzeit nicht verändern. Nach Fortsetzen läuft dieselbe Restzeit weiter. Ein Reload stellt die Runde pausiert wieder her.“
-
-## Empfohlene GitHub-Dateien
+## Dokumente
 
 - `REQUIREMENTS.md`
 - funktionsspezifische Contract-Dokumente
+- `CORE_GAME_ACCEPTANCE.md`
+- `CORE_SCORING_RULES.md`
 
-## Exit-Kriterium
+## Exit
 
-Kernfunktionen besitzen überprüfbare Akzeptanzkriterien.
-
----
-
-# PHASE 7 – Informationsarchitektur und User Flow
-
-## Ziel
-
-Festlegen, wie Nutzer durch die App gelangen, bevor Screens gebaut werden.
-
-## Aufgaben
-
-- Hauptnavigation definieren.
-- Startseite definieren.
-- Kernaufgaben auf wenige Schritte reduzieren.
-- Login / Onboarding entscheiden.
-- leere Zustände definieren.
-- Fehlerwege definieren.
-- Zurück-, Abbruch- und Wiederaufnahmewege definieren.
-
-## Dokumentieren
-
-Für jede Hauptaufgabe:
-
-`Start → Auswahl → Eingabe → Ergebnis → nächster sinnvoller Schritt`
-
-## Empfohlene GitHub-Datei
-
-`UX_FLOW.md`
-
-## Exit-Kriterium
-
-Die wichtigsten Aufgaben sind ohne Entwicklererklärung verständlich.
+Alle Release-Kernfunktionen besitzen testbare Akzeptanzkriterien.
 
 ---
 
-# PHASE 8 – Wireframes und Designsystem
+# 5. UX, Informationsarchitektur und Design
 
 ## Ziel
 
-Bevor Detaildesign entsteht, zuerst Struktur und Wiederverwendbarkeit sichern.
+Die wichtigsten Aufgaben müssen ohne Entwicklererklärung verständlich sein.
 
-## Wireframes
+## Reihenfolge
 
-Zuerst einfache Entwürfe für:
+1. Kernaufgaben definieren
+2. Informationsarchitektur
+3. User Flows
+4. Wireframes
+5. Komponenten
+6. Designsystem
+7. responsive Varianten
+8. Accessibility-Abnahme
+9. visuelles Polishing
 
-- Startseite
-- Navigation
-- Kernfunktion
-- Einstellungen
-- Fehlerzustand
-- leeren Zustand
-- Modal / Bestätigung
-- mobile Ansicht
+## Kernflow Secret Circle
 
-## Designsystem definieren
+`App öffnen → Spieler festlegen → Spiel wählen → Pack/Optionen wählen → spielen → Ergebnis/Abschluss → Wiederholen/nächstes Spiel/Verlauf`
 
-- Farben
-- Typografie
-- Abstände
-- Radius
-- Buttons
-- Formulare
-- Karten
-- Dialoge
-- Statusmeldungen
-- Icons
-- Motion
-- Dark Mode
-- Fokuszustände
+Für private Rollen oder Fragen kommt ein eigener Übergabe-/Reveal-Vertrag hinzu.
 
-## Regeln
+## Benötigte Dokumente
 
-- keine wichtige Information nur durch Farbe.
-- Touchziele groß genug.
-- Kontrast früh prüfen.
-- mobile zuerst mitdenken.
-- Animation darf Nutzung nicht blockieren.
-
-## Empfohlene GitHub-Dateien
-
+- `UX_FLOW.md`
 - `DESIGN_SYSTEM.md`
 - `ASSET_PLAN.md`
 
-Secret Circle besitzt bereits `ASSET_PLAN.md`, benötigt aber weiterhin reale visuelle Abnahme der finalen Kernoberflächen.
+## Exit
 
-## Exit-Kriterium
-
-Alle Kernkomponenten besitzen ein wiederverwendbares visuelles Muster.
+Kernflows funktionieren auf kleinem Smartphone, Tablet und Desktop mit klarer Navigation, Fehlerführung und Fokusführung.
 
 ---
 
-# PHASE 9 – Technische Architektur
+# 6. Architektur und Architecture Decision Records
 
 ## Ziel
 
-Verantwortlichkeiten festlegen, bevor Code zu einem Monolithen wächst.
+Verantwortungen im Code eindeutig halten und wichtige Entscheidungen nachvollziehbar machen.
 
-## Entscheiden
+## Secret Circle – Kernarchitektur
 
-- Frontend-Technologie
-- Backend ja/nein
-- Datenbank ja/nein
-- Authentifizierung ja/nein
-- lokale Speicherung
-- Offlineverhalten
-- APIs
-- Datei-Uploads
-- Benachrichtigungen
-- Analytics
-- Zahlungsanbieter
-- KI-Dienste
-- Cloudspeicher
+- statische PWA
+- lokale Daten
+- kein verpflichtender Server
+- getrennte Engine-/UI-Verantwortung
+- versionierte lokale Schemas
+- gemeinsame Session-Ledger- und Steuerungsverträge
+- kontrollierter Service-Worker-Updatefluss
 
-## Architekturregeln
+## ADRs
 
-- Fachlogik getrennt von UI.
-- Datenformate versionieren.
-- stabile IDs verwenden.
-- Module besitzen klare Verantwortung.
-- Fehler dürfen keine Daten zerstören.
-- Migrationen planen.
-- sensible Daten minimieren.
-- keine unnötigen externen Abhängigkeiten.
+Größere irreversible oder weitreichende Entscheidungen erhalten bei Bedarf `docs/adr/ADR-XXX-*.md` mit:
 
-## Empfohlene GitHub-Datei
+- Problem
+- betrachtete Optionen
+- Entscheidung
+- Gründe
+- Nachteile
+- Konsequenzen
 
-`ARCHITECTURE.md`
+## Backend/API-Regel
 
-Secret Circle besitzt bereits einen umfangreichen Architekturvertrag.
+Für Januar 2027 **nicht anwendbar**. Falls später Backend, Auth, Mehrgeräte-Sync oder Cloud dazukommen, müssen vor Implementierung zusätzlich definiert werden:
 
-## Exit-Kriterium
+- API-Verträge und Versionierung
+- Authentifizierung und Autorisierung
+- Rollen/Rechte
+- Rate Limits
+- Timeouts/Retry
+- Idempotenz
+- Datenbankmigrationen
+- Transaktionen
+- Backups und Restore
+- Hintergrundjobs/Webhooks
 
-Für jede wichtige Verantwortung existiert genau ein klarer Eigentümer im Code.
+## Dokumente
 
----
-
-# PHASE 10 – Datenmodell, Speicher und Migration
-
-## Ziel
-
-Daten dürfen nicht zufällig entstehen. Schon Version 1 braucht stabile Strukturen.
-
-## Für jeden Datentyp definieren
-
-- Schema
-- Version
-- Pflichtfelder
-- optionale Felder
-- IDs
-- Größenlimits
-- Validierung
-- Migration
-- Export
-- Import
-- Löschung
-- Wiederherstellung
-
-## Testfälle
-
-- gültige Daten
-- fehlende Felder
-- beschädigte Daten
-- alte Version
-- unbekannte neuere Version
-- voller Speicher
-- abgebrochener Schreibvorgang
-- doppelter Abschluss
-
-## Empfohlene GitHub-Dateien
-
+- `ARCHITECTURE.md`
 - `DATA_MODEL.md`
 - `BACKUP_SCHEMAS.md`
+- `docs/adr/` bei Bedarf
 
-## Exit-Kriterium
+## Exit
 
-Jeder persistierte Datentyp ist versioniert, validierbar und löschbar.
+Jede wichtige Verantwortung hat einen klaren Eigentümer und Datenänderungen besitzen Migrations-/Rollbackregeln.
 
 ---
 
-# PHASE 11 – Datenschutz und Recht von Anfang an
+# 7. Security, Threat Modeling und Supply Chain
 
 ## Ziel
 
-Datenschutz nicht erst kurz vor Release ergänzen.
+Sicherheitsrisiken werden systematisch statt reaktiv behandelt.
 
-## Fragen
+## Threat Model für Secret Circle
 
-- Welche Daten werden gespeichert?
-- Warum werden sie benötigt?
-- Bleiben sie lokal oder verlassen sie das Gerät?
-- Welche Drittanbieter erhalten Daten?
-- Gibt es Analytics?
-- Gibt es Werbung?
-- Gibt es Accounts?
-- Gibt es Standort, Kamera, Mikrofon oder Kontakte?
-- Gibt es Kinder als Zielgruppe?
-- Werden Inhalte anderer Marken oder Creator verwendet?
+Mindestens betrachten:
 
-## Prinzipien
+- manipulierte Importdateien
+- gespeicherte beschädigte Daten
+- HTML-/Script-Injection über Creator-Inhalte
+- fremde/unerwartete externe URLs
+- Service-Worker-/Cache-Fehler
+- Verlust lokaler Daten bei Migration
+- Offenlegung geheimer Rollen/Inhalte nach Reload
+- Dependency-/Build-Risiken
 
-- Datenminimierung
-- sichere Standardwerte
-- klare Löschfunktion
-- keine unnötigen Berechtigungen
-- keine geheimen Netzwerkaufrufe
-- Nutzereingaben sanitizen
-- Drittanbieter dokumentieren
+## Supply Chain
 
-## Vor Veröffentlichung benötigt
+- Abhängigkeiten minimieren
+- Lockfile verwenden
+- reproduzierbare Installation
+- bekannte Sicherheitslücken prüfen
+- ungewartete Dependencies vermeiden
+- Lizenzen dokumentieren
+- keine unnötigen Postinstall-Skripte
 
-Je nach Produkt und Rechtsraum unter anderem:
+## Secrets/Environments
+
+Secret Circle benötigt für die statische Januar-Version aktuell keine Produktionssecrets. Falls später Secrets nötig sind:
+
+- niemals committen
+- `.env.example` ohne echte Werte
+- Development/Test/Staging/Production trennen
+- Secret Store verwenden
+- Rotation und Widerruf planen
+
+## Dokumente
+
+- `SECURITY.md`
+- `THREAT_MODEL.md`
+- `THIRD_PARTY_NOTICES.md`
+
+## Exit
+
+Keine bekannte kritische Angriffsfläche ist ohne Gegenmaßnahme oder bewusste Risikoakzeptanz offen.
+
+---
+
+# 8. Repository, Entwicklungsumgebungen und Git-Prozess
+
+## Ziel
+
+Das Repository ist die nachvollziehbare Quelle des Produktzustands.
+
+## Regeln
+
+- stabile Hauptbranch schützen
+- Features über Branches und Pull Requests
+- keine Secrets
+- `.gitignore` pflegen
+- verständliche Commits
+- kritische Änderungen reviewen
+- Branch Protection vor Release
+- reproduzierbares Lockfile
+- CI mit `npm ci`, sobald Lockfile vorhanden
+
+## Umgebungen
+
+Für Secret Circle:
+
+- Local: Entwicklung
+- CI/Test: automatisierte Prüfungen
+- Preview/Staging: releaseähnliche HTTPS-Prüfung vor Produktion
+- Production: freigegebener unveränderlicher Release
+
+Auch eine statische PWA braucht vor Veröffentlichung einen realistischen Preview-/Staging-Test, besonders für HTTPS, Service Worker, Cache und Updateverhalten.
+
+## Exit
+
+Ein frischer Rechner und die CI können denselben Projektstand reproduzierbar installieren und prüfen.
+
+---
+
+# 9. Entwicklungsloop pro Feature
+
+## Reihenfolge
+
+1. Anforderung lesen
+2. Risiko/Datenschutz/Accessibility prüfen
+3. State-/Datenänderung definieren
+4. reine Logik implementieren
+5. Unit-/Contract-Test
+6. UI anbinden
+7. Fehler-/Abbruchpfade
+8. Persistenz/Resume
+9. E2E-Test
+10. responsive/Accessibility
+11. Performance
+12. Dokumentation
+13. PR-Review
+
+## Definition of Done für ein Feature
+
+- [ ] Zweck klar
+- [ ] Akzeptanzkriterien klar
+- [ ] Happy Path funktioniert
+- [ ] Fehlerfälle behandelt
+- [ ] Eingaben validiert
+- [ ] Datenmodell migrationsfähig
+- [ ] Abbruch sicher
+- [ ] Reload/Resume geklärt
+- [ ] Unit-/Contract-Tests passend vorhanden
+- [ ] E2E für Kernflow vorhanden
+- [ ] Tastatur/Fokus geprüft
+- [ ] mobile Ansicht geprüft
+- [ ] Datenschutz geprüft
+- [ ] Security geprüft
+- [ ] Performancebudget geprüft
+- [ ] Dokumentation aktuell
+
+---
+
+# 10. Fehlerbehandlung und Resilienz
+
+## Pflichtfälle
+
+- Offline/Netzwerkverlust
+- lokaler Speicher voll
+- beschädigter Import
+- verweigerte Browserfunktion
+- Sessionabbruch
+- Reload mitten im Prozess
+- Browser-/PWA-Neustart
+- ungültige URL
+- leere/zu lange Eingaben
+- doppelte Aktion
+- fehlgeschlagener Schreibvorgang
+- fehlgeschlagenes PWA-Update
+
+## Regeln
+
+- verständliche Fehlermeldung
+- keine stillen Datenverluste
+- atomare/rollbackfähige kritische Schreibvorgänge
+- wiederholte Aktion erzeugt keine Doppelzählung
+- beschädigte Daten werden isoliert statt unkontrolliert weiterverwendet
+
+## Exit
+
+Jeder kritische Nutzerfluss besitzt einen definierten Fehler- und Wiederherstellungspfad.
+
+---
+
+# 11. Teststrategie und CI/CD
+
+## Testpyramide
+
+1. Syntax/statische Checks
+2. Unit-Tests
+3. Contract-Tests
+4. Integrationstests
+5. E2E-Browser
+6. Cross-Browser
+7. echte Geräte
+8. reale Gruppen
+
+## CI muss mindestens
+
+- Checkout ausführen
+- Node/Python reproduzierbar einrichten
+- Dependencies reproduzierbar installieren
+- Syntax prüfen
+- Unit-/Contract-Tests ausführen
+- Architektur-/Performance-/Release-Audits ausführen
+- E2E ausführen
+- Berichte/Artifacts bereitstellen
+
+## Secret Circle aktueller Blocker
+
+Workflows existieren, aber ein Freigabenachweis zählt erst, wenn ein Runner tatsächlich Checkout und Testschritte ausführt. `runner_id: 0` / `steps: []` ist **kein grüner Testlauf**.
+
+## Dokumente
+
+- `TEST_PLAN.md`
+- `MANUAL_TEST_PLAN.md`
+- `.github/workflows/`
+
+## Exit
+
+Der unveränderte Release-Commit besteht alle automatisierten und manuellen Release-Gates.
+
+---
+
+# 12. Offline, PWA, Resume und Update
+
+## Ziel
+
+Offline- und Unterbrechungsverhalten sind Kernproduktfunktionen von Secret Circle.
+
+## Prüfen
+
+- Offline-Erststart nach Installation/Vorladung
+- App-/Tabwechsel
+- Sperrbildschirm
+- Reload
+- Browser-Neustart
+- PWA-Neustart
+- aktive Timer
+- private Reveal-Zustände
+- Update während aktiver Session
+- Update von mindestens zwei älteren Versionen
+- fehlgeschlagene Cache-Promotion
+- Rollbackdeployment
+
+## Exit
+
+Jede aktive Kernsession besitzt einen dokumentierten Resume-Vertrag, und ein Update zerstört weder laufende Session noch lokale Nutzerdaten.
+
+---
+
+# 13. Content, Alter und Rechte
+
+## Ziel
+
+Technisch korrekte Spiele müssen auch redaktionell releasefähig sein.
+
+## Prüfen
+
+- doppelte Karten
+- zu ähnliche Karten
+- schwache/missverständliche Formulierungen
+- Packgröße
+- Wiederholungsrate
+- Altersstufen
+- sensible Inhalte
+- sichere Skip-Möglichkeit
+- familienfreundliche Defaults
+- Marken/Fan-Content
+- Urheberrecht
+- fremde Bilder/Logos/Zitate/Audios
+
+## Dokumente
+
+- `CONTENT_GUIDE.md`
+- `CONTENT_AGE_POLICY.md`
+- `THIRD_PARTY_NOTICES.md`
+
+## Exit
+
+Jeder Releaseinhalt ist redaktionell geprüft und alters-/rechtsseitig eingeordnet.
+
+---
+
+# 14. Beta, reale Nutzer und Gruppentests
+
+## Testgruppen
+
+- 3–4 Personen
+- 5–8 Personen
+- 9–12 Personen
+- unerfahrene Nutzer
+- großer Word-Imposter-Test
+- Mafia mit mindestens 8 Personen
+- Creator durch unerfahrene Nutzer
+- mindestens drei vollständige Smart-Party-Night-Abende
+
+## Beobachten
+
+- Hilfebedarf
+- Fehlklicks
+- unverständliche Texte
+- Wartezeiten
+- versehentliche Aktionen
+- Übergabeprobleme
+- Sichtbarkeit geheimer Inhalte
+- Spaß-/Wiederholungsfaktor
+
+## Exit
+
+Keine offenen kritischen oder hohen Fehler; Kernspiele können ohne Entwicklerhilfe abgeschlossen werden.
+
+---
+
+# 15. Datenschutz, Recht und Support – finale Releaseprüfung
+
+## Vor Veröffentlichung final bestätigen
 
 - Datenschutzerklärung
 - notwendige Betreiber-/Impressumsangaben
 - Lizenz
 - Drittanbieterhinweise
+- Rechte an Assets/Inhalten
 - Supportkontakt
 - Sicherheitskontakt
-- Nutzungsbedingungen, falls erforderlich
+- ggf. Nutzungsbedingungen
 
-Rechtliche Anforderungen können sich ändern und müssen vor der tatsächlichen Veröffentlichung erneut geprüft werden.
+Rechtliche Anforderungen ändern sich. Die finale Prüfung muss kurz vor Veröffentlichung anhand aktueller Regeln erfolgen.
 
-## Empfohlene GitHub-Dateien
+## Dokumente
 
-- `PRIVACY.md`
+- `PRIVACY.md` / öffentliche Datenschutzseite
 - `LEGAL_CHECKLIST.md`
 - `THIRD_PARTY_NOTICES.md`
+- `SUPPORT.md`
+- `SECURITY.md`
 
-## Exit-Kriterium
+## Exit
 
-Alle Datenflüsse und Drittanbieter sind bekannt und dokumentiert.
-
----
-
-# PHASE 12 – Repository professionell aufsetzen
-
-## Ziel
-
-Das Repository wird zur nachvollziehbaren Quelle des Produktzustands.
-
-## Mindeststruktur
-
-```text
-README.md
-PRODUCT_BRIEF.md
-ROADMAP.md
-RELEASE_SCOPE.md
-ARCHITECTURE.md
-DESIGN_SYSTEM.md
-TEST_PLAN.md
-RELEASE_CHECKLIST.md
-DEPLOYMENT.md
-CHANGELOG.md
-KNOWN_LIMITATIONS.md
-src/ oder Produktionsdateien
-tests/
-scripts/
-.github/workflows/
-```
-
-## Git-Regeln
-
-- `main` bleibt stabil.
-- Funktionen auf Branches entwickeln.
-- Pull Requests verwenden.
-- keine Secrets committen.
-- `.gitignore` pflegen.
-- große Binärdateien vermeiden.
-- Commit-Nachrichten verständlich halten.
-- kritische Änderungen reviewen.
-- Branch Protection vor Release aktivieren.
-
-## Abhängigkeiten
-
-- Versionen pinnen, wo Reproduzierbarkeit wichtig ist.
-- Lockfile verwenden.
-- CI mit reproduzierbarer Installation betreiben.
-
-## Secret Circle aktuell
-
-Offen bleibt insbesondere ein reproduzierbares `package-lock.json` und die geplante Umstellung auf `npm ci`.
-
-## Exit-Kriterium
-
-Ein neuer Entwickler kann Repository, Abhängigkeiten und Startprozess nachvollziehen.
+Alle Pflichtangaben sind final, erreichbar und stimmen mit der tatsächlich ausgelieferten App überein.
 
 ---
 
-# PHASE 13 – Entwicklungsumgebung
-
-## Ziel
-
-Lokale Entwicklung muss reproduzierbar sein.
-
-## Dokumentieren
-
-- benötigte Runtime-Versionen
-- Installationsbefehl
-- Entwicklungsstart
-- Testbefehle
-- Buildbefehl
-- Umgebungsvariablen
-- lokale Services
-- Seed-/Testdaten
-
-## Beispiel Secret Circle
-
-```bash
-python -m http.server 8080
-```
-
-Qualitätsbefehle aktuell unter anderem:
-
-```bash
-npm run check
-npm test
-npm run validate
-npm run test:e2e
-npm run test:cross-browser
-```
-
-## Exit-Kriterium
-
-Das Projekt kann auf einem frischen Rechner anhand der Dokumentation gestartet werden.
-
----
-
-# PHASE 14 – Entwicklungsreihenfolge
-
-## Ziel
-
-Nicht gleichzeitig alles bauen.
-
-## Empfohlene Reihenfolge
-
-1. Datenmodell
-2. Kernlogik
-3. Unit-Tests
-4. minimale UI
-5. Haupt-User-Flow
-6. Fehlerfälle
-7. Persistenz
-8. Wiederaufnahme
-9. Accessibility
-10. responsive Verhalten
-11. Performance
-12. Polishing
-
-## Entwicklungsloop pro Funktion
-
-1. Akzeptanzkriterien lesen.
-2. Daten-/State-Änderung definieren.
-3. reine Logik implementieren.
-4. Unit-Test schreiben.
-5. UI anbinden.
-6. Fehlerfälle ergänzen.
-7. Browser-/E2E-Test ergänzen.
-8. Dokumentation aktualisieren.
-9. PR prüfen.
-
-## Exit-Kriterium
-
-Keine neue Kernfunktion wird ohne Tests und dokumentiertes Verhalten als fertig markiert.
-
----
-
-# PHASE 15 – Fehlerbehandlung und sichere Zustände
-
-## Ziel
-
-Fehler sind Teil des Produkts.
-
-## Pflichtfälle
-
-- Netzwerk fehlt
-- lokaler Speicher voll
-- Import beschädigt
-- API nicht erreichbar
-- Berechtigung verweigert
-- Session abgebrochen
-- Browser/App geschlossen
-- Reload mitten im Prozess
-- ungültige URL
-- leere Daten
-- sehr lange Eingaben
-- doppelte Aktion
-
-## Regeln
-
-- Nutzer bekommt verständliche Meldung.
-- Datenverlust vermeiden.
-- kritische Schreibvorgänge rollbackfähig machen.
-- Wiederholung darf keinen doppelten Abschluss erzeugen.
-
-## Exit-Kriterium
-
-Für jeden kritischen Vorgang existiert mindestens ein definierter Fehler- und Wiederherstellungspfad.
-
----
-
-# PHASE 16 – Sicherheit
-
-## Ziel
-
-Die App soll auch bei absichtlichen oder beschädigten Eingaben stabil bleiben.
-
-## Prüfen
-
-- Eingaben validieren.
-- HTML-/Script-Injection verhindern.
-- Secrets nie im Client oder Repository speichern.
-- Abhängigkeiten minimieren.
-- Content Security Policy nutzen, wenn passend.
-- externe URLs kontrollieren.
-- Dateiimporte streng validieren.
-- Größenlimits setzen.
-- Berechtigungen minimieren.
-- Auth-/Session-Tokens sicher behandeln, wenn vorhanden.
-
-## Empfohlene GitHub-Datei
-
-`SECURITY.md`
-
-## Exit-Kriterium
-
-Keine kritische Nutzereingabe gelangt ungeprüft in sensible Logik oder Speicherung.
-
----
-
-# PHASE 17 – Teststrategie
-
-## Ziel
-
-Nicht nur manuell klicken.
-
-## Testpyramide
-
-### 1. Syntax / statische Checks
-
-Schnell bei jedem Commit.
-
-### 2. Unit-Tests
-
-Prüfen reine Logik:
-
-- Berechnung
-- Regeln
-- Validierung
-- Migration
-- Sortierung
-- State-Übergänge
-
-### 3. Contract-Tests
-
-Prüfen Architekturregeln:
-
-- IDs
-- Dateistruktur
-- Modulgrenzen
-- Offline-Core
-- Größenbudgets
-- Release-Scope
-
-### 4. Integrationstests
-
-Prüfen mehrere Module gemeinsam.
-
-### 5. E2E-Browsertests
-
-Prüfen echte Nutzerabläufe.
-
-### 6. Cross-Browser
-
-Mindestens die tatsächlich unterstützten Engines prüfen.
-
-### 7. Echte Geräte
-
-Emulation ersetzt kein reales Smartphone.
-
-### 8. Reale Nutzer
-
-Die App ohne Entwicklerhilfe testen lassen.
-
-## Empfohlene GitHub-Dateien
-
-- `TEST_PLAN.md`
-- `MANUAL_TEST_PLAN.md`
-
-## Exit-Kriterium
-
-Kernfunktionen besitzen automatisierte und reale Abnahmepfade.
-
----
-
-# PHASE 18 – CI/CD
-
-## Ziel
-
-Jeder wichtige Commit wird automatisch überprüft.
-
-## CI sollte mindestens
-
-- Repository auschecken
-- Runtime installieren
-- Abhängigkeiten reproduzierbar installieren
-- Syntax prüfen
-- Unit-Tests ausführen
-- Architektur-/Release-Gates ausführen
-- E2E-Tests ausführen
-- Berichte als Artifact bereitstellen
-
-## Vor Merge
-
-- Pflichtchecks grün
-- Branch Protection aktiv
-- kein Merge bei kritischen Fehlern
-
-## Secret Circle aktuell
-
-CI-Workflows existieren, aber die GitHub-Actions-Ausführung ist aktuell **kein belastbarer Freigabenachweis**, solange Jobs vor Checkout ohne sichtbare Schritte enden.
-
-## Exit-Kriterium
-
-Ein fehlerhafter Commit kann nicht unbemerkt in die Releasebasis gelangen.
-
----
-
-# PHASE 19 – Accessibility
-
-## Ziel
-
-Die App darf nicht nur für Maus und perfektes Sehvermögen funktionieren.
-
-## Mindestprüfung
-
-- semantisches HTML
-- Labels
-- vollständige Tastaturbedienung
-- sichtbarer Fokus
-- sinnvolle Fokusreihenfolge
-- Screenreader-Smoke-Test
-- ausreichender Kontrast
-- Status nicht nur durch Farbe
-- 200 % Zoom
-- Reduced Motion
-- große Touchziele
-- Hoch-/Querformat
-- kleine Displays
-- Bildschirmtastatur
-- Safe Areas
-
-## Exit-Kriterium
-
-Die Kernaufgabe kann ohne Maus und bei starkem Zoom abgeschlossen werden.
-
----
-
-# PHASE 20 – Performance und Ressourcenbudget
-
-## Ziel
-
-Die App bleibt schnell, klein und vorhersehbar.
-
-## Messen
-
-- initiale Dateigröße
-- JavaScript-Größe
-- CSS-Größe
-- Bilder
-- Offline-Cache
-- Startzeit
-- Speicherverbrauch
-- lange Tasks
-
-## Regeln
-
-- keine große Bibliothek ohne messbaren Nutzen.
-- Bilder komprimieren.
-- Videos nur mit klarer Begründung.
-- Module statt Monolithen.
-- Budgets automatisiert prüfen.
-
-## Secret Circle
-
-Das Repository besitzt bereits eigene Performancebudgets und feste Modulgrenzen.
-
-## Exit-Kriterium
-
-Kein Kernpfad überschreitet das definierte Performancebudget.
-
----
-
-# PHASE 21 – Offline, Unterbrechung und Wiederaufnahme
-
-## Ziel
-
-Für Apps mit Offline- oder Sessioncharakter müssen Unterbrechungen explizit geplant werden.
-
-## Prüfen
-
-- Netzwerkverlust
-- Tabwechsel
-- Appwechsel
-- Sperrbildschirm
-- Reload
-- Browser-Neustart
-- PWA-Neustart
-- Update während aktiver Session
-
-## Fragen
-
-- Was wird gespeichert?
-- Was darf aus Datenschutzgründen nicht offen wieder erscheinen?
-- Läuft ein Timer weiter oder pausiert er?
-- Was passiert bei einer alten Sessionversion?
-
-## Exit-Kriterium
-
-Jede aktive Kernsession besitzt einen dokumentierten Resume-Vertrag.
-
----
-
-# PHASE 22 – Inhalte und Content-Qualität
-
-## Ziel
-
-Technisch korrekter Code kann durch schlechte Inhalte trotzdem ein schlechtes Produkt ergeben.
-
-## Prüfen
-
-- doppelte Inhalte
-- schwache Inhalte
-- unverständliche Formulierungen
-- falsche Altersstufe
-- sensible Inhalte
-- problematische Marken-/Fan-Inhalte
-- Urheberrecht
-- unangenehme Aufgaben ohne Skip
-- zu kleine Packs
-- zu häufige Wiederholungen
-
-## Content-Regel
-
-Jede Karte, Frage oder Aufgabe braucht einen klaren Zweck und sollte sich von anderen Inhalten unterscheiden.
-
-## Empfohlene GitHub-Datei
-
-`CONTENT_GUIDE.md`
-
-## Exit-Kriterium
-
-Alle Releaseinhalte wurden redaktionell und rechtlich eingeordnet.
-
----
-
-# PHASE 23 – Analytics, Telemetrie und Support bewusst entscheiden
-
-## Ziel
-
-Nicht automatisch Tracking hinzufügen.
-
-## Entscheiden
-
-- Brauchen wir Analytics überhaupt?
-- Welche Produktfragen sollen beantwortet werden?
-- Können wir sie ohne personenbezogenes Tracking beantworten?
-- Wie werden Fehler gemeldet?
-- Wie erreichen Nutzer den Support?
-
-## Wenn Analytics genutzt wird
-
-- Zweck dokumentieren.
-- Daten minimieren.
-- Rechtsgrundlage und Einwilligung prüfen.
-- Anbieter dokumentieren.
-- Datenschutz aktualisieren.
-
-## Secret Circle
-
-Aktuelles Produktprinzip: keine Analyse-, Werbe- oder Trackingdienste.
-
-## Exit-Kriterium
-
-Tracking existiert nur, wenn sein Nutzen und seine Datenschutzfolgen bewusst entschieden wurden.
-
----
-
-# PHASE 24 – Beta und reale Nutzer
-
-## Ziel
-
-Fehler finden, die Entwickler selbst nicht sehen.
-
-## Testgruppen
-
-- kleine Gruppe
-- mittlere Gruppe
-- große Gruppe
-- unerfahrene Nutzer
-- verschiedene Geräte
-- verschiedene Altersgruppen, wenn relevant
-
-## Beobachten
-
-- Wo fragt jemand nach Hilfe?
-- Wo klickt jemand falsch?
-- Welche Texte werden nicht verstanden?
-- Wo dauert etwas zu lange?
-- Wo wird eine Aktion versehentlich ausgelöst?
-- Welche Funktionen werden ignoriert?
-
-## Fehler klassifizieren
-
-- kritisch
-- hoch
-- mittel
-- niedrig
-
-## Exit-Kriterium
-
-Keine kritischen oder hohen Probleme bleiben offen.
-
----
-
-# PHASE 25 – Release-Management
-
-## Ziel
-
-Die Veröffentlichung ist ein kontrollierter Prozess, kein spontaner Upload.
+# 16. Release Management und Release Candidate
 
 ## Benötigt
 
-- Release-Scope
+- finaler Scope
 - Versionsnummer
 - Code Freeze
 - Release Candidate
-- Release-Commit
+- unveränderlicher Release-Commit
 - Release-Tag
 - Changelog
 - Release Notes
 - Rollbackplan
 - Hotfixplan
 
-## Branch-Modell
+Ab Code Freeze keine neuen Features, nur:
 
-Mindestens:
-
-- stabile Hauptbranch
-- Entwicklungsbranches
-- Pull Requests
-- geschützte Releasebasis
-
-## Exit-Kriterium
-
-Der zu veröffentlichende Commit ist eindeutig und reproduzierbar.
-
----
-
-# PHASE 26 – Release Candidate
-
-## Ziel
-
-Eine Version erzeugen, die **inhaltlich und technisch genau der geplanten Veröffentlichung entspricht**.
-
-## Ab jetzt keine neuen Funktionen
-
-Erlaubt sind nur:
-
-- Fehlerkorrekturen
+- kritische/hohe Fehlerkorrekturen
 - Contentkorrekturen
 - Accessibility
 - Performance
-- Sicherheitskorrekturen
+- Security
 - rechtlich notwendige Änderungen
 - Releaseautomatisierung
 
-## RC-Abnahme
+## RC-Gates
 
 - CI grün
 - Cross-Browser grün
 - echte Geräte grün
 - Offline/PWA grün
-- Datenschutz final
-- Recht final
 - Inhalte final
-- Screenshots final
-- Icons final
-- Release Notes final
-- Backup/Rollback geprüft
+- Security/Datenschutz/Recht final
+- Icons/Screenshots final
+- Rollback geprüft
+- reale Gruppentests abgeschlossen
 
-## Exit-Kriterium
+## Exit
 
-Nur noch GO oder NO_GO – keine Featurediskussion mehr.
+Nur noch **GO** oder **NO_GO**.
 
 ---
 
-# PHASE 27 – Veröffentlichung Web / PWA
+# 17. Deployment und Veröffentlichung
 
-## Voraussetzungen
+## Web/PWA
+
+Voraussetzungen:
 
 - HTTPS
 - finale Domain/URL
 - Produktionskonfiguration
-- Manifest korrekt
+- Manifest/Icons korrekt
 - Service Worker korrekt
-- Icons korrekt
-- Datenschutz erreichbar
-- notwendige Betreiberinformationen erreichbar
-- Supportkontakt erreichbar
+- Datenschutz/Betreiber/Support erreichbar
 
-## Nach Deployment prüfen
+Nach Deployment:
 
-- alle Hauptseiten Status 200
+- Hauptseiten HTTP 200
 - keine Konsolenfehler
 - keine fehlenden Assets
 - keine unerwarteten Netzwerkaufrufe
 - Installation funktioniert
 - Offline-Neustart funktioniert
 - Update funktioniert
-- Daten bleiben erhalten
-- Hauptflow erneut komplett testen
+- lokale Daten bleiben erhalten
+- vollständiger Hauptflow erneut getestet
 
-## Rollback
+## Native Stores
 
-Wenn ein kritischer Fehler entdeckt wird:
-
-1. Veröffentlichung stoppen.
-2. Ursache isolieren.
-3. gezielten Revert / Hotfix erstellen.
-4. Versions-/Cachewechsel sauber durchführen.
-5. Datenschema kompatibel halten.
-6. Smoke-Test durchführen.
-7. Rollback dokumentieren.
+Für Januar 2027 nicht erforderlich. Falls später geplant, entsteht ein eigener Store-Releaseplan für Signing, Store-Metadaten, Altersfreigabe, Datenschutzangaben, Testtracks/TestFlight, Review und kontrollierten Rollout.
 
 ---
 
-# PHASE 28 – Veröffentlichung in App Stores
+# 18. Operations, Monitoring und Incident Response
 
-Diese Phase gilt nur, wenn eine native Android-/iOS-Veröffentlichung geplant ist.
+## Grundsatz
 
-## Benötigt typischerweise
+Secret Circle verwendet aktuell kein personenbezogenes Produkttracking. Trotzdem braucht ein öffentliches Produkt einen Betriebspfad.
 
-- Entwicklerkonto beim jeweiligen Store
-- eindeutige App-ID
-- Signing
-- Produktionsbuild
-- Version und Buildnummer
-- App-Name
-- Beschreibung
-- Kategorie
-- Altersfreigabe
-- App-Icon
-- Screenshots
-- Datenschutz-URL
-- Support-URL
-- Store-Datenschutzangaben
-- Berechtigungsbegründungen
-- Testrelease
-- Review
-- kontrollierter Rollout
+## Bewusst entscheiden
 
-Store-Regeln ändern sich. Vor jedem tatsächlichen Store-Release müssen die aktuellen offiziellen Anforderungen erneut geprüft werden.
+- wie Fehler gemeldet werden
+- welcher Supportkanal gilt
+- wie Produktionsprobleme erkannt werden
+- welche nicht-personenbezogenen technischen Signale nötig sind
+- wer bei kritischen Fehlern entscheidet
 
-## Exit-Kriterium
+## Incident-Ablauf
 
-Store-Build und öffentlicher Eintrag entsprechen exakt derselben freigegebenen Produktversion.
+1. Problem erkennen
+2. Schweregrad bestimmen
+3. Schaden begrenzen
+4. Release/Update ggf. stoppen
+5. Hotfix oder Rollback
+6. notwendige Nutzerkommunikation
+7. Root Cause dokumentieren
+8. Postmortem
+9. präventive Tests/Gates ergänzen
 
----
+## Dokumente
 
-# PHASE 29 – Veröffentlichungstag
-
-## Checkliste
-
-- [ ] Release-Commit festgelegt
-- [ ] Release-Tag gesetzt
-- [ ] Produktionsdeployment abgeschlossen
-- [ ] Hauptseiten erreichbar
-- [ ] Login/Start funktioniert
-- [ ] Kernfunktion funktioniert
-- [ ] Daten speichern
-- [ ] Offline funktioniert, wenn vorgesehen
-- [ ] Installation funktioniert, wenn vorgesehen
-- [ ] Datenschutz/Impressum erreichbar
-- [ ] Support erreichbar
-- [ ] Release Notes veröffentlicht
-- [ ] Fehlerkanal überwacht
-- [ ] Rollback möglich
-
----
-
-# PHASE 30 – Nach dem Release
-
-## Ziel
-
-Release ist der Beginn des Betriebs.
-
-## Erste Tage
-
-- kritische Fehler priorisieren.
-- Supportmeldungen sammeln.
-- Crash-/Fehlerdaten prüfen, falls vorhanden.
-- keine hektischen Großfeatures hinzufügen.
-- Hotfixes klein halten.
-
-## Danach
-
-- Backlog neu priorisieren.
-- echte Nutzungsprobleme auswerten.
-- technische Schulden dokumentieren.
-- Abhängigkeiten aktualisieren.
-- Plattformänderungen beobachten.
-- Datenschutz und Recht regelmäßig prüfen.
-
-## Empfohlene GitHub-Dateien
-
-- `CHANGELOG.md`
+- `SUPPORT.md`
+- `INCIDENT_RESPONSE.md`
 - `KNOWN_LIMITATIONS.md`
 - `POST_RELEASE.md`
 
+## Exit
+
+Ein kritischer Produktionsfehler kann kontrolliert behandelt werden, ohne ad-hoc entscheiden zu müssen.
+
 ---
 
-# PHASE 31 – Wartung und Migration
-
-## Ziel
-
-Die App muss auch nach Monaten und Jahren aktualisierbar bleiben.
+# 19. Wartung, Migration und Lebenszyklus
 
 ## Regeln
 
-- Datenmigrationen versionieren.
-- alte Formate nur kontrolliert entfernen.
-- Deprecations dokumentieren.
-- Abhängigkeiten regelmäßig prüfen.
-- Browser-/OS-Änderungen testen.
-- Backups kompatibel halten.
-- Release Notes pflegen.
-- Sicherheitsupdates priorisieren.
+- Datenmigrationen versionieren
+- alte Formate kontrolliert deprecaten
+- Abhängigkeiten regelmäßig prüfen
+- Sicherheitsupdates priorisieren
+- Browser-/OS-Änderungen testen
+- Backups kompatibel halten
+- Release Notes pflegen
+- veraltete Funktionen bewusst entfernen
+- bei größeren Änderungen Migration und Rollback vor Release testen
 
-## Exit-Kriterium
+## Exit
 
-Ein Update zerstört keine vorhandenen Nutzerdaten und besitzt einen Rollbackpfad.
+Neue Versionen zerstören keine bestehenden Nutzerdaten und besitzen einen nachvollziehbaren Upgrade-/Rollbackpfad.
 
 ---
 
-# MASTER: Welche GitHub-Dokumente brauchen wir insgesamt?
+# 20. Risiko-Management
 
-Nicht jede kleine App braucht sofort jede Datei. Für ein ernsthaftes Release sollte jedoch jede Verantwortung irgendwo eindeutig dokumentiert sein.
+`RISK_REGISTER.md` ist ein lebendes Dokument.
 
-| Bereich | Empfohlene Datei | Secret Circle aktuell |
+Jedes relevante Risiko enthält:
+
+- Beschreibung
+- Bereich
+- Wahrscheinlichkeit
+- Auswirkung
+- Priorität
+- Gegenmaßnahme
+- Verantwortungsbereich
+- Status
+- Nachweis für Schließung
+
+Beispiele für Secret Circle:
+
+- GitHub Actions führt keinen Code aus
+- PWA-Update auf iOS verhält sich anders als erwartet
+- Sperrbildschirm beeinflusst Timer
+- Inhalts-/Altersprüfung unvollständig
+- lokaler Speicher läuft voll
+- Migration beschädigt alte Daten
+- Fan-/Markeninhalt erzeugt Rechtsrisiko
+- große Gruppe versteht Übergaben nicht
+
+Risiken werden nicht nur dokumentiert, sondern in Roadmap und Release-Gates übersetzt.
+
+---
+
+# 21. Dokumentenlandkarte
+
+| Verantwortung | Datei | aktueller Stand |
 |---|---|---|
-| Produktidee | `PRODUCT_BRIEF.md` | teilweise über README/Release-Dokumente |
-| Zielgruppe / Szenarien | `USER_SCENARIOS.md` | noch nicht zentral |
-| Marktanalyse | `MARKET_RESEARCH.md` | noch nicht zentral |
-| Plattformstrategie | `PLATFORM_STRATEGY.md` | indirekt dokumentiert |
-| MVP / Scope | `RELEASE_SCOPE.md` | vorhanden als `RELEASE_SCOPE_2027.md` |
-| Roadmap | `ROADMAP.md` | vorhanden als `ROADMAP_2027.md` |
-| Anforderungen | `REQUIREMENTS.md` | verteilt über Contracts |
-| UX-Flows | `UX_FLOW.md` | noch nicht zentral |
-| Designsystem | `DESIGN_SYSTEM.md` | noch nicht zentral |
+| Gesamtprozess | `APP_ENTWICKLUNG_VON_A_BIS_Z.md` | vorhanden |
+| Produkt | `PRODUCT_BRIEF.md` | zu erstellen |
+| Nutzer/Szenarien | `USER_SCENARIOS.md` | zu erstellen |
+| Markt | `MARKET_RESEARCH.md` | zu erstellen |
+| Risiken | `RISK_REGISTER.md` | zu erstellen |
+| Plattform | `PLATFORM_STRATEGY.md` | zu erstellen |
+| Scope | `RELEASE_SCOPE_2027.md` | vorhanden |
+| Roadmap | `ROADMAP_2027.md` | vorhanden |
+| Anforderungen | `REQUIREMENTS.md` | verteilt / zu konsolidieren |
+| UX | `UX_FLOW.md` | zu erstellen |
+| Design | `DESIGN_SYSTEM.md` | zu erstellen |
 | Assets | `ASSET_PLAN.md` | vorhanden |
 | Architektur | `ARCHITECTURE.md` | vorhanden |
-| Datenmodelle | `DATA_MODEL.md` | verteilt |
-| Backup/Migration | `BACKUP_SCHEMAS.md` | vorhanden |
-| Sicherheit | `SECURITY.md` | noch nicht zentral |
-| Datenschutz | `PRIVACY.md` / Produktseite | teilweise vorhanden |
-| Recht | `LEGAL_CHECKLIST.md` | noch nicht zentral |
-| Contentregeln | `CONTENT_GUIDE.md` | noch nicht zentral |
-| Tests | `TEST_PLAN.md` | verteilt über Tests/Checklisten |
-| manuelle Tests | `MANUAL_TEST_PLAN.md` | vorhanden bzw. vorbereitet |
-| Releasefreigabe | `RELEASE_CHECKLIST.md` | vorhanden |
-| Deployment | `DEPLOYMENT.md` | vorhanden, muss aktuell gehalten werden |
-| bekannte Einschränkungen | `KNOWN_LIMITATIONS.md` | vorhanden |
+| Daten | `DATA_MODEL.md` | verteilt / zu konsolidieren |
+| Backups | `BACKUP_SCHEMAS.md` | vorhanden |
+| Security | `SECURITY.md` | zu erstellen |
+| Threat Model | `THREAT_MODEL.md` | zu erstellen |
+| Content | `CONTENT_GUIDE.md` | zu erstellen |
+| Altersrichtlinie | `CONTENT_AGE_POLICY.md` | zu erstellen |
+| Tests | `TEST_PLAN.md` | verteilt / zu konsolidieren |
+| manuelle Tests | `MANUAL_TEST_PLAN.md` | vorhanden/vorbereitet |
+| Release | `RELEASE_CHECKLIST.md` | vorhanden |
+| Deployment | `DEPLOYMENT.md` | vorhanden, veraltete Angaben synchronisieren |
+| Recht | `LEGAL_CHECKLIST.md` | zu erstellen |
+| Drittanbieter | `THIRD_PARTY_NOTICES.md` | zu erstellen |
+| Support | `SUPPORT.md` | zu erstellen |
+| Incident Response | `INCIDENT_RESPONSE.md` | zu erstellen |
+| Einschränkungen | `KNOWN_LIMITATIONS.md` | vorhanden |
 | Änderungen | `CHANGELOG.md` | vorhanden |
-| Support | `SUPPORT.md` | noch nicht zentral |
-| langfristige Wartung | `MAINTENANCE.md` | noch nicht zentral |
 
 ---
 
-# MASTER: Definition of Done für eine einzelne Funktion
-
-Eine Funktion ist erst fertig, wenn:
-
-- [ ] Zweck definiert
-- [ ] Akzeptanzkriterien definiert
-- [ ] normaler Ablauf funktioniert
-- [ ] Fehlerfälle behandelt
-- [ ] Eingaben validiert
-- [ ] Datenmodell versionierbar
-- [ ] Abbruch sicher
-- [ ] Reload/Wiederaufnahme geklärt
-- [ ] Unit-Test vorhanden, wenn Logik vorhanden
-- [ ] Integrationstest vorhanden, wenn mehrere Module beteiligt
-- [ ] E2E-Test vorhanden, wenn Kernflow betroffen
-- [ ] Tastaturbedienung geprüft
-- [ ] Fokus geprüft
-- [ ] mobile Ansicht geprüft
-- [ ] Datenschutz geprüft
-- [ ] Performancebudget geprüft
-- [ ] Dokumentation aktualisiert
-
----
-
-# MASTER: Definition of Done für eine App vor Veröffentlichung
-
-Eine App ist releasefähig, wenn mindestens:
+# 22. App-weite Definition of Done vor Veröffentlichung
 
 ## Produkt
 
-- [ ] Problem und Zielgruppe klar
+- [ ] Problem, Zielgruppe und Positionierung klar
 - [ ] Scope eingefroren
-- [ ] Kernflows verständlich
+- [ ] Risiken bewertet
+- [ ] Kernflows ohne Entwicklerhilfe verständlich
 - [ ] reale Nutzer getestet
 
 ## Technik
 
-- [ ] reproduzierbarer Build / Start
+- [ ] reproduzierbare Installation
 - [ ] stabile Architektur
-- [ ] Datenmigrationen definiert
-- [ ] keine kritischen Speicherfehler
-- [ ] keine offenen kritischen Sicherheitsprobleme
+- [ ] versionierte Daten/Migrationen
+- [ ] keine offenen kritischen Speicher-/Securityprobleme
+- [ ] Rollback für kritische Änderungen
 
 ## Qualität
 
 - [ ] Syntaxchecks grün
-- [ ] Unit-Tests grün
-- [ ] Integrationstests grün
+- [ ] Unit-/Contract-/Integrationstests grün
 - [ ] E2E grün
-- [ ] unterstützte Browser/Plattformen grün
-- [ ] reale Geräte geprüft
+- [ ] Cross-Browser grün
+- [ ] reale Zielgeräte geprüft
 
 ## UX / Accessibility
 
-- [ ] Kernaufgaben ohne Entwicklerhilfe verständlich
-- [ ] mobile Nutzung geprüft
-- [ ] Tastatur geprüft
+- [ ] Smartphone/Tablet geprüft
+- [ ] Tastatur vollständig
 - [ ] sichtbarer Fokus
-- [ ] Kontrast geprüft
-- [ ] Reduced Motion berücksichtigt
-- [ ] Screenreader-Smoke-Test durchgeführt
+- [ ] 200 % Zoom
+- [ ] Kontrast
+- [ ] Reduced Motion
+- [ ] Screenreader-Smoke-Test
+
+## PWA / Offline
+
+- [ ] installierte PWA online/offline
+- [ ] Reload/Resume
+- [ ] Sperrbildschirm/Appwechsel
+- [ ] Update alte→neue Version
+- [ ] fehlgeschlagene Promotion
+- [ ] Rollbackdeployment
 
 ## Inhalte
 
-- [ ] Inhalte redaktionell geprüft
+- [ ] Kerninhalte redaktionell geprüft
 - [ ] Altersstufen geprüft
-- [ ] sensible Inhalte geprüft
-- [ ] Rechte an Assets/Inhalten geklärt
+- [ ] sensible Inhalte/Skip geprüft
+- [ ] Rechte geprüft
 
-## Datenschutz / Recht
+## Datenschutz / Recht / Support
 
-- [ ] Datenschutzerklärung final
-- [ ] notwendige Betreiberinformationen final
-- [ ] Drittanbieter dokumentiert
-- [ ] Lizenz final
+- [ ] Datenschutz final
+- [ ] Betreiberangaben final
+- [ ] Lizenz/Drittanbieter final
 - [ ] Supportkontakt final
+- [ ] Sicherheitskontakt final
 
 ## Release
 
 - [ ] Version festgelegt
 - [ ] Release-Commit festgelegt
-- [ ] Release-Tag geplant/gesetzt
-- [ ] Changelog final
-- [ ] Release Notes final
-- [ ] Rollback getestet
-- [ ] Hotfixprozess vorbereitet
+- [ ] Release-Tag
+- [ ] Changelog
+- [ ] Release Notes
+- [ ] Hotfix-/Incidentprozess
+- [ ] vollständige `RELEASE_CHECKLIST.md`
 
 ---
 
-# Aktuelle A-bis-Z-Einordnung von Secret Circle
+# 23. Aktueller Secret-Circle-Status
 
-Diese Einschätzung beschreibt den aktuellen Repository-Stand und ist **keine Releasefreigabe**.
+## Bereits stark
 
-## Bereits stark aufgebaut
-
-- klare Produktidee als gemeinsamer Party-Hub
-- definierter Januar-2027-Releasezeitraum
+- definierter Januar-2027-Scope
 - 15 priorisierte Kernspiele
-- Release-Scope und Reifestufen
+- Reifestufen Core/Extended/Labs
 - umfangreicher Architekturvertrag
 - versionierte lokale Daten und Backups
 - Offline/PWA-Architektur
-- Session- und Resume-Verträge
-- umfangreiche Unit-, Contract- und E2E-Teststruktur
-- Performance- und Architektur-Audits
+- Session-/Resume-/Exact-once-Verträge
+- umfangreiche Unit-/Contract-/E2E-Struktur
+- Performance-/Architektur-Audits
 - Release-Checkliste
 - Rollbackgrundlagen
 
-## Vor öffentlichem Release noch wesentlich offen
+## Aktuell wesentliche offene Gates
 
-- GitHub-Actions-Runner muss Repository-Code tatsächlich ausführen.
-- vollständiges `npm run ci` muss nachweislich grün sein.
-- Cross-Browser-Tests müssen nachweislich grün sein.
-- reproduzierbares `package-lock.json` und `npm ci` fehlen noch.
-- Branch Protection und verpflichtende Checks fehlen noch.
-- echte Android-/iPhone-/Tablet-Abnahme fehlt.
-- Sperrbildschirm-/OS-Hintergrundverhalten muss real getestet werden.
-- redaktionelle Prüfung aller Kerninhalte ist noch nicht abgeschlossen.
-- Alters- und sensible Contentprüfung ist noch offen.
-- finale Design-/Icon-/Asset-Abnahme ist noch offen.
-- Datenschutz-/Betreiber-/Support-/Lizenzangaben müssen vor Veröffentlichung final bestätigt werden.
-- reale Gruppentests sind noch nicht vollständig dokumentiert.
-- Deployment-Dokumentation muss vor Release auf aktuelle PR-, Cache- und Versionsdaten synchronisiert werden.
+- Produkt-/Zielgruppen-/Risiko-Dokumentation konsolidieren
+- CI-Runner muss echten Code ausführen
+- `package-lock.json` + `npm ci`
+- Branch Protection
+- Kerninhalte redaktionell/altersseitig prüfen
+- finale UI-/Designabnahme
+- Accessibility-Abnahme
+- Android/iPhone/Tablet real testen
+- Sperrbildschirm/Appwechsel real testen
+- reale Gruppentests
+- Recht/Datenschutz/Support/Lizenz finalisieren
+- Deployment-Dokumentation auf aktuellen PR/Cache/Releasezustand synchronisieren
 
-## Aktueller Freigabestatus
-
-**NO_GO für öffentliche Veröffentlichung**, solange diese Release-Gates nicht vollständig erfüllt sind.
+Aktueller öffentlicher Freigabestatus bleibt **NO_GO**.
 
 ---
 
-# Empfohlene Arbeitsreihenfolge für Secret Circle ab jetzt
+# 24. Verbindliche Arbeitsreihenfolge ab jetzt
 
-1. Master-Dokumentation konsolidieren.
-2. CI-Runner reparieren.
-3. `package-lock.json` erzeugen und CI auf `npm ci` umstellen.
-4. Branch Protection aktivieren.
-5. 15 Kernspiele komplett funktional abnehmen.
-6. Punkte-/Siegerdarstellung visuell prüfen.
-7. Inhalte und Altersstufen redaktionell prüfen.
-8. UI/Design der Kernflows vereinheitlichen.
-9. Accessibility vollständig prüfen.
-10. Android, iPhone und Tablet real testen.
-11. Offline-Update und Sperrbildschirm real testen.
-12. kleine, mittlere und große Gruppentests durchführen.
-13. Recht, Datenschutz, Support und Lizenz finalisieren.
-14. Deployment-Dokumente auf den echten Releasezustand synchronisieren.
-15. Code Freeze durchführen.
-16. Release Candidate erzeugen.
-17. vollständige Release-Checkliste unterschreiben/ausfüllen.
-18. Produktionsdeployment durchführen.
-19. Deployment-Smoke-Test durchführen.
-20. Release taggen und Release Notes veröffentlichen.
-21. Support und Hotfixprozess überwachen.
+1. `PRODUCT_BRIEF.md`
+2. `USER_SCENARIOS.md`
+3. `RISK_REGISTER.md`
+4. `PLATFORM_STRATEGY.md`
+5. Markt-/Positionierungsprüfung
+6. Requirements konsolidieren
+7. UX-Flow dokumentieren und Hub daran prüfen
+8. Designsystem konsolidieren
+9. Security + Threat Model
+10. Content-/Altersaudit der 15 Kernspiele
+11. CI/Lockfile/Branch Protection
+12. vollständige automatisierte Kernabnahme
+13. Accessibility
+14. reale Zielgeräte und PWA-Updates
+15. Gruppentests
+16. Recht/Datenschutz/Support
+17. Code Freeze
+18. Release Candidate
+19. vollständige Releasefreigabe
+20. Produktionsdeployment
+21. Post-Release/Incident/Hotfix
+
+Diese Reihenfolge darf angepasst werden, wenn ein neu entdecktes kritisches Risiko eine frühere Bearbeitung verlangt.
 
 ---
 
 # Grundregel
 
-> **Nicht „Kann die App starten?“ entscheidet über eine Veröffentlichung, sondern „Ist der komplette Produkt-, Technik-, Daten-, Qualitäts-, Geräte-, Inhalts-, Rechts- und Supportprozess nachweislich abgeschlossen?“**
-
-Diese Datei ist der übergeordnete Prozess. Projektspezifische Detailregeln bleiben in den jeweiligen Architektur-, Test-, Content-, Deployment- und Release-Dokumenten.
+> **Secret Circle wird nicht veröffentlicht, weil es startet oder viele Spiele besitzt. Es wird veröffentlicht, wenn Produkt, UX, Technik, Daten, Security, Accessibility, Inhalte, Geräte, reale Gruppen, Recht und Betrieb für denselben unveränderten Release-Commit nachweislich freigegeben sind.**
