@@ -15,7 +15,7 @@ budgets = {
     'word-packs.js': 40_000, 'party-catalog.js': 85_000, 'party-expansion.js': 45_000,
     'party-trending-catalog.js': 70_000, 'party-mega-catalog.js': 90_000,
     'party-viral-catalog.js': 90_000, 'party-core-release-catalog.js': 65_000,
-    'party-routing.js': 20_000,
+    'party-core-classic-content.js': 45_000, 'party-routing.js': 20_000,
     'party-release-structure.js': 22_000, 'party-filter-state.js': 14_000,
     'party-search-assist.js': 28_000,
     'game-creator.js': 45_000, 'creator-page.js': 55_000,
@@ -95,5 +95,6 @@ print(json.dumps({
     'legacy_guard_removed': True,
     'controlled_pwa_updates': True,
     'core_release_content_module': True,
+    'core_classic_content_module': True,
     'asset_sizes': sizes
 }, ensure_ascii=False, indent=2))
