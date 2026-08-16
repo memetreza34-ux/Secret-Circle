@@ -41,7 +41,12 @@ Verantwortung:
 - `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Ersetzungen
 - `party-routing.js`: finale Routingfassade, Competition-Metadaten und lokale Creator-Spiele
 
-`party-core-classic-content.js` steht auf Version 2. Es ersetzt im finalen Runtime-Pfad außerdem den Labs-Modus `anime-guess` durch **40 eigenständige Anime-/Manga-Archetypen** und behält dabei die stabile Spiel-ID.
+`party-core-classic-content.js` steht auf Version **3**. Die finale Schicht:
+
+- ersetzt das frühere konkrete Anime-Fanquiz durch 40 eigenständige Archetypen,
+- ersetzt die konkrete Browser-Referenz `Chrome` durch `Tab`,
+- zeigt die stabile interne Spiel-ID `wavelength` öffentlich als **Spektrum-Tipp** statt als Wellenlänge,
+- behält persistierte IDs/Routingkompatibilität bei.
 
 ## 5. Hub- und Timergrenzen
 
@@ -80,11 +85,12 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v38`**.
+Aktueller Offline-Core: **`secret-circle-v39`**.
 
 - v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
 - v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
-- v38: drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` durch generische gleichwertige Fragen ersetzt
+- v38: drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` generisch ersetzt
+- v39: `Chrome` im finalen Tabu-Content entfernt und sichtbare Bezeichnung `Wellenlänge` durch **Spektrum-Tipp** ersetzt
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -108,6 +114,7 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 - keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
 - vermeidbare konkrete Marken-/Award-/Eventbegriffe werden generisch formuliert
 - konkrete Fan-/Franchise-Namen werden aus dem finalen Runtime-Content entfernt, sofern sie keinen zwingenden Produktnutzen haben
+- stabile interne IDs dürfen aus Migrationsgründen von sichtbaren Produktnamen abweichen
 - keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter oder Adressen
 - jede Built-in-Karte besitzt einen redaktionellen Zweck
 - Altersstufe und sensible Themen werden dokumentiert
@@ -117,7 +124,7 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 
 ## 12. Testpyramide
 
-Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Accessibility-Contract, Performancebudget und Release-Audit.
+Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
 
 Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Screenreader/Zoom und reale Partygruppen.
 
@@ -130,7 +137,7 @@ Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Bu
 - `party-core-release-catalog.js` max. 65 KB
 - `party-core-classic-content.js` max. 45 KB
 
-Der GitHub-Tree weist für Classic Content v2 **12.954 Bytes** aus; das 45-KB-Budget bleibt unverändert und ein Split ist aktuell nicht nötig.
+Die zuletzt bestätigte Classic-v2-Größe lag bei 12.954 Bytes. Nach v3 wird die tatsächliche Tree-Größe erneut geprüft; das 45-KB-Budget wird nicht reflexartig erhöht.
 
 ## 14. Betrieb, Deprecation und Rollback
 
