@@ -1,33 +1,45 @@
 # Secret Circle Party Hub
 
-Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
+Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert nicht nur Funktionsmenge, sondern sichere private Übergaben, Wiederaufnahme nach Unterbrechungen, lokale Datenkontrolle, eigene Spiele und belastbare Release-Gates.
 
 ## Aktueller Funktionsumfang
 
 - 45 eingebaute technisch spielbare Spiele
-- 15 priorisierte Kernspiele für Januar 2027
-- 13 spielbare Erweiterungen
-- 17 klar gekennzeichnete Labs-Modi
+- 15 priorisierte Kernspiele
+- 13 Extended-Spiele
+- 17 Labs-Modi
 - 27 Quick-, Trend- und Viral-Modi
-- 4 Advanced-Spiele
+- 4 Advanced-Kernspiele
+- Word Imposter
 - Smart Party Night
 - gemeinsamer lokaler Spielerpool
 - Favoriten, Presets, Verlauf, Statistiken und Erfolge
 - lokaler No-Code-Game-Creator mit 6 Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- eigene wiederaufnehmbare Creator-Spielengine
 - gespeicherte Katalogfilter und letzte Hub-Ansicht
-- Synonym- und Tippfehlersuche mit barrierearmen Vorschlägen
-- gemeinsame Steuerung für Pause, Skip, Abbruch, Wiederholen und nächstes Spiel in den schnellen Modi
-- pausierbare Timer für Quick-, Mega-, Viral- und Creator-Spiele
+- Synonym-/Tippfehlersuche mit ARIA-/Tastaturunterstützung
+- gemeinsame Pause-/Skip-/Abbruch-/Replay-/Next-Game-Steuerung
+- pausierbare Timer und sichere Reload-Wiederaufnahme
 - installierbare Offline-PWA
-- kontrollierte, sichtbare PWA-Aktualisierungen
+- sichtbare, kontrollierte PWA-Aktualisierung
+- kein verpflichtendes Konto
+- keine Analyse-, Werbe- oder Trackingdienste
 
-„Technisch spielbar“ bedeutet noch nicht automatisch releasefertig. Für Januar 2027 werden Kernspiele, Erweiterungen und experimentelle Modi nach klaren Qualitätskriterien getrennt.
+„Technisch spielbar“ bedeutet **nicht automatisch releasefertig**.
 
-## Zentrale Entwicklungsanleitung
+## Produktpositionierung
 
-`APP_ENTWICKLUNG_VON_A_BIS_Z.md` beschreibt den vollständigen App-Lifecycle von der ersten Idee bis zur Veröffentlichung und Wartung. Die Anleitung ist als wiederverwendbarer Master-Prozess für Secret Circle und zukünftige App-Projekte gedacht und enthält Produkt-, UX-, Architektur-, Daten-, Sicherheits-, Test-, Accessibility-, Release-, Store-, Rollback- und Wartungsphasen sowie eine aktuelle Secret-Circle-Gap-Liste.
+Der Hub soll nicht nur mit „viele Spiele + offline + ein Gerät“ konkurrieren. Der aktuelle Produktfokus liegt auf:
+
+- einem zusammenhängenden Party-Hub statt isolierten Minispielen
+- 15 besonders priorisierten Kernspielen
+- sicheren geheimen Pass-and-Play-Zuständen
+- Resume nach Reload/Unterbrechung
+- lokaler Datenkontrolle ohne Konto/Cloudzwang
+- eigenen Spielen über den lokalen Creator
+- klarer Core/Extended/Labs-Reifegradtrennung
+
+Persönliche Inhalte sind freiwillig. In relevanten Flows wird sichtbar kommuniziert, dass Überspringen jederzeit erlaubt ist und nicht begründet werden muss.
 
 ## Releaseziel
 
@@ -36,119 +48,193 @@ Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spi
 - Release Candidate bis spätestens **15. Dezember 2026**
 - öffentlicher Release zwischen **4. und 15. Januar 2027**
 
-Verbindliche Dokumente:
+Aktueller Offline-Core: **`secret-circle-v35`**.
 
-- `APP_ENTWICKLUNG_VON_A_BIS_Z.md`: übergeordneter Prozess von Idee bis Veröffentlichung und Wartung
-- `ROADMAP_2027.md`: Zeitplan, Arbeitsphasen und Releaseverbote
-- `RELEASE_SCOPE_2027.md`: Kernspiele, Erweiterungen und Labs
-- `RELEASE_CHECKLIST.md`: technische, organisatorische, Geräte-, Inhalts- und Gruppentest-Freigabe
-- `RELEASE_STATUS.md`: aktueller Entwicklungs- und Blockerstatus
-- `BACKUP_SCHEMAS.md`: Sicherungsformate, Versionen, Migrationen und Rollbackregeln
+## Zentrale A-bis-Z-Unterlagen
 
-## Übersichtlicher Spielekatalog
+### Master und Status
 
-Der Party Hub zeigt drei klar getrennte Reifestufen:
+- `APP_ENTWICKLUNG_VON_A_BIS_Z.md` – vollständiger wiederverwendbarer App-Lifecycle
+- `APP_DEVELOPMENT_STATUS.md` – operativer Secret-Circle-A-bis-Z-Tracker
+- `RELEASE_STATUS.md` – aktueller Release-/Blockerstand
+- `ROADMAP_2027.md` – Zeitplan
+- `RELEASE_SCOPE_2027.md` – Core/Extended/Labs-Scope
+- `RELEASE_CHECKLIST.md` – finale RC-/Production-Freigabe
 
-- **Kernspiele:** höchste Priorität für Inhalt, Regeln, Offlinebetrieb, Accessibility und reale Gruppentests
-- **Erweiterungen:** spielbare zusätzliche Funktionen, die nach den Kernspielen priorisiert werden
-- **Labs:** experimentelle Modi in Prüfung, die nicht automatisch als releasefertig gelten
+### Produkt, UX und Architektur
 
-Ein eigener Filter, Schnellwahlkarten und Badges machen diese Stufen im Katalog sichtbar. Selbst erstellte Creator-Spiele werden als Erweiterungen eingeordnet.
+- `PRODUCT_BRIEF.md`
+- `USER_SCENARIOS.md`
+- `MARKET_RESEARCH.md`
+- `PLATFORM_STRATEGY.md`
+- `REQUIREMENTS.md`
+- `UX_FLOW.md`
+- `DESIGN_SYSTEM.md`
+- `ARCHITECTURE.md`
+- `ENVIRONMENTS.md`
 
-Der Hub speichert Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status, Reifestufe und letzte Ansicht lokal. Direkte Links wie `party.html?view=stats` haben Vorrang vor der gespeicherten Ansicht. Über **Filter zurücksetzen** lassen sich alle Katalogeinstellungen gemeinsam löschen.
+### Security, Daten und PWA
 
-## Verbesserte Suche
+- `SECURITY.md`
+- `THREAT_MODEL.md`
+- `RISK_REGISTER.md`
+- `BACKUP_SCHEMAS.md`
+- `DEPLOYMENT.md`
 
-Die Suchhilfe normalisiert Groß- und Kleinschreibung, Umlaute, `ß`, Sonderzeichen und zusätzliche Leerzeichen. Sie kennt außerdem häufige alternative Namen und kleine Tippfehler, zum Beispiel:
+### Content und Accessibility
 
-- `Werwolf` → Mafia
-- `Montagsmaler` → Zeichnen & Raten
-- `Stadt Land Fluss` → Buchstaben-Kategorien
-- `Tabu` → Nicht sagen!
-- `Maifa` → Mafia
-- `Impsoter` → Word Imposter
+- `CONTENT_AGE_POLICY.md`
+- `CORE_CONTENT_REVIEW.md`
+- `CORE_GAME_ACCEPTANCE.md`
+- `CORE_SCORING_RULES.md`
+- `ACCESSIBILITY.md`
+- `BETA_TEST_PLAN.md`
 
-Die Vorschlagsliste ist mit Maus, Touch, Pfeiltasten, Enter und Escape bedienbar und verwendet eine ARIA-Listbox. Suche, Filter und Reifestufen funktionieren auch offline.
+### Recht und Betrieb
 
-## Einheitliche Spielsteuerung
+- `LEGAL_CHECKLIST.md`
+- `THIRD_PARTY_NOTICES.md`
+- `SUPPORT.md`
+- `INCIDENT_RESPONSE.md`
+- `MAINTENANCE.md`
 
-Quick-, Mega-, Viral- und Creator-Modi verwenden denselben Steuerungsruntime `party-session-controls.js`.
+## Spielekatalog und Reifestufen
 
-Während einer aktiven Session stehen an derselben Stelle bereit:
+Der Party Hub trennt:
 
-- **Pause / Fortsetzen**
-- **Runde überspringen**
-- **Session beenden** mit Bestätigung
+- **Core:** höchste Januar-2027-Priorität
+- **Extended:** spielbare Zusatzfunktionen
+- **Labs:** experimentelle Modi
 
-Nach einem vollständigen Abschluss stehen bereit:
+Filter kombinieren unter anderem Reifestufe, Altersstufe, Gruppe, Stimmung und Status. Direkte URL-Ansichten haben Vorrang vor der gespeicherten letzten Ansicht.
 
-- **Wiederholen**
-- **Nächstes Spiel**
-- **Zum Verlauf**
+## Core-Content-Stand
 
-Eine Pause ist nicht nur optisch: Ein gerade laufender Timer friert mit seiner Restzeit ein. Die Rundenaktionen werden währenddessen aus der Bedienung genommen und nach dem Fortsetzen wieder freigegeben. Der gemeinsame Runtime-Layer ist Teil des Offline-Cores.
+Die drei redaktionellen Ausbauwellen haben die definierten quantitativen Ziele erreicht.
 
-## Einfacher Einstieg
+Beispiele:
 
-Der Party Hub erklärt den Ablauf in drei Schritten:
+- Truth/Dare: 24 je Pack
+- Never Have / Most Likely / Would Rather: 24 je Pack
+- Paranoia: 20 je Pack
+- Charades: 30 je Pack
+- Taboo: 24 je Pack
+- Hot Potato: 20 je Pack
+- Two Truths / Question Imposter / Location Spy: 16 je Pack
+- Word Imposter: 14 × 12 Begriffe
 
-1. Spieler speichern.
-2. Spiel oder Reifestufe auswählen.
-3. Pack und Rundenzahl festlegen und starten.
+`CORE_CONTENT_REVIEW.md` enthält den ersten **15/15-Core-Quellpass**. Das ist noch kein finaler Content-Pass: reale Gruppen, Rechte-/Markenprüfung und finaler redaktioneller Sign-off bleiben offen.
 
-Die App benötigt kein Konto und verwendet keine Analyse-, Werbe- oder Tracking-Dienste.
+## Session-, Resume- und Timergrundlage
 
-## Eigenes Spiel erstellen
+- stabile Session- und Completion-IDs
+- Exact-once-Verlauf/Statistik
+- direkte Hub-Session über `secret-circle-party-hub-active-v1`
+- Advanced über `secret-circle-party-active-v1`
+- private Inhalte werden nach Reload nicht automatisch geöffnet
+- bewusstes **Beenden & speichern** getrennt von **Abbrechen & verwerfen**
+- Skip vergibt keinen künstlichen Punkt
+- `party-session-controls.js` liefert gemeinsame pausierbare Timer
+- `party-hub-timers.js` besitzt die direkten Hub-Timermechaniken
+- Scharade: 60 s
+- Tabu: 60 s
+- Hot Potato: zufällige 10–25 s, Restzeit bleibt verborgen
+- Wortkette: 30 s
 
-`creator.html` führt ohne Programmieren durch vier Schritte:
+## Backup- und Datenvertrag
 
-1. Vorlage wählen
-2. Name, Icon, Akzent und Gruppe festlegen
-3. Kategorien und Karten eintragen
-4. prüfen, speichern und direkt testen
+`backup-schema-registry.js` ist Registry **v2** und zentraler Vertragsmittelpunkt.
 
-Vorlagen:
+- drei registrierte Backupformate
+- maximale Datei: 1.500.000 UTF-8-Bytes
+- Complete-Backup-Runtime liest Format/Grenzen aus der Registry
+- Complete-Import akzeptiert nur bekannte versionierte Word-Imposter- und `secret-circle-party-*`-Key-Familien
+- unbekannte Secret-Circle-Namespaces werden abgelehnt
+- vollständiges Löschen bleibt bewusst breiter und entfernt alle `secret-circle-*`-Reste
+- `party.html` lädt die Registry vor `party-data-tools.js`
 
-- Fragen & Aussagen
-- Entweder oder
-- Erraten & Darstellen
-- Challenges
-- Story & Kreativität
-- Meinung & Debatte
+## PWA und Offline
 
-Eigene Spiele lassen sich bearbeiten, kopieren, löschen, exportieren, importieren und direkt im Party Hub spielen. Pro Spiel sind bis zu acht Kategorien und bis zu 200 Karten je Kategorie vorgesehen.
+Aktuell:
 
-## Stabilitätsgrundlage
+- `secret-circle-v35`
+- `secret-circle-v35-staging`
 
-- Imposterrollen werden unabhängig von der Kartenreihenfolge bestimmt.
-- Creator, Quick, Mega und Viral verwenden dasselbe direkte Session-Ledger.
-- Jede neue Session besitzt eine stabile ID; ältere aktive Sessions erhalten eine deterministische kompatible ID.
-- Verlauf, Spielanzahl, Rundenzahl und Bestwert werden pro Session höchstens einmal aktualisiert.
-- Creator, Quick, Mega und Viral verwenden dieselbe Sessionsteuerung und keinen privaten Intervalltimer.
-- Ein fehlgeschlagener Sessionabbruch stellt den letzten aktiven Zustand wieder her, statt ihn still zu verlieren.
-- Der frühere Mega-/Viral-Kompatibilitätsguard und sein globales Storage-Patching wurden vollständig entfernt.
-- Sicherungsdateien werden als UTF-8-Bytes geprüft und sind auf 1,5 MB begrenzt.
-- Drei Sicherungsformate sind zentral versioniert.
-- Neue PWA-Versionen werden vorbereitet, aber erst nach einem sichtbaren Nutzerklick aktiviert.
-- Der bestehende Offline-Cache wird vor erfolgreicher Übernahme der neuen Dateien nicht gelöscht.
+Updates werden zuerst in einem Staging-Cache vorbereitet. Aktivierung erfolgt bewusst über den sichtbaren Updatehinweis. Der aktive Offline-Core wird vor erfolgreicher Promotion nicht destruktiv gelöscht.
+
+`ENVIRONMENTS.md` verlangt für spätere reale Deployments getrennte Origins für HTTPS-Staging und Production, damit Service Worker und lokale Daten nicht kollidieren.
+
+## Accessibility
+
+Vorbereitet:
+
+- semantische Struktur/Skip-Links
+- sichtbarer Fokus
+- 44px kritische Touchziele
+- Reduced Motion
+- ARIA-Autocomplete/Listbox
+- `tests/accessibility-contract.test.js`
+- `tests/e2e/accessibility-core.spec.js`
+- 320-CSS-px-Reflow-Testbasis
+
+Noch real erforderlich:
+
+- 200-%-Zoom
+- VoiceOver
+- TalkBack
+- private Reveal-Flows mit Screenreader
+- reale Smartphone-/Tablet-Touchbedienung
+
+## Beta- und Realtestplan
+
+`BETA_TEST_PLAN.md` definiert:
+
+- G1: 3–4 Personen
+- G2: 5–8 Personen
+- G3: 9–12 Personen
+- G4: Mafia ab 8 Personen
+- G5: Creator mit unerfahrener Person
+- PN1–PN3: drei Smart-Party-Night-Abende
+- Android / iPhone / Tablet
+- VoiceOver / TalkBack / 200-%-Zoom
+- zwei reale PWA-Upgrades
+- HTTPS-Rollbackprobe
+
+Diese Tests sind **vorbereitet, noch nicht durchgeführt**.
+
+## Third Party und Assetrechte
+
+`package.json` besitzt derzeit keine npm-Runtime-Dependencies. Dev-Dependency ist `@playwright/test` 1.54.2.
+
+`THIRD_PARTY_NOTICES.md` hält bewusst offene Punkte fest:
+
+- Herkunft/Lizenz von `icon.svg`
+- Herkunft/Ableitung von `icon-192.png`
+- Herkunft/Ableitung von `icon-512.png`
+- finale Fan-/Marken-/Franchise-Prüfung
+- bewusste Projektlizenzentscheidung, falls Quellcode öffentlich verteilt wird
+
+Im Root wurde aktuell keine `LICENSE`-Datei gefunden. Es wird keine Lizenz oder Assetherkunft geraten.
 
 ## Lokal starten
 
-Die App muss über HTTP statt direkt über `file://` geöffnet werden:
+Die App über HTTP statt direkt über `file://` öffnen:
 
 ```bash
 python -m http.server 8080
 ```
 
-Danach:
+Beispiele:
 
 - Party Hub: `http://localhost:8080/party.html`
 - Word Imposter: `http://localhost:8080/index.html`
-- Game Creator: `http://localhost:8080/creator.html`
-- Advanced-Spiel: `http://localhost:8080/advanced.html?game=question-imposter`
-- Trend- oder Viral-Spiel: `http://localhost:8080/quick-play.html?game=guess-the-price`
+- Creator: `http://localhost:8080/creator.html`
+- Advanced: `http://localhost:8080/advanced.html?game=question-imposter`
+- Quick/Trend/Viral: `http://localhost:8080/quick-play.html?game=guess-the-price`
 
-## Qualitätsprüfungen
+## Qualitätsbefehle – aktueller Übergangszustand
+
+Solange kein echtes Lockfile vorliegt:
 
 ```bash
 npm install --ignore-scripts --no-audit --no-fund --package-lock=false
@@ -156,24 +242,45 @@ npx playwright install --with-deps chromium
 npm run ci
 ```
 
-Cross-Browser-Prüfung:
+Cross-Browser:
 
 ```bash
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-`npm run validate` umfasst Repository-Hygiene, Architektur, Foundation-Verträge, Struktur, Performance und Release-Gates. Die Gates verlangen direkte Genau-einmal-Integration und die gemeinsame Sessionsteuerung für alle vier schnellen Enginefamilien. Sie verhindern sowohl eine erneute Einführung des entfernten Legacy-Guards als auch private nicht pausierbare Engine-Timer.
+**Final vor Release muss auf `package-lock.json` + `npm ci` umgestellt werden.**
 
-Die vollständige Freigabe erfolgt anhand von `RELEASE_CHECKLIST.md`; dort werden CI, Engines, 15 Kernspiele, Hub, Backups, PWA, Accessibility, Geräte, Inhalte, Recht und reale Gruppentests einzeln bestätigt.
+## Aktuelle Blocker
 
-## Produkt- und Designpläne
+### P0 – GitHub Actions
 
-- `MODE_UNIVERSE.md`: langfristiges 122-Modi-Universum
-- `TREND_FORMATS.md`: frühere, aktuelle und zukünftige Trendformate
-- `ASSET_PLAN.md`: Icons, Illustrationen, Animationen und Produktionsbudgets
-- `ARCHITECTURE.md`: Speicher-, Offline-, Datenschutz- und Qualitätsverträge
+Neuester geprüfter Lauf: **Run #1905**.
 
-## Aktueller Freigabestatus
+- Job `validate`
+- failure
+- `steps: []`
+- kein Checkout
+- kein Repository-Code ausgeführt
 
-Der aktuelle Branch ist für automatisierte Tests vorbereitet. Ein endgültiger grüner Lauf ist noch nicht dokumentiert, weil GitHub Actions weiterhin keinen verlässlichen Runnerlauf mit sichtbaren Schritten liefert. Die zuletzt geprüften Jobs endeten vor dem Checkout mit `runner_id: 0` und `steps: []`. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
+Daher sind neue Tests/Audits **nicht als grün bestätigt**.
+
+### P1
+
+- echtes `package-lock.json` + `npm ci`
+- Branch Protection / Required Checks
+- Icon-/Asset-Herkunft und Third-Party-Rechte
+- konkrete HTTPS-Staging-Origin
+- reale PWA-Upgrades/Rollback
+- Android/iPhone/Tablet
+- VoiceOver/TalkBack/200 %
+- reale Gruppentests
+- echte Betreiber-/Support-/Hostingangaben
+- finale Rechte-/Contentfreigabe
+
+## Freigabestatus
+
+- öffentlicher Release: **NO_GO**
+- PR #13: **Draft, nicht mergen**
+- kontrollierte Entwicklungsbeta: möglich
+- Releaseziel Januar 2027: weiterhin erreichbar, wenn die externen und realen Gates rechtzeitig geschlossen werden
