@@ -1,6 +1,6 @@
 (function (root, factory) {
   const base = typeof module === 'object' && module.exports
-    ? require('./party-core-release-catalog.js')
+    ? require('./party-core-classic-content.js')
     : root.SecretCirclePartyCatalog;
   const api = factory(root, base, typeof localStorage === 'undefined' ? null : localStorage);
   if (typeof module === 'object' && module.exports) module.exports = api;
