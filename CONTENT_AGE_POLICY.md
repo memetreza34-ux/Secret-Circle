@@ -4,9 +4,7 @@ Stand: 16. August 2026
 
 ## 1. Zweck
 
-Diese Richtlinie definiert die redaktionelle Qualitäts- und Alterslogik für eingebaute Secret-Circle-Inhalte. Sie ersetzt keine gesetzliche Altersfreigabe oder Store-Einstufung. Vor einer späteren Store-Veröffentlichung müssen die dann aktuellen offiziellen Einstufungsregeln separat geprüft werden.
-
-Für Januar 2027 dienen `all` und `teen` als interne Produktfilter und redaktionelle Freigabestufen.
+Diese Richtlinie definiert die redaktionelle Qualitäts-, Safety-, Privacy- und Alterslogik für eingebaute Secret-Circle-Inhalte. Sie ersetzt keine gesetzliche Altersfreigabe oder Store-Einstufung. `all` und `teen` sind interne Produktfilter und redaktionelle Freigabestufen.
 
 ## 2. Grundregeln
 
@@ -18,8 +16,9 @@ Jede eingebaute Karte, Frage, Aufgabe, Rolle oder jeder Begriff muss:
 - sich ausreichend von anderen Karten unterscheiden
 - frei von eingebetteten HTML-/Scriptfragmenten sein
 - keine fremden geschützten Texte, Logos, Bilder oder Audios kopieren
-- ohne unnötige Demütigung, Zwang oder gefährliche Aufgaben auskommen
-- überspringbar sein, wenn persönliche oder unangenehme Inhalte vorkommen können
+- keine unnötige Demütigung, gefährliche Handlung oder Zwang erzeugen
+- überspringbar sein, wenn persönliche Inhalte vorkommen können
+- keine privaten Nachrichten, Fotos, Passwörter, Adressen oder Kontodaten als Spielmaterial verlangen
 
 Menge allein ist kein Qualitätsnachweis.
 
@@ -27,16 +26,7 @@ Menge allein ist kein Qualitätsnachweis.
 
 ### `all`
 
-- Standard für gemischte Gruppen
-- keine sexualisierten Aufgaben
-- keine Trinkpflicht
-- keine gefährlichen Challenges
-- keine gezielte Bloßstellung
-- keine drastische Gewaltbeschreibung
-- keine Aufforderung zu illegalem Verhalten
-- persönliche Fragen bleiben leicht oder freiwillig
-
-`all` bedeutet nicht automatisch „für jedes Kind jeder Altersstufe geeignet“.
+Für gemischte Gruppen. Keine sexualisierten Aufgaben, Trinkpflicht, gefährlichen Challenges, gezielte Bloßstellung, drastische Gewalt oder Aufforderungen zu illegalem Verhalten. Persönliche Fragen bleiben leicht oder freiwillig.
 
 ### `teen`
 
@@ -65,31 +55,17 @@ Darf persönlichere Fragen, tiefere soziale Themen, peinliche Alltagserfahrungen
 - Location Spy (`location-spy`)
 - Nur falsche Antworten (`wrong-answers`)
 
-`tests/core-content-quality.test.js` schützt diese Zuordnung als technischen Vertrag. Die finale redaktionelle Altersfreigabe bleibt manuell.
+`tests/core-content-quality.test.js` schützt diese technische Zuordnung. Die finale redaktionelle Einstufung bleibt manuell.
 
-## 5. Sensible Inhalte
+## 5. Sensible Themen
 
-Besondere Vorsicht gilt bei:
-
-- Geheimnissen
-- Beziehungen
-- körperlichen Themen
-- psychischer Gesundheit
-- Familie
-- Geld
-- Religion
-- Politik
-- Sexualität
-- Alkohol/Drogen
-- Trauma
-- Aussehen/Körper
-- sozialer Ausgrenzung
+Besondere Vorsicht gilt bei Geheimnissen, Beziehungen, körperlichen Themen, psychischer Gesundheit, Familie, Geld, Religion, Politik, Sexualität, Alkohol/Drogen, Trauma, Aussehen/Körper und sozialer Ausgrenzung.
 
 Regeln:
 
 - nicht beiläufig in `all`-Standardpacks mischen
 - sensible Inhalte klar einordnen
-- freiwilliges Überspringen ermöglichen
+- Skip ermöglichen
 - niemand muss einen Skip begründen
 
 ## 6. Challenges / Pflichten
@@ -101,39 +77,49 @@ Nicht als Built-in zulässig:
 - Belästigung Dritter
 - Veröffentlichung privater Inhalte
 - Zwang zu Nachrichten/Kontakten mit Dritten
-- riskantes Essen/Trinken
-- Alkoholzwang
+- riskantes Essen/Trinken oder Alkoholzwang
 - sexuelle Handlungen
 - Demütigung/Bloßstellung
 - illegale Handlungen
 
 Bevorzugt werden kurze Darstellung, Stimme/Mimik, harmlose Kreativaufgaben, niedrig-riskante Bewegung und positives Gruppenfeedback.
 
-## 7. Datenschutz innerhalb von Karten
+## 7. Privacy-Regeln für Karten
 
 Built-ins dürfen nicht verlangen:
 
 - Passwörter zu zeigen
-- private Chats vollständig vorzulesen
-- private Fotos zu zeigen
+- private Chats oder Nachrichten vorzulesen
+- private Fotos/Kamerarolle zu zeigen oder zu durchsuchen
 - Telefonnummern/Adressen preiszugeben
-- Kontodaten zu nennen
+- Konto-/Zahlungsdaten zu nennen
+- fremde Geräte oder Accounts zu verwenden
 
-Die bestehende Truth/Dare-Karte zum Vorlesen der letzten Nachricht bleibt als konkreter redaktioneller Privacy-Fund markiert und muss vor `CONTENT PASS` entfernt oder so umformuliert werden, dass kein Drittinhalt offengelegt werden muss.
+### Geschlossener Fund SC-CONTENT-PRIV-001
+
+Im manuellen Review wurden zwei problematische Truth/Dare-Karten gefunden:
+
+1. Frage nach dem „Seltsamsten in deiner Kamerarolle“
+2. Pflicht, die letzte Handy-Nachricht vorzulesen
+
+Beide Texte werden im finalen Runtime-Content durch harmlose Alternativen ersetzt:
+
+- `Welches Foto-Motiv findest du besonders lustig?`
+- `Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.`
+
+`tests/core-content-quality.test.js` verlangt, dass die beiden alten Texte im finalen Core-Content nicht mehr vorkommen. Dieser konkrete Fund ist damit **technisch geschlossen**, die Testausführung auf einem funktionierenden Runner bleibt jedoch ausstehend.
 
 ## 8. Marken, Fan- und Popkultur
 
 - keine fremden Logos
 - keine kopierten Karten aus Konkurrenzapps
 - keine langen fremden Zitate
-- keine geschützten Bilder/Audios
+- keine geschützten Bilder/Audios ohne Rechte
 - keine täuschende offizielle Partnerschaft
 
-Word Imposter verwendet überwiegend generische Anime-/Gaming-/Filmbegriffe. Extended/Labs mit stärkerem Fanbezug benötigen vor öffentlicher Vermarktung ein separates Review.
+Extended/Labs mit stärkerem Fanbezug benötigen ein separates Review.
 
 ## 9. Quantitative Release-Gates
-
-Die folgenden Werte sind nach Content-Welle 3 **erreichte harte Regression-Gates**:
 
 | Mechanik | Minimum pro Pack |
 |---|---:|
@@ -153,115 +139,63 @@ Die folgenden Werte sind nach Content-Welle 3 **erreichte harte Regression-Gates
 | Mafia | mindestens **3 eindeutige Rollen**, zusätzlich Balanceprüfung |
 | Word Imposter | **12 Begriffe je 14 Built-in-Kategorien** |
 
-`tests/core-content-quality.test.js` verlangt, dass kein quantitatives Core-Ziel mehr unterschritten wird.
+Nach drei Content-Wellen haben **alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht**. Der Vertrag verlangt `editorialShortfalls = []`.
 
 ## 10. Content-Wellen
 
-### Ausgangsbasis
+### Welle 1
 
-- Word Imposter: 14 × 12 = 168 Begriffe
-- Truth/Dare: 4 × 16
-- Charades: 4 × 12
-- viele weitere Core-Packs nur 8 Einträge
+Taboo 8→16, Hot Potato 8→16, Word Chain 5→10, Two Truths 8→16, Question Imposter 8→16, Location Spy 8→16.
 
-### Welle 1 – strukturierte/kleine Pools
+### Welle 2
 
-In `party-expansion.js`:
+Never Have 8→24, Most Likely 8→24, Would Rather 8→24, Paranoia 8→20, Wrong Answers 8→24.
 
-- Taboo: 8 → 16
-- Hot Potato: 8 → 16
-- Word Chain: 5 → 10
-- Two Truths: 8 → 16
-- Question Imposter: 8 → 16
-- Location Spy: 8 → 16
+### Welle 3
 
-### Welle 2 – soziale Prompt-/Choice-Spiele
-
-In `party-core-release-catalog.js`:
-
-- Never Have: 8 → 24
-- Most Likely: 8 → 24
-- Would Rather: 8 → 24
-- Paranoia: 8 → 20
-- Wrong Answers: 8 → 24
-
-### Welle 3 – klassische Core-Spiele
-
-In `party-core-classic-content.js`:
-
-- Truth/Dare: 16 → **24** je Pack
-- Charades: 12 → **30** je Pack
-- Taboo: 16 → **24** je Pack
-- Hot Potato: 16 → **20** je Pack
-
-Damit haben **alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht**.
+Truth/Dare 16→24, Charades 12→30, Taboo 16→24, Hot Potato 16→20.
 
 ## 11. Strukturverträge
 
 ### Truth/Dare
 
-- getrennte `truth`- und `dare`-Listen
-- mindestens 12 + 12 pro Pack
-- keine exakten normalisierten Duplikate
+Getrennte `truth`-/`dare`-Listen, mindestens 12+12 je Pack, keine exakten normalisierten Duplikate.
 
 ### Would Rather
 
-- genau zwei nicht-leere, unterschiedliche Optionen
+Genau zwei nicht-leere, unterschiedliche Optionen.
 
 ### Taboo
 
-- genau ein Zielwort
-- genau drei eindeutige verbotene Wörter
-- Zielwort nicht selbst verboten
+Ein Zielwort, genau drei eindeutige verbotene Wörter; Zielwort nicht selbst verboten.
 
 ### Question Imposter
 
-- `main` und `imposter` vorhanden
-- verständlich und nicht identisch
-- redaktionell ähnlich genug für vergleichbare Antworten
+`main` und `imposter` vorhanden, verständlich, nicht identisch und redaktionell ähnlich genug für vergleichbare Antworten.
 
-### Location Spy
+### Location Spy / Mafia / Word Imposter
 
-- Orte innerhalb eines Packs eindeutig
-
-### Mafia
-
-- Rollen innerhalb eines Packs eindeutig
-- Packname entspricht Enginevariante
-- reale Balanceprüfung bleibt Pflicht
-
-### Word Imposter
-
-- Begriff + Kontext
-- 14 Built-in-Kategorien
-- 12 Einträge je Kategorie
-- keine Duplikate innerhalb derselben Kategorie
+Orte/Rollen/Begriffe innerhalb ihres vorgesehenen Scopes eindeutig; Mafia zusätzlich reale Balanceprüfung; Word Imposter 14 Kategorien × 12 Einträge.
 
 ## 12. Duplikat- und Textregeln
 
-Automatisch blockiert werden exakte Duplikate nach Unicode-Normalisierung, Trimmen, Zusammenfassen von Leerzeichen und Kleinschreibung.
-
-Semantisch fast gleiche Karten, unpassender Ton oder langweilige Wiederholungen benötigen weiterhin menschliches Review.
-
-Built-in-Texte müssen außerdem innerhalb der in `tests/core-content-quality.test.js` definierten Längen- und Markup-Grenzen bleiben.
+Automatisch blockiert werden exakte Duplikate nach Unicode-Normalisierung, Trimmen, Zusammenfassen von Leerzeichen und Kleinschreibung. Semantisch ähnliche Karten, schwacher Ton oder unpassende Packzuordnung benötigen weiterhin menschliches Review.
 
 ## 13. Quantitativer Status
 
 **QUANTITY TARGET: PREPARED / vollständig implementiert, aber wegen des externen CI-Runnerblockers noch nicht als ausgeführter PASS dokumentiert.**
 
-Der Code-/Contractstand verlangt keine bekannten quantitativen Shortfalls mehr.
-
 ## 14. Was für CONTENT PASS noch fehlt
 
 - [ ] Core-Content-Test auf funktionierendem Runner tatsächlich grün
-- [ ] jeden Core-Pack manuell vollständig lesen
+- [ ] alle 15 Core-Games in `CORE_CONTENT_REVIEW.md` vollständig redaktionell abnehmen
 - [ ] semantische Doppelungen entfernen
 - [ ] Ton und Verständlichkeit prüfen
 - [ ] Altersstufen redaktionell bestätigen
-- [ ] Privacy-Fund in Truth/Dare schließen
-- [ ] sensible Inhalte und Skip-Flows prüfen
+- [x] erster Private-Device-Fund geschlossen
+- [ ] weitere Privacy-/Safety-Funde ausschließen oder beheben
 - [ ] mindestens ein realer Gruppentest pro Kernspiel
-- [ ] Wiederholungsrate in längeren Sessions beobachten
+- [ ] Wiederholungsrate beobachten
 - [ ] Fan-/Marken-/Urheberrechtsprüfung abschließen
 
-Bis diese Punkte nachgewiesen sind, bleibt Content **IN PROGRESS** und nicht `CONTENT PASS`.
+Bis dahin bleibt Content **IN PROGRESS**.
