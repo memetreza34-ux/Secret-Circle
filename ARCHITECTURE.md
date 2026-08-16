@@ -80,9 +80,11 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v37`**.
+Aktueller Offline-Core: **`secret-circle-v38`**.
 
-v37 enthält den Reference-Safe-Pass für `anime-guess`: konkrete Figuren-/Franchisereferenzen aus dem finalen Runtime-Katalog werden durch generische Archetypen ersetzt. v36 hatte zuvor bereits unnötige konkrete Word-Imposter-Begriffe generisch gemacht.
+- v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
+- v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
+- v38: drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` durch generische gleichwertige Fragen ersetzt
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -104,7 +106,7 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 
 - keine kopierten proprietären Karten anderer Apps
 - keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
-- vermeidbare konkrete Marken-/Awardbegriffe im Core werden generisch formuliert
+- vermeidbare konkrete Marken-/Award-/Eventbegriffe werden generisch formuliert
 - konkrete Fan-/Franchise-Namen werden aus dem finalen Runtime-Content entfernt, sofern sie keinen zwingenden Produktnutzen haben
 - keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter oder Adressen
 - jede Built-in-Karte besitzt einen redaktionellen Zweck
@@ -128,7 +130,7 @@ Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Bu
 - `party-core-release-catalog.js` max. 65 KB
 - `party-core-classic-content.js` max. 45 KB
 
-Wenn ein Modul sein Budget erreicht, wird entlang klarer Verantwortungsgrenzen getrennt statt das Budget reflexartig anzuheben.
+Der GitHub-Tree weist für Classic Content v2 **12.954 Bytes** aus; das 45-KB-Budget bleibt unverändert und ein Split ist aktuell nicht nötig.
 
 ## 14. Betrieb, Deprecation und Rollback
 
