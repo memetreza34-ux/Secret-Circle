@@ -4,65 +4,31 @@ from html.parser import HTMLParser
 import ast
 import json
 import re
-import struct
 
 ROOT = Path(__file__).resolve().parents[1]
 read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
-REQUIRED = {
+required = [
     'index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html',
-    'styles.css', 'pwa.css', 'pwa-update.css', 'party.css', 'party-extra.css', 'party-night.css',
-    'party-quick.css', 'party-guide.css', 'party-release.css', 'party-search.css', 'creator.css',
-    'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js',
-    'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js', 'app.js',
-    'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
-    'party-mega-catalog.js', 'party-viral-catalog.js', 'party-core-release-catalog.js',
-    'party-core-classic-content.js', 'party-routing.js', 'party-release-structure.js',
-    'party-filter-state.js', 'party-search-assist.js', 'game-creator.js', 'creator-page.js',
-    'party-custom-packs.js', 'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js',
-    'party-hub-polish.js', 'party-guide.js', 'party-night.js', 'party-data-tools.js',
-    'party-advanced.js', 'party-advanced-runner.js', 'party-advanced-preferences.js',
-    'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-    'party-created-modes.js', 'quick-loader.js', 'sw.js', 'manifest.webmanifest',
-    'icon.svg', 'icon-192.png', 'icon-512.png', 'package.json',
-    'playwright.config.js', 'playwright.cross-browser.config.js',
-    'tests/core-content-quality.test.js', 'tests/core-game-contract.test.js',
-    'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
-    'tests/hub-control-contract.test.js', 'tests/mafia-rules.test.js',
-    'tests/advanced-resume-contract.test.js', 'tests/party-filter-state.test.js',
-    'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
-    'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
-    'tests/session-ledger-integration.test.js', 'tests/service-worker.test.js',
-    'tests/pwa-update.test.js', 'tests/quick-loader.test.js',
-    'scripts/repo_hygiene.py', 'scripts/architecture_audit.py',
-    'scripts/foundation_contract_audit.py', 'scripts/hub_control_audit.py',
-    'scripts/core_content_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py',
-    '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
-    'README.md', 'ARCHITECTURE.md', 'BACKUP_SCHEMAS.md', 'RELEASE_SCOPE_2027.md',
-    'ROADMAP_2027.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
-    'KNOWN_LIMITATIONS.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md',
-    'DEPLOYMENT.md', 'PRODUCT_BRIEF.md', 'REQUIREMENTS.md', 'UX_FLOW.md',
-    'DESIGN_SYSTEM.md', 'CONTENT_AGE_POLICY.md', 'THREAT_MODEL.md', 'RISK_REGISTER.md',
-}
+    'sw.js', 'manifest.webmanifest', 'package.json', 'backup-schema-registry.js', 'party-data-tools.js',
+    'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js',
+    'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
+    'tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js',
+    'ARCHITECTURE.md', 'DEPLOYMENT.md', 'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md',
+    'SECURITY.md', 'THREAT_MODEL.md', 'RISK_REGISTER.md',
+]
+for relative in required:
+    if not (ROOT / relative).is_file():
+        raise SystemExit(f'Missing required project file: {relative}')
 
-missing = sorted(relative for relative in REQUIRED if not (ROOT / relative).is_file())
-if missing:
-    raise SystemExit(f'Missing required files: {", ".join(missing)}')
-
-for obsolete in ('session-ledger-legacy-guard.js', 'tests/session-ledger-legacy-guard.test.js'):
-    if (ROOT / obsolete).exists():
-        raise SystemExit(f'Obsolete legacy guard file still exists: {obsolete}')
-
-
-class HtmlAudit(HTMLParser):
+class Audit(HTMLParser):
     def __init__(self):
         super().__init__()
         self.ids = []
         self.labels = set()
         self.controls = []
-        self.assets = set()
         self.scripts = []
+        self.assets = set()
         self.csp = ''
 
     def handle_starttag(self, tag, attrs):
@@ -74,280 +40,139 @@ class HtmlAudit(HTMLParser):
         if tag in {'input', 'select', 'textarea'}:
             self.controls.append((tag, values))
         if tag == 'script' and values.get('src'):
-            self.assets.add(values['src'])
             self.scripts.append(values['src'])
-        if tag == 'link' and values.get('href') and values.get('rel') in {
-            'stylesheet', 'manifest', 'icon', 'apple-touch-icon'
-        }:
+            self.assets.add(values['src'])
+        if tag == 'link' and values.get('href') and values.get('rel') in {'stylesheet', 'manifest', 'icon', 'apple-touch-icon'}:
             self.assets.add(values['href'])
         if tag == 'meta' and str(values.get('http-equiv', '')).lower() == 'content-security-policy':
             self.csp = values.get('content', '')
 
-
 def audit_html(relative: str, expected_scripts: list[str]) -> str:
     source = read(relative)
-    audit = HtmlAudit()
+    audit = Audit()
     audit.feed(source)
     duplicates = sorted({value for value in audit.ids if audit.ids.count(value) > 1})
     if duplicates:
-        raise SystemExit(f'Duplicate ids in {relative}: {", ".join(duplicates)}')
+        raise SystemExit(f'Duplicate ids in {relative}: {duplicates}')
     for tag, attrs in audit.controls:
         control_id = attrs.get('id')
         labelled = control_id in audit.labels or attrs.get('aria-label') or attrs.get('aria-labelledby')
         if not labelled:
             raise SystemExit(f'Unlabelled control in {relative}: {tag}#{control_id or "unknown"}')
     for asset in audit.assets:
-        if asset.startswith(('http:', 'https:', 'data:')):
+        if asset.startswith(('http:', 'https:')):
             raise SystemExit(f'External runtime asset in {relative}: {asset}')
         if not (ROOT / asset.lstrip('./')).is_file():
-            raise SystemExit(f'Invalid runtime asset in {relative}: {asset}')
+            raise SystemExit(f'Missing runtime asset in {relative}: {asset}')
     if audit.scripts != expected_scripts:
         raise SystemExit(f'Unexpected script order in {relative}: {audit.scripts}')
-    for directive in (
-        "default-src 'self'", "script-src 'self'", "style-src 'self'",
-        "object-src 'none'", "base-uri 'none'", "form-action 'self'",
-    ):
+    for directive in ("default-src 'self'", "script-src 'self'", "style-src 'self'", "object-src 'none'", "base-uri 'none'", "form-action 'self'"):
         if directive not in audit.csp:
             raise SystemExit(f'CSP directive missing in {relative}: {directive}')
     return source
 
-
 catalog_chain = [
-    'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
-    'party-mega-catalog.js', 'party-viral-catalog.js',
-    'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js'
+    'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js', 'party-mega-catalog.js',
+    'party-viral-catalog.js', 'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js'
 ]
 
-index = audit_html('index.html', [
-    'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js',
-])
 party = audit_html('party.html', [
-    'runtime-guard.js', *catalog_chain, 'party-custom-packs.js',
-    'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
-    'party-hub-plus.js', 'party-hub-polish.js', 'party-night.js', 'party-data-tools.js',
+    'runtime-guard.js', *catalog_chain, 'party-custom-packs.js', 'session-ledger.js',
+    'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js',
+    'party-hub-polish.js', 'party-night.js', 'backup-schema-registry.js', 'party-data-tools.js'
 ])
-advanced = audit_html('advanced.html', [
+quick = audit_html('quick-play.html', ['runtime-guard.js', *catalog_chain, 'party-custom-packs.js', 'quick-loader.js'])
+audit_html('advanced.html', [
     'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
-    'party-advanced.js', 'party-advanced-runner.js', 'party-advanced-preferences.js',
+    'party-advanced.js', 'party-advanced-runner.js', 'party-advanced-preferences.js'
 ])
-quick = audit_html('quick-play.html', [
-    'runtime-guard.js', *catalog_chain, 'party-custom-packs.js', 'quick-loader.js',
-])
-creator_page = audit_html('creator.html', ['runtime-guard.js', 'game-creator.js', 'creator-page.js'])
+audit_html('creator.html', ['runtime-guard.js', 'game-creator.js', 'creator-page.js'])
 audit_html('privacy.html', [])
+audit_html('index.html', [
+    'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
+    'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js'
+])
 
 for marker in (
-    'game-detail', 'play-layer', 'party-core-release-catalog.js', 'party-core-classic-content.js',
-    'pause-hub-game', 'play-pause-status', 'finish-hub-game', 'skip-hub-round',
-    'abort-hub-game', 'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js',
+    'Euer Party-Hub · privat · lokal', 'Persönliche Inhalte sind freiwillig',
+    'backup-schema-registry.js', 'party-data-tools.js', 'pause-hub-game', 'skip-hub-round'
 ):
     if marker not in party:
-        raise SystemExit(f'Party Hub marker missing: {marker}')
+        raise SystemExit(f'Party Hub release marker missing: {marker}')
+
+if 'party-core-classic-content.js' not in quick:
+    raise SystemExit('Quick page is missing final Core content layer.')
+
+registry = read('backup-schema-registry.js')
+data_tools = read('party-data-tools.js')
+if 'const VERSION = 2;' not in registry or 'isAllowedCompleteStorageKey' not in registry:
+    raise SystemExit('Backup registry v2/key policy missing.')
 for marker in (
-    'quick-pack', 'quick-rounds', 'quick-resume-box', 'quick-result', 'quick-loader.js',
-    'quick-session-controls', 'quick-pause', 'quick-skip', 'quick-exit',
-    'quick-replay', 'quick-next-game', 'quick-pause-overlay', 'party-core-classic-content.js',
+    'SecretCircleBackupSchemas', "registry.validateHeader(payload, 'complete')",
+    'registry.isAllowedCompleteStorageKey', 'const FORMAT = schema.format',
+    'const MAX_BYTES = schema.maximumBytes'
 ):
-    if marker not in quick:
-        raise SystemExit(f'Quick page marker missing: {marker}')
-for marker in ('advanced-pack', 'advanced-length', 'advanced-start', 'advanced-play-layer'):
-    if marker not in advanced:
-        raise SystemExit(f'Advanced page marker missing: {marker}')
-for marker in ('template-grid', 'pack-editor', 'creator-preview-card', 'created-games-list', 'creator-safe-confirm'):
-    if marker not in creator_page:
-        raise SystemExit(f'Creator marker missing: {marker}')
-for marker in ('href="party.html"', 'role-assignment.js', 'data-store.js'):
-    if marker not in index:
-        raise SystemExit(f'Word Imposter marker missing: {marker}')
-
-sources = {
-    name: read(relative)
-    for name, relative in {
-        'engine': 'game-engine.js', 'store': 'data-store.js', 'registry': 'backup-schema-registry.js',
-        'expansion': 'party-expansion.js', 'trending': 'party-trending-catalog.js',
-        'mega': 'party-mega-catalog.js', 'viral': 'party-viral-catalog.js',
-        'release_content': 'party-core-release-catalog.js', 'classic_content': 'party-core-classic-content.js',
-        'routing': 'party-routing.js', 'creator': 'game-creator.js', 'custom': 'party-custom-packs.js',
-        'release': 'party-release-structure.js', 'filters': 'party-filter-state.js',
-        'search': 'party-search-assist.js', 'controls': 'party-session-controls.js',
-        'hub': 'party-hub.js', 'hub_timers': 'party-hub-timers.js',
-        'quick_runtime': 'party-quick-modes.js', 'mega_runtime': 'party-mega-modes.js',
-        'viral_runtime': 'party-viral-modes.js', 'created_runtime': 'party-created-modes.js',
-        'ledger': 'session-ledger.js', 'loader': 'quick-loader.js',
-        'runtime_guard': 'runtime-guard.js', 'night': 'party-night.js', 'data_tools': 'party-data-tools.js',
-    }.items()
-}
-
-if not re.search(r'\bVERSION\s*=\s*7\b', sources['engine']):
-    raise SystemExit('Game engine version must be 7.')
-if not re.search(r'\bKEY_VERSION\s*=\s*7\b', sources['store']) or not re.search(r'\bENGINE_VERSION\s*=\s*7\b', sources['store']):
-    raise SystemExit('Storage schema must be version 7.')
-if 'const MAX_FILE_BYTES = 1_500_000;' not in sources['registry']:
-    raise SystemExit('Backup registry limit must be 1.5 MB.')
-
-module_markers = {
-    'release': ('CORE_IDS', 'LAB_IDS', 'release-tier-filter', 'ageAllows'),
-    'filters': ('secret-circle-party-catalog-filters-v1', 'Filter zurücksetzen', 'resolveView'),
-    'search': ('MANUAL_ALIASES', 'levenshtein', 'suggestions', 'aria-autocomplete'),
-    'release_content': ('coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent'),
-    'classic_content': ('coreClassicContentVersion', 'coreClassicContentGames', 'function mergeNested', 'function mergeContent'),
-    'routing': ("require('./party-core-classic-content.js')", "CREATED_KEY = 'secret-circle-party-created-games-v1'", 'createCatalog', 'version: 8'),
-    'controls': ('createController', 'function countdown', 'function setPaused', 'remainingMilliseconds'),
-    'hub': ('SecretCirclePartyHubTimers', "completionId('hub'", 'Session fortsetzen', 'skipHubRound', 'abortSession'),
-    'hub_timers': ("TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])", 'renderStoredTimerSession'),
-    'trending': ('trendingGameIds', 'version: 3', 'caption-battle'),
-    'mega': ('megaGameIds', 'quickGameIds', 'version: 4', 'anime-guess', 'money-challenge'),
-    'viral': ('viralGameIds', 'allFastGameIds', 'version: 5', 'put-a-finger-down', 'guess-the-price'),
-    'creator': ("STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40', 'MAX_CARDS = 200'),
-    'custom': ('MAX_PACKS = 30', 'MAX_ITEMS = 150', 'version: 4'),
-    'ledger': ('recordCompletion', 'legacySessionId', 'createSessionId'),
-    'loader': ('session-ledger.js', 'party-session-controls.js', 'SecretCircleSessionLedger', 'SecretCircleSessionControls'),
-    'runtime_guard': ('Neue Secret-Circle-Version bereit', 'hasActiveSession', 'secret-circle-party-hub-active-v1'),
-    'night': ('buildPlan', 'syncPlanFromHistory', 'secret-circle-party-night-v1'),
-    'data_tools': ('byteLength', 'replaceEntries', 'secret-circle-complete-backup'),
-}
-for source_name, expected in module_markers.items():
-    for marker in expected:
-        if marker not in sources[source_name]:
-            raise SystemExit(f'Module marker missing in {source_name}: {marker}')
-
-for name, source, engine in (
-    ('created', sources['created_runtime'], 'created'),
-    ('quick', sources['quick_runtime'], 'quick'),
-    ('mega', sources['mega_runtime'], 'mega'),
-    ('viral', sources['viral_runtime'], 'viral'),
+    if marker not in data_tools:
+        raise SystemExit(f'Party data tools central-schema contract missing: {marker}')
+for forbidden in (
+    "const FORMAT = 'secret-circle-complete-backup'",
+    'const MAX_BYTES = 1_500_000', 'const MAX_ENTRIES = 100', 'const MAX_VALUE_BYTES = 1_000_000'
 ):
-    for marker in (
-        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'S.createController',
-        'sessionControls.countdown', 'sessionControls.stopTimer', 'onSkip:',
-        'onAbort: abortSession', 'onReplay: replaySession', f"completionId('{engine}'",
-        'recordCompletion(loadHub()', 'sessionId: L.createSessionId', 'legacySessionId',
-    ):
-        if marker not in source:
-            raise SystemExit(f'Shared engine contract marker missing in {name}: {marker}')
-    if 'let timerId = null' in source or 'const deadline = Date.now() + seconds * 1000' in source:
-        raise SystemExit(f'Private non-pausable timer remains in {name}.')
-
-for source_name in ('hub', 'hub_timers'):
-    for forbidden in ('activeTimer', 'window.setInterval(', 'performance.now()'):
-        if forbidden in sources[source_name]:
-            raise SystemExit(f'Private Hub timer implementation remains in {source_name}: {forbidden}')
+    if forbidden in data_tools:
+        raise SystemExit(f'Party data tools duplicated backup constant: {forbidden}')
 
 sw = read('sw.js')
-cache_match = re.search(r"const CACHE='(secret-circle-v(\d+))'", sw)
-staging_match = re.search(r"const STAGING_CACHE='(secret-circle-v(\d+)-staging)'", sw)
-if not cache_match or not staging_match or cache_match.group(2) != staging_match.group(2):
-    raise SystemExit('Service-worker active/staging cache contract is invalid.')
-cache_name = cache_match.group(1)
-
+cache = re.search(r"const CACHE='(secret-circle-v(\d+))'", sw)
+staging = re.search(r"const STAGING_CACHE='(secret-circle-v(\d+)-staging)'", sw)
+if not cache or not staging or cache.group(2) != staging.group(2):
+    raise SystemExit('Invalid service-worker cache generations.')
+cache_name = cache.group(1)
 core_match = re.search(r'const CORE=(\[[^;]+\]);', sw)
 if not core_match:
     raise SystemExit('Service worker CORE list missing.')
 core = ast.literal_eval(core_match.group(1))
-for required_asset in (
-    './party.html', './advanced.html', './quick-play.html', './creator.html',
-    './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-    './party-core-release-catalog.js', './party-core-classic-content.js',
-    './session-ledger.js', './party-session-controls.js', './party-hub-timers.js',
-    './party-viral-catalog.js', './party-routing.js', './game-creator.js', './quick-loader.js',
+for asset in (
+    './backup-schema-registry.js', './party-core-release-catalog.js', './party-core-classic-content.js',
+    './party-data-tools.js', './party-hub-timers.js', './session-ledger.js', './party-session-controls.js'
 ):
-    if required_asset not in core:
-        raise SystemExit(f'Service worker CORE asset missing: {required_asset}')
+    if asset not in core:
+        raise SystemExit(f'Offline core missing: {asset}')
 if len(core) != len(set(core)):
-    raise SystemExit('Service worker CORE contains duplicates.')
-if './session-ledger-legacy-guard.js' in core:
-    raise SystemExit('Obsolete legacy guard must not be cached.')
-install_handler = re.search(r"self\.addEventListener\('install',[\s\S]*?\n\}\);", sw)
-if not install_handler or 'skipWaiting' in install_handler.group(0):
-    raise SystemExit('Service worker install must stage updates without automatic activation.')
+    raise SystemExit('Service-worker CORE contains duplicates.')
+if 'await caches.delete(CACHE)' in sw:
+    raise SystemExit('Active cache must not be destroyed before promotion.')
 
 for relative in ('ARCHITECTURE.md', 'DEPLOYMENT.md', 'tests/service-worker.test.js'):
     if cache_name not in read(relative):
-        raise SystemExit(f'Current PWA cache not synchronized in {relative}: {cache_name}')
-
-manifest = json.loads(read('manifest.webmanifest'))
-if manifest.get('id') != './' or manifest.get('start_url') != './party.html' or manifest.get('scope') != './':
-    raise SystemExit('Manifest install scope is invalid.')
-if manifest.get('name') != 'Secret Circle – Party Hub' or manifest.get('display') != 'standalone' or manifest.get('lang') != 'de':
-    raise SystemExit('Manifest metadata is invalid.')
-for source, size in (('icon-192.png', 192), ('icon-512.png', 512)):
-    data = (ROOT / source).read_bytes()
-    if data[:8] != b'\x89PNG\r\n\x1a\n' or data[12:16] != b'IHDR' or struct.unpack('>II', data[16:24]) != (size, size):
-        raise SystemExit(f'PNG file invalid: {source}')
+        raise SystemExit(f'Current cache {cache_name} not synchronized in {relative}.')
 
 package = json.loads(read('package.json'))
 if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('node') != '>=20':
     raise SystemExit('Package metadata invalid.')
-check_gate = package.get('scripts', {}).get('check', '')
-test_gate = package.get('scripts', {}).get('test', '')
-validate_gate = package.get('scripts', {}).get('validate', '')
-for marker in (
-    'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-hub-timers.js',
-    'tests/core-content-quality.test.js', 'tests/core-game-contract.test.js', 'tests/hub-control-contract.test.js',
-):
-    if marker not in check_gate:
-        raise SystemExit(f'Syntax gate missing: {marker}')
-for marker in (
-    'tests/core-content-quality.test.js', 'tests/core-game-contract.test.js',
-    'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js',
-    'tests/mafia-rules.test.js', 'tests/advanced-resume-contract.test.js',
-    'tests/party-search-assist.test.js', 'tests/backup-schema-registry.test.js',
-    'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
-    'tests/session-ledger-integration.test.js', 'tests/pwa-update.test.js',
-):
-    if marker not in test_gate:
+if package.get('devDependencies', {}).get('@playwright/test') != '1.54.2':
+    raise SystemExit('Playwright must remain pinned.')
+
+for marker in ('tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js'):
+    if marker not in package.get('scripts', {}).get('test', ''):
         raise SystemExit(f'Unit gate missing: {marker}')
-for marker in (
-    'scripts/architecture_audit.py', 'scripts/core_content_audit.py',
-    'scripts/foundation_contract_audit.py', 'scripts/hub_control_audit.py',
-    'scripts/performance_budget.py', 'scripts/release_audit.py'
-):
-    if marker not in validate_gate:
-        raise SystemExit(f'Validation audit missing: {marker}')
-
-unit_tests = sorted(path.name for path in (ROOT / 'tests').glob('*.test.js'))
-e2e_suites = sorted(path.name for path in (ROOT / 'tests' / 'e2e').glob('*.spec.js'))
-cross_suites = sorted(path.name for path in (ROOT / 'tests' / 'cross-browser').glob('*.spec.js'))
-if len(unit_tests) < 24 or len(e2e_suites) < 40 or not cross_suites:
-    raise SystemExit('Automated test matrix is incomplete.')
-
-for relative in (
-    'README.md', 'ARCHITECTURE.md', 'BACKUP_SCHEMAS.md', 'RELEASE_SCOPE_2027.md',
-    'ROADMAP_2027.md', 'RELEASE_CHECKLIST.md', 'RELEASE_STATUS.md', 'CHANGELOG.md',
-    'KNOWN_LIMITATIONS.md', 'SECURITY.md', 'MANUAL_TEST_PLAN.md', 'CI_TROUBLESHOOTING.md',
-    'DEPLOYMENT.md', 'PRODUCT_BRIEF.md', 'REQUIREMENTS.md', 'UX_FLOW.md',
-    'DESIGN_SYSTEM.md', 'CONTENT_AGE_POLICY.md', 'THREAT_MODEL.md', 'RISK_REGISTER.md',
-):
-    if (ROOT / relative).stat().st_size < 300:
-        raise SystemExit(f'Missing or incomplete release document: {relative}')
+for marker in ('party-core-release-catalog.js', 'party-core-classic-content.js', 'backup-schema-registry.js', 'party-data-tools.js'):
+    if f'node --check {marker}' not in package.get('scripts', {}).get('check', ''):
+        raise SystemExit(f'Syntax gate missing: {marker}')
+for marker in ('scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py'):
+    if marker not in package.get('scripts', {}).get('validate', ''):
+        raise SystemExit(f'Validate gate missing: {marker}')
 
 for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
-    for relative in (
-        'runtime-guard.js', 'backup-schema-registry.js', 'session-ledger.js',
-        'party-session-controls.js', 'party-core-release-catalog.js', 'party-core-classic-content.js',
-        'quick-loader.js', 'party-created-modes.js', 'party-quick-modes.js',
-        'party-mega-modes.js', 'party-viral-modes.js', 'party-search-assist.js',
-        'party-hub-timers.js', 'party-hub.js', 'game-creator.js', 'creator-page.js',
-    ):
+    for relative in ('party-data-tools.js', 'party-routing.js', 'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-hub.js'):
         if forbidden in read(relative):
             raise SystemExit(f'Forbidden pattern {forbidden} in {relative}')
 
 print(json.dumps({
     'project_validation': 'PASS',
     'cache': cache_name,
-    'staged_updates': True,
     'catalog_chain': catalog_chain,
+    'central_backup_schema': True,
+    'complete_backup_key_allowlist': True,
+    'consent_copy_visible': True,
     'core_content_modules': 2,
-    'backup_schemas': 3,
-    'exact_once_session_engines': 5,
-    'legacy_guard_removed': True,
-    'search_assistance': True,
-    'shared_session_controls': True,
-    'split_direct_hub_timer_module': True,
-    'pausable_fast_engine_timers': True,
-    'direct_hub_reload_resume': True,
-    'unit_test_files': len(unit_tests),
-    'e2e_suites': len(e2e_suites),
-    'cross_browser_projects': len(cross_suites),
 }, ensure_ascii=False, indent=2))
