@@ -4,21 +4,23 @@ Stand: 16. August 2026
 
 ## 1. Produkt in einem Satz
 
-Secret Circle ist eine **offline-first Partyspiel-PWA für Gruppen, die gemeinsam auf einem Gerät spielen und ohne Konto schnell zwischen klassischen, sozialen, geheimen und kreativen Partyspielen wechseln möchten**.
+Secret Circle ist ein **offline-first Party-Hub für Gruppen auf einem gemeinsamen Gerät**, der hochwertige Kernspiele, sichere geheime Übergaben und Wiederaufnahme, einen lokalen Game Creator und kontrollierbare lokale Daten in einer konsistenten PWA verbindet.
 
 ## 2. Problem
 
 Bei gemeinsamen Spieleabenden entstehen wiederkehrende Reibungen:
 
 - verschiedene Spiele benötigen unterschiedliche Apps oder Webseiten
-- manche Lösungen verlangen Konto, Internet oder mehrere Geräte
 - Regeln und Übergaben sind nicht immer sofort verständlich
 - geheime Rollen oder private Fragen können bei Reload/Übergabe versehentlich sichtbar werden
 - Spielstände, Timer und laufende Runden können bei Unterbrechungen verloren gehen
 - große Kataloge wirken schnell unübersichtlich
 - experimentelle oder schwächere Modi werden oft genauso präsentiert wie ausgereifte Kernspiele
+- bei mehreren Spielen hintereinander müssen Gruppen häufig Spieler, Einstellungen oder Abläufe neu organisieren
 
-Secret Circle soll diese Reibung reduzieren, indem ein gemeinsamer, lokaler Party-Hub mehrere Spielmechaniken mit konsistenter Bedienung zusammenführt.
+Die aktuelle Marktanalyse zeigt zugleich: **Offlinebetrieb, kein Account und ein gemeinsames Gerät sind 2026 bereits bei mehreren Wettbewerbern vorhanden.** Diese Eigenschaften bleiben wichtige Produktgrundlagen, sind aber allein kein Alleinstellungsmerkmal.
+
+Secret Circle soll deshalb nicht nur eine Sammlung von Spielen sein, sondern einen ganzen lokalen Spieleabend konsistent führen.
 
 ## 3. Primärer Nutzer
 
@@ -43,8 +45,10 @@ Secret Circle soll ermöglichen:
 3. passendes Spiel auswählen.
 4. Regeln und Optionen schnell verstehen.
 5. gemeinsam spielen.
-6. nach Unterbrechung sicher fortsetzen.
-7. anschließend wiederholen, ein anderes Spiel starten oder Verlauf ansehen.
+6. private Informationen sicher weitergeben.
+7. nach Unterbrechung sicher fortsetzen.
+8. anschließend wiederholen, ein anderes Spiel starten oder Verlauf ansehen.
+9. bei Bedarf eigene Spiele erstellen und im selben Hub spielen.
 
 Der Nutzer soll dafür weder ein Konto noch eine Internetverbindung während des eigentlichen Spieleabends benötigen, sofern die PWA zuvor korrekt geladen/installiert wurde.
 
@@ -118,8 +122,8 @@ In dieser Reihenfolge priorisieren:
 2. Stabilität
 3. Privatsphäre/geheime Inhalte
 4. Datenintegrität
-5. Offlinefähigkeit
-6. Gruppentauglichkeit
+5. Gruppentauglichkeit
+6. Offlinefähigkeit
 7. Accessibility
 8. Inhaltsqualität
 9. Geschwindigkeit
@@ -127,20 +131,68 @@ In dieser Reihenfolge priorisieren:
 
 Mehr Spiele sind kein Erfolg, wenn Kernspiele unklar oder instabil sind.
 
-## 9. Differenzierung
+## 9. Marktvalidierte Differenzierung
 
-Secret Circle soll sich primär durch die Kombination folgender Eigenschaften positionieren:
+`MARKET_RESEARCH.md` zeigt direkte Überschneidungen mit aktuellen All-in-one-Party-Apps. Deshalb gilt:
 
-- viele unterschiedliche Gruppenmechaniken in einem Hub
-- offline-first
+### Baseline, nicht USP
+
+Diese Punkte müssen Secret Circle gut erfüllen, dürfen aber nicht als alleiniger Wettbewerbsvorteil behandelt werden:
+
+- offline
 - kein verpflichtendes Konto
-- ein gemeinsames Gerät reicht
-- klare Reifestufen statt vorgetäuschter Gleichwertigkeit aller Modi
-- sichere Wiederaufnahme privater/aktiver Sessions
-- eigene Spiele lokal erstellen
-- lokale Datenkontrolle statt verpflichtender Cloud
+- ein gemeinsames Gerät
+- mehrere Partyspiele in einer App
 
-Diese Positionierung muss später mit `MARKET_RESEARCH.md` gegen reale aktuelle Alternativen geprüft werden.
+### Die eigentliche Differenzierung soll entstehen aus
+
+#### 1. Einem echten Party-Hub
+
+- Spielerpool über Spiele hinweg
+- Favoriten, Presets und Filter
+- Smart Party Night
+- Verlauf/Statistik
+- Replay und nächstes Spiel
+- Core/Extended/Labs als transparente Reifestufen
+
+#### 2. Sicherer Privatsphäre bei gemeinsamem Gerät
+
+- bewusste Reveal-Schritte
+- geheime Rollen/Fragen nach Reload wieder verdeckt
+- sichere Geräteübergabe
+- Rollenverteilung nicht aus Aufdeckreihenfolge ableitbar
+- klare Abbruch-/Resume-Verträge
+
+#### 3. Zuverlässiger Sessiontechnik
+
+- stabile Session-IDs
+- Exact-once-Abschluss
+- pausierbare Timer
+- Wiederaufnahme laufender Spiele
+- kontrollierte PWA-Updates während aktiver Sessions
+
+#### 4. Lokalem Game Creator
+
+- eigene Spiele ohne Programmierung
+- mehrere Mechanikvorlagen
+- lokale Bibliothek
+- Import/Export/Backup
+- direkt im selben Hub spielbar
+
+#### 5. Lokaler Datenkontrolle
+
+- kein Cloudzwang
+- versionierte lokale Daten
+- Sicherung
+- Wiederherstellung
+- Löschung
+- nachvollziehbare Offlinearchitektur
+
+### Positionierungssatz
+
+> **Secret Circle ist der lokale Party-Hub für einen ganzen Spieleabend: hochwertige Kernspiele, sichere geheime Übergaben, zuverlässige Wiederaufnahme, eigene Spiele und volle lokale Datenkontrolle – ohne Konto und ohne Cloudzwang.**
+
+Diese Differenzierung muss mit realen Nutzern validiert werden. Ein technisches Feature ist erst dann ein Produktvorteil, wenn Nutzer es verstehen oder davon messbar profitieren.
 
 ## 10. Erfolgskriterien für Version 1
 
@@ -149,6 +201,8 @@ Diese Positionierung muss später mit `MARKET_RESEARCH.md` gegen reale aktuelle 
 - neue Nutzer können den Kernflow ohne Entwicklerhilfe abschließen
 - 15 Kernspiele bestehen ihre individuellen Abnahmekriterien
 - kleine, mittlere und große Testgruppen können Sessions durchführen
+- Nutzer verstehen Core/Extended/Labs
+- Wechsel zwischen mehreren Spielen eines Abends ist schneller und konsistenter als einzelne Neu-Setups
 
 ### Qualität
 
@@ -194,6 +248,9 @@ Siehe `RISK_REGISTER.md`. Besonders releasekritisch sind aktuell:
 - reale Gruppentests
 - finale Rechts-/Supportangaben
 - reproduzierbare Dependency-Installation
+- direkte Konkurrenz mit ähnlichem Offline/No-account/One-device-Angebot
+- zu dünne Inhalte trotz großer Gesamtspielzahl
+- PWA-Installationshürde gegenüber nativen Store-Apps
 
 ## 13. Releaseentscheidung
 
