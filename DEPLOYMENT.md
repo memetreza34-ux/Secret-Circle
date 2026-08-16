@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v36`**
+- aktueller Offline-Core: **`secret-circle-v37`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -47,7 +47,9 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - Scoring-/Winner-Vertrag bestätigt
 - quantitative Core-Content-Gates erfüllt
 - 15/15 Core-Quellreview dokumentiert
-- Fan-/Marken-/Franchise-Entscheidungen aus `FAN_CONTENT_REVIEW.md` final
+- Word-Imposter-Core-Rechtepass regressionsgesichert
+- `anime-guess` liefert final nur 40 eigenständige Archetypen, keine konkreten Figuren
+- übrige Extended/Labs final auf vermeidbare Marken-/Franchisereferenzen geprüft
 - Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
 
@@ -64,11 +66,9 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v36`** bestätigt
+- Offline-Start aus **`secret-circle-v37`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
-- `party-core-release-catalog.js` offline verfügbar
-- `party-core-classic-content.js` offline verfügbar
-- Word-Imposter-Core enthält die regressionsgesicherten generischen Ersatzbegriffe
+- beide Core-Contentmodule offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
@@ -90,7 +90,7 @@ Vor Production final:
 - gegebenenfalls Impressum/Anbieterkennzeichnung final
 - Hostingangaben final
 - `THIRD_PARTY_NOTICES.md` final
-- `FAN_CONTENT_REVIEW.md` final entschieden
+- `FAN_CONTENT_REVIEW.md` final synchronisiert
 - echter Supportweg nach `SUPPORT.md`
 - Incident-/Hotfixprozess nach `INCIDENT_RESPONSE.md`
 - Wartungsprozess nach `MAINTENANCE.md`
@@ -116,9 +116,9 @@ GitHub Pages ist eine mögliche Route. Eine andere HTTPS-Plattform ist zulässig
 
 Browserfolge:
 
-`party-catalog → expansion → trending → mega → viral → core-release → core-classic → routing`
+`party-catalog → expansion → trending → mega → viral → core-release → core-classic(v2) → routing`
 
-Online und offline müssen dieselben finalen Core-Inhalte verfügbar sein.
+Online und offline müssen dieselben finalen Inhalte verfügbar sein. `anime-guess` muss als **Anime-Archetypen erraten** mit vier generischen 10er-Packs erscheinen.
 
 ### Hub, Creator und Engines
 
@@ -135,7 +135,7 @@ Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und al
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v36`**
+- aktiver Cache: **`secret-circle-v37`**
 - Backup-Registry und beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
@@ -170,7 +170,7 @@ Bei jeder offline benötigten Dateiveränderung:
 1. Offline-Core aktualisieren
 2. Cachegeneration erhöhen
 3. Service-Worker-Test aktualisieren
-4. Architektur/Deployment/Release-Audits synchronisieren
+4. Architektur/Deployment/Privacy/Environment/Release-Audits synchronisieren
 5. reale ältere installierte Version → neue Version testen
 
 ## Rollback
