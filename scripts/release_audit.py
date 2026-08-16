@@ -12,7 +12,7 @@ required = [
     'party-core-release-catalog.js', 'party-core-classic-content.js',
     'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
     'backup-schema-registry.js', 'party-data-tools.js',
-    'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'ACCESSIBILITY.md', 'BETA_TEST_PLAN.md',
+    'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'FAN_CONTENT_REVIEW.md', 'ACCESSIBILITY.md', 'BETA_TEST_PLAN.md',
     'LEGAL_CHECKLIST.md', 'THIRD_PARTY_NOTICES.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
     'ENVIRONMENTS.md', 'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
     'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/accessibility-contract.test.js',
@@ -43,6 +43,7 @@ service_worker_test = read('tests/service-worker.test.js')
 content_test = read('tests/core-content-quality.test.js')
 content_policy = read('CONTENT_AGE_POLICY.md')
 content_review = read('CORE_CONTENT_REVIEW.md')
+fan_review = read('FAN_CONTENT_REVIEW.md')
 accessibility = read('ACCESSIBILITY.md')
 beta_plan = read('BETA_TEST_PLAN.md')
 legal = read('LEGAL_CHECKLIST.md')
@@ -96,6 +97,7 @@ checks = {
     'cache_architecture_synced': cache_name in architecture,
     'cache_deployment_synced': cache_name in deployment,
     'cache_privacy_synced': cache_name in privacy,
+    'cache_environment_synced': cache_name in environments,
     'controlled_update': "event.data?.type === 'SKIP_WAITING'" in sw and 'await caches.delete(CACHE)' not in sw,
     'visible_update_prompt': all(marker in runtime for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', 'hasActiveSession')),
     'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 17),
@@ -115,8 +117,11 @@ checks = {
     'content_modules_offline': all(f"'./{asset}'" in sw for asset in ('party-core-release-catalog.js', 'party-core-classic-content.js')),
     'quantitative_content_targets': 'quantitativeTargetsMet: true' in content_test and 'assert.deepEqual(editorialShortfalls, []' in content_test,
     'privacy_content_regressions': 'privateDevicePromptsRemoved: true' in content_test,
+    'core_reference_cleanup_regression': 'unnecessaryCoreReferenceTermsRemoved: true' in content_test,
     'content_policy_complete_quantities': 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in content_policy,
     'content_review_has_15_core_rows': content_review.count('| PREPARED |') >= 15 and '15/15 Core-Quellpass' in content_review,
+    'fan_review_inventory_present': '40 konkrete Figurennamen' in fan_review and 'Option A' in fan_review and 'Option B' in fan_review and 'Option C' in fan_review,
+    'fan_review_stays_no_go': 'R-011 **OFFEN**' in fan_review and 'öffentliche Release **NO_GO**' in fan_review,
     'accessibility_contract_in_unit_gate': 'tests/accessibility-contract.test.js' in unit_gate,
     'accessibility_contract_in_syntax_gate': 'tests/accessibility-contract.test.js' in syntax_gate,
     'accessibility_e2e_in_syntax_gate': 'tests/e2e/accessibility-core.spec.js' in syntax_gate,
@@ -128,7 +133,7 @@ checks = {
     'staging_origin_isolated': 'getrennte Origin' in environments and 'localStorage' in environments and 'Service-Worker' in environments,
     'environment_stays_no_go': 'konkrete HTTPS-Staging-URL offen' in environments and 'Production **NO_GO**' in environments,
     'legal_stays_no_go': 'LEGAL NO_GO' in legal and '20. Juli 2025' in legal and 'TDDDG' in legal,
-    'third_party_inventory_explicit': all(marker in third_party for marker in ('@playwright/test', 'icon.svg', 'icon-192.png', 'icon-512.png', 'BLOCKED FOR FINAL SIGN-OFF')),
+    'third_party_inventory_explicit': all(marker in third_party for marker in ('@playwright/test', 'Apache-2.0', 'icon.svg', 'icon-192.png', 'icon-512.png', 'BLOCKED FOR FINAL SIGN-OFF')),
     'third_party_does_not_guess_asset_origin': 'kein Herkunfts-/Lizenznachweis gefunden' in third_party and 'nicht automatisch als eigenes Werk' in third_party,
     'support_has_real_contact_gate': 'TBD vor RC' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
     'incident_runbook_present': 'SEV-0' in incident and 'SEV-1' in incident and 'PRODUCTION NO_GO' in incident,
@@ -154,6 +159,7 @@ print(json.dumps({
     'core_content_modules': 2,
     'quantitative_core_content_targets': 'IMPLEMENTED_NOT_RUNNER_VERIFIED',
     'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
+    'fan_content_review': 'IN_PROGRESS_DECISION_OPEN',
     'accessibility': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
     'beta_plan': 'PREPARED_NOT_EXECUTED',
     'environments': 'PREPARED_STAGING_URL_OPEN',
