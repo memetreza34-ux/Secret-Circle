@@ -156,6 +156,7 @@ assert.ok(wordContent && wordContent.categories, 'Word Imposter content runtime 
 const wordCategories = Object.entries(wordContent.categories);
 assert.equal(wordCategories.length, 14);
 let wordImposterWords = 0;
+const wordImposterTerms = [];
 for (const [categoryId, category] of wordCategories) {
   assertSafeText(category.label, `Word Imposter category label ${categoryId}`, { minimum: 2, maximum: 60 });
   assert.ok(Array.isArray(category.entries) && category.entries.length === 12, `Word Imposter category must contain 12 entries: ${categoryId}`);
@@ -165,15 +166,23 @@ for (const [categoryId, category] of wordCategories) {
     assertSafeText(entry[0], `Word Imposter ${categoryId} word ${index + 1}`, { minimum: 2, maximum: 60 });
     assertSafeText(entry[1], `Word Imposter ${categoryId} context ${index + 1}`, { minimum: 2, maximum: 60 });
     words.push(entry[0]);
+    wordImposterTerms.push(canonicalText(entry[0]));
     wordImposterWords += 1;
   }
   assertUniqueItems(words, `Word Imposter/${categoryId}`);
 }
 assert.equal(wordImposterWords, 168);
+for (const removed of ['Bluetooth', 'Oscar', 'Formel 1']) {
+  assert.ok(!wordImposterTerms.includes(canonicalText(removed)), `Unnecessary concrete reference returned to Word Imposter core: ${removed}`);
+}
+for (const generic of ['Funkverbindung', 'Filmpreis', 'Motorsport']) {
+  assert.ok(wordImposterTerms.includes(canonicalText(generic)), `Generic Word Imposter replacement missing: ${generic}`);
+}
 
 console.log(JSON.stringify({
   coreContentQuality: 'PASS', coreGames: expectedCore.length, ageContract: expectedAges,
   hardMinimums, quantitativeTargetsMet: true, privateDevicePromptsRemoved: true,
+  unnecessaryCoreReferenceTermsRemoved: true,
   coreReleaseContentVersion: releaseContent.coreReleaseContentVersion,
   coreReleaseContentGames: releaseContent.coreReleaseContentGames,
   coreClassicContentVersion: classicContent.coreClassicContentVersion,
