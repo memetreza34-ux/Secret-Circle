@@ -4,14 +4,20 @@ const expanded = require('../party-expansion.js');
 const routed = require('../party-routing.js');
 const advanced = require('../party-advanced.js');
 
-assert.equal(expanded.version, 2);
-assert.equal(routed.version, 3);
+assert.equal(expanded.version, 3);
+assert.equal(routed.version, 8);
 assert.equal(expanded.games.length, 22);
 assert.equal(expanded.games.filter(game => game.status === 'playable').length, 18);
 assert.equal(expanded.games.filter(game => game.status === 'planned').length, 4);
 assert.equal(new Set(expanded.games.map(game => game.id)).size, expanded.games.length);
 
-const advancedIds = ['two-truths', 'question-imposter', 'location-spy', 'mafia'];
+const advancedPacks = {
+  'two-truths': ['Locker', 'Reise', 'Schule & Arbeit'],
+  'question-imposter': ['Alltag', 'Meinungen', 'Schätzfragen'],
+  'location-spy': ['Reise', 'Alltag', 'Fantasieorte'],
+  mafia: ['Schnell', 'Klassisch', 'Erweitert']
+};
+const advancedIds = Object.keys(advancedPacks);
 for (const id of advancedIds) {
   const raw = expanded.getGame(id);
   const linked = routed.getGame(id);
@@ -20,7 +26,8 @@ for (const id of advancedIds) {
   assert.equal(linked.mode, 'link');
   assert.equal(linked.advancedMode, raw.mode);
   assert.equal(linked.href, `advanced.html?game=${id}`);
-  assert.ok(expanded.getPackNames(id).length >= 3);
+  assert.deepEqual(raw.packs, advancedPacks[id]);
+  assert.deepEqual(expanded.getPackNames(id), advancedPacks[id]);
   assert.ok(expanded.itemCount(id) >= 4);
 }
 
@@ -58,6 +65,7 @@ console.log(JSON.stringify({
   playableGames: expanded.games.filter(game => game.status === 'playable').length,
   plannedGames: expanded.games.filter(game => game.status === 'planned').length,
   advancedPlayableGames: advancedIds.length,
+  advancedPackMetadataAligned: true,
   guaranteedMinimumItems: 384,
   totalItems
 }, null, 2));
