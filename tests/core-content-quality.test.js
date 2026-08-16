@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const catalog = require('../party-routing.js');
 const release = require('../party-release-structure.js');
+const releaseContent = require('../party-core-release-catalog.js');
 
 delete globalThis.SecretCircleContent;
 require('../word-packs.js');
@@ -34,10 +35,10 @@ const expectedAges = Object.freeze({
 
 const hardMinimums = Object.freeze({
   'truth-dare': 16,
-  'never-have': 8,
-  'most-likely': 8,
-  'would-rather': 8,
-  paranoia: 8,
+  'never-have': 24,
+  'most-likely': 24,
+  'would-rather': 24,
+  paranoia: 20,
   charades: 12,
   taboo: 16,
   'hot-potato': 16,
@@ -46,7 +47,7 @@ const hardMinimums = Object.freeze({
   'question-imposter': 16,
   'location-spy': 16,
   mafia: 3,
-  'wrong-answers': 8
+  'wrong-answers': 24
 });
 
 const editorialTargets = Object.freeze({
@@ -105,6 +106,11 @@ function assertUniqueItems(items, context) {
 
 assert.deepEqual([...release.coreIds], expectedCore);
 assert.equal(Object.keys(expectedAges).length, 15);
+assert.equal(releaseContent.coreReleaseContentVersion, 1);
+assert.deepEqual(
+  new Set(releaseContent.coreReleaseContentGames),
+  new Set(['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers'])
+);
 
 const editorialShortfalls = [];
 let routedCoreItems = 0;
@@ -224,6 +230,8 @@ console.log(JSON.stringify({
   coreGames: expectedCore.length,
   ageContract: expectedAges,
   hardMinimums,
+  coreReleaseContentVersion: releaseContent.coreReleaseContentVersion,
+  coreReleaseContentGames: releaseContent.coreReleaseContentGames,
   wordImposterCategories: wordCategories.length,
   wordImposterWords,
   routedCoreItemsExcludingWordImposter: routedCoreItems,
