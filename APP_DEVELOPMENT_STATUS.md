@@ -17,7 +17,7 @@ Dieses Dokument ist der operative Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_
 
 **Öffentliche Releasefreigabe: NO_GO**
 
-Die quantitativen Core-Content-Ziele sind implementiert. Offen bleiben vor allem CI/Lockfile, manuelles Content-/Alters-/Privacy-Review, Security-Hardening, Accessibility, reale Geräte/PWA-Updates, Gruppentests, Recht/Support und Operations.
+Die quantitativen Core-Content-Ziele sind implementiert. Security-/Backup-Hardening, manuelle Core-Review-Matrix, Accessibility-Grundlage sowie Legal/Support/Incident/Maintenance sind vorbereitet. Offen bleiben insbesondere echter CI-Nachweis, Lockfile/`npm ci`, finale Content-/Rechteabnahme, reale Accessibility-/Geräte-/PWA-Tests, Gruppentests, echte Betreiber-/Supportangaben und HTTPS-Staging.
 
 ## A-bis-Z-Tracker
 
@@ -29,22 +29,23 @@ Die quantitativen Core-Content-Ziele sind implementiert. Offen bleiben vor allem
 | 2 | Produktstrategie / Scope | PREPARED | Scope, Roadmap, Positionierung | reale Nutzer validieren |
 | 3 | Plattformstrategie | PREPARED | `PLATFORM_STRATEGY.md` | reale Zielgeräte |
 | 4 | Requirements / Akzeptanz | PREPARED | `REQUIREMENTS.md`, Core Contracts | Traceability real schließen |
-| 5 | UX / IA / Design | PREPARED | `UX_FLOW.md`, `DESIGN_SYSTEM.md` | Hero/Startseite + reale UX-Tests |
-| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | Datenmodell/ADRs bei Bedarf |
-| 7 | Security / Threat Model | PREPARED | `SECURITY.md`, `THREAT_MODEL.md` | SEC-F01/SEC-F02 |
+| 5 | UX / IA / Design | PREPARED | `UX_FLOW.md`, `DESIGN_SYSTEM.md`, neuer Hub-Hero | reale UX-Tests |
+| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | ADRs bei neuen Grundsatzentscheidungen |
+| 7 | Security / Threat Model | PREPARED | `SECURITY.md`, `THREAT_MODEL.md`, Registry v2 | SEC-F01/F02 runner-/browserverifizieren |
 | 8 | Repo / Environments / Git | BLOCKED | Workflows | Runner, Lockfile, `npm ci`, Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | Restarbeit so fortführen |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | reale Quota-/Updateabnahme |
 | 11 | Tests / CI | BLOCKED | Testmatrix/Workflows | funktionierenden Actions-Runner |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker **v33** | echte Geräte + alte→neue Updates |
-| 13 | Content / Alter / Rechte | IN PROGRESS | drei Content-Wellen + Content-Gates | manuelles Review fortsetzen |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker **v35** | echte Geräte + alte→neue Updates |
+| 13 | Content / Alter / Rechte | IN PROGRESS | drei Content-Wellen + `CORE_CONTENT_REVIEW.md` | reale Gruppen + finale Rechte-/Semantikabnahme |
 | 14 | Beta / reale Gruppen | OPEN | Scenarios/Checklist | 3–4 / 5–8 / 9–12 |
-| 15 | Datenschutz / Recht / Support | OPEN | Privacy-/Security-Grundlage | Legal/Support/Third Party |
+| 15 | Datenschutz / Recht / Support | PREPARED | `privacy.html`, `LEGAL_CHECKLIST.md`, `SUPPORT.md` | echte Betreiber-/Kontakt-/Hostingangaben |
 | 16 | Release Management / RC | PREPARED | Roadmap/Checklist | nach Gates |
 | 17 | Deployment | PREPARED | `DEPLOYMENT.md` | HTTPS-Staging + Update/Rollback real |
-| 18 | Operations / Incident | OPEN | Security-Meldeweg | Support + Incident Response |
-| 19 | Wartung / Migration | PREPARED | Architektur/Backups/Changelog | Maintenance-Dokument |
+| 18 | Operations / Incident | PREPARED | `SUPPORT.md`, `INCIDENT_RESPONSE.md` | reale Verantwortliche + Probeincident |
+| 19 | Wartung / Migration | PREPARED | `MAINTENANCE.md`, Backups, Changelog | Lockfile/operative Routine nachziehen |
 | 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | laufend aktualisieren |
+| 21 | Accessibility | PREPARED | `ACCESSIBILITY.md`, Contract + E2E-Suite | 200 %, VoiceOver, TalkBack, reale Geräte |
 
 ## Content – quantitative Arbeit abgeschlossen
 
@@ -74,52 +75,116 @@ Die quantitativen Core-Content-Ziele sind implementiert. Offen bleiben vor allem
 
 Kein Core-Pack besitzt nach unserem Vertrag noch einen bekannten quantitativen Shortfall.
 
-## Manuelles Content-/Privacy-Review – begonnen
+## Manuelles Core-Content-/Privacy-Review
 
-Erster konkreter Fund wurde geschlossen:
+`CORE_CONTENT_REVIEW.md` enthält jetzt die 15-Spiel-Matrix.
 
-- entfernt aus dem finalen Runtime-Content: Aufforderung, die letzte private Handy-Nachricht vorzulesen
-- entfernt aus dem finalen Runtime-Content: Frage nach dem seltsamsten Inhalt der Kamerarolle
-- ersetzt durch harmlose, selbstbestimmte Alternativen
-- `tests/core-content-quality.test.js` blockiert die beiden alten Texte als Regression
+Geschlossener konkreter Fund:
 
-Damit ist der konkrete Privacy-Fund geschlossen, aber **das gesamte manuelle Review ist noch nicht fertig**.
+- keine Aufforderung mehr, die letzte private Handy-Nachricht vorzulesen
+- keine Frage mehr nach dem seltsamsten Inhalt der Kamerarolle
+- beide durch harmlose selbstbestimmte Alternativen ersetzt
+- Regression im Core-Content-Test geschützt
+
+Zusätzlich ist Freiwilligkeit jetzt in Hub und Advanced sichtbar: persönliche Inhalte dürfen übersprungen werden, ohne Begründung.
+
+Das gesamte Content-Gate bleibt trotzdem **IN PROGRESS**, bis reale Gruppen-, Rechte- und finale Semantikabnahme abgeschlossen sind.
+
+## Security / Backup
+
+### SEC-F01
+
+Doppelte Complete-Backup-Konstanten beseitigt. `party-data-tools.js` liest Format und Limits aus `backup-schema-registry.js`.
+
+### SEC-F02
+
+Complete-Import akzeptiert nur registrierte versionierte Word-Imposter- und `secret-circle-party-*`-Key-Familien. Unbekannte `secret-circle-*`-Namespaces werden abgelehnt.
+
+Registry steht auf Version 2. `BACKUP_SCHEMAS.md` dokumentiert den zentralen Vertrag.
+
+Status beider Funde: **CLOSED IN CODE / RUNNER + REAL BROWSER VERIFICATION OPEN**.
+
+## Accessibility
+
+Vorhanden:
+
+- `ACCESSIBILITY.md`
+- `tests/accessibility-contract.test.js`
+- `tests/e2e/accessibility-core.spec.js`
+- Contract in `npm test` und `npm run check`
+- Reflow-Testbasis bei 320 CSS px
+- Skip-Link-/Tastatur-/Autocomplete-Gates
+- sichtbare Freiwilligkeitsregel
+
+Noch nicht als PASS:
+
+- 200-%-Zoom real
+- VoiceOver
+- TalkBack
+- reale Touchziele
+- komplette Tastaturrunden
+- Screenreader bei privaten Reveals
+
+## Recht / Support / Operations
+
+Neu vorbereitet:
+
+- `LEGAL_CHECKLIST.md`
+- `SUPPORT.md`
+- `INCIDENT_RESPONSE.md`
+- `MAINTENANCE.md`
+
+Legal-Check berücksichtigt Stand August 2026 unter anderem DDG, TDDDG, DSGVO, VSBG und dass die frühere EU-OS-Plattform seit 20. Juli 2025 eingestellt ist.
+
+Keine Betreiberadresse, Support-Mail oder Rechtsform wurde erfunden. Diese Daten bleiben Releaseblocker bis sie real feststehen.
 
 ## PWA / Audit-Synchronität
 
-Aktuell: **`secret-circle-v33`**.
+Aktuell: **`secret-circle-v35`**.
 
-- beide Core-Contentmodule im Offline-Core
-- Service-Worker-Test erwartet v33
-- Architektur und Deployment auf v33 synchronisiert
-- `scripts/release_audit.py` leitet Cachegeneration jetzt dynamisch aus `sw.js` ab statt v30/v32 einzubrennen
-- `scripts/architecture_audit.py` und `scripts/validate_project.py` verwenden ebenfalls den tatsächlichen Cachevertrag
+v35 bündelt:
 
-## Nächste Arbeitsreihenfolge
+- tatsächlich neue Hub-Positionierung
+- sichtbare Freiwilligkeitsregel im Hub
+- korrekte Registry-v2-Ladereihenfolge vor `party-data-tools.js`
+- aktualisierte Privacy-Seite
+- Backup-Allowlist-Dokumentation
 
-1. manuelles Core-Content-/Alters-/Safety-Review vollständig durchführen
-2. `CORE_CONTENT_REVIEW.md` als nachvollziehbare 15-Spiel-Matrix erstellen
-3. weitere konkrete Content-Funde beheben und regressionssichern
-4. Hero-/Startseitenpositionierung auf echten USP umstellen
-5. SEC-F01/SEC-F02 härten
-6. Lockfile + `npm ci`
-7. Branch Protection
-8. Accessibility
-9. reale Geräte/PWA-Updates
-10. reale Gruppen
-11. Recht/Support/Lizenz
-12. Operations/Maintenance
-13. RC/Production
+Service-Worker-Test erwartet v35. Architektur und Deployment sind auf v35 synchronisiert. Dynamische Audits leiten die Cachegeneration aus `sw.js` ab und sollen nicht an alten hart codierten Generationen hängen.
+
+## Aktuell höchste Prioritäten
+
+### P0
+
+1. GitHub-Actions-Runner / echter Checkout + sichtbare Steps
+
+### P1/P2 danach beziehungsweise parallel ohne Runner
+
+2. `package-lock.json` + `npm ci`
+3. Branch Protection / Required Checks
+4. finale Content-/Marken-/Rechteabnahme
+5. HTTPS-Staging
+6. reale Accessibility-/Gerätetests
+7. reale PWA-Update-/Rollbacktests
+8. reale Gruppentests
+9. echte Betreiber-/Support-/Hostingangaben
+10. Third-Party-/Lizenzinventar
+11. Probeincident + Wartungsroutine
+12. Release Candidate
 
 ## Was weiterhin NICHT als bestanden gilt
 
-Wegen des externen Runnerproblems nicht behaupten:
+Wegen des externen Runnerproblems und fehlender Realtests nicht behaupten:
 
 - `npm run ci` grün
 - Cross-Browser grün
+- Accessibility-Contract tatsächlich grün
+- neue Accessibility-E2E-Suite tatsächlich grün
 - Content-Test tatsächlich grün
-- v33-Update auf realen installierten PWAs bestätigt
-- Accessibility/Touchziele auf Zielgeräten bestätigt
+- v35-Update auf real installierten PWAs bestätigt
+- Registry-v2-Import im echten Browser vollständig bestätigt
+- VoiceOver/TalkBack/200-%-Zoom bestanden
+- Legal/Support final
 
 ## Arbeitsregel
 
