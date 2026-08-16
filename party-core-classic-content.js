@@ -143,6 +143,11 @@
     }
   };
 
+  const editorialReplacements = Object.freeze({
+    'Was ist das Seltsamste in deiner Kamerarolle?': 'Welches Foto-Motiv findest du besonders lustig?',
+    'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.': 'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.'
+  });
+
   function mergeNested(baseValue, extraValue, context) {
     if (Array.isArray(baseValue) && Array.isArray(extraValue)) return [...baseValue, ...extraValue];
     if (
@@ -177,13 +182,22 @@
     return content;
   }
 
+  function replaceEditorialText(value) {
+    if (typeof value === 'string') return editorialReplacements[value] || value;
+    if (Array.isArray(value)) return value.map(replaceEditorialText);
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, replaceEditorialText(entry)]));
+    }
+    return value;
+  }
+
   function flattenItems(value) {
     if (Array.isArray(value)) return value;
     if (!value || typeof value !== 'object') return [];
     return Object.values(value).flatMap(flattenItems);
   }
 
-  const content = mergeContent(base.content, additions);
+  const content = replaceEditorialText(mergeContent(base.content, additions));
 
   function getGame(id) {
     return base.games.find(game => game.id === id) || null;
@@ -213,6 +227,7 @@
     getItems,
     itemCount,
     coreClassicContentVersion: VERSION,
-    coreClassicContentGames: Object.freeze(Object.keys(additions))
+    coreClassicContentGames: Object.freeze(Object.keys(additions)),
+    editorialReplacementCount: Object.keys(editorialReplacements).length
   });
 });
