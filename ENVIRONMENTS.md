@@ -93,9 +93,10 @@ Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cr
 
 ## 8. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt aktuell **`secret-circle-v37`**.
+Der Quellcode besitzt aktuell **`secret-circle-v38`**.
 
-v37 enthält den Reference-Safe-Pass für das Anime-Archetypen-Quiz und muss wie jede Offline-Core-Änderung real aus einer älteren installierten Version aktualisiert werden.
+- v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz.
+- v38 ersetzt zusätzlich drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` durch generische Fragen mit denselben Zahlenwerten.
 
 Regeln:
 
@@ -121,6 +122,7 @@ Mindestens:
 - Offline-Neustart
 - finaler Katalog
 - `anime-guess` zeigt nur generische Archetypen
+- Viral-Sportpack enthält die v38-Ersatzfragen
 - Hub-Datenbereich startet ohne Registryfehler
 - Export/Import mit neutralen Daten
 - ein direktes Hub-Core-Spiel
