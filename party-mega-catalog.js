@@ -20,12 +20,12 @@
       packs: ['Anime-Archetypen', 'Gaming & Internet', 'Märchen & Mythen', 'Berufe', 'Tiere', 'Geschichte', 'Sport', 'Musik & Bühne']
     },
     {
-      id: 'anime-guess', title: 'Anime-Figuren erraten', icon: '✨', group: 'Fan-Quiz', status: 'playable', mode: 'link',
+      id: 'anime-guess', title: 'Anime-Archetypen erraten', icon: '✨', group: 'Anime-Quiz', status: 'playable', mode: 'link',
       href: quickHref('anime-guess'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['competitive', 'clever'], age: 'teen', featured: true,
-      description: 'Inoffizielles Namensquiz ohne Bilder, Logos oder Zitate. Die Gruppe erklärt eine bekannte Anime- oder Mangafigur.',
-      instructions: ['Fan-Pack wählen.', 'Gerät von der ratenden Person weg halten.', 'Figur erklären, ohne den Namen zu nennen.', 'Treffer oder Überspringen markieren.'],
-      packs: ['Shōnen-Klassiker', 'Neuere Hits', 'Kult & Fantasy', 'Sport & Games']
+      description: 'Ein eigenständiges Anime-Archetypen-Quiz ohne konkrete Franchise-Figuren, Logos, Bilder oder Zitate.',
+      instructions: ['Archetypen-Pack wählen.', 'Gerät von der ratenden Person weg halten.', 'Archetyp erklären, ohne die Bezeichnung zu nennen.', 'Treffer oder Überspringen markieren.'],
+      packs: ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']
     },
     {
       id: 'money-challenge', title: 'Geld-Challenge', icon: '💶', group: 'Entscheidung', status: 'playable', mode: 'link',
@@ -101,10 +101,26 @@
       'Musik & Bühne': ['DJ', 'Opernsängerin', 'Schlagzeuger', 'Rapper', 'Dirigent', 'Tänzerin', 'Stand-up-Comedian', 'Zauberkünstler', 'Theaterschauspieler', 'Straßenmusiker']
     },
     'anime-guess': {
-      'Shōnen-Klassiker': ['Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Ichigo Kurosaki', 'Edward Elric', 'Gon Freecss', 'Killua Zoldyck', 'Kenshin Himura', 'Natsu Dragneel', 'Yusuke Urameshi'],
-      'Neuere Hits': ['Tanjiro Kamado', 'Nezuko Kamado', 'Satoru Gojo', 'Yuji Itadori', 'Denji', 'Power', 'Eren Jäger', 'Mikasa Ackerman', 'Izuku Midoriya', 'Shoto Todoroki'],
-      'Kult & Fantasy': ['Sailor Moon', 'Light Yagami', 'L', 'Spike Spiegel', 'Inuyasha', 'Kagome Higurashi', 'Frieren', 'Anya Forger', 'Loid Forger', 'Totoro'],
-      'Sport & Games': ['Ash Ketchum', 'Pikachu', 'Hinata Shoyo', 'Kageyama Tobio', 'Yoichi Isagi', 'Meguru Bachira', 'Tsubasa Ozora', 'Kirito', 'Asuna', 'Subaru Natsuki']
+      'Action & Abenteuer': [
+        'Ehrgeiziger Kampfkunst-Schüler', 'Optimistische Abenteuerkapitänin', 'Ruhiger Schwertkämpfer',
+        'Taktische Bogenschützin', 'Hitzköpfiger Feuerkämpfer', 'Blitzschnelle Rivalin',
+        'Beschützender Team-Anführer', 'Hartnäckige Nachwuchsheldin', 'Gelassene Meisterin', 'Mysteriöser Einzelgänger'
+      ],
+      'Magie & Mystery': [
+        'Fluchjägerin', 'Magieschüler mit verbotener Rune', 'Dämonenforscherin', 'Zeitreisende Detektivin',
+        'Geisterseher', 'Alchemistischer Tüftler', 'Mondmagierin', 'Schattenbeschwörer', 'Heilerin mit Geheimnis',
+        'Bibliothekarin verbotener Magie'
+      ],
+      'Fantasy & Alltag': [
+        'Schüchterne Schulsprecherin mit Doppelleben', 'Chaotischer Café-Mitarbeiter', 'Prinzessin auf geheimer Reise',
+        'Roboterpilot wider Willen', 'Tiergeist-Begleiterin', 'Koch mit legendärem Rezept', 'Reisende Apothekerin',
+        'Dorfheld ohne Superkraft', 'Musikerin mit magischem Instrument', 'Erfinder mit lebendigem Gadget'
+      ],
+      'Sport & Games': [
+        'Volleyball-Springer', 'Präzise Fußballstürmerin', 'Eiskunstlauf-Talent', 'Basketball-Taktikerin',
+        'E-Sport-Kapitän', 'Rennfahrerin mit Nerven aus Stahl', 'Schachgenie an der Schule',
+        'Ausdauerläufer mit Rivalen', 'Bogenschützin im Turnier', 'Teammanager mit großer Strategie'
+      ]
     },
     'money-challenge': {
       'Für 10 Euro': [
