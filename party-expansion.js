@@ -35,10 +35,10 @@
 
   games.push(
     Object.freeze({
-      id: 'wavelength', title: 'Wellenlänge', icon: '📡', group: 'Teamspiel', status: 'planned', mode: 'planned',
+      id: 'wavelength', title: 'Spektrum-Tipp', icon: '📡', group: 'Einschätzen', status: 'planned', mode: 'planned',
       minPlayers: 4, maxPlayers: 20, duration: 20, moods: ['clever', 'friendly'], age: 'all',
-      description: 'Ein Hinweis soll das Team auf einer Skala möglichst nah an einen geheimen Zielpunkt führen.',
-      instructions: ['Teams bilden.', 'Ziel auf einer Skala geheim ansehen.', 'Einen passenden Hinweis geben.', 'Teamposition festlegen und Punkte vergeben.'],
+      description: 'Ein geheimer Zielwert liegt zwischen zwei Polen. Eine Person gibt einen kurzen Hinweis, die Gruppe setzt ihre Position auf dem Spektrum.',
+      instructions: ['Spektrum und geheimen Zielwert ansehen.', 'Einen kurzen passenden Hinweis geben.', 'Ziel verbergen und die Gruppe eine Position festlegen lassen.', 'Abstand aufdecken und Punkte vergeben.'],
       packs: ['Alltag', 'Popkultur', 'Gefühle']
     }),
     Object.freeze({
@@ -157,7 +157,7 @@
         { word: 'USB-Stick', banned: ['Speicher', 'Datei', 'Anschluss'] },
         { word: 'Smartwatch', banned: ['Uhr', 'Handgelenk', 'Fitness'] },
         { word: 'Lautsprecher', banned: ['Musik', 'Ton', 'Box'] },
-        { word: 'Browser', banned: ['Webseite', 'Internet', 'Chrome'] }
+        { word: 'Browser', banned: ['Webseite', 'Internet', 'Tab'] }
       ]
     },
     'hot-potato': {
