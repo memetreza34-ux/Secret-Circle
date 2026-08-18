@@ -5,7 +5,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 ## Aktueller Funktionsumfang
 
 - 45 eingebaute technisch spielbare Spiele
-- 15 priorisierte Kernspiele
+- 15 priorisierte Core-Games
 - 13 Extended-Spiele
 - 17 Labs-Modi
 - 27 Quick-, Trend- und Viral-Modi
@@ -22,12 +22,6 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 
 „Technisch spielbar“ bedeutet **nicht automatisch releasefertig**.
 
-## Produktpositionierung
-
-Secret Circle soll nicht nur über „viele Spiele + offline + ein Gerät“ konkurrieren. Der Fokus liegt auf einem zusammenhängenden Party-Hub, 15 besonders priorisierten Core-Games, sicheren geheimen Pass-and-Play-Zuständen, Resume nach Reload, lokaler Datenkontrolle und eigenen Spielen über den Creator.
-
-Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und muss nicht begründet werden.
-
 ## Releaseziel
 
 - funktionsfertig bis **30. November 2026**
@@ -35,7 +29,14 @@ Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und mu
 - Release Candidate bis **15. Dezember 2026**
 - öffentlicher Release **4.–15. Januar 2027**
 
-Aktueller Offline-Core: **`secret-circle-v38`**.
+Aktueller Offline-Core: **`secret-circle-v41`**.  
+Classic Content: **v4**.
+
+## Produktpositionierung
+
+Der Fokus liegt nicht nur auf „viele Spiele + offline + ein Gerät“, sondern auf einem zusammenhängenden Party-Hub mit 15 priorisierten Core-Games, sicheren geheimen Pass-and-Play-Zuständen, Resume nach Reload, lokaler Datenkontrolle und eigenen Spielen über den Creator.
+
+Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und muss nicht begründet werden.
 
 ## Zentrale A-bis-Z-Unterlagen
 
@@ -98,19 +99,25 @@ Die drei Ausbauwellen haben die definierten quantitativen Ziele erreicht. `CORE_
 - Oscar → Filmpreis
 - Formel 1 → Motorsport
 
-### v37 – Anime-Quiz
+### v37/v40 – Anime-Quiz
 
-Für die stabile ID `anime-guess` wurde **Option B** umgesetzt. Im finalen Runtime-Katalog erscheint **Anime-Archetypen erraten** mit vier generischen Packs und **40 eigenständigen Archetypen**. Die 40 zuvor inventarisierten konkreten Figuren-/Franchisereferenzen werden final nicht ausgeliefert.
+Für die stabile ID `anime-guess` wurde **Option B** umgesetzt. `party-mega-catalog.js` und der finale Runtime-Katalog liefern **Anime-Archetypen erraten** mit vier generischen Packs und 40 eigenständigen Archetypen. Die früheren 40 konkreten Anime-/Mangafiguren sind seit v40 auch physisch aus der ausgelieferten Mega-Quelle entfernt.
 
 ### v38 – Viral Sport
 
-Im `higher-lower`-Sportpack wurden drei unnötig konkrete olympisch/Grand-Slam-bezogene Formulierungen durch neutrale Fragen ersetzt, ohne die Zahlenwerte 5 / 8 / 3 zu verändern.
+Drei unnötig konkrete olympisch/Grand-Slam-bezogene Formulierungen wurden durch neutrale Fragen ersetzt, ohne die Zahlenwerte 5 / 8 / 3 zu verändern.
 
-Tests/Audits schützen diese Verträge. Der restliche Extended-/Labs-Referenzscan bleibt offen.
+### v41 – physischer Source-Vertrag
 
-## Performance
+- stabile technische ID `wavelength`, sichtbarer Titel upstream **Spektrum-Tipp**
+- Browser-Tabu enthält upstream `Tab` statt `Chrome`
+- Emoji-Quiz enthält `🦁🌾 → Löwe` statt `Löwenkönig`
+- `party-core-classic-content.js` auf **v4** vereinfacht
+- `scripts/reference_content_audit.py` scannt acht ausgelieferte Contentquellen
+- der Source-Audit ist Teil von `npm run validate`
+- Core-, Architektur- und Release-Audits verlangen denselben Source-Level-Vertrag
 
-`party-core-classic-content.js` Version 2 besitzt laut GitHub-Tree **12.954 Bytes** bei einem unveränderten Budget von **45.000 Bytes**. Ein Split oder höheres Budget ist aktuell nicht nötig.
+Diese neuen Tests/Audits sind **implementiert, aber wegen des aktuellen Actions-Runnerproblems noch nicht belastbar als grün ausgeführt dokumentiert**.
 
 ## Session-, Resume- und Timergrundlage
 
@@ -139,8 +146,8 @@ Tests/Audits schützen diese Verträge. Der restliche Extended-/Labs-Referenzsca
 
 Aktuell:
 
-- `secret-circle-v38`
-- `secret-circle-v38-staging`
+- `secret-circle-v41`
+- `secret-circle-v41-staging`
 
 Updates werden zuerst vollständig in einem Staging-Cache vorbereitet und erst nach sichtbarer Nutzerentscheidung aktiviert. Der aktive Offline-Core wird vor erfolgreicher Promotion nicht destruktiv entfernt.
 
@@ -148,7 +155,7 @@ Updates werden zuerst vollständig in einem Staging-Cache vorbereitet und erst n
 
 ## Accessibility und Beta
 
-Vorbereitet sind `ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/e2e/accessibility-core.spec.js` sowie `BETA_TEST_PLAN.md` mit G1–G5, PN1–PN3, Android/iPhone/Tablet, VoiceOver/TalkBack, zwei echten PWA-Upgrades und einer HTTPS-Rollbackprobe.
+Vorbereitet sind `ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/e2e/accessibility-core.spec.js` sowie `BETA_TEST_PLAN.md` mit G1–G5, PN1–PN3, Android/iPhone/Tablet, VoiceOver/TalkBack, echten PWA-Upgrades und einer HTTPS-Rollbackprobe.
 
 Real offen: 200-%-Zoom, VoiceOver, TalkBack, private Reveal-Flows, Touchbedienung, Geräte- und Gruppentests.
 
@@ -157,7 +164,9 @@ Real offen: 200-%-Zoom, VoiceOver, TalkBack, private Reveal-Flows, Touchbedienun
 - keine npm-Runtime-Dependencies
 - `@playwright/test` 1.54.2 upstream als **Apache-2.0** verifiziert
 - transitive Inventur wartet auf `package-lock.json`
-- Herkunft/Lizenz von `icon.svg`, `icon-192.png`, `icon-512.png` noch nicht belegt
+- `assets/manifests/asset-provenance.json` inventarisiert Releaseassets
+- `icon.svg`, `icon-192.png`, `icon-512.png` bleiben bewusst **`unresolved`**
+- `scripts/asset_provenance_audit.py` und `scripts/public_release_placeholder_audit.py` sind in `npm run validate`
 - keine Root-`LICENSE`; Projektlizenz wird nicht geraten
 
 ## Lokal starten
@@ -195,14 +204,15 @@ Final vor Release muss ein echtes `package-lock.json` vorhanden sein und CI auf 
 
 ### P0 – GitHub Actions
 
-Neuester belastbar geprüfter Lauf: **Run #1905** – Job `validate`, failure, **`steps: []`**, kein Checkout und kein Repository-Code ausgeführt.
+Die zuletzt geprüften Runs enden weiterhin vor einem belastbaren Repository-Checkout/Testlauf. Deshalb existiert kein verlässlicher grüner `npm run ci`-/Playwright-/Cross-Browser-Nachweis für den aktuellen v41-Stand.
 
 ### P1
 
-- `package-lock.json` + `npm ci`
+- echtes `package-lock.json` + `npm ci`
 - Branch Protection / Required Checks
-- restlicher Extended/Labs-Referenzscan
+- Reference-Source-Audit tatsächlich grün ausführen
 - Icon-/Asset-Provenienz
+- manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 - konkrete HTTPS-Staging-Origin
 - reale PWA-Upgrades/Rollback
 - Android/iPhone/Tablet
