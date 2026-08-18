@@ -1,6 +1,6 @@
 # Secret Circle – Release-Checkliste Januar 2027
 
-Stand: 16. August 2026
+Stand: 18. August 2026
 
 Diese Checkliste muss für den unveränderlichen Release-Commit vollständig ausgefüllt werden. „Technisch spielbar“, „Test vorhanden“ oder „Dokument vorhanden“ ersetzt keine Freigabe.
 
@@ -15,6 +15,9 @@ Diese Checkliste muss für den unveränderlichen Release-Commit vollständig aus
 - [ ] CI verwendet `npm ci`
 - [ ] Branch Protection und verpflichtende Checks aktiv
 - [ ] keine generierten Logs, temporären Dateien oder großen unbekannten Assets committed
+- [ ] `scripts/reference_content_audit.py` auf exakt dem Release-Commit tatsächlich grün
+- [ ] `scripts/asset_provenance_audit.py` auf exakt dem Release-Commit tatsächlich grün
+- [ ] `scripts/public_release_placeholder_audit.py` auf exakt dem Release-Commit tatsächlich grün
 
 ## 2. Engine- und Sitzungsintegrität
 
@@ -116,14 +119,16 @@ Zusätzliche Kernspielverträge:
 - [ ] vollständiges Löschen entfernt auch alte/verwaiste Secret-Circle-Keys
 - [ ] Löschung und Wiederherstellung auf mindestens zwei Browsern geprüft
 
-## 6. PWA und Offline
+## 6. PWA und Offline – v41
 
-- [ ] finaler Cache-/Stagingname stimmt in Code, Test, Architektur, Deployment und Privacy überein
+- [ ] finaler Cache ist **`secret-circle-v41`** und Staging-Cache **`secret-circle-v41-staging`**
+- [ ] Cache-/Stagingname stimmt in Service Worker, Test, Architektur, Deployment, Privacy und Environment überein
 - [ ] normaler Browserstart online
 - [ ] installierte PWA online
 - [ ] Offline-Neustart nach vorheriger Installation
 - [ ] alle Kernseiten offline erreichbar
 - [ ] Backup-Registry offline verfügbar
+- [ ] `party-expansion.js`, `party-mega-catalog.js` und `party-viral-catalog.js` offline verfügbar
 - [ ] beide Core-Contentmodule offline verfügbar
 - [ ] alle vier schnellen Enginefamilien offline startbar
 - [ ] direkte Hub- und Advanced-Kernspiele offline startbar und wiederaufnehmbar
@@ -135,8 +140,8 @@ Zusätzliche Kernspielverträge:
 - [ ] Advanced-Session wird vom Update-Schutz erkannt
 - [ ] sichtbarer Hinweis „Jetzt aktualisieren“ / „Später“
 - [ ] aktiver Offline-Core bleibt bei fehlgeschlagener Promotion erhalten
-- [ ] Update von mindestens zwei älteren Cacheversionen getestet
-- [ ] Rollbackdeployment getestet
+- [ ] Update von mindestens zwei älteren Cacheversionen auf v41 getestet
+- [ ] Rollbackdeployment mit neuer Cachegeneration getestet
 
 ## 7. Accessibility und Geräte
 
@@ -160,7 +165,9 @@ Zusätzliche Kernspielverträge:
 - [ ] Kontrast und Status nicht nur durch Farbe
 - [ ] Timerverhalten bei realem App-Wechsel und Sperrbildschirm dokumentiert
 
-## 8. Inhalte und Recht
+## 8. Inhalte, Referenzen und Recht
+
+### Core-/Altersqualität
 
 - [ ] `CORE_CONTENT_REVIEW.md`: 15/15 erster Core-Quellpass abgeschlossen
 - [ ] jedes Kernspiel in realer Gruppe redaktionell beobachtet
@@ -168,8 +175,30 @@ Zusätzliche Kernspielverträge:
 - [ ] Altersstufen konsistent
 - [ ] sensible Fragen können übersprungen werden
 - [ ] familienfreundliche Standardauswahl geprüft
-- [ ] Fan-, Marken- und urheberrechtlich sensible Inhalte separat bewertet
-- [ ] keine unzulässigen Bilder, Logos, langen Zitate oder Audios enthalten
+
+### Physischer Source-/Referenzvertrag
+
+- [ ] `party-core-classic-content.js` ist auf **Version 4**
+- [ ] `party-mega-catalog.js` enthält keine der früheren 40 konkreten Anime-Figuren
+- [ ] `anime-guess` erscheint als **Anime-Archetypen erraten** mit vier generischen 10er-Packs
+- [ ] stabile technische ID `wavelength` bleibt erhalten, sichtbarer Titel ist upstream **Spektrum-Tipp**
+- [ ] ausgelieferter sichtbarer Content enthält den alten Namen `Wellenlänge` nicht
+- [ ] Browser-Tabu enthält upstream `Tab` und nicht `Chrome`
+- [ ] Emoji-Quiz enthält `🦁🌾 → Löwe` und nicht `Löwenkönig`
+- [ ] drei entfernte olympisch/Grand-Slam-spezifische Viral-Texte sind nicht zurückgekehrt
+- [ ] `scripts/reference_content_audit.py` tatsächlich grün
+- [ ] finaler manueller Extended-/Labs-Semantikpass abgeschlossen
+- [ ] Marketingtexte suggerieren keine offizielle Partnerschaft/Verbindung zu Fremdmarken
+- [ ] keine fremden Logos, Screenshots, Charakterbilder, Audios oder Videos ohne belegte Rechte
+- [ ] keine fremden Slogans oder längeren geschützten Zitate im Releasebuild
+
+### Assets / Legal
+
+- [ ] `assets/manifests/asset-provenance.json` deckt alle gebündelten Releaseassets ab
+- [ ] kein Releaseasset steht auf `unresolved`
+- [ ] `icon.svg` Herkunft/Rechtebasis belegt
+- [ ] `icon-192.png` Herkunft/Ableitung belegt
+- [ ] `icon-512.png` Herkunft/Ableitung belegt
 - [ ] `LEGAL_CHECKLIST.md` mit echtem Betreiber-/Release-Modell abgearbeitet
 - [ ] Datenschutzerklärung auf tatsächliches Hosting angepasst
 - [ ] Impressum beziehungsweise notwendige Betreiberangaben final, falls erforderlich
@@ -178,6 +207,7 @@ Zusätzliche Kernspielverträge:
 - [ ] kein veralteter Link zur eingestellten EU-OS-Plattform verwendet
 - [ ] Support- und Sicherheitskontakt final
 - [ ] Lizenz und Drittanbieterhinweise final
+- [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
 
 ## 9. Reale Gruppentests
 
@@ -206,8 +236,10 @@ Zusätzliche Kernspielverträge:
 ## 11. Veröffentlichung
 
 - [ ] Produktionsdeployment über HTTPS
-- [ ] finale Versionsnummer und Cacheversion
+- [ ] konkrete getrennte Staging- und Production-Origin dokumentiert
+- [ ] finale Versionsnummer und Cacheversion **v41 oder bewusst neuer**
 - [ ] finale Icons und Screenshots samt Herkunft/Nutzungsrechten
+- [ ] öffentlicher Placeholder-Audit grün; keine Dummy-/Beispieldaten in öffentlicher Runtime
 - [ ] Release Notes und Changelog vollständig
 - [ ] unveränderlicher Release-Tag
 - [ ] Installation und Offlinebetrieb nach Deployment erneut geprüft
@@ -225,4 +257,4 @@ Zusätzliche Kernspielverträge:
 - Accessibility-Freigabe: ____________________
 - Legal-/Betriebsfreigabe: ____________________
 
-**Keine Veröffentlichung**, solange GitHub Actions keine sichtbaren Schritte ausführt, Kern-CI oder Cross-Browser-Tests rot sind, kritische beziehungsweise hohe Fehler offen sind, Accessibility/Legal/Betrieb nicht finalisiert sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
+**Keine Veröffentlichung**, solange GitHub Actions keine belastbaren Repository-Schritte ausführt, Kern-CI/Cross-Browser-/Reference-Source-Gates nicht tatsächlich grün sind, kritische beziehungsweise hohe Fehler offen sind, Asset-/Rechte-/Accessibility-/Legal-/Betriebs-Gates nicht finalisiert sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
