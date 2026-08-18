@@ -25,7 +25,7 @@ BLOCKED_LITERALS = [
     'Sätze zum Sieg im Herren-Grand-Slam-Tennis',
     'Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Ichigo Kurosaki', 'Edward Elric',
     'Gon Freecss', 'Killua Zoldyck', 'Kenshin Himura', 'Natsu Dragneel', 'Yusuke Urameshi',
-    'Tanjiro Kamado', 'Nezuko Kamado', 'Satoru Gojo', 'Yuji Itadori', 'Denji', 'Power',
+    'Tanjiro Kamado', 'Nezuko Kamado', 'Satoru Gojo', 'Yuji Itadori', 'Denji', "'Power'",
     'Eren Jäger', 'Mikasa Ackerman', 'Izuku Midoriya', 'Shoto Todoroki',
     'Sailor Moon', 'Light Yagami', 'Spike Spiegel', 'Inuyasha', 'Kagome Higurashi',
     'Frieren', 'Anya Forger', 'Loid Forger', 'Totoro', 'Ash Ketchum', 'Pikachu',
