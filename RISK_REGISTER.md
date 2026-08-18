@@ -1,6 +1,6 @@
 # Secret Circle – Risk Register
 
-Stand: 16. August 2026
+Stand: 18. August 2026
 
 ## 1. Zweck
 
@@ -17,17 +17,17 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 
 | ID | Risiko | Bereich | Wahrscheinlichkeit | Auswirkung | Priorität | Gegenmaßnahme | Status / Nachweis |
 |---|---|---|---|---|---|---|---|
-| R-001 | GitHub Actions hat keinen funktionierenden Runner/keine Steps | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **OFFEN – Run #1905 `steps: []`** |
-| R-002 | Kein reproduzierbares `package-lock.json` | Build/Supply Chain | hoch | hoch | P1 | echtes Lockfile, prüfen, CI auf `npm ci` | **OFFEN – Generierung am Paketnetzwerk gescheitert** |
+| R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **OFFEN – bekannte Runs enden vor verwertbaren Steps** |
+| R-002 | Kein reproduzierbares `package-lock.json` | Build/Supply Chain | hoch | hoch | P1 | echtes Lockfile, prüfen, CI auf `npm ci` | **OFFEN** |
 | R-003 | Branch Protection / Required Checks nicht bestätigt | Git/Release | mittel | hoch | P1 | Pflichtchecks konfigurieren | offen |
 | R-004 | Timer weichen auf echten OS-/Sperrbildschirmpfaden ab | Geräte/PWA | mittel | hoch | P1 | Android + iPhone real | offen |
-| R-005 | PWA-Upgrade beschädigt Offline-Core/lokale Session | PWA/Daten | mittel | kritisch | P1 | zwei Altversionen→RC + Rollback real | **offen; aktueller Core v38 vorbereitet** |
+| R-005 | PWA-Upgrade beschädigt Offline-Core/lokale Session | PWA/Daten | mittel | kritisch | P1 | zwei Altversionen→RC + Rollback real | **offen; aktueller Core v41 vorbereitet** |
 | R-006 | Private Rollen/Fragen werden beim Resume sichtbar | Privacy/Gameplay | niedrig-mittel | hoch | P1 | E2E + reale Übergaben | technisch gehärtet; real offen |
 | R-007 | Quota-/Import-/Migration beschädigt lokale Daten | Daten | niedrig-mittel | kritisch | P1 | Rollbacktests + echter Browser | Registry v2 vorbereitet; real offen |
 | R-008 | Sessionabschluss zählt mehrfach | Daten/Statistik | niedrig | hoch | P1 | Completion-ID + Exact-once | technisch abgesichert; CI offen |
 | R-009 | Core-Inhalte schwach/semantisch redundant | Content | mittel | hoch | P1 | Mengen-Gates + 15/15 Review + reale Sessions | quantitativ geschlossen; reale Langsessions offen |
 | R-010 | Alters-/Safety-Einstufungen passen real nicht | Content/Safety | mittel | hoch | P1 | Policy + Quellreview + Gruppenabnahme | Quellpass vorbereitet; final offen |
-| R-011 | Fan-/Marken-/Franchise-Inhalte erzeugen Rechte-Risiken | Recht/Content | niedrig nach mehreren Fixes | hoch | P1 | konkrete Referenzen reduzieren, Restscan, Marketing-/Visualprüfung | **stark gemindert: Word-Imposter, Anime-Quiz und Viral-Sport bereinigt; übrige Extended/Labs offen** |
+| R-011 | Fan-/Marken-/Franchise-Inhalte erzeugen Rechte-Risiken | Recht/Content | niedrig nach v41-Hardening | hoch | P1 | Source-Audit + manueller Visual/Marketing/Legal-Pass | **stark gemindert: physischer Source-Pass umgesetzt; finale manuelle/rechtliche Abnahme offen** |
 | R-012 | Betreiber-/Support-/Rechtsangaben unvollständig | Recht/Release | mittel | kritisch | P1 | Legal/Support + echte Angaben | Dokumente vorbereitet; reale Angaben offen |
 | R-013 | UI für Erstnutzer zu kompliziert | UX | mittel | hoch | P1 | Tests ohne Entwicklerhilfe | offen |
 | R-014 | Design uneinheitlich/provisorisch | Design | mittel | mittel | P2 | Designsystem + reale Review | Hero/Touchziele verbessert |
@@ -36,7 +36,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-017 | Mafia-Balance real unklar | Gameplay | mittel | mittel | P2 | echte 8+-Sessions | offen |
 | R-018 | Labs wirken releasegleichwertig | Produkt/UX | mittel | mittel | P2 | klare Reifestufen + Nutzerprüfung | Basis vorhanden |
 | R-019 | Production-Hosting verhält sich anders als lokal | Deployment | mittel | hoch | P1 | getrenntes HTTPS-Staging | offen |
-| R-020 | Cache-/Release-Dokumente driften | Prozess | niedrig | mittel | P2 | dynamische Audits + synchronisierte Docs | **stark gemindert: v38 in SW/Test/Privacy/Architektur/Deployment/Environment/Status** |
+| R-020 | Cache-/Release-Dokumente driften | Prozess | niedrig | mittel | P2 | dynamische Audits + synchronisierte Docs | **stark gemindert: v41 in SW/Test/Privacy/Architektur/Deployment/Environment** |
 | R-021 | Dependency enthält Schwachstelle/Lizenzproblem | Supply Chain | niedrig-mittel | hoch | P2 | Lockfile, Audit, Third-Party-Inventar | Playwright direkt verifiziert; transitiv offen |
 | R-022 | Browser-/iOS-PWA-Änderungen bis RC | Plattform | mittel | mittel-hoch | P2 | Zielbrowser kurz vor RC erneut | beobachten |
 | R-023 | Creator-Eingaben umgehen Limits/belasten Speicher | Creator/Security | niedrig-mittel | mittel-hoch | P2 | Limits, Fuzz, Quota, E2E | technisch weitgehend abgesichert |
@@ -45,9 +45,10 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-026 | Basisnutzen ist am Markt nicht einzigartig | Produkt/Markt | hoch | hoch | P2 | Hub-Tiefe, Resume/Privacy, Creator | Positionierung angepasst |
 | R-027 | Backup importiert unbekannte Secret-Circle-Namespaces | Security | niedrig nach Fix | hoch | P1 | Registry-v2-Allowlist | CLOSED IN CODE; real offen |
 | R-028 | Backupkonstanten driften | Security/Maintenance | niedrig nach Fix | hoch | P1 | Registry als einzige Quelle | CLOSED IN CODE; CI offen |
-| R-029 | Herkunft/Lizenz gebündelter Icons/Assets unklar | Recht/Supply Chain | mittel | hoch | P1 | Asset-Provenance dokumentieren | **OFFEN – Icon-Herkunft vor RC** |
-| R-030 | Support-/Legal-Platzhalter gelangen in Production | Recht/Betrieb | mittel | hoch | P1 | Platzhalter-Scan + Releaseaudit | offen, bewusst TBD |
-| R-031 | Classic-Content-v2 überschreitet Modul-/Offlinebudget | Performance/Architektur | sehr niedrig | mittel | P1 | tatsächliche Tree-Größe gegen 45 KB prüfen | **CLOSED – 12.954 Bytes bei 45.000-Byte-Budget** |
+| R-029 | Herkunft/Lizenz gebündelter Icons/Assets unklar | Recht/Supply Chain | mittel | hoch | P1 | Asset-Provenance dokumentieren | **OFFEN – drei Icons weiterhin `unresolved`** |
+| R-030 | Support-/Legal-Platzhalter gelangen in Production | Recht/Betrieb | mittel | hoch | P1 | Placeholder-Audit + Releaseaudit | Audit vorbereitet; echte finale Angaben offen |
+| R-031 | Classic-Content überschreitet Modul-/Offlinebudget | Performance/Architektur | sehr niedrig | mittel | P1 | 45-KB-Budget im Performance-Audit | **technisch kontrolliert; Runnernachweis für v4 offen** |
+| R-032 | Reference-Source-Audit ist vorhanden, aber nicht tatsächlich ausgeführt | Recht/CI | hoch solange Runner blockiert | hoch | P1 | `npm run validate` auf unverändertem RC grün | **OFFEN – Audit in Validate integriert** |
 
 ## 3. Aktuelle Releaseblocker
 
@@ -56,7 +57,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 3. R-003 – Branch Protection
 4. R-004/R-005 – reale Geräte/PWA-Upgrades
 5. R-009/R-010 – reale Content-/Altersabnahme
-6. R-011/R-012/R-029/R-030 – Rechte/Betreiber/Assets
+6. R-011/R-012/R-029/R-030/R-032 – Rechte/Betreiber/Assets/Source-Gate
 7. R-013/R-015 – reale UX/Accessibility
 8. R-019 – HTTPS-Staging
 9. R-024 – Incident-/Support-Drill
@@ -69,27 +70,34 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 - Oscar → Filmpreis
 - Formel 1 → Motorsport
 
-### `anime-guess` – v37
+### `anime-guess` – v37/v40
 
 - Option B umgesetzt
 - stabile ID `anime-guess`
 - finaler Titel `Anime-Archetypen erraten`
 - vier generische Packs / 40 eigenständige Archetypen
-- 40 frühere konkrete Namen im finalen Runtime-Content ausgeschlossen
+- seit v40 keine der 40 früheren konkreten Namen mehr in `party-mega-catalog.js`
 
 ### Viral `higher-lower` – v38
-
-Drei unnötig konkrete Sport-/Eventformulierungen wurden bei identischen Zahlenwerten ersetzt:
 
 - olympisches Ringsymbol → Fünfeck
 - olympisches Stadion → typische Leichtathletikanlage
 - Grand-Slam-Tennis → Best-of-five-Tennismatch
 
-R-011 bleibt nur wegen des restlichen Extended/Labs-/Marketing-/Visualpasses offen.
+### Physischer Source-Pass – v41
 
-## 5. Performance-Nachweis
+- `party-expansion.js`: `Wellenlänge` → **Spektrum-Tipp**
+- Browser-Tabu: `Chrome` → `Tab`
+- `party-mega-catalog.js`: `Löwenkönig` → `Löwe`
+- Classic Content auf v4 vereinfacht
+- `scripts/reference_content_audit.py` scannt acht ausgelieferte Contentquellen
+- Audit in `npm run validate` integriert
 
-`party-core-classic-content.js` Version 2 besitzt laut GitHub-Tree **12.954 Bytes**. Das bestehende Budget bleibt **45.000 Bytes**. Ein Split oder höheres Budget ist nicht nötig.
+R-011 bleibt wegen manueller Semantik-, Visual-, Marketing- und finaler Rechtsabnahme offen. R-032 bleibt offen, bis der neue Source-Audit auf einem funktionierenden Runner tatsächlich grün ist.
+
+## 5. Performance
+
+Das bestehende Budget für `party-core-classic-content.js` bleibt **45.000 Bytes**. Die ältere bestätigte v2-Größe von 12.954 Bytes zeigte deutlichen Spielraum; Classic v4 muss das unveränderte Budget weiterhin über `scripts/performance_budget.py` einhalten. Kein Budget wird zur kosmetischen Freigabe erhöht.
 
 ## 6. Security/Backup
 
@@ -97,7 +105,7 @@ Registry v2 schließt im Code R-027/R-028. Endgültige Schließung erst nach tat
 
 ## 7. Risiko-Regel für neue Features
 
-Vor jeder größeren Funktion prüfen: Netzwerk, personenbezogene Daten, Berechtigungen, Persistenz/Migration, geheime Inhalte, Dependencies, Storage-Key-Familien, Offline-Core/Performance, Accessibility, Alter/Rechte, Marktpositionierung.
+Vor jeder größeren Funktion prüfen: Netzwerk, personenbezogene Daten, Berechtigungen, Persistenz/Migration, geheime Inhalte, Dependencies, Storage-Key-Familien, Offline-Core/Performance, Accessibility, Alter/Rechte, Marktpositionierung und ausgelieferte Source-/Assetreferenzen.
 
 ## 8. Schließregel
 
