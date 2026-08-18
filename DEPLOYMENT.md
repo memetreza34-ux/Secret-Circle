@@ -1,6 +1,6 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Stand: 16. August 2026
+Stand: 18. August 2026
 
 Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentlicht. Eine installierbare PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
 
@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v39`**
+- aktueller Offline-Core: **`secret-circle-v40`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -48,7 +48,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - quantitative Core-Content-Gates erfüllt
 - 15/15 Core-Quellreview dokumentiert
 - Word-Imposter-Rechtepass regressionsgesichert
-- `anime-guess` liefert final nur 40 eigenständige Archetypen
+- `anime-guess` liefert 40 eigenständige Archetypen und die ausgelieferte `party-mega-catalog.js` enthält die 40 früheren konkreten Figuren nicht mehr
 - Viral-`higher-lower` enthält die generischen Sportfragen aus v38
 - Classic Content v3 liefert `Chrome → Tab` und sichtbares **Spektrum-Tipp** statt Wellenlänge
 - übrige Extended/Labs final auf vermeidbare Marken-/Franchisereferenzen geprüft
@@ -68,9 +68,9 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v39`** bestätigt
+- Offline-Start aus **`secret-circle-v40`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
-- beide Core-Contentmodule offline verfügbar
+- Mega-, Viral- und beide Core-Contentmodule offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
@@ -127,6 +127,7 @@ Online und offline müssen dieselben finalen Inhalte verfügbar sein.
 Zusätzliche sichtbare Checks:
 
 - `anime-guess` → **Anime-Archetypen erraten** mit vier generischen 10er-Packs
+- ausgelieferte `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren
 - stabile ID `wavelength` → sichtbarer Titel **Spektrum-Tipp**
 - Browser-Tabu-Karte enthält `Tab`, nicht `Chrome`
 - im Viral-Sportpack tauchen die drei entfernten olympisch/Grand-Slam-spezifischen Texte nicht wieder auf
@@ -146,8 +147,8 @@ Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und al
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v39`**
-- Backup-Registry und beide Core-Contentmodule verfügbar
+- aktiver Cache: **`secret-circle-v40`**
+- Mega-, Viral-, Backup-Registry- und beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
 - lokale Daten bleiben bei Update erhalten
