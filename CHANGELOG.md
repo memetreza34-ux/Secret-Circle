@@ -8,7 +8,7 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 - `APP_ENTWICKLUNG_VON_A_BIS_Z.md` als Masterprozess von Discovery bis Maintenance eingeführt und Secret-Circle-spezifisch erweitert.
 - Operativer Tracker `APP_DEVELOPMENT_STATUS.md`, Risikoregister, Produktbrief, Nutzerszenarien, Marktanalyse, Requirements, UX-Flow, Designsystem, Security/Threat Model, Accessibility, Beta, Legal, Support, Incident Response, Maintenance und Environment-Vertrag ergänzt.
-- Release-Audit verlangt inzwischen Content-, Accessibility-, Asset-Provenienz-, Placeholder-, Legal-/Support-/Operations- und Environment-Nachweise.
+- Release-Audit verlangt Content-, Reference-Source-, Accessibility-, Asset-Provenienz-, Placeholder-, Legal-/Support-/Operations- und Environment-Nachweise.
 
 ### Core-Content
 
@@ -36,10 +36,26 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 #### PWA v39
 
-- Tabu-Browserkarte: `Chrome` → `Tab`.
-- stabile interne ID `wavelength` bleibt kompatibel, sichtbarer Titel wird **Spektrum-Tipp** statt Wellenlänge.
+- finale Tabu-Browserkarte auf `Tab` statt `Chrome` umgestellt.
+- stabile interne ID `wavelength` sichtbar als **Spektrum-Tipp** statt Wellenlänge dargestellt.
 - `party-core-classic-content.js` auf Version 3 angehoben.
-- Unit-/Content-/Architektur-/Release-Verträge für die v39-Reference-Safe-Änderungen nachgezogen.
+
+#### PWA v40
+
+- die 40 historischen konkreten Anime-Figuren vollständig aus der tatsächlich ausgelieferten `party-mega-catalog.js` entfernt.
+- `tests/party-mega-catalog.test.js` liest die ausgelieferte Quelle selbst ein und blockiert die Rückkehr dieser Namen.
+
+#### PWA v41
+
+- `party-expansion.js` liefert die stabile ID `wavelength` bereits upstream mit sichtbarem Titel **Spektrum-Tipp**.
+- Browser-Tabu enthält bereits upstream `Tab` statt `Chrome`; der nachträgliche Classic-Fallback wurde entfernt.
+- Emoji-Quiz: `🦁👑 → Löwenkönig` durch generisches `🦁🌾 → Löwe` ersetzt.
+- `party-core-classic-content.js` auf **Version 4** vereinfacht; dort verbleiben nur noch zwei Privacy-Editorial-Replacements.
+- `scripts/reference_content_audit.py` ergänzt. Der Audit scannt acht tatsächlich ausgelieferte Contentquellen und blockiert bewusst entfernte konkrete Referenzen sowie ausgewählte nicht freigegebene hochprofilige Plattform-/Franchise-Namen.
+- Reference-Source-Audit in `npm run validate` integriert.
+- Core-, Architektur- und Release-Audits auf den physischen Source-Vertrag umgestellt.
+
+Die v41-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerproblems noch **nicht belastbar als grün ausgeführt dokumentiert**.
 
 ### Backup / Security
 
@@ -52,8 +68,8 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 ### PWA / Offline
 
 - kontrollierte staged Updates mit sichtbarer Nutzeraktivierung und nicht-destruktiver Promotion beibehalten.
-- aktueller Offline-Core: **`secret-circle-v39`** / `secret-circle-v39-staging`.
-- Cachegeneration, Privacy, Architektur, Deployment, Environment und Service-Worker-Vertrag synchronisiert.
+- aktueller Offline-Core: **`secret-circle-v41`** / `secret-circle-v41-staging`.
+- Cachegeneration, Privacy, Architektur, Deployment, Environment und Service-Worker-Vertrag auf v41 synchronisiert.
 
 ### Accessibility
 
@@ -69,6 +85,7 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 - `assets/manifests/asset-provenance.json` ergänzt; die drei bestehenden App-Icons bleiben ausdrücklich `unresolved`, bis Herkunft/Rechte belegt sind.
 - `scripts/asset_provenance_audit.py` in `npm run validate` integriert.
 - `scripts/public_release_placeholder_audit.py` ergänzt, um typische Dummywerte in öffentlichen Runtime-Dateien zu blockieren.
+- `scripts/reference_content_audit.py` ergänzt, um physische Contentquellen auf bereits bewertete konkrete Referenzen zu prüfen.
 - `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md` ergänzt.
 
 ### Sessions / Hub / Timer
@@ -88,7 +105,8 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 ### CI / Build – noch offen
 
-- GitHub Actions weist geprüften Jobs weiterhin keinen funktionierenden Runner zu; bestätigtes Muster `runner_id: 0`, `steps: []`, kein Checkout.
+- die zuletzt geprüften GitHub-Actions-Läufe enden weiterhin vor einem belastbaren Repository-Checkout/Testlauf.
+- daher sind die neuen v41-Unit-/Audit-/Reference-Source-Verträge noch nicht runner-verifiziert.
 - `package-lock.json` fehlt; keine Integrity-Werte wurden erfunden.
 - CI bleibt vorläufig auf Installationsübergang und wird erst mit echtem Lockfile auf `npm ci` umgestellt.
 - Branch Protection/Required Checks bleiben offen.
@@ -96,4 +114,4 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 ### Release-Status
 
 - PR #13 bleibt Draft und ungemergt.
-- öffentlicher Release bleibt **NO_GO**, bis CI, Lockfile, Branch Protection, reale Geräte/PWA-Upgrades, Accessibility, reale Gruppen, Asset-/Rechte-, Legal-/Support- und Staging-Gates bestanden sind.
+- öffentlicher Release bleibt **NO_GO**, bis CI, Lockfile, Branch Protection, Reference-Source-Audit, reale Geräte/PWA-Upgrades, Accessibility, reale Gruppen, Asset-/Rechte-, Legal-/Support- und Staging-Gates bestanden sind.
