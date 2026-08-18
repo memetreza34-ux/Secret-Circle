@@ -1,6 +1,6 @@
 # Release-Status – Secret Circle
 
-Stand: 16. August 2026  
+Stand: 18. August 2026  
 Zielrelease: 4.–15. Januar 2027  
 Arbeitsbranch: `agent/release-foundation-2027`  
 Draft-PR: #13
@@ -9,18 +9,22 @@ Draft-PR: #13
 
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v38`**
+**Offline-Core:** **`secret-circle-v41`**  
+**Classic Content:** **v4**
 
 Die technische Grundlage ist weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, Accessibility-Basis und Betriebs-/Legal-Verträge sind vorbereitet.
 
-Neu im Rechte-/Referenzpass:
+Der technische Reference-Safe-Pass ist seit v41 deutlich stärker:
 
-- Word-Imposter-Core: drei unnötige konkrete Referenzen generisch ersetzt
-- `anime-guess`: Option B umgesetzt, final **Anime-Archetypen erraten** mit 40 generischen Archetypen
-- Viral `higher-lower`: drei unnötige olympisch/Grand-Slam-bezogene Sporttexte generisch ersetzt
-- Classic Content v2: 12.954 Bytes bei 45.000-Byte-Budget; Performance-Risiko geschlossen
+- Word Imposter: `Bluetooth`/`Oscar`/`Formel 1` generisch ersetzt
+- Viral: drei unnötig konkrete Sport-/Eventformulierungen generisch ersetzt
+- `anime-guess`: 40 generische Archetypen im finalen Katalog **und physisch in der ausgelieferten Mega-Quelle**
+- `party-expansion.js`: sichtbarer Titel **Spektrum-Tipp** statt `Wellenlänge`
+- Browser-Tabu upstream: `Tab` statt `Chrome`
+- Emoji-Quiz: generischer Löwenhinweis statt `Löwenkönig`
+- `scripts/reference_content_audit.py` ist Teil von `npm run validate`
 
-Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, realer Device-/PWA-/Accessibility-/Gruppentest, Assetherkunft, restlicher Extended/Labs-Rechtepass, Betreiber-/Supportangaben und HTTPS-Staging.
+Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, reale Device-/PWA-/Accessibility-/Gruppentests, Assetherkunft, manuelle visuelle/rechtliche Restabnahme, Betreiber-/Supportangaben und HTTPS-Staging.
 
 ## Produkt / Katalog
 
@@ -29,7 +33,7 @@ Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protectio
 - Filter für Reifestufe, Alter, Gruppe, Stimmung und Status
 - Synonym-/Tippfehlersuche
 - sichtbare Freiwilligkeits-/Skip-Regel
-- finaler Katalogpfad: `base → expansion → trending → mega → viral → core-release → core-classic(v2) → routing`
+- finaler Katalogpfad: `base → expansion → trending → mega → viral → core-release → core-classic(v4) → routing`
 
 ## Core-Content
 
@@ -39,26 +43,34 @@ Privacy-Fund geschlossen: keine letzte private Nachricht vorlesen, keine Kamerar
 
 ## Reference-Safe-Pass
 
-### Word Imposter
+### v36 – Word Imposter
 
 - Bluetooth → Funkverbindung
 - Oscar → Filmpreis
 - Formel 1 → Motorsport
 
-### Anime-Quiz
+### v37/v40 – Anime-Quiz
 
 - stabile ID `anime-guess`
 - finaler Titel `Anime-Archetypen erraten`
 - 4 generische Packs / 40 Archetypen
-- 40 frühere konkrete Figuren im finalen Runtime-Content ausgeschlossen
+- seit v40 keine der 40 früheren konkreten Figuren mehr in `party-mega-catalog.js`
 
-### Viral Sport
+### v38 – Viral Sport
 
-- `Ringe im olympischen Symbol` → `Ecken eines Fünfecks`
-- `Bahnen eines olympischen 400-Meter-Stadions häufig` → `Bahnen einer typischen 400-Meter-Leichtathletikanlage`
-- `Sätze zum Sieg im Herren-Grand-Slam-Tennis` → `Gewinnsätze in einem Best-of-five-Tennismatch`
+- olympisches Ringsymbol → Ecken eines Fünfecks
+- olympisches Stadion → typische 400-m-Leichtathletikanlage
+- Grand-Slam-Formulierung → Best-of-five-Tennismatch
 
-Die Werte 5 / 8 / 3 bleiben unverändert. `tests/party-viral-catalog.test.js` schützt diese Entscheidung.
+### v41 – physischer Source-Vertrag
+
+- `party-expansion.js`: `wavelength` bleibt stabile technische ID, sichtbarer Titel **Spektrum-Tipp**
+- Browser-Tabu enthält direkt `Tab`, nicht `Chrome`
+- `party-mega-catalog.js`: `🦁🌾 → Löwe`, nicht `Löwenkönig`
+- Classic Content v4 enthält nur noch zwei Privacy-Editorial-Replacements
+- zentraler Reference-Source-Audit scannt acht ausgelieferte Contentquellen
+
+**Wichtig:** Diese neuen Tests/Audits sind implementiert, aber wegen des Actions-Runnerproblems noch nicht belastbar als grün ausgeführt dokumentiert.
 
 ## Sessions / Resume / Timer
 
@@ -80,14 +92,14 @@ SEC-F01/F02: **CLOSED IN CODE / REAL VERIFICATION OPEN**.
 
 ## PWA / Offline
 
-- `secret-circle-v38`
-- `secret-circle-v38-staging`
+- `secret-circle-v41`
+- `secret-circle-v41-staging`
 - staged update
 - bewusste Nutzeraktivierung
 - aktiver Core wird nicht vor erfolgreicher Promotion zerstört
-- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v38 synchronisiert
+- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v41 synchronisiert
 
-Offen: reale Altversion→v38-Upgrades, iOS/Android-PWA, Rollback und Sperrbildschirmtests.
+Offen: reale Altversion→v41-Upgrades, iOS/Android-PWA, Rollback und Sperrbildschirmtests.
 
 ## Accessibility / Beta
 
@@ -99,32 +111,40 @@ Real offen: 200 % Zoom, VoiceOver, TalkBack, echte Touchbedienung, private Revea
 
 Vorhanden: `LEGAL_CHECKLIST.md`, `THIRD_PARTY_NOTICES.md`, `FAN_CONTENT_REVIEW.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md`, `MAINTENANCE.md`, `BETA_TEST_PLAN.md`, `ENVIRONMENTS.md`.
 
-Noch real offen: Betreiber-/Kontakt-/Hostingangaben, Icon-Herkunft, transitive Dependencyinventur nach Lockfile, restlicher Extended/Labs-Referenzscan, Support-/Incident-Verantwortliche und Staging-/Production-Origin.
+Noch real offen:
+
+- Betreiber-/Kontakt-/Hostingangaben
+- Icon-Herkunft für `icon.svg`, `icon-192.png`, `icon-512.png`
+- transitive Dependencyinventur nach echtem Lockfile
+- manueller Extended/Labs-/Marketing-/Visual-Rechtepass
+- Support-/Incident-Verantwortliche
+- Staging-/Production-Origin
 
 ## CI – P0
 
-Neuester belastbar geprüfter Lauf: **#1905** – `validate`, failure, `steps: []`, kein Checkout, kein Repository-Code ausgeführt.
+Die zuletzt geprüften Branch-/PR-Actions enden weiterhin vor verwertbaren Repository-Schritten. Das bekannte Muster ist `steps: []` beziehungsweise kein belastbarer Checkout-/Testnachweis.
 
-Daher kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis.
+Daher existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis** für v41.
 
 ## Build – P1
 
-`package-lock.json` fehlt. Lokale Generierung scheiterte am externen Paketnetzwerk/Timeout. Es wurden keine Integritätswerte erfunden. Erst mit echtem Lockfile wird CI auf `npm ci` umgestellt.
+`package-lock.json` fehlt. Es wurden keine Integritätswerte erfunden. Erst mit echtem Lockfile wird CI auf `npm ci` umgestellt.
 
 ## Nächste Releaseblöcke
 
-1. Actions-Runner
-2. Lockfile + `npm ci`
-3. Branch Protection
-4. restlicher Extended/Labs-Referenzscan
+1. Actions-Runner / echter Checkout + sichtbare Steps
+2. echtes `package-lock.json` + `npm ci`
+3. Branch Protection / Required Checks
+4. Reference-Source-Audit auf funktionierendem Runner tatsächlich ausführen
 5. Asset-Provenienz / Icon-Herkunft
-6. HTTPS-Staging
-7. reale Upgrade-/Rollback-/Gerätetests
-8. reale Accessibilitytests
-9. reale Gruppentests
-10. Betreiber-/Supportdaten
-11. Incident-Drill
-12. unveränderter RC + Tag
+6. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
+7. HTTPS-Staging
+8. reale Upgrade-/Rollback-/Gerätetests
+9. reale Accessibilitytests
+10. reale Gruppentests
+11. Betreiber-/Supportdaten
+12. Incident-Drill
+13. unveränderter RC + Tag
 
 ## Releaseentscheidung
 
