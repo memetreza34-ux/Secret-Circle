@@ -159,7 +159,7 @@
       Party: ['Karaoke', 'Quiz', 'Tanzen', 'Mafia', 'Scharade', 'Fotoecke', 'Snackbuffet', 'Playlist', 'Mitternachtsspaziergang', 'Brettspielrunde']
     },
     'emoji-quiz': {
-      Tiere: [['🦁👑', 'Löwenkönig'], ['🐧❄️', 'Pinguin'], ['🐝🍯', 'Biene'], ['🦉🌙', 'Eule'], ['🐢🏁', 'Schildkröte'], ['🐬🌊', 'Delfin'], ['🦘🇦🇺', 'Känguru'], ['🐫🏜️', 'Kamel']],
+      Tiere: [['🦁🌾', 'Löwe'], ['🐧❄️', 'Pinguin'], ['🐝🍯', 'Biene'], ['🦉🌙', 'Eule'], ['🐢🏁', 'Schildkröte'], ['🐬🌊', 'Delfin'], ['🦘🇦🇺', 'Känguru'], ['🐫🏜️', 'Kamel']],
       Essen: [['🍎🥧', 'Apfelkuchen'], ['🍅🧀🍕', 'Pizza'], ['🥔🔥', 'Ofenkartoffel'], ['🍓🥛', 'Erdbeermilch'], ['🌽🍿', 'Popcorn'], ['🍌🥞', 'Bananenpfannkuchen'], ['🥚🍳', 'Spiegelei'], ['🍋🧊', 'Zitronenlimonade']],
       Berufe: [['🔥🚒', 'Feuerwehrkraft'], ['📷🎞️', 'Fotograf'], ['🔧⚡', 'Elektroniker'], ['🍳👨‍🍳', 'Koch'], ['✈️🧑‍✈️', 'Pilot'], ['📚🏫', 'Lehrkraft'], ['💻🧑‍💻', 'Programmierer'], ['🩺🏥', 'Arzt']],
       Orte: [['🗼🥐', 'Paris'], ['🏛️🍕', 'Rom'], ['🚇🌧️', 'London'], ['🌉🚋', 'San Francisco'], ['🏖️🌴', 'Tropeninsel'], ['🏔️🚠', 'Bergstation'], ['🎡🏙️', 'Freizeitpark'], ['📚🤫', 'Bibliothek']],
