@@ -9,7 +9,7 @@
   'use strict';
   if (!base) throw new Error('Core-Release-Katalog für klassische Inhalte fehlt.');
 
-  const VERSION = 3;
+  const VERSION = 4;
   const additions = {
     'truth-dare': {
       Locker: {
@@ -145,8 +145,7 @@
 
   const editorialReplacements = Object.freeze({
     'Was ist das Seltsamste in deiner Kamerarolle?': 'Welches Foto-Motiv findest du besonders lustig?',
-    'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.': 'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.',
-    Chrome: 'Tab'
+    'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.': 'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.'
   });
 
   const referenceSafeGameOverrides = Object.freeze({
