@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v40`**
+- aktueller Offline-Core: **`secret-circle-v41`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -48,10 +48,13 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - quantitative Core-Content-Gates erfüllt
 - 15/15 Core-Quellreview dokumentiert
 - Word-Imposter-Rechtepass regressionsgesichert
-- `anime-guess` liefert 40 eigenständige Archetypen und die ausgelieferte `party-mega-catalog.js` enthält die 40 früheren konkreten Figuren nicht mehr
+- `anime-guess` liefert 40 eigenständige Archetypen und `party-mega-catalog.js` enthält die früheren konkreten Figuren physisch nicht mehr
+- `party-expansion.js` liefert `Spektrum-Tipp` und Browser-Tabu mit `Tab` direkt upstream
+- Emoji-Quiz nutzt generisch `🦁🌾 → Löwe` statt `Löwenkönig`
 - Viral-`higher-lower` enthält die generischen Sportfragen aus v38
-- Classic Content v3 liefert `Chrome → Tab` und sichtbares **Spektrum-Tipp** statt Wellenlänge
-- übrige Extended/Labs final auf vermeidbare Marken-/Franchisereferenzen geprüft
+- Classic Content **v4** hält die reference-safe Runtime-Invarianten
+- `scripts/reference_content_audit.py` ist Teil von `npm run validate`
+- übrige Extended/Labs final manuell/visuell/rechtlich auf vermeidbare Marken-/Franchisereferenzen geprüft
 - Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
 
@@ -68,9 +71,9 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v40`** bestätigt
+- Offline-Start aus **`secret-circle-v41`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
-- Mega-, Viral- und beide Core-Contentmodule offline verfügbar
+- Expansion-, Mega-, Viral- und beide Core-Contentmodule offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
@@ -95,6 +98,7 @@ Vor Production final:
 - `FAN_CONTENT_REVIEW.md` final synchronisiert
 - Asset-Provenienz ohne `unresolved` Releaseassets
 - öffentlicher Placeholder-Audit grün
+- Reference-Source-Audit tatsächlich grün
 - echter Supportweg nach `SUPPORT.md`
 - Incident-/Hotfixprozess nach `INCIDENT_RESPONSE.md`
 - Wartungsprozess nach `MAINTENANCE.md`
@@ -120,17 +124,19 @@ GitHub Pages ist eine mögliche Route. Eine andere HTTPS-Plattform ist zulässig
 
 Browserfolge:
 
-`party-catalog → expansion → trending → mega → viral → core-release → core-classic(v3) → routing`
+`party-catalog → expansion → trending → mega → viral → core-release → core-classic(v4) → routing`
 
 Online und offline müssen dieselben finalen Inhalte verfügbar sein.
 
-Zusätzliche sichtbare Checks:
+Zusätzliche sichtbare/source Checks:
 
 - `anime-guess` → **Anime-Archetypen erraten** mit vier generischen 10er-Packs
 - ausgelieferte `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren
-- stabile ID `wavelength` → sichtbarer Titel **Spektrum-Tipp**
-- Browser-Tabu-Karte enthält `Tab`, nicht `Chrome`
+- ausgelieferte `party-mega-catalog.js` enthält `Löwe`, nicht `Löwenkönig`
+- stabile ID `wavelength` → sichtbarer Titel **Spektrum-Tipp** bereits in `party-expansion.js`
+- Browser-Tabu-Karte enthält `Tab`, nicht `Chrome`, bereits in `party-expansion.js`
 - im Viral-Sportpack tauchen die drei entfernten olympisch/Grand-Slam-spezifischen Texte nicht wieder auf
+- `scripts/reference_content_audit.py` ist auf demselben RC-Commit tatsächlich grün
 
 ### Hub, Creator und Engines
 
@@ -147,8 +153,8 @@ Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und al
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v40`**
-- Mega-, Viral-, Backup-Registry- und beide Core-Contentmodule verfügbar
+- aktiver Cache: **`secret-circle-v41`**
+- Expansion-, Mega-, Viral-, Backup-Registry- und beide Core-Contentmodule verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
 - lokale Daten bleiben bei Update erhalten
