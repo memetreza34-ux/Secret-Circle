@@ -1,6 +1,6 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
-Stand: 16. August 2026  
+Stand: 18. August 2026  
 Status: **IN PROGRESS – Assetherkunft und finale Rechteprüfung offen**
 
 ## 1. Zweck
@@ -31,7 +31,7 @@ Noch offen: Ohne `package-lock.json` existiert kein reproduzierbarer transitive 
 
 ## 4. Maschinenlesbare Asset-Provenienz
 
-Neu verbindlich:
+Verbindlich:
 
 `assets/manifests/asset-provenance.json`
 
@@ -80,13 +80,28 @@ Im UI stehen Unicode-Emoji-Zeichen. Secret Circle bündelt dafür keine eigene E
 
 ### Anime-/Fan-Bezug
 
-`FAN_CONTENT_REVIEW.md` dokumentiert Option B für `anime-guess`: Der **finale Runtime-Katalog** liefert nur `Anime-Archetypen erraten` mit 40 generischen Archetypen. Keine konkreten Charakterbilder, Logos, Screenshots, Audio-/Videodateien oder Zitate sind vorgesehen.
+`FAN_CONTENT_REVIEW.md` dokumentiert Option B für `anime-guess`: `party-mega-catalog.js` und der finale Runtime-Katalog liefern nur **Anime-Archetypen erraten** mit 40 generischen Archetypen. Die 40 früheren konkreten Figuren wurden seit v40 auch physisch aus der ausgelieferten Mega-Katalogdatei entfernt.
+
+Keine konkreten Charakterbilder, Logos, Screenshots, Audio-/Videodateien oder Zitate sind vorgesehen.
+
+### Weitere Source-Bereinigung v41
+
+- `Wellenlänge` → **Spektrum-Tipp** direkt upstream in `party-expansion.js`
+- Browser-Tabu `Chrome` → `Tab` direkt upstream
+- `Löwenkönig` → generischer Emoji-Quiz-Hinweis `🦁🌾 → Löwe`
+- Classic Content v4 benötigt nur noch die zwei Privacy-Textkorrekturen als editoriale Ersetzungen
+
+### Zentraler Referenz-Audit
+
+`scripts/reference_content_audit.py` ist Teil von `npm run validate` und scannt acht tatsächlich ausgelieferte Contentquellen. Er blockiert die bereits bewusst entfernten konkreten Referenzen und erzwingt bei ausgewählten hochprofiligen Plattform-/Franchise-Namen eine neue Review-Entscheidung.
+
+Dieser Audit ist wegen des aktuellen Actions-Runnerproblems **noch nicht tatsächlich runner-verifiziert**.
 
 ### Viral
 
 v38 ersetzt drei unnötig konkrete Sport-/Eventformulierungen durch generische Fragen mit identischen Zahlenwerten.
 
-Der restliche Extended-/Labs-/Marketing-/Visualpass bleibt offen.
+Der restliche manuelle Extended-/Labs-/Marketing-/Visualpass bleibt offen.
 
 ## 8. Zukünftige Designassets
 
@@ -100,7 +115,7 @@ Es existiert weiterhin keine Root-Datei `LICENSE`.
 
 Das bedeutet nicht automatisch, dass eine Open-Source-Lizenz benötigt wird. Vor öffentlicher Quellcodeverteilung muss bewusst entschieden werden, ob der Code proprietär/nicht zur Weiterverwendung lizenziert bleibt oder unter eine konkrete Open-Source-Lizenz gestellt wird.
 
-Der historische konkrete Anime-Basisblock in `party-mega-catalog.js` wird im finalen Runtime-Pfad überschrieben. Falls der Quellcode später öffentlich verteilt wird, ist zusätzlich zu entscheiden, ob dieser historische Basisblock vor Quellcodeveröffentlichung vollständig bereinigt wird.
+Der frühere konkrete Anime-Basisblock wurde aus `party-mega-catalog.js` entfernt. Eine spätere öffentliche Quellcodeverteilung benötigt trotzdem eine bewusste Projektlizenzentscheidung und einen finalen Source-/Asset-/Dependency-Review.
 
 ## 10. Hosting- und Plattformkomponenten
 
@@ -120,11 +135,14 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [ ] transitive Dependencies aus finalem Lockfile inventarisiert
 - [x] maschinenlesbares Asset-Provenienzmanifest vorhanden
 - [x] Asset-Provenienzvalidator in `npm run validate`
+- [x] physischer Reference-Source-Audit in `npm run validate`
+- [x] konkreter historischer Anime-Basisblock aus ausgelieferter Mega-Quelle entfernt
+- [ ] Reference-Source-Audit auf funktionierendem Runner tatsächlich grün
 - [ ] `icon.svg` von `unresolved` auf belegten Status gesetzt
 - [ ] `icon-192.png` Herkunft/Ableitung belegt
 - [ ] `icon-512.png` Herkunft/Ableitung belegt
 - [ ] alle späteren Releaseassets inventarisiert und belegt
-- [ ] restlicher Fan-/Marken-/Franchise-Pass abgeschlossen
+- [ ] restlicher manueller Fan-/Marken-/Franchise-/Marketing-/Visualpass abgeschlossen
 - [ ] keine fremden Logos/Screenshots/Audios/Videos ohne Freigabe
 - [ ] erforderliche Attributionen/Notices final
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
