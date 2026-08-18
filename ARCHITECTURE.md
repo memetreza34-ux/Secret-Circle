@@ -33,22 +33,29 @@ Der vollständige Party-Katalog wird in dieser Reihenfolge aufgebaut:
 Verantwortung:
 
 - `party-catalog.js`: Basisspiele und Ausgangsinhalte
-- `party-expansion.js`: Advanced-Spiele und strukturierte Welle-1-Erweiterungen
+- `party-expansion.js`: Advanced-Spiele, strukturierte Welle-1-Erweiterungen und seit v41 reference-safe Grunddefinitionen für `wavelength`/Tabu
 - `party-trending-catalog.js`: klassische Quick Modes
-- `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate; `anime-guess` ist dort seit v40 bereits physisch reference-safe
+- `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate; `anime-guess` liegt dort physisch als generischer Archetypenmodus vor
 - `party-viral-catalog.js`: Viral-/Preis-/Wissens-/Storyformate
 - `party-core-release-catalog.js`: soziale Core-Releaseinhalte aus Welle 2
-- `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Ersetzungen
+- `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Invarianten
 - `party-routing.js`: finale Routingfassade, Competition-Metadaten und lokale Creator-Spiele
 
-`party-core-classic-content.js` steht auf Version **3**. Die finale Schicht:
+`party-core-classic-content.js` steht auf Version **4**. Die finale Schicht:
 
 - hält `anime-guess` auf 40 eigenständigen Archetypen,
-- ersetzt die konkrete Browser-Referenz `Chrome` durch `Tab`,
-- zeigt die stabile interne Spiel-ID `wavelength` öffentlich als **Spektrum-Tipp** statt als Wellenlänge,
+- hält die stabile interne Spiel-ID `wavelength` öffentlich auf **Spektrum-Tipp**,
+- enthält nur noch die zwei Privacy-Textkorrekturen als redaktionelle Ersetzungen,
 - behält persistierte IDs/Routingkompatibilität bei.
 
-Seit v40 liegen die 40 generischen Anime-Archetypen bereits im ausgelieferten `party-mega-catalog.js`. Die finale Classic-Schicht bleibt als zusätzliche Invariante bestehen; konkrete historische Figuren dürfen weder im finalen Runtime-Katalog noch physisch in der ausgelieferten Mega-Quelle zurückkehren.
+Seit v41 gilt zusätzlich upstream:
+
+- `party-expansion.js` enthält direkt **Spektrum-Tipp** statt `Wellenlänge`.
+- Die Browser-Tabu-Karte enthält direkt `Tab` statt `Chrome`.
+- `party-mega-catalog.js` enthält die 40 generischen Anime-Archetypen und keine früheren konkreten Anime-Figuren.
+- Der Emoji-Quiz-Löwenhinweis ist generisch `🦁🌾 → Löwe` statt `Löwenkönig`.
+
+`scripts/reference_content_audit.py` scannt die tatsächlich ausgelieferten Contentquellen und macht diese Entscheidungen zu einem Releasevertrag. Die stabile technische ID `wavelength` bleibt ausdrücklich erlaubt; der alte sichtbare Produktname ist gesperrt.
 
 ## 5. Hub- und Timergrenzen
 
@@ -87,13 +94,14 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v40`**.
+Aktueller Offline-Core: **`secret-circle-v41`**.
 
 - v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
 - v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
 - v38: drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` generisch ersetzt
 - v39: `Chrome` im finalen Tabu-Content entfernt und sichtbare Bezeichnung `Wellenlänge` durch **Spektrum-Tipp** ersetzt
-- v40: die 40 historischen konkreten Anime-Figurennamen auch physisch aus der ausgelieferten `party-mega-catalog.js` entfernt; Mega-Test blockiert ihre Rückkehr
+- v40: 40 historische konkrete Anime-Figurennamen physisch aus der ausgelieferten `party-mega-catalog.js` entfernt
+- v41: `Spektrum-Tipp` und `Tab` upstream in `party-expansion.js` verankert, Classic Content auf v4 bereinigt, `Löwenkönig` durch generischen Löwenhinweis ersetzt und zentraler Source-Reference-Audit in `npm run validate` aufgenommen
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -123,11 +131,11 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 - Altersstufe und sensible Themen werden dokumentiert
 - Nutzerinhalte bleiben von Built-ins getrennt
 
-`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md` und `THIRD_PARTY_NOTICES.md` definieren die Release-Gates.
+`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md` und `scripts/reference_content_audit.py` definieren die Release-Gates.
 
 ## 12. Testpyramide
 
-Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
+Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Reference-Source-, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
 
 Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Screenreader/Zoom und reale Partygruppen.
 
@@ -140,7 +148,7 @@ Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Bu
 - `party-core-release-catalog.js` max. 65 KB
 - `party-core-classic-content.js` max. 45 KB
 
-Die zuletzt bestätigte Classic-v2-Größe lag bei 12.954 Bytes. Nach v3 wird die tatsächliche Tree-Größe erneut geprüft; das 45-KB-Budget wird nicht reflexartig erhöht.
+Die zuletzt bestätigte Classic-v2-Größe lag bei 12.954 Bytes. Classic v4 bleibt unter demselben unveränderten 45-KB-Budget; die tatsächliche Ausführung des Performance-Audits bleibt vom funktionierenden Runner abhängig.
 
 ## 14. Betrieb, Deprecation und Rollback
 
