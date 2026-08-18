@@ -93,12 +93,13 @@ Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cr
 
 ## 8. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt aktuell **`secret-circle-v40`**.
+Der Quellcode besitzt aktuell **`secret-circle-v41`**.
 
 - v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz im finalen Runtime-Katalog.
 - v38 ersetzte drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower`.
 - v39 entfernte `Chrome` aus dem finalen Tabu-Content und zeigt `wavelength` als **Spektrum-Tipp**.
 - v40 entfernte die 40 historischen konkreten Anime-Figurennamen zusätzlich physisch aus der ausgelieferten `party-mega-catalog.js`.
+- v41 verankert `Spektrum-Tipp` und `Tab` upstream, setzt Classic Content auf v4, ersetzt `Löwenkönig` durch einen generischen Löwenhinweis und nimmt den zentralen Reference-Source-Audit in `npm run validate` auf.
 
 Regeln:
 
@@ -125,9 +126,11 @@ Mindestens:
 - finaler Katalog
 - `anime-guess` zeigt nur generische Archetypen
 - ausgelieferte `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren
-- sichtbarer Modus `wavelength` erscheint als **Spektrum-Tipp**
-- Browser-Tabu enthält `Tab`, nicht `Chrome`
+- Emoji-Quiz nutzt `Löwe`, nicht `Löwenkönig`
+- sichtbarer Modus `wavelength` erscheint bereits upstream als **Spektrum-Tipp**
+- Browser-Tabu enthält bereits upstream `Tab`, nicht `Chrome`
 - Viral-Sportpack enthält die v38-Ersatzfragen
+- Reference-Source-Audit auf dem RC-Commit tatsächlich grün
 - Hub-Datenbereich startet ohne Registryfehler
 - Export/Import mit neutralen Daten
 - ein direktes Hub-Core-Spiel
