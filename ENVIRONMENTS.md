@@ -1,6 +1,6 @@
 # Secret Circle – Umgebungen und Staging-Vertrag
 
-Stand: 16. August 2026  
+Stand: 18. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**
 
 ## 1. Ziel
@@ -93,10 +93,12 @@ Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cr
 
 ## 8. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt aktuell **`secret-circle-v38`**.
+Der Quellcode besitzt aktuell **`secret-circle-v40`**.
 
-- v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz.
-- v38 ersetzt zusätzlich drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` durch generische Fragen mit denselben Zahlenwerten.
+- v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz im finalen Runtime-Katalog.
+- v38 ersetzte drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower`.
+- v39 entfernte `Chrome` aus dem finalen Tabu-Content und zeigt `wavelength` als **Spektrum-Tipp**.
+- v40 entfernte die 40 historischen konkreten Anime-Figurennamen zusätzlich physisch aus der ausgelieferten `party-mega-catalog.js`.
 
 Regeln:
 
@@ -122,6 +124,9 @@ Mindestens:
 - Offline-Neustart
 - finaler Katalog
 - `anime-guess` zeigt nur generische Archetypen
+- ausgelieferte `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren
+- sichtbarer Modus `wavelength` erscheint als **Spektrum-Tipp**
+- Browser-Tabu enthält `Tab`, nicht `Chrome`
 - Viral-Sportpack enthält die v38-Ersatzfragen
 - Hub-Datenbereich startet ohne Registryfehler
 - Export/Import mit neutralen Daten
