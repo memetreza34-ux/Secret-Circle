@@ -9,14 +9,16 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 required = [
     'package.json', 'manifest.webmanifest', 'sw.js', 'runtime-guard.js',
     'party.html', 'quick-play.html', 'privacy.html', 'party-routing.js', 'party-release-structure.js',
-    'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-viral-catalog.js',
+    'party-expansion.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
+    'party-core-release-catalog.js', 'party-core-classic-content.js',
     'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
     'backup-schema-registry.js', 'party-data-tools.js',
     'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'FAN_CONTENT_REVIEW.md', 'ACCESSIBILITY.md', 'BETA_TEST_PLAN.md',
     'LEGAL_CHECKLIST.md', 'THIRD_PARTY_NOTICES.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
     'ENVIRONMENTS.md', 'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
-    'assets/manifests/asset-provenance.json', 'scripts/asset_provenance_audit.py', 'scripts/public_release_placeholder_audit.py',
-    'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/party-viral-catalog.test.js',
+    'assets/manifests/asset-provenance.json', 'scripts/asset_provenance_audit.py',
+    'scripts/public_release_placeholder_audit.py', 'scripts/reference_content_audit.py',
+    'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/party-mega-catalog.test.js', 'tests/party-viral-catalog.test.js',
     'tests/accessibility-contract.test.js', 'tests/backup-schema-registry.test.js', 'tests/e2e/accessibility-core.spec.js',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
 ]
@@ -34,9 +36,11 @@ quick = read('quick-play.html')
 privacy = read('privacy.html')
 routing = read('party-routing.js')
 release_structure = read('party-release-structure.js')
+expansion_content = read('party-expansion.js')
+mega_content = read('party-mega-catalog.js')
+viral_content = read('party-viral-catalog.js')
 release_content = read('party-core-release-catalog.js')
 classic_content = read('party-core-classic-content.js')
-viral_content = read('party-viral-catalog.js')
 registry = read('backup-schema-registry.js')
 data_tools = read('party-data-tools.js')
 architecture = read('ARCHITECTURE.md')
@@ -44,6 +48,7 @@ deployment = read('DEPLOYMENT.md')
 environments = read('ENVIRONMENTS.md')
 service_worker_test = read('tests/service-worker.test.js')
 content_test = read('tests/core-content-quality.test.js')
+mega_test = read('tests/party-mega-catalog.test.js')
 viral_test = read('tests/party-viral-catalog.test.js')
 content_policy = read('CONTENT_AGE_POLICY.md')
 content_review = read('CORE_CONTENT_REVIEW.md')
@@ -57,6 +62,7 @@ incident = read('INCIDENT_RESPONSE.md')
 maintenance = read('MAINTENANCE.md')
 asset_audit = read('scripts/asset_provenance_audit.py')
 placeholder_audit = read('scripts/public_release_placeholder_audit.py')
+reference_audit = read('scripts/reference_content_audit.py')
 workflow = read('.github/workflows/ci.yml')
 cross_workflow = read('.github/workflows/cross-browser.yml')
 
@@ -95,6 +101,9 @@ asset_entries = asset_manifest.get('assets') if isinstance(asset_manifest.get('a
 asset_paths = {entry.get('path') for entry in asset_entries if isinstance(entry, dict)}
 asset_statuses = {entry.get('path'): entry.get('status') for entry in asset_entries if isinstance(entry, dict)}
 required_assets = {'icon.svg', 'icon-192.png', 'icon-512.png'}
+removed_anime_markers = (
+    'Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Satoru Gojo', 'Pikachu', 'Subaru Natsuki'
+)
 
 checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
@@ -120,15 +129,25 @@ checks = {
     'hub_positioning_and_consent': 'Euer Party-Hub · privat · lokal' in party and 'Persönliche Inhalte sind freiwillig' in party and 'Überspringen ist jederzeit erlaubt' in party,
     'routing_uses_final_content': "require('./party-core-classic-content.js')" in routing and 'version: 8' in routing,
     'release_content_contract': all(marker in release_content for marker in ('coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent')),
-    'classic_content_v3_reference_safe': all(marker in classic_content for marker in (
-        'const VERSION = 3;', 'coreClassicContentVersion', 'referenceSafeGameOverrides',
-        'Anime-Archetypen erraten', "title: 'Spektrum-Tipp'", "Chrome: 'Tab'",
-        'referenceSafeRemovedConcreteNames: 40'
-    )),
-    'classic_v3_regression_test': all(marker in content_test for marker in (
-        'coreClassicContentVersion, 3', 'editorialReplacementCount, 3',
+    'classic_content_v4_reference_safe': all(marker in classic_content for marker in (
+        'const VERSION = 4;', 'coreClassicContentVersion', 'referenceSafeGameOverrides',
+        'Anime-Archetypen erraten', "title: 'Spektrum-Tipp'", 'referenceSafeRemovedConcreteNames: 40'
+    )) and "Chrome: 'Tab'" not in classic_content,
+    'classic_v4_regression_test': all(marker in content_test for marker in (
+        'coreClassicContentVersion, 4', 'editorialReplacementCount, 2',
         'chromeReferenceRemoved: true', 'wavelengthBrandingRemoved: true', "new Set(['anime-guess', 'wavelength'])"
     )),
+    'spectrum_and_browser_clean_upstream': all(marker in expansion_content for marker in (
+        "id: 'wavelength', title: 'Spektrum-Tipp'", "banned: ['Webseite', 'Internet', 'Tab']"
+    )) and 'Wellenlänge' not in expansion_content and 'Chrome' not in expansion_content,
+    'anime_clean_in_shipped_mega_source': all(marker in mega_content for marker in (
+        "id: 'anime-guess', title: 'Anime-Archetypen erraten'", 'Ehrgeiziger Kampfkunst-Schüler', 'Fluchjägerin'
+    )) and all(marker not in mega_content for marker in removed_anime_markers),
+    'mega_source_reference_regression': all(marker in mega_test for marker in (
+        'animeSourceReferenceSafe: true', 'concreteAnimeReferencesRemovedFromShippedSource',
+        'franchiseLikeLionReferenceRemoved: true'
+    )),
+    'franchise_like_lion_removed': 'Löwenkönig' not in mega_content and "['🦁🌾', 'Löwe']" in mega_content,
     'viral_reference_cleanup': all(marker in viral_content for marker in (
         'Ecken eines Fünfecks', 'Bahnen einer typischen 400-Meter-Leichtathletikanlage',
         'Gewinnsätze in einem Best-of-five-Tennismatch'
@@ -137,11 +156,19 @@ checks = {
         'Sätze zum Sieg im Herren-Grand-Slam-Tennis'
     )),
     'viral_reference_regression_test': 'unnecessarySportReferenceTermsRemoved: true' in viral_test,
-    'content_modules_offline': all(f"'./{asset}'" in sw for asset in ('party-viral-catalog.js', 'party-core-release-catalog.js', 'party-core-classic-content.js')),
+    'content_modules_offline': all(f"'./{asset}'" in sw for asset in (
+        'party-expansion.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
+        'party-core-release-catalog.js', 'party-core-classic-content.js'
+    )),
     'quantitative_content_targets': 'quantitativeTargetsMet: true' in content_test and 'assert.deepEqual(editorialShortfalls, []' in content_test,
     'privacy_content_regressions': 'privateDevicePromptsRemoved: true' in content_test,
     'core_reference_cleanup_regression': 'unnecessaryCoreReferenceTermsRemoved: true' in content_test,
     'anime_reference_cleanup_regression': 'concreteAnimeFanNamesRemoved: true' in content_test,
+    'reference_content_audit_contract': all(marker in reference_audit for marker in (
+        'SHIPPED_CONTENT_SOURCES', 'BLOCKED_LITERALS', 'REVIEW_REQUIRED_LITERALS',
+        'stable_internal_id_wavelength_allowed', 'physical_source_cleanup_required'
+    )),
+    'reference_content_audit_in_validate': 'scripts/reference_content_audit.py' in validate_gate,
     'content_policy_complete_quantities': 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in content_policy,
     'content_review_has_15_core_rows': content_review.count('| PREPARED |') >= 15 and '15/15 Core-Quellpass' in content_review,
     'fan_reference_review_tracks_remaining_work': all(marker in fan_review for marker in (
@@ -172,8 +199,9 @@ checks = {
     'main_ci_commands': all(command in workflow for command in ('npm run check', 'npm test', 'npm run validate', 'npm run test:e2e')),
     'cross_browser_commands': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'audits_in_validate_gate': all(marker in validate_gate for marker in (
-        'scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/asset_provenance_audit.py',
-        'scripts/public_release_placeholder_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py'
+        'scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/reference_content_audit.py',
+        'scripts/asset_provenance_audit.py', 'scripts/public_release_placeholder_audit.py',
+        'scripts/performance_budget.py', 'scripts/release_audit.py'
     )),
     'no_obsolete_legacy_guard': not (ROOT / 'session-ledger-legacy-guard.js').exists() and 'session-ledger-legacy-guard' not in sw,
 }
@@ -191,12 +219,13 @@ print(json.dumps({
     'release_tiers': {'core': core_count, 'extended': extended_count, 'labs': lab_count},
     'catalog_chain': catalog_chain,
     'backup_registry': 'v2',
-    'core_classic_content_version': 3,
-    'reference_cleanup': 'CLASSIC_V3_PLUS_VIRAL_IMPLEMENTED_NOT_RUNNER_VERIFIED',
+    'core_classic_content_version': 4,
+    'reference_cleanup': 'PHYSICAL_SOURCE_PASS_IMPLEMENTED_NOT_RUNNER_VERIFIED',
+    'reference_content_audit': 'REQUIRED_NOT_RUNNER_VERIFIED',
     'asset_provenance': {'inventoried': len(asset_entries), 'unresolved': unresolved_assets},
     'public_placeholder_leak_gate': 'PREPARED_NOT_RUNNER_VERIFIED',
     'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
-    'fan_content_review': 'REMAINING_EXTENDED_LABS_SCAN_OPEN',
+    'fan_content_review': 'REMAINING_EXTENDED_LABS_MANUAL_VISUAL_LEGAL_SCAN_OPEN',
     'accessibility': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
     'beta_plan': 'PREPARED_NOT_EXECUTED',
     'environments': 'PREPARED_STAGING_URL_OPEN',
