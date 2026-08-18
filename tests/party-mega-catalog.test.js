@@ -49,6 +49,8 @@ const source = fs.readFileSync(path.resolve(__dirname, '..', 'party-mega-catalog
 for (const removed of removedAnimeReferences) {
   assert.ok(!source.includes(removed), `Concrete anime reference remains in shipped source: ${removed}`);
 }
+assert.ok(!source.includes('Löwenkönig'), 'Franchise-like lion reference must not remain in shipped source.');
+assert.deepEqual(mega.getItems('emoji-quiz', 'Tiere')[0], ['🦁🌾', 'Löwe']);
 
 assert.ok(mega.getItems('forehead-guess', 'Anime-Archetypen').length >= 10);
 assert.ok(mega.getItems('who-am-i', 'Geschichte').includes('Marie Curie'));
@@ -75,6 +77,7 @@ console.log(JSON.stringify({
   allMegaQuickModes: mega.quickGameIds.length,
   animeSourceReferenceSafe: true,
   concreteAnimeReferencesRemovedFromShippedSource: removedAnimeReferences.length,
+  franchiseLikeLionReferenceRemoved: true,
   categoryExpansion: true,
   structuredCardsValidated: true
 }, null, 2));
