@@ -1,5 +1,7 @@
 'use strict';
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const mega = require('../party-mega-catalog.js');
 const routed = require('../party-routing.js');
@@ -28,8 +30,26 @@ for (const id of megaIds) {
   assert.ok(mega.itemCount(id) >= 32, `${id} needs broad launch content`);
 }
 
-assert.ok(mega.getItems('anime-guess', 'Shōnen-Klassiker').includes('Son Goku'));
-assert.ok(mega.getItems('anime-guess', 'Neuere Hits').includes('Satoru Gojo'));
+const animeGame = mega.getGame('anime-guess');
+assert.equal(animeGame.title, 'Anime-Archetypen erraten');
+assert.equal(animeGame.group, 'Anime-Quiz');
+assert.deepEqual(animeGame.packs, ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']);
+assert.equal(mega.itemCount('anime-guess'), 40);
+for (const pack of animeGame.packs) assert.equal(mega.getItems('anime-guess', pack).length, 10);
+assert.ok(mega.getItems('anime-guess', 'Action & Abenteuer').includes('Ehrgeiziger Kampfkunst-Schüler'));
+assert.ok(mega.getItems('anime-guess', 'Magie & Mystery').includes('Fluchjägerin'));
+
+const removedAnimeReferences = [
+  'Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Ichigo Kurosaki', 'Edward Elric', 'Gon Freecss', 'Killua Zoldyck', 'Kenshin Himura', 'Natsu Dragneel', 'Yusuke Urameshi',
+  'Tanjiro Kamado', 'Nezuko Kamado', 'Satoru Gojo', 'Yuji Itadori', 'Denji', 'Power', 'Eren Jäger', 'Mikasa Ackerman', 'Izuku Midoriya', 'Shoto Todoroki',
+  'Sailor Moon', 'Light Yagami', 'Spike Spiegel', 'Inuyasha', 'Kagome Higurashi', 'Frieren', 'Anya Forger', 'Loid Forger', 'Totoro',
+  'Ash Ketchum', 'Pikachu', 'Hinata Shoyo', 'Kageyama Tobio', 'Yoichi Isagi', 'Meguru Bachira', 'Tsubasa Ozora', 'Kirito', 'Asuna', 'Subaru Natsuki'
+];
+const source = fs.readFileSync(path.resolve(__dirname, '..', 'party-mega-catalog.js'), 'utf8');
+for (const removed of removedAnimeReferences) {
+  assert.ok(!source.includes(removed), `Concrete anime reference remains in shipped source: ${removed}`);
+}
+
 assert.ok(mega.getItems('forehead-guess', 'Anime-Archetypen').length >= 10);
 assert.ok(mega.getItems('who-am-i', 'Geschichte').includes('Marie Curie'));
 assert.ok(mega.getItems('pass-the-phone', 'Komplimente').every(item => typeof item === 'string'));
@@ -53,7 +73,8 @@ console.log(JSON.stringify({
   routedVersion: routed.version,
   megaModes: megaIds.length,
   allMegaQuickModes: mega.quickGameIds.length,
-  animeFanQuiz: true,
+  animeSourceReferenceSafe: true,
+  concreteAnimeReferencesRemovedFromShippedSource: removedAnimeReferences.length,
   categoryExpansion: true,
   structuredCardsValidated: true
 }, null, 2));
