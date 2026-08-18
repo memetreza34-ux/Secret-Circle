@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v40'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v40-staging'/);
+assert.match(source, /const CACHE='secret-circle-v41'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v41-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -18,6 +18,7 @@ assert.match(source, /event\.data\?\.type === 'SKIP_WAITING'/);
 assert.match(source, /canonicalNavigation \? stripSearch\(request\) : request/);
 assert.match(source, /caches\.match\(stripSearch\(request\), \{ cacheName: CACHE \}\)/);
 assert.match(source, /backup-schema-registry\.js/);
+assert.match(source, /party-expansion\.js/);
 assert.match(source, /party-mega-catalog\.js/);
 assert.match(source, /party-viral-catalog\.js/);
 assert.match(source, /party-core-release-catalog\.js/);
@@ -31,13 +32,14 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 40,
+  cacheContract: 41,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
   queryNavigationOffline: true,
   canonicalNavigationCaching: true,
   backupSchemaRegistryOffline: true,
+  expansionCatalogOffline: true,
   megaCatalogOffline: true,
   viralCatalogOffline: true,
   coreReleaseContentOffline: true,
