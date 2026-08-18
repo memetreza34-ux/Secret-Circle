@@ -1,6 +1,6 @@
 # Secret Circle – Releaseumfang Januar 2027
 
-Stand: 7. August 2026
+Stand: 18. August 2026
 
 Der öffentliche Januar-Release wird nach Qualität statt nach maximaler Spielanzahl freigegeben. Die 45 eingebauten Spiele bleiben sichtbar, werden aber in drei Reifestufen getrennt.
 
@@ -75,6 +75,8 @@ Labs sind experimentelle Modi. Sie bleiben bewusst vom Kernrelease getrennt:
 
 Labs dürfen nicht als vollständig releaseabgenommen dargestellt werden. Gemeinsame Plattformfunktionen, die Labs benutzen, müssen trotzdem dieselben Stabilitätsverträge erfüllen. Dazu gehören insbesondere Session-Ledger, gemeinsame Sessionsteuerung, Offline-Core, Datenschutz und PWA-Updatefluss.
 
+Der technische Referenz-/Source-Pass ist mit Offline-Core **v41** deutlich gehärtet: konkrete frühere Anime-Namen wurden aus der ausgelieferten Mega-Quelle entfernt, `wavelength` erscheint upstream als **Spektrum-Tipp**, Browser-Tabu nutzt `Tab` statt `Chrome`, der Emoji-Löwenhinweis ist generisch und `scripts/reference_content_audit.py` prüft ausgelieferte Contentquellen. Dies ersetzt **nicht** die noch offene manuelle Visual-/Marketing-/Legal-Abnahme.
+
 ## Creator-Spiele
 
 Selbst erstellte Spiele sind keine eigenen Kernspiele. Sie werden im Hub als Erweiterungen angezeigt und müssen mindestens folgende Plattformverträge erfüllen:
@@ -94,11 +96,13 @@ Der Januar-Release bleibt `NO_GO`, wenn mindestens einer dieser Punkte zutrifft:
 
 - ein Kernspiel hat einen kritischen oder hohen reproduzierbaren Fehler
 - Word-Imposter-Rollen sind aus der Aufdeckreihenfolge ableitbar
-- GitHub Actions führt keine sichtbaren Schritte aus
-- `npm run ci` oder Cross-Browser-Gates sind nicht grün dokumentiert
+- GitHub Actions führt keine belastbaren Repository-Schritte aus
+- `npm run ci`, Cross-Browser oder Reference-Source-Audit sind nicht tatsächlich grün dokumentiert
+- `package-lock.json`/`npm ci` oder Required Checks fehlen
 - Offline-Start oder PWA-Update scheitert auf einem Zielgerät
 - Import oder Löschung kann Daten ohne funktionierenden Rollback zerstören
-- notwendige Datenschutz-, Betreiber-, Lizenz- oder Supportangaben fehlen
+- notwendige Datenschutz-, Betreiber-, Asset-, Lizenz- oder Supportangaben fehlen
+- manuelle Content-/Rechte-/Visual-Abnahme ist nicht abgeschlossen
 - Kernspiele wurden nicht mit realen Gruppen getestet
 
 Langfristige zusätzliche Modi aus `MODE_UNIVERSE.md` bleiben nach Januar 2027 möglich, werden aber nur mit eigener Mechanik, hochwertigen Inhalten, Tests und klarer Nutzerwirkung ergänzt.
