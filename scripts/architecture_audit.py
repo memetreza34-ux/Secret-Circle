@@ -99,11 +99,19 @@ contracts = {
     ],
     'session-ledger.js': ['createSessionId', 'legacySessionId', 'completionId', 'recordCompletion'],
     'party-session-controls.js': ['createController', 'remainingMilliseconds', 'function setPaused'],
+    'party-expansion.js': [
+        "id: 'wavelength', title: 'Spektrum-Tipp'",
+        "banned: ['Webseite', 'Internet', 'Tab']"
+    ],
+    'party-mega-catalog.js': [
+        "id: 'anime-guess', title: 'Anime-Archetypen erraten'",
+        "['🦁🌾', 'Löwe']"
+    ],
     'party-core-release-catalog.js': ['coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent'],
     'party-core-classic-content.js': [
-        'const VERSION = 3;', 'coreClassicContentVersion', 'coreClassicContentGames',
+        'const VERSION = 4;', 'coreClassicContentVersion', 'coreClassicContentGames',
         'referenceSafeGameOverrides', 'referenceSafeContent', 'Anime-Archetypen erraten',
-        "title: 'Spektrum-Tipp'", "Chrome: 'Tab'", 'referenceSafeRemovedConcreteNames: 40'
+        "title: 'Spektrum-Tipp'", 'referenceSafeRemovedConcreteNames: 40'
     ],
     'party-routing.js': ["require('./party-core-classic-content.js')", 'createCatalog', 'version: 8'],
     'party-hub.js': [
@@ -140,14 +148,14 @@ for relative in ('party-hub.js', 'party-hub-timers.js'):
 syntax_gate = package.get('scripts', {}).get('check', '')
 unit_gate = package.get('scripts', {}).get('test', '')
 validate_gate = package.get('scripts', {}).get('validate', '')
-for module in ('party-core-release-catalog.js', 'party-core-classic-content.js', 'party-hub-timers.js'):
+for module in ('party-expansion.js', 'party-mega-catalog.js', 'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-hub-timers.js'):
     if f'node --check {module}' not in syntax_gate:
         violations.append(f'Production module missing from syntax gate: {module}')
-for test in ('tests/core-content-quality.test.js', 'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js'):
+for test in ('tests/party-mega-catalog.test.js', 'tests/core-content-quality.test.js', 'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js'):
     if test not in unit_gate:
         violations.append(f'Critical architecture test missing from npm test: {test}')
 for audit in (
-    'scripts/core_content_audit.py', 'scripts/asset_provenance_audit.py',
+    'scripts/core_content_audit.py', 'scripts/reference_content_audit.py', 'scripts/asset_provenance_audit.py',
     'scripts/public_release_placeholder_audit.py', 'scripts/release_audit.py', 'scripts/performance_budget.py'
 ):
     if audit not in validate_gate:
@@ -168,7 +176,8 @@ else:
             violations.append(f'Current cache {cache_name} not synchronized in {relative}.')
 
 for asset in (
-    './backup-schema-registry.js', './party-core-release-catalog.js', './party-core-classic-content.js',
+    './backup-schema-registry.js', './party-expansion.js', './party-mega-catalog.js',
+    './party-core-release-catalog.js', './party-core-classic-content.js',
     './party-hub-timers.js', './session-ledger.js', './party-session-controls.js'
 ):
     if asset not in sw:
@@ -194,10 +203,12 @@ print(json.dumps({
     'module_size_limit_bytes': 100000,
     'pwa_cache': cache.group(1) if cache else None,
     'catalog_chain': catalog_chain,
-    'core_classic_content_version': 3,
-    'reference_safe_anime_runtime': True,
+    'core_classic_content_version': 4,
+    'reference_safe_anime_runtime_and_source': True,
     'spectrum_visible_name': 'Spektrum-Tipp',
-    'browser_brand_reference_removed': True,
+    'browser_brand_reference_removed_upstream': True,
+    'franchise_like_lion_reference_removed': True,
+    'reference_content_audit_required': True,
     'backup_registry_version': 2,
     'shared_session_controls': True,
     'split_hub_timer_module': True,
