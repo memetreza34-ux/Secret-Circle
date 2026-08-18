@@ -66,9 +66,9 @@ assert.deepEqual([...release.coreIds], expectedCore);
 assert.equal(Object.keys(expectedAges).length, 15);
 assert.equal(releaseContent.coreReleaseContentVersion, 1);
 assert.deepEqual(new Set(releaseContent.coreReleaseContentGames), new Set(['never-have', 'most-likely', 'would-rather', 'paranoia', 'wrong-answers']));
-assert.equal(classicContent.coreClassicContentVersion, 3);
+assert.equal(classicContent.coreClassicContentVersion, 4);
 assert.deepEqual(new Set(classicContent.coreClassicContentGames), new Set(['truth-dare', 'charades', 'taboo', 'hot-potato']));
-assert.equal(classicContent.editorialReplacementCount, 3);
+assert.equal(classicContent.editorialReplacementCount, 2);
 assert.deepEqual(new Set(classicContent.referenceSafeGameIds), new Set(['anime-guess', 'wavelength']));
 assert.equal(classicContent.referenceSafeRemovedConcreteNames, 40);
 
