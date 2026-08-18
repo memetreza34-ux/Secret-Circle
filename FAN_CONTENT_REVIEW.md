@@ -1,13 +1,13 @@
 # Secret Circle – Fan-, Marken- und Referenzcontent-Review
 
-Stand: 16. August 2026  
-Status: **IN PROGRESS – Core/Anime/Viral bereinigt; restlicher Extended/Labs-Pass offen**
+Stand: 18. August 2026  
+Status: **IN PROGRESS – technischer Source-Pass stark gehärtet; manuelle visuelle/rechtliche Restabnahme offen**
 
 ## 1. Zweck
 
 Dieses Dokument trennt generischen Partycontent von konkreten fremden Namen, Marken und Fanreferenzen. Es ist ein redaktionelles/releasebezogenes Inventar und keine juristische Freigabe.
 
-Grundregel: Wenn eine konkrete Fremdreferenz keinen zwingenden Produktnutzen hat, wird sie vor Production generisch formuliert oder aus dem finalen Runtime-Pfad entfernt.
+Grundregel: Wenn eine konkrete Fremdreferenz keinen zwingenden Produktnutzen hat, wird sie vor Production generisch formuliert oder aus finalem Runtime-Pfad **und ausgelieferter Source-Datei** entfernt.
 
 ## 2. Word Imposter – v36
 
@@ -17,7 +17,7 @@ Grundregel: Wenn eine konkrete Fremdreferenz keinen zwingenden Produktnutzen hat
 | `Oscar` | `Filmpreis` | konkreter Awardname unnötig |
 | `Formel 1` | `Motorsport` | konkrete Wettbewerbsbezeichnung unnötig |
 
-Die 14 Kategorien mit je 12 Einträgen bleiben erhalten. Der Test schützt die Ersetzungen.
+Die 14 Kategorien mit je 12 Einträgen bleiben erhalten. Regressionstests schützen die Ersetzungen.
 
 ## 3. `who-am-i`
 
@@ -25,11 +25,9 @@ Das Pack `Anime-Archetypen` verwendet generische Rollenbeschreibungen statt konk
 
 Historische Personen werden nicht automatisch wie aktuelle Marken-/Franchisereferenzen behandelt. Keine bekannten Charakterbilder, Logos, Screenshots oder Zitate sind für diesen Modus vorgesehen.
 
-## 4. `anime-guess` – v37
+## 4. `anime-guess` – v37/v40/v41
 
-Der Labs-Modus enthielt im tieferen Basiscontent ursprünglich 40 konkrete bekannte Figuren-/Franchisereferenzen. Diese wurden vor der Releaseentscheidung inventarisiert.
-
-Für den **finalen Runtime-Pfad** wurde Option B gewählt: komplett generisch.
+Der Labs-Modus enthielt ursprünglich 40 konkrete bekannte Figuren-/Franchisereferenzen. Für den Januar-2027-Pfad wurde **Option B: komplett generisch** gewählt.
 
 Stabile ID: `anime-guess`  
 Finaler Titel: **Anime-Archetypen erraten**  
@@ -44,13 +42,17 @@ Finale Packs:
 
 Jedes Pack enthält 10 eigenständige Archetypen, insgesamt 40.
 
-`party-core-classic-content.js` Version 2 überschreibt dafür Titel, Beschreibung, Regeln, Packs und Content. `tests/core-content-quality.test.js` enumeriert die 40 früheren Namen und verlangt ihre Abwesenheit im finalen Runtime-Content.
+Entwicklung:
 
-Status: **CLOSED IN CODE / RUNNER VERIFICATION OPEN**.
+- **v37:** finale Runtime-Schicht auf generische Archetypen umgestellt
+- **v40:** die 40 historischen konkreten Figuren physisch aus `party-mega-catalog.js` entfernt
+- **v41:** Mega-Test prüft die ausgelieferte Source selbst; `scripts/reference_content_audit.py` blockiert die bekannten Altbegriffe zentral
 
-### Source-Distribution-Hinweis
+`party-core-classic-content.js` v4 hält denselben generischen Zustand zusätzlich als finale Invariante.
 
-Die tiefer liegende Datei `party-mega-catalog.js` enthält den historischen Basisblock weiterhin, obwohl er im finalen Runtime-Pfad überschrieben wird. Für die ausgelieferte App ist die finale Route reference-safe. Falls der Quellcode später öffentlich verteilt wird, muss vor dieser Quellcodeveröffentlichung zusätzlich entschieden werden, ob auch der historische Basisblock vollständig bereinigt werden soll.
+Status: **PHYSICAL SOURCE CLEANUP IMPLEMENTED / RUNNER VERIFICATION OPEN**.
+
+Der frühere Source-Distribution-Hinweis ist damit technisch geschlossen: Der konkrete historische Anime-Basisblock liegt nicht mehr in der aktuell ausgelieferten Mega-Katalogdatei.
 
 ## 5. Viral `higher-lower` – v38
 
@@ -66,7 +68,53 @@ Im Sportpack wurden drei unnötig konkrete Event-/Award-nahe Formulierungen erse
 
 Status: **CLOSED IN CODE / RUNNER VERIFICATION OPEN**.
 
-## 6. Visuelle Fancontent-Regeln
+## 6. Weitere physische Source-Bereinigung – v41
+
+### Spektrum-Modus
+
+Stabile technische ID: `wavelength`.
+
+Die ID bleibt aus Routing-/Persistenzgründen erhalten. Der alte sichtbare Name wird nicht mehr ausgeliefert:
+
+- vorher: `Wellenlänge`
+- jetzt upstream in `party-expansion.js`: **Spektrum-Tipp**
+
+### Tabu Browser
+
+- vorher upstream: `Chrome`
+- jetzt upstream: `Tab`
+
+Classic Content benötigt dafür seit v4 keinen nachträglichen `Chrome → Tab`-Fallback mehr.
+
+### Emoji-Quiz
+
+- vorher: `🦁👑 → Löwenkönig`
+- jetzt: `🦁🌾 → Löwe`
+
+Damit wird eine unnötig franchise-nahe Antwort durch einen rein generischen Tierhinweis ersetzt.
+
+## 7. Zentraler Source-Gate
+
+Neu verbindlich:
+
+`scripts/reference_content_audit.py`
+
+Der Audit scannt die tatsächlich ausgelieferten Contentquellen:
+
+- `word-packs.js`
+- `party-catalog.js`
+- `party-expansion.js`
+- `party-trending-catalog.js`
+- `party-mega-catalog.js`
+- `party-viral-catalog.js`
+- `party-core-release-catalog.js`
+- `party-core-classic-content.js`
+
+Er blockiert die bereits bewusst entfernten konkreten Referenzen und markiert zusätzlich eine definierte Gruppe hochprofiliger Plattform-/Franchise-Namen als erneute Review-Pflicht.
+
+Der Audit ist Teil von `npm run validate`. Wegen des aktuellen GitHub-Actions-Runnerproblems ist er **IMPLEMENTED, aber noch nicht runner-verifiziert**.
+
+## 8. Visuelle Fancontent-Regeln
 
 Weiterhin verbindlich:
 
@@ -77,20 +125,19 @@ Weiterhin verbindlich:
 - visuelle Anime-Begleitung nur über eigenständige generische Archetypen
 - ein generiertes Bild darf nicht gezielt wie eine konkrete bekannte Figur aussehen
 
-## 7. Restlicher Extended-/Labs-Pass
+## 9. Restlicher Extended-/Labs-Pass
 
-Noch offen ist der finale Quellpass auf vermeidbare konkrete:
+Der direkte technische Quellpass wurde stark erweitert. Vor finalem Sign-off bleiben dennoch bewusst offen:
 
-- Plattformnamen
-- Produkt-/Markennamen
-- Wettbewerbs-/Awardnamen
-- Film-/Musik-/Game-Franchisen
-- geschützte Figuren
+- vollständige manuelle Semantikprüfung aller Extended-/Labs-Modi
+- visuelle Assets/Screenshots/Marketingmaterial
+- mögliche Verwechslungswirkung von Spiel-/Kampagnennamen
 - fremde Slogans/Zitate
+- finale juristische/geschäftliche Bewertung des tatsächlichen Releasebuilds
 
-Aktuell direkt inspizierte Mega-/Viral-Pfade verwenden außerhalb des historisch überschriebenen Anime-Basisblocks überwiegend generische Kategorien, historische Personen und selbst formulierte Situationen. GitHub-Code-Suche allein gilt wegen Branch-/Indexgrenzen nicht als Freigabenachweis; maßgeblich bleibt die direkte Prüfung der Working-Branch-Dateien und des finalen Routingpfads.
+GitHub-Code-Suche allein gilt wegen Branch-/Indexgrenzen nicht als Freigabenachweis. Maßgeblich sind Working-Branch-Quellen, der zentrale Source-Audit, reale Release-Artefakte und der finale manuelle Review.
 
-## 8. Release-Gates
+## 10. Release-Gates
 
 Vor `FAN / REFERENCE CONTENT PASS`:
 
@@ -99,12 +146,17 @@ Vor `FAN / REFERENCE CONTENT PASS`:
 - [x] konkrete frühere `anime-guess`-Figuren inventarisiert
 - [x] Option B für `anime-guess` umgesetzt
 - [x] 40 konkrete Figuren aus dem finalen Runtime-Katalog entfernt
+- [x] 40 konkrete Figuren physisch aus `party-mega-catalog.js` entfernt
+- [x] Mega-Test blockiert ihre Rückkehr in die ausgelieferte Quelle
 - [x] Viral-Sportreferenzen aus v38 generisch ersetzt
-- [x] Regressionstests für diese Änderungen vorbereitet
-- [ ] übrige Extended/Labs final direkt auf vermeidbare Marken-/Franchisereferenzen durchgesehen
+- [x] `Wellenlänge` upstream durch **Spektrum-Tipp** ersetzt
+- [x] `Chrome` upstream durch `Tab` ersetzt
+- [x] `Löwenkönig` durch generischen Löwenhinweis ersetzt
+- [x] zentraler `reference_content_audit.py` in `npm run validate`
+- [ ] zentraler Source-Audit auf funktionierendem Runner tatsächlich grün
+- [ ] Restlicher Extended-/Labs-Pass manuell/semantisch final abgenommen
 - [ ] keine fremden Bilder/Logos/Screenshots/Audios/Videos im finalen Build bestätigt
 - [ ] Marketingtexte auf keine offizielle Partnerschaft/Irreführung geprüft
-- [ ] Source-Distribution-Entscheidung für historischen Anime-Basisblock getroffen, falls Repo öffentlich wird
 - [ ] `THIRD_PARTY_NOTICES.md` und `LEGAL_CHECKLIST.md` final synchronisiert
 - [ ] Tests auf funktionierendem Runner tatsächlich ausgeführt
 
