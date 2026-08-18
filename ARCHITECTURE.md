@@ -1,6 +1,6 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Stand: 16. August 2026
+Stand: 18. August 2026
 
 Dieses Dokument definiert die technischen Grenzen, die Secret Circle langfristig verständlich, migrierbar, offline nutzbar und testbar halten.
 
@@ -35,7 +35,7 @@ Verantwortung:
 - `party-catalog.js`: Basisspiele und Ausgangsinhalte
 - `party-expansion.js`: Advanced-Spiele und strukturierte Welle-1-Erweiterungen
 - `party-trending-catalog.js`: klassische Quick Modes
-- `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate
+- `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate; `anime-guess` ist dort seit v40 bereits physisch reference-safe
 - `party-viral-catalog.js`: Viral-/Preis-/Wissens-/Storyformate
 - `party-core-release-catalog.js`: soziale Core-Releaseinhalte aus Welle 2
 - `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Ersetzungen
@@ -43,10 +43,12 @@ Verantwortung:
 
 `party-core-classic-content.js` steht auf Version **3**. Die finale Schicht:
 
-- ersetzt das frühere konkrete Anime-Fanquiz durch 40 eigenständige Archetypen,
+- hält `anime-guess` auf 40 eigenständigen Archetypen,
 - ersetzt die konkrete Browser-Referenz `Chrome` durch `Tab`,
 - zeigt die stabile interne Spiel-ID `wavelength` öffentlich als **Spektrum-Tipp** statt als Wellenlänge,
 - behält persistierte IDs/Routingkompatibilität bei.
+
+Seit v40 liegen die 40 generischen Anime-Archetypen bereits im ausgelieferten `party-mega-catalog.js`. Die finale Classic-Schicht bleibt als zusätzliche Invariante bestehen; konkrete historische Figuren dürfen weder im finalen Runtime-Katalog noch physisch in der ausgelieferten Mega-Quelle zurückkehren.
 
 ## 5. Hub- und Timergrenzen
 
@@ -85,12 +87,13 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v39`**.
+Aktueller Offline-Core: **`secret-circle-v40`**.
 
 - v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
 - v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
 - v38: drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` generisch ersetzt
 - v39: `Chrome` im finalen Tabu-Content entfernt und sichtbare Bezeichnung `Wellenlänge` durch **Spektrum-Tipp** ersetzt
+- v40: die 40 historischen konkreten Anime-Figurennamen auch physisch aus der ausgelieferten `party-mega-catalog.js` entfernt; Mega-Test blockiert ihre Rückkehr
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -113,7 +116,7 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 - keine kopierten proprietären Karten anderer Apps
 - keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
 - vermeidbare konkrete Marken-/Award-/Eventbegriffe werden generisch formuliert
-- konkrete Fan-/Franchise-Namen werden aus dem finalen Runtime-Content entfernt, sofern sie keinen zwingenden Produktnutzen haben
+- konkrete Fan-/Franchise-Namen werden aus finalem Runtime-Content **und ausgelieferten Source-Dateien** entfernt, sofern sie keinen zwingenden Produktnutzen haben
 - stabile interne IDs dürfen aus Migrationsgründen von sichtbaren Produktnamen abweichen
 - keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter oder Adressen
 - jede Built-in-Karte besitzt einen redaktionellen Zweck
