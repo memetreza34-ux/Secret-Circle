@@ -6,25 +6,36 @@ Diese Checkliste gilt für den **unveränderten Release-Commit**. Ein vorhandene
 
 ## 1. Repository / CI / Branch Protection
 
+Bereits im Entwicklungsbranch implementiert:
+
+- [x] `package-lock.json` v3 vorhanden
+- [x] CI verwendet `npm ci`
+- [x] Cross-Browser verwendet `npm ci`
+- [x] `scripts/lockfile_contract_audit.py` integriert
+- [x] `BRANCH_PROTECTION.md` vorhanden
+- [x] `scripts/branch_protection_contract_audit.py` integriert
+- [x] `scripts/staging_smoke_contract_audit.py` integriert
+- [x] `scripts/release_readiness_contract_audit.py` integriert
+
+Für den späteren unveränderten RC noch erforderlich:
+
 - [ ] Release-Commit und Tag festgelegt
 - [ ] sichtbarer GitHub-Actions-Checkout und echte Steps
+- [ ] Online-`npm ci` auf exakt dem RC-Commit grün
 - [ ] `npm run ci` vollständig grün
 - [ ] Chromium, Firefox und WebKit auf demselben RC-Commit grün
-- [ ] echtes `package-lock.json`
-- [ ] CI und Cross-Browser verwenden `npm ci`
-- [ ] `BRANCH_PROTECTION.md` abgearbeitet
+- [ ] Lockfile des RC stimmt unverändert mit `package.json` überein
 - [ ] Pull Requests für stabilen Zielbranch verpflichtend
 - [ ] **`Secret Circle CI / validate`** als Required Check aktiv
 - [ ] Required Check auf echtem Runner grün
 - [ ] Force-Push / Branch-Löschung / Review-/Bypass-Regeln geprüft
-- [ ] Cross-Browser separat auf exakt demselben RC-Commit grün; bei aktuellem `workflow_dispatch` nicht als permanenter PR-Required-Check konfiguriert
-- [ ] `scripts/branch_protection_contract_audit.py` grün
-- [ ] `scripts/staging_smoke_contract_audit.py` grün
+- [ ] Cross-Browser auf exakt demselben RC-Commit grün; bei aktuellem `workflow_dispatch` nicht als permanenter PR-Required-Check konfiguriert
+- [ ] alle statischen Release-/Readiness-Audits auf exakt dem RC-Commit grün
 
 ## 2. Engine / Session / Daten
 
-- [ ] stabile Session-/Completion-IDs
-- [ ] Exact-once-Verlauf/Statistik
+- [ ] stabile Session-/Completion-IDs real bestätigt
+- [ ] Exact-once-Verlauf/Statistik real bestätigt
 - [ ] Hub-/Advanced-Resume sicher
 - [ ] private Reveal-Zustände nach Reload wieder verdeckt
 - [ ] Beenden & speichern getrennt von Abbrechen & verwerfen
@@ -63,7 +74,7 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 
 ## 5. PWA / Offline – v43
 
-- [ ] finaler Cache **`secret-circle-v43`** / Staging **`secret-circle-v43-staging`**
+- [ ] finaler RC-Cache **`secret-circle-v43`** oder bewusst neuer / passender Staging-Cache
 - [ ] SW, Test, Architektur, Deployment, Privacy und Environment synchron
 - [ ] Online-/Standalone-/Offline-Neustart
 - [ ] Base-, Expansion-, Mega-, Viral- und Core-Contentmodule offline
@@ -74,29 +85,27 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
 - [ ] aktive Session durch Update geschützt
-- [ ] Upgrade von mindestens zwei älteren installierten Versionen auf v43
+- [ ] Upgrade von mindestens zwei älteren installierten Versionen
 - [ ] Rollback mit neuer Cachegeneration
 
-## 6. Privacy-Content – v43
+## 6. Privacy-Content
 
-- [ ] `party-catalog.js` enthält die alte Kamerarollen-Frage physisch nicht
-- [ ] `party-catalog.js` enthält die Pflicht zum Vorlesen der letzten Handy-Nachricht physisch nicht
-- [ ] sichere Ersatztexte stehen direkt im Basiskatalog
+- [ ] bekannte Kamerarollen-/Letzte-Nachricht-Prompts physisch nicht im ausgelieferten Basiskatalog
+- [ ] sichere Ersatztexte direkt im Basiskatalog
 - [ ] `scripts/privacy_content_audit.py` auf exakt dem RC-Commit grün
-- [ ] keine Built-in-Aufforderung, private Chats/Nachrichten, private Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort oder Kontodaten offenzulegen
-- [ ] harmlose Geräte-/Chat-Erwähnungen wurden nicht unnötig entfernt
-- [ ] persönliche Inhalte bleiben sichtbar freiwillig und überspringbar
+- [ ] keine Built-in-Aufforderung, private Chats/Nachrichten, Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort oder Kontodaten offenzulegen
+- [ ] persönliche Inhalte sichtbar freiwillig und überspringbar
 - [ ] manueller Privacy-/Safety-Contentpass abgeschlossen
 
 ## 7. Reference-/Fan-Content
 
-- [ ] `party-core-classic-content.js` v4
-- [ ] `anime-guess` = **Anime-Archetypen erraten**, 4×10 generische Archetypen
-- [ ] keine früheren 40 konkreten Anime-Namen in `party-mega-catalog.js`
-- [ ] `wavelength` bleibt technische ID, sichtbar upstream **Spektrum-Tipp**
+- [ ] `party-core-classic-content.js` v4 oder bewusst neuere freigegebene Version
+- [ ] `anime-guess` = **Anime-Archetypen erraten**, generische Archetypen
+- [ ] keine früheren konkreten Anime-Namen in ausgelieferter Mega-Quelle
+- [ ] `wavelength` bleibt technische ID, sichtbar **Spektrum-Tipp**
 - [ ] Browser-Tabu upstream `Tab`, nicht `Chrome`
 - [ ] Emoji-Quiz `Löwe`, nicht `Löwenkönig`
-- [ ] drei entfernte Viral-Sportreferenzen nicht zurückgekehrt
+- [ ] entfernte Viral-Sportreferenzen nicht zurückgekehrt
 - [ ] `scripts/reference_content_audit.py` grün
 - [ ] manueller Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
 - [ ] keine fremden Logos/Screenshots/Charakterbilder/Audios/Videos/Zitate ohne Rechte
@@ -110,7 +119,8 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - [ ] KI-/Template-/Stock-Ursprung geklärt
 - [ ] kommerzielle Rechtebasis/Attribution geklärt
 - [ ] kein Releaseasset `unresolved`
-- [ ] transitive Dependencies aus finalem Lockfile geprüft
+- [x] aktuelle gelockte Playwright-Paketkette inventarisiert und Lizenzen gegen Upstream geprüft
+- [ ] finaler Dependency-/Vulnerability-Review auf RC-Lockfile
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden
 - [ ] `LEGAL_CHECKLIST.md` final
 - [ ] Privacy auf reales Hosting angepasst
@@ -153,7 +163,7 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - [ ] getrennte HTTPS-Staging-Origin
 - [ ] Production-Origin festgelegt
 - [ ] **HTTPS-Staging-Smoke** mit `scripts/staging_smoke.py` auf exakt dem RC-Deployment grün
-- [ ] Smoke-Befehl verwendet `--expected-cache secret-circle-v43` oder bewusst neuere freigegebene Cachegeneration
+- [ ] Smoke verwendet erwartete Cachegeneration
 - [ ] Smoke bestätigt Same-Origin-Redirects, Kernrouten, Manifest, PNG-Dimensionen, Cache, Privacy- und Reference-Source-Vertrag
 - [ ] manueller Browser-/PWA-Staging-Smoke vollständig
 - [ ] Service-Worker-Installation und Offline-Neustart real geprüft
@@ -163,7 +173,7 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - [ ] `INCIDENT_RESPONSE.md` reale Verantwortliche
 - [ ] Probe-SEV-1
 - [ ] Wartungs-/Hotfixroutine
-- [ ] finale Versionsnummer / Cacheversion v43 oder bewusst neuer
+- [ ] finale Versionsnummer / Cacheversion dokumentiert
 - [ ] Release Notes / Changelog
 - [ ] unveränderlicher Release-Tag
 - [ ] Production-Smoke mit `scripts/staging_smoke.py --production` nach Deployment grün
@@ -185,4 +195,4 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - Accessibility-Freigabe: ____________________
 - Legal-/Betriebsfreigabe: ____________________
 
-**Keine Veröffentlichung**, solange Actions keine echten Repository-Steps ausführt, Kern-CI/Cross-Browser/Branch-/Privacy-/Reference-/Asset-/HTTPS-Smoke-Gates nicht tatsächlich grün sind, Critical/High Bugs offen sind oder Geräte-, Gruppen-, Rechte-, Legal- und Betriebsabnahmen fehlen.
+**Keine Veröffentlichung**, solange Actions keine echten Repository-Steps ausführt, Online-`npm ci`, Kern-CI/Cross-Browser/Branch-/Privacy-/Reference-/Asset-/HTTPS-Smoke-Gates nicht tatsächlich grün sind, Critical/High Bugs offen sind oder Geräte-, Gruppen-, Rechte-, Legal- und Betriebsabnahmen fehlen.
