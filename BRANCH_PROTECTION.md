@@ -21,7 +21,7 @@ Workflow:
 - Job: `validate`
 - gewünschter Required-Check-Kontext: **`Secret Circle CI / validate`**
 
-Der Job muss echten Checkout und alle vorgesehenen Repository-Schritte ausführen. Ein GitHub-Job mit `steps: []` gilt **nicht** als bestandener Required Check, selbst wenn eine UI später einen anderen Status anzeigen sollte.
+Der Job muss echten Checkout und alle vorgesehenen Repository-Schritte ausführen. Ein GitHub-Job mit `steps: []` gilt **nicht** als bestandener Required Check.
 
 ## 3. Cross-Browser ist Release-Gate, aber derzeit kein permanenter PR-Required-Check
 
@@ -32,19 +32,40 @@ Workflow:
 - Job: `smoke`
 - Trigger aktuell: `workflow_dispatch`
 
-Dieser Workflow ist für Release Candidate / Releasefreigabe zwingend, läuft aber nicht automatisch für jeden Pull Request. Solange das so bleibt, darf `Secret Circle Cross-Browser Smoke / smoke` **nicht** als dauerhaft erforderlicher PR-Check konfiguriert werden, weil normale PRs sonst ohne automatisch erzeugten Check blockieren könnten.
+Dieser Workflow ist für Release Candidate / Releasefreigabe zwingend, läuft aber nicht automatisch für jeden Pull Request. Solange das so bleibt, darf `Secret Circle Cross-Browser Smoke / smoke` **nicht** als dauerhaft erforderlicher PR-Check konfiguriert werden.
 
 Vor RC muss der Cross-Browser-Workflow auf dem **exakten unveränderten RC-Commit** manuell grün ausgeführt und dokumentiert werden.
 
-Falls Cross-Browser später auf `pull_request` umgestellt wird, darf die Required-Check-Entscheidung neu bewertet werden.
+## 4. Reproduzierbarer Installationsvertrag
 
-## 4. Empfohlene Branch-Protection-Regeln
+`package-lock.json` liegt jetzt als Lockfile v3 vor.
+
+Beide Workflows verwenden:
+
+```bash
+npm ci --ignore-scripts --no-audit --no-fund
+```
+
+`actions/setup-node` nutzt den npm-Cache auf Basis des Lockfiles.
+
+`scripts/lockfile_contract_audit.py` schützt:
+
+- Root-Package/Version/Engine/Dev-Dependency-Synchronität
+- minimale Paketmenge
+- exakte Playwright-Version 1.54.2
+- optionales `fsevents` 2.3.2
+- Registry-URLs und `sha512`-Integrities
+- `npm ci` in normalem und Cross-Browser-Workflow
+
+Ein lokaler Offline-`npm ci`-Strukturcheck kam bis zum erwarteten `ENOTCACHED`-Downloadfehler; ein **echter Online-`npm ci`-PASS auf dem unveränderten Commit bleibt offen**.
+
+## 5. Empfohlene Branch-Protection-Regeln
 
 Für den stabilen Zielzweig vor öffentlichem Release:
 
 - Änderungen nur über Pull Request
-- mindestens ein erfolgreicher Required Check: `Secret Circle CI / validate`
-- Branch muss vor Merge aktuell beziehungsweise mit der gewählten GitHub-Regel kompatibel sein
+- mindestens `Secret Circle CI / validate` als Required Check
+- Branch muss vor Merge mit der gewählten GitHub-Regel kompatibel/aktuell sein
 - direkte Force-Pushes deaktivieren
 - Branch-Löschung deaktivieren
 - offene Review-Threads vor Merge auflösen
@@ -53,38 +74,24 @@ Für den stabilen Zielzweig vor öffentlichem Release:
 
 Ein Mindestreview durch eine zweite reale Person ist sinnvoll, falls vor Release eine zweite berechtigte Person verfügbar ist. Dieser Punkt wird nicht als bereits eingerichtet behauptet.
 
-## 5. Merge-Grenze für PR #13
+## 6. Merge-Grenze für PR #13
 
-Unabhängig von GitHub-Einstellungen gilt für PR #13:
+Unabhängig von GitHub-Einstellungen gilt:
 
 1. PR bleibt Draft bis Release-Gates erfüllt sind.
 2. Kein Merge bei `steps: []`.
-3. Kein Merge ohne echtes `package-lock.json` und finalen `npm ci`-Workflow.
-4. Kein Merge ohne grünen `npm run ci` auf unverändertem Commit.
+3. Kein Merge ohne grünes Online-`npm ci` auf unverändertem Commit.
+4. Kein Merge ohne grünen `npm run ci` auf demselben Commit.
 5. Kein Merge ohne grünen manuellen Cross-Browser-Lauf auf demselben RC-Commit.
-6. Kein Merge ohne reale PWA-/Device-/Accessibility-/Gruppenabnahme.
-7. Kein Merge ohne finalen Legal-/Asset-/Support-Sign-off.
-
-## 6. Lockfile-Übergang
-
-Aktuell fehlt `package-lock.json`. Deshalb verwendet `.github/workflows/ci.yml` vorläufig eine Installation ohne Lockfile.
-
-Sobald ein echtes, geprüftes Lockfile vorliegt:
-
-- Workflow auf `npm ci` umstellen
-- Cross-Browser-Workflow ebenfalls auf `npm ci` umstellen
-- neuen unveränderten Commit vollständig testen
-- erst danach Required-Check-Konfiguration als Release-Nachweis akzeptieren
-
-Keine Integrity-Werte oder Lockfile-Inhalte manuell erfinden.
+6. Kein Merge ohne echte Branch-Protection-Abnahme.
+7. Kein Merge ohne HTTPS-Staging-/PWA-/Device-/Accessibility-/Gruppenabnahme.
+8. Kein Merge ohne finalen Legal-/Asset-/Support-Sign-off.
 
 ## 7. Aktueller externer Blocker
 
-`CI_TROUBLESHOOTING.md` dokumentiert aktuell wiederholte Actions-Jobs mit `steps: []`. Solange kein echter Runner Repository-Schritte ausführt, kann die gewünschte Required-Check-Regel technisch vorbereitet, aber nicht belastbar als funktionierend abgenommen werden.
+`CI_TROUBLESHOOTING.md` dokumentiert wiederholte Actions-Jobs mit `steps: []`. Solange kein echter Runner Repository-Schritte ausführt, kann die gewünschte Required-Check-Regel technisch vorbereitet, aber nicht belastbar als funktionierend abgenommen werden.
 
 ## 8. Abnahmeprotokoll
-
-Vor Schließung des Branch-Protection-Gates dokumentieren:
 
 ```text
 Protected branch:
@@ -96,6 +103,7 @@ Branch deletion blocked: yes/no
 Review conversation resolution required: yes/no
 Admin/bypass rules reviewed: yes/no
 Test PR used for verification:
+Successful npm ci run:
 Successful CI run:
 Successful RC cross-browser run:
 Verifier:
@@ -111,7 +119,8 @@ Verifier:
 - [ ] Required Check auf echtem Runner mindestens einmal erfolgreich durchgelaufen
 - [ ] Force-Push-/Löschregeln geprüft
 - [ ] Review-/Bypass-Regeln geprüft
-- [ ] Lockfile/`npm ci` im finalen Workflow aktiv
+- [x] Lockfile/`npm ci` im Workflow technisch aktiv
+- [ ] Online-`npm ci` auf unverändertem Commit grün
 - [ ] RC-Cross-Browser-Lauf separat grün dokumentiert
 
 Bis dahin bleibt Branch Protection **OPEN / RELEASE NO_GO**.
