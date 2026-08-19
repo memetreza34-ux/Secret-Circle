@@ -48,27 +48,23 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - Scoring-/Winner-Vertrag bestätigt
 - quantitative Core-Content-Gates erfüllt
 - 15/15 Core-Quellreview dokumentiert
-- Word-Imposter-Rechtepass regressionsgesichert
 - `anime-guess` liefert 40 eigenständige Archetypen und `party-mega-catalog.js` enthält die früheren konkreten Figuren physisch nicht mehr
 - `party-expansion.js` liefert `Spektrum-Tipp` und Browser-Tabu mit `Tab` direkt upstream
-- Emoji-Quiz nutzt generisch `🦁🌾 → Löwe` statt `Löwenkönig`
+- Emoji-Quiz nutzt `🦁🌾 → Löwe` statt `Löwenkönig`
 - Viral-`higher-lower` enthält die generischen Sportfragen aus v38
 - `party-catalog.js` enthält die beiden früher problematischen Private-Device-Truth/Dare-Prompts seit v43 physisch nicht mehr
-- `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` sind Teil von `npm run validate`
+- Privacy-/Reference-Content-Audits auf dem RC-Commit grün
 - übrige Extended/Labs final manuell/visuell/rechtlich geprüft
-- Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
 
 ### PWA-Icons / Assets
-
-Seit v42 ist der technische Rastervertrag repariert:
 
 - `icon-192.png` existiert und ist exakt 192×192
 - `icon-512.png` existiert und ist exakt 512×512
 - beide Rasterdateien sind aus `icon.svg` abgeleitet
 - `assets/manifests/asset-provenance.json` enthält SHA-256 und Ableitungsnachweis
-- `scripts/asset_provenance_audit.py` prüft Datei, Hash, PNG-IHDR-Dimensionen und Manifestgrößen
-- die finale Rechtebasis von `icon.svg` bleibt bis menschlicher Bestätigung `unresolved`
+- Asset-/Media-Audits grün
+- finale Rechtebasis von `icon.svg` menschlich bestätigt
 
 ### Geräte und Accessibility
 
@@ -91,54 +87,81 @@ Seit v42 ist der technische Rastervertrag repariert:
 - Export/Import/Löschung geprüft
 - Complete-Import lehnt unbekannte Storage-Key-Familien ab
 - Quota-/Korruptions-/Rollbackpfade geprüft
-- Rollbackdeployment vorbereitet
 
 ### Recht und Betrieb
 
-Vor Production final:
-
 - `LEGAL_CHECKLIST.md` abgearbeitet
-- Betreiber-/Kontaktangaben final
+- Betreiber-/Kontakt-/Hostingangaben final
 - Datenschutz auf tatsächliches Hosting angepasst
-- Hostingangaben final
-- `THIRD_PARTY_NOTICES.md` und `FAN_CONTENT_REVIEW.md` final
+- `THIRD_PARTY_NOTICES.md` / `FAN_CONTENT_REVIEW.md` final
 - Asset-Provenienz ohne `unresolved` Releaseassets
 - Privacy-/Reference-/Placeholder-Audits grün
-- echter Supportweg nach `SUPPORT.md`
-- Incident-/Hotfixprozess nach `INCIDENT_RESPONSE.md`
+- echter Supportweg und Incident-/Hotfixprozess vorhanden
+
+## Automatisierter HTTPS-Staging-Smoke
+
+Vor dem manuellen Browser-/PWA-Smoke muss die tatsächlich ausgelieferte Staging-Origin den reproduzierbaren HTTP-Smoke bestehen:
+
+```bash
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
+```
+
+Der Smoke (`scripts/staging_smoke.py`) prüft:
+
+- ausschließlich HTTPS
+- Same-Origin für Redirectziele
+- Größenlimits für geladene Ressourcen
+- Kernseiten und Query-Routen HTTP 200
+- Manifest-/Standalone-Vertrag
+- reale PNG-Dimensionen 192×192 und 512×512
+- Service-Worker-Cache und Staging-Cache
+- Backup-Registry vor Datentools
+- physische v43-Privacy-Safe-Inhalte
+- physische Reference-Safe-Inhalte aus v38–v41
+
+`scripts/staging_smoke_contract_audit.py` ist Teil von `npm run validate` und schützt diesen Vertrag statisch. Die echte Netzwerkprüfung läuft dagegen nur gegen eine konkrete Deployment-URL.
+
+## Manueller Staging-/PWA-Smoke
+
+Der automatisierte HTTP-Smoke ersetzt nicht:
+
+- Service Worker registriert
+- App installierbar
+- Offline-Neustart
+- Updatebanner und bewusste Aktivierung
+- aktive Session während Update
+- lokale Daten nach Update erhalten
+- Hub-Datenbereich und Registry im echten Browser
+- Export/Import
+- Core-/Timer-/Advanced-/Word-Imposter-/Creator-Smokes
+- reale Installationsicons
+- Geräte-/Screenreaderprüfung
 
 ## Production-Smoke-Test
 
-### Seiten und Manifest
+Production erhält denselben freigegebenen RC-Stand. Zuerst:
 
-`party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200. Manifest und Icons sind erreichbar; die Rastergrößen sind 192×192 und 512×512.
+```bash
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v43 --production
+```
+
+Danach Browser-/PWA-Smoke auf Production wiederholen. `--production` verschärft zusätzlich die Prüfung auf typische Placeholderwerte in öffentlichen Dateien.
 
 ### Katalog und Privacy
 
-Browserfolge:
+Online und offline müssen denselben finalen Katalogpfad liefern:
 
 `party-catalog → expansion → trending → mega → viral → core-release → core-classic(v4) → routing`
 
-Online und offline müssen dieselben finalen Inhalte verfügbar sein.
-
-Zusätzliche Checks:
+Zu bestätigen:
 
 - `anime-guess` → **Anime-Archetypen erraten** mit vier generischen 10er-Packs
-- `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren und `Löwe` statt `Löwenkönig`
-- `wavelength` zeigt **Spektrum-Tipp** bereits in `party-expansion.js`
+- keine früheren konkreten Anime-Figuren in `party-mega-catalog.js`
+- `Löwe`, nicht `Löwenkönig`
+- `wavelength` → **Spektrum-Tipp**
 - Browser-Tabu enthält `Tab`, nicht `Chrome`
-- `party-catalog.js` enthält weder die frühere Kamerarollen-Frage noch die Pflicht zum Vorlesen der letzten Handy-Nachricht
-- die sicheren Ersatztexte stehen bereits im Basiskatalog
-- `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` sind auf demselben RC-Commit tatsächlich grün
-
-### Offline
-
-- aktiver Cache: **`secret-circle-v43`**
-- Base-, Expansion-, Mega-, Viral-, Backup-Registry- und beide Core-Contentmodule verfügbar
-- alle drei App-Iconquellen verfügbar
-- Kernseiten und benötigte Engines starten offline
-- Query-Navigation besitzt Fallback
-- lokale Daten bleiben bei Update erhalten
+- `party-catalog.js` enthält weder alte Kamerarollen-Frage noch Pflicht zum Vorlesen der letzten Handy-Nachricht
+- sichere Ersatztexte stehen direkt im Basiskatalog
 
 ## Lokale Befehle – Übergangszustand
 
@@ -174,10 +197,10 @@ Bei jeder offline benötigten Dateiveränderung:
 
 ## Rollback
 
-Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert/Hotfix erstellen, Cachegeneration erneut erhöhen, persistierte Daten rückwärtsverträglich halten oder migrieren, betroffene Kernflows und Datenpfade auf HTTPS-Staging testen und anschließend Production aktualisieren. Kein Force-Push auf die stabile Production-Basis.
+Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert/Hotfix erstellen, Cachegeneration erneut erhöhen, persistierte Daten rückwärtsverträglich halten oder migrieren und auf HTTPS-Staging testen. Nach Rollback/Hotfix sowohl automatisierten HTTPS-Smoke als auch manuellen Browser-/PWA-Smoke erneut durchführen. Kein Force-Push auf stabile Production-Basis.
 
 ## Produktionsfreigabe
 
-Ein öffentlicher Release bleibt blockiert, bis Produkt-, CI-, Cross-Browser-, Branch-Protection-, PWA-, Geräte-, Accessibility-, Daten-, Inhalts-, Privacy-, Rechte-, Gruppen-, Rechts- und Betriebs-Gates auf demselben unveränderten Release Candidate bestätigt sind.
+Ein öffentlicher Release bleibt blockiert, bis Produkt-, CI-, Cross-Browser-, Branch-Protection-, HTTPS-Smoke-, PWA-, Geräte-, Accessibility-, Daten-, Inhalts-, Privacy-, Rechte-, Gruppen-, Rechts- und Betriebs-Gates auf demselben unveränderten Release Candidate bestätigt sind.
 
 Aktueller Status: **NO_GO**.
