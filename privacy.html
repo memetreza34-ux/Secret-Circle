@@ -25,13 +25,15 @@
       <h2>Eigene Spiele und Kategorien</h2>
       <p>Der lokale Game-Creator speichert Spielname, Erklärung, Vorlage, Icon, Akzent, Spielerzahl, Dauer und eigene Textkarten. Es werden keine Bilder oder Dateien automatisch hochgeladen. Eigene Spiele können separat oder über die Gesamtsicherung als JSON exportiert werden.</p>
       <p>Die App prüft Länge, Anzahl, Format und doppelte Karten. Die inhaltliche und rechtliche Verantwortung für selbst eingetragene Texte bleibt bei der Person, die das Spiel erstellt.</p>
-      <p>Aktive Creator-Sessions speichern lokal Spiel-ID, Kategorie, Rundenzahl, Spieler-Snapshot, aktuelle Karte, Fortschritt und Punkte. Nach dem Abschluss werden Verlauf und Statistik lokal ergänzt.</p>
 
       <h2>Smart Party Night</h2>
       <p>Der Planer verarbeitet Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel ausschließlich lokal. Es werden keine Daten an einen Analyse-, Werbe- oder Empfehlungsserver übertragen.</p>
 
       <h2>Geheime Spielinhalte</h2>
       <p>Rollen, Fragen, Orte, Figuren, Identitäten, persönliche Antworten, eigene Erratbegriffe und geheime Missionen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Übergabe- und Verdeckungsstufen verringern Schulterblick, können absichtliches Mitlesen jedoch nicht vollständig verhindern.</p>
+
+      <h2>Built-in-Privacy-Schutz</h2>
+      <p>Die eingebauten Spiele sollen keine privaten Nachrichten, Kamerarollen oder privaten Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial verlangen. Seit Offline-Core v43 sind die zwei früher identifizierten Private-Device-Truth/Dare-Texte auch physisch aus dem Basiskatalog entfernt. Ein Source-Audit prüft die ausgelieferten Built-in-Contentquellen auf solche Offenlegungsaufforderungen. Persönliche Fragen bleiben zusätzlich freiwillig und überspringbar.</p>
 
       <h2>Anime-Archetypen-Quiz</h2>
       <p>Das frühere konkrete Anime-Fanquiz wurde durch eigenständige generische Anime-/Manga-Archetypen ersetzt. Seit Offline-Core v40 sind die früheren konkreten Figuren auch aus der ausgelieferten Mega-Katalogdatei entfernt; v41 verankert die reference-safe Grunddefinition zusätzlich upstream und schützt die ausgelieferten Contentquellen über einen zentralen Audit. Die App lädt dafür keine fremden Charakterbilder, Logos, Videos, Audios oder Zitate und behauptet keine Verbindung zu Rechteinhabern.</p>
@@ -50,7 +52,7 @@
       <p>Nein. Beim Laden oder Aktualisieren ruft der Browser lediglich statische App-Dateien vom Hosting-Anbieter ab. Spieldaten werden nicht an einen eigenen Secret-Circle-Server gesendet.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v42</code>.</p>
+      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v43</code>.</p>
 
       <h2>Daten löschen</h2>
       <p>„Alle lokalen Daten löschen“ entfernt sämtliche Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>, einschließlich eigener Spiele und aktiver Sessions. Das Löschen ist absichtlich breiter als der Backup-Import, damit auch alte oder verwaiste Secret-Circle-Schlüssel entfernt werden. Exportierte Dateien müssen separat im Dateisystem gelöscht werden.</p>
