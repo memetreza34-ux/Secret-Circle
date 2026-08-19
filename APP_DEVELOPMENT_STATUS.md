@@ -1,6 +1,6 @@
 # Secret Circle – A-bis-Z Entwicklungsstatus
 
-Stand: 18. August 2026
+Stand: 19. August 2026
 
 Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
@@ -97,7 +97,15 @@ Vorbereitet: statischer Contract, Playwright-E2E-Basis, Reflow, Fokus, Reduced M
 
 ## CI / Lockfile
 
-Die zuletzt geprüften Actions-Läufe enden vor verwertbaren Repository-Schritten. Deshalb dürfen neue Unit-/Audit-/E2E-Verträge nicht als grün behauptet werden.
+Aktuell geprüft: **Actions Run #2126** auf Commit `16cc9745671f8a565e747a591e9b439989f78aa6`.
+
+- `Secret Circle CI`: `failure`
+- Job `validate`: `failure`
+- Job-Steps: `[]`
+- kein Checkout / kein Repositorycode ausgeführt
+- kein verwertbarer Job-Log vorhanden
+
+Deshalb dürfen neue Unit-/Audit-/E2E-Verträge nicht als grün behauptet werden. Der Lauf ist zugleich kein negativer Code-Test, weil der Code nie ausgeführt wurde.
 
 `package-lock.json` fehlt. Keine Integrity-Werte werden erfunden; CI wird erst mit echtem Lockfile auf `npm ci` umgestellt.
 
