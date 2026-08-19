@@ -14,21 +14,9 @@ data = json.loads(manifest_path.read_text(encoding='utf-8'))
 doc = doc_path.read_text(encoding='utf-8')
 
 EXPECTED_GATES = {
-    'ci',
-    'crossBrowser',
-    'branchProtection',
-    'stagingHttpSmoke',
-    'pwaUpgradeRollback',
-    'android',
-    'ios',
-    'tablet',
-    'accessibility',
-    'groups',
-    'contentPrivacyReference',
-    'assetsThirdParty',
-    'legalPrivacy',
-    'supportIncident',
-    'productionSmoke',
+    'ci', 'crossBrowser', 'branchProtection', 'stagingHttpSmoke', 'pwaUpgradeRollback',
+    'android', 'ios', 'tablet', 'accessibility', 'groups', 'contentPrivacyReference',
+    'assetsThirdParty', 'legalPrivacy', 'supportIncident', 'productionSmoke',
 }
 ALLOWED_GATE_STATUS = {'OPEN', 'BLOCKED', 'PASS', 'FAIL'}
 SHA40 = re.compile(r'^[0-9a-f]{40}$')
@@ -46,7 +34,10 @@ checks = {
     'gate_status_values': all(isinstance(gate, dict) and gate.get('status') in ALLOWED_GATE_STATUS for gate in gates.values()),
     'decision_value': release_decision in {'NO_GO', 'GO'},
     'evidence_status_value': evidence_status in {'PREPARED', 'FINAL'},
-    'doc_no_go_contract': all(marker in doc for marker in ('release-evidence.json', 'NO_GO', 'derselben unveränderten Release-Candidate-Commit', 'scripts/release_evidence_audit.py')),
+    'doc_no_go_contract': all(marker in doc for marker in (
+        'release-evidence.json', 'NO_GO', 'unveränderten Release-Candidate-Commit',
+        '15', 'scripts/release_evidence_audit.py', 'releaseDecision = GO'
+    )),
 }
 
 violations = []
