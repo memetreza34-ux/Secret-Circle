@@ -34,7 +34,7 @@ Releaseanforderung:
 - `npm run ci`
 - Cross-Browser
 
-Aktuell: **BLOCKED**, da geprüfte Actions-Läufe weiterhin vor Repository-Steps enden. Run #2126 auf dem zuletzt untersuchten Commit zeigte erneut `steps: []` und keinen Job-Log.
+Aktuell: **BLOCKED**. `CI_TROUBLESHOOTING.md` führt den jeweils neuesten belastbaren Actions-Befund; wiederholt enden Jobs vor Repository-Steps mit `steps: []`.
 
 ## 4. HTTPS-Staging
 
@@ -76,6 +76,7 @@ RC-Vertrag:
 Vor Promotion:
 
 - CI/Cross-Browser grün
+- Branch Protection nach `BRANCH_PROTECTION.md` bestätigt
 - Staging-Smoke grün
 - Geräte/A11y grün
 - PWA Upgrade/Rollback geprüft
@@ -93,7 +94,7 @@ Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cr
 
 ## 8. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt aktuell **`secret-circle-v42`**.
+Der Quellcode besitzt aktuell **`secret-circle-v43`**.
 
 - v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz im finalen Runtime-Katalog.
 - v38 ersetzte drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower`.
@@ -101,6 +102,7 @@ Der Quellcode besitzt aktuell **`secret-circle-v42`**.
 - v40 entfernte die 40 historischen konkreten Anime-Figurennamen zusätzlich physisch aus der ausgelieferten `party-mega-catalog.js`.
 - v41 verankert `Spektrum-Tipp` und `Tab` upstream, setzt Classic Content auf v4, ersetzt `Löwenkönig` durch einen generischen Löwenhinweis und nimmt den zentralen Reference-Source-Audit in `npm run validate` auf.
 - v42 repariert den PWA-Rastervertrag: echtes 192×192- und 512×512-PNG, SHA-256-/IHDR-/Manifestprüfung im Asset-Audit.
+- v43 entfernt die zwei früheren Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` und nimmt einen globalen Privacy-Content-Audit in `npm run validate` auf.
 
 Regeln:
 
@@ -128,6 +130,8 @@ Mindestens:
 - Installation möglich und Icon sichtbar korrekt
 - Offline-Neustart
 - finaler Katalog
+- `party-catalog.js` enthält die zwei v43-entfernten Private-Device-Prompts nicht
+- Privacy-Content-Audit auf dem RC-Commit tatsächlich grün
 - `anime-guess` zeigt nur generische Archetypen
 - ausgelieferte `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren
 - Emoji-Quiz nutzt `Löwe`, nicht `Löwenkönig`
