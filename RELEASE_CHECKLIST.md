@@ -13,7 +13,14 @@ Diese Checkliste muss für den unveränderlichen Release-Commit vollständig aus
 - [ ] Actions-Runner, Minutenbudget und Richtlinien funktionieren
 - [ ] reproduzierbares `package-lock.json` vorhanden
 - [ ] CI verwendet `npm ci`
-- [ ] Branch Protection und verpflichtende Checks aktiv
+- [ ] `BRANCH_PROTECTION.md` für den finalen Zielbranch abgearbeitet
+- [ ] Pull Requests sind für den stabilen Zielbranch verpflichtend
+- [ ] **`Secret Circle CI / validate`** ist als Required Check aktiv
+- [ ] Required Check lief mindestens einmal auf echtem Runner mit sichtbaren Repository-Steps grün
+- [ ] Force-Push und Branch-Löschung sind für den stabilen Zielbranch gemäß Vertrag geprüft
+- [ ] Review-/Bypass-Regeln sind geprüft und dokumentiert
+- [ ] Cross-Browser bleibt als separater RC-Gate auf exakt demselben unveränderten Commit grün; solange der Workflow nur `workflow_dispatch` nutzt, ist er kein permanenter PR-Required-Check
+- [ ] `scripts/branch_protection_contract_audit.py` auf exakt dem Release-Commit tatsächlich grün
 - [ ] keine generierten Logs, temporären Dateien oder großen unbekannten Assets committed
 - [ ] `scripts/reference_content_audit.py` auf exakt dem Release-Commit tatsächlich grün
 - [ ] `scripts/asset_provenance_audit.py` auf exakt dem Release-Commit tatsächlich grün
@@ -271,4 +278,4 @@ Zusätzliche Kernspielverträge:
 - Accessibility-Freigabe: ____________________
 - Legal-/Betriebsfreigabe: ____________________
 
-**Keine Veröffentlichung**, solange GitHub Actions keine belastbaren Repository-Schritte ausführt, Kern-CI/Cross-Browser-/Reference-/Asset-Gates nicht tatsächlich grün sind, kritische beziehungsweise hohe Fehler offen sind, Root-SVG-/Asset-/Rechte-/Accessibility-/Legal-/Betriebs-Gates nicht finalisiert sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
+**Keine Veröffentlichung**, solange GitHub Actions keine belastbaren Repository-Schritte ausführt, Kern-CI/Cross-Browser-/Branch-Protection-/Reference-/Asset-Gates nicht tatsächlich grün sind, kritische beziehungsweise hohe Fehler offen sind, Root-SVG-/Asset-/Rechte-/Accessibility-/Legal-/Betriebs-Gates nicht finalisiert sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
