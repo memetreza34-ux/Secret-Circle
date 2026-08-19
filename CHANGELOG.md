@@ -55,7 +55,19 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 - Reference-Source-Audit in `npm run validate` integriert.
 - Core-, Architektur- und Release-Audits auf den physischen Source-Vertrag umgestellt.
 
-Die v41-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerproblems noch **nicht belastbar als grün ausgeführt dokumentiert**.
+#### PWA v42 – Rastericon-Reparatur
+
+- echten PWA-Fehler gefunden: `icon-192.png` fehlte auf dem Branch vollständig.
+- die bisherige Datei `icon-512.png` besaß laut PNG-IHDR tatsächlich nur 192×192 Pixel.
+- `icon-192.png` als echtes 192×192-PNG aus `icon.svg` erzeugt.
+- `icon-512.png` als echtes 512×512-PNG aus `icon.svg` erzeugt und PNG-optimiert.
+- `assets/manifests/asset-provenance.json` um Erstellungswerkzeuge, Ableitung, Dimensionen und SHA-256 ergänzt.
+- `scripts/asset_provenance_audit.py` prüft jetzt zusätzlich SHA-256-Drift, PNG-Signatur/IHDR-Dimensionen und die Iconmetadaten aus `manifest.webmanifest`.
+- Service Worker und Service-Worker-Test verlangen alle drei App-Icondateien offline.
+- Git-Historie des aktuellen `icon.svg` bis Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` vom 2. August 2026 dokumentiert.
+- Rechtebasis des Root-SVGs bewusst **nicht** automatisch als geklärt markiert; `icon.svg` bleibt bis menschlicher Bestätigung `unresolved`.
+
+Die v41/v42-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerproblems noch **nicht belastbar als grün ausgeführt dokumentiert**.
 
 ### Backup / Security
 
@@ -68,8 +80,9 @@ Die v41-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerpro
 ### PWA / Offline
 
 - kontrollierte staged Updates mit sichtbarer Nutzeraktivierung und nicht-destruktiver Promotion beibehalten.
-- aktueller Offline-Core: **`secret-circle-v41`** / `secret-circle-v41-staging`.
-- Cachegeneration, Privacy, Architektur, Deployment, Environment und Service-Worker-Vertrag auf v41 synchronisiert.
+- aktueller Offline-Core: **`secret-circle-v42`** / `secret-circle-v42-staging`.
+- Cachegeneration, Privacy, Architektur, Deployment, Environment und Service-Worker-Vertrag auf v42 synchronisiert.
+- PWA-Manifest/Icons sind Teil des Offline-Core.
 
 ### Accessibility
 
@@ -82,8 +95,10 @@ Die v41-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerpro
 
 - `THIRD_PARTY_NOTICES.md` eingeführt.
 - `@playwright/test` 1.54.2 upstream als Apache-2.0 verifiziert.
-- `assets/manifests/asset-provenance.json` ergänzt; die drei bestehenden App-Icons bleiben ausdrücklich `unresolved`, bis Herkunft/Rechte belegt sind.
-- `scripts/asset_provenance_audit.py` in `npm run validate` integriert.
+- `assets/manifests/asset-provenance.json` ergänzt.
+- Rasterherkunft und Dimensionen von `icon-192.png` und `icon-512.png` seit v42 technisch belegt.
+- `icon.svg` bleibt bis finaler menschlicher Rechtebestätigung `unresolved`.
+- `scripts/asset_provenance_audit.py` in `npm run validate` integriert und um Hash-/IHDR-/Manifestprüfung gehärtet.
 - `scripts/public_release_placeholder_audit.py` ergänzt, um typische Dummywerte in öffentlichen Runtime-Dateien zu blockieren.
 - `scripts/reference_content_audit.py` ergänzt, um physische Contentquellen auf bereits bewertete konkrete Referenzen zu prüfen.
 - `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md` ergänzt.
@@ -105,8 +120,8 @@ Die v41-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerpro
 
 ### CI / Build – noch offen
 
-- die zuletzt geprüften GitHub-Actions-Läufe enden weiterhin vor einem belastbaren Repository-Checkout/Testlauf.
-- daher sind die neuen v41-Unit-/Audit-/Reference-Source-Verträge noch nicht runner-verifiziert.
+- der zuletzt belastbar untersuchte GitHub-Actions-Lauf #2126 endete vor einem Repository-Step: `validate` failure, `steps: []`, kein Checkout und kein verwertbarer Job-Log.
+- daher sind die neuen v41/v42-Unit-/Audit-/Reference-/Asset-Verträge noch nicht runner-verifiziert.
 - `package-lock.json` fehlt; keine Integrity-Werte wurden erfunden.
 - CI bleibt vorläufig auf Installationsübergang und wird erst mit echtem Lockfile auf `npm ci` umgestellt.
 - Branch Protection/Required Checks bleiben offen.
@@ -114,4 +129,4 @@ Die v41-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerpro
 ### Release-Status
 
 - PR #13 bleibt Draft und ungemergt.
-- öffentlicher Release bleibt **NO_GO**, bis CI, Lockfile, Branch Protection, Reference-Source-Audit, reale Geräte/PWA-Upgrades, Accessibility, reale Gruppen, Asset-/Rechte-, Legal-/Support- und Staging-Gates bestanden sind.
+- öffentlicher Release bleibt **NO_GO**, bis CI, Lockfile, Branch Protection, Reference-/Asset-Audits, reale Geräte/PWA-Upgrades, Accessibility, reale Gruppen, Root-SVG-/Asset-/Rechte-, Legal-/Support- und Staging-Gates bestanden sind.
