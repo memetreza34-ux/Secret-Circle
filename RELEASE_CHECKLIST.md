@@ -1,6 +1,6 @@
 # Secret Circle – Release-Checkliste Januar 2027
 
-Stand: 18. August 2026
+Stand: 19. August 2026
 
 Diese Checkliste muss für den unveränderlichen Release-Commit vollständig ausgefüllt werden. „Technisch spielbar“, „Test vorhanden“ oder „Dokument vorhanden“ ersetzt keine Freigabe.
 
@@ -119,9 +119,9 @@ Zusätzliche Kernspielverträge:
 - [ ] vollständiges Löschen entfernt auch alte/verwaiste Secret-Circle-Keys
 - [ ] Löschung und Wiederherstellung auf mindestens zwei Browsern geprüft
 
-## 6. PWA und Offline – v41
+## 6. PWA und Offline – v42
 
-- [ ] finaler Cache ist **`secret-circle-v41`** und Staging-Cache **`secret-circle-v41-staging`**
+- [ ] finaler Cache ist **`secret-circle-v42`** und Staging-Cache **`secret-circle-v42-staging`**
 - [ ] Cache-/Stagingname stimmt in Service Worker, Test, Architektur, Deployment, Privacy und Environment überein
 - [ ] normaler Browserstart online
 - [ ] installierte PWA online
@@ -130,6 +130,11 @@ Zusätzliche Kernspielverträge:
 - [ ] Backup-Registry offline verfügbar
 - [ ] `party-expansion.js`, `party-mega-catalog.js` und `party-viral-catalog.js` offline verfügbar
 - [ ] beide Core-Contentmodule offline verfügbar
+- [ ] `manifest.webmanifest`, `icon.svg`, `icon-192.png` und `icon-512.png` offline verfügbar
+- [ ] `icon-192.png` besitzt tatsächlich PNG-IHDR **192×192**
+- [ ] `icon-512.png` besitzt tatsächlich PNG-IHDR **512×512**
+- [ ] Webmanifest deklariert dieselben Rastergrößen und `image/png`
+- [ ] SHA-256-Werte der inventarisierten Icons stimmen mit `asset-provenance.json` überein
 - [ ] alle vier schnellen Enginefamilien offline startbar
 - [ ] direkte Hub- und Advanced-Kernspiele offline startbar und wiederaufnehmbar
 - [ ] Release-Tiers, Filterzustand und Suchhilfe offline verfügbar
@@ -140,7 +145,7 @@ Zusätzliche Kernspielverträge:
 - [ ] Advanced-Session wird vom Update-Schutz erkannt
 - [ ] sichtbarer Hinweis „Jetzt aktualisieren“ / „Später“
 - [ ] aktiver Offline-Core bleibt bei fehlgeschlagener Promotion erhalten
-- [ ] Update von mindestens zwei älteren Cacheversionen auf v41 getestet
+- [ ] Update von mindestens zwei älteren Cacheversionen auf v42 getestet
 - [ ] Rollbackdeployment mit neuer Cachegeneration getestet
 
 ## 7. Accessibility und Geräte
@@ -164,6 +169,9 @@ Zusätzliche Kernspielverträge:
 - [ ] Reduced Motion
 - [ ] Kontrast und Status nicht nur durch Farbe
 - [ ] Timerverhalten bei realem App-Wechsel und Sperrbildschirm dokumentiert
+- [ ] installiertes PWA-Icon auf realem Android korrekt dargestellt
+- [ ] installiertes PWA-Icon auf realem iPhone/iPad soweit unterstützt korrekt dargestellt
+- [ ] installiertes PWA-Icon auf mindestens einer Desktop-PWA-Installation korrekt dargestellt
 
 ## 8. Inhalte, Referenzen und Recht
 
@@ -195,10 +203,14 @@ Zusätzliche Kernspielverträge:
 ### Assets / Legal
 
 - [ ] `assets/manifests/asset-provenance.json` deckt alle gebündelten Releaseassets ab
+- [ ] `scripts/asset_provenance_audit.py` bestätigt Existenz, Hash, PNG-IHDR und Webmanifest-Vertrag auf dem Release-Commit
+- [ ] technische Rasterableitung `icon.svg → icon-192.png/icon-512.png` ist dokumentiert
+- [ ] `icon.svg` tatsächlicher Urheber/Ersteller menschlich bestätigt
+- [ ] mögliche KI-/Template-/Stock-Nutzung des Root-SVGs geklärt
+- [ ] kommerzielle Nutzungsrechte/Rechtebasis des Root-SVGs belegt
+- [ ] erforderliche Attribution für das Root-SVG geklärt
 - [ ] kein Releaseasset steht auf `unresolved`
-- [ ] `icon.svg` Herkunft/Rechtebasis belegt
-- [ ] `icon-192.png` Herkunft/Ableitung belegt
-- [ ] `icon-512.png` Herkunft/Ableitung belegt
+- [ ] alle späteren Releaseassets inventarisiert und belegt
 - [ ] `LEGAL_CHECKLIST.md` mit echtem Betreiber-/Release-Modell abgearbeitet
 - [ ] Datenschutzerklärung auf tatsächliches Hosting angepasst
 - [ ] Impressum beziehungsweise notwendige Betreiberangaben final, falls erforderlich
@@ -237,8 +249,10 @@ Zusätzliche Kernspielverträge:
 
 - [ ] Produktionsdeployment über HTTPS
 - [ ] konkrete getrennte Staging- und Production-Origin dokumentiert
-- [ ] finale Versionsnummer und Cacheversion **v41 oder bewusst neuer**
+- [ ] finale Versionsnummer und Cacheversion **v42 oder bewusst neuer**
 - [ ] finale Icons und Screenshots samt Herkunft/Nutzungsrechten
+- [ ] öffentlich ausgelieferte Rastericons antworten mit Status 200 und korrekten Dimensionen
+- [ ] reales Installationsicon auf den Zielplattformen geprüft
 - [ ] öffentlicher Placeholder-Audit grün; keine Dummy-/Beispieldaten in öffentlicher Runtime
 - [ ] Release Notes und Changelog vollständig
 - [ ] unveränderlicher Release-Tag
@@ -257,4 +271,4 @@ Zusätzliche Kernspielverträge:
 - Accessibility-Freigabe: ____________________
 - Legal-/Betriebsfreigabe: ____________________
 
-**Keine Veröffentlichung**, solange GitHub Actions keine belastbaren Repository-Schritte ausführt, Kern-CI/Cross-Browser-/Reference-Source-Gates nicht tatsächlich grün sind, kritische beziehungsweise hohe Fehler offen sind, Asset-/Rechte-/Accessibility-/Legal-/Betriebs-Gates nicht finalisiert sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
+**Keine Veröffentlichung**, solange GitHub Actions keine belastbaren Repository-Schritte ausführt, Kern-CI/Cross-Browser-/Reference-/Asset-Gates nicht tatsächlich grün sind, kritische beziehungsweise hohe Fehler offen sind, Root-SVG-/Asset-/Rechte-/Accessibility-/Legal-/Betriebs-Gates nicht finalisiert sind oder Kernspiele nicht mit realen Gruppen getestet wurden.
