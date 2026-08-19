@@ -21,7 +21,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-002 | Kein reproduzierbares `package-lock.json` | Build/Supply Chain | hoch | hoch | P1 | echtes Lockfile, prüfen, CI auf `npm ci` | **OFFEN** |
 | R-003 | Branch Protection / Required Checks nicht bestätigt | Git/Release | mittel | hoch | P1 | Pflichtchecks konfigurieren | offen |
 | R-004 | Timer weichen auf echten OS-/Sperrbildschirmpfaden ab | Geräte/PWA | mittel | hoch | P1 | Android + iPhone real | offen |
-| R-005 | PWA-Upgrade beschädigt Offline-Core/lokale Session | PWA/Daten | mittel | kritisch | P1 | zwei Altversionen→RC + Rollback real | **offen; aktueller Core v41 vorbereitet** |
+| R-005 | PWA-Upgrade beschädigt Offline-Core/lokale Session | PWA/Daten | mittel | kritisch | P1 | zwei Altversionen→RC + Rollback real | **offen; aktueller Core v42 vorbereitet** |
 | R-006 | Private Rollen/Fragen werden beim Resume sichtbar | Privacy/Gameplay | niedrig-mittel | hoch | P1 | E2E + reale Übergaben | technisch gehärtet; real offen |
 | R-007 | Quota-/Import-/Migration beschädigt lokale Daten | Daten | niedrig-mittel | kritisch | P1 | Rollbacktests + echter Browser | Registry v2 vorbereitet; real offen |
 | R-008 | Sessionabschluss zählt mehrfach | Daten/Statistik | niedrig | hoch | P1 | Completion-ID + Exact-once | technisch abgesichert; CI offen |
@@ -36,7 +36,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-017 | Mafia-Balance real unklar | Gameplay | mittel | mittel | P2 | echte 8+-Sessions | offen |
 | R-018 | Labs wirken releasegleichwertig | Produkt/UX | mittel | mittel | P2 | klare Reifestufen + Nutzerprüfung | Basis vorhanden |
 | R-019 | Production-Hosting verhält sich anders als lokal | Deployment | mittel | hoch | P1 | getrenntes HTTPS-Staging | offen |
-| R-020 | Cache-/Release-Dokumente driften | Prozess | niedrig | mittel | P2 | dynamische Audits + synchronisierte Docs | **stark gemindert: v41 in SW/Test/Privacy/Architektur/Deployment/Environment/Status** |
+| R-020 | Cache-/Release-Dokumente driften | Prozess | niedrig | mittel | P2 | dynamische Audits + synchronisierte Docs | **stark gemindert: v42 in SW/Test/Privacy/Architektur/Deployment/Environment** |
 | R-021 | Dependency enthält Schwachstelle/Lizenzproblem | Supply Chain | niedrig-mittel | hoch | P2 | Lockfile, Audit, Third-Party-Inventar | Playwright direkt verifiziert; transitiv offen |
 | R-022 | Browser-/iOS-PWA-Änderungen bis RC | Plattform | mittel | mittel-hoch | P2 | Zielbrowser kurz vor RC erneut | beobachten |
 | R-023 | Creator-Eingaben umgehen Limits/belasten Speicher | Creator/Security | niedrig-mittel | mittel-hoch | P2 | Limits, Fuzz, Quota, E2E | technisch weitgehend abgesichert |
@@ -45,10 +45,11 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-026 | Basisnutzen ist am Markt nicht einzigartig | Produkt/Markt | hoch | hoch | P2 | Hub-Tiefe, Resume/Privacy, Creator | Positionierung angepasst |
 | R-027 | Backup importiert unbekannte Secret-Circle-Namespaces | Security | niedrig nach Fix | hoch | P1 | Registry-v2-Allowlist | CLOSED IN CODE; real offen |
 | R-028 | Backupkonstanten driften | Security/Maintenance | niedrig nach Fix | hoch | P1 | Registry als einzige Quelle | CLOSED IN CODE; CI offen |
-| R-029 | Herkunft/Lizenz gebündelter Icons/Assets unklar | Recht/Supply Chain | mittel | hoch | P1 | Asset-Provenance dokumentieren | **OFFEN – drei Icons weiterhin `unresolved`** |
+| R-029 | Rechtebasis des Root-App-Icons ist nicht final bestätigt | Recht/Supply Chain | mittel | hoch | P1 | SVG-Urheber/Rechtebasis menschlich bestätigen | **OFFEN – Rasterherkunft/Größen seit v42 belegt; `icon.svg` bleibt rights-unresolved** |
 | R-030 | Support-/Legal-Platzhalter gelangen in Production | Recht/Betrieb | mittel | hoch | P1 | Placeholder-Audit + Releaseaudit | Audit vorbereitet; echte finale Angaben offen |
 | R-031 | Classic-Content überschreitet Modul-/Offlinebudget | Performance/Architektur | sehr niedrig | mittel | P1 | 45-KB-Budget im Performance-Audit | **technisch kontrolliert; Runnernachweis für v4 offen** |
 | R-032 | Reference-Source-Audit ist vorhanden, aber nicht tatsächlich ausgeführt | Recht/CI | hoch solange Runner blockiert | hoch | P1 | `npm run validate` auf unverändertem RC grün | **OFFEN – Audit in Validate integriert; Run #2126 erreicht keinen Step** |
+| R-033 | PWA-Rastericons fehlen oder stimmen nicht mit Manifestgrößen überein | PWA/Assets | sehr niedrig nach v42 | hoch | P1 | IHDR-/Hash-/Manifestprüfung | **CLOSED IN CODE – 192×192 und 512×512 physisch repariert; Runner/Staging-Verifikation offen** |
 
 ## 3. Aktuelle Releaseblocker
 
@@ -57,10 +58,12 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 3. R-003 – Branch Protection
 4. R-004/R-005 – reale Geräte/PWA-Upgrades
 5. R-009/R-010 – reale Content-/Altersabnahme
-6. R-011/R-012/R-029/R-030/R-032 – Rechte/Betreiber/Assets/Source-Gate
+6. R-011/R-012/R-029/R-030/R-032 – Rechte/Betreiber/Root-Asset/Source-Gate
 7. R-013/R-015 – reale UX/Accessibility
 8. R-019 – HTTPS-Staging
 9. R-024 – Incident-/Support-Drill
+
+R-033 ist technisch geschlossen, bleibt aber bis Runner/Staging nicht als reale Produktionsverifikation zu werten.
 
 ## 4. Fortschritt Fan-/Referenzcontent
 
@@ -95,9 +98,26 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 
 R-011 bleibt wegen manueller Semantik-, Visual-, Marketing- und finaler Rechtsabnahme offen. R-032 bleibt offen, bis der neue Source-Audit auf einem funktionierenden Runner tatsächlich grün ist.
 
-## 5. CI-Nachweis
+## 5. PWA-Asset-Hardening – v42
 
-Aktuellster geprüfter PR-Lauf:
+Gefundener Fehler:
+
+- `icon-192.png` fehlte
+- `icon-512.png` war tatsächlich nur 192×192
+
+Umgesetzt:
+
+- echtes 192×192-PNG aus `icon.svg`
+- echtes 512×512-PNG aus `icon.svg`
+- SHA-256 und Ableitung im Asset-Provenienzmanifest
+- Git-Historie für `icon.svg` bis Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` dokumentiert
+- `asset_provenance_audit.py` prüft PNG-Signatur/IHDR, Hash und Webmanifest-Metadaten
+
+Damit ist der technische Rasterfehler R-033 geschlossen. R-029 bleibt **bewusst offen**, weil Repository-Herkunft allein keine kommerzielle Rechtebasis des SVG beweist.
+
+## 6. CI-Nachweis
+
+Aktuellster belastbar untersuchter PR-Lauf:
 
 - Run **#2126**
 - Commit `16cc9745671f8a565e747a591e9b439989f78aa6`
@@ -109,19 +129,19 @@ Aktuellster geprüfter PR-Lauf:
 
 Damit bleibt R-001 P0. Der Lauf ist kein negativer Repository-Code-Test.
 
-## 6. Performance
+## 7. Performance
 
 Das bestehende Budget für `party-core-classic-content.js` bleibt **45.000 Bytes**. Die ältere bestätigte v2-Größe von 12.954 Bytes zeigte deutlichen Spielraum; Classic v4 muss das unveränderte Budget weiterhin über `scripts/performance_budget.py` einhalten. Kein Budget wird zur kosmetischen Freigabe erhöht.
 
-## 7. Security/Backup
+## 8. Security/Backup
 
 Registry v2 schließt im Code R-027/R-028. Endgültige Schließung erst nach tatsächlich ausgeführten Tests und echtem Browserimport/-rollback.
 
-## 8. Risiko-Regel für neue Features
+## 9. Risiko-Regel für neue Features
 
 Vor jeder größeren Funktion prüfen: Netzwerk, personenbezogene Daten, Berechtigungen, Persistenz/Migration, geheime Inhalte, Dependencies, Storage-Key-Familien, Offline-Core/Performance, Accessibility, Alter/Rechte, Marktpositionierung und ausgelieferte Source-/Assetreferenzen.
 
-## 9. Schließregel
+## 10. Schließregel
 
 P0/P1 erst geschlossen mit belastbarem Nachweis, z. B. grünem unverändertem CI-Commit, Testreport, realem Gerät, realer Gruppe, ausgefüllter Releasecheckliste oder finalen Rechts-/Lizenzunterlagen.
 
