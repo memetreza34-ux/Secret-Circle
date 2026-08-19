@@ -8,6 +8,7 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
 required = [
     'package.json', 'manifest.webmanifest', 'sw.js', 'runtime-guard.js',
+    'icon.svg', 'icon-192.png', 'icon-512.png',
     'party.html', 'quick-play.html', 'privacy.html', 'party-routing.js', 'party-release-structure.js',
     'party-expansion.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
     'party-core-release-catalog.js', 'party-core-classic-content.js',
@@ -100,7 +101,13 @@ validate_gate = package.get('scripts', {}).get('validate', '')
 asset_entries = asset_manifest.get('assets') if isinstance(asset_manifest.get('assets'), list) else []
 asset_paths = {entry.get('path') for entry in asset_entries if isinstance(entry, dict)}
 asset_statuses = {entry.get('path'): entry.get('status') for entry in asset_entries if isinstance(entry, dict)}
+asset_by_path = {entry.get('path'): entry for entry in asset_entries if isinstance(entry, dict) and isinstance(entry.get('path'), str)}
 required_assets = {'icon.svg', 'icon-192.png', 'icon-512.png'}
+manifest_icons = manifest.get('icons') if isinstance(manifest.get('icons'), list) else []
+manifest_icons_by_src = {
+    entry.get('src'): entry for entry in manifest_icons
+    if isinstance(entry, dict) and isinstance(entry.get('src'), str)
+}
 removed_anime_markers = (
     'Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Satoru Gojo', 'Pikachu', 'Subaru Natsuki'
 )
@@ -111,11 +118,21 @@ checks = {
     'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
     'manifest_party_hub': manifest.get('name') == 'Secret Circle – Party Hub' and manifest.get('start_url') == './party.html',
     'standalone_pwa': manifest.get('display') == 'standalone' and manifest.get('scope') == './',
+    'manifest_icon_contract_v42': (
+        manifest_icons_by_src.get('icon-192.png', {}).get('sizes') == '192x192'
+        and manifest_icons_by_src.get('icon-192.png', {}).get('type') == 'image/png'
+        and manifest_icons_by_src.get('icon-512.png', {}).get('sizes') == '512x512'
+        and manifest_icons_by_src.get('icon-512.png', {}).get('type') == 'image/png'
+        and manifest_icons_by_src.get('icon.svg', {}).get('sizes') == 'any'
+        and manifest_icons_by_src.get('icon.svg', {}).get('type') == 'image/svg+xml'
+    ),
     'cache_generations_match': cache_generation == staging_generation,
     'cache_test_synced': cache_name in service_worker_test and staging_name in service_worker_test,
     'cache_docs_synced': all(cache_name in source for source in (architecture, deployment, privacy, environments)),
     'controlled_update': "event.data?.type === 'SKIP_WAITING'" in sw and 'await caches.delete(CACHE)' not in sw,
     'visible_update_prompt': all(marker in runtime for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', 'hasActiveSession')),
+    'pwa_icons_offline': all(f"'./{asset}'" in sw for asset in ('icon.svg', 'icon-192.png', 'icon-512.png')),
+    'pwa_icons_in_service_worker_test': all(marker in service_worker_test for marker in ('icon\\.svg', 'icon-192\\.png', 'icon-512\\.png', 'rasterPwaIconsOffline: true')),
     'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 17),
     'party_catalog_order': ordered(party, catalog_chain),
     'quick_catalog_order': ordered(quick, catalog_chain),
@@ -187,8 +204,20 @@ checks = {
     'legal_stays_no_go': 'LEGAL NO_GO' in legal and '20. Juli 2025' in legal and 'TDDDG' in legal,
     'asset_provenance_schema': asset_manifest.get('schemaVersion') == 1 and required_assets.issubset(asset_paths),
     'asset_provenance_statuses_valid': all(status in {'unresolved', 'verified-own', 'verified-third-party'} for status in asset_statuses.values()),
+    'asset_provenance_v42_metadata': (
+        asset_by_path.get('icon-192.png', {}).get('dimensions') == '192x192'
+        and len(str(asset_by_path.get('icon-192.png', {}).get('sha256', ''))) == 64
+        and asset_by_path.get('icon-192.png', {}).get('derivedFrom') == 'icon.svg'
+        and asset_by_path.get('icon-512.png', {}).get('dimensions') == '512x512'
+        and len(str(asset_by_path.get('icon-512.png', {}).get('sha256', ''))) == 64
+        and asset_by_path.get('icon-512.png', {}).get('derivedFrom') == 'icon.svg'
+    ),
+    'root_svg_rights_still_explicitly_unresolved': asset_statuses.get('icon.svg') == 'unresolved' and 'Root-SVG-Rechte' in third_party,
     'asset_provenance_audit_in_validate': 'scripts/asset_provenance_audit.py' in validate_gate,
-    'asset_provenance_audit_contract': all(marker in asset_audit for marker in ('unresolved', 'verified-own', 'verified-third-party', 'final_asset_signoff')),
+    'asset_provenance_audit_v42_contract': all(marker in asset_audit for marker in (
+        'hashlib', 'struct', 'sha256_file', 'png_dimensions', 'expected_png_dimensions',
+        'PWA manifest icon metadata mismatch', 'hash_drift_detection', 'pwa_manifest_icon_contract'
+    )),
     'public_placeholder_audit_in_validate': 'scripts/public_release_placeholder_audit.py' in validate_gate,
     'public_placeholder_audit_contract': all(marker in placeholder_audit for marker in ('PUBLIC_FILES', 'example-domain', 'REPLACE_ME', 'public_release_placeholder_audit')),
     'third_party_inventory_explicit': all(marker in third_party for marker in ('@playwright/test', 'Apache-2.0', 'asset-provenance.json', 'asset_provenance_audit.py')),
@@ -222,6 +251,7 @@ print(json.dumps({
     'core_classic_content_version': 4,
     'reference_cleanup': 'PHYSICAL_SOURCE_PASS_IMPLEMENTED_NOT_RUNNER_VERIFIED',
     'reference_content_audit': 'REQUIRED_NOT_RUNNER_VERIFIED',
+    'pwa_icon_contract': 'V42_RASTER_HASH_IHDR_MANIFEST_OFFLINE_CONTRACT_IMPLEMENTED_NOT_RUNNER_VERIFIED',
     'asset_provenance': {'inventoried': len(asset_entries), 'unresolved': unresolved_assets},
     'public_placeholder_leak_gate': 'PREPARED_NOT_RUNNER_VERIFIED',
     'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
