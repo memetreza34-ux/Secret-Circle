@@ -6,19 +6,26 @@ Stand: 19. August 2026
 
 Secret Circle besitzt normale GitHub-Actions-Workflows, aber die bislang geprüften Jobs erreichen **keinen Repository-Schritt**.
 
-Zuletzt vollständig belastbar vor dem neuen Lockfile-/Validatorstand geprüft: **Run #2244** (`Secret Circle CI`) auf Head `1c9c5a0888cb7192408e3a3dbca316782d3d61e7` / Job `validate`.
+Aktuellster vollständig geprüfter Stand: **Run #2363** (`Secret Circle CI`) auf Head **`81d26c7acc85c8ad6c4a20dcb1ea04128316291f`** / Job `validate`.
 
+- Run-ID `32282530981`
+- Job-ID `96164384000`
 - `completed / failure`
 - `steps: []`
 - kein Checkout
 - kein Node-/Python-Setup
-- kein Dependency-Install
+- kein Online-`npm ci`
 - keine Tests/Audits/Playwright
 - kein Repositorycode ausgeführt
+- kein belastbarer Job-Log
 
 Das wiederholte Muster ist **kein Beweis für einen Codefehler**, weil der Repositorycode nicht startet.
 
-## Aktueller Buildvertrag nach Run #2244
+## Wiederholbarkeit
+
+Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359 und jetzt #2363. Der aktuelle v44-Stand ist damit ebenfalls noch nicht runnerverifiziert.
+
+## Aktueller Buildvertrag
 
 Der frühere Zustand „kein Lockfile“ ist beendet.
 
@@ -31,20 +38,24 @@ Jetzt vorhanden:
 - CI und Cross-Browser verwenden `npm ci --ignore-scripts --no-audit --no-fund`
 - `actions/setup-node` nutzt npm-Cache
 
-Dependencygraph und Lizenzen wurden gegen offizielle Upstream-Tags geprüft. Ein lokaler Offline-`npm ci`-Strukturcheck akzeptierte Package-/Lock-Synchronität und scheiterte erst erwartungsgemäß mit `ENOTCACHED`, weil die Tarballs nicht lokal gecacht waren.
-
-**Noch nicht verifiziert:** echter Online-`npm ci` auf GitHub Actions.
+Dependencygraph und Lizenzen sind dokumentiert. Ein echter Online-`npm ci`-PASS auf dem unveränderten Branch-Head bleibt offen, weil Actions Step 1 nicht erreicht.
 
 ## Aktuelle Validatorbasis
 
-Neu beziehungsweise synchronisiert:
+Unter anderem vorhanden:
 
-- Foundation-v2-Audit: Registry v2, keine Complete-Backup-Policy-Duplikation
-- `validate_project.py`: Lockfile v3 + aktuelle Querschnittsgates
-- `release_readiness_contract_audit.py`: Lockfile/Branch/Staging/Privacy/Reference/Assets/NO_GO
-- Branch-Protection-Contract-Audit
-- HTTPS-Staging-Smoke-Contract-Audit
-- Privacy-/Reference-/Asset-/Media-/Placeholder-Audits
+- Foundation-/Architektur-Audits
+- `scripts/lockfile_contract_audit.py`
+- `scripts/branch_protection_contract_audit.py`
+- `scripts/staging_smoke_contract_audit.py`
+- `scripts/privacy_content_audit.py`
+- `scripts/reference_content_audit.py`
+- `scripts/asset_provenance_audit.py`
+- `scripts/media_inventory_audit.py`
+- `scripts/public_release_placeholder_audit.py`
+- `scripts/release_readiness_contract_audit.py`
+- `scripts/release_audit.py`
+- `tests/pwa-head-metadata.test.js` für die fünf interaktiven PWA-Einstiegseiten
 
 Keiner dieser neuen/aktualisierten Gates wurde bisher auf einem Actions-Runner ausgeführt.
 
@@ -81,7 +92,7 @@ Keiner dieser neuen/aktualisierten Gates wurde bisher auf einem Actions-Runner a
 
 ## Externe Prüfflächen
 
-Weil der bisherige Fehler vor dem ersten Step liegt:
+Weil der Fehler vor dem ersten Step liegt:
 
 - Actions-/Workflow-Policy
 - GitHub-hosted Runner-Verfügbarkeit
@@ -104,7 +115,7 @@ Cross-Browser bleibt bei aktuellem manuellen Trigger ein separater RC-Gate.
 2. Online-`npm ci` und Integrity-Download prüfen
 3. ersten echten Repositoryfehler isolieren
 4. Syntaxchecks
-5. Unit-/Contracttests
+5. Unit-/Contracttests einschließlich `tests/pwa-head-metadata.test.js`
 6. alle Validatoren/Audits
 7. Chromium E2E
 8. Cross-Browser auf demselben RC-Commit
