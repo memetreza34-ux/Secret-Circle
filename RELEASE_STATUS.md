@@ -12,47 +12,39 @@ Draft-PR: #13
 **Offline-Core:** **`secret-circle-v43`**  
 **Classic Content:** **v4**
 
-Die technische Grundlage ist weit fortgeschritten. Reference-/Privacy-Safe-Verträge liegen inzwischen source-level vor; PWA-Icondimensionen sind technisch gehärtet; Branch-Protection- und HTTPS-Staging-Verträge sind reproduzierbar vorbereitet.
+Die technische Grundlage ist weit fortgeschritten. Reference-/Privacy-Safe-Verträge liegen source-level vor; PWA-Icondimensionen sind technisch gehärtet; Branch-Protection- und HTTPS-Staging-Verträge sind reproduzierbar vorbereitet; **`package-lock.json` v3 ist jetzt vorhanden und beide Workflows verwenden `npm ci`.**
 
-Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, tatsächliche Branch Protection, konkrete HTTPS-Staging-/Production-Origin, reale Device-/PWA-/Accessibility-/Gruppentests, Rechtebasis des Root-SVG-Icons, manuelle visuelle/rechtliche Restabnahme sowie Betreiber-/Supportangaben.
+Nicht abgeschlossen sind echter Online-CI-/`npm ci`-Nachweis, tatsächliche Branch Protection, konkrete HTTPS-Staging-/Production-Origin, reale Device-/PWA-/Accessibility-/Gruppentests, Rechtebasis des Root-SVG-Icons, manuelle visuelle/rechtliche Restabnahme sowie Betreiber-/Supportangaben.
 
-## Produkt / Katalog
+## Build / Supply Chain
 
-- 45 technisch spielbare Built-ins
-- 15 Core / 13 Extended / 17 Labs
-- finaler Katalogpfad: `base → expansion → trending → mega → viral → core-release → core-classic(v4) → routing`
-- persönliche Inhalte sichtbar freiwillig und überspringbar
-- gespeicherte Filter, Suchhilfe und sichere Resume-/Timerpfade
+Neu abgeschlossen im Repositoryvertrag:
 
-## Reference-Safe-Pass
+- `package-lock.json` v3
+- `@playwright/test` 1.54.2
+- `playwright` 1.54.2
+- `playwright-core` 1.54.2
+- optional `fsevents` 2.3.2
+- Registry-URLs und `sha512`-Integrities festgehalten
+- Dependencygraph gegen offizielle Upstream-Tags geprüft
+- Lizenzen: Playwright-Pakete Apache-2.0, fsevents MIT
+- normaler CI- und Cross-Browser-Workflow auf `npm ci --ignore-scripts --no-audit --no-fund`
+- `scripts/lockfile_contract_audit.py` in `npm run validate`
 
-- **v36:** Bluetooth → Funkverbindung, Oscar → Filmpreis, Formel 1 → Motorsport
-- **v37/v40:** `anime-guess` → 40 generische Archetypen; konkrete Figuren physisch aus `party-mega-catalog.js` entfernt
-- **v38:** drei unnötig konkrete Viral-Sportformulierungen neutralisiert
-- **v41:** `Spektrum-Tipp` und `Tab` upstream, `Löwenkönig` → `Löwe`, Classic v4, zentraler Reference-Source-Audit
+Lokaler Offline-`npm ci`-Strukturcheck akzeptierte Package-/Lock-Synchronität und scheiterte erst am fehlenden Tarballcache (`ENOTCACHED`).
 
-## Privacy Source Hardening – v43
+**Noch offen:** echter Online-`npm ci`-PASS auf unverändertem Commit. R-002 ist daher **CLOSED IN CODE / ONLINE VERIFICATION OPEN**.
 
-Physisch aus `party-catalog.js` entfernt:
+## Audit-Härtung
 
-- `Was ist das Seltsamste in deiner Kamerarolle?`
-- `Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.`
+Der veraltete Foundation-Audit mit Registry-v1-/Hardcode-Annahmen wurde durch einen aktuellen Foundation-v2-Vertrag ersetzt. Zusätzlich verbindet `scripts/release_readiness_contract_audit.py` die Querschnittsgates für Lockfile, Branch Protection, HTTPS-Staging, Privacy, Reference, Assets und reale Release-Nachweise.
 
-Direkt im Basiskatalog stehen jetzt:
+## Reference / Privacy
 
-- `Welches Foto-Motiv findest du besonders lustig?`
-- `Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.`
-
-`scripts/privacy_content_audit.py` scannt acht ausgelieferte Contentquellen auf konkrete Offenlegungsaufforderungen zu privaten Chats/Nachrichten, Fotos/Kamerarolle, Passwörtern, Adressen, Telefonnummern, Standort oder Kontodaten.
-
-Status: **IMPLEMENTED / RUNNER VERIFICATION OPEN**.
-
-## PWA-Asset-Hardening – v42
-
-- echtes `icon-192.png` mit 192×192
-- echtes `icon-512.png` mit 512×512
-- SHA-256-/PNG-IHDR-/Manifestvertrag vorbereitet
-- Root-SVG-Rechtebasis bleibt bewusst `unresolved`
+- v36–v41: Reference-Safe-Source-Pass
+- v42: echte 192×192-/512×512-PWA-Rastericons plus Hash/IHDR/Manifestvertrag
+- v43: bekannte Private-Device-Prompts physisch aus `party-catalog.js` entfernt
+- `privacy_content_audit.py` und `reference_content_audit.py` scannen acht ausgelieferte Contentquellen
 
 ## Branch Protection
 
@@ -62,41 +54,38 @@ Vorbereitet:
 - `scripts/branch_protection_contract_audit.py`
 - gewünschter Required Check **`Secret Circle CI / validate`**
 - Cross-Browser bleibt bei aktuellem `workflow_dispatch` separater RC-Gate
+- Lockfile/`npm ci` sind im technischen Vertrag jetzt aktiv
 
 Die tatsächliche GitHub-Einstellung ist **nicht belastbar bestätigt**.
 
 ## HTTPS-Staging / Production-Smoke
 
-Neu vorbereitet:
+Vorbereitet:
 
 - `scripts/staging_smoke.py`
 - `scripts/staging_smoke_contract_audit.py`
 - `npm run staging:smoke`
 
-Der echte Deployment-Smoke verlangt HTTPS, erzwingt Same-Origin-Redirects und prüft Kernrouten, Manifest, echte PNG-Dimensionen, Service-Worker-Cache, Backup-Ladereihenfolge sowie Privacy-/Reference-Source-Verträge.
-
-Geplanter Staging-Befehl:
+Staging:
 
 ```bash
 npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
 ```
 
-Production nach Freigabe zusätzlich mit `--production`.
+Production später zusätzlich mit `--production`.
 
-**Noch offen:** reale Staging-/Production-Origin. Der neue Contract-Audit läuft statisch in `npm run validate`; der Netzwerk-Smoke kann erst gegen ein echtes Deployment als PASS gelten. Service-Worker-Installation, Offline-Neustart, Updates und Geräte bleiben separate Browser-/Real-Gates.
+Noch offen: reale Staging-/Production-Origin und echte Netzwerkausführung. Browser-only PWA-/Offline-/Update-/Geräteverhalten bleibt separat zu testen.
 
 ## Security / Backup
 
-Registry v2 zentralisiert Complete-Backup-Grenzen und erlaubte versionierte Word-/Party-Key-Familien. Unbekannte Namespaces werden beim Import abgelehnt. SEC-F01/F02 bleiben **CLOSED IN CODE / REAL VERIFICATION OPEN**.
+Registry v2 ist zentrale Complete-Backup-Vertragsquelle. `party-data-tools.js` konsumiert Format/Grenzen aus der Registry; unbekannte Namespaces werden beim Import abgelehnt. SEC-F01/F02: **CLOSED IN CODE / REAL VERIFICATION OPEN**.
 
 ## PWA / Offline
 
 - `secret-circle-v43`
 - `secret-circle-v43-staging`
-- staged update
-- bewusste Nutzeraktivierung
-- Base-, Expansion-, Mega-, Viral- und Core-Contentmodule offline vorgesehen
-- PWA-Manifest und Icons offline vorgesehen
+- staged update / bewusste Nutzeraktivierung
+- Offline-Core und Iconvertrag vorbereitet
 
 Offen: reale Altversion→v43-Upgrades, iOS/Android-PWA, Rollback, Installationsicon und Sperrbildschirmtests.
 
@@ -110,27 +99,23 @@ Noch real offen:
 
 - Betreiber-/Kontakt-/Hostingangaben
 - menschliche Rechtebestätigung für `icon.svg`
-- transitive Dependencyinventur nach echtem Lockfile
 - manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 - Support-/Incident-Verantwortliche
 - konkrete Staging-/Production-Origin
+- finaler Vulnerability-/Installationsnachweis der gelockten Dev-Pakete vor RC
 
 ## CI – P0
 
-Der aktuelle CI-Befund wird zentral in `CI_TROUBLESHOOTING.md` geführt. Wiederholt erreicht `Secret Circle CI` im Job `validate` keine Repository-Steps (`steps: []`), also kein Checkout, keine Tests und keine Audits.
+Der jeweils aktuelle Befund wird zentral in `CI_TROUBLESHOOTING.md` geführt. Bisher wiederholt: Job `validate` endet mit `steps: []`, also kein Checkout und kein Repository-Code.
 
-Das ist **kein belastbarer grüner Nachweis**, aber auch kein durch Actions nachgewiesener Repository-Codefehler.
-
-## Build – P1
-
-`package-lock.json` fehlt weiterhin. Keine Integritätswerte werden erfunden. Erst mit echtem Lockfile wird auf `npm ci` umgestellt.
+Der neue Lockfile-/`npm ci`-Stand wurde deshalb noch **nicht** von Actions ausgeführt.
 
 ## Nächste Releaseblöcke
 
 1. Actions-Runner / echter Checkout + sichtbare Steps
-2. echtes `package-lock.json` + `npm ci`
+2. Online-`npm ci` + `npm run ci` auf unverändertem Commit
 3. Branch Protection / Required Checks tatsächlich bestätigen
-4. Privacy-/Reference-/Asset-/Branch-/Staging-Contract-Audits grün ausführen
+4. Lockfile-/Privacy-/Reference-/Asset-/Branch-/Staging-Contract-Audits tatsächlich grün
 5. konkrete HTTPS-Staging-Origin + echter Netzwerk-Smoke
 6. Rechtebasis für `icon.svg`
 7. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
