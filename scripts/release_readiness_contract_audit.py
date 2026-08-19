@@ -9,13 +9,14 @@ required = [
     'package.json', 'package-lock.json',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
     'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md',
+    'RELEASE_EVIDENCE.md', 'release-evidence.json',
     'CONTENT_AGE_POLICY.md', 'THIRD_PARTY_NOTICES.md',
     'scripts/lockfile_contract_audit.py',
     'scripts/branch_protection_contract_audit.py',
     'scripts/staging_smoke.py', 'scripts/staging_smoke_contract_audit.py',
     'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
     'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
-    'scripts/public_release_placeholder_audit.py', 'scripts/release_audit.py',
+    'scripts/public_release_placeholder_audit.py', 'scripts/release_evidence_audit.py', 'scripts/release_audit.py',
     'tests/pwa-head-metadata.test.js',
 ]
 missing = [relative for relative in required if not (ROOT / relative).is_file()]
@@ -24,12 +25,14 @@ if missing:
 
 package = json.loads(read('package.json'))
 lock = json.loads(read('package-lock.json'))
+evidence = json.loads(read('release-evidence.json'))
 ci = read('.github/workflows/ci.yml')
 cross = read('.github/workflows/cross-browser.yml')
 branch = read('BRANCH_PROTECTION.md')
 environments = read('ENVIRONMENTS.md')
 deployment = read('DEPLOYMENT.md')
 checklist = read('RELEASE_CHECKLIST.md')
+evidence_doc = read('RELEASE_EVIDENCE.md')
 content_policy = read('CONTENT_AGE_POLICY.md')
 third_party = read('THIRD_PARTY_NOTICES.md')
 pwa_head_test = read('tests/pwa-head-metadata.test.js')
@@ -46,6 +49,7 @@ required_validate_audits = (
     'scripts/asset_provenance_audit.py',
     'scripts/media_inventory_audit.py',
     'scripts/public_release_placeholder_audit.py',
+    'scripts/release_evidence_audit.py',
     'scripts/release_audit.py',
 )
 
@@ -67,6 +71,9 @@ checks = {
     'staging_smoke_command_documented': 'npm run staging:smoke' in environments and 'npm run staging:smoke' in deployment,
     'production_smoke_mode_documented': '--production' in environments and '--production' in deployment,
     'pwa_v44_install_metadata_documented': 'secret-circle-v44' in environments and 'tests/pwa-head-metadata.test.js' in environments and 'tests/pwa-head-metadata.test.js' in deployment,
+    'release_evidence_schema': evidence.get('schemaVersion') == 1 and evidence.get('product') == 'Secret Circle – Party Hub',
+    'release_evidence_stays_no_go_before_rc': evidence.get('evidenceStatus') == 'PREPARED' and evidence.get('releaseDecision') == 'NO_GO' and evidence.get('candidate', {}).get('commit') is None,
+    'release_evidence_doc_binds_one_commit': 'derselben unveränderten Release-Candidate-Commit' in evidence_doc and '15' in evidence_doc,
     'privacy_source_policy_documented': 'keine privaten Nachrichten, Fotos, Passwörter, Adressen oder Kontodaten als Spielmaterial verlangen' in content_policy,
     'third_party_lockfile_inventory': all(marker in third_party for marker in (
         'package-lock.json', '`playwright`', '`playwright-core`', '`fsevents`', 'scripts/lockfile_contract_audit.py'
@@ -88,6 +95,7 @@ if failed:
 print(json.dumps({
     'release_readiness_contract_audit': 'PASS',
     'static_release_contract': 'PREPARED',
+    'release_evidence': 'PREPARED_NO_GO_SINGLE_RC_CONTRACT',
     'pwa_head_metadata': 'V44_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
     'online_npm_ci': 'OPEN',
     'github_branch_protection': 'OPEN',
