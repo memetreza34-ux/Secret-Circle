@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v42`**
+- aktueller Offline-Core: **`secret-circle-v43`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -39,7 +39,8 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - `npm run ci` auf exakt diesem Commit grün
 - `npm run test:cross-browser` auf exakt diesem Commit grün
 - GitHub Actions zeigt echten Checkout und echte Steps; `steps: []` zählt nicht
-- Required Checks/Branch Protection eingerichtet
+- `BRANCH_PROTECTION.md` abgearbeitet
+- `Secret Circle CI / validate` als Required Check auf echtem Runner bestätigt
 
 ### Produkt und Content
 
@@ -52,9 +53,9 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - `party-expansion.js` liefert `Spektrum-Tipp` und Browser-Tabu mit `Tab` direkt upstream
 - Emoji-Quiz nutzt generisch `🦁🌾 → Löwe` statt `Löwenkönig`
 - Viral-`higher-lower` enthält die generischen Sportfragen aus v38
-- Classic Content **v4** hält die reference-safe Runtime-Invarianten
-- `scripts/reference_content_audit.py` ist Teil von `npm run validate`
-- übrige Extended/Labs final manuell/visuell/rechtlich auf vermeidbare Marken-/Franchisereferenzen geprüft
+- `party-catalog.js` enthält die beiden früher problematischen Private-Device-Truth/Dare-Prompts seit v43 physisch nicht mehr
+- `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` sind Teil von `npm run validate`
+- übrige Extended/Labs final manuell/visuell/rechtlich geprüft
 - Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
 
@@ -78,13 +79,12 @@ Seit v42 ist der technische Rastervertrag repariert:
 - Sperrbildschirm/OS-Hintergrund bei Timern
 - Tastatur, Fokus, 200-%-Zoom/Reflow, Reduced Motion
 - VoiceOver-/TalkBack-Smoke-Test
-- `tests/e2e/accessibility-core.spec.js` auf funktionierendem Runner ausgeführt
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v42`** bestätigt
+- Offline-Start aus **`secret-circle-v43`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
-- Expansion-, Mega-, Viral- und beide Core-Contentmodule offline verfügbar
+- Base-, Expansion-, Mega-, Viral- und beide Core-Contentmodule offline verfügbar
 - `icon.svg`, `icon-192.png` und `icon-512.png` offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
@@ -93,10 +93,6 @@ Seit v42 ist der technische Rastervertrag repariert:
 - Quota-/Korruptions-/Rollbackpfade geprüft
 - Rollbackdeployment vorbereitet
 
-### Reale Gruppen
-
-Dokumentierte Tests mindestens mit 3–4, 5–8 und 9–12 Personen sowie großer Word-Imposter-Runde, Mafia mit mehreren Rollen, Smart Party Night mehrfach und Creator mit einer Person ohne Entwicklerwissen.
-
 ### Recht und Betrieb
 
 Vor Production final:
@@ -104,42 +100,20 @@ Vor Production final:
 - `LEGAL_CHECKLIST.md` abgearbeitet
 - Betreiber-/Kontaktangaben final
 - Datenschutz auf tatsächliches Hosting angepasst
-- gegebenenfalls Impressum/Anbieterkennzeichnung final
 - Hostingangaben final
-- `THIRD_PARTY_NOTICES.md` final
-- `FAN_CONTENT_REVIEW.md` final synchronisiert
+- `THIRD_PARTY_NOTICES.md` und `FAN_CONTENT_REVIEW.md` final
 - Asset-Provenienz ohne `unresolved` Releaseassets
-- öffentlicher Placeholder-Audit grün
-- Reference-Source-Audit tatsächlich grün
+- Privacy-/Reference-/Placeholder-Audits grün
 - echter Supportweg nach `SUPPORT.md`
 - Incident-/Hotfixprozess nach `INCIDENT_RESPONSE.md`
-- Wartungsprozess nach `MAINTENANCE.md`
-
-## GitHub Pages / statisches Hosting
-
-GitHub Pages ist eine mögliche Route. Eine andere HTTPS-Plattform ist zulässig, wenn dieselben PWA-/Cache-/Rollbackverträge gelten.
-
-1. **PR #13 nicht vor Releasefreigabe mergen.**
-2. freigegebenen Commit in stabile Zielbasis übernehmen
-3. Deploymentquelle festlegen
-4. HTTPS-Adresse prüfen
-5. vollständigen Production-Smoke-Test durchführen
-6. Deploymentcommit/-zeitpunkt dokumentieren
 
 ## Production-Smoke-Test
 
 ### Seiten und Manifest
 
-`party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200. CSP blockiert keine benötigten lokalen Dateien und Browser-/Netzwerkansicht zeigen keine kritischen Fehler.
+`party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200. Manifest und Icons sind erreichbar; die Rastergrößen sind 192×192 und 512×512.
 
-Manifest-/Icon-Checks:
-
-- `manifest.webmanifest` referenziert 192×192-PNG, 512×512-PNG und SVG
-- `icon-192.png` liefert 200 und besitzt 192×192-IHDR
-- `icon-512.png` liefert 200 und besitzt 512×512-IHDR
-- installierte PWA zeigt ein korrektes Icon auf Android/iOS/Desktop, soweit Plattform unterstützt
-
-### Katalog
+### Katalog und Privacy
 
 Browserfolge:
 
@@ -147,34 +121,21 @@ Browserfolge:
 
 Online und offline müssen dieselben finalen Inhalte verfügbar sein.
 
-Zusätzliche sichtbare/source Checks:
+Zusätzliche Checks:
 
 - `anime-guess` → **Anime-Archetypen erraten** mit vier generischen 10er-Packs
-- ausgelieferte `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren
-- ausgelieferte `party-mega-catalog.js` enthält `Löwe`, nicht `Löwenkönig`
-- stabile ID `wavelength` → sichtbarer Titel **Spektrum-Tipp** bereits in `party-expansion.js`
-- Browser-Tabu-Karte enthält `Tab`, nicht `Chrome`, bereits in `party-expansion.js`
-- im Viral-Sportpack tauchen die drei entfernten olympisch/Grand-Slam-spezifischen Texte nicht wieder auf
-- `scripts/reference_content_audit.py` ist auf demselben RC-Commit tatsächlich grün
-
-### Hub, Creator und Engines
-
-Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und alle relevanten Enginefamilien starten. Abschluss und Verwerfen bleiben getrennt. Private Inhalte bleiben nach Unterbrechung verdeckt. Persönliche Inhalte sind sichtbar freiwillig/überspringbar. Verlauf/Statistik zählen Abschlüsse genau einmal.
-
-### Daten
-
-- `backup-schema-registry.js` lädt vor `party-data-tools.js`
-- Registry-Version 2 aktiv
-- Export enthält nur registrierte Key-Familien
-- unbekannter `secret-circle-*`-Namespace wird beim Import abgelehnt
-- vollständiges Löschen entfernt weiterhin alle Secret-Circle-Reste
-- Importfehler stellt vorherigen Zustand soweit möglich wieder her
+- `party-mega-catalog.js` enthält keine der 40 entfernten konkreten Anime-Figuren und `Löwe` statt `Löwenkönig`
+- `wavelength` zeigt **Spektrum-Tipp** bereits in `party-expansion.js`
+- Browser-Tabu enthält `Tab`, nicht `Chrome`
+- `party-catalog.js` enthält weder die frühere Kamerarollen-Frage noch die Pflicht zum Vorlesen der letzten Handy-Nachricht
+- die sicheren Ersatztexte stehen bereits im Basiskatalog
+- `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` sind auf demselben RC-Commit tatsächlich grün
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v42`**
-- Expansion-, Mega-, Viral-, Backup-Registry- und beide Core-Contentmodule verfügbar
-- alle drei App-Iconquellen sind offline verfügbar
+- aktiver Cache: **`secret-circle-v43`**
+- Base-, Expansion-, Mega-, Viral-, Backup-Registry- und beide Core-Contentmodule verfügbar
+- alle drei App-Iconquellen verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
 - lokale Daten bleiben bei Update erhalten
@@ -215,10 +176,8 @@ Bei jeder offline benötigten Dateiveränderung:
 
 Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert/Hotfix erstellen, Cachegeneration erneut erhöhen, persistierte Daten rückwärtsverträglich halten oder migrieren, betroffene Kernflows und Datenpfade auf HTTPS-Staging testen und anschließend Production aktualisieren. Kein Force-Push auf die stabile Production-Basis.
 
-Detaillierter Incidentablauf: `INCIDENT_RESPONSE.md`.
-
 ## Produktionsfreigabe
 
-Ein öffentlicher Release bleibt blockiert, bis Produkt-, CI-, Cross-Browser-, PWA-, Geräte-, Accessibility-, Daten-, Inhalts-, Rechte-, Gruppen-, Rechts- und Betriebs-Gates auf demselben unveränderten Release Candidate bestätigt sind.
+Ein öffentlicher Release bleibt blockiert, bis Produkt-, CI-, Cross-Browser-, Branch-Protection-, PWA-, Geräte-, Accessibility-, Daten-, Inhalts-, Privacy-, Rechte-, Gruppen-, Rechts- und Betriebs-Gates auf demselben unveränderten Release Candidate bestätigt sind.
 
 Aktueller Status: **NO_GO**.
