@@ -34,6 +34,14 @@ CORE_TEXT_PATHS = (
     'party-routing.js',
 )
 
+INTERACTIVE_HTML_PATHS = (
+    'party.html',
+    'creator.html',
+    'advanced.html?game=question-imposter',
+    'quick-play.html?game=guess-the-price',
+    'index.html',
+)
+
 ICON_PATHS = ('icon.svg', 'icon-192.png', 'icon-512.png')
 
 BLOCKED_PRIVACY_PROMPTS = (
@@ -44,6 +52,21 @@ BLOCKED_PRIVACY_PROMPTS = (
 BLOCKED_REFERENCE_MARKERS = (
     'Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Satoru Gojo',
     'Pikachu', 'Subaru Natsuki', 'Löwenkönig',
+)
+
+PWA_HEAD_MARKERS = (
+    'viewport-fit=cover',
+    'name="theme-color"',
+    'name="referrer" content="no-referrer"',
+    'name="mobile-web-app-capable" content="yes"',
+    'name="apple-mobile-web-app-capable" content="yes"',
+    'name="apple-mobile-web-app-status-bar-style" content="black-translucent"',
+    'name="apple-mobile-web-app-title" content="Secret Circle"',
+    "manifest-src 'self'",
+    '<link rel="manifest" href="manifest.webmanifest">',
+    '<link rel="icon" href="icon.svg" type="image/svg+xml">',
+    '<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">',
+    '<link rel="apple-touch-icon" href="icon-192.png">',
 )
 
 
@@ -134,10 +157,14 @@ def assert_absent(source: str, markers: tuple[str, ...], label: str) -> None:
         raise RuntimeError(f'{label}: gesperrte Marker gefunden: {found}')
 
 
+def assert_pwa_head_metadata(source: str, label: str) -> None:
+    assert_contains(source, PWA_HEAD_MARKERS, label)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Secret Circle HTTPS staging/production smoke test')
     parser.add_argument('base_url', help='Basis-URL, z. B. https://staging.example.com/')
-    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v43')
+    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v44')
     parser.add_argument('--production', action='store_true', help='Strengere Production-Prüfungen aktivieren')
     return parser.parse_args()
 
@@ -175,6 +202,9 @@ def main() -> int:
         raise RuntimeError('icon-192.png: reale PNG-Dimension ist nicht 192x192')
     if png_dimensions(results['icon-512.png'].body) != (512, 512):
         raise RuntimeError('icon-512.png: reale PNG-Dimension ist nicht 512x512')
+
+    for relative in INTERACTIVE_HTML_PATHS:
+        assert_pwa_head_metadata(texts[relative], relative)
 
     sw = texts['sw.js']
     cache_match = re.search(r"const CACHE='(secret-circle-v\d+)'", sw)
@@ -235,6 +265,8 @@ def main() -> int:
         'same_origin_redirects_enforced': True,
         'https_required': True,
         'manifest_and_png_dimensions': True,
+        'pwa_head_metadata_contract': True,
+        'pwa_head_pages_checked': list(INTERACTIVE_HTML_PATHS),
         'privacy_source_contract': True,
         'reference_source_contract': True,
         'note': 'Browser-only Service-Worker install/offline/update and real-device gates remain separate.',
