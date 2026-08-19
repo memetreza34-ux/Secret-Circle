@@ -2,96 +2,124 @@
 
 Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere private Übergaben, Wiederaufnahme nach Unterbrechungen, lokale Datenkontrolle, eigene Spiele und belastbare Release-Gates.
 
-## Aktueller Funktionsumfang
+## Aktueller Umfang
 
-- 45 eingebaute technisch spielbare Spiele
-- 15 priorisierte Core-Games / 13 Extended / 17 Labs
-- 27 Quick-, Trend- und Viral-Modi
+- 45 technisch spielbare Built-ins
+- 15 Core / 13 Extended / 17 Labs
+- 27 Quick-/Trend-/Viral-Modi
 - 4 Advanced-Kernspiele
-- Word Imposter und Smart Party Night
+- Word Imposter + Smart Party Night
 - lokaler Spielerpool, Favoriten, Presets, Verlauf, Statistiken und Erfolge
-- lokaler No-Code-Game-Creator mit 6 Vorlagen und bis zu 40 eigenen Spielen
-- gespeicherte Filter und Synonym-/Tippfehlersuche
-- gemeinsame Pause-/Skip-/Abbruch-/Replay-/Next-Game-Steuerung
-- sichere Reload-Wiederaufnahme und pausierbare Timer
-- installierbare Offline-PWA mit kontrollierter Aktualisierung
-- kein verpflichtendes Konto, keine Analyse-, Werbe- oder Trackingdienste
+- lokaler No-Code-Game-Creator
+- Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 
-„Technisch spielbar“ bedeutet **nicht automatisch releasefertig**.
+**Technisch spielbar ist nicht automatisch releasefertig.**
 
 ## Releaseziel
 
-- funktionsfertig bis **30. November 2026**
-- Code Freeze **5. Dezember 2026**
-- Release Candidate bis **15. Dezember 2026**
-- öffentlicher Release **4.–15. Januar 2027**
+- funktionsfertig: 30. November 2026
+- Code Freeze: 5. Dezember 2026
+- RC: 15. Dezember 2026
+- öffentlicher Release: 4.–15. Januar 2027
 
-Aktueller Offline-Core: **`secret-circle-v43`**.  
-Classic Content: **v4**.  
-Öffentliche Freigabe: **NO_GO**.
+Aktueller Offline-Core: **`secret-circle-v44`** / `secret-circle-v44-staging`  
+Classic Content: **v4**  
+Freigabe: **NO_GO**
 
-## A-bis-Z-Releasegrundlage
+## A-bis-Z-Grundlage
 
-Zentrale Verträge sind unter anderem `APP_ENTWICKLUNG_VON_A_BIS_Z.md`, `APP_DEVELOPMENT_STATUS.md`, `RELEASE_STATUS.md`, `RELEASE_CHECKLIST.md`, `BRANCH_PROTECTION.md`, `CI_TROUBLESHOOTING.md`, `ARCHITECTURE.md`, `ENVIRONMENTS.md`, `SECURITY.md`, `RISK_REGISTER.md`, `DEPLOYMENT.md`, `CONTENT_AGE_POLICY.md`, `THIRD_PARTY_NOTICES.md`, `ACCESSIBILITY.md`, `BETA_TEST_PLAN.md`, `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md`.
+Zentrale Verträge:
 
-## Content-/Privacy-/Reference-Hardening
+- `APP_ENTWICKLUNG_VON_A_BIS_Z.md`
+- `APP_DEVELOPMENT_STATUS.md`
+- `RELEASE_STATUS.md`
+- `RELEASE_CHECKLIST.md`
+- `RELEASE_EVIDENCE.md` / `release-evidence.json`
+- `BRANCH_PROTECTION.md`
+- `CI_TROUBLESHOOTING.md`
+- `ARCHITECTURE.md`
+- `ENVIRONMENTS.md`
+- `DEPLOYMENT.md`
+- `SECURITY.md` / `THREAT_MODEL.md`
+- `CONTENT_AGE_POLICY.md` / `CORE_CONTENT_REVIEW.md`
+- `THIRD_PARTY_NOTICES.md` / `FAN_CONTENT_REVIEW.md`
+- `ACCESSIBILITY.md` / `BETA_TEST_PLAN.md`
+- `LEGAL_CHECKLIST.md` / `SUPPORT.md` / `INCIDENT_RESPONSE.md` / `MAINTENANCE.md`
 
-- v36–v41: unnötige konkrete Marken-/Franchise-/Eventreferenzen generisch ersetzt; `anime-guess` als **Anime-Archetypen erraten**, `wavelength` sichtbar als **Spektrum-Tipp**, Browser-Tabu `Tab`, Emoji-Quiz `Löwe`.
-- v42: echte PWA-Rastericons 192×192 / 512×512 plus Hash/IHDR/Manifestvertrag.
-- v43: bekannte Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` entfernt.
-- `privacy_content_audit.py` und `reference_content_audit.py` scannen jeweils acht ausgelieferte Contentquellen.
+## Content / Privacy / Reference
 
-## Reproduzierbarer Build
+- alle definierten quantitativen Core-Ziele erreicht
+- 15/15 erster Core-Quellpass dokumentiert
+- v36–v41: unnötige konkrete Marken-/Franchise-/Eventreferenzen generisch ersetzt
+- `anime-guess` → **Anime-Archetypen erraten**
+- stabile ID `wavelength` → sichtbar **Spektrum-Tipp**
+- Browser-Tabu `Tab` statt `Chrome`
+- Emoji-Quiz `Löwe` statt `Löwenkönig`
+- v43: bekannte Kamerarollen-/Letzte-Nachricht-Prompts physisch aus `party-catalog.js` entfernt
+- Privacy-/Reference-Audits scannen die ausgelieferten Contentquellen
 
-Vorhanden:
+## Build / Supply Chain
 
-- **`package-lock.json` v3**
-- exakt gepinnt/gelockt: `@playwright/test`, `playwright`, `playwright-core` 1.54.2; optional `fsevents` 2.3.2
-- feste Registry-URLs + `sha512`-Integrities
-- Dependencygraph/Lizenzen gegen offizielle Upstream-Tags geprüft
-- normaler CI- und Cross-Browser-Workflow verwenden **`npm ci`** und npm-Cache
-- `scripts/lockfile_contract_audit.py` in `npm run validate`
+- `package-lock.json` v3 vorhanden
+- `@playwright/test`, `playwright`, `playwright-core` exakt 1.54.2
+- optional `fsevents` 2.3.2
+- Registry-URLs + `sha512`-Integrities
+- keine npm-Runtime-Dependencies
+- CI und Cross-Browser verwenden `npm ci`
+- `scripts/lockfile_contract_audit.py` schützt Package-/Lock-Synchronität und Dependencygraph
 
-Ein lokaler Offline-`npm ci`-Strukturcheck akzeptierte Package-/Lock-Synchronität und scheiterte erst am erwarteten fehlenden Tarballcache (`ENOTCACHED`). **Echter Online-`npm ci`-PASS auf Actions bleibt offen.**
+Ein echter Online-`npm ci`-/Integrity-PASS bleibt offen, solange GitHub Actions keinen Repository-Step startet.
 
-## Validatorbasis
+## PWA v44
 
-Die zentralen Validatoren sind auf den aktuellen Stand synchronisiert:
+Die fünf interaktiven Einstiegseiten:
 
-- `foundation_contract_audit.py`: Foundation v2 / Registry v2 / keine Backup-Policy-Duplikation
-- `validate_project.py`: Lockfile v3 + aktuelle Releasegates
-- `release_readiness_contract_audit.py`: Lockfile, Branch, Staging, Privacy, Reference, Assets und reale NO_GO-Gates
+- `party.html`
+- `index.html`
+- `creator.html`
+- `advanced.html`
+- `quick-play.html`
 
-Zusätzlich laufen Lockfile-, Branch-, Staging-, Privacy-, Reference-, Asset-, Media- und Placeholder-Audits in `npm run validate`.
+verwenden denselben Manifest-/iOS-/Icon-Vertrag. `tests/pwa-head-metadata.test.js` schützt den Source-Stand; `scripts/staging_smoke.py` prüft dieselben Metadaten später gegen die **wirklich ausgelieferten HTTPS-Seiten**.
 
-## Branch Protection
+PWA-Assets:
 
-Gewünschter normaler Required Check: **`Secret Circle CI / validate`**. Cross-Browser bleibt bei aktuellem `workflow_dispatch` separater RC-Gate. Die tatsächliche GitHub-Konfiguration ist noch nicht belastbar bestätigt.
+- echtes `icon-192.png` 192×192
+- echtes `icon-512.png` 512×512
+- Hash-/IHDR-/Manifestprüfung
+- Root-`icon.svg`-Rechtebasis weiterhin `unresolved`
 
-## HTTPS-Staging-Smoke
+## HTTPS-Staging / Production
+
+Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v44
 ```
 
-Production nach Freigabe:
+Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v43 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v44 --production
 ```
 
-Der Smoke prüft echte HTTPS-Ressourcen, Same-Origin-Redirects, Kernrouten, Manifest, PNG-Dimensionen, Cachegeneration sowie Privacy-/Reference-Source-Verträge. Service-Worker-Installation, Offline-Neustart, Updates, lokale Daten und reale Geräte bleiben separate Browser-/PWA-Gates.
+Der HTTP-Smoke prüft HTTPS, Same-Origin-Redirects, Kernrouten, Manifest, reale PNG-Dimensionen, Cachegeneration, PWA-Head-Metadaten sowie Privacy-/Reference-Source-Verträge. Service-Worker-Installation, Offline-Neustart, Update/Rollback und reale Geräte bleiben separate Gates.
 
-## Backup / PWA
+## Release Evidence
 
-- Backup Registry v2 ist zentrale Complete-Backup-Policy.
-- unbekannte Secret-Circle-Namespaces werden beim Import abgelehnt.
-- aktueller Cache: `secret-circle-v43` / `secret-circle-v43-staging`.
-- staged update mit bewusster Nutzeraktivierung.
+`release-evidence.json` ist aktuell **PREPARED / NO_GO**. Ein späteres `GO` benötigt 15 Pflichtgates mit realen Belegen auf exakt demselben unveränderten RC-Commit. `scripts/release_evidence_audit.py` verhindert einen unvollständigen GO-Zustand.
 
-## Accessibility / Beta / Recht
+## CI – aktueller P0-Blocker
 
-Reale Android-/iPhone-/Tablet-, VoiceOver-/TalkBack-, 200-%-Zoom-, PWA-Upgrade-/Rollback- und Gruppentests bleiben offen. Ebenso Betreiber-/Support-/Hostingangaben, manueller Visual-/Legal-Pass und die finale Rechtebasis von `icon.svg`.
+Zuletzt vollständig geprüft: Run **#2363** auf Head `81d26c7acc85c8ad6c4a20dcb1ea04128316291f`.
+
+- `validate` = failure
+- `steps: []`
+- kein Checkout
+- kein Online-`npm ci`
+- kein Repository-Code ausgeführt
+
+Daher sind die neuen Verträge implementiert, aber nicht runnerverifiziert.
 
 ## Lokal / CI
 
@@ -108,19 +136,18 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-## Aktuelle Blocker
+## Real offene Gates
 
-- GitHub Actions: bisher wiederholt `steps: []`, also kein Repository-Code ausgeführt
-- echter Online-`npm ci`- und CI-Nachweis
-- Branch Protection real bestätigen
-- neue Audits auf funktionierendem Runner grün ausführen
-- konkrete HTTPS-Staging-Origin + Netzwerk-Smoke
-- finale Rechtebasis für `icon.svg`
-- reale PWA-/Geräte-/Accessibility-/Gruppentests
-- Betreiber-/Support-/Hostingangaben
+- Actions-Runner / echter CI-Lauf
+- Branch Protection tatsächlich aktivieren/bestätigen
+- konkrete HTTPS-Staging-/Production-Origin
+- PWA Upgrade/Rollback
+- Android / iPhone / Tablet
+- VoiceOver / TalkBack / 200-%-Zoom
+- reale Gruppen/Beta
+- Root-SVG-Rechte und finaler Third-Party-/Visual-Sign-off
+- Betreiber-/Hosting-/Privacy-/Support-/Legalangaben
+- Incident-Drill
+- finaler unveränderter RC mit `release-evidence.json = FINAL / GO`
 
-## Freigabestatus
-
-- öffentlicher Release: **NO_GO**
-- PR #13: **Draft, nicht mergen**
-- Releaseziel Januar 2027: weiter erreichbar, wenn die externen und realen Gates rechtzeitig geschlossen werden
+**PR #13 bleibt Draft und wird nicht gemergt.**
