@@ -1,6 +1,6 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Stand: 18. August 2026
+Stand: 19. August 2026
 
 Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentlicht. Eine installierbare PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
 
@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v41`**
+- aktueller Offline-Core: **`secret-circle-v42`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -58,6 +58,17 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - Asset-/Dependency-Rechte aus `THIRD_PARTY_NOTICES.md` final
 - keine offenen kritischen/hohen Releasefehler
 
+### PWA-Icons / Assets
+
+Seit v42 ist der technische Rastervertrag repariert:
+
+- `icon-192.png` existiert und ist exakt 192×192
+- `icon-512.png` existiert und ist exakt 512×512
+- beide Rasterdateien sind aus `icon.svg` abgeleitet
+- `assets/manifests/asset-provenance.json` enthält SHA-256 und Ableitungsnachweis
+- `scripts/asset_provenance_audit.py` prüft Datei, Hash, PNG-IHDR-Dimensionen und Manifestgrößen
+- die finale Rechtebasis von `icon.svg` bleibt bis menschlicher Bestätigung `unresolved`
+
 ### Geräte und Accessibility
 
 - reales Android-Smartphone
@@ -71,9 +82,10 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v41`** bestätigt
+- Offline-Start aus **`secret-circle-v42`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
 - Expansion-, Mega-, Viral- und beide Core-Contentmodule offline verfügbar
+- `icon.svg`, `icon-192.png` und `icon-512.png` offline verfügbar
 - Update von mindestens zwei älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
@@ -116,9 +128,16 @@ GitHub Pages ist eine mögliche Route. Eine andere HTTPS-Plattform ist zulässig
 
 ## Production-Smoke-Test
 
-### Seiten
+### Seiten und Manifest
 
-`party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200. Manifest/Icons sind korrekt, CSP blockiert keine benötigten lokalen Dateien und Browser-/Netzwerkansicht zeigen keine kritischen Fehler.
+`party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200. CSP blockiert keine benötigten lokalen Dateien und Browser-/Netzwerkansicht zeigen keine kritischen Fehler.
+
+Manifest-/Icon-Checks:
+
+- `manifest.webmanifest` referenziert 192×192-PNG, 512×512-PNG und SVG
+- `icon-192.png` liefert 200 und besitzt 192×192-IHDR
+- `icon-512.png` liefert 200 und besitzt 512×512-IHDR
+- installierte PWA zeigt ein korrektes Icon auf Android/iOS/Desktop, soweit Plattform unterstützt
 
 ### Katalog
 
@@ -153,8 +172,9 @@ Suche, Filter, Favoriten, Spieler, Presets, Verlauf, Party Night, Creator und al
 
 ### Offline
 
-- aktiver Cache: **`secret-circle-v41`**
+- aktiver Cache: **`secret-circle-v42`**
 - Expansion-, Mega-, Viral-, Backup-Registry- und beide Core-Contentmodule verfügbar
+- alle drei App-Iconquellen sind offline verfügbar
 - Kernseiten und benötigte Engines starten offline
 - Query-Navigation besitzt Fallback
 - lokale Daten bleiben bei Update erhalten
