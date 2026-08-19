@@ -16,6 +16,7 @@ required = [
     'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
     'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
     'scripts/public_release_placeholder_audit.py', 'scripts/release_audit.py',
+    'tests/pwa-head-metadata.test.js',
 ]
 missing = [relative for relative in required if not (ROOT / relative).is_file()]
 if missing:
@@ -31,7 +32,10 @@ deployment = read('DEPLOYMENT.md')
 checklist = read('RELEASE_CHECKLIST.md')
 content_policy = read('CONTENT_AGE_POLICY.md')
 third_party = read('THIRD_PARTY_NOTICES.md')
+pwa_head_test = read('tests/pwa-head-metadata.test.js')
 validate = package.get('scripts', {}).get('validate', '')
+unit = package.get('scripts', {}).get('test', '')
+syntax = package.get('scripts', {}).get('check', '')
 
 required_validate_audits = (
     'scripts/lockfile_contract_audit.py',
@@ -50,11 +54,19 @@ checks = {
     'npm_ci_main': 'npm ci --ignore-scripts --no-audit --no-fund' in ci and 'npm install ' not in ci,
     'npm_ci_cross_browser': 'npm ci --ignore-scripts --no-audit --no-fund' in cross and 'npm install ' not in cross,
     'all_cross_cutting_audits_in_validate': all(marker in validate for marker in required_validate_audits),
+    'pwa_head_test_in_unit_gate': 'tests/pwa-head-metadata.test.js' in unit,
+    'pwa_head_test_in_syntax_gate': 'node --check tests/pwa-head-metadata.test.js' in syntax,
+    'pwa_head_test_contract': all(marker in pwa_head_test for marker in (
+        'party.html', 'index.html', 'creator.html', 'advanced.html', 'quick-play.html',
+        'apple-mobile-web-app-title', 'apple-mobile-web-app-status-bar-style',
+        'icon-192\\.png', 'apple-touch-icon', 'manifest-src'
+    )),
     'branch_protection_not_falsely_claimed': 'GitHub-Einstellung selbst noch nicht belastbar bestätigt' in branch,
     'branch_required_check_defined': 'Secret Circle CI / validate' in branch,
     'https_staging_real_execution_open': 'PREPARED – konkrete HTTPS-Staging-URL offen' in environments,
     'staging_smoke_command_documented': 'npm run staging:smoke' in environments and 'npm run staging:smoke' in deployment,
     'production_smoke_mode_documented': '--production' in environments and '--production' in deployment,
+    'pwa_v44_install_metadata_documented': 'secret-circle-v44' in environments and 'tests/pwa-head-metadata.test.js' in environments and 'tests/pwa-head-metadata.test.js' in deployment,
     'privacy_source_policy_documented': 'keine privaten Nachrichten, Fotos, Passwörter, Adressen oder Kontodaten als Spielmaterial verlangen' in content_policy,
     'third_party_lockfile_inventory': all(marker in third_party for marker in (
         'package-lock.json', '`playwright`', '`playwright-core`', '`fsevents`', 'scripts/lockfile_contract_audit.py'
@@ -76,6 +88,7 @@ if failed:
 print(json.dumps({
     'release_readiness_contract_audit': 'PASS',
     'static_release_contract': 'PREPARED',
+    'pwa_head_metadata': 'V44_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
     'online_npm_ci': 'OPEN',
     'github_branch_protection': 'OPEN',
     'https_staging_network_smoke': 'OPEN',
