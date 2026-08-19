@@ -12,9 +12,9 @@ Draft-PR: #13
 **Offline-Core:** **`secret-circle-v43`**  
 **Classic Content:** **v4**
 
-Die technische Grundlage ist weit fortgeschritten. Neu seit v43: Die zwei früher identifizierten Private-Device-Truth/Dare-Prompts sind nicht mehr nur final überschrieben, sondern physisch aus `party-catalog.js` entfernt. Ein globaler Privacy-Content-Audit schützt acht ausgelieferte Built-in-Contentquellen.
+Die technische Grundlage ist weit fortgeschritten. Reference-/Privacy-Safe-Verträge liegen inzwischen source-level vor; PWA-Icondimensionen sind technisch gehärtet; Branch-Protection- und HTTPS-Staging-Verträge sind reproduzierbar vorbereitet.
 
-Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, tatsächliche Branch Protection, reale Device-/PWA-/Accessibility-/Gruppentests, Rechtebasis des Root-SVG-Icons, manuelle visuelle/rechtliche Restabnahme, Betreiber-/Supportangaben und HTTPS-Staging.
+Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, tatsächliche Branch Protection, konkrete HTTPS-Staging-/Production-Origin, reale Device-/PWA-/Accessibility-/Gruppentests, Rechtebasis des Root-SVG-Icons, manuelle visuelle/rechtliche Restabnahme sowie Betreiber-/Supportangaben.
 
 ## Produkt / Katalog
 
@@ -27,7 +27,7 @@ Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, tatsächliche Br
 ## Reference-Safe-Pass
 
 - **v36:** Bluetooth → Funkverbindung, Oscar → Filmpreis, Formel 1 → Motorsport
-- **v37/v40:** `anime-guess` → 40 generische Archetypen; konkrete Figuren auch physisch aus `party-mega-catalog.js` entfernt
+- **v37/v40:** `anime-guess` → 40 generische Archetypen; konkrete Figuren physisch aus `party-mega-catalog.js` entfernt
 - **v38:** drei unnötig konkrete Viral-Sportformulierungen neutralisiert
 - **v41:** `Spektrum-Tipp` und `Tab` upstream, `Löwenkönig` → `Löwe`, Classic v4, zentraler Reference-Source-Audit
 
@@ -43,7 +43,7 @@ Direkt im Basiskatalog stehen jetzt:
 - `Welches Foto-Motiv findest du besonders lustig?`
 - `Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.`
 
-`scripts/privacy_content_audit.py` scannt acht ausgelieferte Contentquellen auf konkrete Offenlegungsaufforderungen zu privaten Chats/Nachrichten, Fotos/Kamerarolle, Passwörtern, Adressen, Telefonnummern, Standort oder Kontodaten. Harmlose Alltagsreferenzen werden nicht pauschal gesperrt.
+`scripts/privacy_content_audit.py` scannt acht ausgelieferte Contentquellen auf konkrete Offenlegungsaufforderungen zu privaten Chats/Nachrichten, Fotos/Kamerarolle, Passwörtern, Adressen, Telefonnummern, Standort oder Kontodaten.
 
 Status: **IMPLEMENTED / RUNNER VERIFICATION OPEN**.
 
@@ -56,17 +56,34 @@ Status: **IMPLEMENTED / RUNNER VERIFICATION OPEN**.
 
 ## Branch Protection
 
-`BRANCH_PROTECTION.md` und `scripts/branch_protection_contract_audit.py` sind neu Bestandteil des Releasevertrags.
+Vorbereitet:
 
-Vorgesehen:
-
-- Pull Requests auf stabilem Zielbranch
-- Required Check **`Secret Circle CI / validate`**
-- keine Force-Pushes / Branch-Löschung gemäß finaler GitHub-Konfiguration
-- Review-/Bypass-Regeln prüfen
-- Cross-Browser bleibt bei aktuellem `workflow_dispatch` separater RC-Gate, nicht permanenter PR-Required-Check
+- `BRANCH_PROTECTION.md`
+- `scripts/branch_protection_contract_audit.py`
+- gewünschter Required Check **`Secret Circle CI / validate`**
+- Cross-Browser bleibt bei aktuellem `workflow_dispatch` separater RC-Gate
 
 Die tatsächliche GitHub-Einstellung ist **nicht belastbar bestätigt**.
+
+## HTTPS-Staging / Production-Smoke
+
+Neu vorbereitet:
+
+- `scripts/staging_smoke.py`
+- `scripts/staging_smoke_contract_audit.py`
+- `npm run staging:smoke`
+
+Der echte Deployment-Smoke verlangt HTTPS, erzwingt Same-Origin-Redirects und prüft Kernrouten, Manifest, echte PNG-Dimensionen, Service-Worker-Cache, Backup-Ladereihenfolge sowie Privacy-/Reference-Source-Verträge.
+
+Geplanter Staging-Befehl:
+
+```bash
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
+```
+
+Production nach Freigabe zusätzlich mit `--production`.
+
+**Noch offen:** reale Staging-/Production-Origin. Der neue Contract-Audit läuft statisch in `npm run validate`; der Netzwerk-Smoke kann erst gegen ein echtes Deployment als PASS gelten. Service-Worker-Installation, Offline-Neustart, Updates und Geräte bleiben separate Browser-/Real-Gates.
 
 ## Security / Backup
 
@@ -96,7 +113,7 @@ Noch real offen:
 - transitive Dependencyinventur nach echtem Lockfile
 - manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 - Support-/Incident-Verantwortliche
-- Staging-/Production-Origin
+- konkrete Staging-/Production-Origin
 
 ## CI – P0
 
@@ -113,10 +130,10 @@ Das ist **kein belastbarer grüner Nachweis**, aber auch kein durch Actions nach
 1. Actions-Runner / echter Checkout + sichtbare Steps
 2. echtes `package-lock.json` + `npm ci`
 3. Branch Protection / Required Checks tatsächlich bestätigen
-4. Privacy-/Reference-/Asset-/Branch-Audits auf funktionierendem Runner grün ausführen
-5. Rechtebasis für `icon.svg`
-6. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
-7. HTTPS-Staging
+4. Privacy-/Reference-/Asset-/Branch-/Staging-Contract-Audits grün ausführen
+5. konkrete HTTPS-Staging-Origin + echter Netzwerk-Smoke
+6. Rechtebasis für `icon.svg`
+7. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 8. reale Upgrade-/Rollback-/Gerätetests
 9. reale Accessibilitytests
 10. reale Gruppentests
