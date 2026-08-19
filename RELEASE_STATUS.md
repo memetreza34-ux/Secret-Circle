@@ -34,7 +34,7 @@ Offline-`npm ci` akzeptierte Package-/Lock-Synchronität und scheiterte erst am 
 ## Audit-Härtung
 
 - `scripts/foundation_contract_audit.py` auf aktuellen **Foundation-v2-Vertrag** umgestellt; historische Registry-v1-/Hardcode-Annahmen entfernt.
-- `scripts/validate_project.py` verlangt jetzt Registry v2, Lockfile v3 und die aktuellen Querschnittsaudits.
+- `scripts/validate_project.py` verlangt Registry v2, Lockfile v3 und aktuelle Querschnittsaudits.
 - `scripts/release_readiness_contract_audit.py` verbindet Lockfile, Branch Protection, HTTPS-Staging, Privacy, Reference, Assets und reale NO_GO-Gates.
 
 Status dieser Audits: **IMPLEMENTED / RUNNER VERIFICATION OPEN**.
