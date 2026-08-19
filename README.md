@@ -94,19 +94,41 @@ Die zwei früher identifizierten Private-Device-Truth/Dare-Prompts sind jetzt **
 - Kamerarollen-Frage → `Welches Foto-Motiv findest du besonders lustig?`
 - letzte Handy-Nachricht vorlesen → `Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.`
 
-Zusätzlich scannt `scripts/privacy_content_audit.py` acht ausgelieferte Built-in-Contentquellen auf Aufforderungen zur Offenlegung privater Chats/Nachrichten, Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort oder Kontodaten. Harmlose Geräte-/Chat-Erwähnungen werden nicht pauschal blockiert.
+`scripts/privacy_content_audit.py` scannt acht ausgelieferte Built-in-Contentquellen auf konkrete Offenlegungsaufforderungen zu privaten Chats/Nachrichten, Fotos/Kamerarolle, Passwörtern, Adresse, Telefonnummer, Standort oder Kontodaten.
 
 ## Branch Protection
 
 `BRANCH_PROTECTION.md` definiert den Zielvertrag:
 
-- Pull Requests für den stabilen Zielbranch
+- Pull Requests für stabilen Zielbranch
 - **`Secret Circle CI / validate`** als Required Check
 - keine Force-Pushes / Branch-Löschung gemäß finaler Konfiguration
 - Review-/Bypass-Regeln prüfen
-- Cross-Browser bleibt bei aktuellem `workflow_dispatch` ein separater RC-Gate und **kein** permanenter PR-Required-Check
+- Cross-Browser bleibt bei aktuellem `workflow_dispatch` ein separater RC-Gate und kein permanenter PR-Required-Check
 
 Die tatsächliche GitHub-Konfiguration ist noch nicht belastbar bestätigt.
+
+## HTTPS-Staging-Smoke
+
+Neu vorbereitet:
+
+- `scripts/staging_smoke.py`
+- `scripts/staging_smoke_contract_audit.py`
+- `npm run staging:smoke`
+
+Staging-Beispiel:
+
+```bash
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
+```
+
+Production nach finaler Freigabe:
+
+```bash
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v43 --production
+```
+
+Der Smoke prüft echte ausgelieferte HTTPS-Ressourcen, Same-Origin-Redirects, Kernrouten, Manifest, reale PNG-Dimensionen, Cachegeneration sowie Privacy-/Reference-Source-Verträge. **Service-Worker-Installation, Offline-Neustart, Updates, lokale Daten und reale Geräte bleiben separate Browser-/PWA-Gates.**
 
 ## Backup- und Datenvertrag
 
@@ -161,10 +183,10 @@ Final vor Release muss ein echtes `package-lock.json` vorhanden sein und CI auf 
 - GitHub Actions: wiederholt `steps: []`, also kein Repository-Code ausgeführt
 - echtes `package-lock.json` + `npm ci`
 - Branch Protection / Required Checks tatsächlich bestätigen
-- Privacy-/Reference-/Asset-Audits auf funktionierendem Runner grün ausführen
+- Privacy-/Reference-/Asset-/Staging-Contract-Audits auf funktionierendem Runner grün ausführen
+- konkrete HTTPS-Staging-Origin und echter Netzwerk-Smoke
 - finale Rechtebasis für `icon.svg`
 - manueller Extended/Labs-/Marketing-/Visual-Rechtepass
-- konkrete HTTPS-Staging-Origin
 - reale PWA-Upgrade-/Rollback-/Gerätetests
 - VoiceOver/TalkBack/200-%-Zoom
 - reale Gruppentests
