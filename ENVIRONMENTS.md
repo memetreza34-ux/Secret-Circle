@@ -1,6 +1,6 @@
 # Secret Circle – Umgebungen und Staging-Vertrag
 
-Stand: 18. August 2026  
+Stand: 19. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**
 
 ## 1. Ziel
@@ -34,7 +34,7 @@ Releaseanforderung:
 - `npm run ci`
 - Cross-Browser
 
-Aktuell: **BLOCKED**, da geprüfte Actions-Läufe weiterhin vor Repository-Steps enden.
+Aktuell: **BLOCKED**, da geprüfte Actions-Läufe weiterhin vor Repository-Steps enden. Run #2126 auf dem zuletzt untersuchten Commit zeigte erneut `steps: []` und keinen Job-Log.
 
 ## 4. HTTPS-Staging
 
@@ -93,13 +93,14 @@ Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cr
 
 ## 8. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt aktuell **`secret-circle-v41`**.
+Der Quellcode besitzt aktuell **`secret-circle-v42`**.
 
 - v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz im finalen Runtime-Katalog.
 - v38 ersetzte drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower`.
 - v39 entfernte `Chrome` aus dem finalen Tabu-Content und zeigt `wavelength` als **Spektrum-Tipp**.
 - v40 entfernte die 40 historischen konkreten Anime-Figurennamen zusätzlich physisch aus der ausgelieferten `party-mega-catalog.js`.
 - v41 verankert `Spektrum-Tipp` und `Tab` upstream, setzt Classic Content auf v4, ersetzt `Löwenkönig` durch einen generischen Löwenhinweis und nimmt den zentralen Reference-Source-Audit in `npm run validate` auf.
+- v42 repariert den PWA-Rastervertrag: echtes 192×192- und 512×512-PNG, SHA-256-/IHDR-/Manifestprüfung im Asset-Audit.
 
 Regeln:
 
@@ -119,9 +120,12 @@ Falls später hinzugefügt werden: `.env.example` ohne Geheimnisse, getrennte de
 Mindestens:
 
 - alle Kernseiten HTTP 200
-- Manifest + Icons
+- `manifest.webmanifest` HTTP 200
+- `icon.svg`, `icon-192.png`, `icon-512.png` HTTP 200
+- Rastergrößen 192×192 und 512×512 tatsächlich korrekt
+- Asset-Provenienz-Audit auf RC tatsächlich grün
 - Service Worker registriert
-- Installation möglich
+- Installation möglich und Icon sichtbar korrekt
 - Offline-Neustart
 - finaler Katalog
 - `anime-guess` zeigt nur generische Archetypen
