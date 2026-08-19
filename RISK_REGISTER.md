@@ -17,7 +17,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 
 | ID | Risiko | Bereich | Wahrscheinlichkeit | Auswirkung | Priorität | Gegenmaßnahme | Status / Nachweis |
 |---|---|---|---|---|---|---|---|
-| R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **OFFEN – Run #2126 auf `16cc974…`: `validate` failure, `steps: []`, kein Job-Log** |
+| R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **OFFEN – aktueller v42-Head + gezielter Re-Run weiterhin `steps: []`; Details zentral in `CI_TROUBLESHOOTING.md`** |
 | R-002 | Kein reproduzierbares `package-lock.json` | Build/Supply Chain | hoch | hoch | P1 | echtes Lockfile, prüfen, CI auf `npm ci` | **OFFEN** |
 | R-003 | Branch Protection / Required Checks nicht bestätigt | Git/Release | mittel | hoch | P1 | Pflichtchecks konfigurieren | offen |
 | R-004 | Timer weichen auf echten OS-/Sperrbildschirmpfaden ab | Geräte/PWA | mittel | hoch | P1 | Android + iPhone real | offen |
@@ -48,7 +48,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-029 | Rechtebasis des Root-App-Icons ist nicht final bestätigt | Recht/Supply Chain | mittel | hoch | P1 | SVG-Urheber/Rechtebasis menschlich bestätigen | **OFFEN – Rasterherkunft/Größen seit v42 belegt; `icon.svg` bleibt rights-unresolved** |
 | R-030 | Support-/Legal-Platzhalter gelangen in Production | Recht/Betrieb | mittel | hoch | P1 | Placeholder-Audit + Releaseaudit | Audit vorbereitet; echte finale Angaben offen |
 | R-031 | Classic-Content überschreitet Modul-/Offlinebudget | Performance/Architektur | sehr niedrig | mittel | P1 | 45-KB-Budget im Performance-Audit | **technisch kontrolliert; Runnernachweis für v4 offen** |
-| R-032 | Reference-Source-Audit ist vorhanden, aber nicht tatsächlich ausgeführt | Recht/CI | hoch solange Runner blockiert | hoch | P1 | `npm run validate` auf unverändertem RC grün | **OFFEN – Audit in Validate integriert; Run #2126 erreicht keinen Step** |
+| R-032 | Reference-Source-/Asset-Audits sind vorhanden, aber nicht tatsächlich ausgeführt | Recht/CI | hoch solange Runner blockiert | hoch | P1 | `npm run validate` auf unverändertem RC grün | **OFFEN – Audits integriert; Actions erreicht weiterhin keinen Step** |
 | R-033 | PWA-Rastericons fehlen oder stimmen nicht mit Manifestgrößen überein | PWA/Assets | sehr niedrig nach v42 | hoch | P1 | IHDR-/Hash-/Manifestprüfung | **CLOSED IN CODE – 192×192 und 512×512 physisch repariert; Runner/Staging-Verifikation offen** |
 
 ## 3. Aktuelle Releaseblocker
@@ -96,7 +96,7 @@ R-033 ist technisch geschlossen, bleibt aber bis Runner/Staging nicht als reale 
 - `scripts/reference_content_audit.py` scannt acht ausgelieferte Contentquellen
 - Audit in `npm run validate` integriert
 
-R-011 bleibt wegen manueller Semantik-, Visual-, Marketing- und finaler Rechtsabnahme offen. R-032 bleibt offen, bis der neue Source-Audit auf einem funktionierenden Runner tatsächlich grün ist.
+R-011 bleibt wegen manueller Semantik-, Visual-, Marketing- und finaler Rechtsabnahme offen. R-032 bleibt offen, bis die neuen Audits auf einem funktionierenden Runner tatsächlich grün sind.
 
 ## 5. PWA-Asset-Hardening – v42
 
@@ -117,17 +117,17 @@ Damit ist der technische Rasterfehler R-033 geschlossen. R-029 bleibt **bewusst 
 
 ## 6. CI-Nachweis
 
-Aktuellster belastbar untersuchter PR-Lauf:
+Der detaillierte aktuelle CI-Befund liegt **zentral in `CI_TROUBLESHOOTING.md`**.
 
-- Run **#2126**
-- Commit `16cc9745671f8a565e747a591e9b439989f78aa6`
-- Workflow `Secret Circle CI`
-- Job `validate`
+Aktuell bestätigt:
+
+- aktueller v42-Head erreicht keine Repository-Steps
+- gezielter Re-Run der fehlgeschlagenen Jobs zeigt dasselbe Muster
 - `steps: []`
 - kein Checkout
 - kein verwertbarer Job-Log
 
-Damit bleibt R-001 P0. Der Lauf ist kein negativer Repository-Code-Test.
+Damit bleibt R-001 P0. Das Muster ist kein negativer Repository-Code-Test.
 
 ## 7. Performance
 
