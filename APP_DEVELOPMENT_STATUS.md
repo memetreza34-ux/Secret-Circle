@@ -110,15 +110,16 @@ Vorbereitet: statischer Contract, Playwright-E2E-Basis, Reflow, Fokus, Reduced M
 
 ## CI / Lockfile
 
-Aktuell belastbar untersucht: **Actions Run #2126** auf Commit `16cc9745671f8a565e747a591e9b439989f78aa6`.
+Der **aktuelle technische CI-Nachweis wird zentral in `CI_TROUBLESHOOTING.md` gepflegt**, damit wechselnde Actions-Runnummern diesen A-bis-Z-Tracker nicht ständig veralten lassen.
 
-- `Secret Circle CI`: `failure`
-- Job `validate`: `failure`
-- Job-Steps: `[]`
+Aktuell bestätigt:
+
+- der aktuelle v42-Head erreicht im Actions-Job keine Repository-Steps (`steps: []`)
+- ein gezielter Re-Run der fehlgeschlagenen Jobs zeigte dasselbe Muster
 - kein Checkout / kein Repositorycode ausgeführt
 - kein verwertbarer Job-Log vorhanden
 
-Deshalb dürfen neue Unit-/Audit-/E2E-Verträge nicht als grün behauptet werden. Der Lauf ist zugleich kein negativer Code-Test, weil der Code nie ausgeführt wurde.
+Deshalb dürfen neue Unit-/Audit-/E2E-Verträge nicht als grün behauptet werden. Das Muster ist zugleich kein negativer Code-Test, weil der Code nie ausgeführt wird.
 
 `package-lock.json` fehlt. Keine Integrity-Werte werden erfunden; CI wird erst mit echtem Lockfile auf `npm ci` umgestellt.
 
