@@ -6,33 +6,44 @@ Stand: 19. August 2026
 
 Secret Circle besitzt vorbereitete GitHub-Actions-Workflows, aber die aktuell geprüften Jobs erreichen **keinen Repository-Schritt**.
 
-Aktuell belastbar geprüft: **Run #2202** (`Secret Circle CI`) auf Head **`b5795f510f70bda87d880aa6c1554ea208714d4c`** / Job `validate`.
+Aktuell belastbar geprüft: **Run #2244** (`Secret Circle CI`) auf Head **`1c9c5a0888cb7192408e3a3dbca316782d3d61e7`** / Job `validate`.
 
 Aktueller Jobversuch:
 
-- Run-ID `32223462365`
-- Job-ID `95978337127`
+- Run-ID `32228246835`
+- Job-ID `95992378765`
 - Workflow `completed / failure`
 - Job `validate` = `failure`
 - `steps: []`
 - kein Checkout
 - kein Node-/Python-Setup
-- kein `npm install`
+- kein Dependency-Install
+- kein `npm run check`
 - kein `npm test`
 - kein `npm run validate`
 - kein Playwright
 - kein Repositorycode ausgeführt
-- Abruf eines Job-Logs liefert keinen verwertbaren Log-Blob
 
-Damit wurden insbesondere die neu integrierten Gates `tests/manifest-icons.test.js`, `scripts/reference_content_audit.py`, `scripts/asset_provenance_audit.py` und `scripts/media_inventory_audit.py` **nicht ausgeführt**.
+Damit wurden insbesondere die neu integrierten Gates **nicht ausgeführt**:
+
+- `scripts/branch_protection_contract_audit.py`
+- `scripts/privacy_content_audit.py`
+- `scripts/reference_content_audit.py`
+- `scripts/asset_provenance_audit.py`
+- `scripts/media_inventory_audit.py`
+- `scripts/public_release_placeholder_audit.py`
+- `tests/manifest-icons.test.js`
+- weitere Unit-/Contract-/E2E-Verträge
 
 ## Wiederholbarkeit des Problems
 
 Das Muster ist über mehrere Heads und Runs reproduziert:
 
 - Run #2166: `steps: []`; gezielter Re-Run erneut ohne Repository-Steps
-- Run #2194 auf Head `e105b6326cdf6c640fd566a24887f20bf3a6a4fe`: `steps: []`
-- Run #2202 auf Head `b5795f510f70bda87d880aa6c1554ea208714d4c`: `steps: []`
+- Run #2194: `steps: []`
+- Run #2202: `steps: []`
+- Run #2216: `steps: []`
+- **Run #2244 auf v43-Head `1c9c5a0…`: `steps: []`**
 
 Damit ist ein einzelner kurzfristiger Jobaussetzer als Erklärung weniger plausibel. Eine konkrete externe Ursache wird trotzdem nicht erfunden.
 
@@ -101,6 +112,12 @@ npm run ci
 npm run test:cross-browser
 ```
 
+## Branch Protection separat
+
+`BRANCH_PROTECTION.md` definiert den Zielvertrag mit **`Secret Circle CI / validate`** als normalem Required Check. Die tatsächliche GitHub-Konfiguration ist noch nicht belastbar bestätigt.
+
+Der manuelle Cross-Browser-Workflow bleibt ein separater RC-Gate. Solange er nur über `workflow_dispatch` startet, wird er nicht als permanenter PR-Required-Check konfiguriert.
+
 ## Nach Wiederherstellung des Runners
 
 Der erste Lauf mit echten Steps wird **nicht sofort als Release-PASS** interpretiert. Reihenfolge:
@@ -109,14 +126,14 @@ Der erste Lauf mit echten Steps wird **nicht sofort als Release-PASS** interpret
 2. echte Step-Liste dokumentieren
 3. ersten tatsächlichen Repositoryfehler isolieren
 4. `npm run check` beheben
-5. Unit-/Contracttests inklusive `tests/manifest-icons.test.js` beheben
-6. Validatoren/Audits inklusive `reference_content_audit.py`, `asset_provenance_audit.py` und `media_inventory_audit.py` beheben
+5. Unit-/Contracttests beheben
+6. Branch-/Privacy-/Reference-/Asset-/Media-/Placeholder-Audits beheben
 7. Chromium E2E beheben
 8. Cross-Browser beheben
 9. Lockfile erzeugen und verifizieren
-10. Workflow auf `npm ci` umstellen
+10. Workflows auf `npm ci` umstellen
 11. denselben unveränderten Commit erneut vollständig testen
-12. erst danach Required Checks/Branch Protection als Releasegate verwenden
+12. erst danach Required Checks/Branch Protection als Releasegate abnehmen
 
 ## Release-Regel
 
