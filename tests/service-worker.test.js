@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v41'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v41-staging'/);
+assert.match(source, /const CACHE='secret-circle-v42'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v42-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -26,13 +26,16 @@ assert.match(source, /party-core-classic-content\.js/);
 assert.match(source, /session-ledger\.js/);
 assert.match(source, /party-session-controls\.js/);
 assert.match(source, /party-hub-timers\.js/);
+assert.match(source, /icon\.svg/);
+assert.match(source, /icon-192\.png/);
+assert.match(source, /icon-512\.png/);
 assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);
 assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 41,
+  cacheContract: 42,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -47,5 +50,6 @@ console.log(JSON.stringify({
   exactOnceLedgerOffline: true,
   sharedSessionControlsOffline: true,
   splitHubTimerModuleOffline: true,
+  rasterPwaIconsOffline: true,
   legacyGuardRemoved: true
 }, null, 2));
