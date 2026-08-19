@@ -16,7 +16,7 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Smart Party Night
 - lokaler No-Code-Game-Creator mit sechs Vorlagen
 - bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v43`**
+- aktueller Offline-Core: **`secret-circle-v44`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 
 ## Deployment-Reihenfolge
@@ -34,7 +34,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 ### Build und Repository
 
 - unveränderter Release-Commit festgelegt
-- `package-lock.json` vorhanden
+- `package-lock.json` vorhanden und mit `package.json` synchron
 - Installation über `npm ci` reproduzierbar
 - `npm run ci` auf exakt diesem Commit grün
 - `npm run test:cross-browser` auf exakt diesem Commit grün
@@ -57,13 +57,25 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - übrige Extended/Labs final manuell/visuell/rechtlich geprüft
 - keine offenen kritischen/hohen Releasefehler
 
-### PWA-Icons / Assets
+### PWA-Installationsmetadaten / Assets
+
+Seit v44 müssen `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` denselben Installationsvertrag erfüllen:
+
+- Manifest-Link
+- `mobile-web-app-capable=yes`
+- Apple-Web-App-Capable, Statusbar und Titel
+- SVG-Favicon
+- 192×192-PNG-Favicon
+- Apple-Touch-Icon
+- CSP mit `manifest-src 'self'`
+
+Zusätzlich:
 
 - `icon-192.png` existiert und ist exakt 192×192
 - `icon-512.png` existiert und ist exakt 512×512
 - beide Rasterdateien sind aus `icon.svg` abgeleitet
 - `assets/manifests/asset-provenance.json` enthält SHA-256 und Ableitungsnachweis
-- Asset-/Media-Audits grün
+- Asset-/Media-/PWA-Head-Audits bzw. Tests grün
 - finale Rechtebasis von `icon.svg` menschlich bestätigt
 
 ### Geräte und Accessibility
@@ -78,7 +90,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v43`** bestätigt
+- Offline-Start aus **`secret-circle-v44`** bestätigt
 - `backup-schema-registry.js` vor `party-data-tools.js` geladen
 - Base-, Expansion-, Mega-, Viral- und beide Core-Contentmodule offline verfügbar
 - `icon.svg`, `icon-192.png` und `icon-512.png` offline verfügbar
@@ -103,7 +115,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 Vor dem manuellen Browser-/PWA-Smoke muss die tatsächlich ausgelieferte Staging-Origin den reproduzierbaren HTTP-Smoke bestehen:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v44
 ```
 
 Der Smoke (`scripts/staging_smoke.py`) prüft:
@@ -127,6 +139,7 @@ Der automatisierte HTTP-Smoke ersetzt nicht:
 
 - Service Worker registriert
 - App installierbar
+- Installation von Hub **und mindestens einer Unterseite** mit korrektem Secret-Circle-Titel/Icon
 - Offline-Neustart
 - Updatebanner und bewusste Aktivierung
 - aktive Session während Update
@@ -142,7 +155,7 @@ Der automatisierte HTTP-Smoke ersetzt nicht:
 Production erhält denselben freigegebenen RC-Stand. Zuerst:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v43 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v44 --production
 ```
 
 Danach Browser-/PWA-Smoke auf Production wiederholen. `--production` verschärft zusätzlich die Prüfung auf typische Placeholderwerte in öffentlichen Dateien.
@@ -163,27 +176,17 @@ Zu bestätigen:
 - `party-catalog.js` enthält weder alte Kamerarollen-Frage noch Pflicht zum Vorlesen der letzten Handy-Nachricht
 - sichere Ersatztexte stehen direkt im Basiskatalog
 
-## Lokale Befehle – Übergangszustand
-
-Solange das Lockfile fehlt:
+## Qualitätsbefehle
 
 ```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+npm ci --ignore-scripts --no-audit --no-fund
 npx playwright install --with-deps chromium
 npm run ci
 npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Vor Release muss gelten:
-
-```bash
-npm ci
-npx playwright install --with-deps chromium
-npm run ci
-npx playwright install --with-deps chromium firefox webkit
-npm run test:cross-browser
-```
+Der Lockfile-Vertrag wird durch `scripts/lockfile_contract_audit.py` geschützt. Ein echter Online-`npm ci`-PASS bleibt bis zu einem funktionierenden Runner offen.
 
 ## Update-Regel
 
