@@ -62,7 +62,7 @@ Privacy-Fund geschlossen: keine letzte private Nachricht vorlesen, keine Kamerar
 - Classic Content v4 enthält nur noch zwei Privacy-Editorial-Replacements
 - zentraler Reference-Source-Audit scannt acht ausgelieferte Contentquellen
 
-**Wichtig:** Diese neuen Tests/Audits sind implementiert, aber wegen des Actions-Runnerproblems noch nicht belastbar als grün ausgeführt dokumentiert.
+Diese neuen Tests/Audits sind implementiert, aber wegen des Actions-Runnerproblems noch nicht belastbar als grün ausgeführt dokumentiert.
 
 ## PWA-Asset-Hardening – v42
 
@@ -126,7 +126,7 @@ Vorhanden: `LEGAL_CHECKLIST.md`, `THIRD_PARTY_NOTICES.md`, `FAN_CONTENT_REVIEW.m
 Noch real offen:
 
 - Betreiber-/Kontakt-/Hostingangaben
-- **menschliche Rechtebestätigung für `icon.svg`**
+- menschliche Rechtebestätigung für `icon.svg`
 - transitive Dependencyinventur nach echtem Lockfile
 - manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 - Support-/Incident-Verantwortliche
@@ -136,16 +136,17 @@ Die technischen Rasterableitungen von `icon-192.png` und `icon-512.png` sind sei
 
 ## CI – P0
 
-**Aktuell belastbar untersuchter Lauf:** `Secret Circle CI` **#2126** auf Commit `16cc9745671f8a565e747a591e9b439989f78aa6`.
+Der verbindliche aktuelle CI-Befund wird **zentral in `CI_TROUBLESHOOTING.md`** geführt, damit reine Actions-Runnummern nicht zwischen mehreren Statusdateien driften.
 
-- Workflow `completed / failure`
-- Job `validate`: `failure`
-- Job-Steps: **`[]`**
+Aktueller bestätigter Zustand dort:
+
+- aktueller v42-Head wurde von `Secret Circle CI` erneut als failure erfasst
+- Job `validate` erreicht keine Repository-Steps (`steps: []`)
+- ein gezielter Re-Run der fehlgeschlagenen Jobs zeigte dasselbe Muster
 - kein Checkout
-- kein Repositorycode ausgeführt
-- Job-Logabruf liefert keinen vorhandenen Log-Blob
+- kein verwertbarer Job-Log
 
-Damit existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis** für die neueren v41/v42-Verträge. Der Lauf beweist aber auch keinen Repository-Codefehler, weil kein Step ausgeführt wurde.
+Damit existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis**. Das Muster beweist zugleich keinen Repository-Codefehler, weil kein Step ausgeführt wird.
 
 ## Build – P1
 
