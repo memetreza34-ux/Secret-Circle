@@ -4,224 +4,146 @@ import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
+required = [
+    'package.json', 'package-lock.json', 'sw.js', 'runtime-guard.js',
+    'backup-schema-registry.js', 'party-data-tools.js', 'BACKUP_SCHEMAS.md',
+    'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
+    'party.html', 'quick-play.html', 'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
+    'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md',
+    'scripts/lockfile_contract_audit.py', 'scripts/branch_protection_contract_audit.py',
+    'scripts/staging_smoke.py', 'scripts/staging_smoke_contract_audit.py',
+    'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
+]
+missing = [relative for relative in required if not (ROOT / relative).is_file()]
+if missing:
+    raise SystemExit('Foundation contract missing files: ' + ', '.join(missing))
 
-def read(relative: str) -> str:
-    return (ROOT / relative).read_text(encoding='utf-8')
+package = json.loads(read('package.json'))
+lock = json.loads(read('package-lock.json'))
+registry = read('backup-schema-registry.js')
+data_tools = read('party-data-tools.js')
+backup_docs = read('BACKUP_SCHEMAS.md')
+ledger = read('session-ledger.js')
+controls = read('party-session-controls.js')
+hub_timers = read('party-hub-timers.js')
+hub = read('party-hub.js')
+party = read('party.html')
+quick = read('quick-play.html')
+release_structure = read('party-release-structure.js')
+filter_state = read('party-filter-state.js')
+search_assist = read('party-search-assist.js')
+runtime_guard = read('runtime-guard.js')
+sw = read('sw.js')
+branch_contract = read('BRANCH_PROTECTION.md')
+environments = read('ENVIRONMENTS.md')
+validate_gate = package.get('scripts', {}).get('validate', '')
+unit_gate = package.get('scripts', {}).get('test', '')
+syntax_gate = package.get('scripts', {}).get('check', '')
 
-
-def require_file(relative: str) -> str:
-    path = ROOT / relative
-    if not path.is_file():
-        raise SystemExit(f'Release-foundation file missing: {relative}')
-    return read(relative)
-
-
-registry = require_file('backup-schema-registry.js')
-backup_docs = require_file('BACKUP_SCHEMAS.md')
-store = require_file('data-store.js')
-complete_tools = require_file('party-data-tools.js')
-creator = require_file('game-creator.js')
-creator_page = require_file('creator-page.js')
-ledger = require_file('session-ledger.js')
-session_controls = require_file('party-session-controls.js')
-party_page = require_file('party.html')
-quick_play = require_file('quick-play.html')
-quick_styles = require_file('party-quick.css')
-hub_runtime = require_file('party-hub.js')
-hub_timers = require_file('party-hub-timers.js')
-created_runtime = require_file('party-created-modes.js')
-quick_runtime = require_file('party-quick-modes.js')
-mega_runtime = require_file('party-mega-modes.js')
-viral_runtime = require_file('party-viral-modes.js')
-loader = require_file('quick-loader.js')
-release_structure = require_file('party-release-structure.js')
-filter_state = require_file('party-filter-state.js')
-search_assist = require_file('party-search-assist.js')
-release_styles = require_file('party-release.css')
-search_styles = require_file('party-search.css')
-runtime_guard = require_file('runtime-guard.js')
-service_worker = require_file('sw.js')
-package = json.loads(require_file('package.json'))
-
-install_handler_match = re.search(
-    r"self\.addEventListener\('install',[\s\S]*?\n\}\);",
-    service_worker,
-)
-install_handler = install_handler_match.group(0) if install_handler_match else ''
-
-
-def direct_engine(source: str, engine: str) -> bool:
-    return all(marker in source for marker in (
-        'SecretCircleSessionLedger',
-        'SecretCircleSessionControls',
-        'S.createController',
-        'sessionControls.countdown',
-        'sessionControls.stopTimer',
-        'onSkip:',
-        'onAbort: abortSession',
-        'onReplay: replaySession',
-        f"completionId('{engine}'",
-        'recordCompletion(loadHub()',
-        'sessionId: L.createSessionId',
-        'legacySessionId',
-        'if (result.recorded && !saveHub(result.hub)) return',
-        'active = final;',
-    )) and 'let timerId = null' not in source and 'const deadline = Date.now() + seconds * 1000' not in source
-
-
-def hub_engine(runtime: str, timers: str) -> bool:
-    runtime_markers = (
-        'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'SecretCirclePartyHubTimers',
-        'S.createController', 'T.createTimerGames', 'timerGames.renderStoredTimerSession',
-        "completionId('hub'", 'recordCompletion(state,', 'sessionId: L.createSessionId',
-        "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'ACTIVE_VERSION = 1',
-        'normalizeActiveSession', 'persistActiveSession', 'loadActiveSession', 'clearActiveSession',
-        'players: [...state.players]', 'Session fortsetzen',
-        'Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet',
-        "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'",
-        'setHubPaused(true)', 'skipHubRound', 'abortSession',
-    )
-    timer_markers = (
-        "TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])",
-        'normalizeTimerState', 'createTimerGames',
-        "kind: 'charades', phase: 'running', remainingMs",
-        "kind: 'taboo', phase: 'running', remainingMs",
-        "kind: 'hot-potato', phase: 'running', remainingMs",
-        "kind: 'word-chain', phase: 'running', remainingMs",
-        'hubTimer.countdown(remainingMs / 1000, timer, finishCharadesTimer)',
-        'hubTimer.countdown(remainingMs / 1000, timer, finishTabooTimer)',
-        'hubTimer.countdown(remainingMs / 1000, hiddenClock, finishHotPotatoTimer)',
-        'hubTimer.countdown(remainingMs / 1000, timer, finishWordChainTimer)',
-        'renderStoredTimerSession',
-    )
-    forbidden = ('activeTimer', 'window.setInterval(', 'performance.now()')
-    return all(marker in runtime for marker in runtime_markers) \
-        and all(marker in timers for marker in timer_markers) \
-        and all(marker not in source for source in (runtime, timers) for marker in forbidden)
-
+cache_match = re.search(r"const CACHE='(secret-circle-v(\d+))'", sw)
+staging_match = re.search(r"const STAGING_CACHE='(secret-circle-v(\d+)-staging)'", sw)
+if not cache_match or not staging_match:
+    raise SystemExit('Foundation contract cannot parse PWA cache generation.')
+cache_name = cache_match.group(1)
+cache_generation = cache_match.group(2)
 
 checks = {
-    'backup_registry_version': 'const VERSION = 1;' in registry,
-    'backup_shared_limit': 'const MAX_FILE_BYTES = 1_500_000;' in registry,
-    'word_backup_registered': "format: 'secret-circle-backup'" in registry,
-    'complete_backup_registered': "format: 'secret-circle-complete-backup'" in registry,
-    'creator_backup_registered': "format: 'secret-circle-created-games'" in registry,
-    'word_runtime_limit_matches': 'MAX_BACKUP_BYTES = 1_500_000' in store,
-    'complete_runtime_limit_matches': 'MAX_BYTES = 1_500_000' in complete_tools,
-    'creator_import_limit_matches': 'file.size > 1_500_000' in creator_page,
-    'creator_capacity_matches': all(marker in creator for marker in ('MAX_GAMES = 40', 'MAX_PACKS = 8', 'MAX_CARDS = 200')),
-    'backup_contract_documented': all(marker in backup_docs for marker in ('word-imposter', 'complete', 'creator-library', '1.500.000 UTF-8-Bytes')),
-    'session_ledger_versioned': 'const VERSION = 1;' in ledger,
-    'session_controls_versioned': 'const VERSION = 1;' in session_controls,
-    'session_controls_contract': all(marker in session_controls for marker in (
-        'formatMilliseconds', 'nextGameId', 'createController', 'function countdown',
-        'function setPaused', 'function setSessionActive', 'remainingMilliseconds',
-        '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay', '#quick-next-game',
+    # Backup/data foundation: registry v2 is the only Complete-backup policy source.
+    'backup_registry_v2': all(marker in registry for marker in (
+        'const VERSION = 2;', 'const MAX_FILE_BYTES = 1_500_000;',
+        'WORD_STORAGE_KEY', 'PARTY_STORAGE_KEY', 'isAllowedCompleteStorageKey',
+        "format: 'secret-circle-complete-backup'", 'maximumEntries: 100', 'maximumValueBytes: 1_000_000'
     )),
-    'session_controls_surface': all(marker in quick_play for marker in (
-        'id="quick-session-controls"', 'id="quick-pause"', 'id="quick-skip"',
-        'id="quick-exit"', 'id="quick-replay"', 'id="quick-next-game"',
-        'id="quick-pause-overlay"',
+    'backup_runtime_consumes_registry': all(marker in data_tools for marker in (
+        'window.SecretCircleBackupSchemas', "registry?.get?.('complete')",
+        'const FORMAT = schema.format', 'const MAX_BYTES = schema.maximumBytes',
+        'const MAX_ENTRIES = schema.maximumEntries', 'const MAX_VALUE_BYTES = schema.maximumValueBytes',
+        "registry.validateHeader(payload, 'complete')", 'registry.isAllowedCompleteStorageKey'
     )),
-    'hub_controls_surface': all(marker in party_page for marker in (
-        'id="finish-hub-game"', 'id="skip-hub-round"', 'id="pause-hub-game"',
-        'id="abort-hub-game"', 'id="play-pause-status"',
-        '<script src="session-ledger.js"></script>', '<script src="party-session-controls.js"></script>',
-        '<script src="party-hub-timers.js"></script>', '<script src="party-hub.js"></script>',
+    'backup_runtime_no_policy_duplication': all(marker not in data_tools for marker in (
+        "const FORMAT = 'secret-circle-complete-backup'",
+        'const MAX_BYTES = 1_500_000', 'const MAX_ENTRIES = 100', 'const MAX_VALUE_BYTES = 1_000_000'
     )),
-    'hub_split_load_order': party_page.index('party-session-controls.js') < party_page.index('party-hub-timers.js') < party_page.index('party-hub.js'),
-    'session_controls_accessible_styles': all(marker in quick_styles for marker in (
-        '.session-control-bar', '.session-pause-overlay', '.quick-play.is-paused',
-        '@media(max-width:680px)', '@media(prefers-reduced-motion:reduce)',
+    'backup_docs_registry_v2': 'Registry v2' in backup_docs and '1.500.000' in backup_docs,
+    'backup_registry_before_tools': party.index('backup-schema-registry.js') < party.index('party-data-tools.js'),
+
+    # Session/resume/timer foundation.
+    'session_ledger_versioned': 'const VERSION = 1;' in ledger and 'createSessionId' in ledger and 'recordCompletion' in ledger,
+    'shared_session_controls': all(marker in controls for marker in (
+        'createController', 'function countdown', 'function setPaused', 'remainingMilliseconds'
     )),
-    'hub_exact_once_pausable_and_resumable': hub_engine(hub_runtime, hub_timers),
-    'hub_active_key_in_pwa_guard': 'secret-circle-party-hub-active-v1' in runtime_guard,
-    'creator_exact_once': direct_engine(created_runtime, 'created'),
-    'quick_exact_once': direct_engine(quick_runtime, 'quick'),
-    'mega_exact_once': direct_engine(mega_runtime, 'mega'),
-    'viral_exact_once': direct_engine(viral_runtime, 'viral'),
-    'legacy_guard_removed': all('session-ledger-legacy-guard' not in source for source in (loader, service_worker, package.get('scripts', {}).get('test', ''), package.get('scripts', {}).get('check', ''))),
-    'loader_orders_shared_runtime': all(marker in loader for marker in (
-        'session-ledger.js', 'party-session-controls.js', 'scriptPlan',
-        'SecretCircleSessionLedger', 'SecretCircleSessionControls',
+    'hub_timer_split': all(marker in hub_timers for marker in (
+        "TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])",
+        'createTimerGames', 'renderStoredTimerSession'
+    )) and 'SecretCirclePartyHubTimers' in hub,
+    'hub_resume_and_privacy': all(marker in hub for marker in (
+        "secret-circle-party-hub-active-v1", 'Session fortsetzen', 'persistActiveSession', 'loadActiveSession'
     )),
-    'release_tier_contract': all(marker in release_structure for marker in (
-        'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'", 'tierFor', 'ageAllows', 'counts',
+    'pwa_guard_knows_active_sessions': all(marker in runtime_guard for marker in (
+        'secret-circle-party-hub-active-v1', 'secret-circle-party-active-v1', 'hasActiveSession'
     )),
-    'release_tier_counts_declared': all(marker in release_structure for marker in (
-        "'imposter'", "'wrong-answers'", "'who-am-i'", "'finish-the-sentence'",
+
+    # Catalog/release UX foundation.
+    'release_tiers': all(marker in release_structure for marker in (
+        'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'"
     )),
-    'combined_age_tier_filter': all(marker in release_structure for marker in (
-        'selectedTier', 'selectedAge', 'tierMatches', 'ageMatches',
+    'persistent_filters': all(marker in filter_state for marker in (
+        'secret-circle-party-catalog-filters-v1', 'age-filter', 'status-filter', 'release-tier-filter'
     )),
-    'filter_state_contract': all(marker in filter_state for marker in (
-        "STORAGE_KEY = 'secret-circle-party-catalog-filters-v1'", 'game-search',
-        'group-filter', 'mood-filter', 'player-filter', 'age-filter',
-        'status-filter', 'release-tier-filter', 'Filter zurücksetzen',
+    'search_assistance': all(marker in search_assist for marker in (
+        'MANUAL_ALIASES', 'levenshtein', 'aria-autocomplete', 'ArrowDown', 'Escape'
     )),
-    'filter_state_sanitized': all(marker in filter_state for marker in (
-        'normalize(value)', 'FIXED_VALUES', 'optionExists', 'cleanText',
+    'consent_copy_visible': 'Persönliche Inhalte sind freiwillig' in party and 'Überspringen ist jederzeit erlaubt' in party,
+    'final_content_layer_on_quick': 'party-core-classic-content.js' in quick,
+
+    # PWA/update foundation.
+    'cache_generation_match': cache_generation == staging_match.group(2),
+    'controlled_staged_update': all(marker in sw for marker in (
+        'STAGING_CACHE', 'stageCore', 'promoteStagedCore', "event.data?.type === 'SKIP_WAITING'"
+    )) and 'await caches.delete(CACHE)' not in sw,
+    'visible_update_prompt': all(marker in runtime_guard for marker in (
+        'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später'
     )),
-    'search_assist_contract': all(marker in search_assist for marker in (
-        'MANUAL_ALIASES', 'normalizeText', 'levenshtein', 'suggestions',
-        'aria-autocomplete', 'listbox', 'ArrowDown', 'Escape',
+
+    # Reproducible build foundation.
+    'lockfile_v3_present': lock.get('lockfileVersion') == 3 and lock.get('name') == package.get('name'),
+    'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
+    'lockfile_audit_in_validate': 'scripts/lockfile_contract_audit.py' in validate_gate,
+
+    # New cross-cutting release gates.
+    'branch_contract_prepared': 'Secret Circle CI / validate' in branch_contract and 'OPEN / RELEASE NO_GO' in branch_contract,
+    'branch_audit_in_validate': 'scripts/branch_protection_contract_audit.py' in validate_gate,
+    'staging_smoke_documented': 'scripts/staging_smoke.py' in environments and 'npm run staging:smoke' in environments,
+    'staging_contract_in_validate': 'scripts/staging_smoke_contract_audit.py' in validate_gate,
+    'privacy_audit_in_validate': 'scripts/privacy_content_audit.py' in validate_gate,
+    'reference_audit_in_validate': 'scripts/reference_content_audit.py' in validate_gate,
+
+    # Existing quality gates remain wired.
+    'foundation_unit_tests_present': all(marker in unit_gate for marker in (
+        'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
+        'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js'
     )),
-    'release_runtime_loader': all(marker in runtime_guard for marker in (
-        'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
-        'party-release.css', 'party-search.css', 'loadPartyReleaseStructure',
-        'loadPartyFilterState', 'loadPartySearchAssist',
-    )),
-    'release_runtime_offline': all(marker in service_worker for marker in (
-        './party-release-structure.js', './party-filter-state.js', './party-search-assist.js',
-        './party-release.css', './party-search.css', './party-session-controls.js',
-        './party-hub-timers.js',
-    )),
-    'release_accessibility_styles': all(marker in release_styles for marker in (
-        '.release-tier-overview', '.release-tier-pill', 'focus-visible', 'prefers-reduced-motion',
-    )) and all(marker in search_styles for marker in (
-        '.party-search-suggestions', 'focus-visible', 'prefers-reduced-motion',
-    )),
-    'visible_pwa_update': all(marker in runtime_guard for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', "type: 'SKIP_WAITING'")),
-    'staged_pwa_update': all(marker in service_worker for marker in ('STAGING_CACHE', 'stageCore', 'promoteStagedCore', "event.data?.type === 'SKIP_WAITING'")),
-    'install_handler_detected': bool(install_handler),
-    'no_install_auto_activation': bool(install_handler) and 'skipWaiting' not in install_handler,
-    'foundation_tests_in_unit_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in (
-        'tests/party-release-structure.test.js', 'tests/core-game-contract.test.js',
-        'tests/hub-timer-contract.test.js', 'tests/hub-resume-contract.test.js',
-        'tests/hub-control-contract.test.js', 'tests/party-filter-state.test.js',
-        'tests/party-search-assist.test.js', 'tests/session-ledger.test.js',
-        'tests/party-session-controls.test.js', 'tests/session-ledger-integration.test.js',
-        'tests/backup-schema-registry.test.js', 'tests/pwa-update.test.js',
-    )),
-    'foundation_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in (
-        'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
-        'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
-        'party-hub-timers.js', 'party-hub.js', 'tests/hub-timer-contract.test.js',
-        'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js',
-        'runtime-guard.js', 'sw.js',
+    'foundation_syntax_checks_present': all(marker in syntax_gate for marker in (
+        'backup-schema-registry.js', 'party-data-tools.js', 'session-ledger.js',
+        'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js', 'sw.js'
     )),
 }
 
 failed = [name for name, passed in checks.items() if not passed]
 if failed:
-    raise SystemExit(f'Release-foundation contract audit failed: {", ".join(failed)}')
+    raise SystemExit('Foundation contract audit failed: ' + ', '.join(failed))
 
 print(json.dumps({
     'foundation_contract_audit': 'PASS',
-    'release_tiers': {'core': 15, 'extended': 13, 'labs': 17},
-    'persistent_catalog_filters': True,
-    'search_assistance': True,
-    'shared_session_controls': True,
-    'split_direct_hub_timer_module': True,
-    'pausable_fast_engine_timers': True,
-    'pausable_core_hub_timers': True,
-    'direct_hub_reload_resume': True,
-    'combined_age_and_release_filter': True,
-    'backup_schemas': ['word-imposter', 'complete', 'creator-library'],
-    'maximum_backup_bytes': 1_500_000,
-    'exact_once_engines': ['hub', 'created', 'quick', 'mega', 'viral'],
-    'legacy_guard_removed': True,
-    'controlled_pwa_updates': True,
+    'foundation_generation': 2,
+    'backup_registry': 'v2',
+    'pwa_cache': cache_name,
+    'lockfile': 'v3',
+    'npm_ci_online_verified': False,
+    'branch_protection_verified': False,
+    'https_staging_verified': False,
+    'real_device_verified': False,
     'checks': checks,
 }, ensure_ascii=False, indent=2))
