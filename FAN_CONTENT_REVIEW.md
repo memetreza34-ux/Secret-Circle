@@ -1,6 +1,6 @@
 # Secret Circle – Fan-, Marken- und Referenzcontent-Review
 
-Stand: 18. August 2026  
+Stand: 19. August 2026  
 Status: **IN PROGRESS – technischer Source-Pass stark gehärtet; manuelle visuelle/rechtliche Restabnahme offen**
 
 ## 1. Zweck
@@ -114,7 +114,39 @@ Er blockiert die bereits bewusst entfernten konkreten Referenzen und markiert zu
 
 Der Audit ist Teil von `npm run validate`. Wegen des aktuellen GitHub-Actions-Runnerproblems ist er **IMPLEMENTED, aber noch nicht runner-verifiziert**.
 
-## 8. Visuelle Fancontent-Regeln
+## 8. Ergänzender Repository-Suchpass – 19. August 2026
+
+Zusätzlich zum Working-Branch-Source-Vertrag wurde eine repositoryweite GitHub-Code-Suche für typische hochprofilige Plattform-, Game-, Film- und Konsummarken durchgeführt.
+
+Keine Suchtreffer wurden für folgende Begriffe zurückgegeben:
+
+- TikTok
+- Instagram
+- YouTube
+- Netflix
+- Spotify
+- Disney
+- Marvel
+- Minecraft
+- Fortnite
+- PlayStation
+- Nintendo
+- Harry Potter
+- Star Wars
+- Pokémon
+- Coca-Cola
+- McDonald's
+
+Dieser Befund ist **nur ein ergänzendes Signal**. GitHub-Code-Suche kann wegen Branch-/Index-/Suchgrenzen niemals allein einen Rechtepass freigeben. Maßgeblich bleiben:
+
+1. direkte Working-Branch-Dateien
+2. `scripts/reference_content_audit.py`
+3. finale Runtime-/Deployment-Artefakte
+4. visueller Review
+5. Marketing-/Namensreview
+6. finale rechtliche/geschäftliche Entscheidung
+
+## 9. Visuelle Fancontent-Regeln
 
 Weiterhin verbindlich:
 
@@ -125,19 +157,19 @@ Weiterhin verbindlich:
 - visuelle Anime-Begleitung nur über eigenständige generische Archetypen
 - ein generiertes Bild darf nicht gezielt wie eine konkrete bekannte Figur aussehen
 
-## 9. Restlicher Extended-/Labs-Pass
+## 10. Restlicher Extended-/Labs-Pass
 
-Der direkte technische Quellpass wurde stark erweitert. Vor finalem Sign-off bleiben dennoch bewusst offen:
+Der direkte technische Quellpass und der ergänzende Repository-Suchpass wurden stark erweitert. Vor finalem Sign-off bleiben dennoch bewusst offen:
 
-- vollständige manuelle Semantikprüfung aller Extended-/Labs-Modi
+- vollständige manuelle Semantikprüfung aller Extended-/Labs-Modi im finalen Build
 - visuelle Assets/Screenshots/Marketingmaterial
 - mögliche Verwechslungswirkung von Spiel-/Kampagnennamen
 - fremde Slogans/Zitate
 - finale juristische/geschäftliche Bewertung des tatsächlichen Releasebuilds
 
-GitHub-Code-Suche allein gilt wegen Branch-/Indexgrenzen nicht als Freigabenachweis. Maßgeblich sind Working-Branch-Quellen, der zentrale Source-Audit, reale Release-Artefakte und der finale manuelle Review.
+Besonders wichtig: Ein generischer Begriff oder Spielmechanikname wird nicht allein deshalb als „frei“ behandelt, weil die Contentsuche keinen bekannten Franchise-Treffer findet. Vor Production wird die finale öffentliche Namensliste separat bewertet.
 
-## 10. Release-Gates
+## 11. Release-Gates
 
 Vor `FAN / REFERENCE CONTENT PASS`:
 
@@ -153,10 +185,12 @@ Vor `FAN / REFERENCE CONTENT PASS`:
 - [x] `Chrome` upstream durch `Tab` ersetzt
 - [x] `Löwenkönig` durch generischen Löwenhinweis ersetzt
 - [x] zentraler `reference_content_audit.py` in `npm run validate`
+- [x] ergänzender Repository-Suchpass über 16 hochprofilige Namen durchgeführt
 - [ ] zentraler Source-Audit auf funktionierendem Runner tatsächlich grün
 - [ ] Restlicher Extended-/Labs-Pass manuell/semantisch final abgenommen
 - [ ] keine fremden Bilder/Logos/Screenshots/Audios/Videos im finalen Build bestätigt
 - [ ] Marketingtexte auf keine offizielle Partnerschaft/Irreführung geprüft
+- [ ] finale öffentliche Spielnamen separat auf Verwechslungs-/Markenrisiken geprüft
 - [ ] `THIRD_PARTY_NOTICES.md` und `LEGAL_CHECKLIST.md` final synchronisiert
 - [ ] Tests auf funktionierendem Runner tatsächlich ausgeführt
 
