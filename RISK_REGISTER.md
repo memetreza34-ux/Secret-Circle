@@ -1,6 +1,6 @@
 # Secret Circle – Risk Register
 
-Stand: 18. August 2026
+Stand: 19. August 2026
 
 ## 1. Zweck
 
@@ -17,7 +17,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 
 | ID | Risiko | Bereich | Wahrscheinlichkeit | Auswirkung | Priorität | Gegenmaßnahme | Status / Nachweis |
 |---|---|---|---|---|---|---|---|
-| R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **OFFEN – bekannte Runs enden vor verwertbaren Steps** |
+| R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **OFFEN – Run #2126 auf `16cc974…`: `validate` failure, `steps: []`, kein Job-Log** |
 | R-002 | Kein reproduzierbares `package-lock.json` | Build/Supply Chain | hoch | hoch | P1 | echtes Lockfile, prüfen, CI auf `npm ci` | **OFFEN** |
 | R-003 | Branch Protection / Required Checks nicht bestätigt | Git/Release | mittel | hoch | P1 | Pflichtchecks konfigurieren | offen |
 | R-004 | Timer weichen auf echten OS-/Sperrbildschirmpfaden ab | Geräte/PWA | mittel | hoch | P1 | Android + iPhone real | offen |
@@ -36,7 +36,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-017 | Mafia-Balance real unklar | Gameplay | mittel | mittel | P2 | echte 8+-Sessions | offen |
 | R-018 | Labs wirken releasegleichwertig | Produkt/UX | mittel | mittel | P2 | klare Reifestufen + Nutzerprüfung | Basis vorhanden |
 | R-019 | Production-Hosting verhält sich anders als lokal | Deployment | mittel | hoch | P1 | getrenntes HTTPS-Staging | offen |
-| R-020 | Cache-/Release-Dokumente driften | Prozess | niedrig | mittel | P2 | dynamische Audits + synchronisierte Docs | **stark gemindert: v41 in SW/Test/Privacy/Architektur/Deployment/Environment** |
+| R-020 | Cache-/Release-Dokumente driften | Prozess | niedrig | mittel | P2 | dynamische Audits + synchronisierte Docs | **stark gemindert: v41 in SW/Test/Privacy/Architektur/Deployment/Environment/Status** |
 | R-021 | Dependency enthält Schwachstelle/Lizenzproblem | Supply Chain | niedrig-mittel | hoch | P2 | Lockfile, Audit, Third-Party-Inventar | Playwright direkt verifiziert; transitiv offen |
 | R-022 | Browser-/iOS-PWA-Änderungen bis RC | Plattform | mittel | mittel-hoch | P2 | Zielbrowser kurz vor RC erneut | beobachten |
 | R-023 | Creator-Eingaben umgehen Limits/belasten Speicher | Creator/Security | niedrig-mittel | mittel-hoch | P2 | Limits, Fuzz, Quota, E2E | technisch weitgehend abgesichert |
@@ -48,7 +48,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 | R-029 | Herkunft/Lizenz gebündelter Icons/Assets unklar | Recht/Supply Chain | mittel | hoch | P1 | Asset-Provenance dokumentieren | **OFFEN – drei Icons weiterhin `unresolved`** |
 | R-030 | Support-/Legal-Platzhalter gelangen in Production | Recht/Betrieb | mittel | hoch | P1 | Placeholder-Audit + Releaseaudit | Audit vorbereitet; echte finale Angaben offen |
 | R-031 | Classic-Content überschreitet Modul-/Offlinebudget | Performance/Architektur | sehr niedrig | mittel | P1 | 45-KB-Budget im Performance-Audit | **technisch kontrolliert; Runnernachweis für v4 offen** |
-| R-032 | Reference-Source-Audit ist vorhanden, aber nicht tatsächlich ausgeführt | Recht/CI | hoch solange Runner blockiert | hoch | P1 | `npm run validate` auf unverändertem RC grün | **OFFEN – Audit in Validate integriert** |
+| R-032 | Reference-Source-Audit ist vorhanden, aber nicht tatsächlich ausgeführt | Recht/CI | hoch solange Runner blockiert | hoch | P1 | `npm run validate` auf unverändertem RC grün | **OFFEN – Audit in Validate integriert; Run #2126 erreicht keinen Step** |
 
 ## 3. Aktuelle Releaseblocker
 
@@ -95,19 +95,33 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert.
 
 R-011 bleibt wegen manueller Semantik-, Visual-, Marketing- und finaler Rechtsabnahme offen. R-032 bleibt offen, bis der neue Source-Audit auf einem funktionierenden Runner tatsächlich grün ist.
 
-## 5. Performance
+## 5. CI-Nachweis
+
+Aktuellster geprüfter PR-Lauf:
+
+- Run **#2126**
+- Commit `16cc9745671f8a565e747a591e9b439989f78aa6`
+- Workflow `Secret Circle CI`
+- Job `validate`
+- `steps: []`
+- kein Checkout
+- kein verwertbarer Job-Log
+
+Damit bleibt R-001 P0. Der Lauf ist kein negativer Repository-Code-Test.
+
+## 6. Performance
 
 Das bestehende Budget für `party-core-classic-content.js` bleibt **45.000 Bytes**. Die ältere bestätigte v2-Größe von 12.954 Bytes zeigte deutlichen Spielraum; Classic v4 muss das unveränderte Budget weiterhin über `scripts/performance_budget.py` einhalten. Kein Budget wird zur kosmetischen Freigabe erhöht.
 
-## 6. Security/Backup
+## 7. Security/Backup
 
 Registry v2 schließt im Code R-027/R-028. Endgültige Schließung erst nach tatsächlich ausgeführten Tests und echtem Browserimport/-rollback.
 
-## 7. Risiko-Regel für neue Features
+## 8. Risiko-Regel für neue Features
 
 Vor jeder größeren Funktion prüfen: Netzwerk, personenbezogene Daten, Berechtigungen, Persistenz/Migration, geheime Inhalte, Dependencies, Storage-Key-Familien, Offline-Core/Performance, Accessibility, Alter/Rechte, Marktpositionierung und ausgelieferte Source-/Assetreferenzen.
 
-## 8. Schließregel
+## 9. Schließregel
 
 P0/P1 erst geschlossen mit belastbarem Nachweis, z. B. grünem unverändertem CI-Commit, Testreport, realem Gerät, realer Gruppe, ausgefüllter Releasecheckliste oder finalen Rechts-/Lizenzunterlagen.
 
