@@ -81,11 +81,36 @@ Deshalb bleibt bewusst offen:
 
 Sobald dies menschlich bestätigt ist, kann `icon.svg` auf einen belegten Status gesetzt werden; die Rasterableitungen können danach dieselbe Rechtebasis erben.
 
-## 6. Emoji und Systemglyphen
+## 6. Gebündeltes Media-Inventar
+
+Der aktuelle Working-Branch-Tree wurde zusätzlich nach gebündelten Medienformaten geprüft. Als tatsächliche Release-Mediendateien wurden nur diese drei Dateien identifiziert:
+
+1. `icon.svg`
+2. `icon-192.png`
+3. `icon-512.png`
+
+Im geprüften Branch wurden **keine weiteren tatsächlichen** JPG/JPEG/WebP/GIF/AVIF/ICO-, MP3/WAV/OGG/M4A/FLAC- oder MP4/WebM/MOV-Dateien gefunden. Textliche Erwähnungen von Dateiendungen in Code/Dokumentation zählen dabei nicht als Mediendateien.
+
+Neu verbindlich:
+
+`scripts/media_inventory_audit.py`
+
+Der Audit:
+
+- scannt tatsächliche Dateien nach Raster-, Vektor-, Audio- und Videoendungen
+- ignoriert technische Laufzeitordner wie `node_modules`, `.git`, Playwright-/Coverage-Ausgaben
+- verlangt, dass jede gefundene Mediendatei im Provenienzmanifest steht
+- blockiert verwaiste Media-Provenienzeinträge
+- hält den aktuellen Release-Medienvertrag ausdrücklich auf genau den drei Icondateien
+- zwingt bei jeder später neu hinzugefügten Bild-/Audio-/Videodatei zu einer bewussten Inventar- und Rechteentscheidung
+
+Zusätzlich prüft `tests/manifest-icons.test.js` Manifestmetadaten, Dateiexistenz, PNG-Signatur/IHDR, SVG-ViewBox und Offline-Core-Einbindung. Beide neuen Gates sind in `package.json` integriert, aber wegen des aktuellen Actions-Runnerproblems noch **nicht tatsächlich runner-verifiziert**.
+
+## 7. Emoji und Systemglyphen
 
 Im UI stehen Unicode-Emoji-Zeichen. Secret Circle bündelt dafür keine eigene Emoji-Fontdatei; Darstellung erfolgt durch Browser/Betriebssystem. Ein späterer Export von Emoji-Glyphen als eigene Bildassets würde eine neue Rechteprüfung auslösen.
 
-## 7. Built-in- und Referenzcontent
+## 8. Built-in- und Referenzcontent
 
 ### Core
 
@@ -116,13 +141,13 @@ v38 ersetzt drei unnötig konkrete Sport-/Eventformulierungen durch generische F
 
 Der restliche manuelle Extended-/Labs-/Marketing-/Visualpass bleibt offen.
 
-## 8. Zukünftige Designassets
+## 9. Zukünftige Designassets
 
 `ASSET_PLAN.md` beschreibt Navigationsicons, Mechanikicons, Illustrationen, Hintergründe und Motionassets.
 
-Ab jetzt gilt: Ein neues gebündeltes Release-Asset wird **im selben Arbeitsblock** in `assets/manifests/asset-provenance.json` inventarisiert. Kein „später nachtragen“ als Standardprozess.
+Ab jetzt gilt: Ein neues gebündeltes Release-Asset wird **im selben Arbeitsblock** in `assets/manifests/asset-provenance.json` inventarisiert. Kein „später nachtragen“ als Standardprozess. Der Media-Inventar-Audit erzwingt dies zusätzlich für typische Bild-/Audio-/Videoformate.
 
-## 9. Projektlizenz / Quellcodefreigabe
+## 10. Projektlizenz / Quellcodefreigabe
 
 Es existiert weiterhin keine Root-Datei `LICENSE`.
 
@@ -130,7 +155,7 @@ Das bedeutet nicht automatisch, dass eine Open-Source-Lizenz benötigt wird. Vor
 
 Der frühere konkrete Anime-Basisblock wurde aus `party-mega-catalog.js` entfernt. Eine spätere öffentliche Quellcodeverteilung benötigt trotzdem eine bewusste Projektlizenzentscheidung und einen finalen Source-/Asset-/Dependency-Review.
 
-## 10. Hosting- und Plattformkomponenten
+## 11. Hosting- und Plattformkomponenten
 
 Nach Auswahl der Production-Plattform prüfen:
 
@@ -139,7 +164,7 @@ Nach Auswahl der Production-Plattform prüfen:
 - Build-/Deploy-Actions
 - erforderliche License-/NOTICE-/Attribution-Pflichten
 
-## 11. Release-Gates
+## 12. Release-Gates
 
 Vor `THIRD-PARTY / ASSET PASS`:
 
@@ -148,13 +173,16 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [ ] transitive Dependencies aus finalem Lockfile inventarisiert
 - [x] maschinenlesbares Asset-Provenienzmanifest vorhanden
 - [x] Asset-Provenienzvalidator in `npm run validate`
+- [x] Media-Inventar-Audit in `npm run validate`
+- [x] dedizierter Manifest-/Icon-Unit-Test in `npm test` und Syntax-Gate
+- [x] aktueller Branch-Medienbestand auf drei Icondateien eingegrenzt
 - [x] PNG-IHDR-/Hash-/Manifestgrößenprüfung implementiert
 - [x] `icon-192.png` physisch vorhanden und 192×192
 - [x] `icon-512.png` physisch vorhanden und 512×512
 - [x] Rasterableitungen aus `icon.svg` technisch dokumentiert
 - [x] physischer Reference-Source-Audit in `npm run validate`
 - [x] konkreter historischer Anime-Basisblock aus ausgelieferter Mega-Quelle entfernt
-- [ ] Asset-Provenienz-Audit auf funktionierendem Runner tatsächlich grün
+- [ ] Media-Inventar-/Asset-Provenienz-/Manifest-Icon-Gates auf funktionierendem Runner tatsächlich grün
 - [ ] Reference-Source-Audit auf funktionierendem Runner tatsächlich grün
 - [ ] `icon.svg` von `unresolved` auf belegten Rechte-Status gesetzt
 - [ ] alle späteren Releaseassets inventarisiert und belegt
