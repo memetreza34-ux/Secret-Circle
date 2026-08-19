@@ -2,151 +2,103 @@
 
 Stand: 19. August 2026
 
-Diese Checkliste gilt für den **unveränderten Release-Commit**. Ein vorhandener Test oder Vertrag ist kein PASS, solange er nicht tatsächlich ausgeführt beziehungsweise real abgenommen wurde.
+Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
-## 1. Repository / CI / Branch Protection
+## 1. Repository / CI / Build
 
-Bereits im Entwicklungsbranch implementiert:
+Bereits vorbereitet:
 
 - [x] `package-lock.json` v3 vorhanden
-- [x] CI verwendet `npm ci`
-- [x] Cross-Browser verwendet `npm ci`
-- [x] `scripts/lockfile_contract_audit.py` integriert
-- [x] `BRANCH_PROTECTION.md` vorhanden
-- [x] `scripts/branch_protection_contract_audit.py` integriert
-- [x] `scripts/staging_smoke_contract_audit.py` integriert
-- [x] `scripts/release_readiness_contract_audit.py` integriert
+- [x] CI und Cross-Browser verwenden `npm ci`
+- [x] `scripts/lockfile_contract_audit.py`
+- [x] `BRANCH_PROTECTION.md` + Contract-Audit
+- [x] `RELEASE_EVIDENCE.md` + `release-evidence.json` + Audit
 
-Für den späteren unveränderten RC noch erforderlich:
+Für den RC offen:
 
-- [ ] Release-Commit und Tag festgelegt
-- [ ] sichtbarer GitHub-Actions-Checkout und echte Steps
-- [ ] Online-`npm ci` auf exakt dem RC-Commit grün
+- [ ] exakter Release-Commit und Tag festgelegt
+- [ ] Actions zeigt echten Checkout und echte Steps
+- [ ] Online-`npm ci` auf genau diesem Commit grün
 - [ ] `npm run ci` vollständig grün
-- [ ] Chromium, Firefox und WebKit auf demselben RC-Commit grün
-- [ ] Lockfile des RC stimmt unverändert mit `package.json` überein
-- [ ] Pull Requests für stabilen Zielbranch verpflichtend
-- [ ] **`Secret Circle CI / validate`** als Required Check aktiv
-- [ ] Required Check auf echtem Runner grün
-- [ ] Force-Push / Branch-Löschung / Review-/Bypass-Regeln geprüft
-- [ ] Cross-Browser auf exakt demselben RC-Commit grün; bei aktuellem `workflow_dispatch` nicht als permanenter PR-Required-Check konfiguriert
-- [ ] alle statischen Release-/Readiness-Audits auf exakt dem RC-Commit grün
+- [ ] Chromium / Firefox / WebKit auf demselben Commit grün
+- [ ] `Secret Circle CI / validate` als Required Check aktiv und grün
+- [ ] Branch Protection / Review / Bypass / Force-Push / Löschung final bestätigt
 
-## 2. Engine / Session / Daten
+## 2. Engine / Sessions / Daten
 
-- [ ] stabile Session-/Completion-IDs real bestätigt
 - [ ] Exact-once-Verlauf/Statistik real bestätigt
-- [ ] Hub-/Advanced-Resume sicher
-- [ ] private Reveal-Zustände nach Reload wieder verdeckt
-- [ ] Beenden & speichern getrennt von Abbrechen & verwerfen
+- [ ] Hub-/Advanced-/Quick-Resume real geprüft
+- [ ] private Reveal-Zustände bleiben nach Reload verdeckt
+- [ ] Beenden & speichern klar getrennt von Abbrechen & verwerfen
 - [ ] Skip vergibt keinen künstlichen Punkt
-- [ ] Timer pausieren/fortsetzen über Reload korrekt
-- [ ] Registry v2 vor Datentools geladen
-- [ ] unbekannte Complete-Backup-Namespaces abgelehnt
-- [ ] Quota-/Korruptions-/Rollbackpfade real geprüft
-- [ ] Export → Import → Löschung real geprüft
+- [ ] Timer über Pause, Reload, Hintergrund/Sperrbildschirm geprüft
+- [ ] Registry-v2-Backup: Export → Import → Löschen real geprüft
+- [ ] unbekannte Namespace-, Quota-, Korruptions- und Rollbackfälle real geprüft
 
-## 3. 15 Core-Games
+## 3. Core / UX / Content
 
-Für jedes Core-Spiel:
+Für alle 15 Core-Games:
 
-- [ ] Start / Lobby / Packauswahl
-- [ ] Regeln verständlich
-- [ ] persönliche Inhalte freiwillig / Skip möglich
+- [ ] Start / Lobby / Pack / Regeln verständlich
+- [ ] Freiwilligkeit / Skip bei persönlichen Inhalten
 - [ ] Pause / Abbruch / Resume
-- [ ] Punkte-/Winner-Vertrag korrekt
+- [ ] Score-/Winner-Vertrag korrekt
 - [ ] Verlauf/Statistik korrekt
 - [ ] Tastatur/Fokus/Zoom/Reduced Motion
 - [ ] reale Gruppe ohne Entwicklerhilfe
 
-Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_SCORING_RULES.md` und `BETA_TEST_PLAN.md` vollständig abarbeiten.
-
-## 4. Party Hub / UX / Suche
+Zusätzlich:
 
 - [ ] 15 Core / 13 Extended / 17 Labs korrekt dargestellt
-- [ ] Reifestufe/Alter/Gruppe/Stimmung/Status gemeinsam filterbar
-- [ ] Suchsynonyme/Tippfehler funktionieren
-- [ ] Vorschläge mit Maus/Touch/Tastatur/Screenreader nutzbar
-- [ ] leere Zustände und Storagefehler verständlich
-- [ ] wichtige Touchziele mindestens 44×44 px
-- [ ] sinnvolle Fokusführung nach Reveal-/Rundenwechsel
-- [ ] Erstnutzer-Test ohne Entwicklerhilfe
+- [ ] Suche/Filter/Synonyme/Tippfehler real geprüft
+- [ ] manueller Privacy-/Safety-Contentpass final
+- [ ] `scripts/privacy_content_audit.py` grün
+- [ ] `scripts/reference_content_audit.py` grün
+- [ ] finaler Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
 
-## 5. PWA / Offline – v43
+## 4. PWA / Offline – v44
 
-- [ ] finaler RC-Cache **`secret-circle-v43`** oder bewusst neuer / passender Staging-Cache
-- [ ] SW, Test, Architektur, Deployment, Privacy und Environment synchron
-- [ ] Online-/Standalone-/Offline-Neustart
-- [ ] Base-, Expansion-, Mega-, Viral- und Core-Contentmodule offline
-- [ ] Backup-Registry, Engines, Manifest und Icons offline
-- [ ] `icon-192.png` tatsächlich 192×192
-- [ ] `icon-512.png` tatsächlich 512×512
-- [ ] Manifestgrößen und SHA-256 stimmen
+- [ ] finaler Cache `secret-circle-v44` oder bewusst neuer RC-Cache
+- [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
+- [ ] `tests/pwa-head-metadata.test.js` grün
+- [ ] Hub, Word Imposter, Creator, Advanced und Quick besitzen denselben Manifest-/iOS-/Icon-Head-Vertrag
+- [ ] Manifest, SVG, 192er PNG, 512er PNG offline verfügbar
+- [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
+- [ ] Online → installierte PWA → Offline-Neustart
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
-- [ ] aktive Session durch Update geschützt
-- [ ] Upgrade von mindestens zwei älteren installierten Versionen
+- [ ] aktive Session bleibt durch Update geschützt
+- [ ] Update von mindestens zwei älteren installierten Versionen
 - [ ] Rollback mit neuer Cachegeneration
 
-## 6. Privacy-Content
+## 5. HTTPS-Staging / Production
 
-- [ ] bekannte Kamerarollen-/Letzte-Nachricht-Prompts physisch nicht im ausgelieferten Basiskatalog
-- [ ] sichere Ersatztexte direkt im Basiskatalog
-- [ ] `scripts/privacy_content_audit.py` auf exakt dem RC-Commit grün
-- [ ] keine Built-in-Aufforderung, private Chats/Nachrichten, Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort oder Kontodaten offenzulegen
-- [ ] persönliche Inhalte sichtbar freiwillig und überspringbar
-- [ ] manueller Privacy-/Safety-Contentpass abgeschlossen
+- [ ] getrennte HTTPS-Staging-Origin festgelegt
+- [ ] Production-Origin festgelegt
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache <RC-CACHE>` grün
+- [ ] Smoke bestätigt Routen, Same-Origin-Redirects, Manifest, PNG-Dimensionen, Cache, Privacy-/Reference-Source und PWA-Head-Metadaten
+- [ ] manueller Browser-/PWA-Staging-Smoke grün
+- [ ] Production nutzt denselben freigegebenen RC-Stand
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache <RC-CACHE> --production` grün
+- [ ] manueller Production-Smoke grün
 
-## 7. Reference-/Fan-Content
+## 6. Accessibility / Geräte
 
-- [ ] `party-core-classic-content.js` v4 oder bewusst neuere freigegebene Version
-- [ ] `anime-guess` = **Anime-Archetypen erraten**, generische Archetypen
-- [ ] keine früheren konkreten Anime-Namen in ausgelieferter Mega-Quelle
-- [ ] `wavelength` bleibt technische ID, sichtbar **Spektrum-Tipp**
-- [ ] Browser-Tabu upstream `Tab`, nicht `Chrome`
-- [ ] Emoji-Quiz `Löwe`, nicht `Löwenkönig`
-- [ ] entfernte Viral-Sportreferenzen nicht zurückgekehrt
-- [ ] `scripts/reference_content_audit.py` grün
-- [ ] manueller Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
-- [ ] keine fremden Logos/Screenshots/Charakterbilder/Audios/Videos/Zitate ohne Rechte
-
-## 8. Assets / Third Party / Recht
-
-- [ ] `scripts/media_inventory_audit.py` grün
-- [ ] `scripts/asset_provenance_audit.py` grün
-- [ ] alle gebündelten Releaseassets im Provenienzmanifest
-- [ ] `icon.svg` tatsächlicher Urheber/Ersteller bestätigt
-- [ ] KI-/Template-/Stock-Ursprung geklärt
-- [ ] kommerzielle Rechtebasis/Attribution geklärt
-- [ ] kein Releaseasset `unresolved`
-- [x] aktuelle gelockte Playwright-Paketkette inventarisiert und Lizenzen gegen Upstream geprüft
-- [ ] finaler Dependency-/Vulnerability-Review auf RC-Lockfile
-- [ ] Projekt-/Quellcodelizenz bewusst entschieden
-- [ ] `LEGAL_CHECKLIST.md` final
-- [ ] Privacy auf reales Hosting angepasst
-- [ ] Betreiber-/Impressums-/Supportangaben final
-- [ ] keine öffentlichen Placeholderwerte
-
-## 9. Accessibility / Geräte
-
-- [ ] Accessibility-Contract und E2E tatsächlich grün
 - [ ] Android + Chrome
 - [ ] iPhone + Safari
 - [ ] Tablet/iPad
-- [ ] Hoch-/Querformat
-- [ ] 320 CSS px Reflow
+- [ ] Hoch-/Querformat und 320 CSS px
 - [ ] 200-%-Zoom
-- [ ] vollständige Tastatur
-- [ ] sichtbarer Fokus
+- [ ] vollständige Tastatur / sichtbarer Fokus
 - [ ] VoiceOver
 - [ ] TalkBack
 - [ ] private Reveals mit Screenreader
 - [ ] Safe Areas / Bildschirmtastatur
 - [ ] Reduced Motion
-- [ ] Sperrbildschirm/App-Wechsel bei Timern
-- [ ] reales Installationsicon auf Zielplattformen
+- [ ] Installationsicon und App-Titel vom Hub korrekt
+- [ ] mindestens eine Unterseite direkt auf Installations-/Homescreen-Metadaten geprüft
 
-## 10. Reale Gruppen / Beta
+## 7. Beta / Gruppen
 
 - [ ] 3–4 Personen
 - [ ] 5–8 Personen
@@ -155,44 +107,44 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - [ ] Mafia 8+ mit mehreren Rollen
 - [ ] Smart Party Night mindestens 3 vollständige Abende
 - [ ] Creator mit unerfahrener Person
-- [ ] Bugs nach Schweregrad dokumentiert
 - [ ] keine offenen Critical/High Bugs
 
-## 11. Staging / Betrieb / Veröffentlichung
+## 8. Assets / Third Party / Legal / Betrieb
 
-- [ ] getrennte HTTPS-Staging-Origin
-- [ ] Production-Origin festgelegt
-- [ ] **HTTPS-Staging-Smoke** mit `scripts/staging_smoke.py` auf exakt dem RC-Deployment grün
-- [ ] Smoke verwendet erwartete Cachegeneration
-- [ ] Smoke bestätigt Same-Origin-Redirects, Kernrouten, Manifest, PNG-Dimensionen, Cache, Privacy- und Reference-Source-Vertrag
-- [ ] manueller Browser-/PWA-Staging-Smoke vollständig
-- [ ] Service-Worker-Installation und Offline-Neustart real geprüft
-- [ ] Rollbackprobe vollständig
-- [ ] Rollback-/Hotfix-Deployment erneut durch automatisierten HTTPS-Smoke geprüft
+- [ ] Asset-/Media-Provenienz-Audits grün
+- [ ] Root-`icon.svg` Urheber/Rechtebasis/Attribution final belegt
+- [ ] kein Releaseasset `unresolved`
+- [ ] Dependency-/Vulnerability-Review des finalen Lockfiles
+- [ ] Projekt-/Quellcodelizenz bewusst entschieden
+- [ ] `LEGAL_CHECKLIST.md` final
+- [ ] Privacy auf reales Hosting angepasst
+- [ ] Betreiber-/Impressums-/Supportangaben final
 - [ ] `SUPPORT.md` echter Kontakt
-- [ ] `INCIDENT_RESPONSE.md` reale Verantwortliche
-- [ ] Probe-SEV-1
-- [ ] Wartungs-/Hotfixroutine
-- [ ] finale Versionsnummer / Cacheversion dokumentiert
-- [ ] Release Notes / Changelog
-- [ ] unveränderlicher Release-Tag
-- [ ] Production-Smoke mit `scripts/staging_smoke.py --production` nach Deployment grün
-- [ ] manueller Browser-/PWA-Production-Smoke nach Deployment grün
+- [ ] `INCIDENT_RESPONSE.md` echte Verantwortliche
+- [ ] Probe-SEV-1 durchgeführt
+- [ ] Wartungs-/Hotfixroutine und Rollbackprobe bestätigt
 
-## Freigabe
+## 9. Release Evidence / Freigabe
+
+- [ ] `release-evidence.json` auf `evidenceStatus = FINAL`
+- [ ] vollständiger 40-stelliger RC-Commit, Tag, App-Version, Cache, Staging-/Production-URL und Freeze-Zeitpunkt
+- [ ] alle 15 Evidence-Gates `PASS`
+- [ ] jeder PASS-Beleg referenziert exakt denselben RC-Commit
+- [ ] `knownBlockers` leer
+- [ ] `scripts/release_evidence_audit.py` grün
+- [ ] `releaseDecision = GO` erst danach
+
+Freigabefelder:
 
 - Release-Commit: ____________________
 - Release-Tag: ____________________
-- Datum: ____________________
-- getestete Geräte: ____________________
+- Cache: ____________________
 - Staging URL: ____________________
-- Staging-Smoke Ergebnis: ____________________
 - Production URL: ____________________
-- Production-Smoke Ergebnis: ____________________
-- offene mittlere/niedrige Risiken: ____________________
+- getestete Geräte: ____________________
 - technische Freigabe: ____________________
 - Produkt-/Inhaltsfreigabe: ____________________
 - Accessibility-Freigabe: ____________________
 - Legal-/Betriebsfreigabe: ____________________
 
-**Keine Veröffentlichung**, solange Actions keine echten Repository-Steps ausführt, Online-`npm ci`, Kern-CI/Cross-Browser/Branch-/Privacy-/Reference-/Asset-/HTTPS-Smoke-Gates nicht tatsächlich grün sind, Critical/High Bugs offen sind oder Geräte-, Gruppen-, Rechte-, Legal- und Betriebsabnahmen fehlen.
+**Aktuell: NO_GO. PR #13 bleibt Draft und wird nicht gemergt.**
