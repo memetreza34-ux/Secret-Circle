@@ -1,6 +1,6 @@
 # Secret Circle – Content- und Altersrichtlinie
 
-Stand: 16. August 2026
+Stand: 19. August 2026
 
 ## 1. Zweck
 
@@ -109,6 +109,12 @@ Beide Texte werden im finalen Runtime-Content durch harmlose Alternativen ersetz
 
 `tests/core-content-quality.test.js` verlangt, dass die beiden alten Texte im finalen Core-Content nicht mehr vorkommen. Dieser konkrete Fund ist damit **technisch geschlossen**, die Testausführung auf einem funktionierenden Runner bleibt jedoch ausstehend.
 
+### Globaler Source-Vertrag
+
+`scripts/privacy_content_audit.py` erweitert diesen Schutz auf die **acht ausgelieferten Built-in-Contentquellen**. Der Audit blockiert konkrete Aufforderungsmuster, die private Nachrichten, Kamerarolle/Fotos, Passwörter, Adresse, Telefonnummer, Standort oder Kontodaten zum verpflichtenden Spielmaterial machen würden.
+
+Der Audit blockiert bewusst **nicht** jede harmlose Erwähnung eines Geräts oder Chats. Aussagen wie „Gruppenchat“, „letzte App geöffnet?“ oder allgemeine Internet-Situationen bleiben zulässig, solange keine private Offenlegung verlangt wird. Persönliche Inhalte bleiben zusätzlich über den sichtbaren Skip-/Freiwilligkeitsvertrag geschützt.
+
 ## 8. Marken, Fan- und Popkultur
 
 - keine fremden Logos
@@ -188,12 +194,13 @@ Automatisch blockiert werden exakte Duplikate nach Unicode-Normalisierung, Trimm
 ## 14. Was für CONTENT PASS noch fehlt
 
 - [ ] Core-Content-Test auf funktionierendem Runner tatsächlich grün
+- [ ] `scripts/privacy_content_audit.py` auf funktionierendem Runner tatsächlich grün
 - [ ] alle 15 Core-Games in `CORE_CONTENT_REVIEW.md` vollständig redaktionell abnehmen
 - [ ] semantische Doppelungen entfernen
 - [ ] Ton und Verständlichkeit prüfen
 - [ ] Altersstufen redaktionell bestätigen
 - [x] erster Private-Device-Fund geschlossen
-- [ ] weitere Privacy-/Safety-Funde ausschließen oder beheben
+- [ ] weitere Privacy-/Safety-Funde durch globalen Audit und manuelles Review ausschließen oder beheben
 - [ ] mindestens ein realer Gruppentest pro Kernspiel
 - [ ] Wiederholungsrate beobachten
 - [ ] Fan-/Marken-/Urheberrechtsprüfung abschließen
