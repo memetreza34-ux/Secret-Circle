@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "product": "Secret Circle – Party Hub",
+  "releaseTarget": "2027-01",
+  "evidenceStatus": "PREPARED",
+  "releaseDecision": "NO_GO",
+  "candidate": {
+    "commit": null,
+    "tag": null,
+    "appVersion": "1.0.0-beta.3",
+    "cache": null,
+    "stagingUrl": null,
+    "productionUrl": null,
+    "frozenAt": null
+  },
+  "gates": {
+    "ci": {"status": "BLOCKED", "commit": null, "evidence": null},
+    "crossBrowser": {"status": "OPEN", "commit": null, "evidence": null},
+    "branchProtection": {"status": "OPEN", "commit": null, "evidence": null},
+    "stagingHttpSmoke": {"status": "OPEN", "commit": null, "evidence": null},
+    "pwaUpgradeRollback": {"status": "OPEN", "commit": null, "evidence": null},
+    "android": {"status": "OPEN", "commit": null, "evidence": null},
+    "ios": {"status": "OPEN", "commit": null, "evidence": null},
+    "tablet": {"status": "OPEN", "commit": null, "evidence": null},
+    "accessibility": {"status": "OPEN", "commit": null, "evidence": null},
+    "groups": {"status": "OPEN", "commit": null, "evidence": null},
+    "contentPrivacyReference": {"status": "OPEN", "commit": null, "evidence": null},
+    "assetsThirdParty": {"status": "BLOCKED", "commit": null, "evidence": null},
+    "legalPrivacy": {"status": "OPEN", "commit": null, "evidence": null},
+    "supportIncident": {"status": "OPEN", "commit": null, "evidence": null},
+    "productionSmoke": {"status": "OPEN", "commit": null, "evidence": null}
+  },
+  "knownBlockers": [
+    "GitHub Actions jobs currently end before repository steps",
+    "Root icon.svg rights basis is unresolved",
+    "HTTPS staging/production origins and real-device/group/legal evidence are not final"
+  ],
+  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. Fill only with evidence from one immutable release candidate commit."
+}
