@@ -1,6 +1,6 @@
 # Release-Status – Secret Circle
 
-Stand: 18. August 2026  
+Stand: 19. August 2026  
 Zielrelease: 4.–15. Januar 2027  
 Arbeitsbranch: `agent/release-foundation-2027`  
 Draft-PR: #13
@@ -122,9 +122,16 @@ Noch real offen:
 
 ## CI – P0
 
-Die zuletzt geprüften Branch-/PR-Actions enden weiterhin vor verwertbaren Repository-Schritten. Das bekannte Muster ist `steps: []` beziehungsweise kein belastbarer Checkout-/Testnachweis.
+**Aktuell geprüfter Lauf:** `Secret Circle CI` **#2126** auf Commit `16cc9745671f8a565e747a591e9b439989f78aa6`.
 
-Daher existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis** für v41.
+- Workflow `completed / failure`
+- Job `validate`: `failure`
+- Job-Steps: **`[]`**
+- kein Checkout
+- kein Repositorycode ausgeführt
+- Job-Logabruf liefert keinen vorhandenen Log-Blob
+
+Damit existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis** für v41. Der Lauf beweist aber auch keinen Repository-Codefehler, weil kein Step ausgeführt wurde.
 
 ## Build – P1
 
