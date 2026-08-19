@@ -10,12 +10,16 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
 required = [
     'index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html',
-    'sw.js', 'manifest.webmanifest', 'package.json', 'backup-schema-registry.js', 'party-data-tools.js',
+    'sw.js', 'manifest.webmanifest', 'package.json', 'package-lock.json',
+    'backup-schema-registry.js', 'party-data-tools.js',
     'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js',
     'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
     'tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js',
     'ARCHITECTURE.md', 'DEPLOYMENT.md', 'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md',
-    'SECURITY.md', 'THREAT_MODEL.md', 'RISK_REGISTER.md',
+    'SECURITY.md', 'THREAT_MODEL.md', 'RISK_REGISTER.md', 'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md',
+    'scripts/lockfile_contract_audit.py', 'scripts/branch_protection_contract_audit.py',
+    'scripts/staging_smoke_contract_audit.py', 'scripts/privacy_content_audit.py',
+    'scripts/reference_content_audit.py', 'scripts/release_readiness_contract_audit.py',
 ]
 for relative in required:
     if not (ROOT / relative).is_file():
@@ -132,8 +136,9 @@ if not core_match:
     raise SystemExit('Service worker CORE list missing.')
 core = ast.literal_eval(core_match.group(1))
 for asset in (
-    './backup-schema-registry.js', './party-core-release-catalog.js', './party-core-classic-content.js',
-    './party-data-tools.js', './party-hub-timers.js', './session-ledger.js', './party-session-controls.js'
+    './backup-schema-registry.js', './party-catalog.js', './party-core-release-catalog.js', './party-core-classic-content.js',
+    './party-data-tools.js', './party-hub-timers.js', './session-ledger.js', './party-session-controls.js',
+    './icon.svg', './icon-192.png', './icon-512.png'
 ):
     if asset not in core:
         raise SystemExit(f'Offline core missing: {asset}')
@@ -142,15 +147,20 @@ if len(core) != len(set(core)):
 if 'await caches.delete(CACHE)' in sw:
     raise SystemExit('Active cache must not be destroyed before promotion.')
 
-for relative in ('ARCHITECTURE.md', 'DEPLOYMENT.md', 'tests/service-worker.test.js'):
+for relative in ('ARCHITECTURE.md', 'DEPLOYMENT.md', 'privacy.html', 'ENVIRONMENTS.md', 'tests/service-worker.test.js'):
     if cache_name not in read(relative):
         raise SystemExit(f'Current cache {cache_name} not synchronized in {relative}.')
 
 package = json.loads(read('package.json'))
+lock = json.loads(read('package-lock.json'))
 if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('node') != '>=20':
     raise SystemExit('Package metadata invalid.')
 if package.get('devDependencies', {}).get('@playwright/test') != '1.54.2':
     raise SystemExit('Playwright must remain pinned.')
+if lock.get('lockfileVersion') != 3 or lock.get('name') != package.get('name') or lock.get('version') != package.get('version'):
+    raise SystemExit('package-lock.json does not match project package metadata.')
+if lock.get('packages', {}).get('', {}).get('devDependencies') != package.get('devDependencies'):
+    raise SystemExit('package-lock root devDependencies do not match package.json.')
 
 for marker in ('tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js'):
     if marker not in package.get('scripts', {}).get('test', ''):
@@ -158,7 +168,13 @@ for marker in ('tests/core-content-quality.test.js', 'tests/backup-schema-regist
 for marker in ('party-core-release-catalog.js', 'party-core-classic-content.js', 'backup-schema-registry.js', 'party-data-tools.js'):
     if f'node --check {marker}' not in package.get('scripts', {}).get('check', ''):
         raise SystemExit(f'Syntax gate missing: {marker}')
-for marker in ('scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py'):
+for marker in (
+    'scripts/architecture_audit.py', 'scripts/foundation_contract_audit.py', 'scripts/lockfile_contract_audit.py',
+    'scripts/branch_protection_contract_audit.py', 'scripts/staging_smoke_contract_audit.py',
+    'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
+    'scripts/asset_provenance_audit.py', 'scripts/release_readiness_contract_audit.py',
+    'scripts/performance_budget.py', 'scripts/release_audit.py'
+):
     if marker not in package.get('scripts', {}).get('validate', ''):
         raise SystemExit(f'Validate gate missing: {marker}')
 
@@ -171,8 +187,10 @@ print(json.dumps({
     'project_validation': 'PASS',
     'cache': cache_name,
     'catalog_chain': catalog_chain,
-    'central_backup_schema': True,
+    'central_backup_schema': 'v2',
     'complete_backup_key_allowlist': True,
     'consent_copy_visible': True,
-    'core_content_modules': 2,
+    'lockfile': 'v3',
+    'online_npm_ci_verified': False,
+    'release_readiness_contract': True,
 }, ensure_ascii=False, indent=2))
