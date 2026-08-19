@@ -19,6 +19,7 @@ Diese Checkliste gilt für den **unveränderten Release-Commit**. Ein vorhandene
 - [ ] Force-Push / Branch-Löschung / Review-/Bypass-Regeln geprüft
 - [ ] Cross-Browser separat auf exakt demselben RC-Commit grün; bei aktuellem `workflow_dispatch` nicht als permanenter PR-Required-Check konfiguriert
 - [ ] `scripts/branch_protection_contract_audit.py` grün
+- [ ] `scripts/staging_smoke_contract_audit.py` grün
 
 ## 2. Engine / Session / Daten
 
@@ -151,8 +152,13 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 
 - [ ] getrennte HTTPS-Staging-Origin
 - [ ] Production-Origin festgelegt
-- [ ] Staging-Smoke vollständig
+- [ ] **HTTPS-Staging-Smoke** mit `scripts/staging_smoke.py` auf exakt dem RC-Deployment grün
+- [ ] Smoke-Befehl verwendet `--expected-cache secret-circle-v43` oder bewusst neuere freigegebene Cachegeneration
+- [ ] Smoke bestätigt Same-Origin-Redirects, Kernrouten, Manifest, PNG-Dimensionen, Cache, Privacy- und Reference-Source-Vertrag
+- [ ] manueller Browser-/PWA-Staging-Smoke vollständig
+- [ ] Service-Worker-Installation und Offline-Neustart real geprüft
 - [ ] Rollbackprobe vollständig
+- [ ] Rollback-/Hotfix-Deployment erneut durch automatisierten HTTPS-Smoke geprüft
 - [ ] `SUPPORT.md` echter Kontakt
 - [ ] `INCIDENT_RESPONSE.md` reale Verantwortliche
 - [ ] Probe-SEV-1
@@ -160,7 +166,8 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - [ ] finale Versionsnummer / Cacheversion v43 oder bewusst neuer
 - [ ] Release Notes / Changelog
 - [ ] unveränderlicher Release-Tag
-- [ ] Production-Smoke nach Deployment
+- [ ] Production-Smoke mit `scripts/staging_smoke.py --production` nach Deployment grün
+- [ ] manueller Browser-/PWA-Production-Smoke nach Deployment grün
 
 ## Freigabe
 
@@ -168,10 +175,14 @@ Spezielle Timer-/Advanced-/Mafia-Verträge aus `CORE_GAME_ACCEPTANCE.md`, `CORE_
 - Release-Tag: ____________________
 - Datum: ____________________
 - getestete Geräte: ____________________
+- Staging URL: ____________________
+- Staging-Smoke Ergebnis: ____________________
+- Production URL: ____________________
+- Production-Smoke Ergebnis: ____________________
 - offene mittlere/niedrige Risiken: ____________________
 - technische Freigabe: ____________________
 - Produkt-/Inhaltsfreigabe: ____________________
 - Accessibility-Freigabe: ____________________
 - Legal-/Betriebsfreigabe: ____________________
 
-**Keine Veröffentlichung**, solange Actions keine echten Repository-Steps ausführt, Kern-CI/Cross-Browser/Branch-/Privacy-/Reference-/Asset-Gates nicht tatsächlich grün sind, Critical/High Bugs offen sind oder Geräte-, Gruppen-, Rechte-, Legal- und Betriebsabnahmen fehlen.
+**Keine Veröffentlichung**, solange Actions keine echten Repository-Steps ausführt, Kern-CI/Cross-Browser/Branch-/Privacy-/Reference-/Asset-/HTTPS-Smoke-Gates nicht tatsächlich grün sind, Critical/High Bugs offen sind oder Geräte-, Gruppen-, Rechte-, Legal- und Betriebsabnahmen fehlen.
