@@ -73,17 +73,18 @@ checks = {
     'pwa_v44_install_metadata_documented': 'secret-circle-v44' in environments and 'tests/pwa-head-metadata.test.js' in environments and 'tests/pwa-head-metadata.test.js' in deployment,
     'release_evidence_schema': evidence.get('schemaVersion') == 1 and evidence.get('product') == 'Secret Circle – Party Hub',
     'release_evidence_stays_no_go_before_rc': evidence.get('evidenceStatus') == 'PREPARED' and evidence.get('releaseDecision') == 'NO_GO' and evidence.get('candidate', {}).get('commit') is None,
-    'release_evidence_doc_binds_one_commit': 'derselben unveränderten Release-Candidate-Commit' in evidence_doc and '15' in evidence_doc,
+    'release_evidence_doc_binds_one_commit': 'unveränderten Release-Candidate-Commit' in evidence_doc and '15' in evidence_doc and 'releaseDecision = GO' in evidence_doc,
     'privacy_source_policy_documented': 'keine privaten Nachrichten, Fotos, Passwörter, Adressen oder Kontodaten als Spielmaterial verlangen' in content_policy,
     'third_party_lockfile_inventory': all(marker in third_party for marker in (
         'package-lock.json', '`playwright`', '`playwright-core`', '`fsevents`', 'scripts/lockfile_contract_audit.py'
     )),
     'release_checklist_requires_real_evidence': all(marker in checklist for marker in (
-        'Required Check auf echtem Runner grün',
-        'HTTPS-Staging-Smoke',
+        'Required Check aktiv und grün',
+        'npm run staging:smoke -- <STAGING>',
         'Production-Smoke',
         'VoiceOver',
-        'reale Gruppe'
+        'reale Gruppe',
+        'release-evidence.json'
     )),
     'no_false_online_install_claim': 'echter Online-`npm ci`-PASS' in third_party and 'Noch offen' in third_party,
 }
