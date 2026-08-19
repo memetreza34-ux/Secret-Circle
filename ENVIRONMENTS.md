@@ -65,13 +65,13 @@ Nicht empfohlen: Staging und Production nur über Queryparameter derselben Origi
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v44
 ```
 
 Production nach Freigabe:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v43 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v44 --production
 ```
 
 Der Smoke prüft unter anderem:
@@ -131,15 +131,16 @@ Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cr
 
 ## 9. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt aktuell **`secret-circle-v43`**.
+Der Quellcode besitzt aktuell **`secret-circle-v44`**.
 
 - v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz im finalen Runtime-Katalog.
 - v38 ersetzte drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower`.
 - v39 entfernte `Chrome` aus dem finalen Tabu-Content und zeigt `wavelength` als **Spektrum-Tipp**.
-- v40 entfernte die 40 historischen konkreten Anime-Figurennamen zusätzlich physisch aus `party-mega-catalog.js`.
+- v40 entfernte die 40 historischen konkreten Anime-Figurennamen zusätzlich physisch aus der ausgelieferten `party-mega-catalog.js`.
 - v41 verankert `Spektrum-Tipp` und `Tab` upstream, setzt Classic Content auf v4, ersetzt `Löwenkönig` durch einen generischen Löwenhinweis und nimmt den zentralen Reference-Source-Audit in `npm run validate` auf.
 - v42 repariert den PWA-Rastervertrag: echtes 192×192- und 512×512-PNG, SHA-256-/IHDR-/Manifestprüfung im Asset-Audit.
 - v43 entfernt die zwei früheren Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` und nimmt einen globalen Privacy-Content-Audit in `npm run validate` auf.
+- v44 vereinheitlicht Manifest-, iOS- und Icon-Metadaten auf Hub, Word Imposter, Creator, Advanced und Quick und schützt sie mit `tests/pwa-head-metadata.test.js`.
 
 Regeln:
 
@@ -159,7 +160,8 @@ Falls später hinzugefügt werden: `.env.example` ohne Geheimnisse, getrennte de
 Zusätzlich zum automatisierten HTTP-Smoke mindestens:
 
 - Service Worker registriert
-- Installation möglich und Icon sichtbar korrekt
+- Installation vom Hub möglich und Icon/Titel sichtbar korrekt
+- mindestens Creator, Advanced oder Quick direkt geöffnet und Homescreen-/Installationsmetadaten geprüft
 - Offline-Neustart
 - finaler Katalog im Browser
 - Hub-Datenbereich startet ohne Registryfehler
@@ -215,6 +217,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Production-Origin festgelegt
 - [ ] Staging öffentlich erreichbar und installierbar
 - [ ] `scripts/staging_smoke.py` gegen Staging grün
+- [ ] `tests/pwa-head-metadata.test.js` auf demselben RC-Commit grün
 - [ ] manueller Browser-/PWA-Smoke abgeschlossen
 - [ ] Upgrade von mindestens zwei älteren Versionen abgeschlossen
 - [ ] Rollbackprobe abgeschlossen
