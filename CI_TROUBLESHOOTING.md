@@ -1,19 +1,18 @@
 # Secret Circle – CI Troubleshooting
 
-Stand: 16. August 2026
+Stand: 19. August 2026
 
 ## Aktueller Befund
 
 Secret Circle besitzt vorbereitete GitHub-Actions-Workflows, aber die aktuell geprüften Jobs erreichen **keinen Repository-Schritt**.
 
-Zuletzt belastbar geprüft: **Run #1905** / Job `validate`.
+Zuletzt belastbar geprüft: **Run #2126** (`Secret Circle CI`) auf Commit **`16cc9745671f8a565e747a591e9b439989f78aa6`** / Job `validate`.
 
 Beobachtetes Muster:
 
-- Job endet `failure`
-- `runner_id: 0`
-- leerer Runnername
-- `runner_group_id: 0`
+- Workflowstatus `completed`
+- Conclusion `failure`
+- Job `validate` endet `failure`
 - `steps: []`
 - kein Checkout
 - kein Node-/Python-Setup
@@ -22,12 +21,15 @@ Beobachtetes Muster:
 - kein `npm run validate`
 - kein Playwright
 - kein verwertbarer Repository-Step-Log
+- direkter Job-Logabruf liefert keinen vorhandenen Log-Blob
 
-Das ist **kein Beweis für einen Codefehler** im Repository. Der Code wird in diesen Läufen nicht ausgeführt.
+Run #2126 startete am 18. August 2026 um 18:10 UTC auf PR #13. Der Fehler trat innerhalb weniger Sekunden auf und erneut vor jedem Repository-Step.
+
+Das ist **kein Beweis für einen Codefehler** im Repository. Der Code wird in diesem Lauf nicht ausgeführt.
 
 ## Was nicht auf Verdacht geändert wird
 
-Solange GitHub dem Job keinen Runner zuweist, werden keine funktionierenden Testbefehle, Audit-Gates oder Browserprüfungen entfernt, nur um einen roten Status zu vermeiden.
+Solange GitHub dem Job keinen Runner mit echten Steps zuweist, werden keine funktionierenden Testbefehle, Audit-Gates oder Browserprüfungen entfernt, nur um einen roten Status zu vermeiden.
 
 Insbesondere nicht:
 
@@ -79,7 +81,7 @@ Unabhängig vom Runner fehlt noch `package-lock.json`.
 Aktueller Zustand:
 
 - `@playwright/test` ist exakt auf `1.54.2` gepinnt
-- lokaler Versuch `npm install --package-lock-only` konnte wegen Paketnetzwerk/Timeout kein belastbares Lockfile erzeugen
+- ein früherer lokaler Versuch `npm install --package-lock-only` konnte wegen Paketnetzwerk/Timeout kein belastbares Lockfile erzeugen
 - keine Integrity-Hashes wurden erfunden
 - Workflow bleibt deshalb vorläufig bei Installation ohne Lockfile
 
@@ -93,14 +95,14 @@ npm run test:cross-browser
 
 ## Nach Wiederherstellung des Runners
 
-Erster erfolgreicher Runnerlauf wird **nicht sofort als Release-PASS** interpretiert. Reihenfolge:
+Erster Lauf mit echten Steps wird **nicht sofort als Release-PASS** interpretiert. Reihenfolge:
 
 1. sichtbaren Checkout bestätigen
 2. echte Step-Liste dokumentieren
-3. ersten tatsächlichen Fehler isolieren
+3. ersten tatsächlichen Repositoryfehler isolieren
 4. `npm run check` beheben
 5. Unit-/Contracttests beheben
-6. Validatoren/Audits beheben
+6. Validatoren/Audits inklusive `reference_content_audit.py` beheben
 7. Chromium E2E beheben
 8. Cross-Browser beheben
 9. Lockfile erzeugen und verifizieren
