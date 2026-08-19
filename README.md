@@ -48,6 +48,7 @@ Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und mu
 - `ROADMAP_2027.md`
 - `RELEASE_SCOPE_2027.md`
 - `RELEASE_CHECKLIST.md`
+- `CI_TROUBLESHOOTING.md`
 
 ### Produkt, UX und Architektur
 
@@ -224,7 +225,9 @@ Final vor Release muss ein echtes `package-lock.json` vorhanden sein und CI auf 
 
 ### P0 – GitHub Actions
 
-Der zuletzt belastbar untersuchte Lauf **#2126** endete erneut vor einem Repository-Step: `validate` = failure, `steps: []`, kein Checkout und kein verwertbarer Job-Log. Deshalb existiert kein verlässlicher grüner `npm run ci`-/Playwright-/Cross-Browser-Nachweis für den aktuellen v42-Stand.
+Der aktuelle detaillierte Runnerbefund wird **zentral in `CI_TROUBLESHOOTING.md`** geführt. Zuletzt bestätigte Kernaussage: Der v42-Branch erreicht im Job keine Repository-Steps (`steps: []`); auch ein gezielter Re-Run zeigte dasselbe Muster und keinen verwertbaren Job-Log.
+
+Deshalb existiert kein verlässlicher grüner `npm run ci`-/Playwright-/Cross-Browser-Nachweis für den v42-Stand. Das Muster ist zugleich kein negativer Code-Test, weil der Code nie ausgeführt wird.
 
 ### P1
 
