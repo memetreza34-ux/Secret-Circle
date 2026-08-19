@@ -16,8 +16,9 @@ Neu:
 
 - v41: physischer Reference-Source-Pass
 - v42: PWA-Iconvertrag repariert
-- v43: zwei Private-Device-Truth/Dare-Prompts physisch aus dem Basiskatalog entfernt und globaler Privacy-Content-Source-Audit ergänzt
-- `BRANCH_PROTECTION.md` plus Contract-Audit definiert den zukünftigen Required-Check-Vertrag
+- v43: Private-Device-Truth/Dare-Prompts physisch aus Basiskatalog entfernt + globaler Privacy-Source-Audit
+- Branch-Protection-Vertrag + statischer Audit
+- reproduzierbarer HTTPS-Staging-/Production-Smoke + statischer Contract-Audit
 
 ## A-bis-Z-Tracker
 
@@ -41,7 +42,7 @@ Neu:
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md` | G1–G5 + PN1–PN3 real |
 | 15 | Datenschutz / Recht / Support | PREPARED | Privacy, Legal, Support | echte Betreiber-/Hostingangaben |
 | 16 | Release Management / RC | PREPARED | Roadmap/Checklist | nach Gates |
-| 17 | Deployment / Environments | PREPARED | Deployment + Environments | HTTPS-Staging + Rollback real |
+| 17 | Deployment / Environments | PREPARED | Deployment, Environments, Staging-Smoke | echte HTTPS-Origin + Smoke + Rollback real |
 | 18 | Operations / Incident | PREPARED | Support + Incident Response | Verantwortliche + Probeincident |
 | 19 | Wartung / Migration | PREPARED | Maintenance, Backups, Changelog | operative Routine real |
 | 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | laufend aktualisieren |
@@ -51,13 +52,7 @@ Neu:
 
 ## v43 – Privacy Source Hardening
 
-Die beiden früheren Privacy-Funde stehen nicht mehr im spielbaren Basiskatalog:
-
-- Kamerarollen-Frage entfernt
-- Pflicht zum Vorlesen der letzten Handy-Nachricht entfernt
-- harmlose Ersatztexte direkt in `party-catalog.js`
-- `scripts/privacy_content_audit.py` scannt acht ausgelieferte Contentquellen
-- private Chats/Nachrichten, Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort und Kontodaten sind als verpflichtendes Built-in-Spielmaterial source-level geschützt
+Die beiden früheren Privacy-Funde stehen nicht mehr im spielbaren Basiskatalog. `scripts/privacy_content_audit.py` scannt acht ausgelieferte Contentquellen und schützt private Chats/Nachrichten, Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort und Kontodaten vor verpflichtender Built-in-Offenlegung.
 
 Der Audit ist in `npm run validate`, aber wegen des externen Runnerblockers noch nicht als ausgeführter PASS dokumentiert.
 
@@ -71,6 +66,26 @@ Vorbereitet:
 - Cross-Browser bleibt bei aktuellem manuellen Trigger separater RC-Gate
 
 Tatsächliche GitHub-Konfiguration: **noch nicht belastbar bestätigt**.
+
+## HTTPS-Staging / Production-Smoke
+
+Vorbereitet:
+
+- `scripts/staging_smoke.py`
+- `scripts/staging_smoke_contract_audit.py`
+- `npm run staging:smoke`
+
+Der Netzwerk-Smoke verlangt HTTPS, Same-Origin-Redirects und prüft ausgelieferte Kernseiten/Query-Routen, Manifest, echte PNG-Dimensionen, SW-Cache, Registry-Ladereihenfolge sowie Privacy-/Reference-Source-Verträge.
+
+Staging:
+
+```bash
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v43
+```
+
+Production später zusätzlich mit `--production`.
+
+Status: **PREPARED / reale URL und Netzwerkausführung offen**. Browser-only PWA-/Offline-/Update-/Geräteverhalten bleibt separat real zu testen.
 
 ## PWA / Assets
 
@@ -91,10 +106,10 @@ Tatsächliche GitHub-Konfiguration: **noch nicht belastbar bestätigt**.
 1. GitHub-Actions-Runner / echter Checkout + sichtbare Steps
 2. echtes `package-lock.json` + `npm ci`
 3. Branch Protection / Required Checks tatsächlich bestätigen
-4. Branch-/Privacy-/Reference-/Asset-Audits tatsächlich grün ausführen
-5. finale Rechtebasis für `icon.svg`
-6. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
-7. HTTPS-Staging
+4. Branch-/Privacy-/Reference-/Asset-/Staging-Contract-Audits tatsächlich grün ausführen
+5. konkrete HTTPS-Staging-Origin + echter Netzwerk-Smoke
+6. finale Rechtebasis für `icon.svg`
+7. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 8. reale PWA-Upgrade-/Rollback-/Gerätetests
 9. reale Accessibilitytests
 10. reale Gruppentests
@@ -106,7 +121,8 @@ Tatsächliche GitHub-Konfiguration: **noch nicht belastbar bestätigt**.
 
 - `npm run ci` / Cross-Browser
 - Branch-Protection-Konfiguration
-- Privacy-/Reference-/Asset-Audits auf GitHub Actions
+- Privacy-/Reference-/Asset-/Staging-Contract-Audits auf GitHub Actions
+- echter HTTPS-Staging-Smoke
 - v43-Update auf real installierter PWA
 - korrektes Installationsicon auf realen Zielplattformen
 - Registry-v2-Import im echten Browser
@@ -114,4 +130,3 @@ Tatsächliche GitHub-Konfiguration: **noch nicht belastbar bestätigt**.
 - Beta-/Gruppentests
 - Root-SVG-/Third-Party-/Assetrechte final
 - Legal/Support final
-- HTTPS-Staging
