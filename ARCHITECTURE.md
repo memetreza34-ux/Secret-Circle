@@ -1,6 +1,6 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Stand: 18. August 2026
+Stand: 19. August 2026
 
 Dieses Dokument definiert die technischen Grenzen, die Secret Circle langfristig verständlich, migrierbar, offline nutzbar und testbar halten.
 
@@ -94,7 +94,7 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v41`**.
+Aktueller Offline-Core: **`secret-circle-v42`**.
 
 - v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
 - v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
@@ -102,6 +102,7 @@ Aktueller Offline-Core: **`secret-circle-v41`**.
 - v39: `Chrome` im finalen Tabu-Content entfernt und sichtbare Bezeichnung `Wellenlänge` durch **Spektrum-Tipp** ersetzt
 - v40: 40 historische konkrete Anime-Figurennamen physisch aus der ausgelieferten `party-mega-catalog.js` entfernt
 - v41: `Spektrum-Tipp` und `Tab` upstream in `party-expansion.js` verankert, Classic Content auf v4 bereinigt, `Löwenkönig` durch generischen Löwenhinweis ersetzt und zentraler Source-Reference-Audit in `npm run validate` aufgenommen
+- v42: fehlendes `icon-192.png` ergänzt, falsch dimensioniertes `icon-512.png` durch echtes 512×512-Raster ersetzt und Asset-Audit um PNG-IHDR-, Manifestgrößen- und SHA-256-Prüfung erweitert
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -149,6 +150,14 @@ Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Bu
 - `party-core-classic-content.js` max. 45 KB
 
 Die zuletzt bestätigte Classic-v2-Größe lag bei 12.954 Bytes. Classic v4 bleibt unter demselben unveränderten 45-KB-Budget; die tatsächliche Ausführung des Performance-Audits bleibt vom funktionierenden Runner abhängig.
+
+PWA-Icon-Vertrag seit v42:
+
+- `icon.svg`: 512er Vektorquelle; Git-Historie belegt den Repository-Eintrag vom 2. August 2026, finale Rechtebasis bleibt menschlich zu bestätigen
+- `icon-192.png`: echtes 192×192-PNG, deterministisch aus `icon.svg` erzeugt
+- `icon-512.png`: echtes 512×512-PNG, deterministisch aus `icon.svg` erzeugt und PNG-optimiert
+- `assets/manifests/asset-provenance.json` enthält SHA-256 und Ableitung
+- `scripts/asset_provenance_audit.py` validiert Existenz, Hash, IHDR-Dimension und Manifestmetadaten
 
 ## 14. Betrieb, Deprecation und Rollback
 
