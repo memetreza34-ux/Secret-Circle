@@ -1,7 +1,7 @@
 # Secret Circle – Fan-, Marken- und Referenzcontent-Review
 
 Stand: 19. August 2026  
-Status: **IN PROGRESS – technischer Source-Pass stark gehärtet; manuelle visuelle/rechtliche Restabnahme offen**
+Status: **IN PROGRESS – technischer Source-/Media-Pass stark gehärtet; manuelle visuelle/rechtliche Restabnahme offen**
 
 ## 1. Zweck
 
@@ -137,16 +137,37 @@ Keine Suchtreffer wurden für folgende Begriffe zurückgegeben:
 - Coca-Cola
 - McDonald's
 
-Dieser Befund ist **nur ein ergänzendes Signal**. GitHub-Code-Suche kann wegen Branch-/Index-/Suchgrenzen niemals allein einen Rechtepass freigeben. Maßgeblich bleiben:
+Dieser Befund ist **nur ein ergänzendes Signal**. GitHub-Code-Suche kann wegen Branch-/Index-/Suchgrenzen niemals allein einen Rechtepass freigeben. Maßgeblich bleiben direkte Working-Branch-Dateien, Source-Audits, finale Runtime-/Deployment-Artefakte, visueller Review, Marketing-/Namensreview und die finale rechtliche/geschäftliche Entscheidung.
 
-1. direkte Working-Branch-Dateien
-2. `scripts/reference_content_audit.py`
-3. finale Runtime-/Deployment-Artefakte
-4. visueller Review
-5. Marketing-/Namensreview
-6. finale rechtliche/geschäftliche Entscheidung
+## 9. Gebündelter Visual-/Media-Pass – 19. August 2026
 
-## 9. Visuelle Fancontent-Regeln
+Der aktuelle Working-Branch-Tree wurde zusätzlich nach tatsächlichen gebündelten Bild-, Audio- und Videodateien geprüft.
+
+Aktueller Medienbestand:
+
+1. `icon.svg`
+2. `icon-192.png`
+3. `icon-512.png`
+
+Im geprüften Branch wurden keine weiteren tatsächlichen JPG/JPEG/WebP/GIF/AVIF/ICO-, MP3/WAV/OGG/M4A/FLAC- oder MP4/WebM/MOV-Dateien identifiziert.
+
+Das bedeutet für den **aktuellen App-Build**:
+
+- keine gebündelten Anime-/Franchise-Charakterbilder
+- keine fremden Screenshots oder Panels
+- keine gebündelten Markenlogos außerhalb der noch rechtlich zu bestätigenden eigenen App-Iconquelle
+- keine gebündelten Audio-/Videodateien
+
+Technische Absicherung:
+
+- `scripts/media_inventory_audit.py` scannt tatsächliche Mediendateien und verlangt vollständige Provenienz
+- der aktuelle Releasevertrag erlaubt genau die drei Icondateien
+- `tests/manifest-icons.test.js` prüft Manifest, Existenz, PNG-IHDR, SVG-ViewBox und Offline-Core
+- beide Gates sind in `package.json` integriert
+
+**Grenze:** Das schließt zukünftige Store-Screenshots, Social-Media-Material, Marketingvideos oder später hinzukommende Illustrationen ausdrücklich nicht ein. Diese benötigen vor Veröffentlichung einen eigenen finalen Rechte-/Visual-Pass.
+
+## 10. Visuelle Fancontent-Regeln
 
 Weiterhin verbindlich:
 
@@ -157,19 +178,19 @@ Weiterhin verbindlich:
 - visuelle Anime-Begleitung nur über eigenständige generische Archetypen
 - ein generiertes Bild darf nicht gezielt wie eine konkrete bekannte Figur aussehen
 
-## 10. Restlicher Extended-/Labs-Pass
+## 11. Restlicher Extended-/Labs-Pass
 
-Der direkte technische Quellpass und der ergänzende Repository-Suchpass wurden stark erweitert. Vor finalem Sign-off bleiben dennoch bewusst offen:
+Der direkte technische Quellpass, der ergänzende Repository-Suchpass und das aktuelle gebündelte Media-Inventar wurden stark erweitert. Vor finalem Sign-off bleiben dennoch bewusst offen:
 
 - vollständige manuelle Semantikprüfung aller Extended-/Labs-Modi im finalen Build
-- visuelle Assets/Screenshots/Marketingmaterial
+- zukünftige Store-/Marketingassets, Screenshots und Videos
 - mögliche Verwechslungswirkung von Spiel-/Kampagnennamen
 - fremde Slogans/Zitate
 - finale juristische/geschäftliche Bewertung des tatsächlichen Releasebuilds
 
 Besonders wichtig: Ein generischer Begriff oder Spielmechanikname wird nicht allein deshalb als „frei“ behandelt, weil die Contentsuche keinen bekannten Franchise-Treffer findet. Vor Production wird die finale öffentliche Namensliste separat bewertet.
 
-## 11. Release-Gates
+## 12. Release-Gates
 
 Vor `FAN / REFERENCE CONTENT PASS`:
 
@@ -186,9 +207,11 @@ Vor `FAN / REFERENCE CONTENT PASS`:
 - [x] `Löwenkönig` durch generischen Löwenhinweis ersetzt
 - [x] zentraler `reference_content_audit.py` in `npm run validate`
 - [x] ergänzender Repository-Suchpass über 16 hochprofilige Namen durchgeführt
-- [ ] zentraler Source-Audit auf funktionierendem Runner tatsächlich grün
+- [x] aktueller Working-Branch-Medienbestand auf die drei App-Icondateien eingegrenzt
+- [x] `media_inventory_audit.py` und `manifest-icons.test.js` als technische Gates ergänzt
+- [ ] Source-/Media-/Icon-Gates auf funktionierendem Runner tatsächlich grün
 - [ ] Restlicher Extended-/Labs-Pass manuell/semantisch final abgenommen
-- [ ] keine fremden Bilder/Logos/Screenshots/Audios/Videos im finalen Build bestätigt
+- [ ] zukünftige Store-/Marketingbilder, Screenshots und Videos separat geprüft
 - [ ] Marketingtexte auf keine offizielle Partnerschaft/Irreführung geprüft
 - [ ] finale öffentliche Spielnamen separat auf Verwechslungs-/Markenrisiken geprüft
 - [ ] `THIRD_PARTY_NOTICES.md` und `LEGAL_CHECKLIST.md` final synchronisiert
