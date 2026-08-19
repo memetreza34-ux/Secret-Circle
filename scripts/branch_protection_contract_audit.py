@@ -12,6 +12,8 @@ required = [
     'CI_TROUBLESHOOTING.md',
     'RELEASE_CHECKLIST.md',
     'package.json',
+    'package-lock.json',
+    'scripts/lockfile_contract_audit.py',
 ]
 
 missing = [relative for relative in required if not (ROOT / relative).is_file()]
@@ -24,6 +26,7 @@ cross = read('.github/workflows/cross-browser.yml')
 troubleshooting = read('CI_TROUBLESHOOTING.md')
 checklist = read('RELEASE_CHECKLIST.md')
 package = json.loads(read('package.json'))
+lock = json.loads(read('package-lock.json'))
 
 checks = {
     'contract_is_prepared_not_claimed_active': 'PREPARED – GitHub-Einstellung selbst noch nicht belastbar bestätigt' in contract,
@@ -40,9 +43,12 @@ checks = {
     'cross_not_documented_as_permanent_required_check': 'darf `Secret Circle Cross-Browser Smoke / smoke` **nicht** als dauerhaft erforderlicher PR-Check' in contract,
     'cross_still_release_gate': 'exakten unveränderten RC-Commit' in contract and 'Cross-Browser' in checklist,
     'zero_step_jobs_not_accepted': 'Kein Merge bei `steps: []`.' in contract and 'steps: []' in troubleshooting,
-    'lockfile_transition_explicit': 'Workflow auf `npm ci` umstellen' in contract and 'package-lock.json' in contract,
+    'lockfile_now_present': lock.get('lockfileVersion') == 3 and lock.get('name') == package.get('name'),
+    'npm_ci_active_in_both_workflows': 'npm ci --ignore-scripts --no-audit --no-fund' in ci and 'npm ci --ignore-scripts --no-audit --no-fund' in cross,
+    'old_install_transition_removed': 'Aktuell fehlt `package-lock.json`' not in contract and 'Workflow auf `npm ci` umstellen' not in contract,
+    'online_install_verification_still_open': 'Online-`npm ci` auf unverändertem Commit grün' in contract,
+    'lockfile_audit_in_validate': 'scripts/lockfile_contract_audit.py' in package.get('scripts', {}).get('validate', ''),
     'branch_protection_release_gate_explicit': 'BRANCH PROTECTION PASS' in contract and 'RELEASE NO_GO' in contract,
-    'package_validate_can_host_audit': isinstance(package.get('scripts', {}).get('validate'), str),
 }
 
 failed = [name for name, passed in checks.items() if not passed]
@@ -54,7 +60,10 @@ print(json.dumps({
     'required_pr_check': 'Secret Circle CI / validate',
     'cross_browser_required_for_rc': True,
     'cross_browser_permanent_pr_required_check': False,
+    'lockfile_present': True,
+    'npm_ci_active': True,
+    'online_npm_ci_verified': False,
     'github_setting_verified': False,
-    'release_status': 'NO_GO until actual repository protection is verified',
+    'release_status': 'NO_GO until actual repository protection and online CI are verified',
     'checks': checks,
 }, ensure_ascii=False, indent=2))
