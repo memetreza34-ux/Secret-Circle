@@ -1,13 +1,13 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
-Stand: 18. August 2026  
-Status: **IN PROGRESS – Assetherkunft und finale Rechteprüfung offen**
+Stand: 19. August 2026  
+Status: **IN PROGRESS – Rasterherkunft belegt; Root-SVG-Rechte und finale Rechteprüfung offen**
 
 ## 1. Zweck
 
 Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcontent und eigene Projektbestandteile, die vor dem Januar-2027-Release auf Herkunft und Nutzungsrechte geprüft werden müssen.
 
-Ein Eintrag ohne belegte Herkunft wird **nicht** automatisch als eigenes Werk behandelt.
+Ein Eintrag ohne belegte Rechtebasis wird **nicht** automatisch als eigenes Werk behandelt.
 
 ## 2. Runtime-Abhängigkeiten
 
@@ -37,36 +37,49 @@ Verbindlich:
 
 Schema-Version: **1**.
 
-`scripts/asset_provenance_audit.py` ist Teil von `npm run validate` und prüft:
+`scripts/asset_provenance_audit.py` ist Teil von `npm run validate` und prüft seit v42:
 
 - jeder inventarisierte Pfad existiert
 - keine doppelten Pfade
 - nur erlaubte Statuswerte
 - alle drei aktuellen Release-Icons besitzen einen Manifest-Eintrag
 - `derivedFrom` zeigt nur auf bekannte Manifest-Einträge
+- vorhandene SHA-256-Werte stimmen mit den Dateien überein
+- `icon-192.png` besitzt tatsächlich 192×192-IHDR
+- `icon-512.png` besitzt tatsächlich 512×512-IHDR
+- `manifest.webmanifest` deklariert dieselben Rastergrößen und MIME-Typen
 - ein Asset darf nicht als `verified-own` oder `verified-third-party` markiert werden, wenn Creator, Quelle, Rechtebasis/Lizenz oder kommerzielle Nutzung fehlen
 
 Der Validator darf `unresolved` während der Entwicklung akzeptieren, meldet dann aber `final_asset_signoff: BLOCKED`. Dadurch bleibt die tatsächliche offene Rechtefrage sichtbar, ohne Entwicklungsaudits durch erfundene Angaben zu umgehen.
 
 ## 5. Aktuelle App-Assets
 
-| Datei | Manifeststatus | Release-Status |
+### Gefundener technischer Fehler und Reparatur v42
+
+Vor v42 war der PWA-Rastervertrag inkonsistent:
+
+- `icon-192.png` fehlte auf dem Branch vollständig
+- die Datei namens `icon-512.png` besaß tatsächlich nur 192×192 Pixel
+- `manifest.webmanifest` behauptete trotzdem 192×192 und 512×512
+
+v42 repariert das:
+
+| Datei | Technischer Nachweis | Rechte-Status |
 |---|---|---|
-| `icon.svg` | `unresolved` | **BLOCKED FOR FINAL SIGN-OFF** |
-| `icon-192.png` | `unresolved`, `derivedFrom: icon.svg` | **BLOCKED FOR FINAL SIGN-OFF** |
-| `icon-512.png` | `unresolved`, `derivedFrom: icon.svg` | **BLOCKED FOR FINAL SIGN-OFF** |
+| `icon.svg` | Git-Historie: am 2. August 2026 in Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` neu angelegt | `unresolved` |
+| `icon-192.png` | echtes 192×192-PNG, am 19. August 2026 aus `icon.svg` mit CairoSVG 2.8.2 erzeugt; SHA-256 `fbf17eb36a6dc9af8c73df1feede3cfbbf04ff1b66048aad7d81e0dd9c77590f` | `unresolved`, Ableitung technisch belegt |
+| `icon-512.png` | echtes 512×512-PNG, am 19. August 2026 aus `icon.svg` mit CairoSVG 2.8.2 erzeugt und mit Pillow 12.3.0 PNG-optimiert; SHA-256 `deea4ccb390c71b46f9a53f328682789c1bd56eef872bda692dcfae01230306c` | `unresolved`, Ableitung technisch belegt |
 
-Vor RC müssen echte Angaben ergänzt werden:
+Der Commit `c183d439...` ist dem Repo-Eigentümer zugeordnet und enthält den Untertext `design: add Secret Circle app icon`. Das belegt **Repository-Herkunft und Zeitpunkt**, aber noch nicht automatisch die urheberrechtliche Rechtebasis, mögliche Template-/KI-/Stock-Nutzung oder kommerzielle Nutzungsrechte des SVG.
 
-- Urheber/Ersteller
-- Quelle/Originaldatei
-- Erstellungsdatum oder Projektkontext, soweit verfügbar
-- Lizenz/Rechtebasis beziehungsweise belegte Eigenproduktion
-- KI-/Template-/Stock-Werkzeug, falls beteiligt
-- kommerzielle Nutzbarkeit
-- Attribution, falls erforderlich
+Deshalb bleibt bewusst offen:
 
-Aus SVG-Code oder visueller Ähnlichkeit allein lässt sich die Rechtekette nicht beweisen.
+- wer das zugrunde liegende SVG tatsächlich gestaltet hat
+- ob externe Vorlage, KI-, Template- oder Stock-Werkzeuge beteiligt waren
+- welche Rechtebasis für kommerzielle Veröffentlichung gilt
+- ob Attribution erforderlich ist
+
+Sobald dies menschlich bestätigt ist, kann `icon.svg` auf einen belegten Status gesetzt werden; die Rasterableitungen können danach dieselbe Rechtebasis erben.
 
 ## 6. Emoji und Systemglyphen
 
@@ -135,12 +148,15 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [ ] transitive Dependencies aus finalem Lockfile inventarisiert
 - [x] maschinenlesbares Asset-Provenienzmanifest vorhanden
 - [x] Asset-Provenienzvalidator in `npm run validate`
+- [x] PNG-IHDR-/Hash-/Manifestgrößenprüfung implementiert
+- [x] `icon-192.png` physisch vorhanden und 192×192
+- [x] `icon-512.png` physisch vorhanden und 512×512
+- [x] Rasterableitungen aus `icon.svg` technisch dokumentiert
 - [x] physischer Reference-Source-Audit in `npm run validate`
 - [x] konkreter historischer Anime-Basisblock aus ausgelieferter Mega-Quelle entfernt
+- [ ] Asset-Provenienz-Audit auf funktionierendem Runner tatsächlich grün
 - [ ] Reference-Source-Audit auf funktionierendem Runner tatsächlich grün
-- [ ] `icon.svg` von `unresolved` auf belegten Status gesetzt
-- [ ] `icon-192.png` Herkunft/Ableitung belegt
-- [ ] `icon-512.png` Herkunft/Ableitung belegt
+- [ ] `icon.svg` von `unresolved` auf belegten Rechte-Status gesetzt
 - [ ] alle späteren Releaseassets inventarisiert und belegt
 - [ ] restlicher manueller Fan-/Marken-/Franchise-/Marketing-/Visualpass abgeschlossen
 - [ ] keine fremden Logos/Screenshots/Audios/Videos ohne Freigabe
