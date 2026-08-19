@@ -6,12 +6,12 @@ Stand: 19. August 2026
 
 Secret Circle besitzt vorbereitete GitHub-Actions-Workflows, aber die aktuell geprüften Jobs erreichen **keinen Repository-Schritt**.
 
-Aktuell belastbar geprüft: **Run #2194** (`Secret Circle CI`) auf Head **`e105b6326cdf6c640fd566a24887f20bf3a6a4fe`** / Job `validate`.
+Aktuell belastbar geprüft: **Run #2202** (`Secret Circle CI`) auf Head **`b5795f510f70bda87d880aa6c1554ea208714d4c`** / Job `validate`.
 
 Aktueller Jobversuch:
 
-- Run-ID `32222768925`
-- Job-ID `95976321366`
+- Run-ID `32223462365`
+- Job-ID `95978337127`
 - Workflow `completed / failure`
 - Job `validate` = `failure`
 - `steps: []`
@@ -22,14 +22,19 @@ Aktueller Jobversuch:
 - kein `npm run validate`
 - kein Playwright
 - kein Repositorycode ausgeführt
+- Abruf eines Job-Logs liefert keinen verwertbaren Log-Blob
 
-Damit wurden insbesondere die neu integrierten Gates `tests/manifest-icons.test.js` und `scripts/media_inventory_audit.py` **nicht ausgeführt**.
+Damit wurden insbesondere die neu integrierten Gates `tests/manifest-icons.test.js`, `scripts/reference_content_audit.py`, `scripts/asset_provenance_audit.py` und `scripts/media_inventory_audit.py` **nicht ausgeführt**.
 
 ## Wiederholbarkeit des Problems
 
-Bereits beim vorherigen v42-Stand wurde Run #2166 untersucht. Dort zeigte der erste Jobversuch ebenfalls `steps: []`. Ein gezielter Re-Run der fehlgeschlagenen Jobs wurde von GitHub akzeptiert und endete erneut mit `steps: []` sowie ohne verwertbaren Job-Log.
+Das Muster ist über mehrere Heads und Runs reproduziert:
 
-Der aktuelle Run #2194 bestätigt dasselbe Muster auf einem späteren Head. Damit ist ein einzelner kurzfristiger Jobaussetzer als Erklärung weniger plausibel. Eine konkrete externe Ursache wird trotzdem nicht erfunden.
+- Run #2166: `steps: []`; gezielter Re-Run erneut ohne Repository-Steps
+- Run #2194 auf Head `e105b6326cdf6c640fd566a24887f20bf3a6a4fe`: `steps: []`
+- Run #2202 auf Head `b5795f510f70bda87d880aa6c1554ea208714d4c`: `steps: []`
+
+Damit ist ein einzelner kurzfristiger Jobaussetzer als Erklärung weniger plausibel. Eine konkrete externe Ursache wird trotzdem nicht erfunden.
 
 Das ist **kein Beweis für einen Codefehler** im Repository. Der Repositorycode wird in diesen Jobs nicht ausgeführt.
 
