@@ -4,32 +4,20 @@ Stand: 19. August 2026
 
 Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
-## Statuswerte
-
-- **DONE** – für den aktuellen Entwicklungsstand abgeschlossen
-- **IN PROGRESS** – aktiv in Bearbeitung
-- **PREPARED** – Grundlage vorhanden, reale/finale Abnahme fehlt
-- **OPEN** – noch nicht systematisch bearbeitet
-- **BLOCKED** – externer oder technischer Blocker
-- **N/A V1** – bewusst nicht Teil Januar 2027
-
 ## Gesamtstatus
 
 **Öffentliche Releasefreigabe: NO_GO**  
-**Offline-Core: `secret-circle-v42`**  
+**Offline-Core: `secret-circle-v43`**  
 **Classic Content: v4**
 
-Technisch weit fortgeschritten: 15 priorisierte Core-Games, quantitative Core-Contentziele, 15/15 Core-Quellreview, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, Accessibility-Basis sowie Legal-/Support-/Incident-/Maintenance-/Environment-Verträge.
+Technisch weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, Accessibility-Basis sowie Legal-/Support-/Incident-/Maintenance-/Environment-Verträge.
 
-v41 schloss den physischen Reference-Source-Pass weitgehend. v42 hat zusätzlich den PWA-Iconvertrag gehärtet:
+Neu:
 
-- fehlendes `icon-192.png` durch echtes 192×192-Raster ergänzt
-- falsch benanntes 192×192-`icon-512.png` durch echtes 512×512-Raster ersetzt
-- beide Raster aus `icon.svg` erzeugt
-- SHA-256 und Ableitung dokumentiert
-- `asset_provenance_audit.py` prüft Datei, Hash, PNG-IHDR und Webmanifest-Größen
-- Git-Historie des SVG bis zum Repository-Commit vom 2. August 2026 dokumentiert
-- finale Rechtebasis des SVG bleibt bewusst offen
+- v41: physischer Reference-Source-Pass
+- v42: PWA-Iconvertrag repariert
+- v43: zwei Private-Device-Truth/Dare-Prompts physisch aus dem Basiskatalog entfernt und globaler Privacy-Content-Source-Audit ergänzt
+- `BRANCH_PROTECTION.md` plus Contract-Audit definiert den zukünftigen Required-Check-Vertrag
 
 ## A-bis-Z-Tracker
 
@@ -44,12 +32,12 @@ v41 schloss den physischen Reference-Source-Pass weitgehend. v42 hat zusätzlich
 | 5 | UX / IA / Design | PREPARED | UX Flow, Design System | reale UX-Tests |
 | 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | ADRs bei Grundsatzentscheidungen |
 | 7 | Security / Threat Model | PREPARED | Security, Threat Model, Registry v2 | Runner + echter Browser |
-| 8 | Repo / Git / Build | BLOCKED | Workflows | Runner, Lockfile, `npm ci`, Branch Protection |
+| 8 | Repo / Git / Build | BLOCKED | Workflows, `BRANCH_PROTECTION.md` | Runner, Lockfile, `npm ci`, GitHub-Schutz aktivieren |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | Restarbeit nach Guide |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | Quota-/Updateabnahme real |
 | 11 | Tests / CI | BLOCKED | Testmatrix/Workflows | funktionierender Actions-Runner |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker v42 | echte Geräte + alte→neue Updates |
-| 13 | Content / Alter | IN PROGRESS | Content-Wellen + 15/15 Review | reale Gruppen + finaler Sign-off |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker v43 | echte Geräte + alte→neue Updates |
+| 13 | Content / Alter / Privacy | IN PROGRESS | Content-Wellen, 15/15 Review, Privacy-Audit | Runner + reale Gruppen + manueller Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md` | G1–G5 + PN1–PN3 real |
 | 15 | Datenschutz / Recht / Support | PREPARED | Privacy, Legal, Support | echte Betreiber-/Hostingangaben |
 | 16 | Release Management / RC | PREPARED | Roadmap/Checklist | nach Gates |
@@ -59,80 +47,55 @@ v41 schloss den physischen Reference-Source-Pass weitgehend. v42 hat zusätzlich
 | 20 | Risk Management | IN PROGRESS | `RISK_REGISTER.md` | laufend aktualisieren |
 | 21 | Accessibility | PREPARED | Contract + E2E-Suite | 200 %, VoiceOver, TalkBack, Geräte |
 | 22 | Third Party / Assetrechte | IN PROGRESS | Third Party + Asset-Provenienz | Root-SVG-Rechte + Lockfile-Inventar |
-| 23 | Fan-/Referenzcontent | IN PROGRESS | Fan Review + Source-Audit | Runner + manuelle Visual/Legal-Abnahme |
+| 23 | Fan-/Referenzcontent | IN PROGRESS | Fan Review + Reference-Audit | Runner + manuelle Visual/Legal-Abnahme |
 
-## Reference-Safe-Verlauf
+## v43 – Privacy Source Hardening
 
-- **v36:** Bluetooth → Funkverbindung, Oscar → Filmpreis, Formel 1 → Motorsport
-- **v37:** Anime-Quiz final auf 40 generische Archetypen
-- **v38:** drei konkrete Viral-Sportformulierungen generisch ersetzt
-- **v40:** 40 konkrete Anime-Namen physisch aus Mega-Quelle entfernt
-- **v41:** Spektrum-Tipp/Tab upstream, Löwenhinweis generisch, Classic v4, zentraler Source-Audit
+Die beiden früheren Privacy-Funde stehen nicht mehr im spielbaren Basiskatalog:
 
-## PWA-/Asset-Hardening – v42
+- Kamerarollen-Frage entfernt
+- Pflicht zum Vorlesen der letzten Handy-Nachricht entfernt
+- harmlose Ersatztexte direkt in `party-catalog.js`
+- `scripts/privacy_content_audit.py` scannt acht ausgelieferte Contentquellen
+- private Chats/Nachrichten, Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort und Kontodaten sind als verpflichtendes Built-in-Spielmaterial source-level geschützt
 
-Vorher:
+Der Audit ist in `npm run validate`, aber wegen des externen Runnerblockers noch nicht als ausgeführter PASS dokumentiert.
 
-- `icon-192.png` fehlte
-- `icon-512.png` war tatsächlich nur 192×192
+## Branch Protection
 
-Jetzt:
+Vorbereitet:
 
-- 192×192 und 512×512 physisch korrekt
-- `manifest.webmanifest` und Dateigrößenvertrag werden statisch gegengeprüft
-- SHA-256-Drift wird erkannt
-- Rasterherkunft ist technisch als Ableitung aus `icon.svg` belegt
-- `icon.svg` bleibt `unresolved`, weil Git-Historie allein keine kommerzielle Rechtebasis beweist
+- `BRANCH_PROTECTION.md`
+- `scripts/branch_protection_contract_audit.py`
+- gewünschter Required Check: `Secret Circle CI / validate`
+- Cross-Browser bleibt bei aktuellem manuellen Trigger separater RC-Gate
 
-## Security / Backup
+Tatsächliche GitHub-Konfiguration: **noch nicht belastbar bestätigt**.
 
-Registry v2 ist zentrale Complete-Backup-Quelle. Nur registrierte Word-/Party-Key-Familien werden importiert; unbekannte Namespaces werden abgelehnt. SEC-F01/F02 sind **CLOSED IN CODE / RUNNER + REAL BROWSER VERIFICATION OPEN**.
+## PWA / Assets
 
-## Accessibility
-
-Vorbereitet: statischer Contract, Playwright-E2E-Basis, Reflow, Fokus, Reduced Motion, ARIA und Touchzielverträge. Offen: reales 200-%-Zoom, VoiceOver, TalkBack, Touchbedienung und private Reveal-Flows mit Screenreader.
-
-## Third Party / Assets
-
-- keine npm-Runtime-Dependencies
-- `@playwright/test` 1.54.2 upstream als Apache-2.0 verifiziert
-- transitive Inventur wartet auf echtes Lockfile
-- `icon-192.png` und `icon-512.png`: technische Ableitung/Dimension seit v42 belegt
-- `icon.svg`: Repository-Herkunft dokumentiert, finale Rechtebasis noch `unresolved`
-- keine Root-`LICENSE`; Projektlizenz wird nicht geraten
-
-## Environments / PWA
-
-- Cache: `secret-circle-v42`
-- Staging-Cache: `secret-circle-v42-staging`
-- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v42 synchronisiert
-- konkrete Staging-/Production-Origin, reale Upgrades, Installationsicon und Rollback offen
+- Cache: `secret-circle-v43`
+- Staging-Cache: `secret-circle-v43-staging`
+- v42-PNGs technisch korrekt 192×192 / 512×512
+- Root-SVG-Rechtebasis bleibt `unresolved`
+- reale Installations-/Update-/Rollbacktests offen
 
 ## CI / Lockfile
 
-Der **aktuelle technische CI-Nachweis wird zentral in `CI_TROUBLESHOOTING.md` gepflegt**, damit wechselnde Actions-Runnummern diesen A-bis-Z-Tracker nicht ständig veralten lassen.
+`CI_TROUBLESHOOTING.md` führt den jeweils neuesten Actions-Befund. Wiederholt erreichen Jobs keine Repository-Steps (`steps: []`). Dadurch dürfen neue Audits/Tests weder als grün noch als negativ getestet bezeichnet werden.
 
-Aktuell bestätigt:
-
-- der aktuelle v42-Head erreicht im Actions-Job keine Repository-Steps (`steps: []`)
-- ein gezielter Re-Run der fehlgeschlagenen Jobs zeigte dasselbe Muster
-- kein Checkout / kein Repositorycode ausgeführt
-- kein verwertbarer Job-Log vorhanden
-
-Deshalb dürfen neue Unit-/Audit-/E2E-Verträge nicht als grün behauptet werden. Das Muster ist zugleich kein negativer Code-Test, weil der Code nie ausgeführt wird.
-
-`package-lock.json` fehlt. Keine Integrity-Werte werden erfunden; CI wird erst mit echtem Lockfile auf `npm ci` umgestellt.
+`package-lock.json` fehlt weiterhin. Keine Integrity-Werte werden erfunden; final muss CI auf `npm ci` umgestellt werden.
 
 ## Höchste Prioritäten
 
 1. GitHub-Actions-Runner / echter Checkout + sichtbare Steps
 2. echtes `package-lock.json` + `npm ci`
-3. Branch Protection / Required Checks
-4. Reference- und Asset-Audits tatsächlich grün ausführen
+3. Branch Protection / Required Checks tatsächlich bestätigen
+4. Branch-/Privacy-/Reference-/Asset-Audits tatsächlich grün ausführen
 5. finale Rechtebasis für `icon.svg`
 6. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 7. HTTPS-Staging
-8. reale PWA-Upgrade-/Rollback-/Geräte-/Installationsicon-Tests
+8. reale PWA-Upgrade-/Rollback-/Gerätetests
 9. reale Accessibilitytests
 10. reale Gruppentests
 11. Betreiber-/Support-/Hostingangaben
@@ -142,9 +105,10 @@ Deshalb dürfen neue Unit-/Audit-/E2E-Verträge nicht als grün behauptet werden
 ## Nicht als bestanden behaupten
 
 - `npm run ci` / Cross-Browser
-- Reference-Source-/Asset-Provenienz-Audit auf GitHub Actions
-- v42-Update auf real installierter PWA
-- korrektes Installationsicon auf realem Android/iPhone/Desktop
+- Branch-Protection-Konfiguration
+- Privacy-/Reference-/Asset-Audits auf GitHub Actions
+- v43-Update auf real installierter PWA
+- korrektes Installationsicon auf realen Zielplattformen
 - Registry-v2-Import im echten Browser
 - VoiceOver/TalkBack/200-%-Zoom
 - Beta-/Gruppentests
