@@ -32,20 +32,20 @@ Der vollständige Party-Katalog wird in dieser Reihenfolge aufgebaut:
 
 Verantwortung:
 
-- `party-catalog.js`: Basisspiele und Ausgangsinhalte
+- `party-catalog.js`: Basisspiele und Ausgangsinhalte; seit v43 enthält der spielbare Basiskatalog die zwei früher problematischen Private-Device-Truth/Dare-Texte physisch nicht mehr
 - `party-expansion.js`: Advanced-Spiele, strukturierte Welle-1-Erweiterungen und seit v41 reference-safe Grunddefinitionen für `wavelength`/Tabu
 - `party-trending-catalog.js`: klassische Quick Modes
 - `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate; `anime-guess` liegt dort physisch als generischer Archetypenmodus vor
 - `party-viral-catalog.js`: Viral-/Preis-/Wissens-/Storyformate
 - `party-core-release-catalog.js`: soziale Core-Releaseinhalte aus Welle 2
-- `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Invarianten
+- `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Invarianten und defensive Fallback-Ersetzungen
 - `party-routing.js`: finale Routingfassade, Competition-Metadaten und lokale Creator-Spiele
 
 `party-core-classic-content.js` steht auf Version **4**. Die finale Schicht:
 
 - hält `anime-guess` auf 40 eigenständigen Archetypen,
 - hält die stabile interne Spiel-ID `wavelength` öffentlich auf **Spektrum-Tipp**,
-- enthält nur noch die zwei Privacy-Textkorrekturen als redaktionelle Ersetzungen,
+- behält die zwei Privacy-Textkorrekturen nur noch als defensive Fallback-Ersetzungen,
 - behält persistierte IDs/Routingkompatibilität bei.
 
 Seit v41 gilt zusätzlich upstream:
@@ -55,7 +55,14 @@ Seit v41 gilt zusätzlich upstream:
 - `party-mega-catalog.js` enthält die 40 generischen Anime-Archetypen und keine früheren konkreten Anime-Figuren.
 - Der Emoji-Quiz-Löwenhinweis ist generisch `🦁🌾 → Löwe` statt `Löwenkönig`.
 
-`scripts/reference_content_audit.py` scannt die tatsächlich ausgelieferten Contentquellen und macht diese Entscheidungen zu einem Releasevertrag. Die stabile technische ID `wavelength` bleibt ausdrücklich erlaubt; der alte sichtbare Produktname ist gesperrt.
+Seit v43 gilt zusätzlich für Privacy-Content:
+
+- `party-catalog.js` enthält direkt `Welches Foto-Motiv findest du besonders lustig?` statt einer Kamerarollen-Aufforderung.
+- `party-catalog.js` enthält direkt `Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.` statt einer Aufforderung, die letzte Handy-Nachricht vorzulesen.
+- `scripts/privacy_content_audit.py` scannt acht ausgelieferte Built-in-Contentquellen auf konkrete Offenlegungsaufforderungen zu privaten Chats/Nachrichten, Kamerarolle/Fotos, Passwörtern, Adresse, Telefonnummer, Standort oder Kontodaten.
+- Harmlose Geräte-/Chat-Erwähnungen werden nicht pauschal blockiert; der Audit trennt private Offenlegung von normalen Alltagsthemen.
+
+`scripts/reference_content_audit.py` scannt ebenfalls die tatsächlich ausgelieferten Contentquellen und macht die Reference-Safe-Entscheidungen zu einem Releasevertrag. Die stabile technische ID `wavelength` bleibt ausdrücklich erlaubt; der alte sichtbare Produktname ist gesperrt.
 
 ## 5. Hub- und Timergrenzen
 
@@ -87,14 +94,15 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 - Importgrenzen nach Format, Größe, Key-Allowlist und Struktur
 - geheime Inhalte nach Hintergrundwechsel/Reload nicht automatisch sichtbar
 - lokale Daten auffindbar, exportierbar und löschbar
-- Built-in-Content darf keine privaten Nachrichten/Fotos als Spielmaterial verlangen
+- Built-in-Content darf keine privaten Nachrichten/Fotos/Passwörter/Adressen als Spielmaterial verlangen
 - persönliche Inhalte bleiben freiwillig und überspringbar
+- Source-Level-Privacy-Content wird zusätzlich durch `scripts/privacy_content_audit.py` geschützt
 
 `SECURITY.md`, `THREAT_MODEL.md` und `BACKUP_SCHEMAS.md` ergänzen diesen Vertrag verbindlich.
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v42`**.
+Aktueller Offline-Core: **`secret-circle-v43`**.
 
 - v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
 - v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
@@ -103,6 +111,7 @@ Aktueller Offline-Core: **`secret-circle-v42`**.
 - v40: 40 historische konkrete Anime-Figurennamen physisch aus der ausgelieferten `party-mega-catalog.js` entfernt
 - v41: `Spektrum-Tipp` und `Tab` upstream in `party-expansion.js` verankert, Classic Content auf v4 bereinigt, `Löwenkönig` durch generischen Löwenhinweis ersetzt und zentraler Source-Reference-Audit in `npm run validate` aufgenommen
 - v42: fehlendes `icon-192.png` ergänzt, falsch dimensioniertes `icon-512.png` durch echtes 512×512-Raster ersetzt und Asset-Audit um PNG-IHDR-, Manifestgrößen- und SHA-256-Prüfung erweitert
+- v43: die zwei historischen Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` entfernt und ein globaler Privacy-Content-Source-Audit in `npm run validate` aufgenommen
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -127,16 +136,16 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 - vermeidbare konkrete Marken-/Award-/Eventbegriffe werden generisch formuliert
 - konkrete Fan-/Franchise-Namen werden aus finalem Runtime-Content **und ausgelieferten Source-Dateien** entfernt, sofern sie keinen zwingenden Produktnutzen haben
 - stabile interne IDs dürfen aus Migrationsgründen von sichtbaren Produktnamen abweichen
-- keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter oder Adressen
+- keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten
 - jede Built-in-Karte besitzt einen redaktionellen Zweck
 - Altersstufe und sensible Themen werden dokumentiert
 - Nutzerinhalte bleiben von Built-ins getrennt
 
-`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md` und `scripts/reference_content_audit.py` definieren die Release-Gates.
+`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md`, `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` definieren die Release-Gates.
 
 ## 12. Testpyramide
 
-Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Reference-Source-, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
+Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Privacy-Source-, Reference-Source-, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
 
 Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Screenreader/Zoom und reale Partygruppen.
 
