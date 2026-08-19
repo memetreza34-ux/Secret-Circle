@@ -9,6 +9,7 @@ required = [
     'ENVIRONMENTS.md',
     'DEPLOYMENT.md',
     'RELEASE_CHECKLIST.md',
+    'tests/pwa-head-metadata.test.js',
     'package.json',
 ]
 for relative in required:
@@ -19,6 +20,7 @@ smoke = (ROOT / 'scripts/staging_smoke.py').read_text(encoding='utf-8')
 environments = (ROOT / 'ENVIRONMENTS.md').read_text(encoding='utf-8')
 deployment = (ROOT / 'DEPLOYMENT.md').read_text(encoding='utf-8')
 checklist = (ROOT / 'RELEASE_CHECKLIST.md').read_text(encoding='utf-8')
+pwa_head_test = (ROOT / 'tests/pwa-head-metadata.test.js').read_text(encoding='utf-8')
 package = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))
 scripts = package.get('scripts', {})
 
@@ -35,6 +37,12 @@ markers = (
     '--production',
     'BLOCKED_PRIVACY_PROMPTS',
     'BLOCKED_REFERENCE_MARKERS',
+    'INTERACTIVE_HTML_PATHS',
+    'PWA_HEAD_MARKERS',
+    'assert_pwa_head_metadata',
+    'apple-mobile-web-app-title',
+    'apple-touch-icon',
+    'manifest-src',
     'party-catalog.js',
     'party-expansion.js',
     'party-mega-catalog.js',
@@ -48,11 +56,18 @@ checks = {
     'same_origin_redirect_guard': 'Cross-Origin-Redirect blockiert' in smoke,
     'bounded_downloads': 'read_limited' in smoke and 'limit + 1' in smoke,
     'manifest_and_icon_dimensions': all(marker in smoke for marker in ('192x192', '512x512', 'PNG-Signatur/IHDR')),
+    'deployed_pwa_head_contract': all(marker in smoke for marker in (
+        'party.html', 'creator.html', 'advanced.html?game=question-imposter',
+        'quick-play.html?game=guess-the-price', 'index.html', 'pwa_head_metadata_contract'
+    )),
+    'local_pwa_head_test_matches_scope': all(marker in pwa_head_test for marker in (
+        'party.html', 'creator.html', 'advanced.html', 'quick-play.html', 'index.html'
+    )),
     'privacy_source_gate': all(marker in smoke for marker in ('Was ist das Seltsamste in deiner Kamerarolle?', 'Lies die letzte Nachricht auf deinem Handy')),
     'reference_source_gate': all(marker in smoke for marker in ('Anime-Archetypen erraten', 'Spektrum-Tipp', 'Löwenkönig')),
     'package_command': scripts.get('staging:smoke') == 'python scripts/staging_smoke.py',
-    'environment_documents_smoke': 'scripts/staging_smoke.py' in environments and 'HTTPS-Staging' in environments,
-    'deployment_documents_smoke': 'scripts/staging_smoke.py' in deployment and 'Production-Smoke-Test' in deployment,
+    'environment_documents_smoke': 'scripts/staging_smoke.py' in environments and 'HTTPS-Staging' in environments and 'tests/pwa-head-metadata.test.js' in environments,
+    'deployment_documents_smoke': 'scripts/staging_smoke.py' in deployment and 'Production-Smoke-Test' in deployment and 'tests/pwa-head-metadata.test.js' in deployment,
     'release_checklist_requires_smoke': 'scripts/staging_smoke.py' in checklist and 'HTTPS-Staging-Smoke' in checklist,
 }
 
@@ -63,5 +78,6 @@ if failed:
 print(json.dumps({
     'staging_smoke_contract_audit': 'PASS',
     'network_smoke_execution': 'NOT_RUN_BY_THIS_AUDIT',
+    'pwa_head_metadata': 'DEPLOYED_SOURCE_CONTRACT_REQUIRED',
     'checks': checks,
 }, ensure_ascii=False, indent=2))
