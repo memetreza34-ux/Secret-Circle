@@ -6,127 +6,93 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 ### Release-/A-bis-Z-Prozess
 
-- `APP_ENTWICKLUNG_VON_A_BIS_Z.md` als Masterprozess von Discovery bis Maintenance eingeführt und Secret-Circle-spezifisch erweitert.
-- Operativer Tracker `APP_DEVELOPMENT_STATUS.md`, Risikoregister, Produktbrief, Nutzerszenarien, Marktanalyse, Requirements, UX-Flow, Designsystem, Security/Threat Model, Accessibility, Beta, Legal, Support, Incident Response, Maintenance und Environment-Vertrag ergänzt.
-- Release-Audit verlangt Content-, Reference-Source-, Accessibility-, Asset-Provenienz-, Placeholder-, Legal-/Support-/Operations- und Environment-Nachweise.
+- A-bis-Z-Masterprozess, operativer Tracker, Risk Register, Produkt-/UX-/Architektur-/Security-/Accessibility-/Beta-/Legal-/Support-/Incident-/Maintenance-/Environment-Verträge ergänzt.
+- `BRANCH_PROTECTION.md` und `scripts/branch_protection_contract_audit.py` definieren jetzt den zukünftigen Required-Check-Vertrag.
+- gewünschter normaler PR-Check: **`Secret Circle CI / validate`**.
+- Cross-Browser bleibt bei aktuellem `workflow_dispatch` separater RC-Gate und wird nicht fälschlich als permanenter PR-Required-Check verlangt.
 
 ### Core-Content
 
 - alle 15 priorisierten Core-Games auf definierte quantitative Releaseziele gebracht.
 - 15/15 erster manueller Core-Quellpass dokumentiert.
-- private Truth/Dare-Prompts entfernt, die Kamerarolle oder letzte private Handy-Nachricht als Spielmaterial verwenden konnten.
-- sichtbare Freiwilligkeits-/Skip-Regel im Hub und Advanced-Bereich ergänzt.
+- persönliche Inhalte sichtbar freiwillig/überspringbar.
 
 ### Reference-Safe-Content
 
 #### PWA v36
 
-- Word Imposter: `Bluetooth` → `Funkverbindung`.
-- Word Imposter: `Oscar` → `Filmpreis`.
-- Word Imposter: `Formel 1` → `Motorsport`.
+- `Bluetooth` → `Funkverbindung`
+- `Oscar` → `Filmpreis`
+- `Formel 1` → `Motorsport`
 
-#### PWA v37
+#### PWA v37/v40
 
-- `anime-guess` final als **Anime-Archetypen erraten** mit vier generischen Packs und 40 eigenständigen Archetypen ausgeliefert.
-- finale Runtime-Schicht blockiert die 40 früher inventarisierten konkreten Figuren im ausgespielten Katalog.
+- `anime-guess` als **Anime-Archetypen erraten** mit 4 generischen Packs / 40 Archetypen.
+- 40 frühere konkrete Anime-Figuren seit v40 physisch aus `party-mega-catalog.js` entfernt.
 
 #### PWA v38
 
-- Viral `higher-lower`: drei unnötig konkrete olympisch/Grand-Slam-bezogene Sportformulierungen durch neutrale Fragen mit denselben Zahlenwerten ersetzt.
+- drei unnötig konkrete olympisch/Grand-Slam-nahe Viral-Sportformulierungen neutralisiert.
 
-#### PWA v39
+#### PWA v39/v41
 
-- finale Tabu-Browserkarte auf `Tab` statt `Chrome` umgestellt.
-- stabile interne ID `wavelength` sichtbar als **Spektrum-Tipp** statt Wellenlänge dargestellt.
-- `party-core-classic-content.js` auf Version 3 angehoben.
+- stabile ID `wavelength`, sichtbarer Titel upstream **Spektrum-Tipp**.
+- Browser-Tabu upstream `Tab` statt `Chrome`.
+- Emoji-Quiz `Löwenkönig` → generisches `Löwe`.
+- `party-core-classic-content.js` auf v4.
+- `scripts/reference_content_audit.py` scannt acht ausgelieferte Contentquellen.
 
-#### PWA v40
+### PWA v42 – Asset-Hardening
 
-- die 40 historischen konkreten Anime-Figuren vollständig aus der tatsächlich ausgelieferten `party-mega-catalog.js` entfernt.
-- `tests/party-mega-catalog.test.js` liest die ausgelieferte Quelle selbst ein und blockiert die Rückkehr dieser Namen.
+- fehlendes `icon-192.png` durch echtes 192×192-PNG ergänzt.
+- falsch dimensioniertes `icon-512.png` durch echtes 512×512-PNG ersetzt.
+- Rasterableitung aus `icon.svg`, SHA-256, PNG-IHDR und Manifestgrößen werden geprüft.
+- Root-SVG-Rechtebasis bleibt bewusst `unresolved` bis menschlicher Bestätigung.
 
-#### PWA v41
+### PWA v43 – Privacy Source Hardening
 
-- `party-expansion.js` liefert die stabile ID `wavelength` bereits upstream mit sichtbarem Titel **Spektrum-Tipp**.
-- Browser-Tabu enthält bereits upstream `Tab` statt `Chrome`; der nachträgliche Classic-Fallback wurde entfernt.
-- Emoji-Quiz: `🦁👑 → Löwenkönig` durch generisches `🦁🌾 → Löwe` ersetzt.
-- `party-core-classic-content.js` auf **Version 4** vereinfacht; dort verbleiben nur noch zwei Privacy-Editorial-Replacements.
-- `scripts/reference_content_audit.py` ergänzt. Der Audit scannt acht tatsächlich ausgelieferte Contentquellen und blockiert bewusst entfernte konkrete Referenzen sowie ausgewählte nicht freigegebene hochprofilige Plattform-/Franchise-Namen.
-- Reference-Source-Audit in `npm run validate` integriert.
-- Core-, Architektur- und Release-Audits auf den physischen Source-Vertrag umgestellt.
+Die zwei früher identifizierten Private-Device-Truth/Dare-Prompts sind jetzt **physisch aus `party-catalog.js` entfernt**:
 
-#### PWA v42 – Rastericon-Reparatur
+- Kamerarollen-Frage → `Welches Foto-Motiv findest du besonders lustig?`
+- letzte Handy-Nachricht vorlesen → `Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.`
 
-- echten PWA-Fehler gefunden: `icon-192.png` fehlte auf dem Branch vollständig.
-- die bisherige Datei `icon-512.png` besaß laut PNG-IHDR tatsächlich nur 192×192 Pixel.
-- `icon-192.png` als echtes 192×192-PNG aus `icon.svg` erzeugt.
-- `icon-512.png` als echtes 512×512-PNG aus `icon.svg` erzeugt und PNG-optimiert.
-- `assets/manifests/asset-provenance.json` um Erstellungswerkzeuge, Ableitung, Dimensionen und SHA-256 ergänzt.
-- `scripts/asset_provenance_audit.py` prüft jetzt zusätzlich SHA-256-Drift, PNG-Signatur/IHDR-Dimensionen und die Iconmetadaten aus `manifest.webmanifest`.
-- Service Worker und Service-Worker-Test verlangen alle drei App-Icondateien offline.
-- Git-Historie des aktuellen `icon.svg` bis Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` vom 2. August 2026 dokumentiert.
-- Rechtebasis des Root-SVGs bewusst **nicht** automatisch als geklärt markiert; `icon.svg` bleibt bis menschlicher Bestätigung `unresolved`.
+Zusätzlich:
 
-Die v41/v42-Verträge sind implementiert, aber wegen des aktuellen Actions-Runnerproblems noch **nicht belastbar als grün ausgeführt dokumentiert**.
+- `scripts/privacy_content_audit.py` ergänzt.
+- Audit scannt acht ausgelieferte Built-in-Contentquellen.
+- blockiert konkrete Aufforderungen zur Offenlegung privater Chats/Nachrichten, Fotos/Kamerarolle, Passwörter, Adresse, Telefonnummer, Standort oder Kontodaten.
+- harmlose Geräte-/Chat-Erwähnungen werden bewusst nicht pauschal blockiert.
+- Audit in `npm run validate` integriert.
+- Service Worker auf **`secret-circle-v43`** / `secret-circle-v43-staging` angehoben.
+- Service-Worker-Test auf v43 synchronisiert und verlangt `party-catalog.js` offline.
+- Architektur, Deployment, Privacy, Environment, README, Release-Status, A-bis-Z-Tracker und Release-Checkliste auf v43 synchronisiert.
 
 ### Backup / Security
 
-- `backup-schema-registry.js` auf Registry v2 als zentrale Quelle für Complete-Backup-Format, Größenlimits und zulässige Storage-Key-Familien erweitert.
-- `party-data-tools.js` konsumiert das zentrale Registry-Schema statt kritische Grenzen zu duplizieren.
+- Backup Registry v2 ist zentrale Quelle für Complete-Backup-Format, Größenlimits und erlaubte Storage-Key-Familien.
 - unbekannte `secret-circle-*`-Namespaces werden beim Complete-Import abgelehnt.
-- vollständiges Löschen bleibt bewusst breit und entfernt auch alte/verwaiste Secret-Circle-Schlüssel.
-- `party.html` lädt Backup-Registry vor den Datentools.
+- vollständiges Löschen bleibt bewusst breit.
 
-### PWA / Offline
+### Accessibility / Beta
 
-- kontrollierte staged Updates mit sichtbarer Nutzeraktivierung und nicht-destruktiver Promotion beibehalten.
-- aktueller Offline-Core: **`secret-circle-v42`** / `secret-circle-v42-staging`.
-- Cachegeneration, Privacy, Architektur, Deployment, Environment und Service-Worker-Vertrag auf v42 synchronisiert.
-- PWA-Manifest/Icons sind Teil des Offline-Core.
-
-### Accessibility
-
-- `ACCESSIBILITY.md` eingeführt.
-- `tests/accessibility-contract.test.js` in Unit-/Syntax-Gates integriert.
-- `tests/e2e/accessibility-core.spec.js` als Playwright-Basis ergänzt.
-- 44px-kritische Touchziele, Fokus, Reduced Motion, ARIA und Reflow-Verträge verschärft.
+- statischer Accessibility-Contract und Playwright-E2E-Basis vorhanden.
+- reale Android-/iPhone-/Tablet-, VoiceOver-/TalkBack-/200-%-Zoom- und Gruppentests bleiben offen.
 
 ### Third Party / Assets / Legal
 
-- `THIRD_PARTY_NOTICES.md` eingeführt.
 - `@playwright/test` 1.54.2 upstream als Apache-2.0 verifiziert.
-- `assets/manifests/asset-provenance.json` ergänzt.
-- Rasterherkunft und Dimensionen von `icon-192.png` und `icon-512.png` seit v42 technisch belegt.
-- `icon.svg` bleibt bis finaler menschlicher Rechtebestätigung `unresolved`.
-- `scripts/asset_provenance_audit.py` in `npm run validate` integriert und um Hash-/IHDR-/Manifestprüfung gehärtet.
-- `scripts/public_release_placeholder_audit.py` ergänzt, um typische Dummywerte in öffentlichen Runtime-Dateien zu blockieren.
-- `scripts/reference_content_audit.py` ergänzt, um physische Contentquellen auf bereits bewertete konkrete Referenzen zu prüfen.
-- `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md` ergänzt.
-
-### Sessions / Hub / Timer
-
-- gemeinsame Exact-once-Session-Ledger-Grundlage für Hub/Creator/Quick/Mega/Viral weiter abgesichert.
-- direkte Hub-Sessions mit sicherem Resume, Spieler-Snapshot und explizitem Verwerfen.
-- **Beenden & speichern** klar von **Abbrechen & verwerfen** getrennt.
-- gemeinsame Pause-/Skip-Steuerung und Fokusführung.
-- Timermechaniken in `party-hub-timers.js` ausgelagert.
-- Scharade 60 s, Tabu 60 s, Hot Potato 10–25 s verdeckt, Wortkette 30 s mit pausiertem Resume.
-
-### Advanced / Mafia
-
-- private Advanced-Reveals werden nach Reload wieder verdeckt.
-- Mafia skaliert Mafiaanzahl mit Gruppengröße und unterstützt Schnell/Klassisch/Erweitert mit Arzt/Detektiv/Beschützer.
-- Beschützer darf dieselbe Person nicht zwei Nächte nacheinander schützen.
+- Asset-Provenienz-, Media-Inventar-, Reference-, Privacy- und Placeholder-Audits Bestandteil des Qualitätsprozesses.
+- finale Rechtebasis des Root-SVGs, transitive Dependencyinventur, Betreiber-/Support-/Hostingangaben und manueller Visual-/Legal-Pass bleiben offen.
 
 ### CI / Build – noch offen
 
-- der zuletzt belastbar untersuchte GitHub-Actions-Lauf #2126 endete vor einem Repository-Step: `validate` failure, `steps: []`, kein Checkout und kein verwertbarer Job-Log.
-- daher sind die neuen v41/v42-Unit-/Audit-/Reference-/Asset-Verträge noch nicht runner-verifiziert.
-- `package-lock.json` fehlt; keine Integrity-Werte wurden erfunden.
-- CI bleibt vorläufig auf Installationsübergang und wird erst mit echtem Lockfile auf `npm ci` umgestellt.
-- Branch Protection/Required Checks bleiben offen.
+- GitHub Actions beendet geprüfte `validate`-Jobs weiterhin vor Repository-Steps mit `steps: []`.
+- dadurch sind v41–v43-Audits/Tests nicht belastbar runner-verifiziert.
+- `package-lock.json` fehlt weiterhin; keine Integrity-Werte wurden erfunden.
+- final muss auf `npm ci` umgestellt werden.
+- tatsächliche Branch Protection/Required Checks sind noch nicht bestätigt.
 
 ### Release-Status
 
 - PR #13 bleibt Draft und ungemergt.
-- öffentlicher Release bleibt **NO_GO**, bis CI, Lockfile, Branch Protection, Reference-/Asset-Audits, reale Geräte/PWA-Upgrades, Accessibility, reale Gruppen, Root-SVG-/Asset-/Rechte-, Legal-/Support- und Staging-Gates bestanden sind.
+- öffentlicher Release bleibt **NO_GO**, bis CI, Lockfile, Branch Protection, Privacy-/Reference-/Asset-Audits, reale Geräte/PWA-Upgrades, Accessibility, Gruppen, Rechte, Legal/Support und Staging bestanden sind.
