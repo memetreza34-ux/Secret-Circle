@@ -102,7 +102,7 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v43`**.
+Aktueller Offline-Core: **`secret-circle-v44`**.
 
 - v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
 - v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
@@ -112,6 +112,7 @@ Aktueller Offline-Core: **`secret-circle-v43`**.
 - v41: `Spektrum-Tipp` und `Tab` upstream in `party-expansion.js` verankert, Classic Content auf v4 bereinigt, `Löwenkönig` durch generischen Löwenhinweis ersetzt und zentraler Source-Reference-Audit in `npm run validate` aufgenommen
 - v42: fehlendes `icon-192.png` ergänzt, falsch dimensioniertes `icon-512.png` durch echtes 512×512-Raster ersetzt und Asset-Audit um PNG-IHDR-, Manifestgrößen- und SHA-256-Prüfung erweitert
 - v43: die zwei historischen Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` entfernt und ein globaler Privacy-Content-Source-Audit in `npm run validate` aufgenommen
+- v44: `creator.html`, `advanced.html` und `quick-play.html` auf denselben Manifest-/iOS-/Icon-Head-Vertrag wie Hub und Word Imposter gebracht; `tests/pwa-head-metadata.test.js` schützt fünf interaktive Einstiegseiten
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -123,13 +124,32 @@ Bei jeder offline benötigten Dateiänderung:
 4. Architektur/Deployment/Privacy/Environment synchronisieren
 5. reales alte→neue Update später testen
 
-## 10. Accessibility als Definition of Done
+## 10. PWA-Installationsmetadaten
+
+Die interaktiven Einstiegseiten `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` verwenden denselben Installationsvertrag:
+
+- responsiver Viewport mit `viewport-fit=cover`
+- `theme-color`
+- `referrer=no-referrer`
+- `mobile-web-app-capable=yes`
+- `apple-mobile-web-app-capable=yes`
+- `apple-mobile-web-app-status-bar-style=black-translucent`
+- `apple-mobile-web-app-title=Secret Circle`
+- CSP mit `manifest-src 'self'`
+- `manifest.webmanifest`
+- `icon.svg`
+- `icon-192.png` als PNG-Favicon
+- `icon-192.png` als Apple-Touch-Icon
+
+`tests/pwa-head-metadata.test.js` schützt diesen Source-Vertrag. Reale Homescreen-/Installationsdarstellung auf iOS/Android/Desktop bleibt ein Geräte-Gate.
+
+## 11. Accessibility als Definition of Done
 
 Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 px wichtige Touchziele, Reduced Motion, 200-%-Zoom/Reflow, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
 
-`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js` und `tests/e2e/accessibility-core.spec.js` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
+`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/pwa-head-metadata.test.js` und `tests/e2e/accessibility-core.spec.js` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
 
-## 11. Inhalts- und Rechtevertrag
+## 12. Inhalts- und Rechtevertrag
 
 - keine kopierten proprietären Karten anderer Apps
 - keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
@@ -143,13 +163,13 @@ Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastatu
 
 `CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md`, `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` definieren die Release-Gates.
 
-## 12. Testpyramide
+## 13. Testpyramide
 
-Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, Privacy-Source-, Reference-Source-, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
+Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, PWA-Head-, Privacy-Source-, Reference-Source-, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
 
 Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Screenreader/Zoom und reale Partygruppen.
 
-## 13. Performance und Assets
+## 14. Performance und Assets
 
 Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. Aktuell insbesondere:
 
@@ -168,13 +188,13 @@ PWA-Icon-Vertrag seit v42:
 - `assets/manifests/asset-provenance.json` enthält SHA-256 und Ableitung
 - `scripts/asset_provenance_audit.py` validiert Existenz, Hash, IHDR-Dimension und Manifestmetadaten
 
-## 14. Betrieb, Deprecation und Rollback
+## 15. Betrieb, Deprecation und Rollback
 
 `SUPPORT.md`, `INCIDENT_RESPONSE.md`, `MAINTENANCE.md` und `DEPLOYMENT.md` definieren den Betriebsvertrag nach Release.
 
 Veraltete Funktionen werden dokumentiert migriert und nicht still entfernt. Keine Force-Pushes auf stabile Release-Basen. Rollback muss persistierte Daten kompatibel halten und benötigt bei PWA-Dateiänderungen erneut eine höhere Cachegeneration.
 
-## 15. Releaseentscheidung
+## 16. Releaseentscheidung
 
 Eine Funktion ist erst fertig, wenn Happy Path und Fehlerfälle funktionieren, Daten-/Migrationsverhalten geklärt ist, Security/Privacy/Offline/Accessibility berücksichtigt sind, relevante Tests vorhanden **und tatsächlich ausgeführt** wurden, Dokumentation synchron ist und releasekritische Flows real beobachtet wurden.
 
