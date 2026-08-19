@@ -9,22 +9,14 @@ Draft-PR: #13
 
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v41`**  
+**Offline-Core:** **`secret-circle-v42`**  
 **Classic Content:** **v4**
 
 Die technische Grundlage ist weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, Accessibility-Basis und Betriebs-/Legal-Verträge sind vorbereitet.
 
-Der technische Reference-Safe-Pass ist seit v41 deutlich stärker:
+Seit v41 ist der Reference-Safe-Vertrag source-level abgesichert. v42 hat zusätzlich einen echten PWA-Assetfehler geschlossen: `icon-192.png` fehlte und die bisherige Datei `icon-512.png` war tatsächlich nur 192×192. Beide Rastericons liegen jetzt in korrekter Größe vor und werden per Hash/IHDR/Manifest-Audit geprüft.
 
-- Word Imposter: `Bluetooth`/`Oscar`/`Formel 1` generisch ersetzt
-- Viral: drei unnötig konkrete Sport-/Eventformulierungen generisch ersetzt
-- `anime-guess`: 40 generische Archetypen im finalen Katalog **und physisch in der ausgelieferten Mega-Quelle**
-- `party-expansion.js`: sichtbarer Titel **Spektrum-Tipp** statt `Wellenlänge`
-- Browser-Tabu upstream: `Tab` statt `Chrome`
-- Emoji-Quiz: generischer Löwenhinweis statt `Löwenkönig`
-- `scripts/reference_content_audit.py` ist Teil von `npm run validate`
-
-Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, reale Device-/PWA-/Accessibility-/Gruppentests, Assetherkunft, manuelle visuelle/rechtliche Restabnahme, Betreiber-/Supportangaben und HTTPS-Staging.
+Nicht abgeschlossen sind echter CI-Nachweis, Lockfile/`npm ci`, Branch Protection, reale Device-/PWA-/Accessibility-/Gruppentests, **Rechtebasis des Root-SVG-Icons**, manuelle visuelle/rechtliche Restabnahme, Betreiber-/Supportangaben und HTTPS-Staging.
 
 ## Produkt / Katalog
 
@@ -72,6 +64,25 @@ Privacy-Fund geschlossen: keine letzte private Nachricht vorlesen, keine Kamerar
 
 **Wichtig:** Diese neuen Tests/Audits sind implementiert, aber wegen des Actions-Runnerproblems noch nicht belastbar als grün ausgeführt dokumentiert.
 
+## PWA-Asset-Hardening – v42
+
+Gefundener Zustand vor v42:
+
+- `icon-192.png` fehlte auf dem Branch
+- `icon-512.png` enthielt laut PNG-IHDR nur 192×192 Pixel
+- `manifest.webmanifest` deklarierte trotzdem 192×192 und 512×512
+
+Umgesetzt:
+
+- neues echtes `icon-192.png` mit 192×192
+- neues echtes `icon-512.png` mit 512×512
+- beide aus `icon.svg` erzeugt
+- Rasterableitung, Erstellungswerkzeuge und SHA-256 in `asset-provenance.json` dokumentiert
+- `asset_provenance_audit.py` prüft Existenz, SHA-256, PNG-Signatur/IHDR sowie Webmanifest-Größen
+- Git-Historie belegt, dass das aktuelle `icon.svg` am 2. August 2026 in Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` neu in das Repo kam
+
+**Nicht behauptet:** Diese Git-Historie beweist nicht automatisch Urheberrecht oder kommerzielle Nutzungsrechte. `icon.svg` bleibt deshalb korrekt `unresolved` bis menschlicher Bestätigung.
+
 ## Sessions / Resume / Timer
 
 - stabile Session-/Completion-IDs
@@ -92,14 +103,15 @@ SEC-F01/F02: **CLOSED IN CODE / REAL VERIFICATION OPEN**.
 
 ## PWA / Offline
 
-- `secret-circle-v41`
-- `secret-circle-v41-staging`
+- `secret-circle-v42`
+- `secret-circle-v42-staging`
 - staged update
 - bewusste Nutzeraktivierung
 - aktiver Core wird nicht vor erfolgreicher Promotion zerstört
-- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v41 synchronisiert
+- Privacy, Architektur, Deployment, Environment und Service-Worker-Test auf v42 synchronisiert
+- `icon.svg`, `icon-192.png`, `icon-512.png` sind explizit Teil des Offline-Core
 
-Offen: reale Altversion→v41-Upgrades, iOS/Android-PWA, Rollback und Sperrbildschirmtests.
+Offen: reale Altversion→v42-Upgrades, iOS/Android-PWA, Rollback, echtes Installationsicon und Sperrbildschirmtests.
 
 ## Accessibility / Beta
 
@@ -114,15 +126,17 @@ Vorhanden: `LEGAL_CHECKLIST.md`, `THIRD_PARTY_NOTICES.md`, `FAN_CONTENT_REVIEW.m
 Noch real offen:
 
 - Betreiber-/Kontakt-/Hostingangaben
-- Icon-Herkunft für `icon.svg`, `icon-192.png`, `icon-512.png`
+- **menschliche Rechtebestätigung für `icon.svg`**
 - transitive Dependencyinventur nach echtem Lockfile
 - manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 - Support-/Incident-Verantwortliche
 - Staging-/Production-Origin
 
+Die technischen Rasterableitungen von `icon-192.png` und `icon-512.png` sind seit v42 belegt; sie sind nicht mehr als „unbekannte Dateiherkunft“ zu behandeln.
+
 ## CI – P0
 
-**Aktuell geprüfter Lauf:** `Secret Circle CI` **#2126** auf Commit `16cc9745671f8a565e747a591e9b439989f78aa6`.
+**Aktuell belastbar untersuchter Lauf:** `Secret Circle CI` **#2126** auf Commit `16cc9745671f8a565e747a591e9b439989f78aa6`.
 
 - Workflow `completed / failure`
 - Job `validate`: `failure`
@@ -131,7 +145,7 @@ Noch real offen:
 - kein Repositorycode ausgeführt
 - Job-Logabruf liefert keinen vorhandenen Log-Blob
 
-Damit existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis** für v41. Der Lauf beweist aber auch keinen Repository-Codefehler, weil kein Step ausgeführt wurde.
+Damit existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cross-Browser-Nachweis** für die neueren v41/v42-Verträge. Der Lauf beweist aber auch keinen Repository-Codefehler, weil kein Step ausgeführt wurde.
 
 ## Build – P1
 
@@ -142,11 +156,11 @@ Damit existiert weiterhin **kein belastbarer grüner Unit-/Audit-/Playwright-/Cr
 1. Actions-Runner / echter Checkout + sichtbare Steps
 2. echtes `package-lock.json` + `npm ci`
 3. Branch Protection / Required Checks
-4. Reference-Source-Audit auf funktionierendem Runner tatsächlich ausführen
-5. Asset-Provenienz / Icon-Herkunft
+4. Reference- und Asset-Audits auf funktionierendem Runner tatsächlich ausführen
+5. menschliche Rechtebasis für `icon.svg` bestätigen
 6. manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 7. HTTPS-Staging
-8. reale Upgrade-/Rollback-/Gerätetests
+8. reale Upgrade-/Rollback-/Geräte-/Installationsicon-Tests
 9. reale Accessibilitytests
 10. reale Gruppentests
 11. Betreiber-/Supportdaten
