@@ -21,9 +21,14 @@ production_js = [
     'party-created-modes.js', 'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html']
+required_asset_contract_files = [
+    'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
+    'assets/manifests/asset-provenance.json',
+    'tests/manifest-icons.test.js', 'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py'
+]
 violations = []
 
-for relative in production_js + html_pages:
+for relative in production_js + html_pages + required_asset_contract_files:
     if not (ROOT / relative).is_file():
         violations.append(f'Missing architecture file: {relative}')
 if violations:
@@ -122,6 +127,8 @@ contracts = {
     'runtime-guard.js': ['Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession'],
     'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40'],
     'party-data-tools.js': ['SecretCircleBackupSchemas', 'replaceEntries', 'registry.isAllowedCompleteStorageKey'],
+    'tests/manifest-icons.test.js': ['pngDimensions', '192x192', '512x512', 'offlineIconContract'],
+    'scripts/media_inventory_audit.py': ['MEDIA_SUFFIXES', 'EXPECTED_CURRENT_MEDIA', 'all_media_in_provenance_manifest'],
 }
 for relative, markers in contracts.items():
     source = read(relative)
@@ -151,12 +158,18 @@ validate_gate = package.get('scripts', {}).get('validate', '')
 for module in ('party-expansion.js', 'party-mega-catalog.js', 'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-hub-timers.js'):
     if f'node --check {module}' not in syntax_gate:
         violations.append(f'Production module missing from syntax gate: {module}')
-for test in ('tests/party-mega-catalog.test.js', 'tests/core-content-quality.test.js', 'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js'):
+for test in (
+    'tests/party-mega-catalog.test.js', 'tests/core-content-quality.test.js',
+    'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js', 'tests/manifest-icons.test.js'
+):
     if test not in unit_gate:
         violations.append(f'Critical architecture test missing from npm test: {test}')
+    if test == 'tests/manifest-icons.test.js' and f'node --check {test}' not in syntax_gate:
+        violations.append(f'Manifest icon test missing from syntax gate: {test}')
 for audit in (
     'scripts/core_content_audit.py', 'scripts/reference_content_audit.py', 'scripts/asset_provenance_audit.py',
-    'scripts/public_release_placeholder_audit.py', 'scripts/release_audit.py', 'scripts/performance_budget.py'
+    'scripts/media_inventory_audit.py', 'scripts/public_release_placeholder_audit.py',
+    'scripts/release_audit.py', 'scripts/performance_budget.py'
 ):
     if audit not in validate_gate:
         violations.append(f'Critical audit missing from npm validate: {audit}')
@@ -178,7 +191,8 @@ else:
 for asset in (
     './backup-schema-registry.js', './party-expansion.js', './party-mega-catalog.js',
     './party-core-release-catalog.js', './party-core-classic-content.js',
-    './party-hub-timers.js', './session-ledger.js', './party-session-controls.js'
+    './party-hub-timers.js', './session-ledger.js', './party-session-controls.js',
+    './icon.svg', './icon-192.png', './icon-512.png'
 ):
     if asset not in sw:
         violations.append(f'Offline core missing architecture-critical asset: {asset}')
@@ -209,6 +223,9 @@ print(json.dumps({
     'browser_brand_reference_removed_upstream': True,
     'franchise_like_lion_reference_removed': True,
     'reference_content_audit_required': True,
+    'manifest_icon_test_required': True,
+    'media_inventory_audit_required': True,
+    'bundled_media_contract': ['icon.svg', 'icon-192.png', 'icon-512.png'],
     'backup_registry_version': 2,
     'shared_session_controls': True,
     'split_hub_timer_module': True,
