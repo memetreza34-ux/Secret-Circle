@@ -50,7 +50,6 @@ cache_name = cache_match.group(1)
 cache_generation = cache_match.group(2)
 
 checks = {
-    # Backup/data foundation: registry v2 is the only Complete-backup policy source.
     'backup_registry_v2': all(marker in registry for marker in (
         'const VERSION = 2;', 'const MAX_FILE_BYTES = 1_500_000;',
         'WORD_STORAGE_KEY', 'PARTY_STORAGE_KEY', 'isAllowedCompleteStorageKey',
@@ -66,10 +65,9 @@ checks = {
         "const FORMAT = 'secret-circle-complete-backup'",
         'const MAX_BYTES = 1_500_000', 'const MAX_ENTRIES = 100', 'const MAX_VALUE_BYTES = 1_000_000'
     )),
-    'backup_docs_registry_v2': 'Registry v2' in backup_docs and '1.500.000' in backup_docs,
+    'backup_docs_registry_v2': '`backup-schema-registry.js` Version 2' in backup_docs and '1.500.000 UTF-8-Bytes' in backup_docs,
     'backup_registry_before_tools': party.index('backup-schema-registry.js') < party.index('party-data-tools.js'),
 
-    # Session/resume/timer foundation.
     'session_ledger_versioned': 'const VERSION = 1;' in ledger and 'createSessionId' in ledger and 'recordCompletion' in ledger,
     'shared_session_controls': all(marker in controls for marker in (
         'createController', 'function countdown', 'function setPaused', 'remainingMilliseconds'
@@ -79,13 +77,12 @@ checks = {
         'createTimerGames', 'renderStoredTimerSession'
     )) and 'SecretCirclePartyHubTimers' in hub,
     'hub_resume_and_privacy': all(marker in hub for marker in (
-        "secret-circle-party-hub-active-v1", 'Session fortsetzen', 'persistActiveSession', 'loadActiveSession'
+        'secret-circle-party-hub-active-v1', 'Session fortsetzen', 'persistActiveSession', 'loadActiveSession'
     )),
     'pwa_guard_knows_active_sessions': all(marker in runtime_guard for marker in (
         'secret-circle-party-hub-active-v1', 'secret-circle-party-active-v1', 'hasActiveSession'
     )),
 
-    # Catalog/release UX foundation.
     'release_tiers': all(marker in release_structure for marker in (
         'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'"
     )),
@@ -98,7 +95,6 @@ checks = {
     'consent_copy_visible': 'Persönliche Inhalte sind freiwillig' in party and 'Überspringen ist jederzeit erlaubt' in party,
     'final_content_layer_on_quick': 'party-core-classic-content.js' in quick,
 
-    # PWA/update foundation.
     'cache_generation_match': cache_generation == staging_match.group(2),
     'controlled_staged_update': all(marker in sw for marker in (
         'STAGING_CACHE', 'stageCore', 'promoteStagedCore', "event.data?.type === 'SKIP_WAITING'"
@@ -107,12 +103,10 @@ checks = {
         'Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später'
     )),
 
-    # Reproducible build foundation.
     'lockfile_v3_present': lock.get('lockfileVersion') == 3 and lock.get('name') == package.get('name'),
     'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
     'lockfile_audit_in_validate': 'scripts/lockfile_contract_audit.py' in validate_gate,
 
-    # New cross-cutting release gates.
     'branch_contract_prepared': 'Secret Circle CI / validate' in branch_contract and 'OPEN / RELEASE NO_GO' in branch_contract,
     'branch_audit_in_validate': 'scripts/branch_protection_contract_audit.py' in validate_gate,
     'staging_smoke_documented': 'scripts/staging_smoke.py' in environments and 'npm run staging:smoke' in environments,
@@ -120,7 +114,6 @@ checks = {
     'privacy_audit_in_validate': 'scripts/privacy_content_audit.py' in validate_gate,
     'reference_audit_in_validate': 'scripts/reference_content_audit.py' in validate_gate,
 
-    # Existing quality gates remain wired.
     'foundation_unit_tests_present': all(marker in unit_gate for marker in (
         'tests/session-ledger.test.js', 'tests/party-session-controls.test.js',
         'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js'
