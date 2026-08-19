@@ -29,7 +29,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - Release Candidate bis **15. Dezember 2026**
 - öffentlicher Release **4.–15. Januar 2027**
 
-Aktueller Offline-Core: **`secret-circle-v41`**.  
+Aktueller Offline-Core: **`secret-circle-v42`**.  
 Classic Content: **v4**.
 
 ## Produktpositionierung
@@ -119,6 +119,25 @@ Drei unnötig konkrete olympisch/Grand-Slam-bezogene Formulierungen wurden durch
 
 Diese neuen Tests/Audits sind **implementiert, aber wegen des aktuellen Actions-Runnerproblems noch nicht belastbar als grün ausgeführt dokumentiert**.
 
+## PWA-Asset-Hardening – v42
+
+Bei der Asset-Prüfung wurde ein echter PWA-Fehler gefunden:
+
+- `icon-192.png` fehlte vollständig
+- die bisherige Datei `icon-512.png` war laut PNG-IHDR tatsächlich nur 192×192 Pixel
+- das Webmanifest deklarierte trotzdem 192×192 und 512×512
+
+v42 repariert den Vertrag:
+
+- `icon-192.png` ist jetzt ein echtes 192×192-PNG
+- `icon-512.png` ist jetzt ein echtes 512×512-PNG
+- beide Raster sind deterministisch aus `icon.svg` erzeugt
+- `asset-provenance.json` dokumentiert Ableitung, Werkzeug und SHA-256
+- `scripts/asset_provenance_audit.py` prüft Datei-Existenz, SHA-256, PNG-Signatur/IHDR und Webmanifest-Größen
+- Service Worker und Offline-Test verlangen alle drei Icondateien
+
+Die Git-Historie belegt, dass das aktuelle `icon.svg` am **2. August 2026** in Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` neu ins Repository kam. Das beweist **nicht automatisch** Urheberrecht oder kommerzielle Nutzungsrechte. Die finale Rechtebasis des SVG bleibt deshalb bewusst `unresolved`.
+
 ## Session-, Resume- und Timergrundlage
 
 - stabile Session- und Completion-IDs
@@ -146,8 +165,8 @@ Diese neuen Tests/Audits sind **implementiert, aber wegen des aktuellen Actions-
 
 Aktuell:
 
-- `secret-circle-v41`
-- `secret-circle-v41-staging`
+- `secret-circle-v42`
+- `secret-circle-v42-staging`
 
 Updates werden zuerst vollständig in einem Staging-Cache vorbereitet und erst nach sichtbarer Nutzerentscheidung aktiviert. Der aktive Offline-Core wird vor erfolgreicher Promotion nicht destruktiv entfernt.
 
@@ -165,8 +184,9 @@ Real offen: 200-%-Zoom, VoiceOver, TalkBack, private Reveal-Flows, Touchbedienun
 - `@playwright/test` 1.54.2 upstream als **Apache-2.0** verifiziert
 - transitive Inventur wartet auf `package-lock.json`
 - `assets/manifests/asset-provenance.json` inventarisiert Releaseassets
-- `icon.svg`, `icon-192.png`, `icon-512.png` bleiben bewusst **`unresolved`**
-- `scripts/asset_provenance_audit.py` und `scripts/public_release_placeholder_audit.py` sind in `npm run validate`
+- `icon-192.png` und `icon-512.png`: technische Ableitung und Dimensionen seit v42 belegt
+- `icon.svg`: Repository-Herkunft dokumentiert, finale Rechtebasis noch **`unresolved`**
+- `scripts/asset_provenance_audit.py`, `scripts/reference_content_audit.py` und `scripts/public_release_placeholder_audit.py` sind in `npm run validate`
 - keine Root-`LICENSE`; Projektlizenz wird nicht geraten
 
 ## Lokal starten
@@ -204,17 +224,17 @@ Final vor Release muss ein echtes `package-lock.json` vorhanden sein und CI auf 
 
 ### P0 – GitHub Actions
 
-Die zuletzt geprüften Runs enden weiterhin vor einem belastbaren Repository-Checkout/Testlauf. Deshalb existiert kein verlässlicher grüner `npm run ci`-/Playwright-/Cross-Browser-Nachweis für den aktuellen v41-Stand.
+Der zuletzt belastbar untersuchte Lauf **#2126** endete erneut vor einem Repository-Step: `validate` = failure, `steps: []`, kein Checkout und kein verwertbarer Job-Log. Deshalb existiert kein verlässlicher grüner `npm run ci`-/Playwright-/Cross-Browser-Nachweis für den aktuellen v42-Stand.
 
 ### P1
 
 - echtes `package-lock.json` + `npm ci`
 - Branch Protection / Required Checks
-- Reference-Source-Audit tatsächlich grün ausführen
-- Icon-/Asset-Provenienz
+- Reference-Source- und Asset-Provenienz-Audit tatsächlich grün ausführen
+- finale Rechtebasis für `icon.svg`
 - manueller Extended/Labs-/Marketing-/Visual-Rechtepass
 - konkrete HTTPS-Staging-Origin
-- reale PWA-Upgrades/Rollback
+- reale PWA-Upgrades/Rollback und Installationsicon-Prüfung
 - Android/iPhone/Tablet
 - VoiceOver/TalkBack/200 %
 - reale Gruppentests
