@@ -18,8 +18,9 @@ required = [
     'LEGAL_CHECKLIST.md', 'THIRD_PARTY_NOTICES.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
     'ENVIRONMENTS.md', 'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
     'assets/manifests/asset-provenance.json', 'scripts/asset_provenance_audit.py',
-    'scripts/public_release_placeholder_audit.py', 'scripts/reference_content_audit.py',
-    'tests/service-worker.test.js', 'tests/core-content-quality.test.js', 'tests/party-mega-catalog.test.js', 'tests/party-viral-catalog.test.js',
+    'scripts/media_inventory_audit.py', 'scripts/public_release_placeholder_audit.py', 'scripts/reference_content_audit.py',
+    'tests/manifest-icons.test.js', 'tests/service-worker.test.js', 'tests/core-content-quality.test.js',
+    'tests/party-mega-catalog.test.js', 'tests/party-viral-catalog.test.js',
     'tests/accessibility-contract.test.js', 'tests/backup-schema-registry.test.js', 'tests/e2e/accessibility-core.spec.js',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
 ]
@@ -47,6 +48,7 @@ data_tools = read('party-data-tools.js')
 architecture = read('ARCHITECTURE.md')
 deployment = read('DEPLOYMENT.md')
 environments = read('ENVIRONMENTS.md')
+manifest_icon_test = read('tests/manifest-icons.test.js')
 service_worker_test = read('tests/service-worker.test.js')
 content_test = read('tests/core-content-quality.test.js')
 mega_test = read('tests/party-mega-catalog.test.js')
@@ -62,6 +64,7 @@ support = read('SUPPORT.md')
 incident = read('INCIDENT_RESPONSE.md')
 maintenance = read('MAINTENANCE.md')
 asset_audit = read('scripts/asset_provenance_audit.py')
+media_audit = read('scripts/media_inventory_audit.py')
 placeholder_audit = read('scripts/public_release_placeholder_audit.py')
 reference_audit = read('scripts/reference_content_audit.py')
 workflow = read('.github/workflows/ci.yml')
@@ -126,6 +129,12 @@ checks = {
         and manifest_icons_by_src.get('icon.svg', {}).get('sizes') == 'any'
         and manifest_icons_by_src.get('icon.svg', {}).get('type') == 'image/svg+xml'
     ),
+    'manifest_icon_test_contract': all(marker in manifest_icon_test for marker in (
+        'pngDimensions', "'icon-192.png'", "'icon-512.png'", "'icon.svg'",
+        '192x192', '512x512', 'offlineIconContract: true'
+    )),
+    'manifest_icon_test_in_unit_gate': 'tests/manifest-icons.test.js' in unit_gate,
+    'manifest_icon_test_in_syntax_gate': 'node --check tests/manifest-icons.test.js' in syntax_gate,
     'cache_generations_match': cache_generation == staging_generation,
     'cache_test_synced': cache_name in service_worker_test and staging_name in service_worker_test,
     'cache_docs_synced': all(cache_name in source for source in (architecture, deployment, privacy, environments)),
@@ -186,10 +195,21 @@ checks = {
         'stable_internal_id_wavelength_allowed', 'physical_source_cleanup_required'
     )),
     'reference_content_audit_in_validate': 'scripts/reference_content_audit.py' in validate_gate,
+    'media_inventory_audit_contract': all(marker in media_audit for marker in (
+        'MEDIA_SUFFIXES', 'IGNORED_DIRS', 'EXPECTED_CURRENT_MEDIA',
+        'all_media_in_provenance_manifest', 'current_release_media_contract'
+    )),
+    'media_inventory_audit_in_validate': 'scripts/media_inventory_audit.py' in validate_gate,
+    'media_inventory_documented': all(marker in third_party for marker in (
+        'Gebündeltes Media-Inventar', 'icon.svg', 'icon-192.png', 'icon-512.png', 'media_inventory_audit.py'
+    )),
     'content_policy_complete_quantities': 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in content_policy,
     'content_review_has_15_core_rows': content_review.count('| PREPARED |') >= 15 and '15/15 Core-Quellpass' in content_review,
     'fan_reference_review_tracks_remaining_work': all(marker in fan_review for marker in (
         'Anime-Archetypen erraten', 'Viral `higher-lower`', 'Restlicher Extended-/Labs-Pass', 'R-011 **OFFEN**'
+    )),
+    'fan_media_review_tracks_current_inventory': all(marker in fan_review for marker in (
+        'Gebündelter Visual-/Media-Pass', 'media_inventory_audit.py', 'manifest-icons.test.js'
     )),
     'accessibility_contract_in_unit_gate': 'tests/accessibility-contract.test.js' in unit_gate,
     'accessibility_contract_in_syntax_gate': 'tests/accessibility-contract.test.js' in syntax_gate,
@@ -229,8 +249,8 @@ checks = {
     'cross_browser_commands': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'audits_in_validate_gate': all(marker in validate_gate for marker in (
         'scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/reference_content_audit.py',
-        'scripts/asset_provenance_audit.py', 'scripts/public_release_placeholder_audit.py',
-        'scripts/performance_budget.py', 'scripts/release_audit.py'
+        'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
+        'scripts/public_release_placeholder_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py'
     )),
     'no_obsolete_legacy_guard': not (ROOT / 'session-ledger-legacy-guard.js').exists() and 'session-ledger-legacy-guard' not in sw,
 }
@@ -252,6 +272,8 @@ print(json.dumps({
     'reference_cleanup': 'PHYSICAL_SOURCE_PASS_IMPLEMENTED_NOT_RUNNER_VERIFIED',
     'reference_content_audit': 'REQUIRED_NOT_RUNNER_VERIFIED',
     'pwa_icon_contract': 'V42_RASTER_HASH_IHDR_MANIFEST_OFFLINE_CONTRACT_IMPLEMENTED_NOT_RUNNER_VERIFIED',
+    'manifest_icon_test': 'REQUIRED_NOT_RUNNER_VERIFIED',
+    'media_inventory_audit': 'THREE_ICON_MEDIA_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
     'asset_provenance': {'inventoried': len(asset_entries), 'unresolved': unresolved_assets},
     'public_placeholder_leak_gate': 'PREPARED_NOT_RUNNER_VERIFIED',
     'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
