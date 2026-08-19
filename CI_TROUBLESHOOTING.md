@@ -4,139 +4,145 @@ Stand: 19. August 2026
 
 ## Aktueller Befund
 
-Secret Circle besitzt vorbereitete GitHub-Actions-Workflows, aber die aktuell geprüften Jobs erreichen **keinen Repository-Schritt**.
+Secret Circle besitzt normale GitHub-Actions-Workflows, aber die bislang geprüften Jobs erreichen **keinen Repository-Schritt**.
 
-Aktuell belastbar geprüft: **Run #2244** (`Secret Circle CI`) auf Head **`1c9c5a0888cb7192408e3a3dbca316782d3d61e7`** / Job `validate`.
-
-Aktueller Jobversuch:
+Zuletzt belastbar vor dem neuen Lockfile-/`npm ci`-Stand geprüft: **Run #2244** (`Secret Circle CI`) auf Head `1c9c5a0888cb7192408e3a3dbca316782d3d61e7` / Job `validate`.
 
 - Run-ID `32228246835`
 - Job-ID `95992378765`
-- Workflow `completed / failure`
-- Job `validate` = `failure`
+- `completed / failure`
 - `steps: []`
 - kein Checkout
 - kein Node-/Python-Setup
 - kein Dependency-Install
-- kein `npm run check`
-- kein `npm test`
-- kein `npm run validate`
-- kein Playwright
+- keine Tests/Audits/Playwright
 - kein Repositorycode ausgeführt
 
-Damit wurden insbesondere die neu integrierten Gates **nicht ausgeführt**:
+Das Muster wurde über mehrere Runs reproduziert und ist **kein Beweis für einen Codefehler**, weil der Repositorycode nicht startet.
 
-- `scripts/branch_protection_contract_audit.py`
-- `scripts/privacy_content_audit.py`
-- `scripts/reference_content_audit.py`
-- `scripts/asset_provenance_audit.py`
-- `scripts/media_inventory_audit.py`
-- `scripts/public_release_placeholder_audit.py`
-- `tests/manifest-icons.test.js`
-- weitere Unit-/Contract-/E2E-Verträge
+## Neuer Buildstand: Lockfile + npm ci
 
-## Wiederholbarkeit des Problems
+Der frühere Zustand „kein Lockfile“ ist beendet.
 
-Das Muster ist über mehrere Heads und Runs reproduziert:
+Jetzt vorhanden:
 
-- Run #2166: `steps: []`; gezielter Re-Run erneut ohne Repository-Steps
-- Run #2194: `steps: []`
-- Run #2202: `steps: []`
-- Run #2216: `steps: []`
-- **Run #2244 auf v43-Head `1c9c5a0…`: `steps: []`**
+- `package-lock.json`, Lockfile v3
+- `@playwright/test` 1.54.2 exakt
+- `playwright` 1.54.2 exakt
+- `playwright-core` 1.54.2 exakt
+- optional `fsevents` 2.3.2 für macOS
+- feste Registry-URLs und `sha512`-Integrities
+- `scripts/lockfile_contract_audit.py`
 
-Damit ist ein einzelner kurzfristiger Jobaussetzer als Erklärung weniger plausibel. Eine konkrete externe Ursache wird trotzdem nicht erfunden.
+Beide Workflows verwenden jetzt:
 
-Das ist **kein Beweis für einen Codefehler** im Repository. Der Repositorycode wird in diesen Jobs nicht ausgeführt.
+```bash
+npm ci --ignore-scripts --no-audit --no-fund
+```
 
-## Workflow selbst geprüft
+und `actions/setup-node` mit npm-Cache.
 
-`.github/workflows/ci.yml` besitzt weiterhin eine normale GitHub-hosted Baseline:
+### Was bereits geprüft wurde
+
+- Dependencygraph gegen offizielle Tags von Playwright v1.54.2 und fsevents v2.3.2 geprüft
+- Lizenzen: Playwright-Pakete Apache-2.0, fsevents MIT
+- lokaler Offline-`npm ci`-Strukturcheck akzeptierte Package-/Lock-Synchronität und scheiterte erst erwartungsgemäß mit `ENOTCACHED`, weil keine Registry-Tarballs lokal vorhanden waren
+
+### Was noch **nicht** behauptet wird
+
+- kein echter Online-`npm ci`-PASS
+- keine tatsächliche Integrity-Downloadverifikation auf Actions
+- kein grünes `npm run ci`
+- kein grüner Cross-Browser-Lauf
+
+Der nächste Actions-Lauf mit echten Steps muss deshalb zunächst zeigen, dass `npm ci` die gesperrten Pakete erfolgreich aus der Registry lädt.
+
+## Aktuelle Workflows
+
+`.github/workflows/ci.yml`:
 
 - `runs-on: ubuntu-latest`
 - `actions/checkout@v4`
-- Node 22
+- Node 22 + npm cache
 - Python 3.12
-- Dependencies installieren
+- `npm ci --ignore-scripts --no-audit --no-fund`
 - Playwright Chromium
 - `npm run check`
 - `npm test`
 - `npm run validate`
 - `npm run test:e2e`
 
-Es wurde kein offensichtlicher Repository-YAML-/Runner-Label-Fehler gefunden, der `steps: []` erklärt.
+`.github/workflows/cross-browser.yml`:
+
+- manueller `workflow_dispatch`
+- Node 22 + npm cache
+- `npm ci`
+- Chromium + Firefox + WebKit
+- `npm run test:cross-browser`
+
+## Neue Release-Gates seit Run #2244
+
+Noch nicht runner-verifiziert sind unter anderem:
+
+- `scripts/lockfile_contract_audit.py`
+- `scripts/branch_protection_contract_audit.py`
+- `scripts/staging_smoke_contract_audit.py`
+- `scripts/privacy_content_audit.py`
+- `scripts/reference_content_audit.py`
+- `scripts/asset_provenance_audit.py`
+- `scripts/media_inventory_audit.py`
+- `scripts/public_release_placeholder_audit.py`
+- aktualisierter `scripts/foundation_contract_audit.py` für Registry v2
+- Accessibility-/PWA-/Content-/Sessiontests
 
 ## Was nicht auf Verdacht geändert wird
 
-Solange GitHub dem Job keinen Runner mit echten Steps zuweist, werden keine funktionierenden Testbefehle, Audit-Gates oder Browserprüfungen entfernt, nur um einen roten Status zu vermeiden.
+Solange kein echter Runner Repository-Steps ausführt:
 
-Insbesondere nicht:
-
-- Tests deaktivieren
-- Audits aus `npm run validate` entfernen
-- `continue-on-error` auf Releasegates setzen
-- Checkout umgehen
-- Required Checks künstlich grün markieren
+- keine Tests deaktivieren
+- keine Release-Audits entfernen
+- kein `continue-on-error` für Pflichtgates
+- kein Checkout umgehen
+- keine Required Checks künstlich grün markieren
+- nicht von `npm ci` zurück auf ungesperrtes `npm install` wechseln
 
 ## Wahrscheinliche externe Prüfflächen
 
-Weil der Fehler vor dem ersten Step liegt, müssen außerhalb des Repositorycodes geprüft werden:
+Weil der bisherige Fehler vor dem ersten Step liegt:
 
 - GitHub Actions für Repository/Account aktiviert
 - zulässige Actions-/Workflow-Policy
-- GitHub-hosted Runner für das private Repository verfügbar
+- GitHub-hosted Runner verfügbar
 - Minuten-/Billing-/Accountlimits
-- Organisation-/Enterprise-Richtlinien, falls relevant
+- Organisations-/Enterprise-Richtlinien, falls relevant
 - Repository-/Accountzustand
 - temporäre GitHub-Actions-Störung
 
-Diese Punkte dürfen erst als Ursache bezeichnet werden, wenn GitHub sie konkret bestätigt.
+Eine konkrete Ursache wird erst benannt, wenn GitHub sie tatsächlich zeigt.
 
-## Lockfile separat
+## Branch Protection
 
-Unabhängig vom Runner fehlt `package-lock.json` weiterhin.
+`BRANCH_PROTECTION.md` definiert **`Secret Circle CI / validate`** als gewünschten normalen Required Check. Die tatsächliche GitHub-Konfiguration ist noch nicht belastbar bestätigt.
 
-Aktueller Zustand:
+Cross-Browser bleibt bei aktuellem `workflow_dispatch` ein separater RC-Gate und kein permanenter PR-Required-Check.
 
-- `@playwright/test` ist exakt auf `1.54.2` gepinnt
-- `package-lock.json` liefert auf dem Arbeitsbranch weiterhin 404
-- ein früherer lokaler Versuch `npm install --package-lock-only` konnte wegen Paketnetzwerk/Timeout kein belastbares Lockfile erzeugen
-- keine Integrity-Hashes wurden erfunden
-- Workflow bleibt deshalb vorläufig bei Installation ohne Lockfile
+## Wenn der Runner wieder echte Steps zeigt
 
-Vor Release:
+Reihenfolge:
 
-```bash
-npm ci
-npm run ci
-npm run test:cross-browser
-```
-
-## Branch Protection separat
-
-`BRANCH_PROTECTION.md` definiert den Zielvertrag mit **`Secret Circle CI / validate`** als normalem Required Check. Die tatsächliche GitHub-Konfiguration ist noch nicht belastbar bestätigt.
-
-Der manuelle Cross-Browser-Workflow bleibt ein separater RC-Gate. Solange er nur über `workflow_dispatch` startet, wird er nicht als permanenter PR-Required-Check konfiguriert.
-
-## Nach Wiederherstellung des Runners
-
-Der erste Lauf mit echten Steps wird **nicht sofort als Release-PASS** interpretiert. Reihenfolge:
-
-1. sichtbaren Checkout bestätigen
-2. echte Step-Liste dokumentieren
+1. Checkout bestätigen
+2. `npm ci` und Integrity-Download prüfen
 3. ersten tatsächlichen Repositoryfehler isolieren
-4. `npm run check` beheben
-5. Unit-/Contracttests beheben
-6. Branch-/Privacy-/Reference-/Asset-/Media-/Placeholder-Audits beheben
-7. Chromium E2E beheben
-8. Cross-Browser beheben
-9. Lockfile erzeugen und verifizieren
-10. Workflows auf `npm ci` umstellen
-11. denselben unveränderten Commit erneut vollständig testen
-12. erst danach Required Checks/Branch Protection als Releasegate abnehmen
+4. `npm run check`
+5. Unit-/Contracttests
+6. Foundation-/Lockfile-/Branch-/Privacy-/Reference-/Asset-/Media-/Placeholder-/Staging-Contract-Audits
+7. Chromium E2E
+8. Cross-Browser auf exakt demselben RC-Commit
+9. unveränderten Commit erneut vollständig laufen lassen
+10. erst dann Required Checks/Branch Protection als real abnehmen
 
 ## Release-Regel
 
-Ein Workflowlauf mit `steps: []` zählt weder als grün noch als negativer Code-Test. Auch wiederholte Läufe mit demselben Muster ändern daran nichts.
+Ein Workflow mit `steps: []` zählt weder als PASS noch als negativer Code-Test.
 
-Öffentlicher Release und Merge von PR #13 bleiben **NO_GO**, bis ein echter Runner den unveränderten Release Candidate vollständig ausgeführt hat.
+Öffentlicher Release und Merge von PR #13 bleiben **NO_GO**, bis ein echter Runner den unveränderten Release Candidate inklusive Online-`npm ci` vollständig ausgeführt hat.
