@@ -45,6 +45,7 @@
     if (data.stage === 'result') {
       if (!integer(data.voteIndex) || data.voteIndex < 0 || data.voteIndex > 2) return false;
       if (typeof data.correct !== 'boolean') return false;
+      if (data.correct !== (data.voteIndex === data.lieIndex)) return false;
     }
     return true;
   }
@@ -92,6 +93,14 @@
     return counts;
   }
 
+  function mafiaWinner(data) {
+    const mafiaAlive = data.alive.filter(player => data.roles[player] === 'Mafia').length;
+    const villageAlive = data.alive.length - mafiaAlive;
+    if (mafiaAlive === 0) return 'Dorf';
+    if (mafiaAlive >= villageAlive) return 'Mafia';
+    return null;
+  }
+
   function validateMafia(data, players, pack) {
     if (!['reveal', 'moderator', 'overview', 'night', 'day', 'finished'].includes(data.stage)) return false;
     if (!['Schnell', 'Klassisch', 'Erweitert'].includes(pack)) return false;
@@ -115,8 +124,13 @@
     for (const key of ['nightTarget', 'saved', 'protected', 'lastProtected', 'inspected']) {
       if (!member(data[key], players, { nullable: true })) return false;
     }
-    if (data.winner !== undefined && data.winner !== null && !['Dorf', 'Mafia'].includes(data.winner)) return false;
-    if (data.stage === 'finished' && !['Dorf', 'Mafia'].includes(data.winner)) return false;
+
+    const computedWinner = mafiaWinner(data);
+    if (data.stage === 'finished') {
+      if (!computedWinner || data.winner !== computedWinner) return false;
+    } else if (data.winner !== undefined && data.winner !== null) {
+      return false;
+    }
     return true;
   }
 
@@ -167,7 +181,7 @@
   }
 
   return Object.freeze({
-    version: 1,
+    version: 2,
     activeKey: ACTIVE_KEY,
     validateSnapshot,
     validateAdvanced,
@@ -176,6 +190,7 @@
     validateLocationSpy,
     validateMafia,
     expectedRoleCounts,
+    mafiaWinner,
     install
   });
 });
