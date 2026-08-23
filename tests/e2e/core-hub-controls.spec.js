@@ -35,6 +35,29 @@ test('personal hub games make voluntary skipping explicit during play', async ({
   await expect(page.locator('#hub-voluntary-play-note')).toBeVisible();
 });
 
+test('Paranoia conceals an open secret question when the app loses focus', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'paranoia');
+
+  await page.getByRole('button', { name: 'Geheime Frage anzeigen' }).click();
+  await expect(page.locator('#play-actions')).toContainText('Name wurde genannt');
+  const secretBefore = await page.locator('#play-content').textContent();
+  expect(secretBefore?.trim().length).toBeGreaterThan(0);
+
+  await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+
+  await expect(page.locator('#play-content')).toBeHidden();
+  await expect(page.locator('#play-actions')).toBeHidden();
+  await expect(page.locator('#hub-private-prompt-cover')).toBeVisible();
+  await expect(page.locator('#hub-private-prompt-cover')).toContainText('automatisch verdeckt');
+
+  await page.getByRole('button', { name: 'Geheime Frage wieder anzeigen' }).click();
+  await expect(page.locator('#hub-private-prompt-cover')).toHaveCount(0);
+  await expect(page.locator('#play-content')).toBeVisible();
+  await expect(page.locator('#play-content')).toHaveText(secretBefore || '');
+  await expect(page.locator('#play-actions')).toContainText('Name wurde genannt');
+});
+
 test('global skip advances a round without awarding a point and finish records it once', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
