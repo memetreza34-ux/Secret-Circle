@@ -2,7 +2,7 @@
 
 Stand: 23. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v44` / `secret-circle-v44-staging`**  
+Offline-Core: **`secret-circle-v45` / `secret-circle-v45-staging`**  
 Core Source Hardening: **15/15 PREPARED**
 
 ## 1. Ziel
@@ -21,7 +21,7 @@ Die eigentliche RC-Beta beginnt erst, wenn auf demselben Commit dokumentiert gr�
 - Chromium E2E
 - Cross-Browser mit Chromium, Firefox und WebKit
 
-Aktueller Blocker: Issue #7. App-CI Run #2401 und ein reiner Bash-Runner-Probe endeten bereits vor Step 1 mit `steps: []`.
+Aktueller Blocker: Issue #7. App-CI Run #2401 und ein reiner Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
 
 Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als finale RC-Evidence.
 
@@ -89,8 +89,6 @@ Ein einzelner Abend darf mehrere Sessions abdecken, wenn Beobachtung und Evidenc
 
 ## 6. Preflight vor jeder Beta
 
-Dokumentieren:
-
 ```text
 Test-ID:
 Datum:
@@ -110,8 +108,6 @@ Nicht mit einer unbekannten oder während des Tests wechselnden Version arbeiten
 
 ## 7. G1 – Kleine Gruppe 3–4 Personen
 
-### Aufgaben
-
 1. App ohne Erklärung öffnen.
 2. Spieler anlegen.
 3. über Katalog ein Core-Spiel finden.
@@ -124,12 +120,11 @@ Nicht mit einer unbekannten oder während des Tests wechselnden Version arbeiten
 10. Nur falsche Antworten spielen und manuelle Verlustregel erklären lassen.
 11. Verlauf prüfen.
 
-### Beobachten
+Beobachten:
 
 - Setup ohne Entwicklerhilfe verstanden?
 - Unterschied Speichern vs. Verwerfen verstanden?
 - Freiwilligkeitsregel wahrgenommen?
-- Skip ohne soziale Rechtfertigung akzeptiert?
 - private Karte bei Fokusverlust wirklich verdeckt?
 - Fokus nach Reopen/Reload sinnvoll?
 - doppelte Statistik?
@@ -137,14 +132,12 @@ Nicht mit einer unbekannten oder während des Tests wechselnden Version arbeiten
 
 ## 8. G2 – Mittlere Gruppe 5–8 Personen
 
-### Spiele
+Spiele:
 
 - Zwei Wahrheiten, eine Lüge
 - Question Imposter
 - Location Spy
 - optional Never Have / Would Rather
-
-### Unterbrechungs-/Privacy-Test
 
 Bei jedem privaten Mechanismus mindestens einmal:
 
@@ -155,14 +148,7 @@ Bei jedem privaten Mechanismus mindestens einmal:
 5. bewusst wieder öffnen,
 6. zusätzlich Reload testen, wo Resume unterstützt wird.
 
-### Beobachten
-
-- Übergabe klar?
-- sieht nächste Person versehentlich vorherigen geheimen Inhalt?
-- Abstimmung/Auflösung verständlich?
-- Regeln vor Start ausreichend?
-- Spieltempo für 5–8 akzeptabel?
-- manipulierte Test-Snapshots werden sicher verworfen?
+Zusätzlich manipulierte neutrale Test-Snapshots prüfen: inkonsistente Advanced-Zustände müssen verworfen werden.
 
 ## 9. G3 – Große Gruppe 9–12 Personen
 
@@ -176,7 +162,7 @@ Bei jedem privaten Mechanismus mindestens einmal:
 - Imposter-Ratechance
 - individueller Punktestand
 
-Zusätzlich mindestens 20 reale Runden über mehrere Tests protokollieren:
+Mindestens 20 reale Runden über mehrere Tests protokollieren:
 
 - erste Reveal-Person
 - Imposterposition(en)
@@ -189,55 +175,29 @@ Zusätzlich mindestens 20 reale Runden über mehrere Tests protokollieren:
 - offene Geheimfrage bei Appwechsel verdecken
 - soziale Wirkung beobachten
 
-### Timer-Spiel
+### Timer-Spiele
 
-Mindestens Scharade oder Tabu mit echter Geräteweitergabe sowie Heiße Kartoffel.
-
-### Messen/beobachten
-
-- Wartegefühl
-- Verwirrung bei Reihenfolge
-- falsche Geräteweitergabe
-- Text/Buttons aus Gruppendistanz lesbar
-- Übergaben praktisch
-- keine unbeabsichtigte Geheimnisoffenlegung
+Mindestens Scharade oder Tabu sowie Heiße Kartoffel mit echter Geräteweitergabe.
 
 ## 10. G4 – Mafia
 
 Gruppengrößen soweit praktisch: 6, 8, 12 und 16+.
 
-### Varianten
-
-- Schnell
-- Klassisch
-- Erweitert
-
-### Prüfen
+Prüfen:
 
 - Mafiaanzahl skaliert korrekt
-- private Rollen
-- geschützte Moderatoransicht
-- Moderatorübersicht nach Appwechsel verdeckt
-- Nachtformular bei Appwechsel verdeckt
-- Arztaktion
-- Detektivaktion und private Moderatorinformation
-- Beschützeraktion
-- Beschützer kann dieselbe Person nicht zwei Nächte in Folge schützen
+- Schnell/Klassisch/Erweitert korrekt
+- Rollen privat
+- Moderatoransicht geschützt
+- Appwechsel verdeckt Moderator-/Nachtinformationen
+- Arzt/Detektiv/Beschützer korrekt
+- Beschützer nicht dieselbe Person zwei Nächte nacheinander
 - Eliminationszustand korrekt
 - Dorf gewinnt nur bei 0 lebenden Mafia
 - Mafia gewinnt nur bei Mafia >= restlicher Dorfseite
 - manipulierte Rollen-/Alive-/Winner-Snapshots werden verworfen
 
-### Produktfragen
-
-- braucht Moderator zusätzliche Hilfe?
-- dauert Nachtphase zu lange?
-- sind Rollenbegriffe verständlich?
-- wirkt `teen` angemessen?
-
 ## 11. G5 – Creator mit unerfahrener Person
-
-Die Testperson bekommt vorher keine Erklärung des Wizards.
 
 Aufgabe:
 
@@ -246,38 +206,20 @@ Aufgabe:
 Prüfen:
 
 - Vorlage selbst gefunden
-- Pack hinzufügen verständlich
-- Kartenformat verständlich
+- Pack/Kartenformat verstanden
 - Vorschau hilfreich
 - Speichern erfolgreich
 - eigenes Spiel im Hub gefunden
-- Start erfolgreich
 - Editieren/Kopieren/Löschen verstanden
 - Export/Import mit neutralem Testspiel
 
-Abbruchkriterium: Wenn ohne Entwicklerhilfe kein valides erstes Spiel erstellt werden kann, ist Creator für den RC noch nicht ausreichend selbsterklärend.
+Wenn ohne Entwicklerhilfe kein valides erstes Spiel erstellt werden kann, ist Creator noch nicht RC-bereit.
 
 ## 12. Smart Party Night – PN1 bis PN3
 
-Drei vollständige Abende:
-
-### PN1
-
-- kleine/mittlere Gruppe
-- ca. 30 Minuten
-- lustig/friendly
-
-### PN2
-
-- mittlere Gruppe
-- ca. 45–60 Minuten
-- gemischt/competitive
-
-### PN3
-
-- große Gruppe
-- ca. 60–90 Minuten
-- gemischte Core-Auswahl
+- PN1: kleine/mittlere Gruppe, ca. 30 Minuten, lustig/friendly
+- PN2: mittlere Gruppe, ca. 45–60 Minuten, gemischt/competitive
+- PN3: große Gruppe, ca. 60–90 Minuten, gemischte Core-Auswahl
 
 Prüfen:
 
@@ -288,26 +230,24 @@ Prüfen:
 - History-Synchronisierung
 - Abbruch/Wechsel möglich
 
-## 13. PWA-v44-Update-Test
+## 13. PWA-v45-Update-Test
 
 Mindestens zwei echte ältere installierte Zustände gegen den finalen RC prüfen.
-
-Pro Ausgangsversion:
 
 1. Testspieler/Presets anlegen.
 2. Creator-Spiel anlegen.
 3. aktive Hub- oder Advanced-Session erzeugen.
 4. alte installierte PWA starten.
-5. neuen RC bereitstellen.
-6. sichtbaren Updatehinweis prüfen.
+5. v45/RC bereitstellen.
+6. Updatehinweis prüfen.
 7. Update zunächst verschieben.
 8. laufende Session fortsetzen.
-9. anschließend bewusst aktualisieren.
+9. bewusst aktualisieren.
 10. Offline-Neustart.
-11. lokale Daten, Guards und Sessionzustände prüfen.
+11. lokale Daten, Guards und Sessions prüfen.
 12. Cachebestand kontrollieren.
 
-Keine alte Cachegeneration künstlich als getestet markieren, wenn sie nicht wirklich installiert war.
+Keine alte Cachegeneration künstlich als getestet markieren.
 
 ## 14. Rollback-Test
 
@@ -317,7 +257,7 @@ Auf HTTPS-Staging:
 - definierten fehlerhaften Stand simulieren oder isolierten Rollbackpfad verwenden
 - korrigierten Stand mit **neuer** Cachegeneration deployen
 - lokales Datenmodell erhalten
-- Offline-Core danach vollständig
+- Offline-Core vollständig
 - keine Force-Push-Annahme
 - alter funktionierender Core darf nicht durch fehlgeschlagene Promotion zerstört werden
 
@@ -327,10 +267,10 @@ Auf HTTPS-Staging:
 
 - Start → Spiele
 - Suche
-- Spieldetail öffnen/schließen
+- Spieldetail
 - mindestens ein Core-Spiel
 - Advanced-Privatereveal
-- Creator-Wizard
+- Creator
 - Pause/Fortsetzen
 
 ### 200-%-Zoom / große Schrift
@@ -338,12 +278,10 @@ Auf HTTPS-Staging:
 - kein Verlust primärer Aktionen
 - Dialog scrollbar
 - Sessioncontrols erreichbar
-- kein zwingender horizontaler Scroll für Kernaufgabe
+- kein zwingender horizontaler Scroll
 - 320-CSS-px-Reflow
 
 ### VoiceOver/TalkBack
-
-Mindestens:
 
 - Seitentitel/Überschrift
 - Navigation
@@ -368,18 +306,6 @@ Pro gespieltem Core-Game notieren:
 - packfremder Inhalt
 - zu schwere/zu leichte Karte
 - Wiederholungsgefühl
-
-Fundformat:
-
-```text
-Spiel:
-Pack:
-Karte:
-Problem:
-Kategorie: Ton / Privacy / Safety / Alter / Duplikat / Schwierigkeit / Rechte
-Severity:
-Vorschlag:
-```
 
 ## 17. Bug-Severity
 
@@ -430,7 +356,6 @@ Accessibilityfunde:
 PWA/Resume-Funde:
 Privacy-/Secret-Funde:
 Was war unklar?
-Was funktionierte besonders reibungslos?
 Nächste Maßnahmen:
 Retest nötig: ja/nein
 ```
@@ -453,7 +378,7 @@ Vor `REAL USER / DEVICE PASS`:
 - [ ] VoiceOver abgeschlossen
 - [ ] TalkBack abgeschlossen
 - [ ] 200-%-Zoom abgeschlossen
-- [ ] zwei echte PWA-Upgrades abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v45/RC abgeschlossen
 - [ ] HTTPS-Rollbackprobe abgeschlossen
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
