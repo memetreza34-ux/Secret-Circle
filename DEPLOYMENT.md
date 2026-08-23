@@ -1,23 +1,24 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Stand: 19. August 2026
+Stand: 23. August 2026
 
 Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentlicht. Eine installierbare PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
 
 ## Aktueller Releaseumfang
 
 - 45 eingebaute technisch spielbare Spiele
-- 15 priorisierte Kernspiele
-- 13 Extended-Spiele
-- 17 Labs-Spiele
+- 15 Core / 13 Extended / 17 Labs
 - 27 Quick-/Trend-/Viral-Modi
 - 4 Advanced-Kernspiele
 - Word Imposter
 - Smart Party Night
-- lokaler No-Code-Game-Creator mit sechs Vorlagen
-- bis zu 40 selbst erstellte Spiele
-- aktueller Offline-Core: **`secret-circle-v44`**
+- lokaler No-Code-Game-Creator
+- Core Source Review: 15/15 PREPARED
+- Core Source Hardening: 15/15 PREPARED
+- aktueller Offline-Core: **`secret-circle-v45`**
+- Staging-Cache: **`secret-circle-v45-staging`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
+- öffentliche Freigabe: **NO_GO**
 
 ## Deployment-Reihenfolge
 
@@ -42,28 +43,27 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - `BRANCH_PROTECTION.md` abgearbeitet
 - `Secret Circle CI / validate` als Required Check auf echtem Runner bestätigt
 
-### Produkt und Content
+Aktueller P0 bleibt Issue #7: App-CI Run #2401 und ein action-/repo-freier Bash-Runner-Probe endeten vor Step 1.
+
+### Produkt und Core
 
 - alle 15 Kernspiele bestehen `CORE_GAME_ACCEPTANCE.md`
+- 15/15 Quellreview PREPARED
+- 15/15 Core-Hardening PREPARED
 - Scoring-/Winner-Vertrag bestätigt
-- quantitative Core-Content-Gates erfüllt
-- 15/15 Core-Quellreview dokumentiert
-- `anime-guess` liefert 40 eigenständige Archetypen und `party-mega-catalog.js` enthält die früheren konkreten Figuren physisch nicht mehr
-- `party-expansion.js` liefert `Spektrum-Tipp` und Browser-Tabu mit `Tab` direkt upstream
-- Emoji-Quiz nutzt `🦁🌾 → Löwe` statt `Löwenkönig`
-- Viral-`higher-lower` enthält die generischen Sportfragen aus v38
-- `party-catalog.js` enthält die beiden früher problematischen Private-Device-Truth/Dare-Prompts seit v43 physisch nicht mehr
+- Word-Imposter-Setup/Fairness/Voting/Resume real geprüft
+- direkte Hub-Games inklusive Privacy-/Timer-/Skip-Verträge real geprüft
+- Advanced-Privacy-/Resume-Verträge real geprüft
 - Privacy-/Reference-Content-Audits auf dem RC-Commit grün
 - übrige Extended/Labs final manuell/visuell/rechtlich geprüft
-- keine offenen kritischen/hohen Releasefehler
+- keine offenen Critical/High-Releasefehler
 
 ### PWA-Installationsmetadaten / Assets
 
-Seit v44 müssen `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` denselben Installationsvertrag erfüllen:
+Die fünf interaktiven Einstiegseiten `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` müssen denselben Installationsvertrag erfüllen:
 
 - Manifest-Link
-- `mobile-web-app-capable=yes`
-- Apple-Web-App-Capable, Statusbar und Titel
+- Mobile-/Apple-Web-App-Metadaten
 - SVG-Favicon
 - 192×192-PNG-Favicon
 - Apple-Touch-Icon
@@ -71,33 +71,43 @@ Seit v44 müssen `party.html`, `index.html`, `creator.html`, `advanced.html` und
 
 Zusätzlich:
 
-- `icon-192.png` existiert und ist exakt 192×192
-- `icon-512.png` existiert und ist exakt 512×512
-- beide Rasterdateien sind aus `icon.svg` abgeleitet
-- `assets/manifests/asset-provenance.json` enthält SHA-256 und Ableitungsnachweis
-- Asset-/Media-/PWA-Head-Audits bzw. Tests grün
-- finale Rechtebasis von `icon.svg` menschlich bestätigt
+- `icon-192.png` exakt 192×192
+- `icon-512.png` exakt 512×512
+- Asset-Provenienzmanifest vollständig
+- `ASSET_RIGHTS_SIGNOFF.md` abgeschlossen
+- keine Releaseassets mehr `unresolved`
+
+### Resume-/Privacy-Guards im Offline-Core
+
+v45 muss offline enthalten:
+
+- `word-imposter-resume-guard.js`
+- `party-hub-resume-guard.js`
+- `advanced-resume-guard.js`
+- `advanced-privacy-guard.js`
+
+sowie die zugehörigen Runtime-Module und Tests/Verträge.
 
 ### Geräte und Accessibility
 
 - reales Android-Smartphone
 - reales iPhone
-- mindestens ein Tablet
+- mindestens ein Tablet/iPad
 - PWA-Installation, Standalone und Offline-Neustart
 - Sperrbildschirm/OS-Hintergrund bei Timern
-- Tastatur, Fokus, 200-%-Zoom/Reflow, Reduced Motion
-- VoiceOver-/TalkBack-Smoke-Test
+- Tastatur/Fokus/200-%-Zoom/Reflow/Reduced Motion
+- VoiceOver/TalkBack
+- private Reveal-Cover und Fokus-Recovery real
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v44`** bestätigt
-- `backup-schema-registry.js` vor `party-data-tools.js` geladen
-- Base-, Expansion-, Mega-, Viral- und beide Core-Contentmodule offline verfügbar
-- `icon.svg`, `icon-192.png` und `icon-512.png` offline verfügbar
-- Update von mindestens zwei älteren installierten Versionen geprüft
+- Offline-Start aus **`secret-circle-v45`** bestätigt
+- Backup-Registry vor Datentools geladen
+- Katalog-/Core-/Guard-Module offline verfügbar
+- Update von mindestens zwei echten älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
-- Complete-Import lehnt unbekannte Storage-Key-Familien ab
+- unbekannte Storage-Key-Familien abgelehnt
 - Quota-/Korruptions-/Rollbackpfade geprüft
 
 ### Recht und Betrieb
@@ -106,75 +116,61 @@ Zusätzlich:
 - Betreiber-/Kontakt-/Hostingangaben final
 - Datenschutz auf tatsächliches Hosting angepasst
 - `THIRD_PARTY_NOTICES.md` / `FAN_CONTENT_REVIEW.md` final
-- Asset-Provenienz ohne `unresolved` Releaseassets
-- Privacy-/Reference-/Placeholder-Audits grün
+- Asset-Provenienz ohne `unresolved`
 - echter Supportweg und Incident-/Hotfixprozess vorhanden
 
 ## Automatisierter HTTPS-Staging-Smoke
 
-Vor dem manuellen Browser-/PWA-Smoke muss die tatsächlich ausgelieferte Staging-Origin den reproduzierbaren HTTP-Smoke bestehen:
+Vor dem manuellen Browser-/PWA-Smoke muss die tatsächlich ausgelieferte Staging-Origin den HTTP-Smoke bestehen:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v44
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v45
 ```
 
-Der Smoke (`scripts/staging_smoke.py`) prüft:
+Der Smoke prüft unter anderem:
 
 - ausschließlich HTTPS
-- Same-Origin für Redirectziele
-- Größenlimits für geladene Ressourcen
-- Kernseiten und Query-Routen HTTP 200
+- Same-Origin-Redirects
+- begrenzte Downloadgrößen
+- Kernseiten/Query-Routen HTTP 200
 - Manifest-/Standalone-Vertrag
-- reale PNG-Dimensionen 192×192 und 512×512
-- Service-Worker-Cache und Staging-Cache
-- Backup-Registry vor Datentools
-- physische v43-Privacy-Safe-Inhalte
-- physische Reference-Safe-Inhalte aus v38–v41
+- PNG-Dimensionen
+- Service-Worker-Cachegeneration
+- Backup-Registry-Ladereihenfolge
+- Privacy-/Reference-Source-Verträge
+- PWA-Head-Metadaten
 
-`scripts/staging_smoke_contract_audit.py` ist Teil von `npm run validate` und schützt diesen Vertrag statisch. Die echte Netzwerkprüfung läuft dagegen nur gegen eine konkrete Deployment-URL.
+`scripts/staging_smoke_contract_audit.py` schützt den Vertrag statisch. Die echte Netzwerkprüfung läuft nur gegen eine konkrete Deployment-URL.
 
 ## Manueller Staging-/PWA-Smoke
 
-Der automatisierte HTTP-Smoke ersetzt nicht:
+Zusätzlich:
 
 - Service Worker registriert
 - App installierbar
-- Installation von Hub **und mindestens einer Unterseite** mit korrektem Secret-Circle-Titel/Icon
+- Hub und mindestens eine Unterseite mit korrektem Titel/Icon
 - Offline-Neustart
 - Updatebanner und bewusste Aktivierung
-- aktive Session während Update
+- aktive Session während Update geschützt
 - lokale Daten nach Update erhalten
-- Hub-Datenbereich und Registry im echten Browser
 - Export/Import
-- Core-/Timer-/Advanced-/Word-Imposter-/Creator-Smokes
-- reale Installationsicons
-- Geräte-/Screenreaderprüfung
+- Word Imposter
+- direktes Hub-Core-Spiel
+- Timer-Core-Spiel
+- Advanced-Core-Spiel
+- Creator
+- neue Resume-/Privacy-Guards offline
+- reale Geräte-/Screenreaderprüfung
 
 ## Production-Smoke-Test
 
-Production erhält denselben freigegebenen RC-Stand. Zuerst:
+Production erhält denselben freigegebenen RC-Stand:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v44 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v45 --production
 ```
 
-Danach Browser-/PWA-Smoke auf Production wiederholen. `--production` verschärft zusätzlich die Prüfung auf typische Placeholderwerte in öffentlichen Dateien.
-
-### Katalog und Privacy
-
-Online und offline müssen denselben finalen Katalogpfad liefern:
-
-`party-catalog → expansion → trending → mega → viral → core-release → core-classic(v4) → routing`
-
-Zu bestätigen:
-
-- `anime-guess` → **Anime-Archetypen erraten** mit vier generischen 10er-Packs
-- keine früheren konkreten Anime-Figuren in `party-mega-catalog.js`
-- `Löwe`, nicht `Löwenkönig`
-- `wavelength` → **Spektrum-Tipp**
-- Browser-Tabu enthält `Tab`, nicht `Chrome`
-- `party-catalog.js` enthält weder alte Kamerarollen-Frage noch Pflicht zum Vorlesen der letzten Handy-Nachricht
-- sichere Ersatztexte stehen direkt im Basiskatalog
+Danach Browser-/PWA-Smoke auf Production wiederholen. `--production` verschärft die Placeholder-Prüfung öffentlicher Dateien.
 
 ## Qualitätsbefehle
 
@@ -186,21 +182,33 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:cross-browser
 ```
 
-Der Lockfile-Vertrag wird durch `scripts/lockfile_contract_audit.py` geschützt. Ein echter Online-`npm ci`-PASS bleibt bis zu einem funktionierenden Runner offen.
+Ein echter Online-`npm ci`-PASS bleibt bis zu einem funktionierenden Runner offen.
 
 ## Update-Regel
 
-Bei jeder offline benötigten Dateiveränderung:
+Bei **jeder offline benötigten Dateiveränderung**:
 
-1. Offline-Core aktualisieren
+1. Offline-Core-Liste aktualisieren
 2. Cachegeneration erhöhen
 3. Service-Worker-Test aktualisieren
-4. Architektur/Deployment/Privacy/Environment/Release-Audits synchronisieren
-5. reale ältere installierte Version → neue Version testen
+4. `ARCHITECTURE.md`, `DEPLOYMENT.md`, `privacy.html`, `ENVIRONMENTS.md` und Release-Dokumente synchronisieren
+5. echte alte installierte Version → neue Version testen
+
+v45 existiert genau deshalb: Der 15/15-Hardening-Block hat neue Offline-Guard-Dateien eingeführt und durfte nicht unter dem bereits belegten v44-Namen weiterlaufen.
 
 ## Rollback
 
-Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert/Hotfix erstellen, Cachegeneration erneut erhöhen, persistierte Daten rückwärtsverträglich halten oder migrieren und auf HTTPS-Staging testen. Nach Rollback/Hotfix sowohl automatisierten HTTPS-Smoke als auch manuellen Browser-/PWA-Smoke erneut durchführen. Kein Force-Push auf stabile Production-Basis.
+Bei kritischem Fehler:
+
+1. Veröffentlichung stoppen
+2. gezielten Revert/Hotfix erstellen
+3. Cachegeneration erneut erhöhen
+4. persistierte Daten rückwärtsverträglich halten oder migrieren
+5. HTTPS-Staging testen
+6. automatisierten Smoke wiederholen
+7. manuellen PWA-/Geräte-Smoke wiederholen
+
+Kein Force-Push auf eine stabile Production-Basis.
 
 ## Produktionsfreigabe
 
