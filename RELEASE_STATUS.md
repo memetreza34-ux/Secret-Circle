@@ -1,6 +1,6 @@
 # Release-Status – Secret Circle
 
-Stand: 19. August 2026  
+Stand: 23. August 2026  
 Zielrelease: 4.–15. Januar 2027  
 Arbeitsbranch: `agent/release-foundation-2027`  
 Draft-PR: #13
@@ -10,13 +10,33 @@ Draft-PR: #13
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
 **Offline-Core:** **`secret-circle-v44`**  
-**Classic Content:** **v4**
+**Classic Content:** **v4**  
+**Core Source Hardening:** **15/15 PREPARED**
 
-Die technische Grundlage ist weit fortgeschritten. Core-Content, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, source-level Privacy-/Reference-Schutz, PWA-Assets, Lockfile/npm-ci-Vertrag, Branch-Protection-Vertrag, HTTPS-Smoke und Accessibility-Basis sind vorbereitet.
+Die technische Grundlage ist weit fortgeschritten. Core-Content, Exact-once-Sessions, sichere Resume-/Timerpfade, Live-Privacy-Guards, Registry-v2-Backups, source-level Privacy-/Reference-Schutz, PWA-Assets, Lockfile/npm-ci-Vertrag, Branch-Protection-Vertrag, HTTPS-Smoke und Accessibility-Basis sind vorbereitet.
 
-## Neuester interner Stand
+`PREPARED` ist ausdrücklich kein `RELEASE PASS`: CI, reale Geräte, Accessibility, Gruppen-/Beta-Tests und finale Rechte-/Legal-Evidence fehlen weiterhin.
 
-### Build / Supply Chain
+## Core-Hardening – 15/15
+
+Der vollständige Core-Codepfad wurde am 23. August nochmals auf Setup, Privacy, Resume, Timer, Punkte und Anfänger-UX geprüft.
+
+Wichtige Änderungen:
+
+- Word Imposter: Setup-Validierung, Rollenfairness, Voting-/Resume-Guard, Geheimkarten-Schutz
+- Truth/Dare, Never Have, Most Likely, Would Rather: sichtbare Live-Regeln und Freiwilligkeit, wo relevant
+- Paranoia: offene Geheimfrage wird bei Fokusverlust verdeckt
+- Scharade/Tabu: offene Geheimkarten werden bei App-/Tab-Wechsel verdeckt
+- Heiße Kartoffel: Zufallstimer exakt 10–25 Sekunden
+- Wortkette: klarer manueller Erfolgsvertrag
+- Nur falsche Antworten: klare manuelle Verlustregel; weiterhin bewusst scorelos
+- Hub-Resume: Timerzustand muss zur aktiven Spielart passen
+- Advanced Core: `advanced-privacy-guard.js` + `advanced-resume-guard.js`
+- Advanced-Resume validiert Two-Truths-Ergebnis, Question-Imposter-Rolle/Vote, Location-Spy-Zustand sowie Mafia-Rollenanzahl, Alive-Menge und Siegerintegrität
+
+Details: `CORE_GAME_ACCEPTANCE.md`.
+
+## Build / Supply Chain
 
 - `package-lock.json` v3 vorhanden
 - `@playwright/test`, `playwright`, `playwright-core` exakt 1.54.2
@@ -28,9 +48,9 @@ Die technische Grundlage ist weit fortgeschritten. Core-Content, Exact-once-Sess
 
 **Offen:** echter Online-`npm ci`-/Integrity-PASS auf einem funktionierenden Runner.
 
-### v44 – PWA Installationsvertrag
+## PWA v44
 
-Hub, Word Imposter, Creator, Advanced und Quick besitzen jetzt denselben Installations-Head-Vertrag:
+Hub, Word Imposter, Creator, Advanced und Quick besitzen denselben Installations-Head-Vertrag:
 
 - Manifest-Link
 - Mobile-/Apple-Web-App-Metadaten
@@ -40,11 +60,11 @@ Hub, Word Imposter, Creator, Advanced und Quick besitzen jetzt denselben Install
 - Apple-Touch-Icon
 - CSP `manifest-src 'self'`
 
-`tests/pwa-head-metadata.test.js` schützt den lokalen Source-Vertrag. `scripts/staging_smoke.py` prüft denselben Vertrag später gegen die tatsächlich ausgelieferten HTTPS-Seiten.
+Die neuen Resume-/Privacy-Guards sind Bestandteil des Offline-Core. `tests/pwa-head-metadata.test.js` schützt den lokalen Source-Vertrag. `scripts/staging_smoke.py` prüft denselben Vertrag später gegen tatsächlich ausgelieferte HTTPS-Seiten.
 
-### Release Evidence
+## Release Evidence
 
-Neu:
+Vorhanden:
 
 - `release-evidence.json`
 - `RELEASE_EVIDENCE.md`
@@ -56,12 +76,50 @@ Die Evidence-Akte ist aktuell absichtlich **PREPARED / NO_GO**. Ein späteres `G
 
 - quantitative Ziele aller 15 Core-Games erreicht
 - 15/15 erster Core-Quellpass dokumentiert
-- zwei frühere Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` entfernt
-- `scripts/privacy_content_audit.py` scannt acht ausgelieferte Contentquellen
-- Anime-Figuren/unnötige Marken-/Eventreferenzen source-level generisch ersetzt
-- `scripts/reference_content_audit.py` scannt acht ausgelieferte Contentquellen
+- 15/15 Core-Hardening dokumentiert
+- frühere Private-Device-Truth/Dare-Prompts entfernt
+- `scripts/privacy_content_audit.py` scannt ausgelieferte Contentquellen
+- konkrete Anime-/unnötige Marken-/Eventreferenzen source-level generisch ersetzt
+- `scripts/reference_content_audit.py` scannt ausgelieferte Contentquellen
 
 Manueller finaler Extended/Labs-/Marketing-/Visual-/Rechtepass bleibt offen.
+
+## Security / Backup / Resume
+
+Registry v2 ist zentrale Complete-Backup-Vertragsquelle. Unbekannte Namespaces werden beim Import abgelehnt.
+
+Zusätzlich:
+
+- Word-Imposter-Resume-Guard
+- direkter Hub-Resume-Integritätsvertrag
+- Advanced-Resume-Guard
+- Advanced-Live-Privacy-Guard
+
+Status: **CLOSED/PREPARED IN CODE / REAL VERIFICATION OPEN**.
+
+## Branch Protection
+
+`BRANCH_PROTECTION.md` und Contract-Audit sind vorhanden. Gewünschter Required Check: **`Secret Circle CI / validate`**. Die tatsächliche GitHub-Einstellung ist weiterhin nicht bestätigt.
+
+## CI – P0
+
+Aktuellster vollständig geprüfter App-CI-Befund: **Run #2401** auf Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`.
+
+- Run ID `32650097844`
+- Job ID `97220210755`
+- `failure`
+- `steps: []`
+- kein Checkout
+- kein Node-/Python-Setup
+- kein Online-`npm ci`
+- keine Unit-/Audit-/Playwright-Ausführung
+- kein Repository-Code ausgeführt
+
+Zusätzlich wurde ein temporärer **Runner Probe** ausgeführt, der nur einen lokalen Bash-Schritt (`echo` + `uname -a`) enthielt – ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code. Auch dieser Probe-Job endete mit `steps: []`.
+
+Damit sind Repositorycode, npm und die verwendeten Actions als unmittelbare Ursache des aktuellen Pre-Step-Fehlers ausgeschlossen. Der verbleibende Prüfbereich liegt bei Hosted-Runner-Zuteilung, Account-/Billing-/Budgetzustand oder GitHub-/Policy-Sperren.
+
+Neuere Hardening-Commits besitzen weiterhin keine erfolgreiche Runner-Evidence. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
 
 ## PWA / Staging
 
@@ -72,26 +130,6 @@ Manueller finaler Extended/Labs-/Marketing-/Visual-/Rechtepass bleibt offen.
 
 Offen: konkrete Staging-/Production-Origin, reale Altversion→v44-Upgrades, Rollback, Service-Worker-/Offline-/Installationsprüfung auf realen Geräten.
 
-## Security / Backup
-
-Registry v2 ist zentrale Complete-Backup-Vertragsquelle. Unbekannte Namespaces werden beim Import abgelehnt. SEC-F01/F02: **CLOSED IN CODE / REAL VERIFICATION OPEN**.
-
-## Branch Protection
-
-`BRANCH_PROTECTION.md` und Contract-Audit sind vorhanden. Gewünschter Required Check: **`Secret Circle CI / validate`**. Die tatsächliche GitHub-Einstellung ist weiterhin nicht bestätigt.
-
-## CI – P0
-
-Aktuellster vollständig geprüfter Lauf: **#2363** auf Head `81d26c7acc85c8ad6c4a20dcb1ea04128316291f`.
-
-- `validate` = failure
-- `steps: []`
-- kein Checkout
-- kein Online-`npm ci`
-- kein Repository-Code ausgeführt
-
-Damit sind die neuen v44-/Evidence-Verträge **implementiert, aber nicht runnerverifiziert**.
-
 ## Real offene Releasegates
 
 1. Actions-Runner / echte Steps
@@ -100,8 +138,8 @@ Damit sind die neuen v44-/Evidence-Verträge **implementiert, aber nicht runnerv
 4. HTTPS-Staging + automatisierter und manueller PWA-Smoke
 5. PWA Upgrade/Rollback auf real installierten Versionen
 6. Android / iPhone / Tablet
-7. VoiceOver / TalkBack / 200-%-Zoom
-8. reale Gruppen/Beta
+7. VoiceOver / TalkBack / Tastatur / 200-%-Zoom
+8. reale Gruppen/Beta für alle 15 Core-Spiele
 9. Root-`icon.svg`-Rechtebasis
 10. finaler Visual-/Content-/Third-Party-Sign-off
 11. Betreiber-/Hosting-/Privacy-/Support-/Legalangaben
