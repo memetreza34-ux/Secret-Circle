@@ -63,6 +63,27 @@ test('simple social core games keep the round mechanic visible while playing', a
   }
 });
 
+test('Wrong Answers stays scoreless and explains its manual losing condition', async ({ page }) => {
+  await seedHub(page);
+  await openCatalog(page);
+  await startGame(page, 'wrong-answers');
+
+  await expect(page.locator('#hub-round-guide')).toContainText(/absichtlich falsch antworten/i);
+  await expect(page.locator('#hub-round-guide')).toContainText(/keine Punkte/i);
+  const complete = page.getByRole('button', { name: 'Manuell beendete Runde abschließen und nächste Karte öffnen' });
+  await expect(complete).toBeVisible();
+
+  const before = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), ACTIVE_KEY);
+  expect(before.session.rounds).toBe(0);
+  expect(before.session.score).toBe(0);
+
+  await complete.click();
+  const after = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), ACTIVE_KEY);
+  expect(after.session.rounds).toBe(1);
+  expect(after.session.score).toBe(0);
+  await expect(page.locator('#play-score')).toHaveText('');
+});
+
 test('Paranoia conceals an open secret question when the app loses focus', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'paranoia');
