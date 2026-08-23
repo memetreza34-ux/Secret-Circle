@@ -23,6 +23,10 @@ assert.ok(hub.includes("$('#pause-hub-game').addEventListener('click'"));
 assert.ok(hub.includes('syncHubPauseUi();\n      return true;'));
 
 assert.ok(timers.includes("TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain'])"));
+assert.ok(timers.includes('const HOT_POTATO_MIN_MS = 10_000;'));
+assert.ok(timers.includes('const HOT_POTATO_MAX_MS = 25_000;'));
+assert.ok(timers.includes('HOT_POTATO_MIN_MS + randomInt(HOT_POTATO_RANGE_MS)'));
+assert.ok(!timers.includes('10000 + randomInt(16000)'));
 assert.ok(timers.includes("kind: 'charades', phase: 'running', remainingMs"));
 assert.ok(timers.includes("kind: 'taboo', phase: 'running', remainingMs"));
 assert.ok(timers.includes("kind: 'hot-potato', phase: 'running', remainingMs"));
@@ -52,6 +56,7 @@ console.log(JSON.stringify({
   splitTimerModule: true,
   sharedController: true,
   pausableCoreTimers: ['charades', 'taboo', 'hot-potato', 'word-chain'],
+  hotPotatoRangeMs: [10_000, 25_000],
   persistedRemainingTime: true,
   backgroundAutoPause: true,
   reloadResumePaused: true
