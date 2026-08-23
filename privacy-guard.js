@@ -62,11 +62,21 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       focusShowButton();
+      return;
     }
+    clearSecretText();
   }, true);
+
+  const revealScreen = document.querySelector('#reveal-screen');
+  if (revealScreen && typeof MutationObserver === 'function') {
+    new MutationObserver(() => {
+      if (revealScreen.hidden) clearSecretText();
+    }).observe(revealScreen, { attributes: true, attributeFilter: ['hidden'] });
+  }
 
   root.SecretCirclePrivacyGuard = Object.freeze({
     concealSecret,
-    version: 3
+    clearSecretText,
+    version: 4
   });
 })(window);
