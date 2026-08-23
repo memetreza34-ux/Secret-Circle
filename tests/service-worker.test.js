@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v44'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v44-staging'/);
+assert.match(source, /const CACHE='secret-circle-v45'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v45-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -39,7 +39,7 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 44,
+  cacheContract: 45,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
