@@ -1,6 +1,6 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
-Stand: 19. August 2026  
+Stand: 23. August 2026  
 Status: **IN PROGRESS – npm-Snapshot vorhanden; Root-SVG-Rechte und reale Verifikation offen**
 
 ## 1. Zweck
@@ -9,13 +9,15 @@ Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcon
 
 Ein Eintrag ohne belegte Rechtebasis wird **nicht** automatisch als eigenes Werk behandelt.
 
+Für die aktuelle App-Icon-Rechtefrage existiert jetzt zusätzlich `ASSET_RIGHTS_SIGNOFF.md`. Dieses Dokument definiert die erforderliche menschliche Bestätigung, bevor `unresolved` auf einen verifizierten Status geändert werden darf.
+
 ## 2. Runtime-Abhängigkeiten
 
 `package.json` enthält weiterhin **keine npm-Runtime-Dependencies**. Die Production-PWA lädt außerdem keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets.
 
 ## 3. Reproduzierbarer npm-Snapshot
 
-Seit 19. August 2026 liegt `package-lock.json` im Lockfile-Format **v3** vor. Der Snapshot ist bewusst minimal und umfasst nur die Entwicklungs-Testkette:
+`package-lock.json` liegt im Lockfile-Format **v3** vor. Der Snapshot umfasst nur die Entwicklungs-Testkette:
 
 | Paket | Version | Rolle | Lizenz | Runtime der Production-PWA? |
 |---|---:|---|---|---|
@@ -24,58 +26,60 @@ Seit 19. August 2026 liegt `package-lock.json` im Lockfile-Format **v3** vor. De
 | `playwright-core` | `1.54.2` | Dependency von `playwright` | Apache-2.0 | Nein |
 | `fsevents` | `2.3.2` | optionale macOS-Dependency von `playwright` | MIT | Nein |
 
-Der offizielle Playwright-Tag `v1.54.2` bestätigt:
-
-- `@playwright/test` 1.54.2 → `playwright` 1.54.2
-- `playwright` 1.54.2 → `playwright-core` 1.54.2
-- `playwright` führt `fsevents` 2.3.2 als optionale Dependency
-- die drei Playwright-Pakete deklarieren Apache-2.0
-
-Der offizielle `fsevents`-Tag `v2.3.2` deklariert MIT und `darwin` als Zielplattform.
-
-`package-lock.json` enthält für alle vier Registry-Pakete feste `resolved`-URLs und `sha512`-Integrity-Werte.
-
-`scripts/lockfile_contract_audit.py` prüft:
-
-- Lockfile-Version 3
-- Root-Name/Version/Engines/Dev-Dependency gegen `package.json`
-- exakt die erwartete minimale Paketmenge
-- exakte 1.54.2-/2.3.2-Versionen
-- exakten Dependencygraph
-- Registry-URL + `sha512` für jedes Paket
-- keine npm-Runtime-Dependency
-- `npm ci` in normalem CI und Cross-Browser
-- npm-Cache über `actions/setup-node`
-
-Der Audit ist Teil von `npm run validate`.
-
-### Lokaler Strukturcheck
-
-Ein lokaler `npm ci --ignore-scripts --offline --no-audit --no-fund`-Versuch akzeptierte Package-/Lock-Synchronität und brach erst beim fehlenden lokalen Tarballcache (`ENOTCACHED` für `playwright-core-1.54.2.tgz`) ab. Das ist ein Struktur-/Synchronitätssignal, **kein** Online-Installations-PASS.
+Der dokumentierte Dependency-Snapshot wird durch `scripts/lockfile_contract_audit.py` gegen `package.json`/`package-lock.json` geschützt. CI und Cross-Browser verwenden `npm ci`.
 
 Noch offen:
 
 - `npm ci` mit erreichbarer Registry auf echtem Runner
 - tatsächlicher Installations-/Integrity-Nachweis auf unverändertem Commit
-- danach `npm run ci` und Cross-Browser auf demselben Commit
+- danach vollständiges CI und Cross-Browser auf demselben Commit
 
 ## 4. Maschinenlesbare Asset-Provenienz
 
 Verbindlich: `assets/manifests/asset-provenance.json`, Schema-Version **1**.
 
-`scripts/asset_provenance_audit.py` ist Teil von `npm run validate` und prüft unter anderem Datei-Existenz, Statuswerte, Ableitungen, SHA-256, PNG-IHDR und Manifestgrößen.
+`scripts/asset_provenance_audit.py` prüft unter anderem:
 
-Der Validator darf `unresolved` während der Entwicklung akzeptieren, meldet dann aber `final_asset_signoff: BLOCKED`.
+- Datei-Existenz
+- erlaubte Provenienzstatus
+- SHA-256
+- PNG-IHDR/Dimensionen
+- Manifestgrößen
+- `derivedFrom`-Beziehungen
+- erforderliche Rechtefelder für verifizierte Assets
+
+Erlaubte Statuswerte:
+
+- `unresolved`
+- `verified-own`
+- `verified-third-party`
+
+`unresolved` ist während der Entwicklung zulässig, blockiert aber den finalen Asset-Sign-off.
 
 ## 5. Aktuelle App-Assets
 
 | Datei | Technischer Nachweis | Rechte-Status |
 |---|---|---|
 | `icon.svg` | Git-Historie: am 2. August 2026 in Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` neu angelegt | `unresolved` |
-| `icon-192.png` | echtes 192×192-PNG, aus `icon.svg`; SHA-256 dokumentiert | `unresolved`, Ableitung technisch belegt |
-| `icon-512.png` | echtes 512×512-PNG, aus `icon.svg`; SHA-256 dokumentiert | `unresolved`, Ableitung technisch belegt |
+| `icon-192.png` | echtes 192×192-PNG, aus `icon.svg`; Hash/Dimension dokumentiert | `unresolved`, Ableitung technisch belegt |
+| `icon-512.png` | echtes 512×512-PNG, aus `icon.svg`; Hash/Dimension dokumentiert | `unresolved`, Ableitung technisch belegt |
 
-Repository-Herkunft beweist **nicht automatisch** Urheberrecht oder kommerzielle Nutzungsrechte. Offen bleiben Urheber/Ersteller, mögliche KI-/Template-/Stock-Nutzung, kommerzielle Rechtebasis und erforderliche Attribution.
+Repository-Herkunft beweist **nicht automatisch** Urheberrecht oder kommerzielle Nutzungsrechte. Offen bleiben insbesondere Ersteller/Rechteinhaber, möglicher externer Vorlagen-/Stock-/KI-Workflow, kommerzielle Rechtebasis und eventuelle Attribution.
+
+### Neuer Sign-off-Pfad
+
+`ASSET_RIGHTS_SIGNOFF.md` verlangt vor `verified-own` bzw. `verified-third-party` eine konkrete Dokumentation zu:
+
+- Ersteller/Rechteinhaber
+- Erstellungsweg
+- externer Vorlage ja/nein
+- Quelle/Lizenz bei externer Vorlage
+- KI-/Tool-Workflow, falls relevant
+- kommerzieller Nutzung
+- Attribution
+- bestätigender Person und Datum
+
+Ohne diese Bestätigung bleibt das Manifest unverändert `unresolved`.
 
 ## 6. Gebündeltes Media-Inventar
 
@@ -95,17 +99,16 @@ Im UI stehen Unicode-Emoji-Zeichen. Secret Circle bündelt keine eigene Emoji-Fo
 
 ### Core
 
-`CORE_CONTENT_REVIEW.md` dokumentiert den 15/15-Core-Quellpass. v43 entfernt die zwei bekannten Private-Device-Prompts physisch aus `party-catalog.js`; `scripts/privacy_content_audit.py` schützt acht ausgelieferte Contentquellen.
+`CORE_CONTENT_REVIEW.md` dokumentiert den 15/15-Core-Quellpass. `CORE_GAME_ACCEPTANCE.md` dokumentiert zusätzlich den 15/15-Core-Hardening-Pass. Frühere Private-Device-Prompts wurden physisch aus dem Runtime-Content entfernt; Privacy-Audits schützen die ausgelieferten Contentquellen.
 
 ### Fan-/Referenzcontent
 
-- Word Imposter nutzt generische Ersatzbegriffe für die v36-Funde.
-- `anime-guess` liefert **Anime-Archetypen erraten** mit 40 generischen Archetypen; frühere konkrete Figuren sind physisch aus `party-mega-catalog.js` entfernt.
-- `Wellenlänge` → **Spektrum-Tipp** upstream.
-- Browser-Tabu `Chrome` → `Tab` upstream.
-- `Löwenkönig` → `Löwe`.
-- v38-Sport-/Eventformulierungen wurden generisch ersetzt.
-- `scripts/reference_content_audit.py` scannt acht ausgelieferte Contentquellen.
+- Word Imposter verwendet generische Ersatzbegriffe für frühere unnötige konkrete Referenzen.
+- `anime-guess` liefert **Anime-Archetypen erraten** mit generischen Archetypen.
+- `Wellenlänge` ist sichtbar **Spektrum-Tipp**.
+- Browser-Tabu verwendet `Tab` statt konkreter Browsermarke.
+- frühere konkrete Unterhaltungs-/Eventformulierungen wurden generisch ersetzt.
+- `scripts/reference_content_audit.py` schützt ausgelieferte Contentquellen.
 
 Der restliche manuelle Extended-/Labs-/Marketing-/Visualpass bleibt offen.
 
@@ -133,19 +136,19 @@ Nach Auswahl der Production-Plattform prüfen:
 Vor `THIRD-PARTY / ASSET PASS`:
 
 - [x] `package-lock.json` vorhanden
-- [x] direkte Dev-Dependency `@playwright/test` 1.54.2 / Apache-2.0 verifiziert
-- [x] transitive npm-Paketmenge aus Lockfile inventarisiert
-- [x] Playwright-Dependencygraph gegen offiziellen v1.54.2-Tag geprüft
-- [x] `fsevents` 2.3.2 / MIT / darwin gegen offiziellen Tag geprüft
-- [x] `scripts/lockfile_contract_audit.py` in `npm run validate`
+- [x] npm-Entwicklungsabhängigkeiten inventarisiert
+- [x] reproduzierbarer Lockfile-/Dependency-Vertrag vorhanden
 - [x] normaler CI- und Cross-Browser-Workflow verwenden `npm ci`
 - [ ] echtes Online-`npm ci` auf unverändertem Commit grün
 - [ ] Integrity-/Installationsnachweis auf funktionierendem Runner
 - [x] maschinenlesbares Asset-Provenienzmanifest vorhanden
 - [x] Asset-/Media-/Reference-/Privacy-Audits integriert
 - [x] PNG-IHDR-/Hash-/Manifestgrößenprüfung implementiert
+- [x] explizites `ASSET_RIGHTS_SIGNOFF.md` vorhanden
 - [ ] relevante Audits auf funktionierendem Runner tatsächlich grün
-- [ ] `icon.svg` von `unresolved` auf belegten Rechte-Status gesetzt
+- [ ] menschlicher Icon-Rechte-Sign-off vollständig
+- [ ] `icon.svg` von `unresolved` auf belegten Rechte-Status gesetzt oder ersetzt
+- [ ] PNG-Ableitungen entsprechend verifiziert/neu erzeugt
 - [ ] restlicher manueller Fan-/Marken-/Franchise-/Marketing-/Visualpass abgeschlossen
 - [ ] erforderliche Attributionen/Notices final
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
