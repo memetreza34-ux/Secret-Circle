@@ -92,12 +92,15 @@ test('Scharade and Tabu conceal secret timer cards when the app loses focus', as
 test('Wortkette timer freezes during pause and resumes with remaining time', async ({ page }) => {
   await seedHub(page);
   await openHubGame(page, 'word-chain');
+  await expect(page.locator('#hub-round-guide')).toContainText('letzten Buchstaben');
+  await expect(page.locator('#hub-round-guide')).toContainText('Keine Wiederholungen');
   await expectFrozenTimer(page, '30-Sekunden-Runde starten');
 });
 
 test('Heiße Kartoffel keeps its random remaining time hidden while paused', async ({ page }) => {
   await seedHub(page);
   await openHubGame(page, 'hot-potato');
+  await expect(page.locator('#hub-round-guide')).toContainText('bei STOPP hält, verliert die Runde');
   await page.getByRole('button', { name: 'Zufallstimer starten' }).click();
 
   const indicator = page.locator('.timer-display').first();
