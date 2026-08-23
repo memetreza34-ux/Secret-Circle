@@ -58,11 +58,25 @@ test('concealed card can be reopened with its secret restored and the round cont
   await expect(page.locator('#reveal-progress')).toContainText('Karte 2 von 3');
 });
 
+test('normal card handoff removes the previous secret from the DOM', async ({ page }) => {
+  await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
+  await expect(page.locator('#word')).not.toHaveText('');
+
+  await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
+
+  await expect(page.locator('#secret')).toBeHidden();
+  await expect(page.locator('#role')).toHaveText('');
+  await expect(page.locator('#word')).toHaveText('');
+  await expect(page.locator('#hint-text')).toHaveText('');
+  await expect(page.locator('#reveal-progress')).toContainText('Karte 2 von 3');
+});
+
 test('privacy guard exposes a frozen runtime contract', async ({ page }) => {
   const result = await page.evaluate(() => ({
     version: window.SecretCirclePrivacyGuard?.version,
     frozen: Object.isFrozen(window.SecretCirclePrivacyGuard),
-    concealType: typeof window.SecretCirclePrivacyGuard?.concealSecret
+    concealType: typeof window.SecretCirclePrivacyGuard?.concealSecret,
+    clearType: typeof window.SecretCirclePrivacyGuard?.clearSecretText
   }));
-  expect(result).toEqual({ version: 3, frozen: true, concealType: 'function' });
+  expect(result).toEqual({ version: 4, frozen: true, concealType: 'function', clearType: 'function' });
 });
