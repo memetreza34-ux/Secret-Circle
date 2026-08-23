@@ -41,6 +41,13 @@
     return timerMatchesGame(game, session);
   }
 
+  function showDiscardNotice(root) {
+    const status = root?.document?.querySelector?.('#hub-status');
+    if (!status) return;
+    status.textContent = 'Ein inkonsistenter Timer-Spielstand wurde sicher verworfen. Starte das Spiel neu.';
+    status.classList.add('error');
+  }
+
   function install(root) {
     const storage = root?.localStorage;
     const catalog = root?.SecretCirclePartyCatalog;
@@ -55,7 +62,7 @@
     if (validateSnapshot(parsed, catalog)) return true;
 
     try { storage.removeItem(ACTIVE_KEY); } catch { return false; }
-    root.sessionStorage?.setItem?.('secret-circle-party-resume-guard-notice', '1');
+    showDiscardNotice(root);
     return false;
   }
 
