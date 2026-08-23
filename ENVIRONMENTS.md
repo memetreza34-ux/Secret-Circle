@@ -1,7 +1,8 @@
 # Secret Circle – Umgebungen und Staging-Vertrag
 
-Stand: 19. August 2026  
-Status: **PREPARED – konkrete HTTPS-Staging-URL offen**
+Stand: 23. August 2026  
+Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
+Offline-Core: **`secret-circle-v45` / `secret-circle-v45-staging`**
 
 ## 1. Ziel
 
@@ -30,17 +31,17 @@ Releaseanforderung:
 - echter GitHub-Actions-Runner
 - sichtbarer Checkout und sichtbare Steps
 - `package-lock.json`
-- `npm ci`
+- Online-`npm ci`
 - `npm run ci`
 - Cross-Browser
 
-Aktuell: **BLOCKED**. `CI_TROUBLESHOOTING.md` führt den jeweils neuesten belastbaren Actions-Befund; wiederholt enden Jobs vor Repository-Steps mit `steps: []`.
+Aktuell: **BLOCKED**. App-CI Run #2401 und ein reiner Bash-Runner-Probe endeten vor Step 1 mit `steps: []`. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## 4. HTTPS-Staging
 
 Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum vor Production und muss eine **getrennte Origin** besitzen.
 
-Schematisches Beispiel:
+Schematisch:
 
 ```text
 https://staging.example.invalid/
@@ -51,131 +52,154 @@ Die tatsächlichen Domains werden vor Deployment festgelegt.
 
 Warum getrennte Origin:
 
-- `localStorage` wird nach Origin getrennt
-- Service-Worker-Registrierung/-Cache wird nach Origin getrennt
+- `localStorage` originisoliert
+- Service Worker/Cache originisoliert
 - installierte PWA-Zustände vermischen sich nicht
-- Staging-Tests löschen/überschreiben nicht versehentlich Productiondaten
+- Staging-Tests verändern keine Productiondaten
 
-Nicht empfohlen: Staging und Production nur über Queryparameter derselben Origin unterscheiden.
+Staging und Production nicht nur über Queryparameter derselben Origin unterscheiden.
 
 ## 5. Automatisierter HTTPS-Smoke
-
-`scripts/staging_smoke.py` prüft eine **wirklich ausgelieferte HTTPS-Origin** mit Python-Standardbibliothek. Es werden keine neuen Runtime- oder npm-Abhängigkeiten benötigt.
 
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v44
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v45
 ```
 
-Production nach Freigabe:
+Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v44 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v45 --production
 ```
 
 Der Smoke prüft unter anderem:
 
 - HTTPS zwingend
-- Redirects bleiben auf derselben Origin
+- Redirects Same-Origin
 - begrenzte Downloadgrößen
-- Kernseiten und Query-Routen HTTP 200
-- Manifest und `standalone`-Vertrag
-- echte PNG-IHDR-Dimensionen 192×192 / 512×512
-- Service-Worker-Cachegeneration und Staging-Cache-Synchronität
+- Kernseiten/Query-Routen HTTP 200
+- Manifest-/Standalone-Vertrag
+- PNG-IHDR 192×192 / 512×512
+- Service-Worker- und Staging-Cachegeneration
 - Registry-vor-Datentools-Ladereihenfolge
-- v43-Privacy-Source-Vertrag
-- Reference-Safe-Vertrag für Anime-Archetypen, Spektrum-Tipp, Tab und Löwe
-- v38-Viral-Ersatzformulierungen
-- im `--production`-Modus zusätzliche Placeholder-Prüfungen öffentlicher Dateien
+- Privacy-/Reference-Source-Verträge
+- PWA-Head-Metadaten
+- Production-Placeholder-Prüfungen
 
-`scripts/staging_smoke_contract_audit.py` schützt Aufbau, Dokumentation und npm-Script statisch und läuft in `npm run validate`.
+`scripts/staging_smoke_contract_audit.py` schützt diesen Vertrag statisch.
 
-**Wichtig:** Dieser HTTP-Smoke beweist nicht Service-Worker-Installation, Offline-Neustart, Updatebanner, lokale Datenmigration, VoiceOver/TalkBack oder reale Gerätefunktion. Diese Nachweise bleiben Browser-/PWA-/Realgerät-Gates.
+Der HTTP-Smoke beweist **nicht** Service-Worker-Installation, Offline-Neustart, Updatebanner, lokale Datenmigration, VoiceOver/TalkBack oder reale Gerätefunktion.
 
 ## 6. Release Candidate
 
-Ein RC ist kein eigener Codezweig mit zusätzlichen Fixes nach der Freigabe.
-
 RC-Vertrag:
 
-- exakter Commit SHA dokumentiert
-- exakte App-Version dokumentiert
-- exakte Cachegeneration dokumentiert
-- Tests beziehen sich auf denselben Commit
-- HTTPS-Smoke bezieht sich auf das Deployment desselben Commits
-- nach einem Fix entsteht ein neuer RC-Kandidat
+- exakter 40-stelliger Commit SHA
+- exakte App-Version
+- exakte Cachegeneration
+- alle automatisierten Tests auf demselben Commit
+- HTTPS-Staging desselben Commits
+- nach jedem Fix neuer RC-Kandidat
 - Production erhält denselben freigegebenen statischen Stand
+
+Ein RC ist kein Zweig, auf dem nach der Freigabe still weitergepatcht wird.
 
 ## 7. Production
 
 Vor Promotion:
 
 - CI/Cross-Browser grün
-- Branch Protection nach `BRANCH_PROTECTION.md` bestätigt
-- automatisierter HTTPS-Staging-Smoke grün
+- Branch Protection tatsächlich bestätigt
+- HTTPS-Staging-Smoke grün
 - manueller Staging-/PWA-Smoke grün
 - Geräte/A11y grün
 - PWA Upgrade/Rollback geprüft
 - reale Gruppen abgeschlossen
-- Legal/Support/Third-Party/Fan-Content final
+- Legal/Support/Third-Party final
 - keine offenen Critical/High Bugs
 
-Production darf nicht als Ort für den ersten echten Service-Worker-Test dienen.
+Production darf nicht der erste echte Service-Worker-Test sein.
 
 ## 8. Datenisolation
 
-Für Local/Staging bevorzugt neutrale Spielernamen und generische Creator-Karten; keine echten privaten Nachrichten/Fotos und keine sensiblen personenbezogenen Testbackups.
+Für Local/Staging neutrale Spielernamen und generische Creator-Karten verwenden. Keine echten privaten Nachrichten/Fotos und keine sensiblen personenbezogenen Testbackups.
 
-Ein Staging-Backup ist nicht automatisch ein Productionbackup. Beim bewussten Cross-Environment-Test Datei kopieren, personenbezogene Testinhalte vermeiden und Quellumgebung/Commit notieren.
+Cross-Environment-Backups nur bewusst kopieren und Quellumgebung/Commit dokumentieren.
 
 ## 9. PWA-/Cache-Regeln je Umgebung
 
-Der Quellcode besitzt aktuell **`secret-circle-v44`**.
+Aktueller Quellcode: **`secret-circle-v45`**.
 
-- v37 brachte den Reference-Safe-Pass für das Anime-Archetypen-Quiz im finalen Runtime-Katalog.
-- v38 ersetzte drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower`.
-- v39 entfernte `Chrome` aus dem finalen Tabu-Content und zeigt `wavelength` als **Spektrum-Tipp**.
-- v40 entfernte die 40 historischen konkreten Anime-Figurennamen zusätzlich physisch aus der ausgelieferten `party-mega-catalog.js`.
-- v41 verankert `Spektrum-Tipp` und `Tab` upstream, setzt Classic Content auf v4, ersetzt `Löwenkönig` durch einen generischen Löwenhinweis und nimmt den zentralen Reference-Source-Audit in `npm run validate` auf.
-- v42 repariert den PWA-Rastervertrag: echtes 192×192- und 512×512-PNG, SHA-256-/IHDR-/Manifestprüfung im Asset-Audit.
-- v43 entfernt die zwei früheren Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` und nimmt einen globalen Privacy-Content-Audit in `npm run validate` auf.
-- v44 vereinheitlicht Manifest-, iOS- und Icon-Metadaten auf Hub, Word Imposter, Creator, Advanced und Quick und schützt sie mit `tests/pwa-head-metadata.test.js`.
+Relevante Historie:
+
+- v37: Reference-Safe-Anime-Archetypen
+- v38: generische Sport-/Eventformulierungen
+- v39: Browsermarke entfernt, Spektrum-Tipp
+- v40: konkrete Anime-Namen physisch entfernt
+- v41: Reference-Safe-Invarianten upstream + Classic Content v4
+- v42: echter 192×192-/512×512-Rastervertrag
+- v43: Private-Device-Truth/Dare-Prompts physisch entfernt + Privacy-Audit
+- v44: einheitlicher Manifest-/iOS-/Icon-Head-Vertrag auf fünf Einstiegseiten
+- **v45: neue Cachegeneration nach 15/15-Core-Hardening; Word-Imposter-Resume, Advanced-Resume und Advanced-Live-Privacy im Offline-Core**
 
 Regeln:
 
-- nie Cachegeneration wiederverwenden, wenn Offline-Core-Inhalte geändert wurden
-- Staging- und Production-Origin dürfen denselben Cache-Namen tragen, weil Caches originisoliert sind
-- Upgradepfade immer aus wirklich installierter alter Version testen
-- Rollback veröffentlicht ebenfalls eine neue Cachegeneration
+- Cachegeneration nie wiederverwenden, wenn Offline-Core-Inhalte geändert wurden
+- Staging/Production dürfen denselben Cache-Namen tragen, weil Origins getrennt sind
+- Upgradepfade aus wirklich installierter alter Version testen
+- Rollback erhält ebenfalls neue Cachegeneration
 
-## 10. Environment-Konfiguration
+## 10. Offline-v45-Vertrag
 
-V1 benötigt derzeit keine Runtime-Secrets und kein Backend-Environment-File.
+v45 muss unter anderem offline verfügbar machen:
 
-Falls später hinzugefügt werden: `.env.example` ohne Geheimnisse, getrennte dev/test/staging/prod-Werte, keine Production-Keys in Test, Secret Store statt Commit und Rotation/Revoke-Prozess.
+- `word-imposter-resume-guard.js`
+- `party-hub-resume-guard.js`
+- `advanced-resume-guard.js`
+- `advanced-privacy-guard.js`
+- Katalog-/Core-Contentmodule
+- Session-/Timercontroller
+- Backup-Registry
+- Manifest und Icons
 
-## 11. Manueller Staging-Smoke
+Reale Offline-Funktion ist erst nach PWA-/Gerätetest bestätigt.
 
-Zusätzlich zum automatisierten HTTP-Smoke mindestens:
+## 11. Environment-Konfiguration
+
+V1 benötigt keine Runtime-Secrets und kein Backend-Environment-File.
+
+Falls später hinzugefügt:
+
+- `.env.example` ohne Geheimnisse
+- getrennte dev/test/staging/prod-Werte
+- keine Production-Keys in Test
+- Secret Store statt Commit
+- Rotation/Revoke-Prozess
+
+## 12. Manueller Staging-Smoke
+
+Zusätzlich zum HTTP-Smoke mindestens:
 
 - Service Worker registriert
-- Installation vom Hub möglich und Icon/Titel sichtbar korrekt
-- mindestens Creator, Advanced oder Quick direkt geöffnet und Homescreen-/Installationsmetadaten geprüft
+- Installation vom Hub
+- Titel/Icon korrekt
+- mindestens eine Unterseite direkt
 - Offline-Neustart
-- finaler Katalog im Browser
-- Hub-Datenbereich startet ohne Registryfehler
-- Export/Import mit neutralen Daten
+- finaler Katalog
+- Hub-Datenbereich/Backup-Registry
+- Export/Import neutraler Daten
+- Word Imposter
 - ein direktes Hub-Core-Spiel
 - ein Timer-Core-Spiel
 - ein Advanced-Core-Spiel
-- Word Imposter
 - Creator
+- neue Privacy-/Resume-Guards offline
 - Updatebanner
 - aktive Session während Update
 - Privacy-/Legalnavigation
 
-## 12. Rollbackprobe
+## 13. Rollbackprobe
 
 Auf Staging:
 
@@ -189,9 +213,7 @@ Auf Staging:
 8. automatisierten HTTP-Smoke auf C ausführen
 9. Ergebnis dokumentieren
 
-## 13. Environment-Nachweis
-
-Vor Production dokumentieren:
+## 14. Environment-Nachweis
 
 ```text
 Local baseline:
@@ -209,19 +231,19 @@ Production smoke command/result:
 Rollback tested from/to:
 ```
 
-## 14. Release-Gate
+## 15. Release-Gate
 
 Vor `ENVIRONMENT / STAGING PASS`:
 
-- [ ] konkrete getrennte HTTPS-Staging-Origin festgelegt
+- [ ] getrennte HTTPS-Staging-Origin festgelegt
 - [ ] Production-Origin festgelegt
-- [ ] Staging öffentlich erreichbar und installierbar
+- [ ] Staging erreichbar/installierbar
 - [ ] `scripts/staging_smoke.py` gegen Staging grün
-- [ ] `tests/pwa-head-metadata.test.js` auf demselben RC-Commit grün
+- [ ] `tests/pwa-head-metadata.test.js` auf demselben RC grün
 - [ ] manueller Browser-/PWA-Smoke abgeschlossen
 - [ ] Upgrade von mindestens zwei älteren Versionen abgeschlossen
 - [ ] Rollbackprobe abgeschlossen
 - [ ] Datenisolation bestätigt
-- [ ] derselbe freigegebene RC-Commit für Production vorgesehen
+- [ ] derselbe freigegebene RC für Production vorgesehen
 
 Bis dahin bleibt R-019 **OFFEN** und Production **NO_GO**.
