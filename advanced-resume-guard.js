@@ -149,7 +149,7 @@
   function validateSnapshot(value, expectedGameId = null) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
     if (!ACTIVE_VERSIONS.has(value.version) || !MODES.has(value.gameId) || !value.session || typeof value.session !== 'object' || Array.isArray(value.session)) return false;
-    if (expectedGameId && value.gameId !== expectedGameId) return true;
+    if (expectedGameId && value.gameId !== expectedGameId) return false;
     return validateAdvanced(value.gameId, value.session.advanced, value.session);
   }
 
@@ -181,7 +181,7 @@
   }
 
   return Object.freeze({
-    version: 2,
+    version: 3,
     activeKey: ACTIVE_KEY,
     validateSnapshot,
     validateAdvanced,
