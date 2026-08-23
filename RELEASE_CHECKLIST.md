@@ -1,8 +1,10 @@
 # Secret Circle – Release-Checkliste Januar 2027
 
-Stand: 19. August 2026
+Stand: 23. August 2026
 
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
+
+Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**. Öffentliche Freigabe bleibt **NO_GO**.
 
 ## 1. Repository / CI / Build
 
@@ -13,22 +15,44 @@ Bereits vorbereitet:
 - [x] `scripts/lockfile_contract_audit.py`
 - [x] `BRANCH_PROTECTION.md` + Contract-Audit
 - [x] `RELEASE_EVIDENCE.md` + `release-evidence.json` + Audit
+- [x] Runner-Problem mit minimalem action-/repo-freiem Probe isoliert
 
 Für den RC offen:
 
 - [ ] exakter Release-Commit und Tag festgelegt
-- [ ] Actions zeigt echten Checkout und echte Steps
+- [ ] GitHub Actions erreicht einen sichtbaren ersten Step
+- [ ] `Check out repository` wird ausgeführt
 - [ ] Online-`npm ci` auf genau diesem Commit grün
+- [ ] `npm run check` grün
+- [ ] `npm test` grün
+- [ ] `npm run validate` grün
+- [ ] Chromium E2E grün
 - [ ] `npm run ci` vollständig grün
 - [ ] Chromium / Firefox / WebKit auf demselben Commit grün
 - [ ] `Secret Circle CI / validate` als Required Check aktiv und grün
 - [ ] Branch Protection / Review / Bypass / Force-Push / Löschung final bestätigt
 
+Aktueller CI-Blocker: Issue #7. App-CI Run #2401 und ein reiner Bash-Runner-Probe endeten jeweils vor Step 1 mit `steps: []`.
+
 ## 2. Engine / Sessions / Daten
 
+Quellseitig vorbereitet:
+
+- [x] Word-Imposter-Resume-Guard vorhanden
+- [x] Hub-Timer-/Resume-Integritätsvertrag vorhanden
+- [x] `advanced-resume-guard.js` vorhanden
+- [x] `advanced-privacy-guard.js` vorhanden
+- [x] neue Guards Bestandteil des Offline-Core
+
+Für den RC real zu bestätigen:
+
 - [ ] Exact-once-Verlauf/Statistik real bestätigt
-- [ ] Hub-/Advanced-/Quick-Resume real geprüft
+- [ ] Word-Imposter-/Hub-/Advanced-/Quick-Resume real geprüft
+- [ ] manipulierte Word-Imposter-Voting-Snapshots werden sicher verworfen
+- [ ] gekreuzte Hub-Timerzustände werden sicher verworfen
+- [ ] manipulierte Advanced-Snapshots werden sicher verworfen
 - [ ] private Reveal-Zustände bleiben nach Reload verdeckt
+- [ ] private Reveal-Zustände werden auch bei App-/Tab-Wechsel verdeckt
 - [ ] Beenden & speichern klar getrennt von Abbrechen & verwerfen
 - [ ] Skip vergibt keinen künstlichen Punkt
 - [ ] Timer über Pause, Reload, Hintergrund/Sperrbildschirm geprüft
@@ -37,7 +61,14 @@ Für den RC offen:
 
 ## 3. Core / UX / Content
 
-Für alle 15 Core-Games:
+Quellstatus:
+
+- [x] 15/15 erster Core-Content-Quellpass PREPARED
+- [x] 15/15 Core-Hardening-Pass PREPARED
+- [x] Punkte-/Siegervertrag in `CORE_SCORING_RULES.md`
+- [x] technische Matrix in `CORE_GAME_ACCEPTANCE.md`
+
+Für alle 15 Core-Games real:
 
 - [ ] Start / Lobby / Pack / Regeln verständlich
 - [ ] Freiwilligkeit / Skip bei persönlichen Inhalten
@@ -49,6 +80,14 @@ Für alle 15 Core-Games:
 
 Zusätzlich:
 
+- [ ] Word Imposter: Setup-Grenzen, Mehrfach-Imposter, geheimes Voting und Stichwahl real
+- [ ] Paranoia: Geheimfrage bei Fokusverlust real geschützt
+- [ ] Scharade/Tabu: Geheimkarten und 60-s-Timer real geschützt
+- [ ] Heiße Kartoffel: Zufallstimer real ausschließlich 10–25 s
+- [ ] Wortkette: manueller Gültigkeitsabschluss wird verstanden
+- [ ] Nur falsche Antworten: manuelle Verlustregel wird verstanden; keine Punkte
+- [ ] Advanced Core: private Eingaben/Fragen/Orte/Rollen bei Fokusverlust geschützt
+- [ ] Mafia: Rollenanzahl, Alive-Zustand und Siegerlogik real korrekt
 - [ ] 15 Core / 13 Extended / 17 Labs korrekt dargestellt
 - [ ] Suche/Filter/Synonyme/Tippfehler real geprüft
 - [ ] manueller Privacy-/Safety-Contentpass final
@@ -62,13 +101,17 @@ Zusätzlich:
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
 - [ ] `tests/pwa-head-metadata.test.js` grün
 - [ ] Hub, Word Imposter, Creator, Advanced und Quick besitzen denselben Manifest-/iOS-/Icon-Head-Vertrag
+- [ ] Word-Imposter-/Advanced-Resume-/Advanced-Privacy-Guards offline verfügbar
 - [ ] Manifest, SVG, 192er PNG, 512er PNG offline verfügbar
 - [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
 - [ ] Online → installierte PWA → Offline-Neustart
+- [ ] Hub, Word Imposter, Advanced, Quick, Creator und Privacy offline
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
 - [ ] aktive Session bleibt durch Update geschützt
-- [ ] Update von mindestens zwei älteren installierten Versionen
+- [ ] Update von mindestens zwei älteren installierten Versionen auf v44/RC
+- [ ] lokale Daten/Sessions überstehen Update
+- [ ] fehlgeschlagene Promotion zerstört den bisherigen Offline-Core nicht
 - [ ] Rollback mit neuer Cachegeneration
 
 ## 5. HTTPS-Staging / Production
@@ -93,26 +136,33 @@ Zusätzlich:
 - [ ] VoiceOver
 - [ ] TalkBack
 - [ ] private Reveals mit Screenreader
+- [ ] geschützte Inhalte nach Reopen mit sinnvollem Fokus
 - [ ] Safe Areas / Bildschirmtastatur
+- [ ] große Systemschrift
 - [ ] Reduced Motion
+- [ ] Touchziele mindestens 44×44 px, wo gefordert
 - [ ] Installationsicon und App-Titel vom Hub korrekt
 - [ ] mindestens eine Unterseite direkt auf Installations-/Homescreen-Metadaten geprüft
 
 ## 7. Beta / Gruppen
 
-- [ ] 3–4 Personen
-- [ ] 5–8 Personen
-- [ ] 9–12 Personen
-- [ ] großer Word-Imposter-Test
-- [ ] Mafia 8+ mit mehreren Rollen
+- [ ] 3–4 Personen, mindestens 60 Minuten
+- [ ] 5–8 Personen, mindestens 90 Minuten
+- [ ] 9–12 Personen, mindestens 90 Minuten
+- [ ] mindestens ein realer Testnachweis pro Core-Spiel
+- [ ] großer Word-Imposter-Test mit mehreren Impostern
+- [ ] Word-Imposter-Fairness über mindestens 20 reale Runden protokolliert
+- [ ] Mafia mit mehreren Gruppengrößen/Rollen
 - [ ] Smart Party Night mindestens 3 vollständige Abende
 - [ ] Creator mit unerfahrener Person
 - [ ] keine offenen Critical/High Bugs
 
+Operative Detailmatrix: Issue #8 und `MANUAL_TEST_PLAN.md`.
+
 ## 8. Assets / Third Party / Legal / Betrieb
 
 - [ ] Asset-/Media-Provenienz-Audits grün
-- [ ] Root-`icon.svg` Urheber/Rechtebasis/Attribution final belegt
+- [ ] Root-`icon.svg` Urheber/Rechtebasis/Attribution final belegt oder Asset ersetzt
 - [ ] kein Releaseasset `unresolved`
 - [ ] Dependency-/Vulnerability-Review des finalen Lockfiles
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden
