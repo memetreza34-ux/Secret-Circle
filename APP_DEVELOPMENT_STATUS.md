@@ -1,6 +1,6 @@
 # Secret Circle – A-bis-Z Entwicklungsstatus
 
-Stand: 19. August 2026
+Stand: 23. August 2026
 
 Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
@@ -8,9 +8,32 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
 **Öffentliche Releasefreigabe: NO_GO**  
 **Offline-Core: `secret-circle-v44`**  
-**Classic Content: v4**
+**Classic Content: v4**  
+**Core Source Hardening: 15/15 PREPARED**
 
-Technisch weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, Exact-once-Sessions, sichere Resume-/Timerpfade, Registry-v2-Backups, Lockfile/npm-ci-Vertrag, source-level Privacy-/Reference-Schutz, PWA-Head-Vertrag, HTTPS-Smoke, Accessibility-/Legal-/Betriebsgrundlage und maschinenlesbarer Release-Evidence-Vertrag.
+Aktueller PR-Head: `7371b6eb24893d0fbd79df8aebbcaec1930820cd` auf Draft-PR #13.
+
+Technisch weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, 15/15 Core-Hardening-Pass, Exact-once-Sessions, sichere Resume-/Timerpfade, Live-Privacy-Guards, Registry-v2-Backups, Lockfile/npm-ci-Vertrag, source-level Privacy-/Reference-Schutz, PWA-Head-Vertrag, HTTPS-Smoke, Accessibility-/Legal-/Betriebsgrundlage und maschinenlesbarer Release-Evidence-Vertrag.
+
+Wichtig: **PREPARED bedeutet nicht RELEASE PASS.** Automatisierte Runner-Evidence, reale Geräte, Accessibility und Gruppentests sind weiterhin offen.
+
+## Neu seit dem letzten Status
+
+### 15/15 Core-Hardening-Pass
+
+- Word Imposter: Setup-Grenzen, Rollenfairness, geheime Karten, Voting-/Resume-Integrität.
+- persönliche Hub-Spiele: sichtbare Freiwilligkeit/Skip-Regeln und Live-Rundenhilfe.
+- Paranoia: offene Geheimfrage wird bei App-/Tab-Wechsel verdeckt.
+- Scharade/Tabu: Geheimkarten-Sichtschutz + klare Display-Handoff-Regel.
+- Heiße Kartoffel: Zufallstimer exakt 10–25 Sekunden.
+- Wortkette: sichtbarer manueller Erfolgsvertrag.
+- Nur falsche Antworten: sichtbare manuelle Verlustregel; bewusst scorelos.
+- Hub-Resume: Timerzustand muss zur Spielart passen.
+- Advanced Core: `advanced-privacy-guard.js` + `advanced-resume-guard.js`.
+- Advanced-Resume prüft Two-Truths-Ergebnis, Question-Imposter-Rolle/Vote, Location-Spy-Zustand sowie Mafia-Rollenanzahl, Alive-Menge und Siegerintegrität.
+- neue Unit-/E2E-Verträge dokumentieren diese Grenzen.
+
+Details: `CORE_GAME_ACCEPTANCE.md`.
 
 ## A-bis-Z-Tracker
 
@@ -21,16 +44,16 @@ Technisch weit fortgeschritten: 15 priorisierte Core-Games, quantitative Content
 | 1 | Discovery / Nutzer / Markt | DONE | Brief, Scenarios, Market Research | reale Nutzer weiter validieren |
 | 2 | Produktstrategie / Scope | PREPARED | Scope, Roadmap | reale Gruppen/Nutzer |
 | 3 | Plattformstrategie | PREPARED | Platform Strategy | reale Zielgeräte |
-| 4 | Requirements / Akzeptanz | PREPARED | Requirements, Core Contracts | Evidence auf RC binden |
-| 5 | UX / IA / Design | PREPARED | UX Flow, Design System | reale UX-Tests |
+| 4 | Requirements / Akzeptanz | PREPARED | Requirements, Core Contracts, 15/15 Hardening | Runner + reale Core-Abnahme |
+| 5 | UX / IA / Design | PREPARED | UX Flow, Design System, Live-Core-Guidance | reale UX-Tests |
 | 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | bei Grundsatzänderung ADR |
-| 7 | Security / Threat Model | PREPARED | Security, Threat Model, Registry v2 | Runner + echter Browser |
+| 7 | Security / Threat Model | PREPARED | Security, Threat Model, Resume-/Privacy-Guards | Runner + echter Browser |
 | 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | echter Runner + Branch Protection |
-| 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13 | Restarbeit nach Guide |
-| 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-Verträge | reale Quota-/Updatepfade |
+| 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core Hardening | keine neue Scope-Welle; Evidenz schließen |
+| 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-/Resume-Verträge | reale Quota-/Updatepfade |
 | 11 | Tests / CI | BLOCKED | Workflows/Testmatrix | funktionierender Actions-Runner |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker v44 + PWA-Head-Test | echte Install-/Upgrade-/Rollbacktests |
-| 13 | Content / Alter / Privacy | IN PROGRESS | Content-Wellen + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker v44 + PWA-/Resume-Verträge | echte Install-/Upgrade-/Rollbacktests |
+| 13 | Content / Alter / Privacy | IN PROGRESS | 15/15 Quellreview + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md` | G1–G5 + PN1–PN3 real |
 | 15 | Datenschutz / Recht / Support | PREPARED | Privacy, Legal, Support | echte Betreiber-/Hostingangaben |
 | 16 | Release Management / RC | PREPARED | Checklist + Release Evidence | unveränderlichen RC einfrieren |
@@ -59,6 +82,8 @@ Die fünf interaktiven Einstiegseiten Hub, Word Imposter, Creator, Advanced und 
 
 Cache: `secret-circle-v44` / `secret-circle-v44-staging`.
 
+Neu im Offline-Core sind auch die zusätzlichen Core-Hardening-Guards, darunter Word-Imposter-Resume sowie Advanced-Privacy-/Resume-Schutz.
+
 ## Release Evidence
 
 `release-evidence.json` steht aktuell auf **PREPARED / NO_GO**. `scripts/release_evidence_audit.py` verlangt für ein späteres GO:
@@ -71,28 +96,43 @@ Cache: `secret-circle-v44` / `secret-circle-v44-staging`.
 
 ## CI
 
-Aktuellster vollständig geprüfter Lauf: **#2363** auf Head `81d26c7acc85c8ad6c4a20dcb1ea04128316291f`.
+Aktueller PR-Head: `7371b6eb24893d0fbd79df8aebbcaec1930820cd`.
+
+Für diesen Head wurde über die GitHub-Schnittstelle **kein Workflow-Lauf gefunden**.
+
+Aktuellster vollständig geprüfter Problem-Lauf bleibt **Run #2387** auf Head `4335f670229b8a89a07a600f5a3527b43f0fe123`:
 
 - `validate` failure
 - `steps: []`
-- kein Checkout / Online-`npm ci` / Repository-Code
+- kein Checkout
+- kein Online-`npm ci`
+- keine Unit-/Audit-/Playwright-Ausführung
+- kein Repository-Code ausgeführt
 
 Deshalb nichts Neues als runner-grün behaupten.
 
-## Höchste Prioritäten
+## Höchste Prioritäten ab jetzt
 
-1. Actions-Runner / echter Checkout + Online-`npm ci`
-2. vollständiges CI + Cross-Browser
-3. Branch Protection tatsächlich bestätigen
-4. konkrete HTTPS-Staging-Origin + echter Smoke
-5. PWA Upgrade/Rollback + Installationsmetadaten auf realen Geräten
-6. Android / iPhone / Tablet + Accessibility
-7. reale Gruppentests
-8. Root-SVG-Rechte + finaler Visual-/Third-Party-Pass
-9. Betreiber-/Hosting-/Privacy-/Support-/Legalangaben
-10. Incident-Drill
-11. unveränderter RC
-12. `release-evidence.json` auf FINAL/GO erst nach vollständiger Evidence
+1. Actions-Runner / echter Checkout + Online-`npm ci` reparieren.
+2. vollständiges `npm run ci` auf exakt demselben Commit.
+3. Cross-Browser auf demselben RC-Kandidaten.
+4. Branch Protection tatsächlich aktivieren/bestätigen.
+5. konkrete HTTPS-Staging-Origin + echter Smoke.
+6. PWA Upgrade/Rollback + Offline-Neustart auf installierter App.
+7. Android / iPhone / Tablet.
+8. VoiceOver / TalkBack / Tastatur / 200-%-Zoom.
+9. reale Gruppentests für alle 15 Core-Spiele; große Gruppen besonders für Word Imposter, Paranoia und Mafia.
+10. Root-SVG-Rechte + finaler Visual-/Third-Party-Pass.
+11. Betreiber-/Hosting-/Privacy-/Support-/Legalangaben.
+12. Incident-Drill.
+13. unveränderter RC + `release-evidence.json = FINAL / GO` erst nach vollständiger Evidence.
+
+## Was jetzt **nicht** sinnvoll ist
+
+- keine neue 122-Mode-Scope-Welle,
+- keine großen neuen Backends/Accounts,
+- keine Monetarisierungsarchitektur vor den Release-Gates,
+- keine weitere Featuremenge, solange CI, Geräte, Gruppen und Legal nicht geschlossen sind.
 
 ## Nicht als bestanden behaupten
 
