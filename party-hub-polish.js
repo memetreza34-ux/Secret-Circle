@@ -12,6 +12,9 @@
   const skipRound = document.querySelector('#skip-hub-round');
   if (!C || !detail || !title || !start) return;
 
+  const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
+  const TIMER_MODES = new Set(['charades', 'taboo', 'hot-potato', 'word-chain']);
+
   const voluntaryGames = Object.freeze({
     'truth-dare': 'Alles freiwillig. Unangenehme Fragen oder Aufgaben dürfen ohne Begründung übersprungen werden.',
     'never-have': 'Persönliche Aussagen sind freiwillig. Überspringen ist jederzeit ohne Begründung erlaubt.',
@@ -89,6 +92,42 @@
       skipRound.textContent = 'Überspringen · nächste Person';
       skipRound.setAttribute('aria-label', 'Freiwillig überspringen und ohne Punkt zur nächsten Person wechseln');
     }
+  }
+
+  function timerStateMatchesGame(game, session) {
+    if (!game || !session || typeof session !== 'object' || Array.isArray(session)) return false;
+    const timer = session.timer;
+    const timerMode = TIMER_MODES.has(game.mode);
+    if (!timerMode) return (timer === null || timer === undefined) && session.running !== true;
+    if (timer === null || timer === undefined) return session.running !== true;
+    if (!timer || typeof timer !== 'object' || Array.isArray(timer) || timer.kind !== game.mode) return false;
+    if (!['running', 'ended'].includes(timer.phase)) return false;
+    const remaining = Number(timer.remainingMs);
+    if (!Number.isFinite(remaining) || remaining < 0 || remaining > 3_600_000) return false;
+    if (timer.phase === 'running') return remaining > 0 && session.running === true;
+    return remaining === 0 && session.running !== true;
+  }
+
+  function guardStoredResumeIntegrity() {
+    let raw;
+    try { raw = localStorage.getItem(ACTIVE_KEY); } catch { return true; }
+    if (!raw) return true;
+
+    let active;
+    try { active = JSON.parse(raw); } catch { return true; }
+    const session = active?.session;
+    const game = C.getGame(session?.gameId);
+    if (!game || !session) return true;
+    if (timerStateMatchesGame(game, session)) return true;
+
+    try { localStorage.removeItem(ACTIVE_KEY); } catch { return false; }
+    document.querySelector('#hub-resume-session')?.remove();
+    const status = document.querySelector('#hub-status');
+    if (status) {
+      status.textContent = 'Ein inkonsistenter Timer-Spielstand wurde sicher verworfen. Starte das Spiel neu.';
+      status.classList.add('error');
+    }
+    return false;
   }
 
   function paranoiaSecretIsOpen() {
@@ -185,14 +224,17 @@
     observer.disconnect();
     playObserver?.disconnect();
   }, { once: true });
+  guardStoredResumeIntegrity();
   updateStartLabel();
   updatePlaySafety();
   loadGuidance();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 8,
+    version: 9,
     updateStartLabel,
     updatePlaySafety,
+    timerStateMatchesGame,
+    guardStoredResumeIntegrity,
     concealPrivatePrompt,
     removePrivateCover,
     paranoiaSecretIsOpen,
