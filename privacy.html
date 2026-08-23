@@ -30,19 +30,23 @@
       <p>Der Planer verarbeitet Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel ausschließlich lokal. Es werden keine Daten an einen Analyse-, Werbe- oder Empfehlungsserver übertragen.</p>
 
       <h2>Geheime Spielinhalte</h2>
-      <p>Rollen, Fragen, Orte, Figuren, Identitäten, persönliche Antworten, eigene Erratbegriffe und geheime Missionen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Übergabe- und Verdeckungsstufen verringern Schulterblick, können absichtliches Mitlesen jedoch nicht vollständig verhindern.</p>
+      <p>Rollen, Fragen, Orte, Identitäten, persönliche Antworten, eigene Erratbegriffe und geheime Missionen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Übergabe- und Verdeckungsstufen verringern Schulterblick, können absichtliches Mitlesen jedoch nicht vollständig verhindern.</p>
+
+      <h2>Live-Verdeckungs- und Resume-Schutz</h2>
+      <p>Word Imposter, Paranoia, Scharade, Tabu und die Advanced-Kernspiele besitzen zusätzliche Schutzpfade für geheime Inhalte. Offene geheime Karten, Fragen, Orte, Rollen oder private Advanced-Eingaben werden bei unterstützten App-/Tab-Wechseln verdeckt und müssen bewusst wieder geöffnet werden.</p>
+      <p>Zusätzlich prüfen Resume-Guards gespeicherte Word-Imposter-, Hub- und Advanced-Zustände auf definierte Integritätsregeln. Widersprüchliche oder manipulierte Zwischenstände können verworfen werden, statt unbemerkt mit einem falschen Spieler-, Timer-, Rollen- oder Siegerzustand fortgesetzt zu werden.</p>
 
       <h2>Built-in-Privacy-Schutz</h2>
       <p>Die eingebauten Spiele sollen keine privaten Nachrichten, Kamerarollen oder privaten Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial verlangen. Seit Offline-Core v43 sind die zwei früher identifizierten Private-Device-Truth/Dare-Texte auch physisch aus dem Basiskatalog entfernt. Ein Source-Audit prüft die ausgelieferten Built-in-Contentquellen auf solche Offenlegungsaufforderungen. Persönliche Fragen bleiben zusätzlich freiwillig und überspringbar.</p>
 
       <h2>Anime-Archetypen-Quiz</h2>
-      <p>Das frühere konkrete Anime-Fanquiz wurde durch eigenständige generische Anime-/Manga-Archetypen ersetzt. Seit Offline-Core v40 sind die früheren konkreten Figuren auch aus der ausgelieferten Mega-Katalogdatei entfernt; v41 verankert die reference-safe Grunddefinition zusätzlich upstream und schützt die ausgelieferten Contentquellen über einen zentralen Audit. Die App lädt dafür keine fremden Charakterbilder, Logos, Videos, Audios oder Zitate und behauptet keine Verbindung zu Rechteinhabern.</p>
+      <p>Das frühere konkrete Anime-Fanquiz wurde durch eigenständige generische Anime-/Manga-Archetypen ersetzt. Seit Offline-Core v40 sind die früheren konkreten Figuren auch aus der ausgelieferten Mega-Katalogdatei entfernt; spätere Reference-Safe-Gates schützen diese Entscheidung zusätzlich. Die App lädt dafür keine fremden Charakterbilder, Logos, Videos, Audios oder Zitate und behauptet keine Verbindung zu Rechteinhabern.</p>
 
       <h2>Geld-, Preis- und Schätzspiele</h2>
       <p>Alle Geld-Challenges sind hypothetische Partyfragen. Die App verarbeitet keine Zahlung, fordert keine Zahlungsdaten an und verpflichtet niemanden zu einer Ausgabe. „Preis schätzen“ verwendet feste Spielwerte und keine aktuellen Händler-, Börsen- oder Marktdaten.</p>
 
       <h2>Persönliche Social-Spiele</h2>
-      <p>Bei Wer kennt mich am besten?, Finger runter, Hot Seat, Pass das Handy und ähnlichen Modi können persönliche Antworten entstehen. Überspringen ist erlaubt. Die Antworten werden nicht an einen Server gesendet; je nach Modus wird nur der lokale Sessionzustand oder die Punktzahl gespeichert.</p>
+      <p>Bei persönlichen Social-Modi können private Antworten entstehen. Überspringen ist erlaubt und muss nicht begründet werden. Die Antworten werden nicht an einen eigenen Server gesendet; je nach Modus wird nur der lokale Sessionzustand oder die Punktzahl gespeichert.</p>
 
       <h2>Sicherung und Import</h2>
       <p>Eine vollständige JSON-Sicherung kann Spielernamen, Presets, Favoriten, Party-Night-Pläne, Verlauf, Statistiken, eigene Kategorien, selbst erstellte Spiele, Einstellungen und aktive Sessions enthalten. Sie wird lokal erstellt, ist nicht verschlüsselt und sollte nur an einem vertrauenswürdigen Ort gespeichert werden.</p>
@@ -52,14 +56,15 @@
       <p>Nein. Beim Laden oder Aktualisieren ruft der Browser lediglich statische App-Dateien vom Hosting-Anbieter ab. Spieldaten werden nicht an einen eigenen Secret-Circle-Server gesendet.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v44</code>.</p>
-      <p>Seit v44 besitzen Hub, Word Imposter, Creator, Advanced und Quick denselben lokalen Manifest-/Icon-/iOS-Installationsvertrag. Diese Metadaten übertragen keine Spieldaten; sie steuern nur Darstellung und Installation der PWA.</p>
+      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, Resume-/Privacy-Guards, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v45</code>.</p>
+      <p>v44 vereinheitlichte den lokalen Manifest-/Icon-/iOS-Installationsvertrag für Hub, Word Imposter, Creator, Advanced und Quick. v45 erhöht die Cachegeneration nach dem 15/15-Core-Hardening und nimmt die neuen Resume-/Privacy-Guard-Dateien explizit in den Offline-Core auf.</p>
 
       <h2>Daten löschen</h2>
       <p>„Alle lokalen Daten löschen“ entfernt sämtliche Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>, einschließlich eigener Spiele und aktiver Sessions. Das Löschen ist absichtlich breiter als der Backup-Import, damit auch alte oder verwaiste Secret-Circle-Schlüssel entfernt werden. Exportierte Dateien müssen separat im Dateisystem gelöscht werden.</p>
 
       <h2>Browsergrenzen</h2>
       <p>Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck, manuellem Löschen oder einer Neuinstallation entfernen. Für wichtige eigene Spiele und Packs sollte regelmäßig eine Sicherung exportiert werden.</p>
+      <p>Verdeckungsmechanismen reduzieren unbeabsichtigtes Offenlegen, können aber keine absichtliche Einsicht durch andere Personen am gemeinsam genutzten Gerät technisch vollständig verhindern.</p>
 
       <h2>Analyse, Werbung und externe Inhalte</h2>
       <p>Secret Circle verwendet keine Analyse-, Werbe- oder Tracking-Dienste und lädt keine externen Spielskripte, Schriftarten oder Werbeinhalte.</p>
