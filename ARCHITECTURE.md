@@ -1,6 +1,6 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Stand: 19. August 2026
+Stand: 23. August 2026
 
 Dieses Dokument definiert die technischen Grenzen, die Secret Circle langfristig verständlich, migrierbar, offline nutzbar und testbar halten.
 
@@ -14,15 +14,15 @@ Online-Multiplayer, Cloud-Sync, KI-Live-Inhalte, Kamera/Mikrofon und Mehrgeräte
 
 Spiel-IDs, Pack-IDs, Creator-Spiel-IDs, Session-IDs, Abschluss-IDs, Speicherpräfix `secret-circle-`, Backupformate, Manifest-ID und PWA-Scope sind interne Verträge. Anzeigenamen dürfen sich ändern; persistierte IDs benötigen bei Änderungen eine Migration.
 
-Jede wiederaufnehmbare Session erhält genau eine stabile `sessionId`. Abschluss-IDs werden aus Engine, Spiel und Session abgeleitet. Reload oder wiederholter Abschluss dürfen keinen zweiten Verlaufseintrag erzeugen.
+Jede wiederaufnehmbare Session erhält eine stabile Session-ID. Reload oder wiederholter Abschluss dürfen keinen zweiten Verlaufseintrag erzeugen.
 
 ## 3. Versionierte Daten und Backups
 
-Persistierte Bereiche besitzen explizite Versionen. Beschädigte Daten werden normalisiert oder isoliert verworfen. Unbekannte neuere Versionen werden nicht blind überschrieben. Persistenzänderungen benötigen Migrations-, Korruptions-, Quota- und Rollbacktests.
+Persistierte Bereiche besitzen explizite Versionen. Beschädigte Daten werden normalisiert, isoliert verworfen oder über definierte Guard-Verträge abgelehnt. Unbekannte neuere Versionen werden nicht blind überschrieben.
 
 `backup-schema-registry.js` ist der zentrale Backup-Vertragsmittelpunkt und steht auf Registry-Version 2. Complete-Backup-Format, Größenlimits und erlaubte Storage-Key-Familien werden dort definiert. `party-data-tools.js` darf diese Werte nicht separat duplizieren.
 
-Complete-Imports akzeptieren nur bekannte versionierte Word-Imposter-Key-Familien sowie versionierte `secret-circle-party-*`-Familien. Vollständiges Löschen bleibt absichtlich breiter und entfernt weiterhin alle `secret-circle-*`-Reste.
+Complete-Imports akzeptieren nur bekannte versionierte Word-Imposter-Key-Familien sowie definierte `secret-circle-party-*`-Familien. Vollständiges Löschen bleibt absichtlich breiter und entfernt weiterhin alle `secret-circle-*`-Reste.
 
 ## 4. Katalog- und Contentarchitektur
 
@@ -32,57 +32,64 @@ Der vollständige Party-Katalog wird in dieser Reihenfolge aufgebaut:
 
 Verantwortung:
 
-- `party-catalog.js`: Basisspiele und Ausgangsinhalte; seit v43 enthält der spielbare Basiskatalog die zwei früher problematischen Private-Device-Truth/Dare-Texte physisch nicht mehr
-- `party-expansion.js`: Advanced-Spiele, strukturierte Welle-1-Erweiterungen und seit v41 reference-safe Grunddefinitionen für `wavelength`/Tabu
+- `party-catalog.js`: Basisspiele und Ausgangsinhalte
+- `party-expansion.js`: Advanced-Spiele und reference-safe Grunddefinitionen
 - `party-trending-catalog.js`: klassische Quick Modes
-- `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate; `anime-guess` liegt dort physisch als generischer Archetypenmodus vor
+- `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate
 - `party-viral-catalog.js`: Viral-/Preis-/Wissens-/Storyformate
-- `party-core-release-catalog.js`: soziale Core-Releaseinhalte aus Welle 2
-- `party-core-classic-content.js`: klassische Core-Releaseinhalte sowie finale redaktionelle Privacy-/Reference-Safe-Invarianten und defensive Fallback-Ersetzungen
-- `party-routing.js`: finale Routingfassade, Competition-Metadaten und lokale Creator-Spiele
+- `party-core-release-catalog.js`: soziale Core-Releaseinhalte
+- `party-core-classic-content.js`: klassische Core-Inhalte und finale redaktionelle Invarianten
+- `party-routing.js`: finale Routingfassade, Competition-Metadaten und Creator-Spiele
 
-`party-core-classic-content.js` steht auf Version **4**. Die finale Schicht:
+`party-core-classic-content.js` steht auf Version **4**. Der final ausgelieferte Content hält unter anderem:
 
-- hält `anime-guess` auf 40 eigenständigen Archetypen,
-- hält die stabile interne Spiel-ID `wavelength` öffentlich auf **Spektrum-Tipp**,
-- behält die zwei Privacy-Textkorrekturen nur noch als defensive Fallback-Ersetzungen,
-- behält persistierte IDs/Routingkompatibilität bei.
+- `anime-guess` als generisches **Anime-Archetypen erraten**,
+- die stabile ID `wavelength` sichtbar als **Spektrum-Tipp**,
+- Browser-Tabu ohne konkrete Browsermarke,
+- generische Löwen-/Event-/Sportformulierungen,
+- keine früher identifizierten Private-Device-Truth/Dare-Offenlegungsaufforderungen.
 
-Seit v41 gilt zusätzlich upstream:
-
-- `party-expansion.js` enthält direkt **Spektrum-Tipp** statt `Wellenlänge`.
-- Die Browser-Tabu-Karte enthält direkt `Tab` statt `Chrome`.
-- `party-mega-catalog.js` enthält die 40 generischen Anime-Archetypen und keine früheren konkreten Anime-Figuren.
-- Der Emoji-Quiz-Löwenhinweis ist generisch `🦁🌾 → Löwe` statt `Löwenkönig`.
-
-Seit v43 gilt zusätzlich für Privacy-Content:
-
-- `party-catalog.js` enthält direkt `Welches Foto-Motiv findest du besonders lustig?` statt einer Kamerarollen-Aufforderung.
-- `party-catalog.js` enthält direkt `Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.` statt einer Aufforderung, die letzte Handy-Nachricht vorzulesen.
-- `scripts/privacy_content_audit.py` scannt acht ausgelieferte Built-in-Contentquellen auf konkrete Offenlegungsaufforderungen zu privaten Chats/Nachrichten, Kamerarolle/Fotos, Passwörtern, Adresse, Telefonnummer, Standort oder Kontodaten.
-- Harmlose Geräte-/Chat-Erwähnungen werden nicht pauschal blockiert; der Audit trennt private Offenlegung von normalen Alltagsthemen.
-
-`scripts/reference_content_audit.py` scannt ebenfalls die tatsächlich ausgelieferten Contentquellen und macht die Reference-Safe-Entscheidungen zu einem Releasevertrag. Die stabile technische ID `wavelength` bleibt ausdrücklich erlaubt; der alte sichtbare Produktname ist gesperrt.
+`scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` schützen diese Source-Verträge.
 
 ## 5. Hub- und Timergrenzen
 
 - `party-hub.js`: Session, Navigation, Ledger, Fokus und nicht zeitgesteuerte direkte Hub-Spiele
 - `party-hub-timers.js`: Scharade, Tabu, Heiße Kartoffel und Wortkette samt Timer-State
 - `party-session-controls.js`: generischer pausierbarer Timer und gemeinsame Sessionaktionen
+- `party-hub-resume-guard.js`: Cross-Mode-/Timer-Resume-Integrität
+- `party-hub-polish.js`: Live-Guidance, Freiwilligkeit und Geheimkarten-Sichtschutz im direkten Hub
 
 Ladereihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub.js`.
 
-Für Datenverwaltung gilt zusätzlich: `backup-schema-registry.js` muss vor `party-data-tools.js` geladen sein.
+Für Datenverwaltung gilt: `backup-schema-registry.js` muss vor `party-data-tools.js` geladen sein.
 
 ## 6. Weitere Modulgrenzen
 
-Word Imposter trennt Fachlogik (`game-engine.js`), Rollen (`role-assignment.js`), Speicherung (`data-store.js`) und UI (`app.js`). Der Game Creator trennt Daten-/Validierungslogik (`game-creator.js`), Wizard (`creator-page.js`) und Laufzeit (`party-created-modes.js`). Quick/Mega/Viral/Creator verwenden die gemeinsame Sessionsteuerung statt privater Intervalltimer.
+Word Imposter trennt:
+
+- Fachlogik: `game-engine.js`
+- Rollen: `role-assignment.js`
+- Speicherung: `data-store.js`
+- Resume-Integrität: `word-imposter-resume-guard.js`
+- UI: `app.js`
+
+Advanced Core trennt:
+
+- Fachlogik: `party-advanced.js`
+- Resume-Integrität: `advanced-resume-guard.js`
+- Laufzeit/Session: `party-advanced-runner.js`
+- Live-Privacy: `advanced-privacy-guard.js`
+- Einstellungen: `party-advanced-preferences.js`
+
+Der Game Creator trennt Daten-/Validierungslogik (`game-creator.js`), Wizard (`creator-page.js`) und Laufzeit (`party-created-modes.js`). Quick/Mega/Viral/Creator verwenden die gemeinsame Sessionsteuerung statt privater Intervalltimer.
 
 Globale Monkey-Patches von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik sind verboten.
 
 ## 7. Lokale Transaktionen und Exact-once
 
 Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Zustand wieder her. Ein Abschluss verwendet eine stabile Completion-ID, schreibt Verlauf/Statistik genau einmal und entfernt den aktiven Zustand erst nach erfolgreicher Verbuchung.
+
+Abbruch und Skip dürfen keinen künstlichen Abschluss-/Punktzustand erzeugen.
 
 ## 8. Datenschutz und Security durch Architektur
 
@@ -93,26 +100,29 @@ Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vol
 - Nutzerdaten bevorzugt über `textContent`
 - Importgrenzen nach Format, Größe, Key-Allowlist und Struktur
 - geheime Inhalte nach Hintergrundwechsel/Reload nicht automatisch sichtbar
+- Word-Imposter-, Hub- und Advanced-Resume-Zustände werden zusätzlich auf Integrität geprüft
 - lokale Daten auffindbar, exportierbar und löschbar
-- Built-in-Content darf keine privaten Nachrichten/Fotos/Passwörter/Adressen als Spielmaterial verlangen
+- Built-in-Content verlangt keine privaten Nachrichten/Fotos/Passwörter/Adressen als Spielmaterial
 - persönliche Inhalte bleiben freiwillig und überspringbar
-- Source-Level-Privacy-Content wird zusätzlich durch `scripts/privacy_content_audit.py` geschützt
 
-`SECURITY.md`, `THREAT_MODEL.md` und `BACKUP_SCHEMAS.md` ergänzen diesen Vertrag verbindlich.
+`SECURITY.md`, `THREAT_MODEL.md`, `BACKUP_SCHEMAS.md`, `CORE_GAME_ACCEPTANCE.md` und die Privacy-/Resume-Guards ergänzen diesen Vertrag.
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v44`**.
+Aktueller Offline-Core: **`secret-circle-v45`**.
+
+Historie der letzten relevanten Cachegenerationen:
 
 - v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
-- v37: `anime-guess` im finalen Runtime-Katalog auf 40 generische Archetypen umgestellt
-- v38: drei unnötig konkrete Sport-/Eventreferenzen im Viral-`higher-lower` generisch ersetzt
-- v39: `Chrome` im finalen Tabu-Content entfernt und sichtbare Bezeichnung `Wellenlänge` durch **Spektrum-Tipp** ersetzt
-- v40: 40 historische konkrete Anime-Figurennamen physisch aus der ausgelieferten `party-mega-catalog.js` entfernt
-- v41: `Spektrum-Tipp` und `Tab` upstream in `party-expansion.js` verankert, Classic Content auf v4 bereinigt, `Löwenkönig` durch generischen Löwenhinweis ersetzt und zentraler Source-Reference-Audit in `npm run validate` aufgenommen
-- v42: fehlendes `icon-192.png` ergänzt, falsch dimensioniertes `icon-512.png` durch echtes 512×512-Raster ersetzt und Asset-Audit um PNG-IHDR-, Manifestgrößen- und SHA-256-Prüfung erweitert
-- v43: die zwei historischen Private-Device-Truth/Dare-Prompts physisch aus `party-catalog.js` entfernt und ein globaler Privacy-Content-Source-Audit in `npm run validate` aufgenommen
-- v44: `creator.html`, `advanced.html` und `quick-play.html` auf denselben Manifest-/iOS-/Icon-Head-Vertrag wie Hub und Word Imposter gebracht; `tests/pwa-head-metadata.test.js` schützt fünf interaktive Einstiegseiten
+- v37: Anime-Archetypen im finalen Runtime-Katalog
+- v38: konkrete Sport-/Eventreferenzen generisch ersetzt
+- v39: Browsermarke entfernt, sichtbares Spektrum-Tipp
+- v40: konkrete Anime-Figurennamen physisch aus ausgelieferter Quelle entfernt
+- v41: Reference-Safe-Invarianten upstream + Classic Content v4
+- v42: echte 192×192-/512×512-PNGs + Hash/IHDR/Manifestvertrag
+- v43: Private-Device-Truth/Dare-Texte physisch entfernt + Privacy-Source-Audit
+- v44: gemeinsamer Manifest-/iOS-/Icon-Head-Vertrag für Hub, Word Imposter, Creator, Advanced und Quick
+- **v45: Cachegeneration nach 15/15-Core-Hardening erhöht; Word-Imposter-Resume, Advanced-Resume und Advanced-Live-Privacy explizit im Offline-Core**
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -121,8 +131,8 @@ Bei jeder offline benötigten Dateiänderung:
 1. CORE-Liste prüfen
 2. Cachegeneration erhöhen
 3. Service-Worker-Test aktualisieren
-4. Architektur/Deployment/Privacy/Environment synchronisieren
-5. reales alte→neue Update später testen
+4. Architektur/Deployment/Privacy/Environment/Release-Dokumente synchronisieren
+5. reale alte→neue Updatepfade später testen
 
 ## 10. PWA-Installationsmetadaten
 
@@ -131,62 +141,67 @@ Die interaktiven Einstiegseiten `party.html`, `index.html`, `creator.html`, `adv
 - responsiver Viewport mit `viewport-fit=cover`
 - `theme-color`
 - `referrer=no-referrer`
-- `mobile-web-app-capable=yes`
-- `apple-mobile-web-app-capable=yes`
-- `apple-mobile-web-app-status-bar-style=black-translucent`
-- `apple-mobile-web-app-title=Secret Circle`
+- Mobile-/Apple-Web-App-Metadaten
 - CSP mit `manifest-src 'self'`
 - `manifest.webmanifest`
 - `icon.svg`
-- `icon-192.png` als PNG-Favicon
-- `icon-192.png` als Apple-Touch-Icon
+- `icon-192.png` als PNG-Favicon und Apple-Touch-Icon
 
-`tests/pwa-head-metadata.test.js` schützt diesen Source-Vertrag. Reale Homescreen-/Installationsdarstellung auf iOS/Android/Desktop bleibt ein Geräte-Gate.
+`tests/pwa-head-metadata.test.js` schützt diesen Source-Vertrag. Reale Homescreen-/Installationsdarstellung bleibt ein Geräte-Gate.
 
 ## 11. Accessibility als Definition of Done
 
-Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 px wichtige Touchziele, Reduced Motion, 200-%-Zoom/Reflow, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
+Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, ausreichend große Touchziele, Reduced Motion, 200-%-Zoom/Reflow, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
 
-`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/pwa-head-metadata.test.js` und `tests/e2e/accessibility-core.spec.js` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
+Private Reveal-Cover müssen mit Screenreader verständlich und nach bewusster Wiederöffnung fokussierbar sein.
+
+`ACCESSIBILITY.md`, Contracttests und E2E bilden die automatisierbare Grundlage. VoiceOver/TalkBack und echte Touchbedienung bleiben manuelle Release-Gates.
 
 ## 12. Inhalts- und Rechtevertrag
 
 - keine kopierten proprietären Karten anderer Apps
 - keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
-- vermeidbare konkrete Marken-/Award-/Eventbegriffe werden generisch formuliert
-- konkrete Fan-/Franchise-Namen werden aus finalem Runtime-Content **und ausgelieferten Source-Dateien** entfernt, sofern sie keinen zwingenden Produktnutzen haben
+- vermeidbare konkrete Marken-/Award-/Eventbegriffe generisch formulieren
+- konkrete Fan-/Franchise-Namen aus finalem Runtime-Content und ausgelieferten Source-Dateien entfernen, sofern kein zwingender Produktnutzen besteht
 - stabile interne IDs dürfen aus Migrationsgründen von sichtbaren Produktnamen abweichen
 - keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten
-- jede Built-in-Karte besitzt einen redaktionellen Zweck
-- Altersstufe und sensible Themen werden dokumentiert
 - Nutzerinhalte bleiben von Built-ins getrennt
 
-`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md`, `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` definieren die Release-Gates.
+`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md`, `ASSET_RIGHTS_SIGNOFF.md` und die Content-Audits definieren die Release-Gates.
 
 ## 13. Testpyramide
 
-Bei jedem Commit vorgesehen: Syntaxchecks, Unit-/Contracttests, Strukturvalidatoren, Content-/Scoring-Audits, PWA-Head-, Privacy-Source-, Reference-Source-, Asset-Provenienz-, Placeholder-, Accessibility-, Performance- und Release-Audits.
+Bei jedem Commit vorgesehen:
 
-Bei Release Candidates zusätzlich: Chromium, Firefox, WebKit, reale Android-/iPhone-/Tablet-Tests, Offline-Update, Screenreader/Zoom und reale Partygruppen.
+- Syntaxchecks
+- Unit-/Contracttests
+- Strukturvalidatoren
+- Content-/Scoring-Audits
+- Resume-/Timerverträge
+- PWA-Head-/Privacy-/Reference-/Asset-/Placeholder-/Accessibility-/Performance-/Release-Audits
+
+Bei Release Candidates zusätzlich:
+
+- Chromium, Firefox, WebKit
+- reale Android-/iPhone-/Tablet-Tests
+- PWA Upgrade/Rollback
+- Screenreader/Zoom
+- reale Partygruppen
 
 ## 14. Performance und Assets
 
-Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. Aktuell insbesondere:
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang.
 
-- `party-hub.js` max. 50 KB
-- `party-hub-timers.js` max. 18 KB
-- `party-core-release-catalog.js` max. 65 KB
-- `party-core-classic-content.js` max. 45 KB
+PWA-Icon-Vertrag:
 
-Die zuletzt bestätigte Classic-v2-Größe lag bei 12.954 Bytes. Classic v4 bleibt unter demselben unveränderten 45-KB-Budget; die tatsächliche Ausführung des Performance-Audits bleibt vom funktionierenden Runner abhängig.
+- `icon.svg`: Vektorquelle; Rechtebasis noch menschlich zu bestätigen
+- `icon-192.png`: echtes 192×192-PNG
+- `icon-512.png`: echtes 512×512-PNG
+- `assets/manifests/asset-provenance.json`: Hash/Ableitung/Rechtestatus
+- `ASSET_RIGHTS_SIGNOFF.md`: menschlicher Sign-off-Pfad
+- `scripts/asset_provenance_audit.py`: technischer Provenienzvertrag
 
-PWA-Icon-Vertrag seit v42:
-
-- `icon.svg`: 512er Vektorquelle; Git-Historie belegt den Repository-Eintrag vom 2. August 2026, finale Rechtebasis bleibt menschlich zu bestätigen
-- `icon-192.png`: echtes 192×192-PNG, deterministisch aus `icon.svg` erzeugt
-- `icon-512.png`: echtes 512×512-PNG, deterministisch aus `icon.svg` erzeugt und PNG-optimiert
-- `assets/manifests/asset-provenance.json` enthält SHA-256 und Ableitung
-- `scripts/asset_provenance_audit.py` validiert Existenz, Hash, IHDR-Dimension und Manifestmetadaten
+`unresolved` bleibt ein Releaseblocker.
 
 ## 15. Betrieb, Deprecation und Rollback
 
@@ -198,4 +213,4 @@ Veraltete Funktionen werden dokumentiert migriert und nicht still entfernt. Kein
 
 Eine Funktion ist erst fertig, wenn Happy Path und Fehlerfälle funktionieren, Daten-/Migrationsverhalten geklärt ist, Security/Privacy/Offline/Accessibility berücksichtigt sind, relevante Tests vorhanden **und tatsächlich ausgeführt** wurden, Dokumentation synchron ist und releasekritische Flows real beobachtet wurden.
 
-„Code vorhanden“ ist kein Release-Nachweis.
+**„Code vorhanden“ ist nicht gleich „Release PASS“.** Aktueller öffentlicher Release-Status: **NO_GO**.
