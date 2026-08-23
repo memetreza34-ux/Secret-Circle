@@ -75,6 +75,16 @@
     return note;
   }
 
+  function updatePlayActionLabels(game) {
+    if (!playActions || !game) return;
+    for (const button of playActions.querySelectorAll('button')) {
+      if (game.id === 'wrong-answers' && button.textContent === 'Nächste Karte') {
+        button.textContent = 'Runde beendet · nächste Karte';
+        button.setAttribute('aria-label', 'Manuell beendete Runde abschließen und nächste Karte öffnen');
+      }
+    }
+  }
+
   function updatePlaySafety() {
     document.querySelector('#hub-round-guide')?.remove();
     document.querySelector('#hub-voluntary-play-note')?.remove();
@@ -89,6 +99,7 @@
 
     const guide = roundGuidance[game.id];
     if (guide) playContent.insertAdjacentElement('beforebegin', makePlayNote('hub-round-guide', 'muted play-round-guide', guide));
+    updatePlayActionLabels(game);
 
     const message = voluntaryGames[game.id];
     if (!message) return;
@@ -235,6 +246,7 @@
   }) : null;
   playObserver?.observe(playTitle, { childList: true, characterData: true, subtree: true });
   playObserver?.observe(playLayer, { attributes: true, attributeFilter: ['hidden'] });
+  if (playActions) playObserver?.observe(playActions, { childList: true, subtree: true });
 
   const concealWhenHidden = () => {
     if (document.hidden) concealPrivatePrompt();
@@ -254,9 +266,10 @@
   loadGuidance();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 12,
+    version: 13,
     updateStartLabel,
     updatePlaySafety,
+    updatePlayActionLabels,
     timerStateMatchesGame,
     guardStoredResumeIntegrity,
     privatePromptContext,
