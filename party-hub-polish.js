@@ -31,7 +31,8 @@
     charades: 'Nur die darstellende Person schaut auf den aktuellen Begriff. Gerät so halten, dass die Ratenden die Karte nicht sehen.',
     taboo: 'Nur die erklärende Person schaut auf Zielwort und verbotene Wörter. Gerät von den Ratenden weg halten.',
     'hot-potato': 'Passende Antwort nennen und das Gerät direkt weitergeben. Wer es bei STOPP hält, verliert die Runde.',
-    'word-chain': 'Jedes neue Wort beginnt mit dem letzten Buchstaben des vorherigen und passt zur Kategorie. Keine Wiederholungen; „Runde geschafft“ nur bei gültiger Kette.'
+    'word-chain': 'Jedes neue Wort beginnt mit dem letzten Buchstaben des vorherigen und passt zur Kategorie. Keine Wiederholungen; „Runde geschafft“ nur bei gültiger Kette.',
+    'wrong-answers': 'Reihum sofort absichtlich falsch antworten. Wer richtig antwortet oder nach eurer Gruppenregel zu lange braucht, verliert diese Runde; die App vergibt dafür keine Punkte.'
   });
 
   function currentGame() {
@@ -253,7 +254,7 @@
   loadGuidance();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 11,
+    version: 12,
     updateStartLabel,
     updatePlaySafety,
     timerStateMatchesGame,
