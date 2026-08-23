@@ -1,0 +1,23 @@
+name: Secret Circle Runner Probe
+
+on:
+  push:
+    branches:
+      - agent/release-foundation-2027
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirm hosted runner reaches first step
+        shell: bash
+        run: |
+          echo "Secret Circle hosted runner reached step 1"
+          echo "event=${GITHUB_EVENT_NAME}"
+          echo "sha=${GITHUB_SHA}"
+          uname -a
