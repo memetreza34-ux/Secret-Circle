@@ -19,6 +19,12 @@
     paranoia: 'Persönliche Fragen sind freiwillig. Überspringen ist jederzeit ohne Begründung erlaubt.'
   });
 
+  const roundGuidance = Object.freeze({
+    'never-have': 'Alle reagieren gleichzeitig. Wer die Aussage schon erlebt hat, zeigt es; Erzählen danach ist freiwillig.',
+    'most-likely': 'Bis drei zählen, dann zeigen alle gleichzeitig auf eine Person. Eine Begründung danach ist optional.',
+    'would-rather': 'Beide Optionen vorlesen und gleichzeitig A oder B wählen. Begründungen danach sind optional.'
+  });
+
   function currentGame() {
     return C.games.find(game => game.title === title.textContent) || null;
   }
@@ -50,7 +56,17 @@
     }, 0);
   }
 
+  function makePlayNote(id, className, message) {
+    const note = document.createElement('p');
+    note.id = id;
+    note.className = className;
+    note.setAttribute('role', 'note');
+    note.textContent = message;
+    return note;
+  }
+
   function updatePlaySafety() {
+    document.querySelector('#hub-round-guide')?.remove();
     document.querySelector('#hub-voluntary-play-note')?.remove();
     if (skipRound) {
       skipRound.textContent = 'Runde überspringen';
@@ -59,15 +75,15 @@
     if (!playLayer || playLayer.hidden || !playContent) return;
 
     const game = currentPlayGame();
-    const message = game && voluntaryGames[game.id];
+    if (!game) return;
+
+    const guide = roundGuidance[game.id];
+    if (guide) playContent.insertAdjacentElement('beforebegin', makePlayNote('hub-round-guide', 'muted play-round-guide', guide));
+
+    const message = voluntaryGames[game.id];
     if (!message) return;
 
-    const note = document.createElement('p');
-    note.id = 'hub-voluntary-play-note';
-    note.className = 'muted play-safety-note';
-    note.setAttribute('role', 'note');
-    note.textContent = message;
-    playContent.insertAdjacentElement('beforebegin', note);
+    playContent.insertAdjacentElement('beforebegin', makePlayNote('hub-voluntary-play-note', 'muted play-safety-note', message));
 
     if (skipRound) {
       skipRound.textContent = 'Überspringen · nächste Person';
@@ -174,13 +190,14 @@
   loadGuidance();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 7,
+    version: 8,
     updateStartLabel,
     updatePlaySafety,
     concealPrivatePrompt,
     removePrivateCover,
     paranoiaSecretIsOpen,
     loadGuidance,
-    voluntaryGames
+    voluntaryGames,
+    roundGuidance
   });
 })();
