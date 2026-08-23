@@ -1,340 +1,530 @@
 # Secret Circle Party Hub – Manueller Testplan Januar 2027
 
-Dieser Plan ergänzt die automatisierten Prüfungen. Für jeden Durchlauf dokumentieren: Version, Commit, Datum, Testperson, Gerät, Betriebssystem, Browser, Installationsmodus, Gruppengröße und Online-/Offline-Zustand.
+Stand: 23. August 2026  
+Status: **PREPARED – reale Durchführung offen**  
+Offline-Core: **`secret-circle-v44` / `secret-circle-v44-staging`**  
+Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
+
+Dieser Plan ergänzt die automatisierten Prüfungen. Ein technisch startbarer Modus gilt erst nach den jeweils zutreffenden Tests dieses Dokuments als manuell abgenommen.
 
 Bewertung je Test: `BESTANDEN`, `FEHLER` oder `BLOCKIERT`.
 
-Aktueller Foundation-Stand: 45 eingebaute Spiele, 15 priorisierte Kernspiele, 13 Erweiterungen, 17 Labs-Modi, lokaler Game-Creator und Offline-Core `secret-circle-v30`.
+Für jeden Durchlauf dokumentieren:
 
-Ein technisch startbarer Modus gilt erst nach den jeweils zutreffenden Tests dieses Dokuments als manuell abgenommen.
+```text
+Test-ID:
+Version:
+Commit:
+Cachegeneration:
+Datum:
+Testperson/Host:
+Gerät:
+Betriebssystem:
+Browser:
+Installationsmodus:
+Gruppengröße:
+Online/Offline:
+Ergebnis:
+Notizen/Funde:
+```
 
-## 1. Grundlegender Smoke-Test
+**Wichtig:** Vorhandener Code, vorhandene Tests oder ein vorhandener Guard sind kein manueller PASS.
 
-- Party Hub öffnet ohne sichtbaren Laufzeitfehler.
-- 45 eingebaute Spiele sind im Katalog vorhanden.
-- Reifestufen zeigen 15 Kernspiele, 13 Erweiterungen und 17 Labs.
-- Suche, Gruppe, Stimmung, Spielerzahl, Alter, Status und Reifestufe funktionieren gemeinsam.
-- gespeicherte Filter und letzte Ansicht überstehen ein Neuladen.
-- direkte URL-Ansicht wie `party.html?view=stats` hat Vorrang vor dem gespeicherten Zustand.
-- Filterreset stellt sichere Standards wieder her.
-- Synonyme wie `Werwolf`, `Montagsmaler` und `Stadt Land Fluss` liefern sinnvolle Treffer.
-- Tippfehler wie `Maifa` und `Impsoter` liefern begrenzte Vorschläge.
-- Quick-, Mega-, Viral-, Creator-, Advanced- und Imposter-Routen öffnen den korrekten Bereich.
-- Spieler, Presets, Favoriten und Einstellungen überstehen ein Neuladen.
-- Datenschutzseite ist erreichbar.
+## 1. Automatisierter Preflight
 
-## 2. Word Imposter
+Vor finaler RC-Abnahme auf demselben unveränderten Commit:
 
-- 3, 8 und 20 Personen testen.
-- 1, mehrere und maximal 6 Imposter testen.
-- Rollen sind nicht an die Aufdeckreihenfolge gekoppelt.
-- Kartensichtschutz bei App-Wechsel prüfen.
-- Timer im Vordergrund, Hintergrund und nach Neuladen prüfen.
-- Abstimmung, Stichwahl, Ratechance, Punkte und nächste Runde prüfen.
-- aktiven Spielstand fortsetzen.
-- Sessionabschluss erhöht Verlauf und Statistik genau einmal.
-- beschädigte oder unzulässige Sessiondaten werden sicher behandelt.
+- [ ] GitHub Actions erreicht sichtbare Steps
+- [ ] Checkout ausgeführt
+- [ ] Online-`npm ci --ignore-scripts --no-audit --no-fund` grün
+- [ ] `npm run check` grün
+- [ ] `npm test` grün
+- [ ] `npm run validate` grün
+- [ ] Chromium E2E grün
+- [ ] vollständiges `npm run ci` grün
+- [ ] Chromium / Firefox / WebKit Cross-Browser grün
 
-## 3. Einheitliche Sessionsteuerung der schnellen Engines
+Aktueller externer Blocker: Issue #7. Solange Actions vor Step 1 endet, bleibt die finale RC-Abnahme `BLOCKIERT`.
 
-Die folgenden Punkte mindestens einmal in **klassischer Quick-, Mega-, Viral- und Creator-Engine** prüfen:
+## 2. Grundlegender Hub-Smoke
 
-- dieselbe Steuerleiste zeigt Pause, Runde überspringen und Session beenden.
-- Pause ändert sich sichtbar zu Fortsetzen.
-- der Pausenstatus ist auch ohne Farbe verständlich.
-- Rundenaktionen sind während der Pause nicht bedienbar.
-- ein laufender Timer bleibt während mindestens fünf Sekunden Pause sichtbar unverändert.
-- nach Fortsetzen läuft der Timer mit der verbleibenden Zeit weiter.
-- Runde überspringen stoppt einen laufenden Timer und wechselt genau eine Runde weiter.
-- auf der letzten Runde beendet Überspringen die Session sauber.
-- Session beenden verlangt eine Bestätigung.
-- Abbruch entfernt nur die aktive Session und erzeugt keinen fertigen Verlaufseintrag.
-- simulierter Speicherfehler beim Abbruch darf die letzte aktive Session nicht still verlieren.
-- Wiederholen startet eine neue Session mit neuer Session-ID.
-- Nächstes Spiel führt zu einem anderen spielbaren schnellen Modus oder sicher zum Katalog.
-- nach Abschluss werden Verlauf, `plays`, Runden und Bestwert genau einmal aktualisiert.
-- Reload nach gespeichertem Abschluss erzeugt keinen zweiten Verlaufseintrag.
-- die Steuerung funktioniert online und offline.
+- [ ] Party Hub öffnet ohne sichtbaren Laufzeitfehler
+- [ ] 45 Built-ins im Katalog
+- [ ] 15 Core / 13 Extended / 17 Labs korrekt dargestellt
+- [ ] Suche funktioniert
+- [ ] Filter für Art, Stimmung, Spielerzahl, Alter und Status kombinierbar
+- [ ] Suchsynonyme liefern sinnvolle Treffer
+- [ ] Tippfehler wie `Maifa` / `Impsoter` liefern begrenzte Vorschläge
+- [ ] Filterzustand/letzte Ansicht übersteht Reload
+- [ ] direkte URL-Ansicht wie `party.html?view=stats` funktioniert
+- [ ] Quick-, Mega-, Viral-, Advanced-, Creator- und Imposter-Routen korrekt
+- [ ] Spieler, Presets, Favoriten und Einstellungen überstehen Reload
+- [ ] Datenschutzseite erreichbar
+- [ ] keine kritische Konsole-/Ressourcenfehlermeldung
 
-## 4. 15 Kernspiele
+## 3. Word Imposter
 
-Jedes Kernspiel aus `RELEASE_SCOPE_2027.md` erhält einen eigenen Testnachweis.
+### Setup
 
-Aktuelle Kernspiele:
+- [ ] 3 Personen
+- [ ] 8 Personen
+- [ ] 20 Personen
+- [ ] doppelte Namen werden verständlich abgelehnt
+- [ ] unter 3 / über 20 Personen blockiert
+- [ ] 1 Imposter
+- [ ] mehrere Imposter
+- [ ] 6 Imposter zulässig, 7 abgelehnt
+- [ ] Startbutton bei ungültigem Setup gesperrt
+- [ ] Hilfetexte und Screenreader-Status verständlich
 
-1. Word Imposter
-2. Wahrheit oder Pflicht
-3. Ich habe noch nie
-4. Wer würde eher?
-5. Entweder oder
-6. Paranoia
-7. Scharade
-8. Nicht sagen! / Tabu
-9. Heiße Kartoffel
-10. Wortkette
-11. Zwei Wahrheiten, eine Lüge
-12. Question Imposter
-13. Location Spy
-14. Mafia
-15. Nur falsche Antworten
+### Rollenfairness
 
-Für jedes Spiel prüfen:
+- [ ] mindestens 20 reale Runden protokollieren
+- [ ] erste Reveal-Person und Imposterpositionen notieren
+- [ ] Rolle nicht systematisch an Reveal-Reihenfolge gekoppelt
+- [ ] mehrere Imposter eindeutig
+- [ ] keine Rolle aus UI-Muster vorhersagbar
 
-- Einstieg und Spielerzahl verständlich.
-- Regeln vor Start in höchstens vier klaren Schritten verständlich.
-- Packauswahl und Alterskennzeichnung stimmen.
-- Start, nächste Runde, sichere Unterbrechung und Abbruch funktionieren.
-- Überspringen ist vorhanden, wenn Inhalte persönlich, unangenehm oder unpassend sein können.
-- Punkte- beziehungsweise Siegerlogik stimmt und ist verständlich.
-- Verlauf und Statistik stimmen.
-- Wiederaufnahme nach unterstützter Unterbrechung funktioniert.
-- Tastatur, sichtbarer Fokus, 200-%-Zoom und Reduced Motion prüfen.
-- kleine Smartphonebreite und Querformat prüfen.
-- mindestens eine reale Gruppe beendet das Spiel ohne Entwicklerhilfe.
+### Geheime Karten / Diskussion / Voting
 
-## 5. Erweiterungen und Labs
+- [ ] Karte nur für aktuelle Person sichtbar
+- [ ] App-/Tab-Wechsel verdeckt offene Karte
+- [ ] bewusste Wiederanzeige nötig
+- [ ] Handoff verrät vorherige Rolle nicht
+- [ ] Diskussionstimer Start/Pause/Hintergrund korrekt
+- [ ] geheime Abstimmung pro Person klar
+- [ ] Selbststimme ausgeschlossen
+- [ ] Teilabstimmung nach Reload korrekt fortgesetzt
+- [ ] inkonsistenter Voting-Snapshot verworfen
+- [ ] Stichwahl korrekt
+- [ ] Imposter-Ratechance korrekt
+- [ ] Punkte exakt nach `CORE_SCORING_RULES.md`
+- [ ] nächste Runde erhält Matchpunkte
+- [ ] Matchabschluss / Verlauf genau einmal
 
-- Erweiterungen bleiben klar von Kernspielen unterscheidbar.
-- Labs sind sichtbar als experimentell gekennzeichnet.
-- Labs dürfen nicht den Eindruck erwecken, bereits vollständig releaseabgenommen zu sein.
-- mindestens ein vollständiger Smoke-Test pro Mechanikfamilie.
-- private Inhalte und geheime Karten bleiben beim Gerätewechsel geschützt.
-- Geld- und Preisformate bleiben klar als Spielwerte beziehungsweise hypothetisch gekennzeichnet.
-- Anime-/Fan-Modi enthalten keine fremden Bilder, Audios oder langen Zitate.
+## 4. Direkte Hub-Core-Spiele
 
-## 6. Klassische Quick Modes
+Jedes der folgenden Spiele erhält mindestens einen vollständigen realen Durchlauf:
 
-Jeden der zehn klassischen Modi mit 3 und 5 Runden testen; Wellenlänge und Schnellfeuer zusätzlich mit 10 und 20 Runden.
+1. Wahrheit oder Pflicht
+2. Ich habe noch nie
+3. Wer würde eher?
+4. Entweder oder
+5. Paranoia
+6. Scharade
+7. Nicht sagen! / Tabu
+8. Heiße Kartoffel
+9. Wortkette
+10. Nur falsche Antworten
 
-### Wellenlänge
+Für jedes Spiel:
 
-- geheimes Ziel sichtbar nur für Hinweisgeber.
-- Ziel wird vor Gruppenwahl verborgen.
-- Regler von 0 bis 100.
-- Punkte abhängig vom Abstand.
-- gemeinsame Pause/Skip/Abbruch-Steuerung.
-- nächste Runde und Wiederaufnahme.
+- [ ] Spielerzahl verständlich
+- [ ] Packwahl verständlich
+- [ ] Regel während des Spiels noch nachvollziehbar
+- [ ] Runde weiter/überspringen funktioniert
+- [ ] globaler Skip vergibt keinen Punkt
+- [ ] Beenden & speichern ≠ Abbrechen & verwerfen
+- [ ] Abbruch schreibt keinen fertigen Verlauf
+- [ ] Reload zeigt explizite Resume-Entscheidung
+- [ ] gespeicherter Spieler-Snapshot bleibt stabil
+- [ ] Verlauf/Statistik nach echtem Abschluss genau einmal
 
-### Zeichnen & Raten
+### Wahrheit oder Pflicht / Ich habe noch nie / Wer würde eher? / Paranoia
 
-- private Karte.
-- Treffer und Überspringen.
-- keine unmittelbare Wiederholung innerhalb des verfügbaren Pools.
+- [ ] Freiwilligkeitsregel sichtbar und verstanden
+- [ ] Skip ohne Begründung sozial akzeptiert
+- [ ] keine Built-in-Karte fordert private Chats/Fotos/Passwörter
+- [ ] persönlicher Inhalt wird nicht erzwungen
 
-### Schnellfeuer
+### Paranoia
 
-- kurze und längere Timerkarten.
-- Erfolg vor Timerende.
-- automatisches Zeitende.
-- Pause friert die Restzeit ein.
-- Punkte und nächste Person.
+- [ ] Geheimfrage nur für aktive Person
+- [ ] offene Geheimfrage bei Appwechsel verdeckt
+- [ ] bewusstes Wiederöffnen nötig
+- [ ] Reload öffnet Geheimfrage nicht automatisch
 
-### Geräusche erraten
+### Scharade
 
-- Zielkarte nur für aktive Person.
-- Treffer und Überspringen.
+- [ ] nur darstellende Person sieht Begriff
+- [ ] offene Karte bei Appwechsel verdeckt
+- [ ] 60-s-Timer
+- [ ] Pause friert Restzeit
+- [ ] Resume stellt Restzeit, Treffer und Karte wieder her
+- [ ] interner Kartenskip beendet nicht die ganze Runde
 
-### Stirn-Raten
+### Nicht sagen! / Tabu
 
-- ratende Person sieht das Ziel nicht.
-- Gerät zeigt zur Gruppe.
-- Spielerwechsel.
+- [ ] nur erklärende Person sieht Ziel + verbotene Wörter
+- [ ] offene Karte bei Appwechsel verdeckt
+- [ ] 60-s-Timer
+- [ ] Pause/Resume korrekt
+- [ ] Treffer zählt einmal
+- [ ] Begriff überspringen zählt keinen Treffer und beendet Runde nicht
 
-### Buchstaben-Kategorien
+### Heiße Kartoffel
 
-- zufälliger erlaubter Buchstabe.
-- Kategorien sichtbar.
-- 60-Sekunden-Timer.
-- vorzeitige Auswertung stoppt Timer.
-- Punkteingabe begrenzt auf Kategorienanzahl.
+- [ ] zufällige Dauer real innerhalb **10–25 Sekunden**
+- [ ] Countdown bleibt verborgen
+- [ ] Pause verrät Restzeit nicht
+- [ ] Appwechsel/Resume bleibt spielbar
+- [ ] Geräteweitergabe praktikabel und sicher
+- [ ] wer bei STOPP hält, verliert nur manuell; kein erfundener Punkt
 
-### Nicht lachen!
+### Wortkette
 
-- sichere Aufgaben.
-- 30-Sekunden-Timer.
-- Erfolg und Misserfolg.
+- [ ] 30-s-Timer
+- [ ] Kategorie sichtbar
+- [ ] Start-/Folgebuchstabenregel verstanden
+- [ ] keine Wiederholungen verstanden
+- [ ] App behauptet keine automatische Sprachvalidierung
+- [ ] `Runde geschafft` nur manuell nach gültiger Kette
 
-### Melodie summen
+### Nur falsche Antworten
 
-- keine bereitgestellten geschützten Aufnahmen oder Liedtexte.
-- private Aufgabe.
-- Treffer und Überspringen.
+- [ ] Frage verständlich
+- [ ] reihum absichtlich falsch antworten verstanden
+- [ ] richtige Antwort verliert manuell
+- [ ] Gruppenregel für „zu langsam“ verstanden
+- [ ] App bleibt scorelos
+- [ ] `Runde beendet · nächste Karte` eindeutig
 
-### Gegenstandsjagd
-
-- sicheren Spielbereich festlegen.
-- 60-Sekunden-Timer.
-- keine gefährlichen, zerbrechlichen oder privaten Gegenstände verlangen.
-
-### Caption Battle
-
-- Situation anzeigen.
-- Gewinner nur aus aktueller Spielergruppe wählen.
-- Rangliste korrekt.
-
-## 7. Mega- und Viral-Modi
-
-Jeweils mindestens einen vollständigen Durchlauf mit 3 und 5 Runden durchführen.
-
-Besonders prüfen:
-
-- Wer bin ich? und Anime-Raten: private Zielinformation geschützt.
-- Blind Ranking: kein bereits belegter Rang erneut auswählbar.
-- Emoji Quiz: Lösung erst nach Aufdecken sichtbar.
-- Secret Mission: Mission nur für aktive Person sichtbar.
-- Preis schätzen: feste Spielwerte statt aktueller Händlerpreis.
-- Höher/Tiefer: Vergleichslogik stimmt.
-- Wer kennt mich am besten?: geheime Antwort vor Gruppenwahl geschützt.
-- Hear Me Out, Hot Seat und Story Chain: Timer pausierbar und sauber beendbar.
-- Punkte und Statistik erhöhen sich pro echter Session genau einmal.
-
-## 8. Advanced-Spiele
+## 5. Advanced-Core-Spiele
 
 ### Zwei Wahrheiten, eine Lüge
 
-- private Eingabe.
-- zufällige Mischung.
-- Abstimmung und Auflösung.
-- Fortsetzung nach Neuladen.
+- [ ] private Eingabe
+- [ ] drei unterschiedliche Aussagen erforderlich
+- [ ] Appwechsel verdeckt laufende private Eingabe
+- [ ] Mischung verbirgt Lügenposition
+- [ ] Abstimmung korrekt
+- [ ] Resultat korrekt
+- [ ] Reload/Resume sicher
+- [ ] manipuliertes inkonsistentes Ergebnis verworfen
 
 ### Question Imposter
 
-- geheime ähnliche Fragen.
-- korrekte Imposteranzahl gemäß Spielregel.
-- Diskussion und Wahl.
-- Spieler-Snapshot nach Lobbyänderung.
+- [ ] jede Person sieht nur eigene Frage
+- [ ] andere Frage nur bei Imposter
+- [ ] Appwechsel verdeckt offene Frage
+- [ ] Reload öffnet Frage nicht automatisch
+- [ ] Diskussion verständlich
+- [ ] Wahl korrekt
+- [ ] manipulierte Rolle/Vote verworfen
 
 ### Location Spy
 
-- Ort und Spion geheim verteilen.
-- Verdächtigenwahl.
-- Ortsraten und Auflösung.
+- [ ] Ort geheim verteilt
+- [ ] genau ein Spion gemäß aktuellem Spielvertrag
+- [ ] Appwechsel verdeckt offene Ortskarte
+- [ ] Gruppenwahlpfad korrekt
+- [ ] Spion-Ortsguess korrekt
+- [ ] Sieger getrennt vom Session-Zähler angezeigt
+- [ ] manipulierte Spy-/Result-Snapshots verworfen
 
 ### Mafia
 
-- mindestens 6 Personen.
-- private Rollen.
-- geschützte Moderatoransicht.
-- Nachtaktionen, Tageswahl und Siegbedingung.
+Mindestens Gruppengrößen 6, 8, 12 und 16+ soweit praktisch.
+
+- [ ] Mafiaanzahl skaliert korrekt
+- [ ] Pack `Schnell` korrekt
+- [ ] Pack `Klassisch` korrekt
+- [ ] Pack `Erweitert` korrekt
+- [ ] Rollen privat
+- [ ] Moderatorübersicht nur nach bewusster Bestätigung
+- [ ] Appwechsel verdeckt Moderatorübersicht
+- [ ] Nachtformular privat
+- [ ] Arztaktion korrekt
+- [ ] Detektiv-Ergebnis nur Moderator
+- [ ] Beschützeraktion korrekt
+- [ ] Beschützer nicht dieselbe Person zwei Nächte nacheinander
+- [ ] Tageswahl korrekt
+- [ ] Dorf gewinnt nur bei 0 lebenden Mafia
+- [ ] Mafia gewinnt nur bei Mafia >= übriger Dorfseite
+- [ ] manipulierte Rollenanzahl verworfen
+- [ ] manipulierte Alive-Menge verworfen
+- [ ] manipuliertes Winner-Feld verworfen
+
+## 6. Einheitliche Sessionsteuerung schneller Engines
+
+Mindestens einmal in klassischer Quick-, Mega-, Viral- und Creator-Engine:
+
+- [ ] Pause/Fortsetzen
+- [ ] Pausenstatus ohne Farbe verständlich
+- [ ] Rundenaktionen während Pause nicht bedienbar
+- [ ] Timer mindestens 5 s eingefroren
+- [ ] Restzeit nach Fortsetzen korrekt
+- [ ] Runde überspringen stoppt Timer und wechselt genau eine Runde
+- [ ] Skip auf letzter Runde beendet sauber
+- [ ] Session beenden verlangt Bestätigung
+- [ ] Abbruch erzeugt keinen fertigen Verlauf
+- [ ] Reload nach Abschluss bucht nicht doppelt
+- [ ] Replay erhält neue Session-ID
+- [ ] Nächstes Spiel korrekt
+- [ ] online und offline
+
+## 7. Quick Modes
+
+Mindestens vollständige Sessions für die klassischen Quick-Mechaniken.
+
+### Spektrum-Tipp
+
+- [ ] geheimes Ziel nur Hinweisgeber
+- [ ] Ziel vor Gruppenwahl verborgen
+- [ ] Regler 0–100
+- [ ] Punkte abhängig vom Abstand
+- [ ] Pause/Skip/Resume
+
+### Zeichnen & Raten
+
+- [ ] private Karte
+- [ ] Treffer/Skip
+- [ ] keine unmittelbare Wiederholung im Pool
+
+### Schnellfeuer
+
+- [ ] Timer
+- [ ] Erfolg vor Ende
+- [ ] automatisches Zeitende
+- [ ] Pause friert Zeit
+
+### Geräusche erraten / Stirn-Raten / Melodie summen
+
+- [ ] Zielinformation privat
+- [ ] richtige Gerätehaltung
+- [ ] Treffer/Skip
+- [ ] keine geschützten Audio-/Liedtextinhalte ausgeliefert
+
+### Buchstaben-Kategorien
+
+- [ ] erlaubter Buchstabe
+- [ ] Kategorien sichtbar
+- [ ] 60-s-Timer
+- [ ] Auswertung stoppt Timer
+- [ ] Punkteingabe begrenzt
+
+### Nicht lachen! / Gegenstandsjagd
+
+- [ ] sichere Aufgaben/Gegenstände
+- [ ] Timer korrekt
+- [ ] keine gefährlichen/privaten/zerbrechlichen Aufforderungen
+
+### Caption Battle
+
+- [ ] Situation klar
+- [ ] Gewinner nur aus aktueller Spielergruppe
+- [ ] Ergebnis/Statistik korrekt
+
+## 8. Extended / Mega / Viral / Labs
+
+Je Mechanikfamilie mindestens ein kompletter Smoke-Test.
+
+- [ ] Extended klar von Core unterscheidbar
+- [ ] Labs als experimentell erkennbar
+- [ ] Labs wirken nicht wie final releaseabgenommen
+- [ ] private Ziele bei Wer bin ich / Anime-Archetypen / Secret Mission geschützt
+- [ ] Blind Ranking belegt Rang nicht doppelt
+- [ ] Emoji Quiz Lösung erst nach Reveal
+- [ ] Preis-/Geldwerte als Spielwerte/hypothetisch klar
+- [ ] Höher/Tiefer-Logik korrekt
+- [ ] „Wer kennt mich am besten?“ Antwort vor Gruppenwahl geschützt
+- [ ] Hear Me Out / Hot Seat / Story Chain Timer pausierbar
+- [ ] keine konkrete fremde Fan-Grafik/Audios/langen Zitate
+- [ ] Abschluss/Statistik genau einmal
 
 ## 9. Game Creator
 
-- alle sechs Vorlagen erstellen und speichern.
-- mehrere Kategorien pro Spiel.
-- mindestens drei Karten werden erzwungen.
-- Unicode und Sonderzeichen bleiben sicher.
-- strukturierte Auswahlkarten bleiben nach Export/Import strukturiert.
-- Bearbeiten aktualisiert `updatedAt`, Laden allein nicht.
-- Kopie erhält eigene Zeitstempel.
-- eigenes Spiel erscheint im Hub als Erweiterung.
-- Creator-Spiel über Quick-Seite starten, pausieren, skippen, abbrechen und wiederholen.
-- Export und Import der Creator-Bibliothek testen.
-- Speicherfehler und Rollback testen.
+- [ ] alle angebotenen Vorlagen testbar
+- [ ] mehrere Kategorien/Packs
+- [ ] Mindestkartenzahl erzwungen
+- [ ] Unicode/Sonderzeichen sicher
+- [ ] HTML-artige Eingabe wird als Text behandelt
+- [ ] strukturierte Karten bleiben nach Export/Import strukturiert
+- [ ] Bearbeiten aktualisiert `updatedAt`
+- [ ] Laden allein verändert Zeitstempel nicht
+- [ ] Kopie besitzt eigene Zeitstempel/ID
+- [ ] eigenes Spiel erscheint im Hub
+- [ ] eigenes Spiel start/pause/skip/abort/replay
+- [ ] Creator-Bibliothek Export/Import
+- [ ] Speicherfehler/Rollback
+- [ ] unerfahrene Person kann ohne Entwicklerhilfe ein valides Spiel bauen
 
 ## 10. Smart Party Night
 
-- 15, 30, 45, 60 und 90 Minuten testen.
-- alle Stimmungen testen.
-- Alters- und Gruppengrößenfilter prüfen.
-- Favoritenbonus und zuletzt gespielt prüfen.
-- Hub-, Quick-, Advanced-, Creator- und Word-Imposter-Abschluss synchronisieren.
-- erledigte und übersprungene Schritte prüfen.
-- Plan nach App-Neustart fortsetzen.
+- [ ] 15 Minuten
+- [ ] 30 Minuten
+- [ ] 45 Minuten
+- [ ] 60 Minuten
+- [ ] 90 Minuten
+- [ ] unterschiedliche Stimmungen
+- [ ] Altersfilter
+- [ ] Gruppengrößenfilter
+- [ ] Favoritenbonus / zuletzt gespielt
+- [ ] Core-/Quick-/Advanced-/Creator-/Word-Imposter-Abschluss synchron
+- [ ] erledigte und übersprungene Schritte
+- [ ] Plan nach Neustart fortsetzbar
+- [ ] mindestens drei vollständige reale Abende
 
 ## 11. Eigene Hub-Packs
 
-- gültiges Pack erstellen.
-- weniger als erforderliche Mindestkarten ablehnen.
-- doppelte Karten entfernen.
-- doppelten Packnamen ablehnen.
-- Sonderzeichen und HTML-artige Texte sicher anzeigen.
-- Pack verwenden, löschen, exportieren und importieren.
-- aktuelle Kapazitätsgrenzen aus dem Runtime-Vertrag prüfen.
+- [ ] gültiges Pack erstellen
+- [ ] Mindestkartenzahl erzwingen
+- [ ] exakte Duplikate behandeln
+- [ ] doppelten Packnamen ablehnen
+- [ ] Sonderzeichen/HTML-artige Texte sicher darstellen
+- [ ] verwenden
+- [ ] löschen
+- [ ] exportieren/importieren
+- [ ] Kapazitätsgrenzen prüfen
 
-## 12. Backup und Datenschutz
+## 12. Backup / Datenschutz / Datenfehler
 
-- Word-Imposter-Backup erzeugen und wieder importieren.
-- vollständigen Gesamtexport erzeugen.
-- Creator-Bibliothek separat exportieren und importieren.
-- Hub-, Party-Night-, Quick-, Mega-, Viral-, Creator-, Advanced-, Pack- und Imposter-Schlüssel kontrollieren.
-- ungültiges JSON ablehnen.
-- Datei über 1.500.000 UTF-8-Bytes ablehnen.
-- mehrbyteige Unicode-Datei knapp oberhalb der Bytegrenze ablehnen.
-- simulierten Schreibfehler und Rollback prüfen.
-- vollständige Löschung aller `secret-circle-*`-Schlüssel prüfen.
+- [ ] Word-Imposter-Backup Export → Import
+- [ ] vollständiger Gesamtexport
+- [ ] Creator-Bibliothek separat
+- [ ] alle Secret-Circle-Namespace-Daten enthalten
+- [ ] ungültiges JSON abgelehnt
+- [ ] unbekannter Namespace abgelehnt
+- [ ] Datei über 1.500.000 UTF-8-Bytes abgelehnt
+- [ ] Mehrbyte-Unicode knapp über Grenze abgelehnt
+- [ ] simulierter Schreibfehler führt zu Rollback
+- [ ] vollständige lokale Löschung
+- [ ] keine Datenübertragung an eigenen Server beobachtet
 
-## 13. PWA und Offline
+## 13. PWA / Offline – v44
 
-- Online-Erststart vollständig laden.
-- Installation auf Android und iOS.
-- Flugmodus aktivieren.
-- Party Hub, Creator, Quick-, Mega-, Viral-, Advanced-Spiel, Word Imposter und Datenschutz öffnen.
-- Release-Tiers, Filter, Suchvorschläge und `party-session-controls.js` offline prüfen.
-- aktive schnelle Session offline fortsetzen.
-- Pause, Skip, Abbruch, Replay und nächstes Spiel offline prüfen.
-- Query-Routen wie `quick-play.html?game=...` offline öffnen.
-- Update von mindestens zwei älteren installierten Versionen auf den aktuellen Release Candidate prüfen.
-- neue Version wird zunächst nur vorbereitet.
-- laufende Session wird nicht ohne Zustimmung neu geladen.
-- „Später“ behält die aktuelle Version während der Session.
-- „Jetzt aktualisieren“ aktiviert die vorbereitete Version kontrolliert.
-- lokale Spieler, Packs, Creator-Spiele und Sessions überstehen das Update.
-- bei fehlgeschlagener Promotion bleibt der bisherige Offline-Core verwendbar.
-- nur die vorgesehene finale Cacheversion bleibt nach erfolgreicher Promotion bestehen.
+- [ ] Online-Erststart
+- [ ] Installation Android
+- [ ] Add to Home Screen iOS
+- [ ] Flugmodus
+- [ ] Party Hub offline
+- [ ] Word Imposter offline
+- [ ] Advanced offline
+- [ ] Quick/Mega/Viral offline
+- [ ] Creator offline
+- [ ] Privacy offline
+- [ ] Query-Routen offline
+- [ ] Resume-Guards offline verfügbar
+- [ ] Pause/Skip/Abort/Replay offline
+- [ ] Update von mindestens zwei echten älteren Installationen auf RC/v44
+- [ ] neue Version zunächst nur staged
+- [ ] aktive Session nicht ungefragt ersetzt
+- [ ] `Später` behält aktuelle Version
+- [ ] bewusste Aktivierung aktualisiert
+- [ ] lokale Daten überstehen Update
+- [ ] fehlgeschlagene Promotion lässt bisherigen Core verwendbar
+- [ ] nach erfolgreicher Promotion nur vorgesehene finale Cachegeneration aktiv
 
-## 14. Hintergrund, Sperrbildschirm und Reload
+## 14. Hintergrund / Sperrbildschirm / Reload
 
-Für jeden zeitgesteuerten Kernmechanismus separat dokumentieren:
+Für jeden zeitgesteuerten Kernmechanismus:
 
-- Timer im Vordergrund starten.
-- App/Tab kurz in den Hintergrund schicken und zurückkehren.
-- Gerät sperren und nach kurzer Zeit entsperren.
-- Seite während einer aktiven Session neu laden.
-- bewusst pausierte Zeit darf nicht als Spielzeit abgezogen werden.
-- nicht pausierte Hintergrundzeit muss gemäß definierter Spielregel korrekt behandelt werden.
-- keine doppelte Timer-Endaktion nach Rückkehr oder Reload.
-- keine doppelte Statistikbuchung.
+- [ ] Timer starten
+- [ ] App/Tab Hintergrund → zurück
+- [ ] Gerät sperren → entsperren
+- [ ] Reload während Session
+- [ ] bewusst pausierte Zeit nicht abgezogen
+- [ ] definierte Hintergrundregel eingehalten
+- [ ] keine doppelte Endaktion
+- [ ] keine doppelte Statistik
+- [ ] private Inhalte bei Fokusverlust verdeckt
 
-Dieser Block bleibt offen, bis das Verhalten auf echten Android- und iOS-Geräten bestätigt ist.
+Muss real auf Android und iOS bestätigt werden.
 
-## 15. Accessibility und Mobile
+## 15. Accessibility / Mobile
 
-- Tastaturbedienung ohne Maus.
-- sichtbare Fokusmarkierungen.
-- Screenreader-Grundprüfung.
-- 200-%-Zoom.
-- Hoch- und Querformat.
-- iPhone-Safe-Areas.
-- mindestens 44 × 44 Pixel große Touchziele.
-- kein horizontaler Überlauf.
-- Reduced Motion und große Systemschrift.
-- Suchvorschläge als Listbox verständlich.
-- Pausenknopf meldet Zustand über `aria-pressed`.
-- pausierte Rundenaktionen sind nicht fokussierbar beziehungsweise bedienbar.
-- Statusmeldungen erklären Fehler und Pausen ohne reine Farbcodierung.
+- [ ] Tastatur ohne Maus
+- [ ] Skip-Link sinnvoll
+- [ ] sichtbarer Fokus
+- [ ] Screenreader-Grundprüfung
+- [ ] VoiceOver
+- [ ] TalkBack
+- [ ] private Inhalte werden vor Reveal nicht angesagt
+- [ ] Privacy-Cover verständlich angekündigt
+- [ ] 200-%-Zoom
+- [ ] 320 CSS px
+- [ ] große Systemschrift
+- [ ] Hoch-/Querformat
+- [ ] iPhone-Safe-Areas
+- [ ] Bildschirmtastatur
+- [ ] Touchziele mindestens 44×44 px, wo gefordert
+- [ ] kein kritischer horizontaler Überlauf
+- [ ] Reduced Motion
+- [ ] Pause über `aria-pressed`
+- [ ] pausierte/inert Aktionen nicht fokussierbar/bedienbar
+- [ ] Statusmeldungen nicht nur über Farbe
 
 ## 16. Reale Partytests
 
 ### Kleine Gruppe
 
-- 3–4 Personen.
-- mindestens 60 Minuten.
-- Word Imposter, mindestens zwei Kernspiele, ein schneller Modus und ein Advanced-Spiel.
+- [ ] 3–4 Personen
+- [ ] mindestens 60 Minuten
+- [ ] Word Imposter
+- [ ] mindestens zwei weitere Core-Games
+- [ ] ein Advanced-Spiel
 
 ### Mittlere Gruppe
 
-- 5–8 Personen.
-- mindestens 90 Minuten.
-- mehrere Kernspiele, Smart Party Night und mindestens ein Creator-Spiel.
+- [ ] 5–8 Personen
+- [ ] mindestens 90 Minuten
+- [ ] mehrere Core-Games
+- [ ] Smart Party Night
+- [ ] Creator-Spiel
 
 ### Große Gruppe
 
-- 9–12 Personen.
-- mindestens 90 Minuten.
-- Mafia, Word Imposter mit mehreren Impostern, Scharade und Party Night.
+- [ ] 9–12 Personen
+- [ ] mindestens 90 Minuten
+- [ ] Word Imposter mit mehreren Impostern
+- [ ] Mafia
+- [ ] Scharade/Tabu
+- [ ] Party Night
 
-Dokumentieren: unklare Regeln, Wartezeiten, Kartenqualität, ungeeignete Inhalte, technische Unterbrechungen, gewünschte Wiederholungen, bevorzugte Spiele sowie Fehlbedienungen der Pause-/Skip-/Abbruchsteuerung.
+Dokumentieren:
 
-## Freigabekriterium
+- unklare Regeln
+- Wartezeiten
+- Kartenqualität
+- ungeeignete Inhalte
+- technische Unterbrechungen
+- versehentliche Geheimnisoffenlegung
+- bevorzugte Spiele
+- Spiele, die Nutzer vermeiden
+- Fehlbedienung von Pause/Skip/Abbruch
 
-Der reale Betatest für den Release Candidate beginnt erst nach dokumentiert grünem `npm run ci` und grünem Cross-Browser-Lauf. Ein öffentlicher Release benötigt zusätzlich erfolgreiche Android-/iOS-, Offline-Update-, Inhalts-, Gruppen-, Accessibility- und rechtliche Prüfungen gemäß `RELEASE_CHECKLIST.md`.
+## 17. Content-/Rechtebeobachtung
+
+Pro gespieltem Core-/Release-Spiel:
+
+- [ ] Ton passend
+- [ ] Privacy passend
+- [ ] Safety passend
+- [ ] Altersstufe plausibel
+- [ ] keine semantisch störenden Wiederholungen
+- [ ] Schwierigkeit passend
+- [ ] keine unklare konkrete Marken-/Fanreferenz
+- [ ] keine ungeklärten visuellen Rechte
+
+Root-`icon.svg` bleibt bis dokumentierter Rechtebasis oder Ersatz offen.
+
+## 18. Release-Freigabekriterium
+
+Ein öffentlicher `GO` ist erst zulässig, wenn:
+
+- [ ] automatisierter Preflight auf finalem RC grün
+- [ ] Branch Protection tatsächlich aktiv und Required Check grün
+- [ ] HTTPS-Staging und Production-Smoke grün
+- [ ] Android real bestanden
+- [ ] iPhone/iPad real bestanden
+- [ ] Accessibility real bestanden
+- [ ] mindestens ein realer Testnachweis pro Core-Spiel
+- [ ] G1–G5 und PN1–PN3 nach `BETA_TEST_PLAN.md` abgeschlossen
+- [ ] zwei echte PWA-Upgrades und Rollback bestanden
+- [ ] keine offenen Critical/High-Funde
+- [ ] Content-/Rechte-/Legal-/Support-/Hosting-Sign-off abgeschlossen
+- [ ] Incident-/Rollback-Drill abgeschlossen
+- [ ] unveränderter RC festgelegt
+- [ ] `release-evidence.json = FINAL / GO`
+
+Bis dahin bleibt der öffentliche Release **NO_GO** und PR #13 **Draft / ungemergt**.
