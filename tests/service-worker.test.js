@@ -18,6 +18,7 @@ assert.match(source, /event\.data\?\.type === 'SKIP_WAITING'/);
 assert.match(source, /canonicalNavigation \? stripSearch\(request\) : request/);
 assert.match(source, /caches\.match\(stripSearch\(request\), \{ cacheName: CACHE \}\)/);
 assert.match(source, /word-imposter-resume-guard\.js/);
+assert.match(source, /advanced-resume-guard\.js/);
 assert.match(source, /advanced-privacy-guard\.js/);
 assert.match(source, /backup-schema-registry\.js/);
 assert.match(source, /party-catalog\.js/);
@@ -45,6 +46,7 @@ console.log(JSON.stringify({
   queryNavigationOffline: true,
   canonicalNavigationCaching: true,
   wordImposterResumeGuardOffline: true,
+  advancedResumeGuardOffline: true,
   advancedPrivacyGuardOffline: true,
   backupSchemaRegistryOffline: true,
   baseCatalogOffline: true,
