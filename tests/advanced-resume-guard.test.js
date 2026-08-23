@@ -34,6 +34,7 @@ const twoTruths = snapshot('two-truths', {
   correct: true
 });
 assert.equal(guard.validateSnapshot(twoTruths, 'two-truths'), true);
+assert.equal(guard.validateSnapshot(twoTruths, 'mafia'), false);
 const impossibleTwoTruths = structuredClone(twoTruths);
 impossibleTwoTruths.session.advanced.correct = false;
 assert.equal(guard.validateSnapshot(impossibleTwoTruths, 'two-truths'), false);
@@ -104,6 +105,7 @@ assert.deepEqual(guard.expectedRoleCounts(8, 'Klassisch'), {
 console.log(JSON.stringify({
   advancedResumeGuard: 'PASS',
   guardedModes: ['two-truths', 'question-imposter', 'location-spy', 'mafia'],
+  strictGameIdMatch: true,
   outcomeConsistency: true,
   mafiaWinnerIntegrity: true,
   mafiaRoleCountIntegrity: true
