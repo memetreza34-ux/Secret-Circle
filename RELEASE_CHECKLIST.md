@@ -4,7 +4,9 @@ Stand: 23. August 2026
 
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
-Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**. Öffentliche Freigabe bleibt **NO_GO**.
+Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
+Aktueller Offline-Core: **`secret-circle-v45` / `secret-circle-v45-staging`**.  
+Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
 
@@ -38,26 +40,26 @@ Aktueller CI-Blocker: Issue #7. App-CI Run #2401 und ein reiner Bash-Runner-Prob
 
 Quellseitig vorbereitet:
 
-- [x] Word-Imposter-Resume-Guard vorhanden
-- [x] Hub-Timer-/Resume-Integritätsvertrag vorhanden
-- [x] `advanced-resume-guard.js` vorhanden
-- [x] `advanced-privacy-guard.js` vorhanden
-- [x] neue Guards Bestandteil des Offline-Core
+- [x] Word-Imposter-Resume-Guard
+- [x] Hub-Timer-/Resume-Integritätsvertrag
+- [x] `advanced-resume-guard.js`
+- [x] `advanced-privacy-guard.js`
+- [x] Guard-Dateien im Offline-Core v45
 
 Für den RC real zu bestätigen:
 
-- [ ] Exact-once-Verlauf/Statistik real bestätigt
-- [ ] Word-Imposter-/Hub-/Advanced-/Quick-Resume real geprüft
-- [ ] manipulierte Word-Imposter-Voting-Snapshots werden sicher verworfen
-- [ ] gekreuzte Hub-Timerzustände werden sicher verworfen
-- [ ] manipulierte Advanced-Snapshots werden sicher verworfen
-- [ ] private Reveal-Zustände bleiben nach Reload verdeckt
-- [ ] private Reveal-Zustände werden auch bei App-/Tab-Wechsel verdeckt
+- [ ] Exact-once-Verlauf/Statistik
+- [ ] Word-Imposter-/Hub-/Advanced-/Quick-Resume
+- [ ] manipulierte Word-Imposter-Voting-Snapshots sicher verworfen
+- [ ] gekreuzte Hub-Timerzustände sicher verworfen
+- [ ] manipulierte Advanced-Snapshots sicher verworfen
+- [ ] private Reveal-Zustände nach Reload verdeckt
+- [ ] private Reveal-Zustände bei App-/Tab-Wechsel verdeckt
 - [ ] Beenden & speichern klar getrennt von Abbrechen & verwerfen
 - [ ] Skip vergibt keinen künstlichen Punkt
 - [ ] Timer über Pause, Reload, Hintergrund/Sperrbildschirm geprüft
-- [ ] Registry-v2-Backup: Export → Import → Löschen real geprüft
-- [ ] unbekannte Namespace-, Quota-, Korruptions- und Rollbackfälle real geprüft
+- [ ] Registry-v2-Backup Export → Import → Löschen
+- [ ] Namespace-/Quota-/Korruptions-/Rollbackfälle
 
 ## 3. Core / UX / Content
 
@@ -80,49 +82,49 @@ Für alle 15 Core-Games real:
 
 Zusätzlich:
 
-- [ ] Word Imposter: Setup-Grenzen, Mehrfach-Imposter, geheimes Voting und Stichwahl real
-- [ ] Paranoia: Geheimfrage bei Fokusverlust real geschützt
-- [ ] Scharade/Tabu: Geheimkarten und 60-s-Timer real geschützt
+- [ ] Word Imposter: Setup-Grenzen, Mehrfach-Imposter, geheimes Voting, Stichwahl
+- [ ] Paranoia: Geheimfrage bei Fokusverlust geschützt
+- [ ] Scharade/Tabu: Geheimkarten und 60-s-Timer geschützt
 - [ ] Heiße Kartoffel: Zufallstimer real ausschließlich 10–25 s
-- [ ] Wortkette: manueller Gültigkeitsabschluss wird verstanden
-- [ ] Nur falsche Antworten: manuelle Verlustregel wird verstanden; keine Punkte
+- [ ] Wortkette: manueller Gültigkeitsabschluss verstanden
+- [ ] Nur falsche Antworten: manuelle Verlustregel verstanden; keine Punkte
 - [ ] Advanced Core: private Eingaben/Fragen/Orte/Rollen bei Fokusverlust geschützt
 - [ ] Mafia: Rollenanzahl, Alive-Zustand und Siegerlogik real korrekt
 - [ ] 15 Core / 13 Extended / 17 Labs korrekt dargestellt
 - [ ] Suche/Filter/Synonyme/Tippfehler real geprüft
-- [ ] manueller Privacy-/Safety-Contentpass final
-- [ ] `scripts/privacy_content_audit.py` grün
-- [ ] `scripts/reference_content_audit.py` grün
-- [ ] finaler Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
+- [ ] Privacy-/Safety-Contentpass final
+- [ ] Privacy-/Reference-Audits grün
+- [ ] Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
 
-## 4. PWA / Offline – v44
+## 4. PWA / Offline – v45
 
-- [ ] finaler Cache `secret-circle-v44` oder bewusst neuer RC-Cache
+- [ ] finaler Cache `secret-circle-v45` oder bewusst neuer RC-Cache
+- [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
 - [ ] `tests/pwa-head-metadata.test.js` grün
-- [ ] Hub, Word Imposter, Creator, Advanced und Quick besitzen denselben Manifest-/iOS-/Icon-Head-Vertrag
-- [ ] Word-Imposter-/Advanced-Resume-/Advanced-Privacy-Guards offline verfügbar
-- [ ] Manifest, SVG, 192er PNG, 512er PNG offline verfügbar
+- [ ] fünf interaktive Einstiegseiten erfüllen denselben Installationsvertrag
+- [ ] Word-Imposter-/Hub-/Advanced-Resume-/Advanced-Privacy-Guards offline
+- [ ] Manifest, SVG, 192er PNG, 512er PNG offline
 - [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
 - [ ] Online → installierte PWA → Offline-Neustart
 - [ ] Hub, Word Imposter, Advanced, Quick, Creator und Privacy offline
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
 - [ ] aktive Session bleibt durch Update geschützt
-- [ ] Update von mindestens zwei älteren installierten Versionen auf v44/RC
+- [ ] Update von mindestens zwei älteren installierten Versionen auf v45/RC
 - [ ] lokale Daten/Sessions überstehen Update
-- [ ] fehlgeschlagene Promotion zerstört den bisherigen Offline-Core nicht
+- [ ] fehlgeschlagene Promotion zerstört bisherigen Offline-Core nicht
 - [ ] Rollback mit neuer Cachegeneration
 
 ## 5. HTTPS-Staging / Production
 
 - [ ] getrennte HTTPS-Staging-Origin festgelegt
 - [ ] Production-Origin festgelegt
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache <RC-CACHE>` grün
-- [ ] Smoke bestätigt Routen, Same-Origin-Redirects, Manifest, PNG-Dimensionen, Cache, Privacy-/Reference-Source und PWA-Head-Metadaten
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v45` grün
+- [ ] Smoke bestätigt Routen, Redirects, Manifest, PNGs, Cache, Privacy-/Reference-Source und PWA-Head
 - [ ] manueller Browser-/PWA-Staging-Smoke grün
-- [ ] Production nutzt denselben freigegebenen RC-Stand
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache <RC-CACHE> --production` grün
+- [ ] Production nutzt denselben freigegebenen RC
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v45 --production` grün
 - [ ] manueller Production-Smoke grün
 
 ## 6. Accessibility / Geräte
@@ -140,9 +142,8 @@ Zusätzlich:
 - [ ] Safe Areas / Bildschirmtastatur
 - [ ] große Systemschrift
 - [ ] Reduced Motion
-- [ ] Touchziele mindestens 44×44 px, wo gefordert
-- [ ] Installationsicon und App-Titel vom Hub korrekt
-- [ ] mindestens eine Unterseite direkt auf Installations-/Homescreen-Metadaten geprüft
+- [ ] wichtige Touchziele ausreichend groß
+- [ ] Installationsicon/App-Titel korrekt
 
 ## 7. Beta / Gruppen
 
@@ -157,12 +158,13 @@ Zusätzlich:
 - [ ] Creator mit unerfahrener Person
 - [ ] keine offenen Critical/High Bugs
 
-Operative Detailmatrix: Issue #8 und `MANUAL_TEST_PLAN.md`.
+Operative Detailmatrix: Issue #8, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`.
 
 ## 8. Assets / Third Party / Legal / Betrieb
 
 - [ ] Asset-/Media-Provenienz-Audits grün
-- [ ] Root-`icon.svg` Urheber/Rechtebasis/Attribution final belegt oder Asset ersetzt
+- [ ] `ASSET_RIGHTS_SIGNOFF.md` vollständig
+- [ ] Root-`icon.svg` Rechtebasis final belegt oder Asset ersetzt
 - [ ] kein Releaseasset `unresolved`
 - [ ] Dependency-/Vulnerability-Review des finalen Lockfiles
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden
@@ -177,7 +179,7 @@ Operative Detailmatrix: Issue #8 und `MANUAL_TEST_PLAN.md`.
 ## 9. Release Evidence / Freigabe
 
 - [ ] `release-evidence.json` auf `evidenceStatus = FINAL`
-- [ ] vollständiger 40-stelliger RC-Commit, Tag, App-Version, Cache, Staging-/Production-URL und Freeze-Zeitpunkt
+- [ ] 40-stelliger RC-Commit, Tag, App-Version, Cache, Staging-/Production-URL und Freeze-Zeitpunkt
 - [ ] alle 15 Evidence-Gates `PASS`
 - [ ] jeder PASS-Beleg referenziert exakt denselben RC-Commit
 - [ ] `knownBlockers` leer
