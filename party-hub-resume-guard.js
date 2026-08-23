@@ -17,7 +17,7 @@
     const timer = session.timer;
     const timerMode = TIMER_MODES.has(game.mode);
 
-    if (!timerMode) return timer === null || timer === undefined;
+    if (!timerMode) return (timer === null || timer === undefined) && session.running !== true;
     if (timer === null || timer === undefined) return session.running !== true;
     if (!timer || typeof timer !== 'object' || Array.isArray(timer)) return false;
     if (timer.kind !== game.mode) return false;
