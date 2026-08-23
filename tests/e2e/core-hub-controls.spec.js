@@ -16,7 +16,14 @@ async function seedHub(page) {
   await page.reload();
 }
 
+async function openCatalog(page) {
+  await page.locator('[data-view-target="games"]').first().click();
+  await expect(page.locator('#view-games')).toBeVisible();
+}
+
 async function startGame(page, gameId) {
+  const opener = page.locator(`[data-open-game="${gameId}"]`).first();
+  if (await opener.count() === 0) await openCatalog(page);
   await page.locator(`[data-open-game="${gameId}"]`).first().click();
   await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();
@@ -33,6 +40,27 @@ test('personal hub games make voluntary skipping explicit during play', async ({
 
   await page.getByRole('button', { name: 'Wahrheit' }).click();
   await expect(page.locator('#hub-voluntary-play-note')).toBeVisible();
+});
+
+test('simple social core games keep the round mechanic visible while playing', async ({ page }) => {
+  const expectations = [
+    ['never-have', /reagieren gleichzeitig/i, true],
+    ['most-likely', /zeigen alle gleichzeitig/i, true],
+    ['would-rather', /gleichzeitig A oder B/i, false]
+  ];
+
+  for (const [gameId, guide, voluntary] of expectations) {
+    await seedHub(page);
+    await openCatalog(page);
+    await startGame(page, gameId);
+    await expect(page.locator('#hub-round-guide')).toContainText(guide);
+    if (voluntary) {
+      await expect(page.locator('#hub-voluntary-play-note')).toBeVisible();
+      await expect(page.locator('#skip-hub-round')).toHaveText('Überspringen · nächste Person');
+    } else {
+      await expect(page.locator('#hub-voluntary-play-note')).toHaveCount(0);
+    }
+  }
 });
 
 test('Paranoia conceals an open secret question when the app loses focus', async ({ page }) => {
