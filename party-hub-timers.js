@@ -2,6 +2,9 @@
 
 (() => {
   const TIMER_KINDS = new Set(['charades', 'taboo', 'hot-potato', 'word-chain']);
+  const HOT_POTATO_MIN_MS = 10_000;
+  const HOT_POTATO_MAX_MS = 25_000;
+  const HOT_POTATO_RANGE_MS = HOT_POTATO_MAX_MS - HOT_POTATO_MIN_MS + 1;
 
   function normalizeTimerState(value, helpers) {
     const { safeInteger, cleanText } = helpers || {};
@@ -196,7 +199,7 @@
       const prompt = pickUnused(contentItems('hot-potato', current.pack));
       $('#play-content').textContent = prompt || 'Keine Aufgabe verfügbar.';
       $('#play-player').textContent = `${currentPlayer()} beginnt mit dem Gerät`;
-      $('#play-options').append(actionButton('Zufallstimer starten', () => startHotPotato(prompt, 10000 + randomInt(16000))));
+      $('#play-options').append(actionButton('Zufallstimer starten', () => startHotPotato(prompt, HOT_POTATO_MIN_MS + randomInt(HOT_POTATO_RANGE_MS))));
       persistActiveSession();
     }
 
@@ -299,6 +302,8 @@
 
   window.SecretCirclePartyHubTimers = Object.freeze({
     timerKinds: TIMER_KINDS,
+    hotPotatoMinimumMs: HOT_POTATO_MIN_MS,
+    hotPotatoMaximumMs: HOT_POTATO_MAX_MS,
     normalizeTimerState,
     createTimerGames
   });
