@@ -9,11 +9,13 @@
   const playTitle = document.querySelector('#play-title');
   const playContent = document.querySelector('#play-content');
   const playActions = document.querySelector('#play-actions');
+  const playOptions = document.querySelector('#play-options');
   const skipRound = document.querySelector('#skip-hub-round');
   if (!C || !detail || !title || !start) return;
 
   const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
   const TIMER_MODES = new Set(['charades', 'taboo', 'hot-potato', 'word-chain']);
+  const PRIVATE_CARD_GAMES = new Set(['charades', 'taboo']);
 
   const voluntaryGames = Object.freeze({
     'truth-dare': 'Alles freiwillig. Unangenehme Fragen oder Aufgaben dürfen ohne Begründung übersprungen werden.',
@@ -25,7 +27,9 @@
   const roundGuidance = Object.freeze({
     'never-have': 'Alle reagieren gleichzeitig. Wer die Aussage schon erlebt hat, zeigt es; Erzählen danach ist freiwillig.',
     'most-likely': 'Bis drei zählen, dann zeigen alle gleichzeitig auf eine Person. Eine Begründung danach ist optional.',
-    'would-rather': 'Beide Optionen vorlesen und gleichzeitig A oder B wählen. Begründungen danach sind optional.'
+    'would-rather': 'Beide Optionen vorlesen und gleichzeitig A oder B wählen. Begründungen danach sind optional.',
+    charades: 'Nur die darstellende Person schaut auf den aktuellen Begriff. Gerät so halten, dass die Ratenden die Karte nicht sehen.',
+    taboo: 'Nur die erklärende Person schaut auf Zielwort und verbotene Wörter. Gerät von den Ratenden weg halten.'
   });
 
   function currentGame() {
@@ -130,10 +134,23 @@
     return false;
   }
 
+  function privatePromptContext() {
+    const game = currentPlayGame();
+    if (!game || !playContent || playContent.hidden) return null;
+
+    if (game.id === 'paranoia' && playActions && [...playActions.querySelectorAll('button')].some(button => button.textContent.includes('Name wurde genannt'))) {
+      return { gameId: game.id, label: 'Geheime Frage', revealLabel: 'Geheime Frage wieder anzeigen' };
+    }
+
+    if (PRIVATE_CARD_GAMES.has(game.id) && playOptions && [...playOptions.querySelectorAll('button')].some(button => button.textContent === 'Treffer')) {
+      return { gameId: game.id, label: 'Geheime Karte', revealLabel: 'Geheime Karte wieder anzeigen' };
+    }
+
+    return null;
+  }
+
   function paranoiaSecretIsOpen() {
-    if (currentPlayGame()?.id !== 'paranoia' || !playActions || !playContent || playContent.hidden) return false;
-    return [...playActions.querySelectorAll('button')]
-      .some(button => button.textContent.includes('Name wurde genannt'));
+    return privatePromptContext()?.gameId === 'paranoia';
   }
 
   function removePrivateCover({ reveal = false } = {}) {
@@ -143,28 +160,31 @@
     if (reveal) {
       if (playContent) playContent.hidden = false;
       if (playActions) playActions.hidden = false;
-      window.requestAnimationFrame?.(() => playActions?.querySelector('button')?.focus?.());
+      if (playOptions) playOptions.hidden = false;
+      window.requestAnimationFrame?.(() => playOptions?.querySelector('button')?.focus?.() || playActions?.querySelector('button')?.focus?.());
     }
     return true;
   }
 
   function concealPrivatePrompt() {
-    if (!paranoiaSecretIsOpen()) return false;
     if (document.querySelector('#hub-private-prompt-cover')) return true;
+    const context = privatePromptContext();
+    if (!context) return false;
 
     playContent.hidden = true;
     if (playActions) playActions.hidden = true;
+    if (playOptions) playOptions.hidden = true;
     const cover = document.createElement('div');
     cover.id = 'hub-private-prompt-cover';
     cover.className = 'play-content private-prompt-cover';
     cover.setAttribute('role', 'region');
-    cover.setAttribute('aria-label', 'Geheime Frage verdeckt');
+    cover.setAttribute('aria-label', `${context.label} verdeckt`);
 
     const message = document.createElement('p');
-    message.textContent = 'Die geheime Frage wurde automatisch verdeckt.';
+    message.textContent = `${context.label} wurde automatisch verdeckt.`;
     const reveal = document.createElement('button');
     reveal.type = 'button';
-    reveal.textContent = 'Geheime Frage wieder anzeigen';
+    reveal.textContent = context.revealLabel;
     reveal.addEventListener('click', () => removePrivateCover({ reveal: true }));
     cover.append(message, reveal);
     playContent.insertAdjacentElement('afterend', cover);
@@ -175,7 +195,8 @@
   function syncPrivateCover() {
     const cover = document.querySelector('#hub-private-prompt-cover');
     if (!cover) return;
-    if (currentPlayGame()?.id !== 'paranoia' || playLayer?.hidden) {
+    const gameId = currentPlayGame()?.id;
+    if (!['paranoia', 'charades', 'taboo'].includes(gameId) || playLayer?.hidden) {
       removePrivateCover({ reveal: true });
     }
   }
@@ -230,11 +251,12 @@
   loadGuidance();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 9,
+    version: 10,
     updateStartLabel,
     updatePlaySafety,
     timerStateMatchesGame,
     guardStoredResumeIntegrity,
+    privatePromptContext,
     concealPrivatePrompt,
     removePrivateCover,
     paranoiaSecretIsOpen,
