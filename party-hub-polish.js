@@ -8,12 +8,14 @@
   const playLayer = document.querySelector('#play-layer');
   const playTitle = document.querySelector('#play-title');
   const playContent = document.querySelector('#play-content');
+  const playActions = document.querySelector('#play-actions');
   const skipRound = document.querySelector('#skip-hub-round');
   if (!C || !detail || !title || !start) return;
 
   const voluntaryGames = Object.freeze({
     'truth-dare': 'Alles freiwillig. Unangenehme Fragen oder Aufgaben dürfen ohne Begründung übersprungen werden.',
     'never-have': 'Persönliche Aussagen sind freiwillig. Überspringen ist jederzeit ohne Begründung erlaubt.',
+    'most-likely': 'Abstimmungen bleiben spielerisch. Niemand muss sich rechtfertigen; unangenehme Karten dürfen übersprungen werden.',
     paranoia: 'Persönliche Fragen sind freiwillig. Überspringen ist jederzeit ohne Begründung erlaubt.'
   });
 
@@ -73,6 +75,56 @@
     }
   }
 
+  function paranoiaSecretIsOpen() {
+    if (currentPlayGame()?.id !== 'paranoia' || !playActions || !playContent || playContent.hidden) return false;
+    return [...playActions.querySelectorAll('button')]
+      .some(button => button.textContent.includes('Name wurde genannt'));
+  }
+
+  function removePrivateCover({ reveal = false } = {}) {
+    const cover = document.querySelector('#hub-private-prompt-cover');
+    if (!cover) return false;
+    cover.remove();
+    if (reveal) {
+      if (playContent) playContent.hidden = false;
+      if (playActions) playActions.hidden = false;
+      window.requestAnimationFrame?.(() => playActions?.querySelector('button')?.focus?.());
+    }
+    return true;
+  }
+
+  function concealPrivatePrompt() {
+    if (!paranoiaSecretIsOpen()) return false;
+    if (document.querySelector('#hub-private-prompt-cover')) return true;
+
+    playContent.hidden = true;
+    if (playActions) playActions.hidden = true;
+    const cover = document.createElement('div');
+    cover.id = 'hub-private-prompt-cover';
+    cover.className = 'play-content private-prompt-cover';
+    cover.setAttribute('role', 'region');
+    cover.setAttribute('aria-label', 'Geheime Frage verdeckt');
+
+    const message = document.createElement('p');
+    message.textContent = 'Die geheime Frage wurde automatisch verdeckt.';
+    const reveal = document.createElement('button');
+    reveal.type = 'button';
+    reveal.textContent = 'Geheime Frage wieder anzeigen';
+    reveal.addEventListener('click', () => removePrivateCover({ reveal: true }));
+    cover.append(message, reveal);
+    playContent.insertAdjacentElement('afterend', cover);
+    window.requestAnimationFrame?.(() => reveal.focus());
+    return true;
+  }
+
+  function syncPrivateCover() {
+    const cover = document.querySelector('#hub-private-prompt-cover');
+    if (!cover) return;
+    if (currentPlayGame()?.id !== 'paranoia' || playLayer?.hidden) {
+      removePrivateCover({ reveal: true });
+    }
+  }
+
   function loadGuidance() {
     if (!document.querySelector('link[href="party-guide.css"]')) {
       const style = document.createElement('link');
@@ -98,9 +150,20 @@
   observer.observe(title, { childList: true, characterData: true, subtree: true });
   observer.observe(detail, { attributes: true, attributeFilter: ['hidden'] });
 
-  const playObserver = playTitle && playLayer ? new MutationObserver(updatePlaySafety) : null;
+  const playObserver = playTitle && playLayer ? new MutationObserver(() => {
+    updatePlaySafety();
+    syncPrivateCover();
+  }) : null;
   playObserver?.observe(playTitle, { childList: true, characterData: true, subtree: true });
   playObserver?.observe(playLayer, { attributes: true, attributeFilter: ['hidden'] });
+
+  const concealWhenHidden = () => {
+    if (document.hidden) concealPrivatePrompt();
+  };
+  document.addEventListener('visibilitychange', concealWhenHidden);
+  window.addEventListener('blur', concealPrivatePrompt);
+  window.addEventListener('pagehide', concealPrivatePrompt);
+  document.addEventListener('freeze', concealPrivatePrompt);
 
   addEventListener('pagehide', () => {
     observer.disconnect();
@@ -111,9 +174,12 @@
   loadGuidance();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 6,
+    version: 7,
     updateStartLabel,
     updatePlaySafety,
+    concealPrivatePrompt,
+    removePrivateCover,
+    paranoiaSecretIsOpen,
     loadGuidance,
     voluntaryGames
   });
