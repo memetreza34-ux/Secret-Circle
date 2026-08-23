@@ -11,7 +11,7 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 **Classic Content: v4**  
 **Core Source Hardening: 15/15 PREPARED**
 
-Aktueller PR-Head: `7371b6eb24893d0fbd79df8aebbcaec1930820cd` auf Draft-PR #13.
+Arbeitsstand: Draft-PR #13 auf `agent/release-foundation-2027`.
 
 Technisch weit fortgeschritten: 15 priorisierte Core-Games, quantitative Contentziele, 15/15 Core-Quellreview, 15/15 Core-Hardening-Pass, Exact-once-Sessions, sichere Resume-/Timerpfade, Live-Privacy-Guards, Registry-v2-Backups, Lockfile/npm-ci-Vertrag, source-level Privacy-/Reference-Schutz, PWA-Head-Vertrag, HTTPS-Smoke, Accessibility-/Legal-/Betriebsgrundlage und maschinenlesbarer Release-Evidence-Vertrag.
 
@@ -51,7 +51,7 @@ Details: `CORE_GAME_ACCEPTANCE.md`.
 | 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | echter Runner + Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core Hardening | keine neue Scope-Welle; Evidenz schließen |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-/Resume-Verträge | reale Quota-/Updatepfade |
-| 11 | Tests / CI | BLOCKED | Workflows/Testmatrix | funktionierender Actions-Runner |
+| 11 | Tests / CI | BLOCKED | Workflows/Testmatrix + Runner Probe | funktionierender Hosted Runner |
 | 12 | Offline / PWA / Resume | PREPARED | Service Worker v44 + PWA-/Resume-Verträge | echte Install-/Upgrade-/Rollbacktests |
 | 13 | Content / Alter / Privacy | IN PROGRESS | 15/15 Quellreview + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md` | G1–G5 + PN1–PN3 real |
@@ -96,24 +96,27 @@ Neu im Offline-Core sind auch die zusätzlichen Core-Hardening-Guards, darunter 
 
 ## CI
 
-Aktueller PR-Head: `7371b6eb24893d0fbd79df8aebbcaec1930820cd`.
+Aktuellster vollständig geprüfter App-CI-Befund: **Run #2401** auf Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`.
 
-Für diesen Head wurde über die GitHub-Schnittstelle **kein Workflow-Lauf gefunden**.
-
-Aktuellster vollständig geprüfter Problem-Lauf bleibt **Run #2387** auf Head `4335f670229b8a89a07a600f5a3527b43f0fe123`:
-
-- `validate` failure
+- Run ID `32650097844`
+- Job ID `97220210755`
+- `failure`
 - `steps: []`
 - kein Checkout
+- kein Node-/Python-Setup
 - kein Online-`npm ci`
 - keine Unit-/Audit-/Playwright-Ausführung
 - kein Repository-Code ausgeführt
 
-Deshalb nichts Neues als runner-grün behaupten.
+Zusätzlich wurde ein temporärer **Runner Probe** ohne Checkout, Setup-Action, npm oder Repository-Code ausgeführt. Selbst der einzige lokale Bash-Schritt (`echo` + `uname -a`) endete vor Step 1 mit `steps: []`.
+
+Damit liegt der verbleibende Untersuchungsbereich vor der Step-Ausführung: Hosted-Runner-Zuteilung, Account-/Billing-/Budgetzustand oder GitHub-/Policy-Sperren. Der reguläre Workflow selbst bleibt unverändert, weil ein Code-/Workflow-Patch diesen externen Pre-Step-Blocker nicht sinnvoll behebt.
+
+Neuere Hardening-Commits besitzen weiterhin keine erfolgreiche Runner-Evidence.
 
 ## Höchste Prioritäten ab jetzt
 
-1. Actions-Runner / echter Checkout + Online-`npm ci` reparieren.
+1. Actions-Runner / echter Step-Start reparieren.
 2. vollständiges `npm run ci` auf exakt demselben Commit.
 3. Cross-Browser auf demselben RC-Kandidaten.
 4. Branch Protection tatsächlich aktivieren/bestätigen.
