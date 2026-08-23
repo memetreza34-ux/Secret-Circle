@@ -1,15 +1,15 @@
 # Secret Circle – CI Troubleshooting
 
-Stand: 19. August 2026
+Stand: 23. August 2026
 
 ## Aktueller Befund
 
-Secret Circle besitzt normale GitHub-Actions-Workflows, aber die bislang geprüften Jobs erreichen **keinen Repository-Schritt**.
+Secret Circle besitzt normale GitHub-Actions-Workflows, aber die geprüften Jobs erreichen **keinen Workflow-Schritt**.
 
-Aktuellster vollständig geprüfter Stand: **Run #2387** (`Secret Circle CI`) auf Head **`4335f670229b8a89a07a600f5a3527b43f0fe123`** / Job `validate`.
+Aktuellster vollständiger App-CI-Befund: **Run #2401** (`Secret Circle CI`) auf Head **`a9f2591a5280ec67b9042df8ff636019c7c6149a`** / Job `validate`.
 
-- Run-ID `32283581882`
-- Job-ID `96167714801`
+- Run-ID `32650097844`
+- Job-ID `97220210755`
 - `completed / failure`
 - `steps: []`
 - kein Checkout
@@ -20,9 +20,28 @@ Aktuellster vollständig geprüfter Stand: **Run #2387** (`Secret Circle CI`) au
 
 Das wiederholte Muster ist **kein Beweis für einen Codefehler**, weil der Repositorycode nicht startet.
 
+## Isolierter Hosted-Runner-Probe
+
+Am 23. August 2026 wurde zusätzlich ein temporärer Minimalworkflow `Secret Circle Runner Probe` ausgeführt. Dieser Job enthielt **keinen Checkout, keine Setup-Action und keine Dependencyinstallation**, sondern ausschließlich einen lokalen Bash-Schritt mit `echo` und `uname -a`.
+
+Ergebnis: **Run #7** auf demselben Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`.
+
+- Run-ID `32650097848`
+- Job-ID `97220210640`
+- `completed / failure`
+- `steps: []`
+- selbst der erste lokale Bash-Schritt wurde nicht erzeugt oder gestartet
+- keine Repositorydatei und keine externe Action war für den Fehler erforderlich
+
+Damit ist für den aktuellen Befund ausgeschlossen, dass `actions/checkout`, `actions/setup-node`, `actions/setup-python`, `npm ci`, Playwright oder Secret-Circle-Code die unmittelbare Ursache dieses Pre-Step-Fehlers sind.
+
+Der verbleibende Fehlerbereich liegt **vor der Step-Ausführung**, insbesondere bei Hosted-Runner-Zuteilung, Account-/Billing-/Budgetzustand oder einer GitHub-/Policy-Sperre. Die exakte externe Ursache darf erst benannt werden, wenn GitHub sie in Einstellungen, Billing oder Statusdaten bestätigt.
+
+Der temporäre Probe-Workflow wird nach diesem Nachweis wieder entfernt, damit er keine dauerhafte zusätzliche CI-Fläche erzeugt.
+
 ## Wiederholbarkeit
 
-Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363 und jetzt #2387. Der v44-/Release-Evidence-Stand ist damit ebenfalls noch nicht runnerverifiziert.
+Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363, #2387, #2401 und der isolierte Runner-Probe Run #7. Der v44-/Release-Evidence-Stand ist damit weiterhin nicht runnerverifiziert.
 
 ## Aktueller Buildvertrag
 
@@ -82,29 +101,29 @@ Diese Gates sind implementiert, aber nicht durch einen Actions-Runner ausgeführ
 
 ## Externe Prüfflächen
 
-Weil der Fehler vor dem ersten Step liegt:
+Weil sogar der action-freie Runner-Probe vor Step 1 endet, jetzt zuerst prüfen:
 
-- Actions-/Workflow-Policy
-- GitHub-hosted Runner-Verfügbarkeit
-- Minuten-/Billing-/Accountlimits
-- Organisations-/Enterprise-Regeln
-- Repository-/Accountzustand
-- mögliche GitHub-Actions-Störung
+1. persönliche `Settings → Billing and licensing` beziehungsweise Actions-Nutzung/Budget
+2. Repository `Settings → Actions → General`
+3. ob GitHub Actions für das private Repository erlaubt ist
+4. ob GitHub-hosted Runner durch Account-/Organisations-/Enterprise-Regeln gesperrt sind
+5. GitHub Status auf Actions-/Runner-Störung
 
-Eine konkrete Ursache wird erst benannt, wenn GitHub sie tatsächlich zeigt.
+Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere Repository-CI-Diagnostik.
 
 ## Wenn der Runner wieder echte Steps zeigt
 
-1. Checkout bestätigen
-2. Online-`npm ci` / Integrity-Download prüfen
-3. ersten echten Repositoryfehler isolieren
-4. Syntaxchecks
-5. Unit-/Contracttests einschließlich PWA-Head
-6. Validatoren/Audits einschließlich Release Evidence
-7. Chromium E2E
-8. Cross-Browser auf demselben RC-Commit
-9. unveränderten Commit erneut vollständig testen
-10. erst danach Branch Protection und Release Evidence als reale PASS-Gates abnehmen
+1. Minimaljob muss Step 1 erreichen
+2. Checkout bestätigen
+3. Online-`npm ci` / Integrity-Download prüfen
+4. ersten echten Repositoryfehler isolieren
+5. Syntaxchecks
+6. Unit-/Contracttests einschließlich PWA-Head
+7. Validatoren/Audits einschließlich Release Evidence
+8. Chromium E2E
+9. Cross-Browser auf demselben RC-Commit
+10. unveränderten Commit erneut vollständig testen
+11. erst danach Branch Protection und Release Evidence als reale PASS-Gates abnehmen
 
 ## Release-Regel
 
