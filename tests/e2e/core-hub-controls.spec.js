@@ -22,6 +22,19 @@ async function startGame(page, gameId) {
   await expect(page.locator('#play-layer')).toBeVisible();
 }
 
+test('personal hub games make voluntary skipping explicit during play', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'truth-dare');
+
+  await expect(page.locator('#hub-voluntary-play-note')).toContainText('Alles freiwillig');
+  await expect(page.locator('#hub-voluntary-play-note')).toContainText('ohne Begründung');
+  await expect(page.locator('#skip-hub-round')).toHaveText('Überspringen · nächste Person');
+  await expect(page.locator('#skip-hub-round')).toHaveAttribute('aria-label', /ohne Punkt/i);
+
+  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await expect(page.locator('#hub-voluntary-play-note')).toBeVisible();
+});
+
 test('global skip advances a round without awarding a point and finish records it once', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
