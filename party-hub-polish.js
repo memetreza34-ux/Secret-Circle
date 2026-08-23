@@ -29,7 +29,9 @@
     'most-likely': 'Bis drei zählen, dann zeigen alle gleichzeitig auf eine Person. Eine Begründung danach ist optional.',
     'would-rather': 'Beide Optionen vorlesen und gleichzeitig A oder B wählen. Begründungen danach sind optional.',
     charades: 'Nur die darstellende Person schaut auf den aktuellen Begriff. Gerät so halten, dass die Ratenden die Karte nicht sehen.',
-    taboo: 'Nur die erklärende Person schaut auf Zielwort und verbotene Wörter. Gerät von den Ratenden weg halten.'
+    taboo: 'Nur die erklärende Person schaut auf Zielwort und verbotene Wörter. Gerät von den Ratenden weg halten.',
+    'hot-potato': 'Passende Antwort nennen und das Gerät direkt weitergeben. Wer es bei STOPP hält, verliert die Runde.',
+    'word-chain': 'Jedes neue Wort beginnt mit dem letzten Buchstaben des vorherigen und passt zur Kategorie. Keine Wiederholungen; „Runde geschafft“ nur bei gültiger Kette.'
   });
 
   function currentGame() {
@@ -251,7 +253,7 @@
   loadGuidance();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 10,
+    version: 11,
     updateStartLabel,
     updatePlaySafety,
     timerStateMatchesGame,
