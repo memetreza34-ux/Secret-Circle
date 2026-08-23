@@ -5,6 +5,7 @@
   const impostersField = document.querySelector('#imposters');
   const playersHelp = document.querySelector('#players-help');
   const impostersHelp = document.querySelector('#imposters-help');
+  const startButton = document.querySelector('#start');
   if (!playersField || !impostersField || !playersHelp || !impostersHelp) return;
 
   function addQuickGuide() {
@@ -29,16 +30,34 @@
       .filter(Boolean);
   }
 
+  function recommendedImposters(playerCount, maximum) {
+    const suggested = playerCount <= 6 ? 1 : playerCount <= 10 ? 2 : playerCount <= 15 ? 3 : 4;
+    return Math.max(1, Math.min(maximum, suggested));
+  }
+
   function update() {
     const names = normalizedNames();
     const uniqueCount = new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size;
     const duplicateCount = names.length - uniqueCount;
     const maximumImposters = Math.max(1, Math.min(6, uniqueCount - 1));
 
+    impostersField.min = '1';
     impostersField.max = String(maximumImposters);
     if (Number(impostersField.value) > maximumImposters) {
       impostersField.value = String(maximumImposters);
       impostersField.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    const imposterCount = Number(impostersField.value);
+    const validPlayers = duplicateCount === 0 && uniqueCount >= 3 && uniqueCount <= 20;
+    const validImposters = Number.isInteger(imposterCount) && imposterCount >= 1 && imposterCount <= maximumImposters;
+    const recommended = recommendedImposters(uniqueCount, maximumImposters);
+
+    playersField.setAttribute('aria-invalid', String(!validPlayers));
+    impostersField.setAttribute('aria-invalid', String(!validImposters));
+    if (startButton) {
+      startButton.disabled = !(validPlayers && validImposters);
+      startButton.setAttribute('aria-disabled', String(startButton.disabled));
     }
 
     if (duplicateCount > 0) {
@@ -48,10 +67,14 @@
     } else if (uniqueCount > 20) {
       playersHelp.textContent = `${uniqueCount} Personen erkannt. Höchstens 20 sind erlaubt.`;
     } else {
-      playersHelp.textContent = `${uniqueCount} eindeutige Personen erkannt.`;
+      playersHelp.textContent = `${uniqueCount} eindeutige Personen erkannt. Bereit zum Spielen.`;
     }
 
-    impostersHelp.textContent = `Für diese Gruppe sind 1 bis ${maximumImposters} Imposter möglich.`;
+    if (!validImposters) {
+      impostersHelp.textContent = `Bitte eine ganze Zahl zwischen 1 und ${maximumImposters} wählen.`;
+    } else {
+      impostersHelp.textContent = `1 bis ${maximumImposters} möglich · Empfehlung für ${uniqueCount} Personen: ${recommended}.`;
+    }
   }
 
   function refreshAfterAsyncAction() {
@@ -61,6 +84,8 @@
 
   playersField.addEventListener('input', update);
   playersField.addEventListener('change', update);
+  impostersField.addEventListener('input', update);
+  impostersField.addEventListener('change', update);
   document.querySelector('#clear-all-data')?.addEventListener('click', refreshAfterAsyncAction);
   document.querySelector('#import-data')?.addEventListener('change', refreshAfterAsyncAction);
   root.addEventListener('pageshow', update);
@@ -69,5 +94,5 @@
   update();
   refreshAfterAsyncAction();
 
-  root.SecretCircleSetupUx = Object.freeze({ update, addQuickGuide, version: 4 });
+  root.SecretCircleSetupUx = Object.freeze({ update, addQuickGuide, recommendedImposters, version: 5 });
 })(window);
