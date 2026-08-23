@@ -50,6 +50,28 @@ test('Paranoia reload requires explicit resume and never auto-opens the secret q
   await expect(page.getByRole('button', { name: 'Geheime Frage anzeigen' })).toBeVisible();
 });
 
+test('cross-mode timer corruption is discarded instead of resuming the wrong game runner', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'truth-dare');
+  await page.getByRole('button', { name: 'Wahrheit' }).click();
+
+  await page.evaluate(key => {
+    const active = JSON.parse(localStorage.getItem(key));
+    active.session.running = true;
+    active.session.timer = {
+      kind: 'charades', phase: 'running', remainingMs: 45_000,
+      roundScore: 0, item: 'Fremde Timerkarte', prompt: '', letter: '', word: '', banned: []
+    };
+    localStorage.setItem(key, JSON.stringify(active));
+  }, ACTIVE_KEY);
+
+  await page.reload();
+  await expect(page.locator('#play-layer')).toBeHidden();
+  await expect(page.locator('#hub-resume-session')).toHaveCount(0);
+  await expect(page.locator('#hub-status')).toContainText('inkonsistenter Timer-Spielstand');
+  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).toBeNull();
+});
+
 test('Charades restores the remaining time paused and continues from that value', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'charades');
