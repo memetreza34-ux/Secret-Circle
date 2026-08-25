@@ -12,7 +12,7 @@ required = [
     'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md',
     'RELEASE_EVIDENCE.md', 'release-evidence.json',
     'CONTENT_AGE_POLICY.md', 'THIRD_PARTY_NOTICES.md',
-    'operator-release.json', 'OPERATOR_RELEASE_SIGNOFF.md', 'HOSTING_DECISION.md',
+    'operator-release.json', 'OPERATOR_RELEASE_SIGNOFF.md', 'OPERATOR_EVIDENCE_LOG.md', 'HOSTING_DECISION.md',
     'LEGAL_CHECKLIST.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md',
     'scripts/lockfile_contract_audit.py',
     'scripts/branch_protection_contract_audit.py',
@@ -43,6 +43,7 @@ evidence_doc = read('RELEASE_EVIDENCE.md')
 content_policy = read('CONTENT_AGE_POLICY.md')
 third_party = read('THIRD_PARTY_NOTICES.md')
 operator_signoff = read('OPERATOR_RELEASE_SIGNOFF.md')
+operator_log = read('OPERATOR_EVIDENCE_LOG.md')
 hosting_decision = read('HOSTING_DECISION.md')
 legal = read('LEGAL_CHECKLIST.md')
 support = read('SUPPORT.md')
@@ -104,7 +105,12 @@ checks = {
     'release_evidence_doc_binds_one_commit': 'unveränderten Release-Candidate-Commit' in evidence_doc and '15' in evidence_doc and 'releaseDecision = GO' in evidence_doc,
     'operator_evidence_schema': operator_evidence.get('schemaVersion') == 1,
     'operator_gate_not_falsely_ready': operator_evidence.get('evidenceStatus') == 'PREPARED' and operator_evidence.get('operatorGate') == 'BLOCKED',
-    'operator_signoff_contract': all(marker in operator_signoff for marker in ('operator-release.json', 'Hostingentscheidung', 'Support', 'Incident Response', 'FINAL / READY')),
+    'operator_signoff_contract': all(marker in operator_signoff for marker in ('operator-release.json', 'OPERATOR_EVIDENCE_LOG.md', 'Hostingentscheidung', 'Support', 'Incident Response', 'FINAL / READY')),
+    'operator_real_world_log_contract': all(marker in operator_log for marker in (
+        'Supportkontakt-Test', 'Security-/Privacy-Meldeweg-Test', 'Probe-Supportfall',
+        'Probe-SEV-1', 'HTTPS-Staging-Rollback-Drill', 'Finale Legal-/Privacy-Plausibilisierung',
+        'Operator Gate: BLOCKED / READY'
+    )),
     'hosting_decision_contract': all(marker in hosting_decision for marker in (current_cache, 'Staging-Origin', 'Production-Origin', 'Accesslogs', 'Rollback')),
     'legal_real_values_required': 'Kein öffentliches GO mit Platzhaltern' in legal and 'LEGAL NO_GO' in legal,
     'support_real_contact_required': 'echter Supportkontakt festgelegt' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
@@ -133,6 +139,7 @@ print(json.dumps({
     'static_release_contract': 'PREPARED',
     'release_evidence': 'PREPARED_NO_GO_SINGLE_RC_CONTRACT',
     'operator_evidence': 'PREPARED_BLOCKED_UNTIL_REAL_VALUES',
+    'operator_real_world_evidence_log': 'PREPARED_NOT_EXECUTED',
     'pwa_cache': current_cache,
     'pwa_head_metadata': 'CURRENT_CACHE_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
     'hub_accessibility_contract': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
