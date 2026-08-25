@@ -18,10 +18,11 @@ const catalog = { getGame: id => games[id] || null };
 const session = (gameId, extra = {}) => ({ gameId, running: false, timer: null, ...extra });
 const snapshot = value => ({ version: 1, session: value });
 
-assert.equal(Guard.version, 1);
+assert.equal(Guard.version, 2);
 assert.equal(Object.isFrozen(Guard), true);
 assert.equal(Guard.activeKey, 'secret-circle-party-hub-active-v1');
 assert.equal(Guard.activeVersion, 1);
+assert.equal(typeof Guard.removeResumeUi, 'function');
 
 assert.equal(Guard.validateSnapshot(snapshot(session('truth-dare')), catalog), true);
 assert.equal(Guard.validateSnapshot(snapshot(session('truth-dare', { running: true })), catalog), false);
@@ -57,6 +58,68 @@ assert.equal(Guard.validateSnapshot(snapshot(session('imposter')), catalog), fal
 assert.equal(Guard.validateSnapshot(snapshot(session('missing')), catalog), false);
 assert.equal(Guard.validateSnapshot(null, catalog), false);
 
+// Regression: a stale resume card must disappear together with an invalid stored snapshot.
+{
+  let resumeRemoved = false;
+  let removedStorageKey = null;
+  const errorClasses = new Set();
+  const status = {
+    textContent: '',
+    classList: { add: value => errorClasses.add(value) }
+  };
+  const resumeNode = { remove: () => { resumeRemoved = true; } };
+  const invalid = snapshot(session('truth-dare', {
+    running: true,
+    timer: { kind: 'charades', phase: 'running', remainingMs: 60_000 }
+  }));
+  const root = {
+    SecretCirclePartyCatalog: catalog,
+    localStorage: {
+      getItem: key => key === Guard.activeKey ? JSON.stringify(invalid) : null,
+      removeItem: key => { removedStorageKey = key; }
+    },
+    document: {
+      querySelector: selector => {
+        if (selector === '#hub-resume-session') return resumeNode;
+        if (selector === '#hub-status') return status;
+        return null;
+      }
+    }
+  };
+
+  assert.equal(Guard.install(root), false);
+  assert.equal(removedStorageKey, Guard.activeKey);
+  assert.equal(resumeRemoved, true);
+  assert.match(status.textContent, /inkonsistenter Timer-Spielstand/);
+  assert.equal(errorClasses.has('error'), true);
+}
+
+// Valid stored sessions must remain untouched.
+{
+  let removeCalls = 0;
+  let resumeRemoved = false;
+  const valid = snapshot(session('charades', {
+    running: true,
+    timer: { kind: 'charades', phase: 'running', remainingMs: 30_000 }
+  }));
+  const root = {
+    SecretCirclePartyCatalog: catalog,
+    localStorage: {
+      getItem: key => key === Guard.activeKey ? JSON.stringify(valid) : null,
+      removeItem: () => { removeCalls += 1; }
+    },
+    document: {
+      querySelector: selector => selector === '#hub-resume-session'
+        ? { remove: () => { resumeRemoved = true; } }
+        : null
+    }
+  };
+
+  assert.equal(Guard.install(root), true);
+  assert.equal(removeCalls, 0);
+  assert.equal(resumeRemoved, false);
+}
+
 // Runtime integration: the browser must execute the same tested guard instead of a copied validator.
 assert.match(polish, /function loadHubResumeGuard\(\)/);
 assert.match(polish, /party-hub-resume-guard\.js/);
@@ -66,6 +129,7 @@ assert.match(polish, /loadHubResumeGuard\(\);/);
 assert.doesNotMatch(polish, /const ACTIVE_KEY = 'secret-circle-party-hub-active-v1'/);
 assert.doesNotMatch(polish, /const TIMER_MODES = new Set/);
 assert.match(worker, /\.\/party-hub-resume-guard\.js/);
+assert.match(worker, /secret-circle-v49/);
 
 console.log(JSON.stringify({
   ok: true,
@@ -73,6 +137,8 @@ console.log(JSON.stringify({
   crossModeTimerInjectionRejected: true,
   timerPhaseConsistencyProtected: true,
   nonTimerRunningStateRejected: true,
+  staleResumeUiRemovedWithInvalidSnapshot: true,
+  validResumeStatePreserved: true,
   runtimeUsesTestedGuard: true,
   duplicatePolishValidatorRemoved: true,
   offlineGuardRequired: true
