@@ -42,7 +42,7 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Aktueller externer Blocker: Issue #7. Letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand **#2715** erreicht keinen ersten Workflow-Step (`steps: []`). Für v49 existiert noch kein echter Runner-PASS.
+Aktueller externer Blocker: Issue #7. Letzter vollständig untersuchter v49-App-Actions-Lauf **#2787** (Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`) erreichte keinen ersten Workflow-Step (`steps: null` / `steps: []`); kein Repositorycode wurde ausgeführt.
 
 ## 2. Hub-Smoke
 
