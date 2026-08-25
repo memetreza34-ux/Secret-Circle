@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – Provider und Domains offen**  
-Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v50`**
+Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v51`**
 
 Secret Circle ist eine statische offline-first PWA ohne eigenes Backend. Der Hostinganbieter verarbeitet dennoch HTTP-Verbindungen und kann technische Access-/Securitylogs erzeugen. Hosting bleibt deshalb ein eigenes Release-Gate.
 
@@ -66,30 +66,30 @@ Das Ergebnis fließt in `operator-release.json`, `privacy.html` und `OPERATOR_EV
 Staging ist der erste echte Deploymentraum des RC. Für den aktuellen Quellstand:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v50
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v51
 ```
 
-Danach folgen manueller Browser-/PWA-Smoke, Installation, Offline-Neustart, Updatepfade, Daten-/Resume-Checks und Accessibility-/Gerätetests. Der Hub-Resume-v2-Test muss dabei auch bestätigen, dass sichtbare Resume-Aktionen während der Guard-Ladephase gesperrt bleiben.
+Danach folgen manueller Browser-/PWA-Smoke, Installation, Offline-Neustart, Updatepfade, Daten-/Resume-Checks und Accessibility-/Gerätetests. Zusätzlich muss v51 mit neutralen Backups real bestätigen, dass unbekannte/future Namespaces einen Restore überleben, ungültige managed JSON-Werte vor Mutation blockiert werden und ein simulierter Schreibfehler die verwalteten Daten zurückrollt.
 
 ## 5. Production-Vertrag
 
 Production erhält denselben freigegebenen RC:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v50 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v51 --production
 ```
 
 Der Production-Smoke ersetzt keine finale manuelle PWA-/Legal-/Support-Abnahme.
 
 ## 6. Cache-/Rollback-Regel
 
-- aktuell: `secret-circle-v50`
-- Staging: `secret-circle-v50-staging`
+- aktuell: `secret-circle-v51`
+- Staging: `secret-circle-v51-staging`
 - keine Wiederverwendung einer Cachegeneration nach Änderung einer Offline-Core-Datei
 - Rollback/Hotfix erhält eine neue Generation
 - lokale Daten und aktive Sessions müssen soweit vorgesehen erhalten bleiben
 
-v49 zentralisierte die Hub-Resume-Validierung. **v50 ergänzt die fail-closed Resume-UI-Quarantäne während der asynchronen Guard-Ladephase.**
+Historie: v49 zentralisierte die Hub-Resume-Validierung; v50 ergänzte die fail-closed Resume-UI-Quarantäne; **v51 härtet Complete-Backup-Restore und Forward-Compatibility gegen lokalen Datenverlust.**
 
 Der Rollback-Drill wird mit realen Staging-Deployments und neutralen Testdaten durchgeführt und in `OPERATOR_EVIDENCE_LOG.md` dokumentiert.
 
@@ -115,8 +115,9 @@ Vor `HOSTING PASS`:
 - [ ] Drittlandbezug geprüft
 - [ ] Abuse-/Security-Kontakt geprüft
 - [ ] getrennte HTTPS-Staging- und Production-Origin
-- [ ] v50/RC Staging-Smoke grün
+- [ ] v51/RC Staging-Smoke grün
 - [ ] Hub-Resume-v2/v50-Ladequarantäne real bestätigt
+- [ ] Complete-Backup-v51 Restore-/Rollback-/Future-Key-Vertrag real bestätigt
 - [ ] manueller PWA-Smoke grün
 - [ ] Rollbackweg real getestet
 - [ ] Privacy-Text auf reales Hosting angepasst
