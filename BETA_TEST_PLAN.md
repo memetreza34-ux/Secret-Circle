@@ -2,335 +2,278 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**  
+Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**  
 Core Source Hardening: **15/15 PREPARED**  
 Accessibility Source Hardening: **PREPARED**  
 Word-Imposter Data/Resume Hardening: **PREPARED**  
-Hub Resume Integrity v2: **PREPARED**
+Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**
 
-## 1. Ziel
+## 1. Eintrittskriterium
 
-Dieser Plan übersetzt die offenen Realtests aus `RELEASE_CHECKLIST.md` und Issue #8 in konkrete Sessions. Ziel ist nicht nur „App öffnen“, sondern zu beobachten, ob echte Nutzer Secret Circle ohne Entwicklerhilfe verstehen, sicher bedienen und nach Unterbrechungen wieder aufnehmen können.
+Finale RC-Beta erst nach demselben unveränderten Commit mit:
 
-Automatisierte Tests bleiben Voraussetzung, ersetzen diese Beta nicht. Kein vorhandener Test oder Guard darf als bestanden markiert werden, bevor er tatsächlich auf dem getesteten RC ausgeführt wurde.
-
-## 2. Eintrittskriterium
-
-Die eigentliche RC-Beta beginnt erst, wenn auf demselben Commit dokumentiert grün sind:
-
-- GitHub Actions mit sichtbaren Steps
+- sichtbaren GitHub-Actions-Steps
 - Online-`npm ci`
 - `npm run ci`
 - Chromium E2E
-- Cross-Browser mit Chromium, Firefox und WebKit
+- Chromium / Firefox / WebKit
 
-Aktueller Blocker: Issue #7. Letzter vollständig untersuchter v49-App-Actions-Lauf **#2787** (Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`) endete vor Step 1 mit `steps: null` / `steps: []`; kein Repositorycode wurde ausgeführt. Der reine Bash-Runner-Probe zeigte dasselbe Muster.
+Letzter vollständig untersuchter v49-App-Actions-Lauf: **#2787**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 ist daher ebenfalls nicht runnerverifiziert.**
 
-Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als finale RC-Evidence.
+Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 
-## 3. Testprinzipien
+## 2. Testprinzipien
 
-- Entwickler erklärt nicht vorab jeden Button.
-- Beobachter greift nur bei Sicherheits-/Datenrisiko ein.
-- Probleme werden notiert, nicht während der Session schöngeredet.
-- persönliche Spielinhalte bleiben freiwillig.
-- keine realen Passwörter, privaten Chats oder unnötigen personenbezogenen Daten sammeln.
-- Screenshots/Video nur mit Einwilligung der Beteiligten.
-- Testbackup möglichst mit neutralen Testnamen/-inhalten.
-- jedes Problem erhält Severity und reproduzierbare Notiz.
-- geheime Inhalte werden absichtlich auch bei App-/Tab-Wechsel getestet.
-- manipulierte Resume-/Importzustände werden nur mit neutralen Testdaten geprüft.
-- Fokus-/Tastaturprobleme werden als funktionale Accessibility-Funde dokumentiert, nicht nur als Kosmetik.
+- Entwickler erklärt nicht jeden Button vorab.
+- persönliche Inhalte bleiben freiwillig.
+- neutrale Testdaten für manipulierte Resume-/Importfälle.
+- keine Passwörter/private Chats/Fotos als Testmaterial.
+- jedes Problem bekommt Severity und reproduzierbare Notiz.
+- geheime Inhalte werden bewusst bei App-/Tab-Wechsel getestet.
+- Fokus-/Tastaturprobleme gelten als funktionale Accessibility-Funde.
 
-## 4. Mindest-Testmatrix
+## 3. Mindest-Testmatrix
 
-| Session | Gruppe | Schwerpunkt | Mindestumfang |
-|---|---:|---|---|
-| G1 | 3–4 | kleine Party / Direkt-Hub | Word Imposter + mehrere Social-/Timer-Core-Games |
-| G2 | 5–8 | mittlere Gruppe | Advanced + Smart Party Night |
-| G3 | 9–12 | große Übergaben | Word Imposter, Paranoia, Scharade/Tabu |
-| G4 | 6 / 8 / 12 / 16+ soweit praktisch | Mafia | Rollen-Skalierung, Klassisch + Erweitert |
-| G5 | 1 unerfahrene Host-Person + Gruppe | Creator | eigenes Spiel ohne Entwicklerhilfe erstellen und spielen |
-| DWI | neutraler Testdatensatz | Word-Imposter Datenvertrag | 50/51 Kategorien, 200/201 Begriffe, Backupgrenze |
-| HR2 | neutraler Testdatensatz | Hub Resume Guard v2 | gültiger Resume + gekreuzter Timer + stale Resume UI |
-| PN1–PN3 | variabel | Smart Party Night | drei vollständige geplante Abende |
+| Session | Gruppe | Schwerpunkt |
+|---|---:|---|
+| G1 | 3–4 | kleiner Core-Abend / Direkt-Hub |
+| G2 | 5–8 | Advanced + Social |
+| G3 | 9–12 | Übergaben / Multi-Imposter |
+| G4 | 6 / 8 / 12 / 16+ | Mafia |
+| G5 | 1 unerfahrener Host + Gruppe | Creator |
+| DWI | neutral | Word-Imposter 50/51, 200/201, Backup |
+| HR2 | neutral | Hub Resume Guard v2 + v50-Ladequarantäne |
+| PN1 | klein/mittel | Smart Party Night 1 |
+| PN2 | mittel | Smart Party Night 2 |
+| PN3 | groß | Smart Party Night 3 |
 
-## 5. Geräte-Mindestmatrix
+## 4. Geräte-Mindestmatrix
 
-### D1 – Android
+### Android
 
-- aktuelles reales Android-Smartphone + Chrome
-- Browser-Tab und installierte PWA
-- Hoch-/Querformat
+- aktuelles reales **Android** + Chrome
+- Browser und installierte PWA
 - Offline-Neustart
-- Hintergrund/Appwechsel und Sperrbildschirm bei Timer
-- TalkBack-Smoke
+- Appwechsel/Sperrbildschirm bei Timer
+- **TalkBack**-Smoke
 
-### D2 – iPhone
+### iPhone
 
-- reales iPhone + Safari
-- Add-to-Home-Screen-PWA
-- Safe Areas / Bildschirmtastatur
-- Hintergrund/Appwechsel und Sperrbildschirm
-- VoiceOver-Smoke
+- reales **iPhone** + Safari
+- Add to Home Screen
+- Safe Areas / Tastatur
+- Appwechsel/Sperrbildschirm
+- **VoiceOver**-Smoke
 
-### D3 – Tablet/iPad
+### Tablet/iPad
 
 - reale Tabletklasse
-- Katalog, private Übergabe, Timer, Advanced, Quick und Creator
-- Quer-/Hochformat
+- Hoch-/Querformat
+- private Übergaben / Advanced / Quick / Creator
 
-### D4 – Desktop
+### Desktop
 
-- Hauptnavigation/Katalog/Core/Advanced/Quick/Creator ohne Maus
+- Tastatur ohne Maus
 - 200-%-Zoom
-- Chromium plus mindestens ein weiterer Browser
-- alle modalen Overlays mit Tab/Shift+Tab prüfen
+- Chromium + weiterer Browser
+- Modal-/Fokuspfade
 
-## 6. Preflight vor jeder Beta
+## 5. Preflight-Protokoll
 
 ```text
 Test-ID:
 Datum:
 App-Version:
-App-Commit:
+Commit:
 Cachegeneration:
-Browser/OS:
-Gerät:
+Gerät/OS/Browser:
 Installiert oder Browser:
-Online/Offline zu Beginn:
+Online/Offline:
 Gruppengröße:
 Beobachter:
-Bekannte offene P0/P1-Funde:
+Bekannte P0/P1-Funde:
 ```
 
-Nicht mit einer unbekannten oder während des Tests wechselnden Version arbeiten.
+## 6. G1 – 3–4 Personen
 
-## 7. G1 – Kleine Gruppe 3–4 Personen
+- Word Imposter komplett
+- Wahrheit oder Pflicht inklusive Skip
+- Scharade Pause/Resume/Appwechsel
+- Reload während Session
+- Hub Resume fortsetzen
+- Wrong Answers erklären lassen
+- Verlauf prüfen
 
-1. App ohne Erklärung öffnen.
-2. Spieler anlegen.
-3. über Katalog ein Core-Spiel finden.
-4. Word Imposter komplett spielen.
-5. Wahrheit oder Pflicht starten und mindestens eine Karte bewusst überspringen.
-6. Beenden & speichern verwenden.
-7. Scharade starten, pausieren, fortsetzen und App wechseln.
-8. Seite während einer laufenden Session neu laden.
-9. gespeicherte Session bewusst fortsetzen.
-10. Nur falsche Antworten spielen und manuelle Verlustregel erklären lassen.
-11. Verlauf prüfen.
+Beobachten: Setup, Freiwilligkeit, Privacy, Timer, Resume, Exact-once, Fokus.
 
-Beobachten: Setupverständnis, Speichern vs. Verwerfen, Freiwilligkeit, private Karten, Fokus nach Reopen/Reload, doppelte Statistik, Timerrestzeit.
+## 7. G2 – 5–8 Personen
 
-## 8. G2 – Mittlere Gruppe 5–8 Personen
-
-Spiele:
-
-- Zwei Wahrheiten, eine Lüge
+- Zwei Wahrheiten/eine Lüge
 - Question Imposter
 - Location Spy
 - optional Never Have / Would Rather
+- App-/Tab-Wechsel bei privaten Mechaniken
+- neutral manipulierten Advanced-Snapshot verwerfen
+- Advanced-Modal per Tastatur
 
-Bei jedem privaten Mechanismus mindestens einmal App-/Tab-Wechsel, bewusstes Wiederöffnen und – wo unterstützt – Reload testen. Manipulierte neutrale Advanced-Snapshots müssen verworfen werden.
-
-Zusätzlich historischer **v47-A11y-Vertrag auf dem aktuellen v49-RC**:
-
-- Advanced-Spiel starten: Setup-Hintergrund darf per Tastatur nicht erreichbar sein.
-- Tab/Shift+Tab bleibt im aktiven Advanced-Spiel.
-- Nach Phasenwechsel bleibt ein sinnvoller Fokuspunkt vorhanden.
-
-## 9. G3 – Große Gruppe 9–12 Personen
+## 8. G3 – 9–12 Personen
 
 ### Word Imposter
 
 - mehrere Imposter
-- komplette Reveal-Kette
-- Diskussion
-- geheime Abstimmung
-- mögliche Stichwahl
-- Imposter-Ratechance
-- individueller Punktestand
-- mindestens 20 reale Runden für Reveal-/Rollenfairness protokollieren
-- partielle **sequenzielle** Abstimmung speichern/reloaden und mit dem nächsten offenen Wähler fortsetzen
-- manipulierten nicht-sequenziellen Voting-Snapshot sicher verwerfen
-
-### Paranoia / Timer-Spiele
-
-- Freiwilligkeit/Skip
-- Geheimfrage bei Appwechsel verdecken
-- Scharade/Tabu sowie Heiße Kartoffel mit echter Geräteweitergabe
-
-## 10. DWI – Word-Imposter-Datengrenzen
-
-Der Vertrag wurde in v48 eingeführt und wird auf dem aktuellen v49-RC real bestätigt.
-
-Mit neutralen Testdaten auf demselben RC:
-
-1. 50 eigene Kategorien importieren/speichern → akzeptiert.
-2. 51 Kategorien importieren → vollständig abgelehnt, nicht auf 50 gekürzt.
-3. Vorher gespeicherte Kategorien nach Ablehnung erneut prüfen → unverändert.
-4. Kategorie mit 200 eindeutigen Begriffen → akzeptiert.
-5. Kategorie mit 201 Begriffen → abgelehnt.
-6. sichtbare UI-Hinweise „bis zu 50“ und „2–200“ prüfen.
-7. valide Sicherung unterhalb der Größenobergrenze importieren.
-8. Sicherung über **1,5 MB UTF-8** ablehnen.
-9. Multibyte-Testdatei verwenden, bei der Zeichenanzahl kleiner, Bytegröße aber größer als das Limit ist.
-10. übergroßen/manipulierten lokalen Custom-State simulieren → fail-safe verwerfen und verständliche Warnung zeigen.
-
-Ein abgelehnter Import darf **keine vorherigen lokalen Daten verändern**.
-
-## 11. HR2 – Hub Resume Guard v2
-
-Mit neutralen lokalen Testzuständen auf demselben v49-RC:
-
-1. gültige normale Hub-Session speichern → Resume bleibt verfügbar.
-2. gültigen laufenden Scharade-Timer speichern → Resume bleibt verfügbar.
-3. Wahrheit-oder-Pflicht-Snapshot mit eingeschleustem Scharade-Timer erzeugen → Snapshot wird verworfen.
-4. Scharade-Snapshot mit Tabu-Timer erzeugen → Snapshot wird verworfen.
-5. laufenden Timer mit `remainingMs = 0` erzeugen → Snapshot wird verworfen.
-6. bereits gerenderte „Session fortsetzen“-Karte vorhanden lassen und anschließend einen ungültigen Snapshot erkennen lassen → Resume-Karte verschwindet ebenfalls.
-7. Statusmeldung zum sicheren Verwerfen sichtbar und verständlich prüfen.
-8. gültige Session nach Guard-Ausführung erneut prüfen → keine Mutation, kein unbeabsichtigtes Entfernen.
-9. dasselbe offline in der installierten PWA wiederholen.
-
-Der Browser muss hierbei dieselbe Logik nutzen wie `tests/party-hub-resume-guard.test.js`; keine zweite abweichende Timer-Validierung darf aktiv sein.
-
-## 12. G4 – Mafia
-
-Gruppengrößen soweit praktisch: 6, 8, 12 und 16+.
-
-Prüfen: Rollenanzahl, Packs, private Rollen, Moderatoransicht, Nachtinformationen, Arzt/Detektiv/Beschützer, Eliminationszustand, Dorf-/Mafia-Sieg und manipulierte Resume-Zustände.
-
-## 13. G5 – Creator mit unerfahrener Person
-
-Aufgabe:
-
-> Erstelle ein eigenes Partyspiel mit mindestens zwei Packs und spiele danach eine kurze Runde damit.
-
-Prüfen:
-
-- Vorlage selbst gefunden
-- Template-Radiogroup nur mit Tab + Pfeiltasten/Home/End bedienbar
-- Schrittwechsel fokussiert die neue Überschrift sinnvoll
-- Hilfe öffnen: Hintergrund nicht per Tastatur erreichbar
-- Hilfe: Tab/Shift+Tab bleibt im Dialog
-- Hilfe schließen: Fokus kehrt zum Hilfe-Auslöser zurück
-- Pack/Kartenformat verstanden
-- Vorschau hilfreich
-- Speichern erfolgreich
-- eigenes Spiel im Hub gefunden
-- Editieren/Kopieren/Löschen verstanden
-- Export/Import mit neutralem Testspiel
-
-Wenn ohne Entwicklerhilfe kein valides erstes Spiel erstellt werden kann, ist Creator noch nicht RC-bereit.
-
-## 14. Smart Party Night – PN1 bis PN3
-
-- PN1: kleine/mittlere Gruppe, ca. 30 Minuten, lustig/friendly
-- PN2: mittlere Gruppe, ca. 45–60 Minuten, gemischt/competitive
-- PN3: große Gruppe, ca. 60–90 Minuten, gemischte Core-Auswahl
-
-Prüfen: Gruppengröße, Wiederholungen, Wechsel, Dauer, History-Synchronisierung und Abbruch/Wechsel.
-
-## 15. PWA-v49-Update-Test
-
-Mindestens zwei echte ältere installierte Zustände gegen den finalen RC prüfen.
-
-1. Testspieler/Presets anlegen.
-2. Word-Imposter-Custom-Kategorie und Creator-Spiel anlegen.
-3. aktive Hub- oder Advanced-Session erzeugen.
-4. alte installierte PWA starten.
-5. v49/RC bereitstellen.
-6. Updatehinweis prüfen und zunächst verschieben.
-7. laufende Session fortsetzen.
-8. bewusst aktualisieren.
-9. Offline-Neustart.
-10. lokale Daten, Resume-/Privacy-/A11y-Guards und Sessions prüfen.
-11. `party-hub-a11y.js` und `secondary-surface-a11y.js` offline praktisch prüfen.
-12. Word-Imposter-Datenlimits/Voting-Resume und Hub-Resume-v2 offline prüfen.
-13. Cachebestand kontrollieren.
-
-Keine alte Cachegeneration künstlich als getestet markieren.
-
-## 16. Rollback-Test
-
-Auf HTTPS-Staging:
-
-- RC bereitstellen
-- definierten fehlerhaften Stand simulieren oder isolierten Rollbackpfad verwenden
-- korrigierten Stand mit **neuer** Cachegeneration deployen
-- lokales Datenmodell erhalten
-- Offline-Core vollständig
-- keine Force-Push-Annahme
-- alter funktionierender Core darf nicht durch fehlgeschlagene Promotion zerstört werden
-
-## 17. Accessibility-Realtest
+- vollständige Reveal-Kette
+- geheime Abstimmung + Stichwahl
+- mindestens 20 reale Runden Fairnessprotokoll
+- sequenzielles Teilvoting speichern/reloaden
+- nicht-sequenziellen Voting-Snapshot verwerfen
 
 ### Hub
 
-- Erstladen: Skip-Link erster sinnvoller Tastaturtarget
-- Bereichswechsel fokussieren neue Hauptüberschrift
-- Spieldetail und aktive Runde halten Fokus im Modal
-- Schließen stellt Rückkehrfokus her
+- Paranoia-Secret-Cover
+- Scharade/Tabu Geräteweitergabe
+- Hot Potato reale Dauer
+
+## 9. DWI – Word-Imposter-Datengrenzen
+
+Auf v50-RC bestätigen, obwohl Vertrag in v48 eingeführt wurde:
+
+1. 50 Kategorien akzeptiert.
+2. 51 Kategorien abgelehnt, keine Kürzung.
+3. Bestandsdaten nach Ablehnung unverändert.
+4. 200 Begriffe akzeptiert.
+5. 201 Begriffe abgelehnt.
+6. UI erklärt 50 und 2–200.
+7. valide Backupgröße akzeptiert.
+8. >1,5 MB UTF-8 abgelehnt.
+9. Multibyte-Datei nach Bytes bewertet.
+10. korrupter lokaler Übergrößen-State fail-safe verworfen.
+
+## 10. HR2 – Hub Resume Guard v2 / v50
+
+Mit neutralen Zuständen:
+
+1. gültige normale Hub-Session → Resume bleibt.
+2. gültiger laufender Scharade-Timer → Resume bleibt.
+3. Truth/Dare + eingeschleuster Scharade-Timer → verworfen.
+4. Scharade + Tabu-Timer → verworfen.
+5. `running` + `remainingMs = 0` → verworfen.
+6. bereits gerenderte Resume-Karte → verschwindet bei ungültigem Snapshot.
+7. **während der Guard-Ladephase: Resume-Karte `aria-busy`, Buttons deaktiviert.**
+8. kein Resume-Klick möglich, bevor Validierung abgeschlossen ist.
+9. nach erfolgreicher Validierung einer gültigen Session werden Buttons wieder freigegeben.
+10. Guard-Ladefehler bleibt fail-closed.
+11. gültige Session wird nicht mutiert.
+12. dasselbe offline in installierter PWA.
+
+## 11. G4 – Mafia
+
+- mehrere Gruppengrößen
+- Classic/Extended Packs
+- Rollenanzahl
+- Moderator-/Nachtprivacy
+- Arzt/Detektiv/Beschützer
+- Alive-Zustand
+- Dorf-/Mafia-Sieg
+- manipulierte Resume-Zustände
+
+## 12. G5 – Creator
+
+Unerfahrene Person erstellt ohne Entwicklerhilfe ein eigenes Spiel.
+
+Prüfen:
+
+- Template-Radiogroup Tab + Pfeile/Home/End
+- Wizard-Fokus
+- Hilfe-Modal + Fokus-Trap/Rückkehr
+- Packs/Inhalte
+- Speichern
+- im Hub finden
+- Editieren/Kopieren/Löschen
+- Export/Import
+
+## 13. PN1–PN3 – Smart Party Night
+
+- PN1 ca. 30 Minuten
+- PN2 ca. 45–60 Minuten
+- PN3 ca. 60–90 Minuten
+
+Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch.
+
+## 14. PWA-Update-Test
+
+**PWA-Update-Test** mit mindestens zwei echten älteren Installationen:
+
+1. neutrale lokale Daten + aktive Session.
+2. v50/RC bereitstellen.
+3. Update zunächst verschieben.
+4. aktive Session fortsetzen.
+5. bewusst aktualisieren.
+6. Offline-Neustart.
+7. Daten/Guards/A11y prüfen.
+8. DWI + HR2 offline prüfen.
+
+## 15. Rollback-Test
+
+**Rollback-Test** auf HTTPS-Staging:
+
+- RC bereitstellen
+- Fehlerstand oder isolierten Rollbackpfad nutzen
+- korrigierten Stand mit neuer Cachegeneration deployen
+- Daten erhalten
+- Offline-Core vollständig
+- alter funktionierender Core darf nicht durch fehlgeschlagene Promotion zerstört werden
+
+## 16. Accessibility-Realtest
+
+### Hub
+
+- Skip-Link
+- Bereichsüberschriften
+- Detail-/Spielmodal Fokus-Trap
+- Resume-Ladequarantäne darf nicht zu unverständlichem Fokus führen
 
 ### Advanced
 
-- Start öffnet modalen Spielkontext
-- Setup/Skip-Link während Spiel nicht bedienbar
-- Tab/Shift+Tab bleibt im Overlay
-- private Reveal-/Privacy-Cover mit Screenreader
+- Modal / Hintergrund `inert`
+- private Reveals
 
 ### Quick
 
-- Start/Resume
-- nach einer Aktion, die das DOM ersetzt, Fokus auf neuer sinnvoller Aktion/Control
-- Spektrum-Tipp: nach „Ziel verbergen“ Range-Regler direkt sinnvoll erreichbar
-- Pause/Skip/Result per Tastatur
+- Fokus-Recovery nach dynamischem DOM-Austausch
 
 ### Creator
 
-- Wizard-Schrittwechsel fokussiert neue `h3`
-- Template-Radiogroup: genau ein Tab-Stopp; Pfeile/Home/End
-- Hilfe modal, Hintergrund `inert`, Fokus-Trap, Rückkehrfokus
-- komplettes erstes Spiel ohne Maus
+- Wizard-Fokus
+- Radiogroup
+- Hilfe-Modal
 
-### Geräte/A11y allgemein
+### Allgemein
 
 - 200-%-Zoom / große Schrift / 320 CSS px
-- VoiceOver und TalkBack
+- VoiceOver / TalkBack
 - Reduced Motion
 - Touchziele
-- keine wichtige Information nur über Farbe
+- keine kritische Information nur über Farbe
 
-Private Inhalte dürfen nicht vor bewusster Reveal-Aktion angesagt werden.
-
-## 18. Content-Beobachtung
-
-Pro Core-Game notieren: unklare/ähnliche/zu lange Karte, unangenehmer Eindruck, Altersstufe, packfremder Inhalt, Schwierigkeit, Wiederholungsgefühl.
-
-## 19. Bug-Severity
+## 17. Bug-Severity
 
 ### Critical
 
 - Datenverlust ohne Recovery
 - private Informationen unerwartet offengelegt
 - weitreichender Securityfehler
-- App für Hauptzielgruppe nicht nutzbar
+- Hauptzielgruppe kann App nicht nutzen
 
 ### High
 
 - Core-Spiel nicht abschließbar
-- falscher Sieger/Score mit Produktwirkung
+- falscher Sieger/Score
 - Resume/Timer systematisch kaputt
-- Import überschreibt Daten trotz Ablehnung
+- Import verändert Daten trotz Ablehnung
 - wichtiger Accessibilityflow blockiert
-- Tastaturfokus kann ein modales Spiel-/Hilfefenster nicht sinnvoll bedienen
+- ungültige Resume-Session kann vor Guard-Validierung gestartet werden
 
-### Medium / Low
-
-Workaround-fähige UX-/Content-/Layoutfehler bzw. kosmetische Funde.
-
-## 20. Testbericht pro Session
+## 18. Testbericht
 
 ```text
 Test-ID:
@@ -351,30 +294,25 @@ Accessibilityfunde:
 PWA/Resume-Funde:
 Privacy-/Secret-Funde:
 Data-/Import-Funde:
-Was war unklar?
-Nächste Maßnahmen:
 Retest nötig: ja/nein
 ```
 
-Keine Namen der Teilnehmer sind für den Releasebericht erforderlich; Test-IDs reichen.
-
-## 21. Beta-Freigaberegel
+## 19. Beta-Freigaberegel
 
 Vor `REAL USER / DEVICE PASS`:
 
 - [ ] G1–G5 abgeschlossen
-- [ ] DWI-Datengrenzen auf dem v49-RC abgeschlossen
-- [ ] HR2 Hub-Resume-v2 abgeschlossen
+- [ ] DWI abgeschlossen
+- [ ] HR2 inklusive v50-Ladequarantäne abgeschlossen
 - [ ] PN1–PN3 abgeschlossen
-- [ ] reales Android / iPhone / Tablet abgeschlossen
-- [ ] VoiceOver / TalkBack / 200-%-Zoom abgeschlossen
-- [ ] Hub-/Advanced-/Creator-Modalfokus real bestanden
-- [ ] Quick-Phasen-Fokus-Recovery real bestanden
-- [ ] Creator-Radiogroup und Wizard-Fokus real bestanden
-- [ ] zwei echte PWA-Upgrades auf v49/RC abgeschlossen
-- [ ] HTTPS-Rollbackprobe abgeschlossen
-- [ ] mindestens ein realer Testnachweis pro Core-Spiel
+- [ ] Android / iPhone / Tablet real
+- [ ] VoiceOver / TalkBack / 200-%-Zoom real
+- [ ] zwei echte PWA-Upgrades auf v50/RC
+- [ ] Rollback-Test bestanden
+- [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
-- [ ] Retests aller gefixten Critical/High-Funde abgeschlossen
+- [ ] Retests aller gefixten Critical/High-Funde
 
-Bis dahin bleibt Beta/Realgeräte **OPEN bzw. IN PROGRESS** und der öffentliche Release **NO_GO**.
+Bis dahin bleibt die **reale Durchführung offen** und der öffentliche Release **NO_GO**.
+
+Release **NO_GO** bedeutet: vorhandene Source-Verträge sind kein Ersatz für reale Evidence.
