@@ -33,7 +33,8 @@
   "knownBlockers": [
     "GitHub Actions jobs currently end before repository steps",
     "Root icon.svg rights basis is unresolved",
-    "HTTPS staging/production origins and real-device/group/legal evidence are not final"
+    "operator-release.json remains PREPARED/BLOCKED until real operator, hosting, legal, support and incident evidence exists",
+    "HTTPS staging/production origins and real-device/group evidence are not final"
   ],
-  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. Fill only with evidence from one immutable release candidate commit."
+  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. Fill only with evidence from one immutable release candidate commit. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached."
 }
