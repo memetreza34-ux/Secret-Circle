@@ -121,15 +121,21 @@ assert.equal(Guard.validateSnapshot(null, catalog), false);
 }
 
 // Runtime integration: the browser must execute the same tested guard instead of a copied validator.
-assert.match(polish, /function loadHubResumeGuard\(\)/);
+assert.match(polish, /function setResumeUiPending\(pending\)/);
+assert.match(polish, /resume\.setAttribute\('aria-busy', 'true'\)/);
+assert.match(polish, /control\.disabled = true/);
+assert.match(polish, /control\.setAttribute\('aria-disabled', 'true'\)/);
+assert.match(polish, /function loadHubResumeGuard\(\)[\s\S]*setResumeUiPending\(true\)/);
 assert.match(polish, /party-hub-resume-guard\.js/);
 assert.match(polish, /SecretCirclePartyHubResumeGuard\?\.timerMatchesGame/);
 assert.match(polish, /guard\.install\(window\)/);
+assert.match(polish, /else setResumeUiPending\(false\)/);
 assert.match(polish, /loadHubResumeGuard\(\);/);
 assert.doesNotMatch(polish, /const ACTIVE_KEY = 'secret-circle-party-hub-active-v1'/);
 assert.doesNotMatch(polish, /const TIMER_MODES = new Set/);
 assert.match(worker, /\.\/party-hub-resume-guard\.js/);
-assert.match(worker, /secret-circle-v49/);
+assert.match(worker, /\.\/party-hub-polish\.js/);
+assert.match(worker, /secret-circle-v50/);
 
 console.log(JSON.stringify({
   ok: true,
@@ -139,7 +145,9 @@ console.log(JSON.stringify({
   nonTimerRunningStateRejected: true,
   staleResumeUiRemovedWithInvalidSnapshot: true,
   validResumeStatePreserved: true,
+  resumeUiQuarantinedUntilGuardValidation: true,
   runtimeUsesTestedGuard: true,
   duplicatePolishValidatorRemoved: true,
-  offlineGuardRequired: true
+  offlineGuardRequired: true,
+  cacheContract: 50
 }, null, 2));
