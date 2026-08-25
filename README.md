@@ -22,12 +22,13 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - RC: 15. Dezember 2026
 - öffentlicher Release: 4.–15. Januar 2027
 
-Aktueller Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**  
+Aktueller Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**  
 Classic Content: **v4**  
 Core Source Review: **15/15 PREPARED**  
 Core Source Hardening: **15/15 PREPARED**  
 Accessibility Source Hardening: **PREPARED**  
 Word-Imposter Data/Resume Hardening: **PREPARED**  
+Hub Resume Guard v2: **PREPARED**  
 Operator / Hosting / Legal: **PREPARED / BLOCKED**  
 Freigabe: **NO_GO**
 
@@ -48,7 +49,7 @@ Wichtige Verträge: Word-Imposter-Setup/Fairness/Voting/Resume, freiwillige Soci
 - Die UI erklärt die Grenzen sichtbar.
 - `tests/storage.test.js` und `tests/word-imposter-data-contract.test.js` schützen diese Verträge.
 
-**PREPARED bedeutet hier Source-Hardening, nicht Runner-PASS.**
+Diese v48-Verträge bleiben Bestandteil des aktuellen v49-Offline-Core. **PREPARED bedeutet hier Source-Hardening, nicht Runner-PASS.**
 
 ## Accessibility-Hardening – v46/v47
 
@@ -56,11 +57,11 @@ Wichtige Verträge: Word-Imposter-Setup/Fairness/Voting/Resume, freiwillige Soci
 
 **v47** erweiterte den Qualitätsanspruch über `secondary-surface-a11y.js` auf Advanced, Quick und Creator: Advanced-Modal, Quick-Fokus-Recovery, Creator-Wizard-Fokus, Hilfe-Modal und Template-Radiogroup mit Pfeiltasten/Home/End.
 
-Beide A11y-Schichten bleiben Bestandteil des aktuellen v48-Offline-Core. **Noch kein Accessibility PASS:** VoiceOver, TalkBack, reales 200-%-Zoom, Touchbedienung und echte Geräte-/Browserabnahme bleiben offen.
+Beide A11y-Schichten bleiben Bestandteil des aktuellen v49-Offline-Core. **Noch kein Accessibility PASS:** VoiceOver, TalkBack, reales 200-%-Zoom, Touchbedienung und echte Geräte-/Browserabnahme bleiben offen.
 
 ## Zentrale A-bis-Z-Verträge
 
-`APP_ENTWICKLUNG_VON_A_BIS_Z.md`, `APP_DEVELOPMENT_STATUS.md`, `CORE_GAME_ACCEPTANCE.md`, `ACCESSIBILITY.md`, `ARCHITECTURE.md`, `RELEASE_STATUS.md`, `RELEASE_CHECKLIST.md`, `RELEASE_EVIDENCE.md`, `release-evidence.json`, `operator-release.json`, `OPERATOR_RELEASE_SIGNOFF.md`, `HOSTING_DECISION.md`, `BRANCH_PROTECTION.md`, `CI_TROUBLESHOOTING.md`, `ENVIRONMENTS.md`, `DEPLOYMENT.md`, `SECURITY.md`, `THREAT_MODEL.md`, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`, `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md`.
+`APP_ENTWICKLUNG_VON_A_BIS_Z.md`, `APP_DEVELOPMENT_STATUS.md`, `CORE_GAME_ACCEPTANCE.md`, `ACCESSIBILITY.md`, `ARCHITECTURE.md`, `RELEASE_STATUS.md`, `RELEASE_CHECKLIST.md`, `RELEASE_EVIDENCE.md`, `release-evidence.json`, `operator-release.json`, `OPERATOR_RELEASE_SIGNOFF.md`, `OPERATOR_EVIDENCE_LOG.md`, `HOSTING_DECISION.md`, `BRANCH_PROTECTION.md`, `CI_TROUBLESHOOTING.md`, `ENVIRONMENTS.md`, `DEPLOYMENT.md`, `SECURITY.md`, `THREAT_MODEL.md`, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`, `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md`.
 
 ## Operator / Hosting / Legal
 
@@ -76,7 +77,7 @@ Der reale Betriebs-/Legalblock bleibt als eigener Releasevertrag modelliert. `op
 
 ## CI – extern blockiert
 
-Aktuellster bestätigter v48-Lauf: **Run #2715**.
+Letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand: **Run #2715**.
 
 - Run ID `32850361668`
 - Job `validate`, Job ID `97809595781`
@@ -85,16 +86,16 @@ Aktuellster bestätigter v48-Lauf: **Run #2715**.
 - `steps: null` / separate Step-Abfrage `steps: []`
 - kein Checkout, npm, Test oder Repositorycode ausgeführt
 
-Ein früherer Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Die unmittelbare Fehlerfläche liegt weiterhin vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
+Ein früherer Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Die unmittelbare Fehlerfläche liegt weiterhin vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Für v49 existiert noch kein echter Runner-PASS. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
 
-## Offline / PWA – v48
+## Offline / PWA – v49
 
 Der Service Worker verwendet:
 
-- `secret-circle-v48`
-- `secret-circle-v48-staging`
+- `secret-circle-v49`
+- `secret-circle-v49-staging`
 
-Zum Offline-Core gehören Hub, Word Imposter, Advanced, Quick, Creator, Privacy, Katalog-/Contentmodule, Backup-Registry, Timer-/Sessioncontroller, Resume-/Privacy-Guards, beide A11y-Schichten sowie die aktuellen Word-Imposter-UI-/Store-Dateien und Manifest/App-Icons.
+Zum Offline-Core gehören Hub, Word Imposter, Advanced, Quick, Creator, Privacy, Katalog-/Contentmodule, Backup-Registry, Timer-/Sessioncontroller, Resume-/Privacy-Guards, beide A11y-Schichten sowie die aktuellen Word-Imposter-UI-/Store-Dateien und Manifest/App-Icons. Der direkte Hub nutzt den getesteten `party-hub-resume-guard.js` als zentrale Resume-Integritätsquelle.
 
 Updates werden staged und erst nach bewusster Nutzerentscheidung aktiviert. Reale PWA-Upgrades, Rollbacks und Gerätetests bleiben offen.
 
@@ -112,7 +113,7 @@ Ein späteres `GO` erfordert echte Belege auf **demselben unveränderten RC-Comm
 ## Drei zentrale offene Issues
 
 1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
-2. **#8** – reale Geräte, v48 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen und Partytests
+2. **#8** – reale Geräte, v49 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2 und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 Zusätzlich bleibt die Icon-Rechtebasis offen.
@@ -123,8 +124,8 @@ Zusätzlich bleibt die Icon-Rechtebasis offen.
 2. Online-`npm ci` + vollständiges CI/Cross-Browser
 3. Branch Protection real bestätigen
 4. Provider + echte HTTPS-Staging-/Production-Origin
-5. v48 Staging-/PWA-Smoke, Upgrade und Rollback
-6. Word-Imposter-v48-Datengrenzen real ausführen
+5. v49 Staging-/PWA-Smoke, Upgrade und Rollback
+6. Word-Imposter-v48-Datengrenzen + Hub-Resume-v2 real ausführen
 7. reale Android/iPhone/iPad-/VoiceOver-/TalkBack-/Tastatur-/Zoom-Abnahme
 8. reale Gruppentests für alle 15 Core-Games
 9. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
