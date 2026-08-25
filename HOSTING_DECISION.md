@@ -1,114 +1,122 @@
 # Secret Circle – Hosting-Entscheidungsvertrag
 
 Stand: 25. August 2026  
-Status: **PREPARED – Provider und Domains offen**
+Status: **PREPARED – Provider und Domains offen**  
+Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v49`**
 
-Secret Circle ist eine statische Offline-first-PWA ohne eigenes Backend. Trotzdem verarbeitet der Hostinganbieter technisch unvermeidbar HTTP-Verbindungen und möglicherweise Access-/Securitylogs. Deshalb wird Hosting als eigenes Release-Gate behandelt.
+Secret Circle ist eine statische offline-first PWA ohne eigenes Backend. Der Hostinganbieter verarbeitet dennoch HTTP-Verbindungen und kann technische Access-/Securitylogs erzeugen. Hosting bleibt deshalb ein eigenes Release-Gate.
 
 ## 1. Mindestanforderungen
 
 Der Production-Host muss mindestens bieten:
 
-- HTTPS auf eigener Production-Origin
+- HTTPS
+- eigene Production-Origin
 - getrennte HTTPS-Staging-Origin
-- zuverlässige Auslieferung statischer HTML/CSS/JS/PNG/SVG/Manifest-Dateien
-- korrekte Service-Worker-Auslieferung ohne unerwartete Cachemanipulation
-- kontrollierbare Deployments eines unveränderten Git-Commits
-- nachvollziehbare Rollbackmöglichkeit
-- dokumentierte Log-/Datenschutzbedingungen
-- erreichbaren Abuse-/Security-Kontakt
+- statische Dateien ohne notwendige Runtime-Injektion fremder Skripte
+- kontrollierbare Cache-/Headerkonfiguration
+- nachvollziehbare Logs/Retention
+- dokumentierte Region beziehungsweise Datenroute, soweit relevant
+- klare Abuse-/Security-Kontaktmöglichkeit
+- verlässlichen Rollback/Deploymentweg
 
-## 2. Entscheidungsmatrix
+Staging und Production dürfen nicht dieselbe Origin sein.
 
-Vor Auswahl pro Kandidat dokumentieren:
-
-| Kriterium | Kandidat A | Kandidat B | Final |
-|---|---|---|---|
-| HTTPS / Custom Domain |  |  |  |
-| getrennte Staging-Origin |  |  |  |
-| statische PWA geeignet |  |  |  |
-| Service Worker ohne Sonderregeln |  |  |  |
-| EU/EWR-Region bzw. Datenweg dokumentiert |  |  |  |
-| Accesslogs dokumentiert |  |  |  |
-| Logaufbewahrung dokumentiert |  |  |  |
-| AV-/Processor-Rolle geprüft |  |  |  |
-| Drittlandtransfer geprüft |  |  |  |
-| Rollback einfach und reproduzierbar |  |  |  |
-| Abuse-/Security-Kontakt |  |  |  |
-| Kosten für V1 akzeptabel |  |  |  |
-
-## 3. Finale Hostingakte
+## 2. Vor Auswahl dokumentieren
 
 ```text
 Provider:
 Produkt/Tarif:
+Region/Standort:
 Staging-Origin:
 Production-Origin:
-Region/Standort:
-Accesslogs:
-Aufbewahrung/Löschkriterien:
-Datenschutz-/Processor-Rolle:
-DPA/AVV geprüft:
-Drittlandtransfer:
 HTTPS bestätigt:
+Accesslogs:
+Securitylogs:
+Aufbewahrung/Löschkriterien:
+Processor-/AVV-Rolle:
+Drittlandbezug:
 Abuse-/Security-Kontakt:
-Deploymentquelle:
-Rollbackverfahren:
-Prüfdatum:
+Deploymentweg:
+Rollbackweg:
 Reviewer:
+Datum:
 ```
 
-## 4. Staging-Regel
+Keine Felder aus Vermutung ausfüllen.
 
-Staging und Production müssen getrennte Origins besitzen. Dadurch bleiben insbesondere `localStorage`, Service-Worker-Registrierungen, Cache Storage und installierte PWA-Zustände getrennt.
+## 3. Datenschutzprüfung
 
-Nicht zulässig als finale Trennung: nur Queryparameter auf derselben Origin.
+Vor Production anhand des real ausgewählten Providers prüfen:
 
-## 5. Technische Abnahme
+- welche Request-/IP-/User-Agent-/Securitydaten technisch anfallen
+- zu welchem Zweck Logs verarbeitet werden
+- Aufbewahrungsdauer beziehungsweise Löschkriterien
+- ob Auftragsverarbeitung einschlägig ist
+- ob ein AVV/DPA erforderlich und verfügbar ist
+- Unterauftragnehmer
+- Drittlandbezug und gegebenenfalls Transfermechanismus
+- technische/organisatorische Sicherheitsangaben
+- öffentlich erreichbarer Datenschutz-/Securitykontakt
 
-Nach Auswahl des Hosts:
+Das Ergebnis fließt in `operator-release.json`, `privacy.html` und `OPERATOR_EVIDENCE_LOG.md` ein.
 
-1. unveränderten RC auf Staging deployen
-2. `npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v48`
-3. manuellen Browser-/PWA-Staging-Smoke durchführen
-4. PWA installieren und offline neu starten
-5. Upgrade von mindestens zwei real installierten Altständen prüfen
-6. v47-A11y-Pfade für Hub, Advanced, Quick und Creator offline prüfen
-7. v48-Word-Imposter-Datenvertrag prüfen: Voting-Resume, 50/51 Kategorien, 200/201 Begriffe, 1,5-MB-Importlimit und unveränderte Daten nach Ablehnung
-8. Rollback-/Hotfix-Version mit neuer Cachegeneration testen
-9. erst danach denselben freigegebenen statischen RC nach Production promoten
-10. `npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v48 --production`
-11. manuellen Production-Smoke durchführen
+## 4. Staging-Vertrag
 
-Der erwartete Cache muss stets dem aktuellen `CACHE` aus `sw.js` entsprechen; eine neue Offline-Core-Änderung erzeugt eine neue Generation.
+Staging ist der erste echte Deploymentraum des RC. Für den aktuellen Quellstand:
 
-## 6. Datenschutzabgleich
+```bash
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v49
+```
 
-`privacy.html` darf erst final freigegeben werden, wenn mindestens bekannt ist:
+Danach folgen manueller Browser-/PWA-Smoke, Installation, Offline-Neustart, Updatepfade, Daten-/Resume-Checks und Accessibility-/Gerätetests.
 
-- wer hostet
-- welche technischen Verbindungs-/Logdaten anfallen
-- zu welchen Zwecken diese verarbeitet werden
-- wie lange beziehungsweise nach welchen Kriterien Logs gespeichert werden
-- ob Auftragsverarbeitung oder Drittlandbezug relevant ist
+## 5. Production-Vertrag
 
-Die Aussage „Spieldaten bleiben lokal“ darf bestehen, soweit das technisch weiterhin stimmt. Sie darf aber nicht mit „es findet überhaupt keine personenbezogene Verarbeitung statt“ verwechselt werden.
+Production erhält denselben freigegebenen RC:
 
-## 7. Release-Gate
+```bash
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v49 --production
+```
 
-Vor `HOSTING / ENVIRONMENT PASS`:
+Der Production-Smoke ersetzt keine finale manuelle PWA-/Legal-/Support-Abnahme.
 
-- [ ] Provider final ausgewählt
-- [ ] Staging-Origin final
-- [ ] Production-Origin final
-- [ ] Log-/Privacybedingungen dokumentiert
-- [ ] Datenschutzrolle/Drittlandbezug geprüft
-- [ ] HTTPS bestätigt
-- [ ] Staging-Smoke grün auf `secret-circle-v48` oder bewusst neuerem RC-Cache
-- [ ] realer PWA-Smoke grün
-- [ ] Hub-/Advanced-/Quick-/Creator-A11y offline real geprüft
-- [ ] Word-Imposter-v48-Daten-/Resume-Grenzen real geprüft
-- [ ] Upgrade-/Rollbackpfad grün
-- [ ] Production-Smoke grün
+## 6. Cache-/Rollback-Regel
+
+- aktuell: `secret-circle-v49`
+- Staging: `secret-circle-v49-staging`
+- keine Wiederverwendung einer Cachegeneration nach Änderung einer Offline-Core-Datei
+- Rollback/Hotfix erhält eine neue Generation
+- lokale Daten und aktive Sessions müssen soweit vorgesehen erhalten bleiben
+
+Der Rollback-Drill wird mit realen Staging-Deployments und neutralen Testdaten durchgeführt und in `OPERATOR_EVIDENCE_LOG.md` dokumentiert.
+
+## 7. Öffentliche Legal-/Privacy-Flächen
+
+Vor `operatorGate = READY` müssen die realen Hostingangaben in der öffentlichen Privacy-/Legal-Darstellung konsistent sein. `scripts/operator_release_contract_audit.py` erzwingt bei READY unter anderem:
+
+- existierende Privacy- und Legal-Seite
+- finalen Betreiber-/Kontaktbezug
+- finalen Hostingprovider in der Privacy-Seite
+- getrennte HTTPS-Staging-/Production-Origins
+- veröffentlichte Legal-/Support-Verknüpfung
+
+## 8. Release-Gate
+
+Vor `HOSTING PASS`:
+
+- [ ] Provider und Produkt real ausgewählt
+- [ ] Region/Datenroute dokumentiert
+- [ ] Accesslogs dokumentiert
+- [ ] Retention/Löschung dokumentiert
+- [ ] Processor-/AVV-Rolle geprüft
+- [ ] Drittlandbezug geprüft
+- [ ] Abuse-/Security-Kontakt geprüft
+- [ ] getrennte HTTPS-Staging- und Production-Origin
+- [ ] v49/RC Staging-Smoke grün
+- [ ] manueller PWA-Smoke grün
+- [ ] Rollbackweg real getestet
+- [ ] Privacy-Text auf reales Hosting angepasst
+- [ ] reale Evidence in `OPERATOR_EVIDENCE_LOG.md`
 
 Bis dahin bleibt Hosting **PREPARED / NO_GO**.
