@@ -5,264 +5,200 @@ Stand: 25. August 2026
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
 Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
-Aktueller Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**.  
 Accessibility Source Hardening: **PREPARED**.  
 Word-Imposter Data/Resume Hardening: **PREPARED**.  
-Hub Resume Integrity v2: **PREPARED**.  
+Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**.  
 Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
 
-Bereits vorbereitet:
+Quellsseitig vorbereitet:
 
-- [x] `package-lock.json` v3 vorhanden
+- [x] `package-lock.json` v3
 - [x] CI und Cross-Browser verwenden `npm ci`
-- [x] `scripts/lockfile_contract_audit.py`
-- [x] `BRANCH_PROTECTION.md` + Contract-Audit
-- [x] `RELEASE_EVIDENCE.md` + `release-evidence.json` + Audit
-- [x] zentrale Release-Audits auf späteren FINAL/GO-Übergang vorbereitet
-- [x] `validate_project.py` auf aktuelle v49-Runtime-Scriptketten synchronisiert
-- [x] Runner-Problem mit minimalem action-/repo-freiem Probe isoliert
+- [x] Lockfile-/Branch-/Foundation-/Readiness-/Release-Audits
+- [x] `release-evidence.json` + Audit
+- [x] transition-safe FINAL/GO-Verträge
+- [x] `validate_project.py` auf aktuelle Runtime-Scriptketten und Hub-Resume-Loader synchronisiert
+- [x] Runner-Problem durch action-/repo-freien Minimalprobe als Pre-Step-Problem isoliert
 
 Für den RC offen:
 
 - [ ] exakter Release-Commit und Tag festgelegt
-- [ ] GitHub Actions erreicht einen sichtbaren ersten Step
-- [ ] `Check out repository` wird ausgeführt
-- [ ] Online-`npm ci` auf genau diesem Commit grün
+- [ ] GitHub Actions erreicht Step 1
+- [ ] Checkout ausgeführt
+- [ ] Online-`npm ci` grün
 - [ ] `npm run check` grün
 - [ ] `npm test` grün
 - [ ] `npm run validate` grün
 - [ ] Chromium E2E grün
 - [ ] `npm run ci` vollständig grün
 - [ ] Chromium / Firefox / WebKit auf demselben Commit grün
-- [ ] `Secret Circle CI / validate` als Required Check aktiv und grün
-- [ ] Branch Protection / Review / Bypass / Force-Push / Löschung final bestätigt
+- [ ] `Secret Circle CI / validate` als **Required Check aktiv und grün**
+- [ ] Branch Protection / Review / Bypass / Force-Push / Löschung real bestätigt
 
-Aktueller CI-Blocker: Issue #7. Hosted-Runner-Jobs enden weiterhin vor Step 1 mit `steps: []`; der isolierte Bash-Runner-Probe zeigte dasselbe Muster.
+Letzter vollständig untersuchter v49-App-Actions-Lauf: Run #2787, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. v50 ist deshalb ebenfalls nicht runnerverifiziert.
 
 ## 2. Engine / Sessions / Daten
 
-Quellseitig vorbereitet:
+Quellsseitig vorbereitet:
 
-- [x] Word-Imposter-Resume-Guard
-- [x] Word-Imposter-Voting-UI bestimmt nächsten offenen Wähler aus tatsächlichen Vote-Keys
-- [x] Word-Imposter-Custom-Limits: 50 Kategorien / 200 Begriffe je Kategorie
-- [x] 1,5-MB-UTF-8-Backupgrenze zwischen UI und Store synchron
-- [x] keine stille Kategorie-Trunkierung bei Import
+- [x] Word-Imposter Voting-/Resume-Guard
+- [x] 50 Kategorien / 200 Begriffe / 1,5-MB-UTF-8-Grenze
+- [x] kein stilles Trunkieren bei Import
 - [x] `tests/word-imposter-data-contract.test.js`
-- [x] `party-hub-resume-guard.js` v2 als zentrale direkte Hub-Resume-Integritätsquelle
-- [x] `party-hub-polish.js` delegiert statt Hub-Timer-/Resume-Validierung zu duplizieren
-- [x] stale `#hub-resume-session` wird beim Verwerfen eines inkonsistenten Snapshots entfernt
-- [x] `tests/party-hub-resume-guard.test.js` prüft Runtime-Einbindung + stale-UI-Regressionsfall
-- [x] `advanced-resume-guard.js`
-- [x] `advanced-privacy-guard.js`
-- [x] Guard-Dateien im Offline-Core
+- [x] `party-hub-resume-guard.js` v2
+- [x] `party-hub-polish.js` delegiert an denselben Guard
+- [x] stale Resume UI wird beim Verwerfen entfernt
+- [x] v50: sichtbare Resume-UI während Guard-Ladephase `aria-busy` + Buttons deaktiviert
+- [x] Freigabe der Resume-Buttons erst nach erfolgreicher Validierung
+- [x] `tests/party-hub-resume-guard.test.js` schützt v50-Ladequarantäne
+- [x] Advanced Resume-/Privacy-Guards
 
-Für den RC real zu bestätigen:
+Real auf RC zu bestätigen:
 
-- [ ] Exact-once-Verlauf/Statistik
-- [ ] Word-Imposter-/Hub-/Advanced-/Quick-Resume
-- [ ] manipulierte Word-Imposter-Voting-Snapshots sicher verworfen
-- [ ] Word-Imposter 50 Kategorien akzeptiert / 51 abgelehnt
-- [ ] Word-Imposter 200 Begriffe akzeptiert / 201 abgelehnt
-- [ ] abgelehnter Word-Imposter-Import verändert bestehende Daten nicht
-- [ ] 1,5-MB-UTF-8-Limit real bestätigt
-- [ ] gekreuzte Hub-Timerzustände sicher verworfen
-- [ ] bereits sichtbare Hub-Resume-Karte verschwindet nach erkannter Snapshot-Inkonsistenz
-- [ ] gültige Hub-Resume-Session bleibt durch den v2-Guard erhalten
-- [ ] manipulierte Advanced-Snapshots sicher verworfen
-- [ ] private Reveal-Zustände nach Reload verdeckt
-- [ ] private Reveal-Zustände bei App-/Tab-Wechsel verdeckt
-- [ ] Beenden & speichern klar getrennt von Abbrechen & verwerfen
-- [ ] Skip vergibt keinen künstlichen Punkt
-- [ ] Timer über Pause, Reload, Hintergrund/Sperrbildschirm geprüft
-- [ ] Registry-v2-Backup Export → Import → Löschen
-- [ ] Namespace-/Quota-/Korruptions-/Rollbackfälle
+- [ ] Word-Imposter Teilvoting/Resume
+- [ ] manipulierte Voting-Snapshots verworfen
+- [ ] 50/51 Kategorien und 200/201 Begriffe
+- [ ] 1,5-MB-UTF-8-Grenze
+- [ ] abgelehnter Import verändert Bestandsdaten nicht
+- [ ] gültige Hub-Resume-Session bleibt erhalten
+- [ ] gekreuzte Hub-Timerzustände werden verworfen
+- [ ] stale Hub-Resume-Karte verschwindet bei ungültigem Snapshot
+- [ ] **vor Abschluss der Guard-Prüfung ist keine Hub-Resume-Aktion anklickbar**
+- [ ] nach erfolgreicher Guard-Prüfung wird eine gültige Resume-Session wieder bedienbar
+- [ ] Guard-Ladefehler bleibt fail-closed
+- [ ] manipulierte Advanced-Snapshots verworfen
+- [ ] private Reveals bei Reload/Fokusverlust geschützt
+- [ ] Abschluss/Verlauf/Statistik exact-once
 
 ## 3. Core / UX / Content
 
-Quellstatus:
+- [x] 15/15 Core Source Review PREPARED
+- [x] 15/15 Core Hardening PREPARED
+- [x] Punkte-/Siegervertrag vorhanden
 
-- [x] 15/15 erster Core-Content-Quellpass PREPARED
-- [x] 15/15 Core-Hardening-Pass PREPARED
-- [x] Punkte-/Siegervertrag in `CORE_SCORING_RULES.md`
-- [x] technische Matrix in `CORE_GAME_ACCEPTANCE.md`
+Für **jedes** Core-Spiel real:
 
-Für alle 15 Core-Games real:
-
-- [ ] Start / Lobby / Pack / Regeln verständlich
-- [ ] Freiwilligkeit / Skip bei persönlichen Inhalten
-- [ ] Pause / Abbruch / Resume
+- [ ] Start/Lobby/Pack/Regeln verständlich
+- [ ] Freiwilligkeit/Skip korrekt
+- [ ] Pause/Abbruch/Resume korrekt
 - [ ] Score-/Winner-Vertrag korrekt
 - [ ] Verlauf/Statistik korrekt
 - [ ] Tastatur/Fokus/Zoom/Reduced Motion
-- [ ] reale Gruppe ohne Entwicklerhilfe
+- [ ] mindestens eine **reale Gruppe** ohne Entwicklerhilfe
 
-Zusätzlich:
+Spezialfälle:
 
-- [ ] Word Imposter: Setup-Grenzen, Mehrfach-Imposter, geheimes Voting, Stichwahl
-- [ ] Paranoia: Geheimfrage bei Fokusverlust geschützt
-- [ ] Scharade/Tabu: Geheimkarten und 60-s-Timer geschützt
-- [ ] Heiße Kartoffel: Zufallstimer real ausschließlich 10–25 s
-- [ ] Wortkette: manueller Gültigkeitsabschluss verstanden
-- [ ] Nur falsche Antworten: manuelle Verlustregel verstanden; keine Punkte
-- [ ] Advanced Core: private Eingaben/Fragen/Orte/Rollen bei Fokusverlust geschützt
-- [ ] Mafia: Rollenanzahl, Alive-Zustand und Siegerlogik real korrekt
-- [ ] 15 Core / 13 Extended / 17 Labs korrekt dargestellt
-- [ ] Suche/Filter/Synonyme/Tippfehler real geprüft
-- [ ] Privacy-/Safety-Contentpass final
-- [ ] Privacy-/Reference-Audits grün
-- [ ] Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
+- [ ] Word Imposter: Mehrfach-Imposter, geheimes Voting, Stichwahl
+- [ ] Paranoia: Geheimfrage geschützt
+- [ ] Scharade/Tabu: Geheimkarten + Timer
+- [ ] Heiße Kartoffel: real ausschließlich 10–25 s
+- [ ] Mafia: Rollen/Alive/Sieger
+- [ ] Wrong Answers: manuelle Verlustregel, scorelos
 
-## 4. PWA / Offline – v49
+## 4. PWA / Offline – v50
 
-- [ ] finaler Cache `secret-circle-v49` oder bewusst neuer RC-Cache
+- [ ] finaler Cache `secret-circle-v50` oder bewusst neuerer RC-Cache
 - [ ] Staging-Cache gleiche Generation
-- [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
-- [ ] `tests/pwa-head-metadata.test.js` grün
-- [ ] fünf interaktive Einstiegseiten erfüllen denselben Installationsvertrag
-- [ ] Word-Imposter-/Hub-/Advanced-Resume-/Advanced-Privacy-Guards offline
-- [ ] `party-hub-resume-guard.js` v2 offline und in echter Hub-Runtime aktiv
-- [ ] `party-hub-a11y.js` offline
-- [ ] `secondary-surface-a11y.js` offline
-- [ ] aktuelle Word-Imposter-UI/Store-Dateien offline
-- [ ] Manifest, SVG, 192er PNG, 512er PNG offline
-- [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
+- [ ] SW/Test/Architektur/Deployment/Privacy/Environment/Hosting synchron
+- [ ] Installationsmetadaten grün
+- [ ] Word-Imposter-/Hub-/Advanced-Guards offline
+- [ ] `party-hub-polish.js` mit v50-Ladequarantäne offline
+- [ ] Hub-/Secondary-A11y offline
 - [ ] Online → installierte PWA → Offline-Neustart
-- [ ] Hub, Word Imposter, Advanced, Quick, Creator und Privacy offline
+- [ ] Hub/Word Imposter/Advanced/Quick/Creator/Privacy offline
 - [ ] Query-Routen offline
-- [ ] staged update / bewusste Aktivierung
-- [ ] aktive Session bleibt durch Update geschützt
-- [ ] Update von mindestens zwei älteren installierten Versionen auf v49/RC
-- [ ] lokale Daten/Sessions überstehen Update
-- [ ] fehlgeschlagene Promotion zerstört bisherigen Offline-Core nicht
+- [ ] aktive Session über Update geschützt
+- [ ] Update von mindestens zwei älteren Installationen auf v50/RC
+- [ ] lokale Daten/Sessions bleiben erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
 ## 5. HTTPS-Staging / Production
 
-- [x] `HOSTING_DECISION.md` als Entscheidungskontrakt vorhanden
-- [ ] Hostingprovider/Produkt final ausgewählt
-- [ ] Log-/Retention-/Processor-/Drittlandprüfung dokumentiert
-- [ ] getrennte HTTPS-Staging-Origin festgelegt
-- [ ] Production-Origin festgelegt
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v49` grün
-- [ ] Smoke bestätigt Routen, Redirects, Manifest, PNGs, Cache, Privacy-/Reference-Source und PWA-Head
-- [ ] manueller Browser-/PWA-Staging-Smoke grün
-- [ ] Word-Imposter-Datenvertrag auf Staging bestätigt
-- [ ] Hub-Resume-v2-Vertrag auf Staging bestätigt
-- [ ] Production nutzt denselben freigegebenen RC
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v49 --production` grün
-- [ ] manueller Production-Smoke grün
+- [x] `HOSTING_DECISION.md` vorhanden
+- [ ] Provider/Produkt final
+- [ ] Log-/Retention-/Processor-/Drittlandprüfung
+- [ ] getrennte HTTPS-Staging-Origin
+- [ ] Production-Origin
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v50` grün
+- [ ] manueller PWA-Staging-Smoke
+- [ ] Word-Imposter-Datenvertrag real
+- [ ] Hub-Resume-v2/v50-Ladequarantäne real
+- [ ] Production nutzt denselben RC
+- [ ] **Production-Smoke**: `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v50 --production` grün
 
 ## 6. Accessibility / Geräte
 
-Quellseitig vorbereitet:
-
-- [x] `party-hub-a11y.js`
-- [x] `secondary-surface-a11y.js`
-- [x] Hub- und Advanced-Spieloverlays als `aria-modal` Dialoge
-- [x] modale Hintergrundisolation mit `inert`
-- [x] Tab-/Shift+Tab-Fokus-Traps für Hub/Advanced/Creator-Hilfe
-- [x] Hub-Bereichswechsel fokussieren die sichtbare Hauptüberschrift
-- [x] Quick-Phasen besitzen Fokus-Recovery nach DOM-Austausch
-- [x] Creator-Schrittüberschriften sind programmatisch fokussierbar
-- [x] Creator-Template-Radiogroup unterstützt Pfeile/Home/End
-- [x] `scripts/hub_a11y_contract_audit.py` in `npm run validate`
-- [x] `scripts/secondary_surface_a11y_contract_audit.py` in `npm run validate`
-- [x] statische und E2E-Verträge für die Fokuspfade angelegt
+- [x] Hub-A11y-Schicht
+- [x] Secondary-Surface-A11y-Schicht
+- [x] statische/E2E/Auditverträge vorbereitet
 
 Real offen:
 
 - [ ] Android + Chrome
 - [ ] iPhone + Safari
 - [ ] Tablet/iPad
-- [ ] Hoch-/Querformat und 320 CSS px
+- [ ] Hoch-/Querformat / 320 CSS px
 - [ ] 200-%-Zoom
-- [ ] vollständige Tastatur / sichtbarer Fokus
-- [ ] Hub-Bereichswechsel-Fokus in realen Browsern sinnvoll
-- [ ] Hub-Detail-/Spielmodal verliert Fokus nicht in den Hintergrund
-- [ ] Advanced-Spieloverlay verliert Fokus nicht in Setup/Hintergrund
-- [ ] Quick-Phasenwechsel landen auf sinnvoller nächster Aktion
-- [ ] Creator-Schrittwechsel verständlich
-- [ ] Creator-Template-Pfeiltasten/Home/End real
-- [ ] Creator-Hilfe Fokus-Trap + Rückkehrfokus real
-- [ ] VoiceOver
+- [ ] vollständige Tastatur
+- [ ] Hub-/Advanced-/Creator-Modalfokus
+- [ ] Quick-Fokus-Recovery
+- [ ] Creator-Radiogroup
+- [ ] **VoiceOver**
 - [ ] TalkBack
 - [ ] private Reveals mit Screenreader
-- [ ] geschützte Inhalte nach Reopen mit sinnvollem Fokus
-- [ ] Safe Areas / Bildschirmtastatur
-- [ ] große Systemschrift
-- [ ] Reduced Motion
-- [ ] wichtige Touchziele ausreichend groß
-- [ ] Installationsicon/App-Titel korrekt
+- [ ] Safe Areas / große Systemschrift / Reduced Motion / Touchziele
 
 ## 7. Beta / Gruppen
 
-- [ ] 3–4 Personen, mindestens 60 Minuten
-- [ ] 5–8 Personen, mindestens 90 Minuten
-- [ ] 9–12 Personen, mindestens 90 Minuten
+- [ ] G1 kleine Gruppe
+- [ ] G2 mittlere Gruppe
+- [ ] G3 große Gruppe
+- [ ] G4 Mafia
+- [ ] G5 Creator mit unerfahrener Person
+- [ ] DWI Word-Imposter-Datengrenzen
+- [ ] HR2 Hub Resume v2 + v50-Ladequarantäne
+- [ ] PN1–PN3 Smart Party Night
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
-- [ ] großer Word-Imposter-Test mit mehreren Impostern
-- [ ] Word-Imposter-Fairness über mindestens 20 reale Runden protokolliert
-- [ ] Word-Imposter Custom-/Backup-Grenzen mit neutralen Daten praktisch getestet
-- [ ] Hub-Resume-v2-Race-Fall mit neutralem Teststand praktisch getestet
-- [ ] Mafia mit mehreren Gruppengrößen/Rollen
-- [ ] Smart Party Night mindestens 3 vollständige Abende
-- [ ] Creator mit unerfahrener Person
 - [ ] keine offenen Critical/High Bugs
 
-Operative Detailmatrix: Issue #8, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`.
+Details: Issue #8, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`.
 
 ## 8. Assets / Third Party / Legal / Betrieb
 
-Quellseitig vorbereitet:
+Quellsseitig vorbereitet:
 
-- [x] `ASSET_RIGHTS_SIGNOFF.md`
-- [x] `operator-release.json` als maschinenlesbare Betreiber-/Hosting-/Support-/Incident-Akte
+- [x] Asset-Provenienz-/Rights-Verträge
+- [x] `operator-release.json`
 - [x] `OPERATOR_RELEASE_SIGNOFF.md`
 - [x] `OPERATOR_EVIDENCE_LOG.md`
-- [x] `HOSTING_DECISION.md`
-- [x] `scripts/operator_release_contract_audit.py` in `npm run validate`
+- [x] Operator-/Hosting-/Legal-/Support-/Incident-Verträge
 
-Für Production real zu schließen:
+Real offen:
 
-- [ ] Asset-/Media-Provenienz-Audits grün
-- [ ] `ASSET_RIGHTS_SIGNOFF.md` vollständig
-- [ ] Root-`icon.svg` Rechtebasis final belegt oder Asset ersetzt
 - [ ] kein Releaseasset `unresolved`
-- [ ] Dependency-/Vulnerability-Review des finalen Lockfiles
-- [ ] Projekt-/Quellcodelizenz bewusst entschieden
-- [ ] `LEGAL_CHECKLIST.md` final
-- [ ] `operator-release.json` wahrheitsgemäß `FINAL / READY`
-- [ ] Betreiberidentität / Rechtsform / ladungsfähige Anschrift / öffentliche Kontaktmöglichkeit final, soweit erforderlich
-- [ ] öffentliche Legal-/Anbieterkennzeichnungsseite final, soweit erforderlich
+- [ ] Root-`icon.svg` Rechtebasis belegt oder ersetzt
+- [ ] finale Lockfile-/Dependencyprüfung
+- [ ] Betreiberidentität/Kontakt final
 - [ ] Privacy auf reales Hosting angepasst
-- [ ] Verbraucherstreitbeilegungsposition anhand des realen Modells final geprüft
-- [ ] keine veraltete EU-OS-Plattform verlinkt
-- [ ] `SUPPORT.md` echter Kontakt
-- [ ] Supportpostfach praktisch getestet
-- [ ] Security-/Privacy-Meldeweg praktisch getestet
-- [ ] `INCIDENT_RESPONSE.md` echte Verantwortliche
-- [ ] Probe-Supportfall durchgeführt
-- [ ] Probe-SEV-1 durchgeführt
-- [ ] Wartungs-/Hotfixroutine und HTTPS-Rollbackprobe bestätigt
-- [ ] reale Nachweise in `OPERATOR_EVIDENCE_LOG.md` dokumentiert
+- [ ] Legal-/Anbieterkennzeichnung final, soweit erforderlich
+- [ ] Support-/Securitywege real getestet
+- [ ] Probe-Supportfall
+- [ ] Probe-SEV-1
+- [ ] HTTPS-Rollback-Drill
+- [ ] reale Evidence im Operator-Log
 
 ## 9. Release Evidence / Freigabe
 
-- [ ] `release-evidence.json` auf `evidenceStatus = FINAL`
-- [ ] 40-stelliger RC-Commit, Tag, App-Version, Cache, Staging-/Production-URL und Freeze-Zeitpunkt
-- [ ] alle 15 Evidence-Gates `PASS`
-- [ ] `legalPrivacy` und `supportIncident` nur PASS, wenn `operator-release.json = FINAL / READY`
-- [ ] jeder PASS-Beleg referenziert exakt denselben RC-Commit
+- [ ] `release-evidence.json` auf `FINAL`
+- [ ] 40-stelliger RC-Commit, Tag, App-Version, Cache, Staging-/Production-URL, Freeze-Zeitpunkt
+- [ ] alle 15 Gates `PASS`
+- [ ] jeder PASS-Beleg referenziert exakt denselben RC
 - [ ] `knownBlockers` leer
-- [ ] `scripts/operator_release_contract_audit.py` grün
-- [ ] `scripts/hub_a11y_contract_audit.py` grün
-- [ ] `scripts/secondary_surface_a11y_contract_audit.py` grün
-- [ ] `tests/word-imposter-data-contract.test.js` auf dem RC grün
-- [ ] `tests/party-hub-resume-guard.test.js` auf dem RC grün
-- [ ] `scripts/release_evidence_audit.py` grün
+- [ ] `operator-release.json = FINAL / READY`
+- [ ] alle Release-Audits grün
 - [ ] `releaseDecision = GO` erst danach
 
 Freigabefelder:
