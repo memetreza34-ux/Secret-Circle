@@ -15,8 +15,8 @@ Stand: 25. August 2026
 - Hub Resume Integrity v2 steht auf **PREPARED**.
 - `release-evidence.json` bleibt bewusst `PREPARED / NO_GO`; kein unveränderter RC ist eingefroren.
 - PR #13 bleibt Draft und ungemergt.
-- Branch-Protection-, Foundation-, Readiness- und Release-Audits sind jetzt **transition-safe** und blockieren einen später korrekt belegten `FINAL / GO`-Zustand nicht mehr durch historische OPEN-/NO_GO-Hardcodes.
-- `validate_project.py` wurde auf die aktuellen Word-Imposter-/Advanced-/Quick-/Creator-Scriptketten synchronisiert und prüft den dynamischen Hub-Resume-v2-Loadervertrag.
+- Branch-Protection-, Foundation-, Readiness- und Release-Audits sind **transition-safe** und blockieren einen später korrekt belegten `FINAL / GO`-Zustand nicht durch historische OPEN-/NO_GO-Hardcodes.
+- `validate_project.py` kennt die aktuellen Word-Imposter-/Advanced-/Quick-/Creator-Scriptketten und schützt den Hub-Resume-v2-Loadervertrag.
 
 ### Core-Hardening
 
@@ -61,21 +61,28 @@ Stand: 25. August 2026
 
 ### Hub Resume Integrity – v49
 
-- `party-hub-resume-guard.js` Version 2 ist die zentrale getestete Runtime-Quelle für direkte Hub-Resume-Integrität.
+- `party-hub-resume-guard.js` Version 2 wurde zur zentralen getesteten Runtime-Quelle für direkte Hub-Resume-Integrität.
 - `party-hub-polish.js` delegiert an denselben Guard statt Timer-/Resume-Validierung zu duplizieren.
 - gekreuzte oder logisch widersprüchliche Timer-Snapshots werden verworfen.
 - beim Verwerfen wird auch eine bereits sichtbare `#hub-resume-session`-Karte entfernt.
 - gültige gespeicherte Sessions bleiben unangetastet.
 - `tests/party-hub-resume-guard.test.js` prüft Modul, Runtime-Einbindung, Offline-Core, gültigen Resume und stale-Resume-UI-Race.
-- Beta-/Geräteplan enthält einen eigenen **HR2**-Realtest für diesen Guard.
 
-### PWA / Offline – v49
+### Fail-closed Hub Resume Loading – v50
 
-- Offline-Core auf **`secret-circle-v49` / `secret-circle-v49-staging`** erhöht.
-- v46-/v47-A11y-Schichten und v48-Word-Imposter-Datenverträge bleiben enthalten.
-- `party-hub-resume-guard.js` ist jetzt explizit Teil des echten Runtime-/Offline-Core.
-- `tests/service-worker.test.js` auf Cachevertrag 49 aktualisiert.
-- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan, A-bis-Z-Status, Issue #8 und PR #13 auf v49 synchronisiert.
+- konkretes Rest-Race geschlossen: Eine bereits gerenderte Resume-Karte darf nicht mehr anklickbar sein, während der Resume-Guard noch geladen beziehungsweise ausgeführt wird.
+- `party-hub-polish.js` markiert die Resume-Fläche während der Prüfung als beschäftigt und deaktiviert Resume-/Discard-Aktionen sofort.
+- erst nach erfolgreicher Guard-Validierung werden die Aktionen wieder freigegeben.
+- Guard-Lade- oder Integritätsfehler bleiben fail-closed; ein ungeschützter Resume-Pfad wird nicht angeboten.
+- `tests/party-hub-resume-guard.test.js` schützt zusätzlich den Ladephasen-/Interaktionsvertrag.
+- Beta-/Manual-Testpläne führen die fehlende Interaktionsmöglichkeit vor Guard-Abschluss als realen HR2-Abnahmefall.
+
+### PWA / Offline – v50
+
+- Offline-Core auf **`secret-circle-v50` / `secret-circle-v50-staging`** erhöht, weil `party-hub-polish.js` als Offline-Core-Runtime geändert wurde.
+- v46-/v47-A11y-Schichten, v48-Word-Imposter-Datenverträge und v49-Hub-Resume-Guard bleiben enthalten.
+- `tests/service-worker.test.js` schützt Cachevertrag 50.
+- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan und A-bis-Z-Status sind auf v50 synchronisiert.
 - reale Installations-, Upgrade-, Rollback-, Resume- und Offline-Gerätetests bleiben offen.
 
 ### Build / Supply Chain
@@ -92,7 +99,7 @@ Stand: 25. August 2026
 - `operator-release.json` bleibt `PREPARED / BLOCKED`.
 - `OPERATOR_EVIDENCE_LOG.md` bündelt reale Hosting-, Support-, Security-, Probe-Support-, SEV-1-, Rollback- und Legal-/Privacy-Nachweise.
 - Operator-Audit erzwingt bei späterem READY reale Privacy-/Legal-Dateien, veröffentlichte Betreiber-/Kontaktwerte, getrennte HTTPS-Origins und konsistente Links von allen fünf öffentlichen Einstiegseiten.
-- `HOSTING_DECISION.md` erwartet v49 für Staging-/Production-Smokes.
+- `HOSTING_DECISION.md` erwartet v50 für Staging-/Production-Smokes.
 - Issue #14 führt reale Betreiber-/Hosting-/Legal-/Support-/Incident-Evidence.
 - reale Betreiberwerte, Provider/Origins, Support-/Securitytests und Drills bleiben offen.
 
@@ -102,7 +109,7 @@ Stand: 25. August 2026
 - Ergebnis vor Step 1: `steps: null` / separate Abfrage `steps: []`.
 - kein Checkout, npm, Test oder Repository-Code wurde ausgeführt.
 - der isolierte Minimal-Runner-Probe ohne Repository-Code zeigte dasselbe Muster.
-- Run #2787 bestätigt den identischen Pre-Step-Blocker ausdrücklich auch auf v49.
+- Run #2787 bestätigt den identischen Pre-Step-Blocker ausdrücklich auf v49; für v50 wird daraus kein Test-PASS abgeleitet.
 - unmittelbare Fehlerfläche bleibt vor der Workflow-Step-Ausführung; Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ### Third Party / Assets
