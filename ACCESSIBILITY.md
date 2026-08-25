@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Abnahme offen**  
-Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**
+Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**
 
 ## 1. Ziel
 
@@ -24,6 +24,7 @@ Secret Circle soll die 15 Kernspiele sowie zentrale Extended-/Labs-/Creator-Flow
 - Inputs/Selects/Textareas besitzen sichtbares Label oder ARIA-Beschriftung
 - Statusfelder nutzen `role="status"`/`aria-live`, wo dynamische Rückmeldung wichtig ist
 - Creator-Template-Auswahl ist eine beschriftete Radiogroup mit genau einem Tab-Stopp
+- Word-Imposter-Custom-Eingabe beschreibt ihr 2–200-Begriffe-Limit sichtbar und über `aria-describedby`
 
 ### Fokus und Tastatur
 
@@ -38,6 +39,7 @@ Secret Circle soll die 15 Kernspiele sowie zentrale Extended-/Labs-/Creator-Flow
 - Creator-Schrittüberschriften sind programmatisch fokussierbar
 - Creator-Hilfe isoliert den Hintergrund und hält Tab/Shift+Tab im Dialog
 - Creator-Template-Radiogroup unterstützt Pfeiltasten sowie Home/End
+- Word-Imposter-Voting-Resume führt zur nächsten tatsächlich noch offenen abstimmenden Person
 - beim Erstladen bleibt die Skip-Link-Reihenfolge unverändert
 
 ### Touch
@@ -70,23 +72,29 @@ v46 führte `party-hub-a11y.js` ein:
 
 ## 4. v47 Advanced-/Quick-/Creator-Hardening
 
-Neu in v47:
+v47 führte `secondary-surface-a11y.js` ein:
 
-- `secondary-surface-a11y.js` als gemeinsame kleine Accessibility-Schicht
 - Advanced-Spielrunde als modaler Dialog mit Hintergrundisolation und Tab-Fokus-Trap
 - Quick-Phasen-Fokus-Recovery nach dynamischem DOM-Austausch
-- Creator-Wizard-Schrittüberschriften erhalten `tabindex="-1"` für echte programmatische Fokusführung
-- Creator-Hilfe verhält sich als modaler Tastaturkontext; Hintergrund wird `inert`
-- Creator-Template-Radiogroup verwendet roving `tabindex` und unterstützt ArrowRight/ArrowDown/ArrowLeft/ArrowUp, Home und End
-- `tests/accessibility-contract.test.js` schützt die statischen Verträge
-- `tests/e2e/accessibility-core.spec.js` enthält echte Browserpfade für Advanced, Quick und Creator
-- `scripts/secondary_surface_a11y_contract_audit.py` ist Teil von `npm run validate`
-- `scripts/architecture_audit.py` behandelt die Schicht als Production-/Offline-Modul
-- `secondary-surface-a11y.js` ist Bestandteil des v47-Offline-Core
+- Creator-Wizard-Schrittüberschriften mit `tabindex="-1"` für echte programmatische Fokusführung
+- Creator-Hilfe als modaler Tastaturkontext mit `inert`-Hintergrund
+- Creator-Template-Radiogroup mit roving `tabindex`, Arrow-Tasten sowie Home/End
+- Unit-/E2E-/Auditverträge
 
-**PREPARED bleibt bewusst bestehen:** Ohne funktionierenden Runner sowie reale VoiceOver-/TalkBack-/Zoom-/Touchprüfung ist dies noch kein Accessibility PASS.
+Diese v47-A11y-Schicht bleibt **unverändert Bestandteil des aktuellen v48-Offline-Core**.
 
-## 5. Anzeigenamen und Screenreader
+## 5. v48 Word-Imposter-UX-/Daten-Hardening
+
+v48 ist primär ein Daten-/Resume-Release, besitzt aber auch Accessibility-relevante UI-Verträge:
+
+- die nächste abstimmende Person wird aus den tatsächlich offenen Stimmen abgeleitet, sodass Resume nicht auf einen bereits abgeschlossenen Wähler zeigt,
+- das Custom-Panel kommuniziert **maximal 50 Kategorien** und **2–200 Begriffe je Kategorie** sichtbar,
+- das Begriffe-Textarea verweist programmatisch auf den erklärenden Hilfetext,
+- Importfehler werden als Statusmeldung ausgegeben und dürfen Bestandsdaten nicht still verändern.
+
+`tests/word-imposter-data-contract.test.js` schützt die statische Verbindung zwischen UI und Datenvertrag. Dies ist **kein Ersatz** für reale Screenreader-/Tastaturtests mit großen gültigen Datensätzen.
+
+## 6. Anzeigenamen und Screenreader
 
 Technische IDs sind kein Nutzerlabel.
 
@@ -97,7 +105,7 @@ Aktuell müssen sichtbare/angesagte Titel dem finalen Katalog entsprechen:
 
 Ein Screenreader soll nicht versehentlich interne IDs oder veraltete sichtbare Namen als Hauptbezeichnung erhalten.
 
-## 6. Flow-Matrix
+## 7. Flow-Matrix
 
 | Flow | Automatische Grundlage | Manuelle Abnahme |
 |---|---|---|
@@ -105,6 +113,8 @@ Ein Screenreader soll nicht versehentlich interne IDs oder veraltete sichtbare N
 | Spieler/Presets | Labels, Textarea, Status | lange Namen, Zoom, VoiceOver/TalkBack |
 | Hub-Spieldetail | Dialogrolle, `aria-modal`, Hintergrund `inert`, Fokus-Trap, Rückkehrfokus | Screenreader-/Browserrealität |
 | direkte Hub-Spiele | modales Spieloverlay, Fokus-/Statusgrundlage, 44px Controls | komplette Tastatur-/Screenreader-Runde |
+| Word-Imposter Voting | offene-Wähler-Ableitung + Resume-Guard | partielle Abstimmung mit Screenreader/Tastatur |
+| Word-Imposter Custom | sichtbare/programmatische 50-/2–200-Hinweise | große valide Kategorie + Fehlermeldung real |
 | private Reveals | verdeckter Zustand/Status | Übergabe mit Screenreader real |
 | Timer | Pausezustand, Live-Status | Sperrbildschirm + Reduced Motion |
 | Advanced | modales Spieloverlay, Fokus-Recovery, Privacy-/Resume-Guards | private Rollen/Abstimmung per Screenreader |
@@ -112,7 +122,7 @@ Ein Screenreader soll nicht versehentlich interne IDs oder veraltete sichtbare N
 | Creator | Wizard-Schrittfokus, Radiogroup-Tastatur, modale Hilfe | kompletter Wizard ohne Maus + Screenreader |
 | Daten/Backup | Labels, Status, Bestätigung | Dateiimport mit assistiver Technik |
 
-## 7. Manuelle Release-Gates
+## 8. Manuelle Release-Gates
 
 Vor `ACCESSIBILITY PASS`:
 
@@ -127,6 +137,8 @@ Vor `ACCESSIBILITY PASS`:
 - [ ] Creator-Schrittwechsel werden mit Tastatur/Screenreader verständlich angekündigt
 - [ ] Creator-Template-Radiogroup mit Pfeiltasten/Home/End real bedienbar
 - [ ] Creator-Hilfe verliert Fokus nicht in den Hintergrund und kehrt zum Auslöser zurück
+- [ ] Word-Imposter-Teilabstimmung nach Reload zeigt/ansagt die richtige nächste Person
+- [ ] Word-Imposter-Custom-Hilfe und Grenzfehler sind mit Screenreader verständlich
 - [ ] mindestens ein Core-Spiel nur Tastatur
 - [ ] Word-Imposter-Reveal mit Screenreader-Smoke
 - [ ] Advanced-Private-Reveal mit Screenreader-Smoke
@@ -139,7 +151,7 @@ Vor `ACCESSIBILITY PASS`:
 - [ ] keine Information ausschließlich durch Farbe
 - [ ] Touchziele real geprüft
 
-## 8. Screenreader-Prüffragen
+## 9. Screenreader-Prüffragen
 
 1. Ist klar, welche Seite/Phase geöffnet ist?
 2. Wird die aktive Person verständlich benannt?
@@ -150,9 +162,11 @@ Vor `ACCESSIBILITY PASS`:
 7. Bleibt nach Dialogschluss ein sinnvoller Fokuspunkt?
 8. Bleibt während eines modalen Overlays der Hintergrund aus Interaktion und Lesereihenfolge heraus?
 9. Wird ein Creator-Schrittwechsel sinnvoll angekündigt?
-10. Wird der aktuelle sichtbare Produktname statt einer technischen ID angesagt?
+10. Wird beim Word-Imposter-Voting nach Resume die richtige nächste Person angekündigt?
+11. Sind Word-Imposter-Custom-Grenzen und Importfehler ohne rein visuelle Hinweise verständlich?
+12. Wird der aktuelle sichtbare Produktname statt einer technischen ID angesagt?
 
-## 9. Zoom-/Reflow-Prüfung
+## 10. Zoom-/Reflow-Prüfung
 
 Bei 200 % Zoom:
 
@@ -162,13 +176,14 @@ Bei 200 % Zoom:
 - Timer und zentrale Spielkarte erreichbar
 - Sessioncontrols bedienbar
 - Creator-Wizard und Hilfe erreichbar
+- Word-Imposter-Custom-Editor und Hilfetext erreichbar
 - keine wichtige horizontale Scrollpflicht
 - Safe Areas berücksichtigt
 
-## 10. Grenzen der Automatisierung
+## 11. Grenzen der Automatisierung
 
 Ein statischer Test oder Playwright-Vertrag kann Attribute, Fokuspfade und CSS-/DOM-Grenzen prüfen, aber nicht beweisen, dass VoiceOver/TalkBack sinnvoll klingen oder ein reales 200-%-Layout verständlich ist.
 
-**Unit/E2E/A11y-Audits grün ≠ ACCESSIBILITY PASS.**
+**Unit/E2E/A11y-/Word-Data-Verträge grün ≠ ACCESSIBILITY PASS.**
 
 Finaler Pass benötigt dokumentierte reale Bedienung.
