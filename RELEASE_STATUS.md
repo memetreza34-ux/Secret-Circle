@@ -9,155 +9,106 @@ Draft-PR: #13
 
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v46` / `secret-circle-v46-staging`**  
+**Offline-Core:** **`secret-circle-v47` / `secret-circle-v47-staging`**  
 **Classic Content:** **v4**  
 **Core Source Review:** **15/15 PREPARED**  
 **Core Source Hardening:** **15/15 PREPARED**  
 **Accessibility Source Hardening:** **PREPARED**  
 **Operator / Hosting / Legal:** **PREPARED / BLOCKED**
 
-v45 war die Cachegeneration nach dem Core-Hardening. **v46** ist die neue Generation für das zusätzliche Hub-Accessibility-Hardening und nimmt `party-hub-a11y.js` explizit in den Offline-Core auf.
+v45 war die Core-Hardening-Generation, v46 brachte Hub-A11y. **v47** erweitert das Accessibility-Hardening auf Advanced, Quick und Creator und enthält `secondary-surface-a11y.js` offline.
 
 ## Core-Hardening – 15/15
 
-- Word Imposter: Setup-Validierung, Rollenfairness, Voting-/Resume-Guard, Geheimkarten-Schutz
-- soziale Hub-Spiele: sichtbare Live-Regeln und Freiwilligkeit, wo relevant
-- Paranoia: offene Geheimfrage wird bei Fokusverlust verdeckt
-- Scharade/Tabu: offene Geheimkarten werden bei App-/Tab-Wechsel verdeckt
-- Heiße Kartoffel: Zufallstimer exakt 10–25 Sekunden
-- Wortkette: klarer manueller Erfolgsvertrag
-- Nur falsche Antworten: klare manuelle Verlustregel; scorelos
-- Hub-Resume: Timerzustand muss zur Spielart passen
-- Advanced: `advanced-privacy-guard.js` + `advanced-resume-guard.js`
-- Advanced-Resume validiert Two-Truths-Ergebnis, Question-Imposter-Rolle/Vote, Location-Spy-Zustand sowie Mafia-Rollenanzahl, Alive-Menge und Siegerintegrität
+Word Imposter, soziale Hub-Spiele, Paranoia, Scharade/Tabu, Heiße Kartoffel, Wortkette, Nur falsche Antworten sowie Advanced/Mafia sind quellsseitig auf Setup, Privacy, Resume, Timer, Regeln und Sieger-/Scoreintegrität gehärtet. Details: `CORE_GAME_ACCEPTANCE.md`.
 
-Details: `CORE_GAME_ACCEPTANCE.md`.
+## Accessibility-Hardening – v46/v47
 
-## Accessibility-Hardening – v46
+### Hub / v46
 
-Neu vorbereitet:
+- `party-hub-a11y.js`
+- Hub-Bereichsfokus
+- Hub-Spieldetail und aktive Runde als modale Tastaturkontexte
+- Hintergrund `inert`
+- Tab-/Shift+Tab-Fokus-Trap
+- Rückkehrfokus
 
-- `party-hub-a11y.js` Version 2
-- Hub-Bereichswechsel fokussieren die neue sichtbare Hauptüberschrift mit `tabindex="-1"`
-- aktive Hub-Spielrunde ist als `role="dialog"` + `aria-modal="true"` ausgezeichnet
-- bei Spieldetail/Spielrunde wird der übrige Body-Hintergrund `inert`
-- Tab/Shift+Tab bleibt innerhalb des aktiven Overlays
-- dynamisch hinzugefügte Body-Siblings werden während eines offenen Overlays ebenfalls isoliert
-- Skip-Link bleibt beim Erstladen erster sinnvoller Tastaturtarget
-- `tests/accessibility-contract.test.js` erweitert
-- `tests/e2e/accessibility-core.spec.js` um Browser-Fokuspfade erweitert
-- `scripts/hub_a11y_contract_audit.py` in `npm run validate`
-- `party-hub-a11y.js` Bestandteil von v46
-- globaler Architektur-Audit kennt nun alle releasekritischen Resume-/Privacy-/A11y-Guardmodule
+### Advanced / Quick / Creator / v47
 
-**Noch offen:** echte Ausführung auf Runner, VoiceOver/TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserabnahme. Deshalb weiterhin PREPARED, nicht PASS.
+- `secondary-surface-a11y.js` Version 1
+- Advanced-Spieloverlay modal + Hintergrundisolation + Fokus-Trap
+- Quick-Fokus-Recovery bei dynamischen Phasenwechseln
+- Creator-Schrittüberschriften programmatisch fokussierbar
+- Creator-Hilfe modal + Hintergrundisolation + Fokus-Trap + Rückkehrfokus
+- Creator-Template-Radiogroup mit roving `tabindex`, Pfeiltasten, Home und End
+- `scripts/secondary_surface_a11y_contract_audit.py` in `npm run validate`
+- neue E2E-Pfade für Advanced, Quick und Creator
+- globaler Architektur-Audit behandelt beide A11y-Schichten als Production-/Offline-Module
+
+**Noch offen:** echter Runner, VoiceOver/TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserabnahme. Deshalb PREPARED, nicht PASS.
 
 ## Operator / Hosting / Legal / Support
 
-Zentralisiert:
-
-- `operator-release.json` – aktuell `PREPARED / BLOCKED`
+- `operator-release.json`: `PREPARED / BLOCKED`
 - `OPERATOR_RELEASE_SIGNOFF.md`
-- `HOSTING_DECISION.md`
-- `scripts/operator_release_contract_audit.py` in `npm run validate`
+- `HOSTING_DECISION.md` auf v47-Smokevertrag
 - `LEGAL_CHECKLIST.md` Stand 25. August 2026
-- `SUPPORT.md` und `INCIDENT_RESPONSE.md` an dieselbe Operator-Akte gebunden
-- Issue #14 führt die real offenen Betreiber-/Hosting-/Legal-/Support-/Incident-Schritte
-
-`legalPrivacy` und `supportIncident` dürfen erst PASS werden, wenn `operator-release.json = FINAL / READY` und reale Nachweise existieren.
+- `SUPPORT.md` / `INCIDENT_RESPONSE.md`
+- Issue #14 führt reale Operator-/Hosting-/Legal-/Support-/Incident-Schritte
 
 ## Build / Supply Chain
 
 - `package-lock.json` v3
-- Playwright-Testkette exakt 1.54.2
+- Playwright exakt 1.54.2
 - keine npm-Runtime-Dependencies
-- feste Registry-/Integrity-Verträge
 - CI/Cross-Browser verwenden `npm ci`
-- Lockfile-/A11y-/Operator-/Readiness-Audits in `npm run validate`
-- Operator- und Readiness-Audit leiten die aktuelle Cachegeneration dynamisch aus `sw.js` ab
+- Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Operator- und Readiness-Audits eingebunden
 
 **Offen:** echter Online-`npm ci`-/Integrity-PASS auf funktionierendem Runner.
 
-## PWA v46
+## PWA v47
 
 Service Worker:
 
-- `secret-circle-v46`
-- `secret-circle-v46-staging`
+- `secret-circle-v47`
+- `secret-circle-v47-staging`
 
-Offline enthalten sind fünf Einstiegspfade, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Resume-/Privacy-Guards, `party-hub-a11y.js` sowie Manifest/PWA-Icons.
+Offline enthalten sind Hub/Word Imposter/Advanced/Quick/Creator/Privacy, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Resume-/Privacy-Guards, `party-hub-a11y.js`, `secondary-surface-a11y.js`, Manifest und Icons.
 
-Reale Installation, Upgrade älterer Versionen, Rollback und Offline-Gerätetest bleiben offen.
-
-## Release Evidence
-
-- `release-evidence.json`: **PREPARED / NO_GO**
-- `operator-release.json`: **PREPARED / BLOCKED**
-
-Ein `GO` benötigt echte Belege auf exakt demselben unveränderten RC-Commit.
-
-## Assets / Third Party
-
-- technisches Asset-Provenienzmanifest vorhanden
-- PNG-Dimensionen/Hashes/Ableitungen dokumentiert
-- `ASSET_RIGHTS_SIGNOFF.md` vorhanden
-- `icon.svg` und PNG-Ableitungen bleiben bis menschlicher Rechtebestätigung `unresolved`
-
-Daher bleibt `ASSETS / THIRD PARTY` blockiert.
+Reale Installation, Upgrades, Rollback und Offline-Gerätetest bleiben offen.
 
 ## CI – P0
 
-Aktuellster ausdrücklich untersuchter v46-Lauf: **Run #2627**.
+Der jüngste ausdrücklich untersuchte Lauf vor dem v47-Block war **Run #2637** und zeigte erneut `steps: []`. Kein Checkout, npm, Test oder Repository-Code wurde ausgeführt. Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit.
 
-- Run ID `32809352564`
-- Job `validate`, Job ID `97685596269`
-- Head `30ef13f84d34f7fa95c46d441463bb58f0cb09c1`
-- `failure`
-- Jobliste `steps: null`
-- separate Step-Abfrage `steps: []`
-- kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
+Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
-Run #2627 liegt auf dem v46-/Hub-A11y-/Architektur-Hardening-Stand. Auch diese Änderungen wurden nicht runnerverifiziert.
+## Release Evidence / Assets
 
-Der frühere Minimal-Runner-Probe ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code endete ebenfalls vor Step 1 mit `steps: []`.
-
-Damit liegt der verbleibende Prüfbereich vor der Step-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung.
-
-Details: Issue #7 und `CI_TROUBLESHOOTING.md`.
-
-## Branch Protection
-
-`BRANCH_PROTECTION.md` und Contract-Audit existieren. Gewünschter Required Check: **`Secret Circle CI / validate`**. Die tatsächliche GitHub-Einstellung ist weiterhin nicht real bestätigt.
-
-## HTTPS / Environment
-
-- v46 in Architektur/Deployment/Environment/Privacy synchronisiert
-- `HOSTING_DECISION.md` erwartet v46-Smokes
-- konkrete Provider-, Staging- und Production-Entscheidung offen
-- `scripts/staging_smoke.py` vorbereitet
+- `release-evidence.json`: **PREPARED / NO_GO**
+- `operator-release.json`: **PREPARED / BLOCKED**
+- Root-`icon.svg` und Ableitungen: Rechtebasis weiterhin `unresolved`
 
 ## Drei zentrale offene GitHub-Blocker
 
-1. **Issue #7** – GitHub Actions / Hosted Runner vor Step 1
-2. **Issue #8** – reale Geräte, Offline-PWA, Accessibility und Partytests
+1. **Issue #7** – Hosted Runner vor Step 1
+2. **Issue #8** – reale Geräte, v47 Offline-PWA, Accessibility und Partytests
 3. **Issue #14** – Operator, Hosting, Legal, Support und Incident Evidence
-
-Zusätzlich bleibt die Icon-Rechtebasis offen.
 
 ## Real offene Releasegates
 
 1. Actions-Runner / echte Steps
-2. Online-`npm ci` + vollständiges CI/Cross-Browser
-3. Branch Protection tatsächlich aktiv
-4. Hostingprovider + getrennte HTTPS-Staging-/Production-Origin
-5. HTTPS-Staging + automatisierter/manueller v46-PWA-Smoke
-6. PWA v46 Upgrade/Rollback auf real installierten Versionen
+2. Online-`npm ci` + CI/Cross-Browser
+3. Branch Protection real aktiv
+4. Hostingprovider + getrennte HTTPS-Origins
+5. v47 Staging-/Production-/PWA-Smokes
+6. v47 Upgrade/Rollback auf echten Installationen
 7. Android / iPhone / Tablet
-8. VoiceOver / TalkBack / reale Tastatur-/Modalfokus-/200-%-Zoom-Abnahme
+8. VoiceOver / TalkBack / Hub-/Advanced-/Quick-/Creator-Tastaturpfade / 200-%-Zoom
 9. reale Gruppen/Beta für alle 15 Core-Spiele
-10. Icon-Rechtebasis + finaler Visual-/Third-Party-Sign-off
-11. Operator-/Privacy-/Support-/Legalangaben final
-12. Support-/Securitytest + SEV-1-/Rollback-Drill
+10. Icon-/Visual-/Third-Party-Sign-off
+11. Operator-/Privacy-/Support-/Legal-Sign-off
+12. Support-/Security-/SEV-1-/Rollback-Drill
 13. unveränderter RC + Release Evidence FINAL/GO
 
 ## Releaseentscheidung
