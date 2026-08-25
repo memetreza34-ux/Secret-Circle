@@ -2,257 +2,164 @@
 
 Stand: 25. August 2026
 
-Dieses Dokument definiert die technischen Grenzen, die Secret Circle langfristig verständlich, migrierbar, offline nutzbar und testbar halten.
+Dieses Dokument definiert die technischen Grenzen für den Januar-2027-Release. Secret Circle bleibt eine statische **offline-first PWA** für gemeinsame Spiele auf einem Gerät.
 
 ## 1. Produktgrenzen
 
-Secret Circle bleibt für den Januar-2027-Release eine statische Offline-first-PWA ohne verpflichtendes Konto, Backend, eigene Server-API, Werbung, Tracking oder externe Laufzeit-CDNs. Ein gemeinsames Gerät reicht für den vollständigen Kernabend.
-
-Online-Multiplayer, Cloud-Sync, KI-Live-Inhalte, Kamera/Mikrofon und Mehrgerätefunktionen benötigen vor Einführung einen neuen Produkt-, Datenschutz-, Security- und Architekturentscheid.
+V1 besitzt kein verpflichtendes Konto, kein Backend, keine eigene Server-API, keine Werbung, kein Tracking und keine externen Runtime-CDNs. Online-Multiplayer, Cloud-Sync, Live-KI-Inhalte, Kamera/Mikrofon oder Mehrgerätefunktionen benötigen vor Einführung einen neuen Produkt-, Privacy-, Security- und Architekturentscheid.
 
 ## 2. Stabile Identitäten
 
-Spiel-IDs, Pack-IDs, Creator-Spiel-IDs, Session-IDs, Abschluss-IDs, Speicherpräfix `secret-circle-`, Backupformate, Manifest-ID und PWA-Scope sind interne Verträge. Anzeigenamen dürfen sich ändern; persistierte IDs benötigen bei Änderungen eine Migration.
+Persistierte Spiel-IDs, Pack-IDs, Creator-IDs, Session-IDs, Completion-IDs, Storage-Key-Familien, Backupformate, Manifest-ID und PWA-Scope sind Verträge. Anzeigenamen dürfen geändert werden; persistierte IDs nur mit Migration.
 
-Jede wiederaufnehmbare Session erhält eine stabile Session-ID. Reload oder wiederholter Abschluss dürfen keinen zweiten Verlaufseintrag erzeugen.
+Jede wiederaufnehmbare Session besitzt eine stabile Session-ID. Ein Abschluss darf Verlauf und Statistik genau einmal verändern.
 
 ## 3. Versionierte Daten und Backups
 
-Persistierte Bereiche besitzen explizite Versionen. Beschädigte Daten werden normalisiert, isoliert verworfen oder über definierte Guard-Verträge abgelehnt. Unbekannte neuere Versionen werden nicht blind überschrieben.
+`backup-schema-registry.js` ist die zentrale Quelle für Complete-Backup-Format, Größenlimits und erlaubte Storage-Key-Familien und steht auf Registry-Version 2. `party-data-tools.js` konsumiert diesen Vertrag, statt Limits zu duplizieren.
 
-`backup-schema-registry.js` ist der zentrale Backup-Vertragsmittelpunkt und steht auf Registry-Version 2. Complete-Backup-Format, Größenlimits und erlaubte Storage-Key-Familien werden dort definiert. `party-data-tools.js` darf diese Werte nicht separat duplizieren.
-
-Complete-Imports akzeptieren nur bekannte versionierte Word-Imposter-Key-Familien sowie definierte `secret-circle-party-*`-Familien. Vollständiges Löschen bleibt absichtlich breiter und entfernt weiterhin alle `secret-circle-*`-Reste.
-
-Für die lokale Word-Imposter-Datenmenge gilt seit v48 zusätzlich:
-
-- maximal **50 eigene Kategorien**,
-- maximal **200 Begriffe pro eigener Kategorie**,
-- Backupgröße maximal **1,5 MB UTF-8**,
-- Überschreitungen werden abgelehnt und nicht still gekürzt,
-- ein abgelehnter Import darf vorhandene lokale Daten nicht verändern.
-
-`data-store.js` ist die verbindliche Quelle dieser Grenzen; `app.js` liest sie aus dem Store statt eigene abweichende Werte zu definieren. `tests/storage.test.js` und `tests/word-imposter-data-contract.test.js` schützen 50/51-, 200/201- und Byte-Limit-Verträge.
+Beschädigte oder unbekannte Daten werden nicht blind übernommen. Änderungen an Persistenz benötigen Validierung, Migration, Korruptions-, Quota-, Import- und Rollbacktests. Word Imposter begrenzt eigene Kategorien auf 50 und Begriffe je Kategorie auf 200; ungültige Imports dürfen vorhandene Daten nicht teilweise verändern.
 
 ## 4. Katalog- und Contentarchitektur
 
-Der vollständige Party-Katalog wird in dieser Reihenfolge aufgebaut:
+Der Party-Katalog wird in dieser Reihenfolge aufgebaut:
 
 `party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-core-classic-content.js → party-routing.js`
 
 Verantwortung:
 
-- `party-catalog.js`: Basisspiele und Ausgangsinhalte
-- `party-expansion.js`: Advanced-Spiele und reference-safe Grunddefinitionen
+- `party-catalog.js`: Basiskatalog und soziale Kerninhalte
+- `party-expansion.js`: Erweiterungen und Advanced-Definitionen
 - `party-trending-catalog.js`: klassische Quick Modes
 - `party-mega-catalog.js`: Trend-/Ranking-/Social-Formate
-- `party-viral-catalog.js`: Viral-/Preis-/Wissens-/Storyformate
-- `party-core-release-catalog.js`: soziale Core-Releaseinhalte
-- `party-core-classic-content.js`: klassische Core-Inhalte und finale redaktionelle Invarianten
-- `party-routing.js`: finale Routingfassade, Competition-Metadaten und Creator-Spiele
+- `party-viral-catalog.js`: Viral-/Quiz-/Storyformate
+- `party-core-release-catalog.js`: Core-Releaseinhalte
+- `party-core-classic-content.js`: finale redaktionelle Core-Schicht, aktuell **v4**
+- `party-routing.js`: finale Routingfassade und Creator-Integration
 
-`party-core-classic-content.js` steht auf Version **4**. Der final ausgelieferte Content hält unter anderem:
-
-- `anime-guess` als generisches **Anime-Archetypen erraten**,
-- die stabile ID `wavelength` sichtbar als **Spektrum-Tipp**,
-- Browser-Tabu ohne konkrete Browsermarke,
-- generische Löwen-/Event-/Sportformulierungen,
-- keine früher identifizierten Private-Device-Truth/Dare-Offenlegungsaufforderungen.
-
-`scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` schützen diese Source-Verträge.
+Privacy-/Reference-Safe-Entscheidungen werden nicht nur in einer späteren Ersatzschicht gehalten: bekannte problematische Private-Device-Prompts und unnötige konkrete Fan-/Markenreferenzen wurden aus den ausgelieferten Quellmodulen entfernt. `scripts/privacy_content_audit.py` und `scripts/reference_content_audit.py` schützen diese Grenze.
 
 ## 5. Hub- und Timergrenzen
 
-- `party-hub.js`: Session, Navigation, Ledger, Fokus und nicht zeitgesteuerte direkte Hub-Spiele
-- `party-hub-timers.js`: Scharade, Tabu, Heiße Kartoffel und Wortkette samt Timer-State
-- `party-session-controls.js`: generischer pausierbarer Timer und gemeinsame Sessionaktionen
-- `party-hub-resume-guard.js`: Cross-Mode-/Timer-Resume-Integrität
-- `party-hub-polish.js`: Live-Guidance, Freiwilligkeit und Geheimkarten-Sichtschutz im direkten Hub
-- `party-hub-a11y.js`: Bereichs-Fokusführung, modale Hintergrundisolation über `inert` und Tab-Fokus-Trap für Detail- und Spieloverlay
+- `party-hub.js`: direkte Hub-Sessions, Navigation, Persistenz und nicht zeitgesteuerte Flows
+- `party-hub-timers.js`: Scharade, Tabu, Heiße Kartoffel und Wortkette
+- `party-session-controls.js`: gemeinsame pausierbare Session-/Timersteuerung
+- `party-hub-resume-guard.js`: eigenständige Validierung gespeicherter Hub-Timerzustände
+- `party-hub-polish.js`: Live-Guidance, Privacy-Handoff und ergänzende UI-Schutzlogik
+- `party-hub-a11y.js`: Fokus-, Modal- und Hintergrundisolation des Hubs
 
-Ladereihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub.js → party-hub-polish.js → party-hub-a11y.js` (letzteres wird durch die Polish-Schicht geladen).
+Die Hub-A11y-Schicht wird kontrolliert aus `party-hub-polish.js` geladen. Der Resume-Guard ist ein eigenständiger, testbarer Runtime-Vertrag und Bestandteil des Offline-Core.
 
-Für Datenverwaltung gilt: `backup-schema-registry.js` muss vor `party-data-tools.js` geladen sein.
-
-## 6. Weitere Modulgrenzen
+## 6. Weitere Runtime-Grenzen
 
 Word Imposter trennt:
 
 - Fachlogik: `game-engine.js`
 - Rollen: `role-assignment.js`
-- Speicherung: `data-store.js`
+- Daten: `data-store.js`
 - Resume-Integrität: `word-imposter-resume-guard.js`
 - UI: `app.js`
 
-Der Word-Imposter-Voting-UI-Pfad darf die nächste Person nicht aus der bloßen Anzahl gespeicherter Stimmen ableiten. `app.js` bestimmt den **nächsten noch nicht abstimmenden Spieler** aus den tatsächlichen Vote-Keys; der strengere Resume-Guard verwirft zusätzlich nicht-sequenzielle manipulierte Snapshots.
+Advanced Core trennt Definitionen, Runner und Schutzschichten über `party-advanced.js`, `advanced-resume-guard.js`, `party-advanced-runner.js` und `advanced-privacy-guard.js`.
 
-Advanced Core trennt:
-
-- Fachlogik: `party-advanced.js`
-- Resume-Integrität: `advanced-resume-guard.js`
-- Laufzeit/Session: `party-advanced-runner.js`
-- Live-Privacy: `advanced-privacy-guard.js`
-- Einstellungen: `party-advanced-preferences.js`
-
-`secondary-surface-a11y.js` ist die gemeinsame Accessibility-Schicht für **Advanced, Quick und Creator**. Sie wird auf diesen Einstiegseiten vor dem jeweiligen Runner beziehungsweise Page-Controller geladen und übernimmt ausschließlich Querschnittsverhalten:
-
-- Advanced-Spieloverlay als modalen Fokuskontext isolieren,
-- Creator-Hilfe als echten modalen Fokuskontext isolieren,
-- dynamischen Fokus nach Quick-/Advanced-Phasenwechseln wiederherstellen,
-- Creator-Wizard-Schrittüberschriften programmatisch fokussierbar machen,
-- Creator-Template-Radiogroup mit roving `tabindex` sowie Pfeil-/Home-/End-Tasten bedienen.
-
-Die Fachlogik der Spiele bleibt in ihren jeweiligen Engines; die A11y-Schicht darf keine Gewinner-, Punkte-, Timer- oder Persistenzlogik besitzen.
-
-Der Game Creator trennt Daten-/Validierungslogik (`game-creator.js`), Wizard (`creator-page.js`) und Laufzeit (`party-created-modes.js`). Quick/Mega/Viral/Creator verwenden die gemeinsame Sessionsteuerung statt privater Intervalltimer.
-
-Globale Monkey-Patches von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik sind verboten.
+`secondary-surface-a11y.js` schützt Advanced, Quick und Creator. Globale Monkey-Patches von Storage-, Engine- oder Browser-Prototypen zur Korrektur von Fachlogik sind verboten.
 
 ## 7. Lokale Transaktionen und Exact-once
 
-Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Zustand wieder her. Ein Abschluss verwendet eine stabile Completion-ID, schreibt Verlauf/Statistik genau einmal und entfernt den aktiven Zustand erst nach erfolgreicher Verbuchung.
-
-Abbruch und Skip dürfen keinen künstlichen Abschluss-/Punktzustand erzeugen.
+Kritische Datenoperationen validieren zuerst, halten den alten Zustand fest, schreiben vollständig und rollen bei Fehlern zurück. Fertige Sessions werden mit stabilen Completion-IDs verbucht. Reload, Wiederholung oder UI-Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
 ## 8. Datenschutz und Security durch Architektur
 
 - keine Analytics-/Ads-Skripte
-- keine versteckten Netzwerkaufrufe
-- keine externen Fonts zur Laufzeit
+- keine externen Runtime-Fonts/CDNs
 - restriktive CSP
-- Nutzerdaten bevorzugt über `textContent`
-- Importgrenzen nach Format, Größe, Key-Allowlist und Struktur
-- geheime Inhalte nach Hintergrundwechsel/Reload nicht automatisch sichtbar
-- Word-Imposter-, Hub- und Advanced-Resume-Zustände werden zusätzlich auf Integrität geprüft
-- lokale Daten auffindbar, exportierbar und löschbar
-- Built-in-Content verlangt keine privaten Nachrichten/Fotos/Passwörter/Adressen als Spielmaterial
-- persönliche Inhalte bleiben freiwillig und überspringbar
+- Nutzereingaben bevorzugt über `textContent`
+- Importgrenzen nach Format, Version, Größe, Key-Allowlist und Struktur
+- geheime Karten/Fragen/Rollen bei Fokusverlust verdecken
+- geheime Zustände nach Reload nicht automatisch öffnen
+- lokale Daten exportierbar und löschbar
+- persönliche Inhalte freiwillig und überspringbar
+- Built-ins verlangen keine Offenlegung privater Nachrichten, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten
 
-`SECURITY.md`, `THREAT_MODEL.md`, `BACKUP_SCHEMAS.md`, `CORE_GAME_ACCEPTANCE.md` und die Privacy-/Resume-Guards ergänzen diesen Vertrag.
+`SECURITY.md`, `THREAT_MODEL.md` und `BACKUP_SCHEMAS.md` ergänzen diesen Vertrag.
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v48`**.
+Aktueller Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**.
 
-Historie der letzten relevanten Cachegenerationen:
+Relevante jüngere Generationen:
 
-- v36: unnötige konkrete Word-Imposter-Referenzen generisch ersetzt
-- v37: Anime-Archetypen im finalen Runtime-Katalog
-- v38: konkrete Sport-/Eventreferenzen generisch ersetzt
-- v39: Browsermarke entfernt, sichtbares Spektrum-Tipp
-- v40: konkrete Anime-Figurennamen physisch aus ausgelieferter Quelle entfernt
-- v41: Reference-Safe-Invarianten upstream + Classic Content v4
-- v42: echte 192×192-/512×512-PNGs + Hash/IHDR/Manifestvertrag
-- v43: Private-Device-Truth/Dare-Texte physisch entfernt + Privacy-Source-Audit
-- v44: gemeinsamer Manifest-/iOS-/Icon-Head-Vertrag für Hub, Word Imposter, Creator, Advanced und Quick
-- v45: Cachegeneration nach 15/15-Core-Hardening; Resume-/Privacy-Guards explizit offline
-- v46: Hub-Accessibility-Hardening mit Bereichs-Fokusführung, modaler Hintergrundisolation und Fokus-Trap
-- v47: Accessibility-Hardening auf Advanced, Quick und Creator erweitert; `secondary-surface-a11y.js` im Offline-Core
-- **v48: Word-Imposter-Voting-Resume und lokale Custom-/Backup-Grenzen gehärtet; keine stille Kategorie-Trunkierung mehr**
+- v42: echte 192×192-/512×512-PWA-Rastericons + Hash/IHDR/Manifestvertrag
+- v43: Private-Device-Content physisch bereinigt
+- v44: einheitlicher PWA-Head-Vertrag der interaktiven Einstiegseiten
+- v45: Core-Hardening-/Resume-/Privacy-Ausbau
+- v46: Hub-Accessibility
+- v47: Advanced-/Quick-/Creator-Accessibility
+- v48: Word-Imposter Voting-Resume + Custom-/Backup-Datenhärtung
+- **v49: Hub-Resume-Guard als expliziter Offline-Core-Vertrag und Validator-Synchronisierung**
 
-Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
+Neue Versionen werden zuerst in `STAGING_CACHE` vorbereitet. Aktivierung erfolgt erst nach bewusster Nutzerentscheidung. Der aktive Cache wird nicht vor erfolgreicher Promotion zerstört.
 
-Bei jeder offline benötigten Dateiänderung:
+Bei jeder Änderung einer offline benötigten Datei:
 
 1. CORE-Liste prüfen
 2. Cachegeneration erhöhen
 3. Service-Worker-Test aktualisieren
-4. Architektur/Deployment/Privacy/Environment/Release-Dokumente synchronisieren
-5. reale alte→neue Updatepfade später testen
+4. Architektur/Deployment/Privacy/Environment/Hosting synchronisieren
+5. reale Alt→Neu- und Rollbackpfade später auf HTTPS-Staging testen
 
 ## 10. PWA-Installationsmetadaten
 
-Die interaktiven Einstiegseiten `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` verwenden denselben Installationsvertrag:
+`party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag: Manifest, Theme/Viewport, Apple-/Mobile-Metadaten, SVG-/PNG-Icons, Apple-Touch-Icon und CSP mit `manifest-src 'self'`.
 
-- responsiver Viewport mit `viewport-fit=cover`
-- `theme-color`
-- `referrer=no-referrer`
-- Mobile-/Apple-Web-App-Metadaten
-- CSP mit `manifest-src 'self'`
-- `manifest.webmanifest`
-- `icon.svg`
-- `icon-192.png` als PNG-Favicon und Apple-Touch-Icon
-
-`tests/pwa-head-metadata.test.js` schützt diesen Source-Vertrag. Reale Homescreen-/Installationsdarstellung bleibt ein Geräte-Gate.
+`tests/pwa-head-metadata.test.js` schützt die Source-Seite; reale Homescreen-/Standalone-Darstellung bleibt ein Geräte-Gate.
 
 ## 11. Accessibility als Definition of Done
 
-Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, ausreichend große Touchziele, Reduced Motion, 200-%-Zoom/Reflow, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
+Kernoberflächen benötigen semantische Struktur, beschriftete Controls, sichtbaren Fokus, Tastaturbedienung, modale Fokusgrenzen, ausreichend große Touchziele, Reduced Motion, 200-%-Zoom/Reflow und verständliche Statusmeldungen. Farbe allein darf keinen kritischen Status erklären.
 
-Für den Party Hub gilt seit v46:
-
-- sichtbare Bereichswechsel verschieben den programmatischen Fokus auf die neue Hauptüberschrift,
-- Detail- und aktive Spieloverlays sind als modale Dialoge ausgezeichnet,
-- der restliche Dokumenthintergrund wird während eines Overlays `inert`,
-- Tab/Shift+Tab bleibt innerhalb des aktiven Overlays,
-- die normale Skip-Link-Reihenfolge bleibt beim Erstladen unverändert.
-
-Seit v47 gilt zusätzlich:
-
-- Advanced-Spielrunden bilden einen modalen Tastaturkontext und isolieren den Setup-Hintergrund,
-- Quick-Phasen stellen Fokus wieder her, wenn die auslösende Aktion beim Re-Render entfernt wurde,
-- Creator-Schrittwechsel fokussieren die neue Schrittüberschrift,
-- Creator-Hilfe isoliert den Hintergrund und hält Tab/Shift+Tab im Dialog,
-- die Creator-Template-Radiogroup unterstützt roving `tabindex`, Pfeiltasten, Home und End.
-
-Private Reveal-Cover müssen mit Screenreader verständlich und nach bewusster Wiederöffnung fokussierbar sein.
-
-`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/e2e/accessibility-core.spec.js`, `scripts/hub_a11y_contract_audit.py` und `scripts/secondary_surface_a11y_contract_audit.py` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
+Quellseitige Schutzschichten sind `party-hub-a11y.js` und `secondary-surface-a11y.js`. VoiceOver, TalkBack, reale Touchbedienung, große Systemschrift und Geräte-/Browserprüfung bleiben Release-Evidence.
 
 ## 12. Inhalts- und Rechtevertrag
 
-- keine kopierten proprietären Karten anderer Apps
-- keine fremden Logos/Bilder/Audios/Zitate ohne geklärte Rechte
-- vermeidbare konkrete Marken-/Award-/Eventbegriffe generisch formulieren
-- konkrete Fan-/Franchise-Namen aus finalem Runtime-Content und ausgelieferten Source-Dateien entfernen, sofern kein zwingender Produktnutzen besteht
-- stabile interne IDs dürfen aus Migrationsgründen von sichtbaren Produktnamen abweichen
-- keine Aufforderung zur Offenlegung privater Chats, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten
-- Nutzerinhalte bleiben von Built-ins getrennt
+- keine kopierten proprietären Karten konkurrierender Apps
+- keine fremden Logos/Bilder/Audios/längeren Zitate ohne geklärte Rechte
+- unnötige konkrete Marken-/Franchise-/Eventbezüge vermeiden
+- Nutzerinhalte klar von Built-ins trennen
+- Asset-Provenienz maschinenlesbar halten
+- ein `unresolved` Releaseasset blockiert `assetsThirdParty = PASS`
 
-`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md`, `ASSET_RIGHTS_SIGNOFF.md` und die Content-Audits definieren die Release-Gates.
+`CONTENT_AGE_POLICY.md`, `CORE_CONTENT_REVIEW.md`, `FAN_CONTENT_REVIEW.md`, `THIRD_PARTY_NOTICES.md` und `ASSET_RIGHTS_SIGNOFF.md` bilden die Detailverträge.
 
 ## 13. Testpyramide
 
-Bei jedem Commit vorgesehen:
+Bei normalen Änderungen: Syntaxchecks, Unit-/Contracttests, Architektur-/Foundation-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
 
-- Syntaxchecks
-- Unit-/Contracttests
-- Strukturvalidatoren
-- Content-/Scoring-Audits
-- Resume-/Timerverträge
-- PWA-Head-/Privacy-/Reference-/Asset-/Placeholder-/Accessibility-/Performance-/Release-Audits
+Beim Release Candidate zusätzlich: echter Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, PWA Upgrade/Rollback, Android/iPhone/Tablet, VoiceOver/TalkBack/Zoom/Tastatur sowie reale Gruppen.
 
-Bei Release Candidates zusätzlich:
-
-- Chromium, Firefox, WebKit
-- reale Android-/iPhone-/Tablet-Tests
-- PWA Upgrade/Rollback
-- Screenreader/Zoom
-- reale Partygruppen
+Audits müssen **zustandsfähig** sein: Sie dürfen PREPARED/NO_GO heute validieren und einen späteren korrekt belegten FINAL/GO-Zustand nicht allein deshalb ablehnen, weil er nicht mehr „offen“ ist.
 
 ## 14. Performance und Assets
 
-Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. Accessibility-Querschnittsmodule bleiben bewusst klein und fachlogikfrei.
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. Keine Videos im Offline-Core der ersten Releaseversion ohne neue Performanceentscheidung.
 
-PWA-Icon-Vertrag:
+PWA-Assets:
 
-- `icon.svg`: Vektorquelle; Rechtebasis noch menschlich zu bestätigen
-- `icon-192.png`: echtes 192×192-PNG
-- `icon-512.png`: echtes 512×512-PNG
-- `assets/manifests/asset-provenance.json`: Hash/Ableitung/Rechtestatus
-- `ASSET_RIGHTS_SIGNOFF.md`: menschlicher Sign-off-Pfad
-- `scripts/asset_provenance_audit.py`: technischer Provenienzvertrag
+- `icon.svg`
+- `icon-192.png`
+- `icon-512.png`
+- `assets/manifests/asset-provenance.json`
 
-`unresolved` bleibt ein Releaseblocker.
+Technische Provenienz ist dokumentiert; die Rechtebasis wird separat menschlich freigegeben.
 
 ## 15. Betrieb, Deprecation und Rollback
 
-`SUPPORT.md`, `INCIDENT_RESPONSE.md`, `MAINTENANCE.md` und `DEPLOYMENT.md` definieren den Betriebsvertrag nach Release.
+`SUPPORT.md`, `INCIDENT_RESPONSE.md`, `MAINTENANCE.md`, `HOSTING_DECISION.md`, `OPERATOR_RELEASE_SIGNOFF.md` und `OPERATOR_EVIDENCE_LOG.md` definieren den Betriebsvertrag.
 
-Veraltete Funktionen werden dokumentiert migriert und nicht still entfernt. Keine Force-Pushes auf stabile Release-Basen. Rollback muss persistierte Daten kompatibel halten und benötigt bei PWA-Dateiänderungen erneut eine höhere Cachegeneration.
+Keine Force-Push-Annahme für stabile Release-Basen. Rollback erhält bei Offline-Core-Änderungen erneut eine neue Cachegeneration. Persistierte Daten müssen rückwärtsverträglich bleiben oder explizit migriert werden.
 
 ## 16. Releaseentscheidung
 
-Eine Funktion ist erst fertig, wenn Happy Path und Fehlerfälle funktionieren, Daten-/Migrationsverhalten geklärt ist, Security/Privacy/Offline/Accessibility berücksichtigt sind, relevante Tests vorhanden **und tatsächlich ausgeführt** wurden, Dokumentation synchron ist und releasekritische Flows real beobachtet wurden.
+Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und die erforderlichen realen Gates tatsächlich ausgeführt wurden**.
 
-**„Code vorhanden“ ist nicht gleich „Release PASS“.** Aktueller öffentlicher Release-Status: **NO_GO**.
+`release-evidence.json` ist die maschinenlesbare finale Quelle. `GO` ist nur zulässig, wenn alle Pflichtgates mit Evidence auf demselben unveränderten RC-Commit `PASS` sind.
