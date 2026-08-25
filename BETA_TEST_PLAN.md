@@ -24,7 +24,7 @@ Die eigentliche RC-Beta beginnt erst, wenn auf demselben Commit dokumentiert gr�
 - Chromium E2E
 - Cross-Browser mit Chromium, Firefox und WebKit
 
-Aktueller Blocker: Issue #7. Letzter vollst채ndig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand **#2715** endet vor Step 1 mit `steps: []`; der reine Bash-Runner-Probe zeigte dasselbe Muster. F체r v49 existiert noch kein echter Runner-PASS.
+Aktueller Blocker: Issue #7. Letzter vollst채ndig untersuchter v49-App-Actions-Lauf **#2787** (Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`) endete vor Step 1 mit `steps: null` / `steps: []`; kein Repositorycode wurde ausgef체hrt. Der reine Bash-Runner-Probe zeigte dasselbe Muster.
 
 Vorher d체rfen informelle UX-Proben stattfinden, aber sie z채hlen nicht als finale RC-Evidence.
 
