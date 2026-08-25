@@ -1,9 +1,10 @@
 # Secret Circle – Beta-, Geräte- und Gruppentestplan
 
-Stand: 23. August 2026  
+Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v45` / `secret-circle-v45-staging`**  
-Core Source Hardening: **15/15 PREPARED**
+Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**  
+Core Source Hardening: **15/15 PREPARED**  
+Accessibility Source Hardening: **PREPARED**
 
 ## 1. Ziel
 
@@ -21,7 +22,7 @@ Die eigentliche RC-Beta beginnt erst, wenn auf demselben Commit dokumentiert gr�
 - Chromium E2E
 - Cross-Browser mit Chromium, Firefox und WebKit
 
-Aktueller Blocker: Issue #7. App-CI Run #2401 und ein reiner Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
+Aktueller Blocker: Issue #7. Auch Run #2575 und ein reiner Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
 
 Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als finale RC-Evidence.
 
@@ -37,6 +38,7 @@ Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als fina
 - jedes Problem erhält Severity und reproduzierbare Notiz.
 - geheime Inhalte werden absichtlich auch bei App-/Tab-Wechsel getestet.
 - manipulierte Resume-Zustände werden nur mit neutralen Testdaten geprüft.
+- Fokus-/Tastaturprobleme werden als funktionale Accessibility-Funde dokumentiert, nicht nur als Kosmetik.
 
 ## 4. Mindest-Testmatrix
 
@@ -86,6 +88,7 @@ Ein einzelner Abend darf mehrere Sessions abdecken, wenn Beobachtung und Evidenc
 - Tastatur ohne Maus für Hauptnavigation/Katalog/Core-Spiel
 - 200-%-Zoom
 - Chromium plus mindestens ein weiterer Browser im manuellen Smoke
+- Detail- und Spieloverlay vollständig per Tab/Shift+Tab prüfen
 
 ## 6. Preflight vor jeder Beta
 
@@ -230,7 +233,7 @@ Prüfen:
 - History-Synchronisierung
 - Abbruch/Wechsel möglich
 
-## 13. PWA-v45-Update-Test
+## 13. PWA-v46-Update-Test
 
 Mindestens zwei echte ältere installierte Zustände gegen den finalen RC prüfen.
 
@@ -238,14 +241,15 @@ Mindestens zwei echte ältere installierte Zustände gegen den finalen RC prüfe
 2. Creator-Spiel anlegen.
 3. aktive Hub- oder Advanced-Session erzeugen.
 4. alte installierte PWA starten.
-5. v45/RC bereitstellen.
+5. v46/RC bereitstellen.
 6. Updatehinweis prüfen.
 7. Update zunächst verschieben.
 8. laufende Session fortsetzen.
 9. bewusst aktualisieren.
 10. Offline-Neustart.
-11. lokale Daten, Guards und Sessions prüfen.
-12. Cachebestand kontrollieren.
+11. lokale Daten, Resume-/Privacy-/A11y-Guards und Sessions prüfen.
+12. `party-hub-a11y.js` im Offlinebetrieb praktisch prüfen.
+13. Cachebestand kontrollieren.
 
 Keine alte Cachegeneration künstlich als getestet markieren.
 
@@ -263,12 +267,18 @@ Auf HTTPS-Staging:
 
 ## 15. Accessibility-Realtest
 
-### Tastatur
+### Tastatur / Fokus
 
-- Start → Spiele
-- Suche
-- Spieldetail
-- mindestens ein Core-Spiel
+- Erstladen: Skip-Link bleibt erster sinnvoller Tastaturtarget
+- Start → Spiele: sichtbare Hauptüberschrift erhält sinnvollen Fokus
+- Spiele → Spieler/Favoriten/Verlauf/Daten: neuer Bereich wird verständlich angekündigt/fokussiert
+- Suche vollständig per Tastatur
+- Spieldetail öffnen: Fokus im Dialog
+- Spieldetail: Tab und Shift+Tab verlassen das Modal nicht in Richtung Hintergrund
+- Spieldetail schließen: Fokus kehrt zum auslösenden Spiel zurück
+- aktive Hub-Spielrunde: Hintergrund bleibt nicht bedienbar
+- aktive Hub-Spielrunde: Tab/Shift+Tab bleiben im Spieloverlay
+- mindestens ein Core-Spiel vollständig per Tastatur
 - Advanced-Privatereveal
 - Creator
 - Pause/Fortsetzen
@@ -285,8 +295,11 @@ Auf HTTPS-Staging:
 
 - Seitentitel/Überschrift
 - Navigation
+- Bereichswechsel
 - Suche + Vorschläge
-- Spieldialog
+- Spieldialog als modal verständlich
+- aktive Spielrunde als modal verständlich
+- Hintergrund während Modal nicht störend erreichbar
 - private Reveal-Karte
 - Privacy-Cover
 - Pause/Fortsetzen
@@ -322,6 +335,7 @@ Pro gespieltem Core-Game notieren:
 - falscher Sieger/Score mit Produktwirkung
 - Resume/Timer systematisch kaputt
 - wichtiger Accessibilityflow blockiert
+- Tastaturfokus kann ein modales Core-Overlay nicht sinnvoll bedienen
 
 ### Medium
 
@@ -378,7 +392,8 @@ Vor `REAL USER / DEVICE PASS`:
 - [ ] VoiceOver abgeschlossen
 - [ ] TalkBack abgeschlossen
 - [ ] 200-%-Zoom abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v45/RC abgeschlossen
+- [ ] Tastatur-/Modalfokus-v46-Abnahme abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v46/RC abgeschlossen
 - [ ] HTTPS-Rollbackprobe abgeschlossen
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
