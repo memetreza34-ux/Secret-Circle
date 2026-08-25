@@ -114,6 +114,26 @@
     return window.SecretCirclePartyHubResumeGuard?.timerMatchesGame?.(game, session) === true;
   }
 
+  function setResumeUiPending(pending) {
+    const resume = document.querySelector('#hub-resume-session');
+    if (!resume) return false;
+    if (pending) resume.setAttribute('aria-busy', 'true');
+    else resume.removeAttribute('aria-busy');
+
+    for (const control of resume.querySelectorAll('button')) {
+      if (pending) {
+        if (!control.disabled) control.dataset.resumeGuardDisabled = 'true';
+        control.disabled = true;
+        control.setAttribute('aria-disabled', 'true');
+      } else if (control.dataset.resumeGuardDisabled === 'true') {
+        control.disabled = false;
+        control.removeAttribute('aria-disabled');
+        delete control.dataset.resumeGuardDisabled;
+      }
+    }
+    return true;
+  }
+
   function guardStoredResumeIntegrity() {
     const guard = window.SecretCirclePartyHubResumeGuard;
     if (!guard?.install) {
@@ -128,10 +148,13 @@
 
     const result = guard.install(window);
     if (!result) document.querySelector('#hub-resume-session')?.remove();
+    else setResumeUiPending(false);
     return result;
   }
 
   function loadHubResumeGuard() {
+    setResumeUiPending(true);
+
     if (window.SecretCirclePartyHubResumeGuard) {
       guardStoredResumeIntegrity();
       return Promise.resolve(true);
@@ -288,11 +311,12 @@
   loadHubA11y();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 15,
+    version: 16,
     updateStartLabel,
     updatePlaySafety,
     updatePlayActionLabels,
     timerStateMatchesGame,
+    setResumeUiPending,
     guardStoredResumeIntegrity,
     loadHubResumeGuard,
     privatePromptContext,
