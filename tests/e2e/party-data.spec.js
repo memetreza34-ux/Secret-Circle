@@ -72,7 +72,7 @@ test('complete backup exports Hub custom packs and Word Imposter local data toge
     version: window.SecretCirclePartyDataTools?.version,
     bytes: window.SecretCirclePartyDataTools?.byteLength('ä')
   }));
-  expect(api).toEqual({ version: 2, bytes: 2 });
+  expect(api).toEqual({ version: 5, bytes: 2 });
 
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Alles exportieren' }).click();
@@ -89,7 +89,7 @@ test('complete backup exports Hub custom packs and Word Imposter local data toge
   expect(payload.entries['secret-circle-settings-v7']).toContain('duration');
 });
 
-test('complete backup import replaces Secret Circle data and reloads safely', async ({ page }) => {
+test('complete backup import replaces managed Secret Circle data and reloads safely', async ({ page }) => {
   const reloaded = page.waitForEvent('load');
   await page.locator('#hub-import-data').setInputFiles({
     name: 'secret-circle-backup.json',
@@ -110,19 +110,73 @@ test('complete backup import replaces Secret Circle data and reloads safely', as
   await expect(page.locator('#custom-pack-list')).toContainText('Wortkette');
 });
 
+test('complete backup import preserves unknown future Secret Circle namespaces', async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem('secret-circle-future-feature-v99', JSON.stringify({ version: 99, keep: 'future-data' }));
+  });
+
+  const reloaded = page.waitForEvent('load');
+  await page.locator('#hub-import-data').setInputFiles({
+    name: 'older-backup.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(replacementBackup()))
+  });
+  await reloaded;
+
+  const result = await page.evaluate(() => ({
+    future: JSON.parse(localStorage.getItem('secret-circle-future-feature-v99')),
+    players: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players
+  }));
+  expect(result.future).toEqual({ version: 99, keep: 'future-data' });
+  expect(result.players).toEqual(['Aylin', 'Ben', 'Cem', 'Daria']);
+});
+
 test('invalid import is rejected without destroying existing local data', async ({ page }) => {
   await page.locator('#hub-import-data').setInputFiles({
     name: 'invalid.json',
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify({ format: 'unknown', entries: {} }))
   });
-  await expect(page.locator('#hub-status')).toContainText('keine unterstützte');
+  await expect(page.locator('#hub-status')).toContainText('entspricht nicht dem Schema');
   const snapshot = await page.evaluate(() => ({
     players: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players,
     custom: JSON.parse(localStorage.getItem('secret-circle-party-custom-packs-v1')).packs[0].name
   }));
   expect(snapshot.players).toEqual(['Alex', 'Sam', 'Mika']);
   expect(snapshot.custom).toBe('Eigene Runde');
+});
+
+test('plain text in an allowed storage key is rejected before mutation', async ({ page }) => {
+  const malformed = replacementBackup();
+  malformed.entries['secret-circle-party-hub-v1'] = 'not-json';
+
+  await page.locator('#hub-import-data').setInputFiles({
+    name: 'malformed-managed-value.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(malformed))
+  });
+  await expect(page.locator('#hub-status')).toContainText('Ungültiges JSON für secret-circle-party-hub-v1');
+
+  const snapshot = await page.evaluate(() => ({
+    players: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players,
+    custom: JSON.parse(localStorage.getItem('secret-circle-party-custom-packs-v1')).packs[0].name
+  }));
+  expect(snapshot.players).toEqual(['Alex', 'Sam', 'Mika']);
+  expect(snapshot.custom).toBe('Eigene Runde');
+});
+
+test('primitive JSON in an allowed storage key is rejected before mutation', async ({ page }) => {
+  const malformed = replacementBackup();
+  malformed.entries['secret-circle-party-hub-v1'] = JSON.stringify('not-an-object');
+
+  await page.locator('#hub-import-data').setInputFiles({
+    name: 'primitive-managed-value.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(malformed))
+  });
+  await expect(page.locator('#hub-status')).toContainText('Ungültige Datenstruktur für secret-circle-party-hub-v1');
+  const players = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players);
+  expect(players).toEqual(['Alex', 'Sam', 'Mika']);
 });
 
 test('multibyte backup over the byte limit is rejected before changing data', async ({ page }) => {
@@ -147,8 +201,9 @@ test('multibyte backup over the byte limit is rejected before changing data', as
   expect(players).toEqual(['Alex', 'Sam', 'Mika']);
 });
 
-test('failed import write rolls back every previous local entry', async ({ page }) => {
+test('failed import write rolls back every previous managed local entry', async ({ page }) => {
   await page.evaluate(() => {
+    localStorage.setItem('secret-circle-future-feature-v99', JSON.stringify({ keep: true }));
     const original = Storage.prototype.setItem;
     let failed = false;
     Storage.prototype.setItem = function setItem(key, value) {
@@ -169,9 +224,10 @@ test('failed import write rolls back every previous local entry', async ({ page 
   const snapshot = await page.evaluate(() => ({
     players: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players,
     custom: JSON.parse(localStorage.getItem('secret-circle-party-custom-packs-v1')).packs[0].name,
-    settings: JSON.parse(localStorage.getItem('secret-circle-settings-v7')).duration
+    settings: JSON.parse(localStorage.getItem('secret-circle-settings-v7')).duration,
+    future: JSON.parse(localStorage.getItem('secret-circle-future-feature-v99')).keep
   }));
-  expect(snapshot).toEqual({ players: ['Alex', 'Sam', 'Mika'], custom: 'Eigene Runde', settings: 3 });
+  expect(snapshot).toEqual({ players: ['Alex', 'Sam', 'Mika'], custom: 'Eigene Runde', settings: 3, future: true });
 });
 
 test('failed deletion rolls back instead of leaving partial local data', async ({ page }) => {
@@ -197,10 +253,11 @@ test('failed deletion rolls back instead of leaving partial local data', async (
   expect(snapshot).toEqual({ hub: true, custom: true, settings: true });
 });
 
-test('complete deletion removes Hub custom packs Imposter preferences and active sessions', async ({ page }) => {
+test('complete deletion removes Hub custom packs Imposter preferences active sessions and unknown Secret Circle namespaces', async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem('secret-circle-party-active-v1', JSON.stringify({ version: 2 }));
     localStorage.setItem('secret-circle-custom-v7', JSON.stringify([{ name: 'Test' }]));
+    localStorage.setItem('secret-circle-future-feature-v99', JSON.stringify({ keep: false }));
   });
   page.once('dialog', dialog => dialog.accept());
   const reloaded = page.waitForEvent('load');
