@@ -75,6 +75,35 @@ required_validate_audits = (
     'scripts/release_audit.py',
 )
 
+release_status = evidence.get('evidenceStatus')
+release_decision = evidence.get('releaseDecision')
+candidate = evidence.get('candidate') if isinstance(evidence.get('candidate'), dict) else {}
+gates = evidence.get('gates') if isinstance(evidence.get('gates'), dict) else {}
+operator_status = operator_evidence.get('evidenceStatus')
+operator_gate = operator_evidence.get('operatorGate')
+branch_gate_status = (gates.get('branchProtection') or {}).get('status')
+branch_doc_match = re.search(r'Evidence-Status:\s*\*\*(OPEN|PASS)\*\*', branch)
+branch_doc_status = branch_doc_match.group(1) if branch_doc_match else None
+expected_branch_doc_status = 'PASS' if branch_gate_status == 'PASS' else 'OPEN'
+
+release_state_valid = (
+    release_status in {'PREPARED', 'FINAL'}
+    and release_decision in {'NO_GO', 'GO'}
+    and not (release_status == 'PREPARED' and release_decision != 'NO_GO')
+    and not (release_status == 'PREPARED' and candidate.get('commit') is not None)
+    and not (release_decision == 'GO' and release_status != 'FINAL')
+)
+operator_state_valid = (
+    operator_status in {'PREPARED', 'FINAL'}
+    and operator_gate in {'BLOCKED', 'READY'}
+    and not (operator_status == 'PREPARED' and operator_gate != 'BLOCKED')
+    and not (operator_gate == 'READY' and operator_status != 'FINAL')
+)
+operator_release_crosscheck = all(
+    (gates.get(name) or {}).get('status') != 'PASS' or operator_gate == 'READY'
+    for name in ('legalPrivacy', 'supportIncident')
+)
+
 checks = {
     'lockfile_v3': lock.get('lockfileVersion') == 3 and lock.get('name') == package.get('name'),
     'npm_ci_main': 'npm ci --ignore-scripts --no-audit --no-fund' in ci and 'npm install ' not in ci,
@@ -93,18 +122,25 @@ checks = {
         'apple-mobile-web-app-title', 'apple-mobile-web-app-status-bar-style',
         'icon-192\\.png', 'apple-touch-icon', 'manifest-src'
     )),
-    'branch_protection_not_falsely_claimed': 'GitHub-Einstellung selbst noch nicht belastbar bestätigt' in branch,
+    'branch_contract_is_stateful': all(marker in branch for marker in (
+        'Evidence-Status:', 'release-evidence.json → gates.branchProtection', 'Secret Circle CI / validate'
+    )),
+    'branch_contract_matches_release_evidence': branch_doc_status in {'OPEN', 'PASS'} and branch_doc_status == expected_branch_doc_status,
     'branch_required_check_defined': 'Secret Circle CI / validate' in branch,
-    'https_staging_real_execution_open': 'PREPARED – konkrete HTTPS-Staging-URL offen' in environments,
+    'environment_contract_is_stateful': all(marker in environments for marker in (
+        'Local → CI/Test → HTTPS-Staging → Release Candidate → Production',
+        'getrennte Origin', 'scripts/staging_smoke.py'
+    )),
     'staging_smoke_command_documented': 'npm run staging:smoke' in environments and 'npm run staging:smoke' in deployment,
     'production_smoke_mode_documented': '--production' in environments and '--production' in deployment,
     'current_pwa_contract_documented': current_cache in environments and current_cache in deployment and 'tests/pwa-head-metadata.test.js' in environments and 'tests/pwa-head-metadata.test.js' in deployment,
     'hosting_current_cache_documented': current_cache in hosting_decision,
     'release_evidence_schema': evidence.get('schemaVersion') == 1 and evidence.get('product') == 'Secret Circle – Party Hub',
-    'release_evidence_stays_no_go_before_rc': evidence.get('evidenceStatus') == 'PREPARED' and evidence.get('releaseDecision') == 'NO_GO' and evidence.get('candidate', {}).get('commit') is None,
+    'release_evidence_state_valid': release_state_valid,
     'release_evidence_doc_binds_one_commit': 'unveränderten Release-Candidate-Commit' in evidence_doc and '15' in evidence_doc and 'releaseDecision = GO' in evidence_doc,
     'operator_evidence_schema': operator_evidence.get('schemaVersion') == 1,
-    'operator_gate_not_falsely_ready': operator_evidence.get('evidenceStatus') == 'PREPARED' and operator_evidence.get('operatorGate') == 'BLOCKED',
+    'operator_state_valid': operator_state_valid,
+    'operator_release_gate_crosscheck': operator_release_crosscheck,
     'operator_signoff_contract': all(marker in operator_signoff for marker in ('operator-release.json', 'OPERATOR_EVIDENCE_LOG.md', 'Hostingentscheidung', 'Support', 'Incident Response', 'FINAL / READY')),
     'operator_real_world_log_contract': all(marker in operator_log for marker in (
         'Supportkontakt-Test', 'Security-/Privacy-Meldeweg-Test', 'Probe-Supportfall',
@@ -112,9 +148,11 @@ checks = {
         'Operator Gate: BLOCKED / READY'
     )),
     'hosting_decision_contract': all(marker in hosting_decision for marker in (current_cache, 'Staging-Origin', 'Production-Origin', 'Accesslogs', 'Rollback')),
-    'legal_real_values_required': 'Kein öffentliches GO mit Platzhaltern' in legal and 'LEGAL NO_GO' in legal,
-    'support_real_contact_required': 'echter Supportkontakt festgelegt' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
-    'incident_real_owners_required': 'reale Verantwortliche eingetragen' in incident and 'PREPARED / PRODUCTION NO_GO' in incident,
+    'legal_release_contract': all(marker in legal for marker in (
+        'operator-release.json', 'DDG', 'TDDDG', 'VSBG', 'scripts/operator_release_contract_audit.py'
+    )),
+    'support_release_contract': all(marker in support for marker in ('SUPPORT PASS', 'echter Supportkontakt festgelegt', 'Security/Privacy')),
+    'incident_release_contract': all(marker in incident for marker in ('INCIDENT RESPONSE PASS', 'SEV-1', 'Rollback')),
     'privacy_source_policy_documented': 'keine privaten Nachrichten, Fotos, Passwörter, Adressen oder Kontodaten als Spielmaterial verlangen' in content_policy,
     'third_party_lockfile_inventory': all(marker in third_party for marker in (
         'package-lock.json', '`playwright`', '`playwright-core`', '`fsevents`', 'scripts/lockfile_contract_audit.py'
@@ -127,27 +165,37 @@ checks = {
         'reale Gruppe',
         'release-evidence.json'
     )),
-    'no_false_online_install_claim': 'echter Online-`npm ci`-PASS' in third_party and 'Noch offen' in third_party,
+    'third_party_requires_online_install_evidence': 'echter Online-`npm ci`-PASS' in third_party and 'unverändertem Commit' in third_party,
 }
 
 failed = [name for name, passed in checks.items() if not passed]
 if failed:
     raise SystemExit('Release readiness contract failed: ' + ', '.join(failed))
 
+
+def gate_status(name):
+    return (gates.get(name) or {}).get('status', 'MISSING')
+
 print(json.dumps({
     'release_readiness_contract_audit': 'PASS',
-    'static_release_contract': 'PREPARED',
-    'release_evidence': 'PREPARED_NO_GO_SINGLE_RC_CONTRACT',
-    'operator_evidence': 'PREPARED_BLOCKED_UNTIL_REAL_VALUES',
-    'operator_real_world_evidence_log': 'PREPARED_NOT_EXECUTED',
+    'static_release_contract': release_status,
+    'release_evidence': f'{release_status}_{release_decision}',
+    'operator_evidence': f'{operator_status}_{operator_gate}',
+    'operator_real_world_evidence_log': 'REQUIRED_FOR_READY',
     'pwa_cache': current_cache,
-    'pwa_head_metadata': 'CURRENT_CACHE_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
-    'hub_accessibility_contract': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
-    'word_imposter_data_contract': 'PREPARED_NOT_RUNNER_VERIFIED',
-    'online_npm_ci': 'OPEN',
-    'github_branch_protection': 'OPEN',
-    'https_staging_network_smoke': 'OPEN',
-    'real_devices_accessibility_groups_legal': 'OPEN',
-    'public_release': 'NO_GO',
+    'pwa_head_metadata': 'SOURCE_CONTRACT_PRESENT',
+    'hub_accessibility_contract': 'SOURCE_CONTRACT_PRESENT',
+    'word_imposter_data_contract': 'SOURCE_CONTRACT_PRESENT',
+    'online_npm_ci': gate_status('ci'),
+    'github_branch_protection': gate_status('branchProtection'),
+    'https_staging_network_smoke': gate_status('stagingHttpSmoke'),
+    'android': gate_status('android'),
+    'ios': gate_status('ios'),
+    'tablet': gate_status('tablet'),
+    'accessibility': gate_status('accessibility'),
+    'groups': gate_status('groups'),
+    'legal_privacy': gate_status('legalPrivacy'),
+    'support_incident': gate_status('supportIncident'),
+    'public_release': release_decision,
     'checks': checks,
 }, ensure_ascii=False, indent=2))
