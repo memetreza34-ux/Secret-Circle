@@ -6,10 +6,10 @@ Stand: 25. August 2026
 
 Secret Circle besitzt normale GitHub-Actions-Workflows, aber die geprüften Jobs erreichen weiterhin **keinen Workflow-Schritt**.
 
-Aktuellster bestätigter v48-App-CI-Befund: **Run #2715** (`Secret Circle CI`) auf Head **`9f87910567a60e5ce905ced42bb62201b3e3a85d`** / Job `validate`.
+Aktuellster bestätigter v49-App-CI-Befund: **Run #2787** (`Secret Circle CI`) auf Head **`a9ad91389ff9e966af432b0a77103ddc0960709d`** / Job `validate`.
 
-- Run-ID `32850361668`
-- Job-ID `97809595781`
+- Run-ID `32871536761`
+- Job-ID `97879489858`
 - `completed / failure`
 - Jobliste liefert `steps: null`
 - separate Step-Abfrage liefert `steps: []`
@@ -22,7 +22,7 @@ Aktuellster bestätigter v48-App-CI-Befund: **Run #2715** (`Secret Circle CI`) a
 - kein Playwright
 - kein Repositorycode ausgeführt
 
-Run #2715 liegt auf dem **v48-/Word-Imposter-Daten-/Resume-Hardening-Stand**. Damit wurden auch die neuen 50/51- und 200/201-Grenztests, die 1,5-MB-UTF-8-Importgrenze, der offene-Wähler-Votingpfad sowie die bestehenden v46/v47-A11y-Verträge nicht durch einen GitHub-Runner ausgeführt.
+Run #2787 liegt auf dem **v49-/Hub-Resume-v2-/Release-Audit-/Operator-Evidence-Hardening-Stand**. Damit wurden auch der zentrale `party-hub-resume-guard.js` v2, der stale-Resume-UI-Regressionsfall, die transition-safe Release-Audits und die v49-Dokument-/PWA-Verträge nicht durch einen GitHub-Runner ausgeführt.
 
 Das wiederholte Muster ist **kein Beweis für einen Codefehler**, weil der Repositorycode nicht startet.
 
@@ -45,13 +45,13 @@ Der verbleibende Fehlerbereich liegt **vor der Step-Ausführung**, insbesondere 
 
 ## Wiederholbarkeit
 
-Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363, #2387, #2401, #2565, #2575, #2627, #2637, #2685, **#2715** und der isolierte Runner-Probe Run #7.
+Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363, #2387, #2401, #2565, #2575, #2627, #2637, #2685, #2715 und **#2787** sowie der isolierte Runner-Probe Run #7.
 
-Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A11y, v47-Secondary-A11y und v48-Word-Imposter-Datenhardening hinweg verstärkt die Diagnose: Der unmittelbare Fehler tritt **vor jeder Repositoryausführung** auf.
+Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A11y, v47-Secondary-A11y, v48-Word-Imposter-Datenhardening und nun v49-Hub-Resume-/Release-Audit-Hardening hinweg verstärkt die Diagnose: Der unmittelbare Fehler tritt **vor jeder Repositoryausführung** auf.
 
 ## Aktueller Buildvertrag
 
-- Offline-Core `secret-circle-v48` / `secret-circle-v48-staging`
+- Offline-Core `secret-circle-v49` / `secret-circle-v49-staging`
 - `package-lock.json` v3
 - `@playwright/test`, `playwright`, `playwright-core` 1.54.2; optional `fsevents` 2.3.2
 - feste Registry-URLs + `sha512`-Integrities
@@ -60,9 +60,11 @@ Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A1
 - `scripts/hub_a11y_contract_audit.py`
 - `scripts/secondary_surface_a11y_contract_audit.py`
 - `tests/word-imposter-data-contract.test.js`
+- `tests/party-hub-resume-guard.test.js`
 - `scripts/operator_release_contract_audit.py`
 - `scripts/release_readiness_contract_audit.py`
-- erweiterter `scripts/architecture_audit.py` für Resume-/Privacy-/A11y-Productionmodule
+- `scripts/release_audit.py`
+- `scripts/architecture_audit.py`
 
 Ein echter Online-`npm ci`-PASS bleibt offen, weil Actions Step 1 nicht erreicht.
 
@@ -74,14 +76,13 @@ Unter anderem vorhanden:
 - Lockfile-/Branch-Protection-Audits
 - Hub- und Secondary-Surface-A11y-Audits
 - Word-Imposter-Daten-/Voting-Contracttest
+- Hub-Resume-v2-Contracttest
 - HTTPS-Staging-Smoke + Contract-Audit
 - PWA-Head-Metadata-Test für fünf interaktive Einstiegseiten
 - Privacy-/Reference-/Asset-/Media-/Placeholder-Audits
-- Operator-/Hosting-/Legal-/Support-/Incident-Vertrag
+- Operator-/Hosting-/Legal-/Support-/Incident-Vertrag + `OPERATOR_EVIDENCE_LOG.md`
 - `release-evidence.json` + `RELEASE_EVIDENCE.md`
-- `scripts/release_evidence_audit.py`
-- `scripts/release_readiness_contract_audit.py`
-- `scripts/release_audit.py`
+- transition-safe Release-Readiness-/Release-Audits
 
 Diese Gates sind implementiert, aber nicht durch einen Actions-Runner ausgeführt.
 
@@ -135,7 +136,7 @@ Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere Reposit
 3. Online-`npm ci` / Integrity-Download prüfen
 4. ersten echten Repositoryfehler isolieren
 5. `npm run check`
-6. `npm test` inklusive `tests/word-imposter-data-contract.test.js`
+6. `npm test` inklusive `tests/word-imposter-data-contract.test.js` und `tests/party-hub-resume-guard.test.js`
 7. `npm run validate` einschließlich A11y-/Architektur-/Operator-/Release-Evidence-Audits
 8. Chromium E2E
 9. vollständiges `npm run ci`
