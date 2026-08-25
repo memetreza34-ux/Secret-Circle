@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = [
     'operator-release.json',
     'OPERATOR_RELEASE_SIGNOFF.md',
+    'OPERATOR_EVIDENCE_LOG.md',
     'HOSTING_DECISION.md',
     'LEGAL_CHECKLIST.md',
     'SUPPORT.md',
@@ -18,14 +19,26 @@ REQUIRED_FILES = [
     'release-evidence.json',
     'sw.js',
 ]
+PUBLIC_ENTRY_PAGES = [
+    'index.html',
+    'party.html',
+    'advanced.html',
+    'quick-play.html',
+    'creator.html',
+]
+PLACEHOLDER_RE = re.compile(
+    r'\b(?:TBD|TODO|REPLACE[_ -]?ME)\b|example\.(?:com|org|net|invalid)|\{\{[^}]+\}\}|<INSERT[_ -][^>]+>',
+    re.IGNORECASE,
+)
 
-for relative in REQUIRED_FILES:
+for relative in REQUIRED_FILES + PUBLIC_ENTRY_PAGES:
     if not (ROOT / relative).is_file():
         raise SystemExit(f'Operator release contract missing file: {relative}')
 
 payload = json.loads((ROOT / 'operator-release.json').read_text(encoding='utf-8'))
 evidence = json.loads((ROOT / 'release-evidence.json').read_text(encoding='utf-8'))
 signoff = (ROOT / 'OPERATOR_RELEASE_SIGNOFF.md').read_text(encoding='utf-8')
+evidence_log = (ROOT / 'OPERATOR_EVIDENCE_LOG.md').read_text(encoding='utf-8')
 hosting_doc = (ROOT / 'HOSTING_DECISION.md').read_text(encoding='utf-8')
 legal_doc = (ROOT / 'LEGAL_CHECKLIST.md').read_text(encoding='utf-8')
 support_doc = (ROOT / 'SUPPORT.md').read_text(encoding='utf-8')
@@ -53,9 +66,14 @@ if gate == 'READY' and status != 'FINAL':
 
 for marker, source, label in (
     ('operator-release.json', signoff, 'operator sign-off'),
+    ('OPERATOR_EVIDENCE_LOG.md', signoff, 'operator sign-off'),
     ('Hostingentscheidung', signoff, 'operator sign-off'),
     ('Support', signoff, 'operator sign-off'),
     ('Incident Response', signoff, 'operator sign-off'),
+    ('Supportkontakt-Test', evidence_log, 'operator evidence log'),
+    ('Security-/Privacy-Meldeweg-Test', evidence_log, 'operator evidence log'),
+    ('Probe-SEV-1', evidence_log, 'operator evidence log'),
+    ('HTTPS-Staging-Rollback-Drill', evidence_log, 'operator evidence log'),
     (current_cache, hosting_doc, 'hosting decision'),
     ('Legal- und Veröffentlichungscheckliste', legal_doc, 'legal checklist'),
     ('SUPPORT PASS', support_doc, 'support contract'),
@@ -92,6 +110,29 @@ def https_origin(value):
     return parsed.scheme.lower() == 'https' and bool(parsed.netloc) and parsed.path in {'', '/'} and not parsed.query and not parsed.fragment
 
 
+def safe_public_html(value):
+    if not present(value):
+        return None
+    relative = value.strip()
+    path = Path(relative)
+    if path.is_absolute() or '..' in path.parts or path.suffix.lower() != '.html':
+        return None
+    candidate = ROOT / path
+    if not candidate.is_file():
+        return None
+    return relative
+
+
+def public_source(relative):
+    return (ROOT / relative).read_text(encoding='utf-8')
+
+
+def reject_placeholders(relative, source):
+    match = PLACEHOLDER_RE.search(source)
+    if match:
+        raise SystemExit(f'READY public page contains placeholder text in {relative}: {match.group(0)}')
+
+
 def require_ready_contract():
     required_operator = ('legalName', 'legalForm', 'serviceAddress')
     missing_operator = [key for key in required_operator if not present(operator.get(key))]
@@ -117,8 +158,12 @@ def require_ready_contract():
         if hosting.get(key) is not True:
             raise SystemExit(f'READY hosting evidence requires {key}=true.')
 
-    if not present(public_legal.get('privacyPage')) or not present(public_legal.get('legalNoticePage')):
-        raise SystemExit('READY public legal evidence requires privacy and legal notice pages.')
+    privacy_page = safe_public_html(public_legal.get('privacyPage'))
+    legal_page = safe_public_html(public_legal.get('legalNoticePage'))
+    if not privacy_page or not legal_page:
+        raise SystemExit('READY public legal evidence requires existing relative privacy and legal-notice HTML pages.')
+    if privacy_page == legal_page:
+        raise SystemExit('Privacy page and legal notice page must be separate public surfaces.')
     for key in (
         'privacyHostingTextFinal', 'operatorDetailsPublished', 'supportLinkPublished',
         'vsbgPositionPublishedIfRequired', 'noObsoleteEuOdrLink'
@@ -147,8 +192,39 @@ def require_ready_contract():
     ):
         if legal.get(key) is not True:
             raise SystemExit(f'READY legal evidence requires {key}=true.')
-    if not present(legal.get('reviewedAt')):
-        raise SystemExit('READY legal evidence requires reviewedAt.')
+    reviewed_at = legal.get('reviewedAt')
+    if not present(reviewed_at) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', reviewed_at.strip()):
+        raise SystemExit('READY legal evidence requires reviewedAt in YYYY-MM-DD form.')
+
+    privacy_source = public_source(privacy_page)
+    legal_source = public_source(legal_page)
+    reject_placeholders(privacy_page, privacy_source)
+    reject_placeholders(legal_page, legal_source)
+
+    for label, value in (
+        ('operator legal name', operator.get('legalName')),
+        ('operator public email', operator.get('publicEmail')),
+        ('hosting provider', hosting.get('provider')),
+    ):
+        if value.strip() not in privacy_source:
+            raise SystemExit(f'READY privacy page does not publish final {label}.')
+
+    for label, value in (
+        ('operator legal name', operator.get('legalName')),
+        ('operator service address', operator.get('serviceAddress')),
+        ('operator public email', operator.get('publicEmail')),
+        ('support email', support.get('publicSupportEmail')),
+    ):
+        if value.strip() not in legal_source:
+            raise SystemExit(f'READY legal notice page does not publish final {label}.')
+
+    for relative in PUBLIC_ENTRY_PAGES:
+        source = public_source(relative)
+        reject_placeholders(relative, source)
+        if privacy_page not in source:
+            raise SystemExit(f'READY public entry page does not link privacy page: {relative}')
+        if legal_page not in source:
+            raise SystemExit(f'READY public entry page does not link legal notice page: {relative}')
 
 
 if gate == 'READY':
@@ -166,7 +242,11 @@ print(json.dumps({
     'operator_gate': gate,
     'current_pwa_cache': current_cache,
     'ready_contract_enforced': True,
+    'real_world_evidence_log_required': True,
     'https_origin_separation_required': True,
+    'public_legal_pages_required_when_ready': True,
+    'public_entry_legal_links_required_when_ready': PUBLIC_ENTRY_PAGES,
+    'final_public_values_cross_checked_when_ready': True,
     'tested_support_and_security_required': True,
     'incident_and_rollback_drills_required': True,
     'release_evidence_cross_check': ['legalPrivacy', 'supportIncident'],
