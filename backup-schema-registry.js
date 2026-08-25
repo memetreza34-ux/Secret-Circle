@@ -45,7 +45,7 @@
       maximumValueBytes: 1_000_000,
       storagePrefix: 'secret-circle-',
       allowedKeys: COMPLETE_STORAGE_KEYS,
-      // Backward-compatible descriptor name for older audits/UI. Values are now exact,
+      // Backward-compatible descriptor name for older audits/UI. Values are exact,
       // not wildcard families, so a future storage version survives an older restore.
       allowedKeyFamilies: COMPLETE_STORAGE_KEYS,
       scope: 'Alle aktuell anerkannten lokalen Secret-Circle-Daten',
@@ -70,6 +70,10 @@
     if (typeof Buffer === 'function') return Buffer.byteLength(text, 'utf8');
     if (typeof Blob === 'function') return new Blob([text]).size;
     return encodeURIComponent(text).replace(/%[0-9A-F]{2}|./gi, 'x').length;
+  }
+
+  function isObject(value) {
+    return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
   }
 
   function get(id) {
@@ -106,6 +110,43 @@
     return key.length <= 120 && COMPLETE_STORAGE_KEY_SET.has(key);
   }
 
+  function validateCompleteStorageValue(keyInput, value) {
+    const key = String(keyInput ?? '');
+    if (!isAllowedCompleteStorageKey(key)) return false;
+
+    switch (key) {
+      case 'secret-circle-active-v7':
+        return isObject(value) && value.version === 7;
+      case 'secret-circle-custom-v7':
+      case 'secret-circle-history-v7':
+        return Array.isArray(value);
+      case 'secret-circle-settings-v7':
+        return isObject(value);
+      case 'secret-circle-party-hub-v1':
+        return isObject(value) && value.version === 1 && Array.isArray(value.players);
+      case 'secret-circle-party-hub-active-v1':
+        return isObject(value) && value.version === 1 && isObject(value.session);
+      case 'secret-circle-party-active-v1':
+        return isObject(value) && [1, 2].includes(value.version) && typeof value.gameId === 'string' && isObject(value.session);
+      case 'secret-circle-party-quick-active-v1':
+      case 'secret-circle-party-mega-active-v1':
+      case 'secret-circle-party-viral-active-v1':
+      case 'secret-circle-party-created-active-v1':
+        return isObject(value) && value.version === 1 && typeof value.gameId === 'string';
+      case 'secret-circle-party-created-games-v1':
+        return isObject(value) && value.version === 1 && Array.isArray(value.games);
+      case 'secret-circle-party-custom-packs-v1':
+        return isObject(value) && value.version === 1 && Array.isArray(value.packs);
+      case 'secret-circle-party-night-v1':
+        return isObject(value) && value.version === 1 && Array.isArray(value.steps);
+      case 'secret-circle-party-preferences-v1':
+      case 'secret-circle-party-catalog-filters-v1':
+        return isObject(value) && value.version === 1;
+      default:
+        return false;
+    }
+  }
+
   return Object.freeze({
     version: VERSION,
     maximumFileBytes: MAX_FILE_BYTES,
@@ -117,6 +158,7 @@
     identify,
     validateHeader,
     assertSize,
-    isAllowedCompleteStorageKey
+    isAllowedCompleteStorageKey,
+    validateCompleteStorageValue
   });
 });
