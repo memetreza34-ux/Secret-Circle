@@ -13,7 +13,7 @@
   const MAX_BYTES = schema.maximumBytes;
   const MAX_ENTRIES = schema.maximumEntries;
   const MAX_VALUE_BYTES = schema.maximumValueBytes;
-  const VERSION = 4;
+  const VERSION = 5;
 
   function byteLength(value) {
     return registry.byteLength(value);
@@ -48,6 +48,10 @@
     return entries;
   }
 
+  function snapshotManagedEntries() {
+    return collectEntries();
+  }
+
   function snapshotAllEntries() {
     const entries = Object.create(null);
     for (const key of allSecretCircleKeys()) {
@@ -55,6 +59,10 @@
       if (value !== null) entries[key] = value;
     }
     return entries;
+  }
+
+  function clearManagedEntries() {
+    for (const key of backupKeys()) localStorage.removeItem(key);
   }
 
   function clearAllSecretCircleEntries() {
@@ -67,20 +75,35 @@
 
   function replaceEntries(entries) {
     const target = Array.isArray(entries) ? entries : Object.entries(entries || {});
-    const snapshot = snapshotAllEntries();
+    const snapshot = snapshotManagedEntries();
     try {
-      clearAllSecretCircleEntries();
+      // A restore owns only namespaces registered by BackupSchemaRegistry. Unknown/future
+      // Secret Circle keys must survive an older backup import instead of being erased.
+      clearManagedEntries();
       writeEntries(target);
       return { ok: true, replaced: target.length };
     } catch (error) {
       try {
-        clearAllSecretCircleEntries();
+        clearManagedEntries();
         writeEntries(Object.entries(snapshot));
       } catch (rollbackError) {
         throw new Error(`Import und Rollback sind fehlgeschlagen. Bitte Browserdaten nicht weiter verändern: ${rollbackError?.message || 'unbekannter Rollback-Fehler'}`);
       }
       throw new Error(`Import abgebrochen und alte Daten wiederhergestellt: ${error?.message || 'lokaler Speicherfehler'}`);
     }
+  }
+
+  function parseStoredJson(key, value) {
+    let parsed;
+    try {
+      parsed = JSON.parse(value);
+    } catch {
+      throw new Error(`Ungültiges JSON für ${key}`);
+    }
+    if (parsed === null || (typeof parsed !== 'object')) {
+      throw new Error(`Ungültige Datenstruktur für ${key}`);
+    }
+    return parsed;
   }
 
   function validateBackup(payload, rawBytes) {
@@ -102,8 +125,10 @@
         throw new Error(`Ungültiger Wert für ${key}`);
       }
       seen.add(key);
-      const trimmed = value.trim();
-      if (trimmed.startsWith('{') || trimmed.startsWith('[')) JSON.parse(value);
+      // Every currently managed Secret Circle storage family is JSON-backed. Accepting
+      // arbitrary plain text would let a formally allowed key overwrite valid data with
+      // a state that the owning runtime can only discard on its next load.
+      parseStoredJson(key, value);
     }
     return entries;
   }
@@ -129,7 +154,7 @@
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
     const suffix = unsupported.length
-      ? ` ${unsupported.length} unbekannte alte Namespace-Datensätze wurden aus Sicherheitsgründen nicht exportiert.`
+      ? ` ${unsupported.length} unbekannte alte oder neuere Namespace-Datensätze wurden aus Sicherheitsgründen nicht exportiert und werden bei einem Import nicht verändert.`
       : '';
     setStatus(`${Object.keys(entries).length} anerkannte lokale Datensätze exportiert.${suffix}`);
   }
