@@ -37,6 +37,22 @@ Stand: 25. August 2026
 - Mafia: Rollenanzahl nach Gruppengröße/Pack, Alive-Menge und Sieger werden validiert; manipulierte Sieger-/Rollenstände werden verworfen.
 - Unit-/E2E-Verträge für manipulierte Advanced-Snapshots angelegt.
 
+### Hub-Accessibility-Hardening – v46
+
+- konkreten Fokusfehler behoben: Hub-Bereichswechsel riefen zuvor `focus()` auf nicht fokussierbaren Überschriften auf; die neue A11y-Schicht setzt den sichtbaren `h1/h2` programmatisch `tabindex="-1"` und fokussiert ihn kontrolliert.
+- konkretes Modalproblem behoben: Spieldetail und aktive Hub-Runde ließen zuvor Tastaturfokus in den verdeckten Hintergrund wandern.
+- `party-hub-a11y.js` Version 2 ergänzt.
+- aktive Hub-Spielrunde als `role="dialog"` + `aria-modal="true"` ausgezeichnet.
+- Hintergrund-Siblings werden während Spieldetail/Spielrunde über `inert` isoliert.
+- dynamisch hinzugefügte Body-Siblings werden bei offenem Overlay ebenfalls isoliert.
+- Tab und Shift+Tab werden innerhalb des aktiven Overlays zyklisch gehalten.
+- Erstladen behält den Skip-Link als ersten sinnvollen Tastaturtarget.
+- `tests/accessibility-contract.test.js` um Modal-, Inert-, Fokus- und Fokus-Trap-Verträge erweitert.
+- `tests/e2e/accessibility-core.spec.js` prüft Bereichsfokus, Detailmodal-Fokus-Trap und aktive Spielrunde als modalen Tastaturkontext.
+- `scripts/hub_a11y_contract_audit.py` ergänzt und in `npm run validate` eingebunden.
+- `scripts/architecture_audit.py` erweitert: Word-Imposter-/Hub-/Advanced-Resume-/Privacy-Guards und `party-hub-a11y.js` werden jetzt als echte Production-/Offline-Module geprüft.
+- reale VoiceOver-/TalkBack-/Zoom-/Touch-/Browser-Abnahme bleibt offen; Accessibility steht deshalb weiterhin auf **PREPARED**, nicht PASS.
+
 ### Core-Content / Privacy / Reference
 
 - alle 15 priorisierten Core-Games auf quantitative Releaseziele gebracht.
@@ -53,10 +69,10 @@ Stand: 25. August 2026
 - v42: echtes `icon-192.png` 192×192 und echtes `icon-512.png` 512×512; Hash/IHDR/Manifestgrößen werden geprüft.
 - v43: Private-Device-Content physisch aus dem Runtime-Pool entfernt.
 - v44: gemeinsamer Manifest-/iOS-/Icon-Head-Vertrag für Hub, Word Imposter, Creator, Advanced und Quick.
-- **v45:** neue Cachegeneration nach dem 15/15-Core-Hardening. Offline-Core jetzt `secret-circle-v45` / `secret-circle-v45-staging`.
-- v45 enthält die neuen Word-Imposter-/Hub-/Advanced-Resume- und Advanced-Privacy-Guards explizit offline.
-- `sw.js`, Service-Worker-Test, Architektur, Deployment, Environment, Privacy und Release-Dokumentation auf v45 synchronisiert.
-- `scripts/release_readiness_contract_audit.py` enthielt noch einen hart codierten v44-Vertrag und wurde auf v45 korrigiert.
+- v45: neue Cachegeneration nach dem 15/15-Core-Hardening; Word-Imposter-/Hub-/Advanced-Resume- und Advanced-Privacy-Guards explizit offline.
+- **v46:** neue Cachegeneration wegen des Hub-Accessibility-Hardenings. Offline-Core jetzt `secret-circle-v46` / `secret-circle-v46-staging` und enthält `party-hub-a11y.js`.
+- `sw.js`, Service-Worker-Test, Architektur, Deployment, Environment, Privacy, Accessibility, Release-/Beta-/Manual-Dokumentation und Issue #8 auf v46 synchronisiert.
+- Operator- und Release-Readiness-Audit lesen die aktuelle Cachegeneration inzwischen dynamisch aus `sw.js`, statt bei jedem Cachebump einen alten Versionsstring zu verlangen.
 - reale Installations-, Upgrade-, Rollback- und Gerätetests bleiben offen.
 
 ### Reproduzierbarer Build / Supply Chain
@@ -66,27 +82,25 @@ Stand: 25. August 2026
 - Registry-URLs und `sha512`-Integrities festgehalten.
 - keine npm-Runtime-Dependencies.
 - normaler CI- und Cross-Browser-Workflow verwenden `npm ci --ignore-scripts --no-audit --no-fund`.
-- `scripts/lockfile_contract_audit.py` in `npm run validate` integriert.
+- Lockfile-, A11y-, Operator- und Release-Readiness-Audits in `npm run validate` integriert.
 - echter Online-`npm ci`-PASS bleibt bis funktionierendem Runner offen.
 
 ### Operator / Hosting / Legal / Support / Incident
 
-- `operator-release.json` als neue maschinenlesbare Betreiber-/Hosting-/Support-/Incident-Akte ergänzt; startet bewusst mit **`PREPARED / BLOCKED`**.
+- `operator-release.json` als maschinenlesbare Betreiber-/Hosting-/Support-/Incident-Akte ergänzt; startet bewusst mit **`PREPARED / BLOCKED`**.
 - `OPERATOR_RELEASE_SIGNOFF.md` bündelt den menschlichen Betreiber-/Legal-/Support-/Incident-Sign-off.
-- `HOSTING_DECISION.md` definiert Provider-, HTTPS-Origin-, Log-/Retention-, Processor-/Drittland- und Rollbackprüfung.
-- `scripts/operator_release_contract_audit.py` ergänzt und in `npm run validate` integriert.
-- Audit verlangt für `READY`: reale Betreiber-/Kontaktwerte, getrennte HTTPS-Staging-/Production-Origin, dokumentierte Hosting-/Privacybedingungen, getestete Support-/Securitywege sowie SEV-1-/Rollback-Drills.
+- `HOSTING_DECISION.md` definiert Provider-, HTTPS-Origin-, Log-/Retention-, Processor-/Drittland- und Rollbackprüfung und ist auf den v46-Smoke aktualisiert.
+- `scripts/operator_release_contract_audit.py` verlangt für `READY`: reale Betreiber-/Kontaktwerte, getrennte HTTPS-Staging-/Production-Origin, dokumentierte Hosting-/Privacybedingungen, getestete Support-/Securitywege sowie SEV-1-/Rollback-Drills.
 - `release-evidence.json` bindet `legalPrivacy` und `supportIncident` an `operator-release.json = FINAL / READY`.
-- `RELEASE_EVIDENCE.md`, `RELEASE_CHECKLIST.md` und `scripts/release_readiness_contract_audit.py` auf denselben Vertrag synchronisiert.
-- `LEGAL_CHECKLIST.md` auf Stand **25. August 2026** gebracht; DDG/TDDDG/VSBG und Abschaltung der EU-OS-Plattform erneut gegen amtliche/primäre Quellen geprüft.
-- `SUPPORT.md` enthält jetzt verbindlichen Probe-Supportfall und zentrale Operator-Kontaktquelle.
-- `INCIDENT_RESPONSE.md` enthält einen verbindlichen Probe-SEV-1 einschließlich neuer Cachegeneration, HTTPS-Staging und Rollbacknachweis.
-- **Issue #14** neu: operative Checkliste für reale Operator-/Hosting-/Legal-/Support-/Incident-Evidence.
+- `LEGAL_CHECKLIST.md` auf Stand **25. August 2026** gebracht.
+- `SUPPORT.md` enthält verbindlichen Probe-Supportfall und zentrale Operator-Kontaktquelle.
+- `INCIDENT_RESPONSE.md` enthält verbindlichen Probe-SEV-1 einschließlich neuer Cachegeneration, HTTPS-Staging und Rollbacknachweis.
+- **Issue #14** führt die reale Operator-/Hosting-/Legal-/Support-/Incident-Evidence.
 
 ### HTTPS-Staging / Production-Smoke
 
 - `scripts/staging_smoke.py` prüft HTTPS-Ressourcen, Same-Origin-Redirects, Größenlimits, Kernrouten, Manifest, PNG-Dimensionen, SW-Cache, Registry-Ladereihenfolge sowie Privacy-/Reference-Safe-Source-Verträge.
-- aktueller erwarteter Cache: **`secret-circle-v45`**.
+- aktueller erwarteter Cache: **`secret-circle-v46`**.
 - `--production` verschärft öffentliche Placeholder-Prüfungen.
 - reale Provider-/Staging-/Production-Origin und Netzwerk-Smokes bleiben offen.
 
@@ -99,30 +113,29 @@ Stand: 25. August 2026
 
 ### Accessibility / Beta
 
-- statischer Accessibility-Contract und Playwright-E2E-Basis vorhanden.
-- Issue #8 sowie Beta-/Manual-Testpläne decken v45, 15 Core-Games, reale Android-/iPhone-/Tablet-, VoiceOver-/TalkBack-/200-%-Zoom-, PWA-Upgrade-/Rollback- und Gruppentests ab.
+- Issue #8 sowie `BETA_TEST_PLAN.md` und `MANUAL_TEST_PLAN.md` sind auf v46 aktualisiert.
+- reale Matrix umfasst Android/iPhone/iPad, VoiceOver/TalkBack, 200-%-Zoom, 320-CSS-px-Reflow, Tastatur, Modal-Fokus, PWA-Upgrade/Rollback und reale Gruppen.
 - reale Durchführung bleibt offen.
 
 ### Third Party / Assets
 
 - gelockte Playwright-Paketkette vollständig inventarisiert.
 - Asset-Provenienz-, Media-Inventar-, Reference-, Privacy- und Placeholder-Audits vorhanden.
-- `ASSET_RIGHTS_SIGNOFF.md` ergänzt: `icon.svg` darf erst nach echter menschlicher Herkunfts-/Rechtebestätigung auf einen verifizierten Status wechseln.
+- `ASSET_RIGHTS_SIGNOFF.md`: `icon.svg` darf erst nach echter menschlicher Herkunfts-/Rechtebestätigung auf einen verifizierten Status wechseln.
 - `icon.svg`, `icon-192.png` und `icon-512.png` bleiben bis dahin korrekt `unresolved`.
 
 ### CI / Hosted Runner – P0
 
-- aktueller App-CI-Lauf: **Run #2565**, Run ID `32808084307`, Job `97681972379`, Head `668c65fce0233553fb2013631be2abe6cfd2f2a4`.
-- Ergebnis: `failure`; Jobliste `steps: null`, separate Step-Abfrage `steps: []`, Joblogs nicht vorhanden.
+- zuletzt ausdrücklich untersuchter aktueller-Branch-Lauf: **Run #2575**, Job `97682633520`.
+- Ergebnis: `failure`, separate Step-Abfrage `steps: []`, keine Joblogs.
 - kein Checkout, kein Node/Python, kein npm, keine Tests und kein Repository-Code ausgeführt.
 - früherer temporärer Runner-Probe ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code – nur lokales Bash `echo`/`uname` – endete ebenfalls vor Step 1 mit `steps: []`.
-- damit sind Secret-Circle-Code, npm, Playwright und Checkout-Actions als unmittelbare Ursache des aktuellen Fehlermusters ausgeschlossen.
+- damit liegt die unmittelbare Fehlerfläche weiterhin vor der Repository-Ausführung.
 - verbleibender Prüfbereich: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung.
-- Issue #7 und `CI_TROUBLESHOOTING.md` auf Run #2565 aktualisiert.
 
 ### Release-Status
 
-- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta**, **#14 Operator/Hosting/Legal/Support**.
+- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y**, **#14 Operator/Hosting/Legal/Support**.
 - Draft-PR #13 bleibt ungemergt.
 - öffentlicher Release bleibt **NO_GO**.
 - kein CI-, Geräte-, Accessibility-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echten Nachweis behauptet.
