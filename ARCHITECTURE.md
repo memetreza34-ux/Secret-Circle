@@ -45,10 +45,10 @@ Privacy-/Reference-Safe-Entscheidungen werden nicht nur in einer späteren Ersat
 - `party-hub-timers.js`: Scharade, Tabu, Heiße Kartoffel und Wortkette
 - `party-session-controls.js`: gemeinsame pausierbare Session-/Timersteuerung
 - `party-hub-resume-guard.js`: eigenständige Validierung gespeicherter Hub-Timerzustände
-- `party-hub-polish.js`: Live-Guidance, Privacy-Handoff und ergänzende UI-Schutzlogik
+- `party-hub-polish.js`: Live-Guidance, Privacy-Handoff, Resume-Guard-Ladesteuerung und ergänzende UI-Schutzlogik
 - `party-hub-a11y.js`: Fokus-, Modal- und Hintergrundisolation des Hubs
 
-Die Hub-A11y-Schicht wird kontrolliert aus `party-hub-polish.js` geladen. Der Resume-Guard ist ein eigenständiger, testbarer Runtime-Vertrag und Bestandteil des Offline-Core.
+Die Hub-A11y-Schicht wird kontrolliert aus `party-hub-polish.js` geladen. Der Resume-Guard ist ein eigenständiger, testbarer Runtime-Vertrag und Bestandteil des Offline-Core. **Seit v50 wird eine bereits sichtbare Resume-Karte während der asynchronen Guard-Prüfung fail-closed gesperrt (`aria-busy`, deaktivierte Buttons) und erst nach erfolgreicher Validierung wieder freigegeben.** Dadurch kann ein inkonsistenter Snapshot nicht in einem kurzen Ladefenster angeklickt werden.
 
 ## 6. Weitere Runtime-Grenzen
 
@@ -85,7 +85,7 @@ Kritische Datenoperationen validieren zuerst, halten den alten Zustand fest, sch
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**.
+Aktueller Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**.
 
 Relevante jüngere Generationen:
 
@@ -96,7 +96,8 @@ Relevante jüngere Generationen:
 - v46: Hub-Accessibility
 - v47: Advanced-/Quick-/Creator-Accessibility
 - v48: Word-Imposter Voting-Resume + Custom-/Backup-Datenhärtung
-- **v49: Hub-Resume-Guard als expliziter Offline-Core-Vertrag und Validator-Synchronisierung**
+- v49: zentraler Hub-Resume-Guard + Validator-Synchronisierung
+- **v50: fail-closed Resume-UI-Quarantäne während der Guard-Ladephase**
 
 Neue Versionen werden zuerst in `STAGING_CACHE` vorbereitet. Aktivierung erfolgt erst nach bewusster Nutzerentscheidung. Der aktive Cache wird nicht vor erfolgreicher Promotion zerstört.
 
