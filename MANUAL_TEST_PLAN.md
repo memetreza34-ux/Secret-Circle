@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**  
+Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Dieser Plan ergänzt die automatisierten Prüfungen. Ein technisch startbarer Modus gilt erst nach den jeweils zutreffenden Tests als manuell abgenommen.
@@ -36,13 +36,13 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Checkout ausgeführt
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` grün
-- [ ] `npm test` grün inklusive `tests/word-imposter-data-contract.test.js`
+- [ ] `npm test` grün inklusive `tests/word-imposter-data-contract.test.js` und `tests/party-hub-resume-guard.test.js`
 - [ ] `npm run validate` grün
 - [ ] Chromium E2E grün
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Aktueller externer Blocker: Issue #7. Aktuellster geprüfter v48-Lauf **#2715** erreicht keinen ersten Workflow-Step (`steps: []`).
+Aktueller externer Blocker: Issue #7. Letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand **#2715** erreicht keinen ersten Workflow-Step (`steps: []`). Für v49 existiert noch kein echter Runner-PASS.
 
 ## 2. Hub-Smoke
 
@@ -82,7 +82,7 @@ Aktueller externer Blocker: Issue #7. Aktuellster geprüfter v48-Lauf **#2715** 
 - [ ] Punkte korrekt
 - [ ] Abschluss genau einmal
 
-### Custom-/Backup-Grenzen – v48
+### Custom-/Backup-Grenzen – in v48 eingeführt, auf v49-RC zu bestätigen
 
 - [ ] UI erklärt maximal 50 eigene Kategorien und 2–200 Begriffe je Kategorie
 - [ ] 50 Kategorien akzeptiert
@@ -118,11 +118,23 @@ Spezifisch:
 - [ ] Wortkette: letzter Buchstabe/Kategorie/keine Wiederholung manuell verstanden
 - [ ] Nur falsche Antworten: richtige/zu langsame Antwort verliert manuell, App scorelos
 
+### Hub Resume Guard v2 – v49
+
+- [ ] gültige normale Hub-Session bleibt fortsetzbar
+- [ ] gültiger laufender Scharade-Timer bleibt fortsetzbar
+- [ ] Wahrheit-oder-Pflicht-Snapshot mit eingeschleustem Scharade-Timer wird verworfen
+- [ ] Scharade-Snapshot mit Tabu-Timer wird verworfen
+- [ ] laufender Timer mit `remainingMs = 0` wird verworfen
+- [ ] bereits gerenderte `#hub-resume-session` verschwindet beim Verwerfen ebenfalls
+- [ ] sichtbare Fehlermeldung erklärt das sichere Verwerfen
+- [ ] gültige gespeicherte Session wird vom Guard nicht verändert
+- [ ] Verhalten identisch online und offline
+
 ## 5. Advanced Core
 
 Für Zwei Wahrheiten/eine Lüge, Question Imposter, Location Spy und Mafia jeweils Fachlogik, Privacy, Resume und Siegerzustand prüfen.
 
-Zusätzlich historischer v47-A11y-Vertrag auf dem aktuellen v48-RC:
+Zusätzlich historischer v47-A11y-Vertrag auf dem aktuellen v49-RC:
 
 - [ ] `advanced-play-layer` wird als modaler Dialog verstanden
 - [ ] Setup/Skip-Link sind während aktiver Runde per Tastatur nicht erreichbar
@@ -192,7 +204,7 @@ Prüfen:
 
 ## 10. Backup / Datenschutz
 
-- [ ] Word-Imposter-Backup inklusive v48-Grenzen
+- [ ] Word-Imposter-Backup inklusive der in v48 eingeführten Grenzen
 - [ ] Gesamtexport
 - [ ] Creator-Bibliothek
 - [ ] ungültiges JSON / unbekannter Namespace abgelehnt
@@ -202,7 +214,7 @@ Prüfen:
 - [ ] vollständige lokale Löschung
 - [ ] keine Spieldaten an eigenen Server übertragen
 
-## 11. PWA / Offline – v48
+## 11. PWA / Offline – v49
 
 - [ ] Online-Erststart
 - [ ] Android-Installation
@@ -210,16 +222,18 @@ Prüfen:
 - [ ] Flugmodus
 - [ ] Hub/Word Imposter/Advanced/Quick/Creator/Privacy offline
 - [ ] Query-Routen offline
-- [ ] Resume-/Privacy-Guards offline
+- [ ] Word-Imposter-/Hub-/Advanced-Resume-/Privacy-Guards offline
+- [ ] `party-hub-resume-guard.js` v2 offline und echte Runtime-Quelle
 - [ ] `party-hub-a11y.js` offline geladen
 - [ ] `secondary-surface-a11y.js` offline geladen
-- [ ] Word-Imposter-v48-UI-/Store-Logik offline aktuell
+- [ ] aktuelle Word-Imposter-UI-/Store-Logik offline
 - [ ] Hub-Bereichsfokus / Modal-Fokus-Trap offline
 - [ ] Advanced-Modal-Fokus-Trap offline
 - [ ] Quick-Fokus-Recovery offline
 - [ ] Creator-Wizard-/Help-/Radiogroup-A11y offline
 - [ ] Word-Imposter 50/51-, 200/201- und Voting-Resume-Verträge offline
-- [ ] Update von mindestens zwei echten älteren Installationen auf v48/RC
+- [ ] Hub-Resume-v2-Race-Fall offline
+- [ ] Update von mindestens zwei echten älteren Installationen auf v49/RC
 - [ ] Update zunächst staged
 - [ ] aktive Session nicht ungefragt ersetzt
 - [ ] `Später` behält aktuelle Version
@@ -285,7 +299,8 @@ Muss real auf Android und iOS bestätigt werden.
 - [ ] 5–8 Personen / ≥90 min
 - [ ] 9–12 Personen / ≥90 min
 - [ ] Word Imposter mit mehreren Impostern
-- [ ] Word-Imposter-v48-Datengrenzen mit neutralen Testdaten
+- [ ] Word-Imposter-Datengrenzen mit neutralen Testdaten
+- [ ] Hub-Resume-v2 mit neutralem Testzustand
 - [ ] Mafia
 - [ ] Scharade/Tabu
 - [ ] Party Night
@@ -311,10 +326,11 @@ Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
 - [ ] HTTPS-Staging/Production-Smoke grün
 - [ ] Android/iPhone/iPad real
 - [ ] Accessibility real inklusive Hub-/Advanced-/Quick-/Creator-Pfade
-- [ ] Word-Imposter-v48-Voting-/Daten-/Importverträge real
+- [ ] Word-Imposter-Voting-/Daten-/Importverträge real
+- [ ] Hub Resume Guard v2 real
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
-- [ ] G1–G5, DWI und PN1–PN3 abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v48/RC + Rollback
+- [ ] G1–G5, DWI, HR2 und PN1–PN3 abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v49/RC + Rollback
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content-/Rechte-/Legal-/Support-/Hosting-Sign-off
 - [ ] Incident-/Rollback-Drill
