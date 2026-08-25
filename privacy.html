@@ -56,8 +56,8 @@
       <p>Nein. Beim Laden oder Aktualisieren ruft der Browser lediglich statische App-Dateien vom Hosting-Anbieter ab. Spieldaten werden nicht an einen eigenen Secret-Circle-Server gesendet.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, Resume-/Privacy-Guards, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v45</code>.</p>
-      <p>v44 vereinheitlichte den lokalen Manifest-/Icon-/iOS-Installationsvertrag für Hub, Word Imposter, Creator, Advanced und Quick. v45 erhöht die Cachegeneration nach dem 15/15-Core-Hardening und nimmt die neuen Resume-/Privacy-Guard-Dateien explizit in den Offline-Core auf.</p>
+      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, Resume-/Privacy-/Accessibility-Guards, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v46</code>.</p>
+      <p>v44 vereinheitlichte den lokalen Manifest-/Icon-/iOS-Installationsvertrag. v45 nahm die Core-Hardening-Resume-/Privacy-Guards explizit in den Offline-Core auf. v46 erhöht die Cachegeneration erneut für das Hub-Accessibility-Hardening einschließlich Fokusführung, modaler Hintergrundisolation und Tastatur-Fokus-Trap.</p>
 
       <h2>Daten löschen</h2>
       <p>„Alle lokalen Daten löschen“ entfernt sämtliche Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>, einschließlich eigener Spiele und aktiver Sessions. Das Löschen ist absichtlich breiter als der Backup-Import, damit auch alte oder verwaiste Secret-Circle-Schlüssel entfernt werden. Exportierte Dateien müssen separat im Dateisystem gelöscht werden.</p>
