@@ -6,7 +6,7 @@ Stand: 25. August 2026
 
 Secret Circle besitzt normale GitHub-Actions-Workflows, aber die geprüften Jobs erreichen weiterhin **keinen Workflow-Schritt**.
 
-Aktuellster bestätigter v49-App-CI-Befund: **Run #2787** (`Secret Circle CI`) auf Head **`a9ad91389ff9e966af432b0a77103ddc0960709d`** / Job `validate`.
+Aktuellster vollständig untersuchter App-CI-Befund bleibt der v49-Lauf **Run #2787** (`Secret Circle CI`) auf Head **`a9ad91389ff9e966af432b0a77103ddc0960709d`** / Job `validate`.
 
 - Run-ID `32871536761`
 - Job-ID `97879489858`
@@ -22,7 +22,9 @@ Aktuellster bestätigter v49-App-CI-Befund: **Run #2787** (`Secret Circle CI`) a
 - kein Playwright
 - kein Repositorycode ausgeführt
 
-Run #2787 liegt auf dem **v49-/Hub-Resume-v2-/Release-Audit-/Operator-Evidence-Hardening-Stand**. Damit wurden auch der zentrale `party-hub-resume-guard.js` v2, der stale-Resume-UI-Regressionsfall, die transition-safe Release-Audits und die v49-Dokument-/PWA-Verträge nicht durch einen GitHub-Runner ausgeführt.
+Run #2787 liegt auf dem **v49-/Hub-Resume-v2-/Release-Audit-/Operator-Evidence-Hardening-Stand**. Damit wurden der zentrale `party-hub-resume-guard.js` v2, der stale-Resume-UI-Regressionsfall und die transition-safe Release-Audits nicht durch einen GitHub-Runner ausgeführt.
+
+Der aktuelle Source-/Offline-Core ist inzwischen **v50**. v50 ergänzt die fail-closed Ladephase des Hub-Resume-Schutzes: Bereits gerenderte Resume-Aktionen sind bis zum Abschluss der Guard-Validierung gesperrt. Auch dieser v50-Vertrag besitzt weiterhin **keinen echten Runner-PASS**.
 
 Das wiederholte Muster ist **kein Beweis für einen Codefehler**, weil der Repositorycode nicht startet.
 
@@ -47,11 +49,12 @@ Der verbleibende Fehlerbereich liegt **vor der Step-Ausführung**, insbesondere 
 
 Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363, #2387, #2401, #2565, #2575, #2627, #2637, #2685, #2715 und **#2787** sowie der isolierte Runner-Probe Run #7.
 
-Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A11y, v47-Secondary-A11y, v48-Word-Imposter-Datenhardening und nun v49-Hub-Resume-/Release-Audit-Hardening hinweg verstärkt die Diagnose: Der unmittelbare Fehler tritt **vor jeder Repositoryausführung** auf.
+Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A11y, v47-Secondary-A11y, v48-Word-Imposter-Datenhardening und v49-Hub-Resume-/Release-Audit-Hardening hinweg verstärkt die Diagnose: Der unmittelbare Fehler tritt **vor jeder Repositoryausführung** auf. v50 ändert an dieser externen Diagnose nichts.
 
 ## Aktueller Buildvertrag
 
-- Offline-Core `secret-circle-v49` / `secret-circle-v49-staging`
+- Offline-Core `secret-circle-v50` / `secret-circle-v50-staging`
+- Hub Resume Guard v2 + fail-closed Lade-/Button-Sperre
 - `package-lock.json` v3
 - `@playwright/test`, `playwright`, `playwright-core` 1.54.2; optional `fsevents` 2.3.2
 - feste Registry-URLs + `sha512`-Integrities
@@ -76,7 +79,7 @@ Unter anderem vorhanden:
 - Lockfile-/Branch-Protection-Audits
 - Hub- und Secondary-Surface-A11y-Audits
 - Word-Imposter-Daten-/Voting-Contracttest
-- Hub-Resume-v2-Contracttest
+- Hub-Resume-v2-Contracttest inklusive v50-Ladephasen-Sperre
 - HTTPS-Staging-Smoke + Contract-Audit
 - PWA-Head-Metadata-Test für fünf interaktive Einstiegseiten
 - Privacy-/Reference-/Asset-/Media-/Placeholder-Audits
