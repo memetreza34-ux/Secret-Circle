@@ -9,18 +9,33 @@ Draft-PR: #13
 
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v47` / `secret-circle-v47-staging`**  
+**Offline-Core:** **`secret-circle-v48` / `secret-circle-v48-staging`**  
 **Classic Content:** **v4**  
 **Core Source Review:** **15/15 PREPARED**  
 **Core Source Hardening:** **15/15 PREPARED**  
 **Accessibility Source Hardening:** **PREPARED**  
+**Word-Imposter Data/Resume Hardening:** **PREPARED**  
 **Operator / Hosting / Legal:** **PREPARED / BLOCKED**
 
-v45 war die Core-Hardening-Generation, v46 brachte Hub-A11y. **v47** erweitert das Accessibility-Hardening auf Advanced, Quick und Creator und enthält `secondary-surface-a11y.js` offline.
+v45 war die Core-Hardening-Generation, v46 brachte Hub-A11y, v47 erweiterte Accessibility auf Advanced/Quick/Creator. **v48** bündelt Word-Imposter-Voting-Resume und lokale Custom-/Backup-Datenhärtung.
 
 ## Core-Hardening – 15/15
 
 Word Imposter, soziale Hub-Spiele, Paranoia, Scharade/Tabu, Heiße Kartoffel, Wortkette, Nur falsche Antworten sowie Advanced/Mafia sind quellsseitig auf Setup, Privacy, Resume, Timer, Regeln und Sieger-/Scoreintegrität gehärtet. Details: `CORE_GAME_ACCEPTANCE.md`.
+
+## Word-Imposter Data/Resume – v48
+
+- nächste abstimmende Person wird aus den tatsächlich **noch offenen Vote-Keys** abgeleitet
+- nicht-sequenzielle manipulierte Voting-Snapshots bleiben durch den Resume-Guard blockiert
+- maximal 50 eigene Kategorien
+- maximal 200 Begriffe je Kategorie
+- 51/201 werden abgelehnt statt still gekürzt
+- 1,5-MB-UTF-8-Backupgrenze zwischen UI und Store synchron
+- abgelehnte Imports verändern bestehende Daten nicht
+- sichtbare UI-Hinweise für 50 Kategorien / 2–200 Begriffe
+- `tests/storage.test.js` + `tests/word-imposter-data-contract.test.js`
+
+**Noch offen:** echte Ausführung dieser Tests auf dem Runner sowie realer Browser-/PWA-Smoke. Deshalb PREPARED, nicht PASS.
 
 ## Accessibility-Hardening – v46/v47
 
@@ -42,16 +57,14 @@ Word Imposter, soziale Hub-Spiele, Paranoia, Scharade/Tabu, Heiße Kartoffel, Wo
 - Creator-Hilfe modal + Hintergrundisolation + Fokus-Trap + Rückkehrfokus
 - Creator-Template-Radiogroup mit roving `tabindex`, Pfeiltasten, Home und End
 - `scripts/secondary_surface_a11y_contract_audit.py` in `npm run validate`
-- neue E2E-Pfade für Advanced, Quick und Creator
-- globaler Architektur-Audit behandelt beide A11y-Schichten als Production-/Offline-Module
 
-**Noch offen:** echter Runner, VoiceOver/TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserabnahme. Deshalb PREPARED, nicht PASS.
+Beide A11y-Schichten bleiben im v48-Offline-Core. **Noch offen:** echter Runner, VoiceOver/TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserabnahme.
 
 ## Operator / Hosting / Legal / Support
 
 - `operator-release.json`: `PREPARED / BLOCKED`
 - `OPERATOR_RELEASE_SIGNOFF.md`
-- `HOSTING_DECISION.md` auf v47-Smokevertrag
+- `HOSTING_DECISION.md` auf v48-Smokevertrag
 - `LEGAL_CHECKLIST.md` Stand 25. August 2026
 - `SUPPORT.md` / `INCIDENT_RESPONSE.md`
 - Issue #14 führt reale Operator-/Hosting-/Legal-/Support-/Incident-Schritte
@@ -62,26 +75,33 @@ Word Imposter, soziale Hub-Spiele, Paranoia, Scharade/Tabu, Heiße Kartoffel, Wo
 - Playwright exakt 1.54.2
 - keine npm-Runtime-Dependencies
 - CI/Cross-Browser verwenden `npm ci`
-- Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Operator- und Readiness-Audits eingebunden
+- Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Word-Imposter-Daten-, Operator- und Readiness-Verträge eingebunden
 
 **Offen:** echter Online-`npm ci`-/Integrity-PASS auf funktionierendem Runner.
 
-## PWA v47
+## PWA v48
 
 Service Worker:
 
-- `secret-circle-v47`
-- `secret-circle-v47-staging`
+- `secret-circle-v48`
+- `secret-circle-v48-staging`
 
-Offline enthalten sind Hub/Word Imposter/Advanced/Quick/Creator/Privacy, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Resume-/Privacy-Guards, `party-hub-a11y.js`, `secondary-surface-a11y.js`, Manifest und Icons.
+Offline enthalten sind Hub/Word Imposter/Advanced/Quick/Creator/Privacy, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Resume-/Privacy-Guards, beide A11y-Schichten, aktuelle Word-Imposter-UI-/Store-Dateien, Manifest und Icons.
 
 Reale Installation, Upgrades, Rollback und Offline-Gerätetest bleiben offen.
 
 ## CI – P0
 
-Der jüngste ausdrücklich untersuchte Lauf vor dem v47-Block war **Run #2637** und zeigte erneut `steps: []`. Kein Checkout, npm, Test oder Repository-Code wurde ausgeführt. Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit.
+Aktuellster bestätigter v48-Lauf: **Run #2715**.
 
-Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+- Run ID `32850361668`
+- Job `validate`, Job ID `97809595781`
+- Head `9f87910567a60e5ce905ced42bb62201b3e3a85d`
+- `failure`
+- `steps: null` / separate Step-Abfrage `steps: []`
+- kein Checkout, npm, Test oder Repository-Code ausgeführt
+
+Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit. Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## Release Evidence / Assets
 
@@ -92,7 +112,7 @@ Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-R
 ## Drei zentrale offene GitHub-Blocker
 
 1. **Issue #7** – Hosted Runner vor Step 1
-2. **Issue #8** – reale Geräte, v47 Offline-PWA, Accessibility und Partytests
+2. **Issue #8** – reale Geräte, v48 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen und Partytests
 3. **Issue #14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 ## Real offene Releasegates
@@ -101,15 +121,16 @@ Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-R
 2. Online-`npm ci` + CI/Cross-Browser
 3. Branch Protection real aktiv
 4. Hostingprovider + getrennte HTTPS-Origins
-5. v47 Staging-/Production-/PWA-Smokes
-6. v47 Upgrade/Rollback auf echten Installationen
-7. Android / iPhone / Tablet
-8. VoiceOver / TalkBack / Hub-/Advanced-/Quick-/Creator-Tastaturpfade / 200-%-Zoom
-9. reale Gruppen/Beta für alle 15 Core-Spiele
-10. Icon-/Visual-/Third-Party-Sign-off
-11. Operator-/Privacy-/Support-/Legal-Sign-off
-12. Support-/Security-/SEV-1-/Rollback-Drill
-13. unveränderter RC + Release Evidence FINAL/GO
+5. v48 Staging-/Production-/PWA-Smokes
+6. v48 Upgrade/Rollback auf echten Installationen
+7. Word-Imposter-v48-Daten-/Voting-Verträge real ausführen
+8. Android / iPhone / Tablet
+9. VoiceOver / TalkBack / Hub-/Advanced-/Quick-/Creator-Tastaturpfade / 200-%-Zoom
+10. reale Gruppen/Beta für alle 15 Core-Spiele
+11. Icon-/Visual-/Third-Party-Sign-off
+12. Operator-/Privacy-/Support-/Legal-Sign-off
+13. Support-/Security-/SEV-1-/Rollback-Drill
+14. unveränderter RC + Release Evidence FINAL/GO
 
 ## Releaseentscheidung
 
