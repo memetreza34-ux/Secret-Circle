@@ -7,8 +7,25 @@
 
   const VERSION = 2;
   const MAX_FILE_BYTES = 1_500_000;
-  const WORD_STORAGE_KEY = /^secret-circle-(active|custom|history|settings)-v\d+$/;
-  const PARTY_STORAGE_KEY = /^secret-circle-party-[a-z0-9-]+-v\d+$/;
+  const COMPLETE_STORAGE_KEYS = Object.freeze([
+    'secret-circle-active-v7',
+    'secret-circle-custom-v7',
+    'secret-circle-history-v7',
+    'secret-circle-settings-v7',
+    'secret-circle-party-hub-v1',
+    'secret-circle-party-hub-active-v1',
+    'secret-circle-party-active-v1',
+    'secret-circle-party-quick-active-v1',
+    'secret-circle-party-mega-active-v1',
+    'secret-circle-party-viral-active-v1',
+    'secret-circle-party-created-active-v1',
+    'secret-circle-party-created-games-v1',
+    'secret-circle-party-custom-packs-v1',
+    'secret-circle-party-night-v1',
+    'secret-circle-party-preferences-v1',
+    'secret-circle-party-catalog-filters-v1'
+  ]);
+  const COMPLETE_STORAGE_KEY_SET = new Set(COMPLETE_STORAGE_KEYS);
 
   const schemas = Object.freeze({
     wordImposter: Object.freeze({
@@ -27,11 +44,11 @@
       maximumEntries: 100,
       maximumValueBytes: 1_000_000,
       storagePrefix: 'secret-circle-',
-      allowedKeyFamilies: Object.freeze([
-        'secret-circle-(active|custom|history|settings)-v<version>',
-        'secret-circle-party-<name>-v<version>'
-      ]),
-      scope: 'Alle anerkannten lokalen Secret-Circle-Daten',
+      allowedKeys: COMPLETE_STORAGE_KEYS,
+      // Backward-compatible descriptor name for older audits/UI. Values are now exact,
+      // not wildcard families, so a future storage version survives an older restore.
+      allowedKeyFamilies: COMPLETE_STORAGE_KEYS,
+      scope: 'Alle aktuell anerkannten lokalen Secret-Circle-Daten',
       extension: '.json'
     }),
     creatorLibrary: Object.freeze({
@@ -86,13 +103,13 @@
 
   function isAllowedCompleteStorageKey(value) {
     const key = String(value ?? '');
-    if (!key || key.length > 120) return false;
-    return WORD_STORAGE_KEY.test(key) || PARTY_STORAGE_KEY.test(key);
+    return key.length <= 120 && COMPLETE_STORAGE_KEY_SET.has(key);
   }
 
   return Object.freeze({
     version: VERSION,
     maximumFileBytes: MAX_FILE_BYTES,
+    completeStorageKeys: COMPLETE_STORAGE_KEYS,
     schemas,
     list: Object.freeze(Object.values(schemas)),
     byteLength,
