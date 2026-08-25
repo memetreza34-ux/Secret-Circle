@@ -26,9 +26,8 @@ Aktueller Offline-Core: **`secret-circle-v45`** / `secret-circle-v45-staging`
 Classic Content: **v4**  
 Core Source Review: **15/15 PREPARED**  
 Core Source Hardening: **15/15 PREPARED**  
+Operator / Hosting / Legal: **PREPARED / BLOCKED**  
 Freigabe: **NO_GO**
-
-v45 ist die erste Cachegeneration nach dem vollständigen 15/15-Core-Hardening. Sie nimmt die neuen Resume-/Privacy-Guards explizit in den Offline-Core auf und vermeidet die Wiederverwendung des bereits belegten v44-Caches.
 
 ## Core-Hardening
 
@@ -59,6 +58,8 @@ Zentrale Verträge:
 - `RELEASE_STATUS.md`
 - `RELEASE_CHECKLIST.md`
 - `RELEASE_EVIDENCE.md` / `release-evidence.json`
+- `operator-release.json` / `OPERATOR_RELEASE_SIGNOFF.md`
+- `HOSTING_DECISION.md`
 - `BRANCH_PROTECTION.md`
 - `CI_TROUBLESHOOTING.md`
 - `ARCHITECTURE.md`
@@ -70,6 +71,17 @@ Zentrale Verträge:
 - `ACCESSIBILITY.md` / `BETA_TEST_PLAN.md` / `MANUAL_TEST_PLAN.md`
 - `LEGAL_CHECKLIST.md` / `SUPPORT.md` / `INCIDENT_RESPONSE.md` / `MAINTENANCE.md`
 
+## Operator / Hosting / Legal
+
+Der reale Betriebs-/Legalblock ist jetzt als eigener Releasevertrag modelliert:
+
+- `operator-release.json` startet bewusst mit `PREPARED / BLOCKED`
+- `OPERATOR_RELEASE_SIGNOFF.md` bündelt Betreiber-/Legal-/Support-/Incident-Freigaben
+- `HOSTING_DECISION.md` erzwingt Provider-, Log-, Datenschutz-, Staging-/Production- und Rollbackprüfung
+- `scripts/operator_release_contract_audit.py` läuft in `npm run validate`
+- `legalPrivacy` und `supportIncident` in `release-evidence.json` dürfen erst PASS werden, wenn die Operator-Akte `FINAL / READY` ist
+- Issue #14 führt die real offenen Operator-/Hosting-/Legal-/Support-/Incident-Schritte
+
 ## Content / Privacy / Reference
 
 - alle definierten quantitativen Core-Ziele erreicht
@@ -78,7 +90,6 @@ Zentrale Verträge:
 - unnötige konkrete Marken-/Franchise-/Eventreferenzen generisch ersetzt
 - `anime-guess` → **Anime-Archetypen erraten**
 - stabile ID `wavelength` → sichtbar **Spektrum-Tipp**
-- Browser-Tabu verwendet generischen Begriff statt konkrete Browsermarke
 - frühere Private-Device-Truth/Dare-Prompts physisch entfernt
 - Privacy-/Reference-Audits scannen ausgelieferte Contentquellen
 - persönliche Core-Inhalte bleiben freiwillig/überspringbar
@@ -91,17 +102,27 @@ Zentrale Verträge:
 - Registry-URLs + `sha512`-Integrities
 - keine npm-Runtime-Dependencies
 - CI und Cross-Browser verwenden `npm ci`
-- `scripts/lockfile_contract_audit.py` schützt Package-/Lock-Synchronität und Dependencygraph
+- Lockfile-, Operator- und Release-Readiness-Audits sind in `npm run validate` eingebunden
 
 ## CI – aktuell blockiert
 
-Der Workflow selbst ist normal aufgebaut. Der aktuellste vollständig untersuchte App-Lauf und zusätzlich ein minimaler Runner-Probe ohne Repository-Code endeten jedoch **vor Step 1** mit `steps: []`.
+Aktuellster bestätigter App-CI-Lauf:
+
+- Run **#2565**
+- Run ID `32808084307`
+- Job ID `97681972379`
+- Head `668c65fce0233553fb2013631be2abe6cfd2f2a4`
+- `failure`
+- Jobliste `steps: null`
+- separate Step-Abfrage `steps: []`
+- keine Joblogs
+- kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
+
+Der frühere Minimal-Runner-Probe ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code endete ebenfalls vor Step 1 mit `steps: []`.
 
 Damit sind Secret-Circle-Code, npm, Playwright und Checkout-Actions nicht als unmittelbare Ursache des aktuellen Fehlermusters belegt. Der verbleibende Prüfbereich liegt bei Hosted-Runner-Zuteilung, GitHub-Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitiger Runner-Störung.
 
-Details und UI-Prüfschritte: `CI_TROUBLESHOOTING.md` und Issue #7.
-
-Solange der Runner keinen echten Checkout/Online-`npm ci`/Testlauf ausführt, wird **kein CI-PASS** behauptet.
+Details: `CI_TROUBLESHOOTING.md` und Issue #7.
 
 ## Offline / PWA – v45
 
@@ -110,17 +131,7 @@ Der Service Worker verwendet:
 - `secret-circle-v45`
 - `secret-circle-v45-staging`
 
-Zum Offline-Core gehören unter anderem:
-
-- Hub / Word Imposter / Advanced / Quick / Creator / Privacy
-- Katalog-/Contentmodule
-- Backup-Registry
-- Timer-/Sessioncontroller
-- `word-imposter-resume-guard.js`
-- `party-hub-resume-guard.js`
-- `advanced-resume-guard.js`
-- `advanced-privacy-guard.js`
-- Manifest und App-Icons
+Zum Offline-Core gehören unter anderem Hub, Word Imposter, Advanced, Quick, Creator, Privacy, Katalog-/Contentmodule, Backup-Registry, Timer-/Sessioncontroller, Resume-/Privacy-Guards sowie Manifest/App-Icons.
 
 Updates werden staged und erst nach bewusster Nutzerentscheidung aktiviert. Reale PWA-Upgrades, Rollbacks und Gerätetests bleiben offen.
 
@@ -139,27 +150,39 @@ Bis dahin bleibt `ASSETS / THIRD PARTY` blockiert.
 - `evidenceStatus = PREPARED`
 - `releaseDecision = NO_GO`
 
-Ein späteres `GO` erfordert echte Belege auf **demselben unveränderten RC-Commit** für CI, Cross-Browser, Branch Protection, HTTPS-Staging, PWA Upgrade/Rollback, Android/iOS/Tablet, Accessibility, reale Gruppen, Content/Privacy/Reference, Assets/Third Party, Legal/Privacy, Support/Incident und Production-Smoke.
+`operator-release.json` bleibt absichtlich:
+
+- `evidenceStatus = PREPARED`
+- `operatorGate = BLOCKED`
+
+Ein späteres `GO` erfordert echte Belege auf **demselben unveränderten RC-Commit**.
+
+## Drei zentrale offene Issues
+
+1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
+2. **#8** – reale Geräte, Offline-PWA, Accessibility und Partytests
+3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
+
+Zusätzlich bleibt die Icon-Rechtebasis offen.
 
 ## Aktuell höchste Priorität
 
-1. GitHub Actions/Hosted Runner bis zum ersten echten Step reparieren
+1. Issue #7: Hosted Runner bis zum ersten echten Step reparieren
 2. Online-`npm ci` + vollständiges `npm run ci`
 3. Cross-Browser auf demselben Commit
 4. Branch Protection real bestätigen
-5. HTTPS-Staging-Origin festlegen und Smoke ausführen
-6. PWA v45 Upgrade/Rollback auf echten Installationen
-7. Android/iPhone/iPad + VoiceOver/TalkBack/200-%-Zoom
-8. reale Gruppentests für alle 15 Core-Games
-9. App-Icon-Rechtebasis und restlicher Visual-/Third-Party-Sign-off
-10. Betreiber-/Hosting-/Privacy-/Support-/Legal-Details + Incident-Drill
-11. unveränderlicher RC + vollständige Release Evidence
+5. Issue #14: Provider + Betreiber-/Kontakt-/Privacy-/Supportangaben finalisieren
+6. HTTPS-Staging-Origin festlegen und v45-Smoke ausführen
+7. Issue #8: PWA v45 Upgrade/Rollback + reale Geräte/A11y/Gruppen
+8. App-Icon-Rechtebasis und restlicher Visual-/Third-Party-Sign-off
+9. Support-/Securitytest + SEV-1-/Rollback-Drill
+10. unveränderlicher RC + vollständige Release Evidence
 
 ## Was jetzt nicht priorisiert wird
 
 - keine neue 122-Mode-Scope-Welle
 - kein großes Backend/Accountsystem
 - keine Monetarisierungsarchitektur vor den Release-Gates
-- keine weitere Featuremenge auf Kosten von CI, Geräten, Gruppen und Legal
+- keine weitere Featuremenge auf Kosten von CI, Geräten, Gruppen, Hosting und Legal
 
 **Aktuell: NO_GO. PR #13 bleibt Draft und wird nicht gemergt.**
