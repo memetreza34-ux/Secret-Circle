@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import json
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
 required = [
-    'package.json', 'package-lock.json',
+    'package.json', 'package-lock.json', 'sw.js',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
     'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md',
     'RELEASE_EVIDENCE.md', 'release-evidence.json',
@@ -16,6 +17,7 @@ required = [
     'scripts/lockfile_contract_audit.py',
     'scripts/branch_protection_contract_audit.py',
     'scripts/staging_smoke.py', 'scripts/staging_smoke_contract_audit.py',
+    'scripts/hub_a11y_contract_audit.py',
     'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
     'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
     'scripts/public_release_placeholder_audit.py', 'scripts/operator_release_contract_audit.py',
@@ -30,6 +32,7 @@ package = json.loads(read('package.json'))
 lock = json.loads(read('package-lock.json'))
 evidence = json.loads(read('release-evidence.json'))
 operator_evidence = json.loads(read('operator-release.json'))
+sw = read('sw.js')
 ci = read('.github/workflows/ci.yml')
 cross = read('.github/workflows/cross-browser.yml')
 branch = read('BRANCH_PROTECTION.md')
@@ -49,10 +52,16 @@ validate = package.get('scripts', {}).get('validate', '')
 unit = package.get('scripts', {}).get('test', '')
 syntax = package.get('scripts', {}).get('check', '')
 
+cache_match = re.search(r"const CACHE='(secret-circle-v\d+)'", sw)
+if not cache_match:
+    raise SystemExit('Release readiness contract cannot parse current PWA cache.')
+current_cache = cache_match.group(1)
+
 required_validate_audits = (
     'scripts/lockfile_contract_audit.py',
     'scripts/branch_protection_contract_audit.py',
     'scripts/staging_smoke_contract_audit.py',
+    'scripts/hub_a11y_contract_audit.py',
     'scripts/privacy_content_audit.py',
     'scripts/reference_content_audit.py',
     'scripts/asset_provenance_audit.py',
@@ -80,14 +89,15 @@ checks = {
     'https_staging_real_execution_open': 'PREPARED – konkrete HTTPS-Staging-URL offen' in environments,
     'staging_smoke_command_documented': 'npm run staging:smoke' in environments and 'npm run staging:smoke' in deployment,
     'production_smoke_mode_documented': '--production' in environments and '--production' in deployment,
-    'pwa_v45_install_metadata_documented': 'secret-circle-v45' in environments and 'tests/pwa-head-metadata.test.js' in environments and 'tests/pwa-head-metadata.test.js' in deployment,
+    'current_pwa_contract_documented': current_cache in environments and current_cache in deployment and 'tests/pwa-head-metadata.test.js' in environments and 'tests/pwa-head-metadata.test.js' in deployment,
+    'hosting_current_cache_documented': current_cache in hosting_decision,
     'release_evidence_schema': evidence.get('schemaVersion') == 1 and evidence.get('product') == 'Secret Circle – Party Hub',
     'release_evidence_stays_no_go_before_rc': evidence.get('evidenceStatus') == 'PREPARED' and evidence.get('releaseDecision') == 'NO_GO' and evidence.get('candidate', {}).get('commit') is None,
     'release_evidence_doc_binds_one_commit': 'unveränderten Release-Candidate-Commit' in evidence_doc and '15' in evidence_doc and 'releaseDecision = GO' in evidence_doc,
     'operator_evidence_schema': operator_evidence.get('schemaVersion') == 1,
     'operator_gate_not_falsely_ready': operator_evidence.get('evidenceStatus') == 'PREPARED' and operator_evidence.get('operatorGate') == 'BLOCKED',
     'operator_signoff_contract': all(marker in operator_signoff for marker in ('operator-release.json', 'Hostingentscheidung', 'Support', 'Incident Response', 'FINAL / READY')),
-    'hosting_decision_contract': all(marker in hosting_decision for marker in ('secret-circle-v45', 'Staging-Origin', 'Production-Origin', 'Accesslogs', 'Rollback')),
+    'hosting_decision_contract': all(marker in hosting_decision for marker in (current_cache, 'Staging-Origin', 'Production-Origin', 'Accesslogs', 'Rollback')),
     'legal_real_values_required': 'Kein öffentliches GO mit Platzhaltern' in legal and 'LEGAL NO_GO' in legal,
     'support_real_contact_required': 'echter Supportkontakt festgelegt' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
     'incident_real_owners_required': 'reale Verantwortliche eingetragen' in incident and 'PREPARED / PRODUCTION NO_GO' in incident,
@@ -115,7 +125,9 @@ print(json.dumps({
     'static_release_contract': 'PREPARED',
     'release_evidence': 'PREPARED_NO_GO_SINGLE_RC_CONTRACT',
     'operator_evidence': 'PREPARED_BLOCKED_UNTIL_REAL_VALUES',
-    'pwa_head_metadata': 'V45_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
+    'pwa_cache': current_cache,
+    'pwa_head_metadata': 'CURRENT_CACHE_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
+    'hub_accessibility_contract': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
     'online_npm_ci': 'OPEN',
     'github_branch_protection': 'OPEN',
     'https_staging_network_smoke': 'OPEN',
