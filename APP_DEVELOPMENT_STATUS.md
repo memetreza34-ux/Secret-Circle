@@ -36,7 +36,7 @@ v45 war Core-Hardening, v46 Hub-A11y, v47 Secondary-A11y für Advanced/Quick/Cre
 | 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | Issue #7 / echter Runner + Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core + A11y + Data + Resume Hardening | keine neue Scope-Welle; Evidence schließen |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-/Resume-/Data-Verträge | reale Quota-/Update-/Import-/Resume-Pfade |
-| 11 | Tests / CI | BLOCKED | Run #2715 + Runner Probe | funktionierender Hosted Runner |
+| 11 | Tests / CI | BLOCKED | Run #2787 + Runner Probe | funktionierender Hosted Runner |
 | 12 | Offline / PWA / Resume | PREPARED | Service Worker v49 + Guards/A11y/Data offline | Issue #8 / Install-/Upgrade-/Rollback-/HR2-Tests |
 | 13 | Content / Alter / Privacy | IN PROGRESS | 15/15 Quellreview + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md`, Issue #8 | G1–G5, DWI, HR2, PN1–PN3 durchführen |
@@ -102,7 +102,7 @@ Die zentralen Audits wurden von historischen Momentaufnahmen auf echte Evidence-
 - Foundation leitet CI/Branch/Staging/Geräte aus `release-evidence.json` ab.
 - Release Readiness akzeptiert PREPARED/NO_GO, FINAL/NO_GO oder korrektes FINAL/GO.
 - Release Audit verlangt bei `assetsThirdParty = PASS`, dass kein Releaseasset mehr `unresolved` ist, blockiert aber nicht das spätere Lösen der Rechtefrage.
-- `validate_project.py` kennt die aktuellen Runtime-Scriptketten.
+- `validate_project.py` kennt die aktuellen Runtime-Scriptketten und prüft den dynamischen Hub-Resume-v2-Loadervertrag.
 
 ## Operator-/Hosting-/Legal-Block
 
@@ -128,8 +128,7 @@ Reale Upgrade-/Rollback-/Geräte-Evidence bleibt offen.
 - keine npm-Runtime-Dependencies
 - Syntax-/Unit-/Validate-/E2E-Verträge erweitert
 - `tests/word-imposter-data-contract.test.js` und `tests/party-hub-resume-guard.test.js` im Testvertrag
-- letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand: Run #2715 mit `steps: []`; kein Repositorycode wurde ausgeführt
-- v49 besitzt noch keinen echten Runner-PASS
+- letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, erneut `steps: null` / `steps: []`; kein Repositorycode wurde ausgeführt
 
 Status: **CLOSED IN CODE / ONLINE RUNNER VERIFICATION OPEN**.
 
