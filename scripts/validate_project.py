@@ -19,6 +19,7 @@ required = [
     'advanced-resume-guard.js', 'advanced-privacy-guard.js', 'secondary-surface-a11y.js',
     'tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js',
     'tests/service-worker.test.js', 'tests/word-imposter-data-contract.test.js',
+    'tests/party-hub-resume-guard.test.js',
     'ARCHITECTURE.md', 'DEPLOYMENT.md', 'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md',
     'SECURITY.md', 'THREAT_MODEL.md', 'RISK_REGISTER.md', 'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md',
     'operator-release.json', 'OPERATOR_RELEASE_SIGNOFF.md', 'OPERATOR_EVIDENCE_LOG.md',
@@ -138,6 +139,15 @@ hub_polish = read('party-hub-polish.js')
 for marker in ('function loadHubA11y()', "script.src = 'party-hub-a11y.js'", 'loadHubA11y();'):
     if marker not in hub_polish:
         raise SystemExit(f'Party Hub accessibility loader contract missing: {marker}')
+for marker in (
+    'function loadHubResumeGuard()',
+    "script.src = 'party-hub-resume-guard.js'",
+    'SecretCirclePartyHubResumeGuard',
+    'guard.install(window)',
+    'loadHubResumeGuard();'
+):
+    if marker not in hub_polish:
+        raise SystemExit(f'Party Hub resume loader contract missing: {marker}')
 
 registry = read('backup-schema-registry.js')
 data_tools = read('party-data-tools.js')
@@ -201,7 +211,8 @@ if lock.get('packages', {}).get('', {}).get('devDependencies') != package.get('d
 
 for marker in (
     'tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js',
-    'tests/service-worker.test.js', 'tests/word-imposter-data-contract.test.js'
+    'tests/service-worker.test.js', 'tests/word-imposter-data-contract.test.js',
+    'tests/party-hub-resume-guard.test.js'
 ):
     if marker not in package.get('scripts', {}).get('test', ''):
         raise SystemExit(f'Unit gate missing: {marker}')
@@ -248,6 +259,7 @@ print(json.dumps({
     'complete_backup_key_allowlist': True,
     'consent_copy_visible': True,
     'word_imposter_resume_guard_loaded': True,
+    'hub_resume_guard_loader_present': True,
     'advanced_resume_privacy_guards_loaded': True,
     'hub_accessibility_loader_present': True,
     'secondary_accessibility_loaded': ['advanced.html', 'quick-play.html', 'creator.html'],
