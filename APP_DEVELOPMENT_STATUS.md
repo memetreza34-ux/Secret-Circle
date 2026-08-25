@@ -34,7 +34,7 @@ v45 war die Cachegeneration nach dem 15/15-Core-Hardening. **v46** ist die neue 
 | 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | Issue #7 / echter Runner + Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core + A11y Hardening | keine neue Scope-Welle; Evidence schließen |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-/Resume-Verträge | reale Quota-/Updatepfade |
-| 11 | Tests / CI | BLOCKED | Run #2575 + Runner Probe | funktionierender Hosted Runner |
+| 11 | Tests / CI | BLOCKED | Run #2627 + Runner Probe | funktionierender Hosted Runner |
 | 12 | Offline / PWA / Resume | PREPARED | Service Worker v46 + Guards/A11y offline | Issue #8 / Install-/Upgrade-/Rollbacktests |
 | 13 | Content / Alter / Privacy | IN PROGRESS | 15/15 Quellreview + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md`, Issue #8 | reale Sessions durchführen |
@@ -120,11 +120,14 @@ Status: **CLOSED IN CODE / ONLINE RUNNER VERIFICATION OPEN**.
 
 ## CI
 
-Der zuletzt ausdrücklich untersuchte aktuelle-Branch-Lauf war **Run #2575**, Job `97682633520`:
+Aktuellster ausdrücklich untersuchter v46-Lauf: **Run #2627**.
 
+- Run ID `32809352564`
+- Job `validate`, Job ID `97685596269`
+- Head `30ef13f84d34f7fa95c46d441463bb58f0cb09c1`
 - `failure`
+- Jobliste `steps: null`
 - separate Step-Abfrage `steps: []`
-- keine Joblogs
 - kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
 
 Ein action-/repo-freier Bash-Runner-Probe endete ebenfalls vor Step 1 mit `steps: []`.
