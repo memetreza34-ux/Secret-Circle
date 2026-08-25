@@ -71,7 +71,7 @@ Stand: 25. August 2026
 - v44: gemeinsamer Manifest-/iOS-/Icon-Head-Vertrag für Hub, Word Imposter, Creator, Advanced und Quick.
 - v45: neue Cachegeneration nach dem 15/15-Core-Hardening; Word-Imposter-/Hub-/Advanced-Resume- und Advanced-Privacy-Guards explizit offline.
 - **v46:** neue Cachegeneration wegen des Hub-Accessibility-Hardenings. Offline-Core jetzt `secret-circle-v46` / `secret-circle-v46-staging` und enthält `party-hub-a11y.js`.
-- `sw.js`, Service-Worker-Test, Architektur, Deployment, Environment, Privacy, Accessibility, Release-/Beta-/Manual-Dokumentation und Issue #8 auf v46 synchronisiert.
+- `sw.js`, Service-Worker-Test, Architektur, Deployment, Environment, Privacy, Accessibility, Release-/Beta-/Manual-Dokumentation, README, PR #13 und Issue #8 auf v46 synchronisiert.
 - Operator- und Release-Readiness-Audit lesen die aktuelle Cachegeneration inzwischen dynamisch aus `sw.js`, statt bei jedem Cachebump einen alten Versionsstring zu verlangen.
 - reale Installations-, Upgrade-, Rollback- und Gerätetests bleiben offen.
 
@@ -126,12 +126,13 @@ Stand: 25. August 2026
 
 ### CI / Hosted Runner – P0
 
-- zuletzt ausdrücklich untersuchter aktueller-Branch-Lauf: **Run #2575**, Job `97682633520`.
-- Ergebnis: `failure`, separate Step-Abfrage `steps: []`, keine Joblogs.
+- aktuellster ausdrücklich untersuchter v46-Lauf: **Run #2627**, Run ID `32809352564`, Job `validate` / `97685596269`, Head `30ef13f84d34f7fa95c46d441463bb58f0cb09c1`.
+- Ergebnis: `failure`; Jobliste `steps: null`, separate Step-Abfrage `steps: []`.
 - kein Checkout, kein Node/Python, kein npm, keine Tests und kein Repository-Code ausgeführt.
 - früherer temporärer Runner-Probe ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code – nur lokales Bash `echo`/`uname` – endete ebenfalls vor Step 1 mit `steps: []`.
-- damit liegt die unmittelbare Fehlerfläche weiterhin vor der Repository-Ausführung.
+- dasselbe Muster wurde über zahlreiche Heads bis v46 beobachtet; die unmittelbare Fehlerfläche liegt weiterhin vor der Repository-Ausführung.
 - verbleibender Prüfbereich: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung.
+- `CI_TROUBLESHOOTING.md` und Issue #7 sind auf Run #2627 synchronisiert.
 
 ### Release-Status
 
