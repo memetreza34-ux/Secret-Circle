@@ -13,8 +13,6 @@
   const skipRound = document.querySelector('#skip-hub-round');
   if (!C || !detail || !title || !start) return;
 
-  const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
-  const TIMER_MODES = new Set(['charades', 'taboo', 'hot-potato', 'word-chain']);
   const PRIVATE_CARD_GAMES = new Set(['charades', 'taboo']);
 
   const voluntaryGames = Object.freeze({
@@ -113,39 +111,47 @@
   }
 
   function timerStateMatchesGame(game, session) {
-    if (!game || !session || typeof session !== 'object' || Array.isArray(session)) return false;
-    const timer = session.timer;
-    const timerMode = TIMER_MODES.has(game.mode);
-    if (!timerMode) return (timer === null || timer === undefined) && session.running !== true;
-    if (timer === null || timer === undefined) return session.running !== true;
-    if (!timer || typeof timer !== 'object' || Array.isArray(timer) || timer.kind !== game.mode) return false;
-    if (!['running', 'ended'].includes(timer.phase)) return false;
-    const remaining = Number(timer.remainingMs);
-    if (!Number.isFinite(remaining) || remaining < 0 || remaining > 3_600_000) return false;
-    if (timer.phase === 'running') return remaining > 0 && session.running === true;
-    return remaining === 0 && session.running !== true;
+    return window.SecretCirclePartyHubResumeGuard?.timerMatchesGame?.(game, session) === true;
   }
 
   function guardStoredResumeIntegrity() {
-    let raw;
-    try { raw = localStorage.getItem(ACTIVE_KEY); } catch { return true; }
-    if (!raw) return true;
-
-    let active;
-    try { active = JSON.parse(raw); } catch { return true; }
-    const session = active?.session;
-    const game = C.getGame(session?.gameId);
-    if (!game || !session) return true;
-    if (timerStateMatchesGame(game, session)) return true;
-
-    try { localStorage.removeItem(ACTIVE_KEY); } catch { return false; }
-    document.querySelector('#hub-resume-session')?.remove();
-    const status = document.querySelector('#hub-status');
-    if (status) {
-      status.textContent = 'Ein inkonsistenter Timer-Spielstand wurde sicher verworfen. Starte das Spiel neu.';
-      status.classList.add('error');
+    const guard = window.SecretCirclePartyHubResumeGuard;
+    if (!guard?.install) {
+      document.querySelector('#hub-resume-session')?.remove();
+      const status = document.querySelector('#hub-status');
+      if (status) {
+        status.textContent = 'Der Resume-Schutz konnte nicht geladen werden. Eine gespeicherte Runde wird vorsichtshalber nicht angeboten.';
+        status.classList.add('error');
+      }
+      return false;
     }
-    return false;
+
+    const result = guard.install(window);
+    if (!result) document.querySelector('#hub-resume-session')?.remove();
+    return result;
+  }
+
+  function loadHubResumeGuard() {
+    if (window.SecretCirclePartyHubResumeGuard) {
+      guardStoredResumeIntegrity();
+      return Promise.resolve(true);
+    }
+
+    const existing = document.querySelector('script[src="party-hub-resume-guard.js"]');
+    if (existing) {
+      return new Promise(resolve => {
+        existing.addEventListener('load', () => resolve(guardStoredResumeIntegrity()), { once: true });
+        existing.addEventListener('error', () => resolve(guardStoredResumeIntegrity()), { once: true });
+      });
+    }
+
+    return new Promise(resolve => {
+      const script = document.createElement('script');
+      script.src = 'party-hub-resume-guard.js';
+      script.addEventListener('load', () => resolve(guardStoredResumeIntegrity()), { once: true });
+      script.addEventListener('error', () => resolve(guardStoredResumeIntegrity()), { once: true });
+      document.body.append(script);
+    });
   }
 
   function privatePromptContext() {
@@ -274,19 +280,21 @@
     observer.disconnect();
     playObserver?.disconnect();
   }, { once: true });
-  guardStoredResumeIntegrity();
+
+  loadHubResumeGuard();
   updateStartLabel();
   updatePlaySafety();
   loadGuidance();
   loadHubA11y();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 14,
+    version: 15,
     updateStartLabel,
     updatePlaySafety,
     updatePlayActionLabels,
     timerStateMatchesGame,
     guardStoredResumeIntegrity,
+    loadHubResumeGuard,
     privatePromptContext,
     concealPrivatePrompt,
     removePrivateCover,
