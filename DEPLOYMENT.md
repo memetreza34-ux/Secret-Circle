@@ -16,8 +16,9 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - Core Source Review: 15/15 PREPARED
 - Core Source Hardening: 15/15 PREPARED
 - Accessibility Source Hardening: PREPARED
-- aktueller Offline-Core: **`secret-circle-v47`**
-- Staging-Cache: **`secret-circle-v47-staging`**
+- Word-Imposter Data/Resume Hardening: PREPARED
+- aktueller Offline-Core: **`secret-circle-v48`**
+- Staging-Cache: **`secret-circle-v48-staging`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 - öffentliche Freigabe: **NO_GO**
 
@@ -44,7 +45,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - `BRANCH_PROTECTION.md` abgearbeitet
 - `Secret Circle CI / validate` als Required Check auf echtem Runner bestätigt
 
-Aktueller P0 bleibt Issue #7. Der Runner scheitert weiterhin vor Step 1; auch Run #2637 zeigte `steps: []`.
+Aktueller P0 bleibt Issue #7. Der Hosted Runner scheitert weiterhin vor Step 1; dieser externe Blocker ist nicht durch v48-Code behoben.
 
 ### Produkt und Core
 
@@ -53,11 +54,25 @@ Aktueller P0 bleibt Issue #7. Der Runner scheitert weiterhin vor Step 1; auch Ru
 - 15/15 Core-Hardening PREPARED
 - Scoring-/Winner-Vertrag bestätigt
 - Word-Imposter-Setup/Fairness/Voting/Resume real geprüft
+- Word-Imposter Custom-/Backup-Grenzen real geprüft
 - direkte Hub-Games inklusive Privacy-/Timer-/Skip-Verträge real geprüft
 - Advanced-Privacy-/Resume-Verträge real geprüft
 - Privacy-/Reference-Content-Audits auf dem RC-Commit grün
 - übrige Extended/Labs final manuell/visuell/rechtlich geprüft
 - keine offenen Critical/High-Releasefehler
+
+### Word-Imposter-Datenvertrag v48
+
+Vor RC-Abnahme müssen die neuen Grenzen real bzw. im ausgeführten Testgate bestätigt sein:
+
+- maximal 50 eigene Kategorien
+- maximal 200 Begriffe je eigener Kategorie
+- 51 Kategorien werden vollständig abgelehnt und nicht still auf 50 gekürzt
+- 201 Begriffe werden vollständig abgelehnt
+- Backupgröße maximal 1,5 MB UTF-8
+- abgelehnter Import verändert vorhandene Daten nicht
+- Voting-Resume bestimmt den nächsten noch offenen Wähler aus tatsächlichen Stimmen
+- der strengere Resume-Guard verwirft weiterhin nicht-sequenzielle manipulierte Voting-Snapshots
 
 ### PWA-Installationsmetadaten / Assets
 
@@ -80,7 +95,7 @@ Zusätzlich:
 
 ### Resume-/Privacy-/Accessibility-Guards im Offline-Core
 
-v47 muss offline enthalten:
+v48 muss offline enthalten:
 
 - `word-imposter-resume-guard.js`
 - `party-hub-resume-guard.js`
@@ -111,12 +126,13 @@ sowie die zugehörigen Runtime-Module und Test-/Auditverträge.
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v47`** bestätigt
+- Offline-Start aus **`secret-circle-v48`** bestätigt
 - Backup-Registry vor Datentools geladen
 - Katalog-/Core-/Guard-/A11y-Module offline verfügbar
 - Update von mindestens zwei echten älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
+- Word-Imposter 50/51- und 200/201-Grenzen geprüft
 - unbekannte Storage-Key-Familien abgelehnt
 - Quota-/Korruptions-/Rollbackpfade geprüft
 
@@ -133,7 +149,7 @@ sowie die zugehörigen Runtime-Module und Test-/Auditverträge.
 ## Automatisierter HTTPS-Staging-Smoke
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v47
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v48
 ```
 
 Der Smoke prüft unter anderem HTTPS, Same-Origin-Redirects, Größenlimits, Kernseiten/Query-Routen, Manifest, PNG-Dimensionen, Service-Worker-Cachegeneration, Backup-Registry-Ladereihenfolge, Privacy-/Reference-Source-Verträge und PWA-Head-Metadaten.
@@ -152,7 +168,7 @@ Zusätzlich:
 - aktive Session während Update geschützt
 - lokale Daten nach Update erhalten
 - Export/Import
-- Word Imposter
+- Word Imposter inklusive Voting-Resume und Custom-/Backup-Grenzen
 - direktes Hub-Core-Spiel
 - Timer-Core-Spiel
 - Advanced-Core-Spiel
@@ -164,7 +180,7 @@ Zusätzlich:
 ## Production-Smoke-Test
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v47 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v48 --production
 ```
 
 Danach Browser-/PWA-Smoke auf Production wiederholen. `--production` verschärft die Placeholder-Prüfung öffentlicher Dateien.
@@ -191,7 +207,7 @@ Bei **jeder offline benötigten Dateiveränderung**:
 4. `ARCHITECTURE.md`, `DEPLOYMENT.md`, `privacy.html`, `ENVIRONMENTS.md` und Release-Dokumente synchronisieren
 5. echte alte installierte Version → neue Version testen
 
-v45 wurde für den 15/15-Core-Hardening-Block eingeführt. v46 folgte für das Hub-Accessibility-Hardening. **v47** erweitert den A11y-Vertrag auf Advanced, Quick und Creator und enthält `secondary-surface-a11y.js` offline.
+v45 wurde für den 15/15-Core-Hardening-Block eingeführt. v46 folgte für das Hub-Accessibility-Hardening. v47 erweiterte den A11y-Vertrag auf Advanced, Quick und Creator. **v48** bündelt das Word-Imposter-Voting-Resume- und lokale Daten-/Backup-Hardening.
 
 ## Rollback
 
