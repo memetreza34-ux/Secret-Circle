@@ -36,6 +36,9 @@
       <p>Word Imposter, Paranoia, Scharade, Tabu und die Advanced-Kernspiele besitzen zusätzliche Schutzpfade für geheime Inhalte. Offene geheime Karten, Fragen, Orte, Rollen oder private Advanced-Eingaben werden bei unterstützten App-/Tab-Wechseln verdeckt und müssen bewusst wieder geöffnet werden.</p>
       <p>Zusätzlich prüfen Resume-Guards gespeicherte Word-Imposter-, Hub- und Advanced-Zustände auf definierte Integritätsregeln. Widersprüchliche oder manipulierte Zwischenstände können verworfen werden, statt unbemerkt mit einem falschen Spieler-, Timer-, Rollen- oder Siegerzustand fortgesetzt zu werden.</p>
 
+      <h2>Accessibility-Schutz bei Übergängen</h2>
+      <p>Die Accessibility-Schichten verändern keine Spieldaten und übertragen keine Informationen. Sie steuern ausschließlich lokale Fokus-, Tastatur- und Dialogzustände. Der Hub isoliert seine Detail- und Spieloverlays. Seit Offline-Core v47 gilt eine gemeinsame Fokus-/Modal-Schicht zusätzlich für Advanced, Quick und Creator, damit dynamische Phasenwechsel und Hilfedialoge den Tastaturfokus nicht unbeabsichtigt in verdeckte Bereiche verlieren.</p>
+
       <h2>Built-in-Privacy-Schutz</h2>
       <p>Die eingebauten Spiele sollen keine privaten Nachrichten, Kamerarollen oder privaten Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial verlangen. Seit Offline-Core v43 sind die zwei früher identifizierten Private-Device-Truth/Dare-Texte auch physisch aus dem Basiskatalog entfernt. Ein Source-Audit prüft die ausgelieferten Built-in-Contentquellen auf solche Offenlegungsaufforderungen. Persönliche Fragen bleiben zusätzlich freiwillig und überspringbar.</p>
 
@@ -56,8 +59,8 @@
       <p>Nein. Beim Laden oder Aktualisieren ruft der Browser lediglich statische App-Dateien vom Hosting-Anbieter ab. Spieldaten werden nicht an einen eigenen Secret-Circle-Server gesendet.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, Resume-/Privacy-/Accessibility-Guards, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v46</code>.</p>
-      <p>v44 vereinheitlichte den lokalen Manifest-/Icon-/iOS-Installationsvertrag. v45 nahm die Core-Hardening-Resume-/Privacy-Guards explizit in den Offline-Core auf. v46 erhöht die Cachegeneration erneut für das Hub-Accessibility-Hardening einschließlich Fokusführung, modaler Hintergrundisolation und Tastatur-Fokus-Trap.</p>
+      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter, Resume-/Privacy-/Accessibility-Guards, PWA-Manifest/Icons und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v47</code>.</p>
+      <p>v44 vereinheitlichte den lokalen Manifest-/Icon-/iOS-Installationsvertrag. v45 nahm die Core-Hardening-Resume-/Privacy-Guards explizit in den Offline-Core auf. v46 ergänzte das Hub-Accessibility-Hardening. v47 erweitert diesen Schutz auf Advanced, Quick und Creator und liefert <code>secondary-surface-a11y.js</code> offline mit aus.</p>
 
       <h2>Daten löschen</h2>
       <p>„Alle lokalen Daten löschen“ entfernt sämtliche Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>, einschließlich eigener Spiele und aktiver Sessions. Das Löschen ist absichtlich breiter als der Backup-Import, damit auch alte oder verwaiste Secret-Circle-Schlüssel entfernt werden. Exportierte Dateien müssen separat im Dateisystem gelöscht werden.</p>
