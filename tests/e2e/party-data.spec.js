@@ -72,7 +72,7 @@ test('complete backup exports Hub custom packs and Word Imposter local data toge
     version: window.SecretCirclePartyDataTools?.version,
     bytes: window.SecretCirclePartyDataTools?.byteLength('ä')
   }));
-  expect(api).toEqual({ version: 5, bytes: 2 });
+  expect(api).toEqual({ version: 6, bytes: 2 });
 
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Alles exportieren' }).click();
