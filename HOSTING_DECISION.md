@@ -60,12 +60,7 @@ Reviewer:
 
 ## 4. Staging-Regel
 
-Staging und Production müssen getrennte Origins besitzen. Dadurch bleiben insbesondere getrennt:
-
-- `localStorage`
-- Service-Worker-Registrierungen
-- Cache Storage
-- installierte PWA-Zustände
+Staging und Production müssen getrennte Origins besitzen. Dadurch bleiben insbesondere `localStorage`, Service-Worker-Registrierungen, Cache Storage und installierte PWA-Zustände getrennt.
 
 Nicht zulässig als finale Trennung: nur Queryparameter auf derselben Origin.
 
@@ -74,14 +69,15 @@ Nicht zulässig als finale Trennung: nur Queryparameter auf derselben Origin.
 Nach Auswahl des Hosts:
 
 1. unveränderten RC auf Staging deployen
-2. `npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v46`
+2. `npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v47`
 3. manuellen Browser-/PWA-Staging-Smoke durchführen
 4. PWA installieren und offline neu starten
 5. Upgrade von mindestens zwei real installierten Altständen prüfen
-6. Rollback-/Hotfix-Version mit neuer Cachegeneration testen
-7. erst danach denselben freigegebenen statischen RC nach Production promoten
-8. `npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v46 --production`
-9. manuellen Production-Smoke durchführen
+6. v47-A11y-Pfade für Hub, Advanced, Quick und Creator offline prüfen
+7. Rollback-/Hotfix-Version mit neuer Cachegeneration testen
+8. erst danach denselben freigegebenen statischen RC nach Production promoten
+9. `npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v47 --production`
+10. manuellen Production-Smoke durchführen
 
 Der erwartete Cache muss stets dem aktuellen `CACHE` aus `sw.js` entsprechen; eine neue Offline-Core-Änderung erzeugt eine neue Generation.
 
@@ -109,6 +105,7 @@ Vor `HOSTING / ENVIRONMENT PASS`:
 - [ ] HTTPS bestätigt
 - [ ] Staging-Smoke grün
 - [ ] realer PWA-Smoke grün
+- [ ] v47 Hub-/Advanced-/Quick-/Creator-A11y offline real geprüft
 - [ ] Upgrade-/Rollbackpfad grün
 - [ ] Production-Smoke grün
 
