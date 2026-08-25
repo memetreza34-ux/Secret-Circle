@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**
+Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**
 
 ## 1. Ziel
 
@@ -51,10 +51,14 @@ Nur Queryparameter derselben Origin sind keine ausreichende Staging-Trennung.
 
 Quellstand:
 
-- aktiv: `secret-circle-v50`
-- staging: `secret-circle-v50-staging`
+- aktiv: `secret-circle-v51`
+- staging: `secret-circle-v51-staging`
 
-v49 machte den eigenständigen `party-hub-resume-guard.js` zur zentralen getesteten Runtime-/Offline-Quelle. **v50 ergänzt die fail-closed Ladephase: eine bereits sichtbare Hub-Resume-Karte ist bis zur erfolgreichen Guard-Validierung `aria-busy` und ihre Buttons sind deaktiviert.**
+Historie:
+
+- v49: zentraler getesteter Hub-Resume-Guard
+- v50: fail-closed Resume-UI während der Guard-Ladephase
+- **v51: Complete-Backup-Restore ersetzt nur registry-verwaltete Namespaces, bewahrt unbekannte/future Secret-Circle-Keys und verlangt strukturierte JSON-Werte vor Mutation**
 
 Cachegenerationen werden nicht wiederverwendet, wenn sich eine offline benötigte Datei ändert. Rollback/Hotfix erhält ebenfalls eine neue Generation.
 
@@ -63,32 +67,18 @@ Cachegenerationen werden nicht wiederverwendet, wenn sich eine offline benötigt
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v50
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v51
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v50 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v51 --production
 ```
 
-`scripts/staging_smoke.py` prüft unter anderem:
+`scripts/staging_smoke.py` prüft unter anderem HTTPS, Same-Origin-Redirects, Größenlimits, Kernseiten/Query-Routen, Manifest-/Standalone-Vertrag, PNG-IHDR, aktuelle Cachegeneration, PWA-Head-Metadaten, Backup-Registry-Ladereihenfolge, Privacy-/Reference-Safe-Source und Production-Placeholder-Grenzen.
 
-- HTTPS
-- Same-Origin-Redirects
-- Größenlimits
-- Kernseiten und Query-Routen
-- Manifest-/Standalone-Vertrag
-- PNG-IHDR 192×192 / 512×512
-- aktuelle Cachegeneration
-- PWA-Head-Metadaten
-- Backup-Registry-Ladereihenfolge
-- Privacy-/Reference-Safe-Source
-- Production-Placeholder-Grenzen
-
-`scripts/staging_smoke_contract_audit.py` schützt diesen Vertrag statisch.
-
-Der Netzwerk-Smoke beweist **nicht** Installation, Offline-Neustart, Updatebanner, Datenmigration, VoiceOver/TalkBack oder reale Gerätefunktion.
+Der Netzwerk-Smoke beweist **nicht** Installation, Offline-Neustart, Updatebanner, Datenmigration, Restore-Transaktion, VoiceOver/TalkBack oder reale Gerätefunktion.
 
 ## 7. Release Candidate
 
@@ -119,13 +109,13 @@ Vor Promotion erforderlich:
 - Assets/Rechte PASS
 - Operator/Hosting/Legal/Support/Incident PASS
 
-Production darf nicht als erster echter Service-Worker-Test dienen.
+Production darf nicht als erster echter Service-Worker- oder Restore-Test dienen.
 
 ## 9. Datenisolation
 
 Local und Staging verwenden neutrale Testnamen und Testinhalte. Keine echten privaten Nachrichten, Fotos oder unnötig personenbezogenen Backups als Standardtestdaten.
 
-Bei bewusstem Cross-Environment-Import Quelle, Commit und Zweck dokumentieren.
+Bei bewusstem Cross-Environment-Import Quelle, Commit und Zweck dokumentieren. Für v51 muss zusätzlich bestätigt werden, dass ein unbekannter Future-Key einen Restore überlebt und ungültige managed Werte keine Bestandsdaten verändern.
 
 ## 10. Runtime-Konfiguration
 
@@ -142,6 +132,10 @@ Mindestens:
 - Hub/Word Imposter/Advanced/Quick/Creator/Privacy offline
 - Query-Routen offline
 - Export/Import mit neutralen Daten
+- Complete Backup v51: Unknown/Future-Key bleibt erhalten
+- Complete Backup v51: Klartext/Primitive in managed Key wird vor Mutation abgelehnt
+- Complete Backup v51: simulierter Write-Fail rollt managed Daten zurück
+- vollständige Datenlöschung entfernt weiterhin alle Secret-Circle-Namespaces
 - Hub-Core- und Timer-Core-Smoke
 - Advanced-Core-Smoke
 - Word-Imposter Resume-/Datenlimits
@@ -180,6 +174,7 @@ Production URL:
 Production commit:
 Production cache:
 Production smoke result:
+Complete-backup restore evidence:
 Rollback tested from/to:
 Evidence reference:
 ```
@@ -194,6 +189,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] `scripts/staging_smoke.py` gegen Staging grün
 - [ ] manueller Browser-/PWA-Smoke abgeschlossen
 - [ ] v50-Hub-Resume-Ladequarantäne real bestätigt
+- [ ] v51-Complete-Backup-Transaktions-/Forward-Compatibility real bestätigt
 - [ ] Upgrade aus mindestens zwei real installierten Altständen
 - [ ] Rollbackprobe
 - [ ] Datenisolation bestätigt
