@@ -10,20 +10,28 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 
 required = [
     'index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html',
-    'sw.js', 'manifest.webmanifest', 'package.json', 'package-lock.json',
+    'sw.js', 'manifest.webmanifest', 'package.json', 'package-lock.json', 'release-evidence.json',
+    'runtime-guard.js', 'privacy-guard.js', 'word-imposter-resume-guard.js',
     'backup-schema-registry.js', 'party-data-tools.js',
     'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js',
     'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
-    'tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js',
+    'party-hub-polish.js', 'party-hub-resume-guard.js', 'party-hub-a11y.js',
+    'advanced-resume-guard.js', 'advanced-privacy-guard.js', 'secondary-surface-a11y.js',
+    'tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js',
+    'tests/service-worker.test.js', 'tests/word-imposter-data-contract.test.js',
     'ARCHITECTURE.md', 'DEPLOYMENT.md', 'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md',
     'SECURITY.md', 'THREAT_MODEL.md', 'RISK_REGISTER.md', 'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md',
+    'operator-release.json', 'OPERATOR_RELEASE_SIGNOFF.md', 'OPERATOR_EVIDENCE_LOG.md',
     'scripts/lockfile_contract_audit.py', 'scripts/branch_protection_contract_audit.py',
-    'scripts/staging_smoke_contract_audit.py', 'scripts/privacy_content_audit.py',
-    'scripts/reference_content_audit.py', 'scripts/release_readiness_contract_audit.py',
+    'scripts/staging_smoke_contract_audit.py', 'scripts/hub_a11y_contract_audit.py',
+    'scripts/secondary_surface_a11y_contract_audit.py', 'scripts/privacy_content_audit.py',
+    'scripts/reference_content_audit.py', 'scripts/operator_release_contract_audit.py',
+    'scripts/release_evidence_audit.py', 'scripts/release_readiness_contract_audit.py',
 ]
 for relative in required:
     if not (ROOT / relative).is_file():
         raise SystemExit(f'Missing required project file: {relative}')
+
 
 class Audit(HTMLParser):
     def __init__(self):
@@ -51,6 +59,7 @@ class Audit(HTMLParser):
         if tag == 'meta' and str(values.get('http-equiv', '')).lower() == 'content-security-policy':
             self.csp = values.get('content', '')
 
+
 def audit_html(relative: str, expected_scripts: list[str]) -> str:
     source = read(relative)
     audit = Audit()
@@ -66,14 +75,19 @@ def audit_html(relative: str, expected_scripts: list[str]) -> str:
     for asset in audit.assets:
         if asset.startswith(('http:', 'https:')):
             raise SystemExit(f'External runtime asset in {relative}: {asset}')
-        if not (ROOT / asset.lstrip('./')).is_file():
+        clean_asset = asset.split('?', 1)[0].split('#', 1)[0].lstrip('./')
+        if clean_asset and not (ROOT / clean_asset).is_file():
             raise SystemExit(f'Missing runtime asset in {relative}: {asset}')
     if audit.scripts != expected_scripts:
         raise SystemExit(f'Unexpected script order in {relative}: {audit.scripts}')
-    for directive in ("default-src 'self'", "script-src 'self'", "style-src 'self'", "object-src 'none'", "base-uri 'none'", "form-action 'self'"):
+    for directive in (
+        "default-src 'self'", "script-src 'self'", "style-src 'self'",
+        "object-src 'none'", "base-uri 'none'", "form-action 'self'"
+    ):
         if directive not in audit.csp:
             raise SystemExit(f'CSP directive missing in {relative}: {directive}')
     return source
+
 
 catalog_chain = [
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js', 'party-mega-catalog.js',
@@ -85,16 +99,23 @@ party = audit_html('party.html', [
     'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js',
     'party-hub-polish.js', 'party-night.js', 'backup-schema-registry.js', 'party-data-tools.js'
 ])
-quick = audit_html('quick-play.html', ['runtime-guard.js', *catalog_chain, 'party-custom-packs.js', 'quick-loader.js'])
-audit_html('advanced.html', [
-    'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
-    'party-advanced.js', 'party-advanced-runner.js', 'party-advanced-preferences.js'
+quick = audit_html('quick-play.html', [
+    'runtime-guard.js', *catalog_chain, 'party-custom-packs.js',
+    'secondary-surface-a11y.js', 'quick-loader.js'
 ])
-audit_html('creator.html', ['runtime-guard.js', 'game-creator.js', 'creator-page.js'])
+advanced = audit_html('advanced.html', [
+    'runtime-guard.js', 'party-catalog.js', 'party-expansion.js', 'party-routing.js',
+    'party-advanced.js', 'advanced-resume-guard.js', 'secondary-surface-a11y.js',
+    'party-advanced-runner.js', 'advanced-privacy-guard.js', 'party-advanced-preferences.js'
+])
+creator = audit_html('creator.html', [
+    'runtime-guard.js', 'game-creator.js', 'secondary-surface-a11y.js', 'creator-page.js'
+])
 audit_html('privacy.html', [])
-audit_html('index.html', [
+index = audit_html('index.html', [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
-    'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js', 'app.js'
+    'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js',
+    'word-imposter-resume-guard.js', 'app.js'
 ])
 
 for marker in (
@@ -106,6 +127,17 @@ for marker in (
 
 if 'party-core-classic-content.js' not in quick:
     raise SystemExit('Quick page is missing final Core content layer.')
+if 'secondary-surface-a11y.js' not in quick or 'secondary-surface-a11y.js' not in advanced or 'secondary-surface-a11y.js' not in creator:
+    raise SystemExit('Secondary accessibility layer is not loaded on all required surfaces.')
+if 'advanced-resume-guard.js' not in advanced or 'advanced-privacy-guard.js' not in advanced:
+    raise SystemExit('Advanced resume/privacy guards are missing from advanced.html runtime order.')
+if 'word-imposter-resume-guard.js' not in index:
+    raise SystemExit('Word Imposter resume guard is missing from index.html runtime order.')
+
+hub_polish = read('party-hub-polish.js')
+for marker in ('function loadHubA11y()', "script.src = 'party-hub-a11y.js'", 'loadHubA11y();'):
+    if marker not in hub_polish:
+        raise SystemExit(f'Party Hub accessibility loader contract missing: {marker}')
 
 registry = read('backup-schema-registry.js')
 data_tools = read('party-data-tools.js')
@@ -136,8 +168,12 @@ if not core_match:
     raise SystemExit('Service worker CORE list missing.')
 core = ast.literal_eval(core_match.group(1))
 for asset in (
-    './backup-schema-registry.js', './party-catalog.js', './party-core-release-catalog.js', './party-core-classic-content.js',
-    './party-data-tools.js', './party-hub-timers.js', './session-ledger.js', './party-session-controls.js',
+    './word-imposter-resume-guard.js', './backup-schema-registry.js',
+    './party-catalog.js', './party-core-release-catalog.js', './party-core-classic-content.js',
+    './party-data-tools.js', './party-hub-timers.js', './party-hub-resume-guard.js',
+    './party-hub-a11y.js', './secondary-surface-a11y.js',
+    './advanced-resume-guard.js', './advanced-privacy-guard.js',
+    './session-ledger.js', './party-session-controls.js',
     './icon.svg', './icon-192.png', './icon-512.png'
 ):
     if asset not in core:
@@ -153,6 +189,7 @@ for relative in ('ARCHITECTURE.md', 'DEPLOYMENT.md', 'privacy.html', 'ENVIRONMEN
 
 package = json.loads(read('package.json'))
 lock = json.loads(read('package-lock.json'))
+release_evidence = json.loads(read('release-evidence.json'))
 if package.get('version') != '1.0.0-beta.3' or package.get('engines', {}).get('node') != '>=20':
     raise SystemExit('Package metadata invalid.')
 if package.get('devDependencies', {}).get('@playwright/test') != '1.54.2':
@@ -162,26 +199,46 @@ if lock.get('lockfileVersion') != 3 or lock.get('name') != package.get('name') o
 if lock.get('packages', {}).get('', {}).get('devDependencies') != package.get('devDependencies'):
     raise SystemExit('package-lock root devDependencies do not match package.json.')
 
-for marker in ('tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js', 'tests/service-worker.test.js'):
+for marker in (
+    'tests/core-content-quality.test.js', 'tests/backup-schema-registry.test.js',
+    'tests/service-worker.test.js', 'tests/word-imposter-data-contract.test.js'
+):
     if marker not in package.get('scripts', {}).get('test', ''):
         raise SystemExit(f'Unit gate missing: {marker}')
-for marker in ('party-core-release-catalog.js', 'party-core-classic-content.js', 'backup-schema-registry.js', 'party-data-tools.js'):
+for marker in (
+    'party-core-release-catalog.js', 'party-core-classic-content.js', 'backup-schema-registry.js',
+    'party-data-tools.js', 'word-imposter-resume-guard.js', 'party-hub-resume-guard.js',
+    'party-hub-a11y.js', 'secondary-surface-a11y.js',
+    'advanced-resume-guard.js', 'advanced-privacy-guard.js'
+):
     if f'node --check {marker}' not in package.get('scripts', {}).get('check', ''):
         raise SystemExit(f'Syntax gate missing: {marker}')
 for marker in (
     'scripts/architecture_audit.py', 'scripts/foundation_contract_audit.py', 'scripts/lockfile_contract_audit.py',
     'scripts/branch_protection_contract_audit.py', 'scripts/staging_smoke_contract_audit.py',
+    'scripts/hub_a11y_contract_audit.py', 'scripts/secondary_surface_a11y_contract_audit.py',
     'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
-    'scripts/asset_provenance_audit.py', 'scripts/release_readiness_contract_audit.py',
+    'scripts/asset_provenance_audit.py', 'scripts/operator_release_contract_audit.py',
+    'scripts/release_evidence_audit.py', 'scripts/release_readiness_contract_audit.py',
     'scripts/performance_budget.py', 'scripts/release_audit.py'
 ):
     if marker not in package.get('scripts', {}).get('validate', ''):
         raise SystemExit(f'Validate gate missing: {marker}')
 
 for forbidden in ('eval(', 'new Function(', 'document.write(', 'http://'):
-    for relative in ('party-data-tools.js', 'party-routing.js', 'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-hub.js'):
+    for relative in (
+        'party-data-tools.js', 'party-routing.js', 'party-core-release-catalog.js',
+        'party-core-classic-content.js', 'party-hub.js', 'advanced-resume-guard.js',
+        'word-imposter-resume-guard.js'
+    ):
         if forbidden in read(relative):
             raise SystemExit(f'Forbidden pattern {forbidden} in {relative}')
+
+gates = release_evidence.get('gates') if isinstance(release_evidence.get('gates'), dict) else {}
+ci_status = (gates.get('ci') or {}).get('status')
+allowed_gate_statuses = {'OPEN', 'BLOCKED', 'PASS', 'FAIL'}
+if ci_status not in allowed_gate_statuses:
+    raise SystemExit('Release evidence has an invalid CI gate status.')
 
 print(json.dumps({
     'project_validation': 'PASS',
@@ -190,7 +247,13 @@ print(json.dumps({
     'central_backup_schema': 'v2',
     'complete_backup_key_allowlist': True,
     'consent_copy_visible': True,
+    'word_imposter_resume_guard_loaded': True,
+    'advanced_resume_privacy_guards_loaded': True,
+    'hub_accessibility_loader_present': True,
+    'secondary_accessibility_loaded': ['advanced.html', 'quick-play.html', 'creator.html'],
     'lockfile': 'v3',
-    'online_npm_ci_verified': False,
+    'online_npm_ci_verified': ci_status == 'PASS',
+    'ci_evidence_status': ci_status,
+    'release_decision': release_evidence.get('releaseDecision'),
     'release_readiness_contract': True,
 }, ensure_ascii=False, indent=2))
