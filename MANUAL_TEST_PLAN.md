@@ -1,8 +1,8 @@
 # Secret Circle Party Hub – Manueller Testplan Januar 2027
 
-Stand: 23. August 2026  
+Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v45` / `secret-circle-v45-staging`**  
+Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Dieser Plan ergänzt die automatisierten Prüfungen. Ein technisch startbarer Modus gilt erst nach den jeweils zutreffenden Tests als manuell abgenommen.
@@ -42,7 +42,7 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Aktueller externer Blocker: Issue #7.
+Aktueller externer Blocker: Issue #7. Auch Run #2575 erreicht keinen ersten Workflow-Step.
 
 ## 2. Hub-Smoke
 
@@ -54,6 +54,8 @@ Aktueller externer Blocker: Issue #7.
 - [ ] Quick/Mega/Viral/Advanced/Creator/Imposter-Routen
 - [ ] Datenschutzseite
 - [ ] keine kritischen Laufzeit-/Ressourcenfehler
+- [ ] Bereichswechsel setzt Fokus nachvollziehbar auf neue Hauptüberschrift
+- [ ] Erstladen behält Skip-Link als ersten sinnvollen Tastaturtarget
 
 ## 3. Word Imposter
 
@@ -103,6 +105,8 @@ Gemeinsam:
 - [ ] Reload/Resume explizit
 - [ ] Spieler-Snapshot stabil
 - [ ] Verlauf/Statistik genau einmal
+- [ ] aktive Runde ist für Tastatur/Screenreader als modaler Kontext verständlich
+- [ ] Fokus kann nicht unbeabsichtigt in den Hub-Hintergrund wechseln
 
 Spezifisch:
 
@@ -231,7 +235,7 @@ Prüfen:
 - [ ] vollständige lokale Löschung
 - [ ] keine Spieldaten an eigenen Server übertragen
 
-## 11. PWA / Offline – v45
+## 11. PWA / Offline – v46
 
 - [ ] Online-Erststart
 - [ ] Android-Installation
@@ -240,7 +244,10 @@ Prüfen:
 - [ ] Hub/Word Imposter/Advanced/Quick/Creator/Privacy offline
 - [ ] Query-Routen offline
 - [ ] Resume-/Privacy-Guards offline
-- [ ] Update von mindestens zwei echten älteren Installationen auf v45/RC
+- [ ] `party-hub-a11y.js` offline geladen
+- [ ] Hub-Bereichsfokus offline funktional
+- [ ] Modal-/Spiel-Fokus-Trap offline funktional
+- [ ] Update von mindestens zwei echten älteren Installationen auf v46/RC
 - [ ] Update zunächst staged
 - [ ] aktive Session nicht ungefragt ersetzt
 - [ ] `Später` behält aktuelle Version
@@ -265,13 +272,30 @@ Muss real auf Android und iOS bestätigt werden.
 
 ## 13. Accessibility / Mobile
 
+### Tastatur und Fokus
+
 - [ ] Tastatur ohne Maus
-- [ ] Skip-Link
+- [ ] Skip-Link beim Erstladen
 - [ ] sichtbarer Fokus
+- [ ] Start → Spiele verschiebt Fokus sinnvoll auf `#games-title`
+- [ ] weitere Hub-Bereichswechsel fokussieren die neue Hauptüberschrift
+- [ ] Spieldetail öffnet als modaler Dialog
+- [ ] Spieldetail: Hintergrund nicht fokussierbar
+- [ ] Spieldetail: Tab vom letzten Control springt zum ersten
+- [ ] Spieldetail: Shift+Tab vom ersten Control springt zum letzten
+- [ ] Spieldetail schließen: Fokus kehrt zum Auslöser zurück
+- [ ] aktive Hub-Spielrunde ist modal
+- [ ] aktive Runde: Hintergrund nicht fokussierbar
+- [ ] aktive Runde: Tab/Shift+Tab bleiben im Overlay
+
+### Screenreader / Darstellung
+
 - [ ] VoiceOver
 - [ ] TalkBack
 - [ ] private Inhalte vor Reveal nicht angesagt
 - [ ] Privacy-Cover verständlich
+- [ ] Bereichswechsel verständlich angekündigt
+- [ ] modale Overlays als solche verständlich
 - [ ] 200-%-Zoom
 - [ ] 320 CSS px
 - [ ] große Systemschrift
@@ -296,7 +320,7 @@ Muss real auf Android und iOS bestätigt werden.
 - [ ] Party Night
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 
-Dokumentieren: Regeln, Wartezeit, Content, technische Unterbrechungen, Geheimnisoffenlegung, bevorzugte/vermiedene Spiele, Fehlbedienung.
+Dokumentieren: Regeln, Wartezeit, Content, technische Unterbrechungen, Geheimnisoffenlegung, bevorzugte/vermiedene Spiele, Fehlbedienung und Accessibility-/Fokusprobleme.
 
 ## 15. Content / Rechte
 
@@ -315,10 +339,10 @@ Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
 - [ ] Branch Protection aktiv
 - [ ] HTTPS-Staging/Production-Smoke grün
 - [ ] Android/iPhone/iPad real
-- [ ] Accessibility real
+- [ ] Accessibility real inklusive v46-Fokus-/Modalpfade
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] G1–G5 und PN1–PN3 abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v45/RC + Rollback
+- [ ] zwei echte PWA-Upgrades auf v46/RC + Rollback
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content-/Rechte-/Legal-/Support-/Hosting-Sign-off
 - [ ] Incident-/Rollback-Drill
