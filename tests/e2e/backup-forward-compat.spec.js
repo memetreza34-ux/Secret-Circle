@@ -79,3 +79,29 @@ test('v51 rejects a backup that tries to write a future storage version', async 
   expect(result.current.players).toEqual(['Alt', 'Stand', 'Eins']);
   expect(result.future).toEqual({ version: 2, future: 'hub-v2-must-survive' });
 });
+
+test('v51 rejects a semantically invalid value for a current storage key before mutation', async ({ page }) => {
+  await openDataView(page);
+
+  await page.locator('#hub-import-data').setInputFiles({
+    name: 'wrong-current-wrapper.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(completeBackup({
+      [HUB_V1]: JSON.stringify({
+        version: 999,
+        players: ['Manipuliert', 'Aber', 'Strukturiert']
+      })
+    })))
+  });
+
+  await expect(page.locator('#hub-status')).toContainText(`Daten passen nicht zum aktuellen Speicherschema: ${HUB_V1}`);
+  const result = await page.evaluate(({ hubV1, hubV2, futureKey }) => ({
+    current: JSON.parse(localStorage.getItem(hubV1)),
+    futureVersion: JSON.parse(localStorage.getItem(hubV2)),
+    futureNamespace: JSON.parse(localStorage.getItem(futureKey))
+  }), { hubV1: HUB_V1, hubV2: HUB_V2, futureKey: FUTURE_KEY });
+
+  expect(result.current.players).toEqual(['Alt', 'Stand', 'Eins']);
+  expect(result.futureVersion).toEqual({ version: 2, future: 'hub-v2-must-survive' });
+  expect(result.futureNamespace).toEqual({ version: 99, future: 'namespace-must-survive' });
+});
