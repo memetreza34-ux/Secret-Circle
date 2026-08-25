@@ -1,6 +1,12 @@
 'use strict';
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const Guard = require('../party-hub-resume-guard.js');
+
+const read = file => fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+const polish = read('party-hub-polish.js');
+const worker = read('sw.js');
 
 const games = {
   'truth-dare': { id: 'truth-dare', mode: 'truth-dare', status: 'playable' },
@@ -51,10 +57,23 @@ assert.equal(Guard.validateSnapshot(snapshot(session('imposter')), catalog), fal
 assert.equal(Guard.validateSnapshot(snapshot(session('missing')), catalog), false);
 assert.equal(Guard.validateSnapshot(null, catalog), false);
 
+// Runtime integration: the browser must execute the same tested guard instead of a copied validator.
+assert.match(polish, /function loadHubResumeGuard\(\)/);
+assert.match(polish, /party-hub-resume-guard\.js/);
+assert.match(polish, /SecretCirclePartyHubResumeGuard\?\.timerMatchesGame/);
+assert.match(polish, /guard\.install\(window\)/);
+assert.match(polish, /loadHubResumeGuard\(\);/);
+assert.doesNotMatch(polish, /const ACTIVE_KEY = 'secret-circle-party-hub-active-v1'/);
+assert.doesNotMatch(polish, /const TIMER_MODES = new Set/);
+assert.match(worker, /\.\/party-hub-resume-guard\.js/);
+
 console.log(JSON.stringify({
   ok: true,
   version: Guard.version,
   crossModeTimerInjectionRejected: true,
   timerPhaseConsistencyProtected: true,
-  nonTimerRunningStateRejected: true
+  nonTimerRunningStateRejected: true,
+  runtimeUsesTestedGuard: true,
+  duplicatePolishValidatorRemoved: true,
+  offlineGuardRequired: true
 }, null, 2));
