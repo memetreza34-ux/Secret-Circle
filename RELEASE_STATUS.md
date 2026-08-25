@@ -45,9 +45,10 @@ Neu vorbereitet:
 - dynamisch hinzugefügte Body-Siblings werden während eines offenen Overlays ebenfalls isoliert
 - Skip-Link bleibt beim Erstladen erster sinnvoller Tastaturtarget
 - `tests/accessibility-contract.test.js` erweitert
-- `tests/e2e/accessibility-core.spec.js` um reale Browser-Fokuspfade erweitert
+- `tests/e2e/accessibility-core.spec.js` um Browser-Fokuspfade erweitert
 - `scripts/hub_a11y_contract_audit.py` in `npm run validate`
 - `party-hub-a11y.js` Bestandteil von v46
+- globaler Architektur-Audit kennt nun alle releasekritischen Resume-/Privacy-/A11y-Guardmodule
 
 **Noch offen:** echte Ausführung auf Runner, VoiceOver/TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserabnahme. Deshalb weiterhin PREPARED, nicht PASS.
 
@@ -73,7 +74,7 @@ Zentralisiert:
 - feste Registry-/Integrity-Verträge
 - CI/Cross-Browser verwenden `npm ci`
 - Lockfile-/A11y-/Operator-/Readiness-Audits in `npm run validate`
-- Operator- und Readiness-Audit leiten die aktuelle Cachegeneration inzwischen dynamisch aus `sw.js` ab
+- Operator- und Readiness-Audit leiten die aktuelle Cachegeneration dynamisch aus `sw.js` ab
 
 **Offen:** echter Online-`npm ci`-/Integrity-PASS auf funktionierendem Runner.
 
@@ -106,13 +107,17 @@ Daher bleibt `ASSETS / THIRD PARTY` blockiert.
 
 ## CI – P0
 
-Der zuletzt ausdrücklich untersuchte aktuelle-Branch-Lauf war **Run #2575**, Job `97682633520`.
+Aktuellster ausdrücklich untersuchter v46-Lauf: **Run #2627**.
 
+- Run ID `32809352564`
+- Job `validate`, Job ID `97685596269`
+- Head `30ef13f84d34f7fa95c46d441463bb58f0cb09c1`
 - `failure`
-- keine ausführbaren Workflow-Schritte sichtbar
+- Jobliste `steps: null`
 - separate Step-Abfrage `steps: []`
-- Joblogs nicht vorhanden
 - kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
+
+Run #2627 liegt auf dem v46-/Hub-A11y-/Architektur-Hardening-Stand. Auch diese Änderungen wurden nicht runnerverifiziert.
 
 Der frühere Minimal-Runner-Probe ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code endete ebenfalls vor Step 1 mit `steps: []`.
 
