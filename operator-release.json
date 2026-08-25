@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "evidenceStatus": "PREPARED",
+  "operatorGate": "BLOCKED",
+  "operator": {
+    "legalName": null,
+    "legalForm": null,
+    "representative": null,
+    "serviceAddress": null,
+    "publicEmail": null,
+    "register": null,
+    "registerNumber": null,
+    "vatOrBusinessId": null
+  },
+  "hosting": {
+    "provider": null,
+    "product": null,
+    "region": null,
+    "stagingOrigin": null,
+    "productionOrigin": null,
+    "accessLogsDocumented": false,
+    "retentionDocumented": false,
+    "processorRoleReviewed": false,
+    "thirdCountryTransferReviewed": false,
+    "httpsConfirmed": false,
+    "abuseOrSecurityContactReviewed": false
+  },
+  "publicLegal": {
+    "privacyPage": "privacy.html",
+    "legalNoticePage": null,
+    "privacyHostingTextFinal": false,
+    "operatorDetailsPublished": false,
+    "supportLinkPublished": false,
+    "vsbgPositionPublishedIfRequired": false,
+    "noObsoleteEuOdrLink": true
+  },
+  "support": {
+    "publicSupportEmail": null,
+    "securityReportingRoute": null,
+    "supportContactTested": false,
+    "securityRouteTested": false,
+    "sampleSupportCaseCompleted": false
+  },
+  "incident": {
+    "incidentLead": null,
+    "engineeringOwner": null,
+    "supportOwner": null,
+    "legalPrivacyOwner": null,
+    "sev1DrillCompleted": false,
+    "rollbackDrillCompleted": false,
+    "userCommunicationRouteConfirmed": false
+  },
+  "legalReview": {
+    "ddgReviewed": false,
+    "gdprPrivacyReviewed": false,
+    "tdddgStorageReviewed": false,
+    "vsbgReviewed": false,
+    "contentRightsReviewed": false,
+    "agePositionReviewed": false,
+    "monetizationPosition": "N/A_V1",
+    "finalPlausibilityReviewCompleted": false,
+    "reviewedAt": null
+  },
+  "notes": "Template only. Do not invent operator, contact, hosting or legal facts. READY requires real values, tested contacts, final hosting/privacy review and completed drills."
+}
