@@ -6,19 +6,23 @@ Stand: 25. August 2026
 
 Secret Circle besitzt normale GitHub-Actions-Workflows, aber die geprüften Jobs erreichen weiterhin **keinen Workflow-Schritt**.
 
-Aktuellster bestätigter App-CI-Befund: **Run #2565** (`Secret Circle CI`) auf Head **`668c65fce0233553fb2013631be2abe6cfd2f2a4`** / Job `validate`.
+Aktuellster bestätigter v46-App-CI-Befund: **Run #2627** (`Secret Circle CI`) auf Head **`30ef13f84d34f7fa95c46d441463bb58f0cb09c1`** / Job `validate`.
 
-- Run-ID `32808084307`
-- Job-ID `97681972379`
+- Run-ID `32809352564`
+- Job-ID `97685596269`
 - `completed / failure`
 - Jobliste liefert `steps: null`
 - separate Step-Abfrage liefert `steps: []`
-- Joblogs nicht verfügbar (`404 BlobNotFound`)
 - kein Checkout
 - kein Node-/Python-Setup
 - kein Online-`npm ci`
-- keine Tests/Audits/Playwright
+- keine Syntaxchecks
+- keine Unit-/Contracttests
+- keine Validatoren/Audits
+- kein Playwright
 - kein Repositorycode ausgeführt
+
+Run #2627 liegt auf dem synchronisierten **v46-/Hub-Accessibility-/Architektur-Hardening-Stand**. Damit wurden auch `party-hub-a11y.js`, die neuen Fokus-/Modalverträge und die erweiterten Architektur-/Readiness-Audits nicht durch einen GitHub-Runner ausgeführt.
 
 Das wiederholte Muster ist **kein Beweis für einen Codefehler**, weil der Repositorycode nicht startet.
 
@@ -41,20 +45,22 @@ Der verbleibende Fehlerbereich liegt **vor der Step-Ausführung**, insbesondere 
 
 ## Wiederholbarkeit
 
-Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363, #2387, #2401, #2565 und der isolierte Runner-Probe Run #7.
+Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363, #2387, #2401, #2565, #2575, **#2627** und der isolierte Runner-Probe Run #7.
 
-Wichtig: **Run #2565 liegt auf dem aktuellen Release-Foundation-Head nach v45, Core-Hardening und Operator-/Legal-Audit-Erweiterungen.** Auch diese Änderungen wurden dadurch nicht runnerverifiziert.
+Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen und nun v46-Hub-Accessibility-Hardening hinweg verstärkt die Diagnose: Der unmittelbare Fehler tritt **vor jeder Repositoryausführung** auf.
 
 ## Aktueller Buildvertrag
 
-- Offline-Core `secret-circle-v45` / `secret-circle-v45-staging`
+- Offline-Core `secret-circle-v46` / `secret-circle-v46-staging`
 - `package-lock.json` v3
 - `@playwright/test`, `playwright`, `playwright-core` 1.54.2; optional `fsevents` 2.3.2
 - feste Registry-URLs + `sha512`-Integrities
 - CI und Cross-Browser verwenden `npm ci`
 - `scripts/lockfile_contract_audit.py`
+- `scripts/hub_a11y_contract_audit.py`
 - `scripts/operator_release_contract_audit.py`
 - `scripts/release_readiness_contract_audit.py`
+- erweiterter `scripts/architecture_audit.py` für Resume-/Privacy-/A11y-Productionmodule
 
 Ein echter Online-`npm ci`-PASS bleibt offen, weil Actions Step 1 nicht erreicht.
 
@@ -64,6 +70,7 @@ Unter anderem vorhanden:
 
 - Foundation-/Architektur-Audits
 - Lockfile-/Branch-Protection-Audits
+- Hub-A11y-Contract-Audit
 - HTTPS-Staging-Smoke + Contract-Audit
 - PWA-Head-Metadata-Test für fünf interaktive Einstiegseiten
 - Privacy-/Reference-/Asset-/Media-/Placeholder-Audits
@@ -120,17 +127,18 @@ Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere Reposit
 
 ## Wenn der Runner wieder echte Steps zeigt
 
-1. Minimaljob muss Step 1 erreichen
+1. Job muss Step 1 erreichen
 2. Checkout bestätigen
 3. Online-`npm ci` / Integrity-Download prüfen
 4. ersten echten Repositoryfehler isolieren
-5. Syntaxchecks
-6. Unit-/Contracttests einschließlich PWA-Head
-7. Validatoren/Audits einschließlich Operator-/Release-Evidence
+5. `npm run check`
+6. `npm test`
+7. `npm run validate` einschließlich A11y-/Architektur-/Operator-/Release-Evidence-Audits
 8. Chromium E2E
-9. Cross-Browser auf demselben RC-Commit
-10. unveränderten Commit erneut vollständig testen
-11. erst danach Branch Protection und Release Evidence als reale PASS-Gates abnehmen
+9. vollständiges `npm run ci`
+10. Cross-Browser auf demselben RC-Commit
+11. unveränderten Commit erneut vollständig testen
+12. erst danach Branch Protection und Release Evidence als reale PASS-Gates abnehmen
 
 ## Release-Regel
 
