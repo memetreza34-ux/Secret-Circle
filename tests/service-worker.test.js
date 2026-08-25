@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v50'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v50-staging'/);
+assert.match(source, /const CACHE='secret-circle-v51'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v51-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -25,6 +25,7 @@ assert.match(source, /secondary-surface-a11y\.js/);
 assert.match(source, /advanced-resume-guard\.js/);
 assert.match(source, /advanced-privacy-guard\.js/);
 assert.match(source, /backup-schema-registry\.js/);
+assert.match(source, /party-data-tools\.js/);
 assert.match(source, /party-catalog\.js/);
 assert.match(source, /party-expansion\.js/);
 assert.match(source, /party-mega-catalog\.js/);
@@ -43,7 +44,7 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 50,
+  cacheContract: 51,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -57,6 +58,7 @@ console.log(JSON.stringify({
   advancedResumeGuardOffline: true,
   advancedPrivacyGuardOffline: true,
   backupSchemaRegistryOffline: true,
+  completeBackupHardeningOffline: true,
   baseCatalogOffline: true,
   expansionCatalogOffline: true,
   megaCatalogOffline: true,
