@@ -82,6 +82,16 @@ Advanced Core trennt:
 - Live-Privacy: `advanced-privacy-guard.js`
 - Einstellungen: `party-advanced-preferences.js`
 
+`secondary-surface-a11y.js` ist die gemeinsame Accessibility-Schicht für **Advanced, Quick und Creator**. Sie wird auf diesen Einstiegseiten vor dem jeweiligen Runner beziehungsweise Page-Controller geladen und übernimmt ausschließlich Querschnittsverhalten:
+
+- Advanced-Spieloverlay als modalen Fokuskontext isolieren,
+- Creator-Hilfe als echten modalen Fokuskontext isolieren,
+- dynamischen Fokus nach Quick-/Advanced-Phasenwechseln wiederherstellen,
+- Creator-Wizard-Schrittüberschriften programmatisch fokussierbar machen,
+- Creator-Template-Radiogroup mit roving `tabindex` sowie Pfeil-/Home-/End-Tasten bedienen.
+
+Die Fachlogik der Spiele bleibt in ihren jeweiligen Engines; die A11y-Schicht darf keine Gewinner-, Punkte-, Timer- oder Persistenzlogik besitzen.
+
 Der Game Creator trennt Daten-/Validierungslogik (`game-creator.js`), Wizard (`creator-page.js`) und Laufzeit (`party-created-modes.js`). Quick/Mega/Viral/Creator verwenden die gemeinsame Sessionsteuerung statt privater Intervalltimer.
 
 Globale Monkey-Patches von `Storage.prototype`, Engine-Methoden oder Browser-APIs zur nachträglichen Korrektur von Fachlogik sind verboten.
@@ -110,7 +120,7 @@ Abbruch und Skip dürfen keinen künstlichen Abschluss-/Punktzustand erzeugen.
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v46`**.
+Aktueller Offline-Core: **`secret-circle-v47`**.
 
 Historie der letzten relevanten Cachegenerationen:
 
@@ -124,7 +134,8 @@ Historie der letzten relevanten Cachegenerationen:
 - v43: Private-Device-Truth/Dare-Texte physisch entfernt + Privacy-Source-Audit
 - v44: gemeinsamer Manifest-/iOS-/Icon-Head-Vertrag für Hub, Word Imposter, Creator, Advanced und Quick
 - v45: Cachegeneration nach 15/15-Core-Hardening; Resume-/Privacy-Guards explizit offline
-- **v46: Hub-Accessibility-Hardening mit funktionierender Bereichs-Fokusführung, modaler Hintergrundisolation, Fokus-Trap und `party-hub-a11y.js` im Offline-Core**
+- v46: Hub-Accessibility-Hardening mit Bereichs-Fokusführung, modaler Hintergrundisolation und Fokus-Trap
+- **v47: Accessibility-Hardening auf Advanced, Quick und Creator erweitert; `secondary-surface-a11y.js` ist Teil des Offline-Core**
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -155,7 +166,7 @@ Die interaktiven Einstiegseiten `party.html`, `index.html`, `creator.html`, `adv
 
 Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, ausreichend große Touchziele, Reduced Motion, 200-%-Zoom/Reflow, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
 
-Für den Party Hub gilt seit v46 zusätzlich:
+Für den Party Hub gilt seit v46:
 
 - sichtbare Bereichswechsel verschieben den programmatischen Fokus auf die neue Hauptüberschrift,
 - Detail- und aktive Spieloverlays sind als modale Dialoge ausgezeichnet,
@@ -163,9 +174,17 @@ Für den Party Hub gilt seit v46 zusätzlich:
 - Tab/Shift+Tab bleibt innerhalb des aktiven Overlays,
 - die normale Skip-Link-Reihenfolge bleibt beim Erstladen unverändert.
 
+Seit v47 gilt zusätzlich:
+
+- Advanced-Spielrunden bilden einen modalen Tastaturkontext und isolieren den Setup-Hintergrund,
+- Quick-Phasen stellen Fokus wieder her, wenn die auslösende Aktion beim Re-Render entfernt wurde,
+- Creator-Schrittwechsel fokussieren die neue Schrittüberschrift,
+- Creator-Hilfe isoliert den Hintergrund und hält Tab/Shift+Tab im Dialog,
+- die Creator-Template-Radiogroup unterstützt roving `tabindex`, Pfeiltasten, Home und End.
+
 Private Reveal-Cover müssen mit Screenreader verständlich und nach bewusster Wiederöffnung fokussierbar sein.
 
-`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/e2e/accessibility-core.spec.js` und `scripts/hub_a11y_contract_audit.py` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
+`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/e2e/accessibility-core.spec.js`, `scripts/hub_a11y_contract_audit.py` und `scripts/secondary_surface_a11y_contract_audit.py` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
 
 ## 12. Inhalts- und Rechtevertrag
 
@@ -200,7 +219,7 @@ Bei Release Candidates zusätzlich:
 
 ## 14. Performance und Assets
 
-Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. `party-hub-a11y.js` besitzt zusätzlich einen eigenen statischen Grenzwert unter 20 KB im A11y-Audit.
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. Accessibility-Querschnittsmodule bleiben bewusst klein und fachlogikfrei.
 
 PWA-Icon-Vertrag:
 
