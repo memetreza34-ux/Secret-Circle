@@ -12,8 +12,11 @@ Stand: 25. August 2026
 - 15/15 Core Source Review und 15/15 Core Source Hardening stehen auf **PREPARED**.
 - Accessibility Source Hardening steht auf **PREPARED**.
 - Word-Imposter Data/Resume Hardening steht auf **PREPARED**.
+- Hub Resume Integrity v2 steht auf **PREPARED**.
 - `release-evidence.json` bleibt bewusst `PREPARED / NO_GO`; kein unveränderter RC ist eingefroren.
 - PR #13 bleibt Draft und ungemergt.
+- Branch-Protection-, Foundation-, Readiness- und Release-Audits sind jetzt **transition-safe** und blockieren einen später korrekt belegten `FINAL / GO`-Zustand nicht mehr durch historische OPEN-/NO_GO-Hardcodes.
+- `validate_project.py` wurde auf die aktuellen Word-Imposter-/Advanced-/Quick-/Creator-Scriptketten synchronisiert.
 
 ### Core-Hardening
 
@@ -27,7 +30,7 @@ Stand: 25. August 2026
 ### Hub-Accessibility-Hardening – v46
 
 - `party-hub-a11y.js` Version 2 ergänzt.
-- konkreten Hub-Fokusfehler behoben: Bereichswechsel fokussieren eine programmatisch fokussierbare Hauptüberschrift.
+- Bereichswechsel fokussieren eine programmatisch fokussierbare Hauptüberschrift.
 - Spieldetail und aktive Hub-Runde als modale Tastaturkontexte gehärtet.
 - Hintergrund über `inert` isoliert; Tab/Shift+Tab bleibt im Overlay.
 - Rückkehrfokus nach Schließen des Spieldetails.
@@ -44,31 +47,36 @@ Stand: 25. August 2026
 
 ### Word-Imposter Data/Resume Hardening – v48
 
-- konkreten Defense-in-depth-Votingfehler entfernt: `app.js` leitet die nächste abstimmende Person nicht mehr aus `Object.keys(votes).length` ab, sondern sucht den nächsten Spieler ohne gespeicherte Stimme.
-- der strengere `word-imposter-resume-guard.js` bleibt unverändert aktiv und verwirft nicht-sequenzielle manipulierte Voting-Snapshots.
-- `data-store.js` definiert jetzt zentral:
-  - maximal **50 eigene Kategorien**,
-  - maximal **200 Begriffe je eigener Kategorie**,
-  - maximal **1,5 MB UTF-8** pro Word-Imposter-Backup.
-- frühere stille `slice(0, 50)`-Trunkierung entfernt: 51 Kategorien werden jetzt fail-closed abgelehnt.
-- 201 Begriffe werden vor `engine.normalizeEntries()` abgelehnt.
+- `app.js` leitet die nächste abstimmende Person nicht mehr aus `Object.keys(votes).length` ab, sondern sucht den nächsten Spieler ohne gespeicherte Stimme.
+- `word-imposter-resume-guard.js` verwirft nicht-sequenzielle manipulierte Voting-Snapshots.
+- `data-store.js` definiert maximal **50 eigene Kategorien**, maximal **200 Begriffe je eigener Kategorie** und maximal **1,5 MB UTF-8** pro Word-Imposter-Backup.
+- frühere stille Kategorie-Trunkierung entfernt: 51 Kategorien werden fail-closed abgelehnt.
+- 201 Begriffe werden vor Normalisierung abgelehnt.
 - Backup-`data` muss ein echtes Objekt und darf kein Array sein.
 - abgelehnte Imports verändern bestehende lokale Daten nicht.
 - `app.js` liest die Limits aus dem Store statt eigene unabhängige Werte zu verwenden.
-- `index.html` erklärt 50 Kategorien und 2–200 Begriffe sichtbar und besitzt einen begrenzten Texteingabepfad.
+- `index.html` erklärt 50 Kategorien und 2–200 Begriffe sichtbar.
 - `tests/storage.test.js` deckt 50/51, 200/201, UTF-8-Byte-Limit, korrupte lokale Übergrößen und Import-Rollback ab.
-- `tests/word-imposter-data-contract.test.js` neu; schützt Voting-, UI-, Store- und Backup-Grenzen.
-- `package.json` führt den neuen Contracttest in `npm test` und `npm run check` aus.
-- `scripts/release_readiness_contract_audit.py` verlangt den neuen Test im Unit-/Syntaxgate.
+- `tests/word-imposter-data-contract.test.js` schützt Voting-, UI-, Store- und Backup-Grenzen.
 
-### PWA / Offline – v48
+### Hub Resume Integrity – v49
 
-- Offline-Core auf **`secret-circle-v48` / `secret-circle-v48-staging`** erhöht.
-- v46-/v47-A11y-Schichten bleiben enthalten.
-- aktuelle `index.html`, `app.js` und `data-store.js` mit Word-Imposter-v48-Hardening werden offline ausgeliefert.
-- `tests/service-worker.test.js` auf Cachevertrag 48 aktualisiert.
-- Architektur, Deployment, Environment, Privacy, Hosting, Release-Checkliste, Issue #8, README, Release-Status und A-bis-Z-Tracker auf v48 synchronisiert.
-- reale Installations-, Upgrade-, Rollback-, Grenz- und Offline-Gerätetests bleiben offen.
+- `party-hub-resume-guard.js` Version 2 ist die zentrale getestete Runtime-Quelle für direkte Hub-Resume-Integrität.
+- `party-hub-polish.js` delegiert an denselben Guard statt Timer-/Resume-Validierung zu duplizieren.
+- gekreuzte oder logisch widersprüchliche Timer-Snapshots werden verworfen.
+- beim Verwerfen wird auch eine bereits sichtbare `#hub-resume-session`-Karte entfernt.
+- gültige gespeicherte Sessions bleiben unangetastet.
+- `tests/party-hub-resume-guard.test.js` prüft Modul, Runtime-Einbindung, Offline-Core, gültigen Resume und stale-Resume-UI-Race.
+- Beta-/Geräteplan enthält einen eigenen **HR2**-Realtest für diesen Guard.
+
+### PWA / Offline – v49
+
+- Offline-Core auf **`secret-circle-v49` / `secret-circle-v49-staging`** erhöht.
+- v46-/v47-A11y-Schichten und v48-Word-Imposter-Datenverträge bleiben enthalten.
+- `party-hub-resume-guard.js` ist jetzt explizit Teil des echten Runtime-/Offline-Core.
+- `tests/service-worker.test.js` auf Cachevertrag 49 aktualisiert.
+- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-Plan, Issue #8 und PR #13 auf v49 synchronisiert.
+- reale Installations-, Upgrade-, Rollback-, Resume- und Offline-Gerätetests bleiben offen.
 
 ### Build / Supply Chain
 
@@ -76,23 +84,26 @@ Stand: 25. August 2026
 - Playwright-Kette exakt 1.54.2.
 - keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- Syntax-/Unit-/Validate-Gates enthalten die A11y- und Word-Imposter-Datenverträge.
+- Syntax-/Unit-/Validate-Gates enthalten A11y-, Word-Imposter-Daten-, Operator- und Resume-Verträge.
 - Online-`npm ci`-/Test-PASS bleibt wegen Hosted-Runner-Blocker offen.
 
 ### Operator / Hosting / Legal / Support
 
 - `operator-release.json` bleibt `PREPARED / BLOCKED`.
-- `HOSTING_DECISION.md` erwartet v48 für Staging-/Production-Smokes.
+- `OPERATOR_EVIDENCE_LOG.md` bündelt reale Hosting-, Support-, Security-, Probe-Support-, SEV-1-, Rollback- und Legal-/Privacy-Nachweise.
+- Operator-Audit erzwingt bei späterem READY reale Privacy-/Legal-Dateien, veröffentlichte Betreiber-/Kontaktwerte, getrennte HTTPS-Origins und konsistente Links von allen fünf öffentlichen Einstiegseiten.
+- `HOSTING_DECISION.md` erwartet v49 für Staging-/Production-Smokes.
 - Issue #14 führt reale Betreiber-/Hosting-/Legal-/Support-/Incident-Evidence.
 - reale Betreiberwerte, Provider/Origins, Support-/Securitytests und Drills bleiben offen.
 
 ### CI / Hosted Runner – P0
 
-- aktuellster bestätigter v48-Lauf: **Run #2715**, Run ID `32850361668`, Job `validate` / `97809595781`, Head `9f87910567a60e5ce905ced42bb62201b3e3a85d`.
-- Ergebnis erneut vor Step 1: `steps: null` / separate Abfrage `steps: []`.
+- letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand: **Run #2715**, Run ID `32850361668`, Job `validate` / `97809595781`, Head `9f87910567a60e5ce905ced42bb62201b3e3a85d`.
+- Ergebnis vor Step 1: `steps: null` / separate Abfrage `steps: []`.
 - kein Checkout, npm, Test oder Repository-Code wurde ausgeführt.
 - der isolierte Minimal-Runner-Probe ohne Repository-Code zeigte dasselbe Muster.
 - unmittelbare Fehlerfläche bleibt vor der Workflow-Step-Ausführung; Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+- **v49 besitzt daher noch keinen echten Runner-PASS.**
 
 ### Third Party / Assets
 
@@ -101,6 +112,6 @@ Stand: 25. August 2026
 
 ### Release-Status
 
-- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/Word-Imposter-v48-Daten**, **#14 Operator/Hosting/Legal/Support**.
+- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/Word-Imposter-Daten/Hub-Resume-v2**, **#14 Operator/Hosting/Legal/Support**.
 - öffentlicher Release: **NO_GO**.
-- kein CI-, Geräte-, Accessibility-, Daten-Grenz-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echte Ausführung behauptet.
+- kein CI-, Geräte-, Accessibility-, Daten-Grenz-, Resume-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echte Ausführung behauptet.
