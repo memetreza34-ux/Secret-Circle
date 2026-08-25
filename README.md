@@ -61,6 +61,7 @@ Der Party Hub besitzt jetzt zusätzlich:
 - unveränderten Skip-Link als ersten sinnvollen Tastaturtarget beim Erstladen
 - statische Accessibility-Verträge, neue Playwright-E2E-Fälle und `scripts/hub_a11y_contract_audit.py`
 - Offline-Verfügbarkeit dieser A11y-Schicht im v46-Service-Worker-Core
+- globalen Architektur-Audit für alle releasekritischen Resume-/Privacy-/A11y-Module
 
 **Noch kein Accessibility PASS:** VoiceOver, TalkBack, reales 200-%-Zoom, Touchbedienung und echte Geräte-/Browserabnahme bleiben offen.
 
@@ -123,12 +124,14 @@ Der reale Betriebs-/Legalblock ist als eigener Releasevertrag modelliert:
 
 ## CI – extern blockiert
 
-Der zuletzt ausdrücklich untersuchte aktuelle-Branch-Lauf war **Run #2575**, Job `97682633520`.
+Aktuellster ausdrücklich untersuchter v46-Lauf: **Run #2627**.
 
+- Run ID `32809352564`
+- Job `validate`, Job ID `97685596269`
+- Head `30ef13f84d34f7fa95c46d441463bb58f0cb09c1`
 - `failure`
-- Jobliste ohne Workflow-Schritte
+- Jobliste `steps: null`
 - separate Step-Abfrage `steps: []`
-- keine Joblogs
 - kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
 
 Ein früherer Minimal-Runner-Probe ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code endete ebenfalls vor Step 1 mit `steps: []`.
