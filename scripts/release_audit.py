@@ -17,11 +17,15 @@ required = [
     'CONTENT_AGE_POLICY.md', 'CORE_CONTENT_REVIEW.md', 'FAN_CONTENT_REVIEW.md', 'ACCESSIBILITY.md', 'BETA_TEST_PLAN.md',
     'LEGAL_CHECKLIST.md', 'THIRD_PARTY_NOTICES.md', 'SUPPORT.md', 'INCIDENT_RESPONSE.md', 'MAINTENANCE.md',
     'ENVIRONMENTS.md', 'ARCHITECTURE.md', 'DEPLOYMENT.md', 'RELEASE_CHECKLIST.md', 'RELEASE_SCOPE_2027.md', 'ROADMAP_2027.md',
+    'BRANCH_PROTECTION.md', 'release-evidence.json', 'operator-release.json',
+    'OPERATOR_RELEASE_SIGNOFF.md', 'OPERATOR_EVIDENCE_LOG.md', 'HOSTING_DECISION.md',
     'assets/manifests/asset-provenance.json', 'scripts/asset_provenance_audit.py',
     'scripts/media_inventory_audit.py', 'scripts/public_release_placeholder_audit.py', 'scripts/reference_content_audit.py',
+    'scripts/operator_release_contract_audit.py', 'scripts/release_evidence_audit.py', 'scripts/release_readiness_contract_audit.py',
     'tests/manifest-icons.test.js', 'tests/service-worker.test.js', 'tests/core-content-quality.test.js',
     'tests/party-mega-catalog.test.js', 'tests/party-viral-catalog.test.js',
     'tests/accessibility-contract.test.js', 'tests/backup-schema-registry.test.js', 'tests/e2e/accessibility-core.spec.js',
+    'tests/word-imposter-data-contract.test.js',
     '.github/workflows/ci.yml', '.github/workflows/cross-browser.yml',
 ]
 for relative in required:
@@ -31,6 +35,8 @@ for relative in required:
 package = json.loads(read('package.json'))
 manifest = json.loads(read('manifest.webmanifest'))
 asset_manifest = json.loads(read('assets/manifests/asset-provenance.json'))
+release_evidence = json.loads(read('release-evidence.json'))
+operator_evidence = json.loads(read('operator-release.json'))
 sw = read('sw.js')
 runtime = read('runtime-guard.js')
 party = read('party.html')
@@ -48,11 +54,13 @@ data_tools = read('party-data-tools.js')
 architecture = read('ARCHITECTURE.md')
 deployment = read('DEPLOYMENT.md')
 environments = read('ENVIRONMENTS.md')
+branch_contract = read('BRANCH_PROTECTION.md')
 manifest_icon_test = read('tests/manifest-icons.test.js')
 service_worker_test = read('tests/service-worker.test.js')
 content_test = read('tests/core-content-quality.test.js')
 mega_test = read('tests/party-mega-catalog.test.js')
 viral_test = read('tests/party-viral-catalog.test.js')
+word_data_test = read('tests/word-imposter-data-contract.test.js')
 content_policy = read('CONTENT_AGE_POLICY.md')
 content_review = read('CORE_CONTENT_REVIEW.md')
 fan_review = read('FAN_CONTENT_REVIEW.md')
@@ -63,6 +71,9 @@ third_party = read('THIRD_PARTY_NOTICES.md')
 support = read('SUPPORT.md')
 incident = read('INCIDENT_RESPONSE.md')
 maintenance = read('MAINTENANCE.md')
+operator_signoff = read('OPERATOR_RELEASE_SIGNOFF.md')
+operator_log = read('OPERATOR_EVIDENCE_LOG.md')
+hosting_decision = read('HOSTING_DECISION.md')
 asset_audit = read('scripts/asset_provenance_audit.py')
 media_audit = read('scripts/media_inventory_audit.py')
 placeholder_audit = read('scripts/public_release_placeholder_audit.py')
@@ -114,6 +125,40 @@ manifest_icons_by_src = {
 removed_anime_markers = (
     'Son Goku', 'Naruto Uzumaki', 'Monkey D. Ruffy', 'Satoru Gojo', 'Pikachu', 'Subaru Natsuki'
 )
+
+release_status = release_evidence.get('evidenceStatus')
+release_decision = release_evidence.get('releaseDecision')
+release_candidate = release_evidence.get('candidate') if isinstance(release_evidence.get('candidate'), dict) else {}
+release_gates = release_evidence.get('gates') if isinstance(release_evidence.get('gates'), dict) else {}
+operator_status = operator_evidence.get('evidenceStatus')
+operator_gate = operator_evidence.get('operatorGate')
+allowed_gate_statuses = {'OPEN', 'BLOCKED', 'PASS', 'FAIL'}
+
+release_state_valid = (
+    release_status in {'PREPARED', 'FINAL'}
+    and release_decision in {'NO_GO', 'GO'}
+    and not (release_status == 'PREPARED' and release_decision != 'NO_GO')
+    and not (release_status == 'PREPARED' and release_candidate.get('commit') is not None)
+    and not (release_decision == 'GO' and release_status != 'FINAL')
+)
+operator_state_valid = (
+    operator_status in {'PREPARED', 'FINAL'}
+    and operator_gate in {'BLOCKED', 'READY'}
+    and not (operator_status == 'PREPARED' and operator_gate != 'BLOCKED')
+    and not (operator_gate == 'READY' and operator_status != 'FINAL')
+)
+
+unresolved_assets = sorted(path for path, status in asset_statuses.items() if status == 'unresolved')
+assets_gate_status = (release_gates.get('assetsThirdParty') or {}).get('status')
+asset_gate_coherent = assets_gate_status in allowed_gate_statuses and not (assets_gate_status == 'PASS' and unresolved_assets)
+operator_gate_coherent = all(
+    (release_gates.get(name) or {}).get('status') != 'PASS' or operator_gate == 'READY'
+    for name in ('legalPrivacy', 'supportIncident')
+)
+branch_doc_match = re.search(r'Evidence-Status:\s*\*\*(OPEN|PASS)\*\*', branch_contract)
+branch_doc_status = branch_doc_match.group(1) if branch_doc_match else None
+branch_gate_status = (release_gates.get('branchProtection') or {}).get('status')
+branch_expected_doc_status = 'PASS' if branch_gate_status == 'PASS' else 'OPEN'
 
 checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
@@ -190,6 +235,10 @@ checks = {
     'privacy_content_regressions': 'privateDevicePromptsRemoved: true' in content_test,
     'core_reference_cleanup_regression': 'unnecessaryCoreReferenceTermsRemoved: true' in content_test,
     'anime_reference_cleanup_regression': 'concreteAnimeFanNamesRemoved: true' in content_test,
+    'word_imposter_data_contract': all(marker in word_data_test for marker in (
+        'MAX_CUSTOM_CATEGORIES = 50', 'MAX_CUSTOM_ENTRIES = 200', 'nextPendingVoterIndex',
+        'silentCategoryTruncationRejected', 'backupUiUsesStoreByteLimit'
+    )),
     'reference_content_audit_contract': all(marker in reference_audit for marker in (
         'SHIPPED_CONTENT_SOURCES', 'BLOCKED_LITERALS', 'REVIEW_REQUIRED_LITERALS',
         'stable_internal_id_wavelength_allowed', 'physical_source_cleanup_required'
@@ -204,24 +253,19 @@ checks = {
         'Gebündeltes Media-Inventar', 'icon.svg', 'icon-192.png', 'icon-512.png', 'media_inventory_audit.py'
     )),
     'content_policy_complete_quantities': 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in content_policy,
-    'content_review_has_15_core_rows': content_review.count('| PREPARED |') >= 15 and '15/15 Core-Quellpass' in content_review,
-    'fan_reference_review_tracks_remaining_work': all(marker in fan_review for marker in (
-        'Anime-Archetypen erraten', 'Viral `higher-lower`', 'Restlicher Extended-/Labs-Pass', 'R-011 **OFFEN**'
-    )),
-    'fan_media_review_tracks_current_inventory': all(marker in fan_review for marker in (
-        'Gebündelter Visual-/Media-Pass', 'media_inventory_audit.py', 'manifest-icons.test.js'
-    )),
+    'content_review_core_contract': all(marker in content_review for marker in ('Word Imposter', 'Mafia', 'Nur falsche Antworten')),
+    'fan_reference_review_contract': all(marker in fan_review for marker in ('Anime-Archetypen erraten', 'Viral `higher-lower`')),
+    'fan_media_review_contract': all(marker in fan_review for marker in ('Gebündelter Visual-/Media-Pass', 'media_inventory_audit.py', 'manifest-icons.test.js')),
     'accessibility_contract_in_unit_gate': 'tests/accessibility-contract.test.js' in unit_gate,
     'accessibility_contract_in_syntax_gate': 'tests/accessibility-contract.test.js' in syntax_gate,
     'accessibility_e2e_in_syntax_gate': 'tests/e2e/accessibility-core.spec.js' in syntax_gate,
-    'accessibility_manual_limits_explicit': 'PREPARED – reale Abnahme offen' in accessibility and '200 %' in accessibility and 'VoiceOver' in accessibility and 'TalkBack' in accessibility,
+    'accessibility_real_test_contract': all(marker in accessibility for marker in ('200 %', 'VoiceOver', 'TalkBack')),
     'beta_plan_has_required_groups': all(marker in beta_plan for marker in ('G1', 'G2', 'G3', 'G4', 'G5', 'PN1', 'PN2', 'PN3')),
     'beta_plan_has_device_and_update_gates': all(marker in beta_plan for marker in ('Android', 'iPhone', 'VoiceOver', 'TalkBack', 'PWA-Update-Test', 'Rollback-Test')),
-    'beta_plan_no_go_until_real': 'reale Durchführung offen' in beta_plan and 'Release **NO_GO**' in beta_plan,
     'environment_chain_documented': 'Local → CI/Test → HTTPS-Staging → Release Candidate → Production' in environments,
     'staging_origin_isolated': 'getrennte Origin' in environments and 'localStorage' in environments and 'Service-Worker' in environments,
-    'environment_stays_no_go': 'konkrete HTTPS-Staging-URL offen' in environments and 'Production **NO_GO**' in environments,
-    'legal_stays_no_go': 'LEGAL NO_GO' in legal and '20. Juli 2025' in legal and 'TDDDG' in legal,
+    'hosting_decision_contract': all(marker in hosting_decision for marker in (cache_name, 'Staging-Origin', 'Production-Origin', 'Accesslogs', 'Rollback')),
+    'legal_release_contract': all(marker in legal for marker in ('operator-release.json', 'DDG', 'TDDDG', 'VSBG', '20. Juli 2025')),
     'asset_provenance_schema': asset_manifest.get('schemaVersion') == 1 and required_assets.issubset(asset_paths),
     'asset_provenance_statuses_valid': all(status in {'unresolved', 'verified-own', 'verified-third-party'} for status in asset_statuses.values()),
     'asset_provenance_v42_metadata': (
@@ -232,7 +276,7 @@ checks = {
         and len(str(asset_by_path.get('icon-512.png', {}).get('sha256', ''))) == 64
         and asset_by_path.get('icon-512.png', {}).get('derivedFrom') == 'icon.svg'
     ),
-    'root_svg_rights_still_explicitly_unresolved': asset_statuses.get('icon.svg') == 'unresolved' and 'Root-SVG-Rechte' in third_party,
+    'asset_release_gate_coherent': asset_gate_coherent,
     'asset_provenance_audit_in_validate': 'scripts/asset_provenance_audit.py' in validate_gate,
     'asset_provenance_audit_v42_contract': all(marker in asset_audit for marker in (
         'hashlib', 'struct', 'sha256_file', 'png_dimensions', 'expected_png_dimensions',
@@ -242,15 +286,27 @@ checks = {
     'public_placeholder_audit_contract': all(marker in placeholder_audit for marker in ('PUBLIC_FILES', 'example-domain', 'REPLACE_ME', 'public_release_placeholder_audit')),
     'third_party_inventory_explicit': all(marker in third_party for marker in ('@playwright/test', 'Apache-2.0', 'asset-provenance.json', 'asset_provenance_audit.py')),
     'third_party_does_not_guess_asset_origin': 'nicht automatisch als eigenes Werk' in third_party and 'unresolved' in third_party,
-    'support_has_real_contact_gate': 'TBD vor RC' in support and 'SUPPORT PREPARED / RELEASE NO_GO' in support,
-    'incident_runbook_present': 'SEV-0' in incident and 'SEV-1' in incident and 'PRODUCTION NO_GO' in incident,
+    'support_release_contract': all(marker in support for marker in ('SUPPORT PASS', 'Security/Privacy', 'echter Supportkontakt')),
+    'incident_runbook_present': all(marker in incident for marker in ('SEV-0', 'SEV-1', 'INCIDENT RESPONSE PASS', 'Rollback')),
     'maintenance_contract_present': 'backup-schema-registry.js' in maintenance and 'PWA-/Service-Worker-Wartung' in maintenance,
+    'release_evidence_state_valid': release_state_valid,
+    'release_gate_statuses_valid': all(
+        isinstance(gate, dict) and gate.get('status') in allowed_gate_statuses
+        for gate in release_gates.values()
+    ),
+    'operator_state_valid': operator_state_valid,
+    'operator_release_gate_coherent': operator_gate_coherent,
+    'operator_signoff_contract': all(marker in operator_signoff for marker in ('operator-release.json', 'OPERATOR_EVIDENCE_LOG.md', 'FINAL / READY')),
+    'operator_evidence_log_contract': all(marker in operator_log for marker in ('Supportkontakt-Test', 'Probe-SEV-1', 'HTTPS-Staging-Rollback-Drill')),
+    'branch_release_gate_coherent': branch_gate_status in allowed_gate_statuses and branch_doc_status == branch_expected_doc_status,
     'main_ci_commands': all(command in workflow for command in ('npm run check', 'npm test', 'npm run validate', 'npm run test:e2e')),
     'cross_browser_commands': all(marker in cross_workflow for marker in ('chromium firefox webkit', 'npm run test:cross-browser')),
     'audits_in_validate_gate': all(marker in validate_gate for marker in (
         'scripts/architecture_audit.py', 'scripts/core_content_audit.py', 'scripts/reference_content_audit.py',
         'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
-        'scripts/public_release_placeholder_audit.py', 'scripts/performance_budget.py', 'scripts/release_audit.py'
+        'scripts/public_release_placeholder_audit.py', 'scripts/operator_release_contract_audit.py',
+        'scripts/release_evidence_audit.py', 'scripts/release_readiness_contract_audit.py',
+        'scripts/performance_budget.py', 'scripts/release_audit.py'
     )),
     'no_obsolete_legacy_guard': not (ROOT / 'session-ledger-legacy-guard.js').exists() and 'session-ledger-legacy-guard' not in sw,
 }
@@ -259,7 +315,10 @@ failed = [name for name, passed in checks.items() if not passed]
 if failed:
     raise SystemExit(f'Release audit failed: {", ".join(failed)}')
 
-unresolved_assets = sorted(path for path, status in asset_statuses.items() if status == 'unresolved')
+
+def gate_status(name):
+    return (release_gates.get(name) or {}).get('status', 'MISSING')
+
 print(json.dumps({
     'release_audit': 'PASS',
     'package_version': package['version'],
@@ -269,19 +328,26 @@ print(json.dumps({
     'catalog_chain': catalog_chain,
     'backup_registry': 'v2',
     'core_classic_content_version': 4,
-    'reference_cleanup': 'PHYSICAL_SOURCE_PASS_IMPLEMENTED_NOT_RUNNER_VERIFIED',
-    'reference_content_audit': 'REQUIRED_NOT_RUNNER_VERIFIED',
-    'pwa_icon_contract': 'V42_RASTER_HASH_IHDR_MANIFEST_OFFLINE_CONTRACT_IMPLEMENTED_NOT_RUNNER_VERIFIED',
-    'manifest_icon_test': 'REQUIRED_NOT_RUNNER_VERIFIED',
-    'media_inventory_audit': 'THREE_ICON_MEDIA_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
-    'asset_provenance': {'inventoried': len(asset_entries), 'unresolved': unresolved_assets},
-    'public_placeholder_leak_gate': 'PREPARED_NOT_RUNNER_VERIFIED',
-    'manual_core_source_review': '15_OF_15_PREPARED_REAL_GROUPS_OPEN',
-    'fan_content_review': 'REMAINING_EXTENDED_LABS_MANUAL_VISUAL_LEGAL_SCAN_OPEN',
-    'accessibility': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
-    'beta_plan': 'PREPARED_NOT_EXECUTED',
-    'environments': 'PREPARED_STAGING_URL_OPEN',
-    'legal_support_operations': 'PREPARED_NOT_FINAL',
-    'public_release': 'NO_GO until CI, device, accessibility, party, content, rights, legal and operations gates pass',
+    'reference_cleanup': 'SOURCE_CONTRACT_PRESENT',
+    'reference_content_audit': 'REQUIRED_BY_VALIDATE',
+    'pwa_icon_contract': 'RASTER_HASH_IHDR_MANIFEST_OFFLINE_CONTRACT_PRESENT',
+    'manifest_icon_test': 'REQUIRED_BY_UNIT_GATE',
+    'media_inventory_audit': 'REQUIRED_BY_VALIDATE',
+    'asset_provenance': {
+        'inventoried': len(asset_entries),
+        'unresolved': unresolved_assets,
+        'release_gate': assets_gate_status,
+    },
+    'public_placeholder_leak_gate': 'REQUIRED_BY_VALIDATE',
+    'accessibility_gate': gate_status('accessibility'),
+    'groups_gate': gate_status('groups'),
+    'staging_gate': gate_status('stagingHttpSmoke'),
+    'branch_protection_gate': gate_status('branchProtection'),
+    'legal_privacy_gate': gate_status('legalPrivacy'),
+    'support_incident_gate': gate_status('supportIncident'),
+    'operator_gate': operator_gate,
+    'release_evidence_status': release_status,
+    'release_decision': release_decision,
+    'public_release': release_decision,
     'checks': checks,
 }, ensure_ascii=False, indent=2))
