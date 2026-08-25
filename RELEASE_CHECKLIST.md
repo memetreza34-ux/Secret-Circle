@@ -5,9 +5,10 @@ Stand: 25. August 2026
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
 Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
-Aktueller Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**.  
 Accessibility Source Hardening: **PREPARED**.  
 Word-Imposter Data/Resume Hardening: **PREPARED**.  
+Hub Resume Integrity v2: **PREPARED**.  
 Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
@@ -19,6 +20,8 @@ Bereits vorbereitet:
 - [x] `scripts/lockfile_contract_audit.py`
 - [x] `BRANCH_PROTECTION.md` + Contract-Audit
 - [x] `RELEASE_EVIDENCE.md` + `release-evidence.json` + Audit
+- [x] zentrale Release-Audits auf späteren FINAL/GO-Übergang vorbereitet
+- [x] `validate_project.py` auf aktuelle v49-Runtime-Scriptketten synchronisiert
 - [x] Runner-Problem mit minimalem action-/repo-freiem Probe isoliert
 
 Für den RC offen:
@@ -48,7 +51,10 @@ Quellseitig vorbereitet:
 - [x] 1,5-MB-UTF-8-Backupgrenze zwischen UI und Store synchron
 - [x] keine stille Kategorie-Trunkierung bei Import
 - [x] `tests/word-imposter-data-contract.test.js`
-- [x] Hub-Timer-/Resume-Integritätsvertrag
+- [x] `party-hub-resume-guard.js` v2 als zentrale direkte Hub-Resume-Integritätsquelle
+- [x] `party-hub-polish.js` delegiert statt Hub-Timer-/Resume-Validierung zu duplizieren
+- [x] stale `#hub-resume-session` wird beim Verwerfen eines inkonsistenten Snapshots entfernt
+- [x] `tests/party-hub-resume-guard.test.js` prüft Runtime-Einbindung + stale-UI-Regressionsfall
 - [x] `advanced-resume-guard.js`
 - [x] `advanced-privacy-guard.js`
 - [x] Guard-Dateien im Offline-Core
@@ -63,6 +69,8 @@ Für den RC real zu bestätigen:
 - [ ] abgelehnter Word-Imposter-Import verändert bestehende Daten nicht
 - [ ] 1,5-MB-UTF-8-Limit real bestätigt
 - [ ] gekreuzte Hub-Timerzustände sicher verworfen
+- [ ] bereits sichtbare Hub-Resume-Karte verschwindet nach erkannter Snapshot-Inkonsistenz
+- [ ] gültige Hub-Resume-Session bleibt durch den v2-Guard erhalten
 - [ ] manipulierte Advanced-Snapshots sicher verworfen
 - [ ] private Reveal-Zustände nach Reload verdeckt
 - [ ] private Reveal-Zustände bei App-/Tab-Wechsel verdeckt
@@ -107,17 +115,18 @@ Zusätzlich:
 - [ ] Privacy-/Reference-Audits grün
 - [ ] Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
 
-## 4. PWA / Offline – v48
+## 4. PWA / Offline – v49
 
-- [ ] finaler Cache `secret-circle-v48` oder bewusst neuer RC-Cache
+- [ ] finaler Cache `secret-circle-v49` oder bewusst neuer RC-Cache
 - [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
 - [ ] `tests/pwa-head-metadata.test.js` grün
 - [ ] fünf interaktive Einstiegseiten erfüllen denselben Installationsvertrag
 - [ ] Word-Imposter-/Hub-/Advanced-Resume-/Advanced-Privacy-Guards offline
+- [ ] `party-hub-resume-guard.js` v2 offline und in echter Hub-Runtime aktiv
 - [ ] `party-hub-a11y.js` offline
 - [ ] `secondary-surface-a11y.js` offline
-- [ ] v48-Word-Imposter-UI/Store-Dateien offline aktuell
+- [ ] aktuelle Word-Imposter-UI/Store-Dateien offline
 - [ ] Manifest, SVG, 192er PNG, 512er PNG offline
 - [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
 - [ ] Online → installierte PWA → Offline-Neustart
@@ -125,7 +134,7 @@ Zusätzlich:
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
 - [ ] aktive Session bleibt durch Update geschützt
-- [ ] Update von mindestens zwei älteren installierten Versionen auf v48/RC
+- [ ] Update von mindestens zwei älteren installierten Versionen auf v49/RC
 - [ ] lokale Daten/Sessions überstehen Update
 - [ ] fehlgeschlagene Promotion zerstört bisherigen Offline-Core nicht
 - [ ] Rollback mit neuer Cachegeneration
@@ -137,12 +146,13 @@ Zusätzlich:
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung dokumentiert
 - [ ] getrennte HTTPS-Staging-Origin festgelegt
 - [ ] Production-Origin festgelegt
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v48` grün
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v49` grün
 - [ ] Smoke bestätigt Routen, Redirects, Manifest, PNGs, Cache, Privacy-/Reference-Source und PWA-Head
 - [ ] manueller Browser-/PWA-Staging-Smoke grün
-- [ ] Word-Imposter-v48-Datenvertrag auf Staging bestätigt
+- [ ] Word-Imposter-Datenvertrag auf Staging bestätigt
+- [ ] Hub-Resume-v2-Vertrag auf Staging bestätigt
 - [ ] Production nutzt denselben freigegebenen RC
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v48 --production` grün
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v49 --production` grün
 - [ ] manueller Production-Smoke grün
 
 ## 6. Accessibility / Geräte
@@ -196,6 +206,7 @@ Real offen:
 - [ ] großer Word-Imposter-Test mit mehreren Impostern
 - [ ] Word-Imposter-Fairness über mindestens 20 reale Runden protokolliert
 - [ ] Word-Imposter Custom-/Backup-Grenzen mit neutralen Daten praktisch getestet
+- [ ] Hub-Resume-v2-Race-Fall mit neutralem Teststand praktisch getestet
 - [ ] Mafia mit mehreren Gruppengrößen/Rollen
 - [ ] Smart Party Night mindestens 3 vollständige Abende
 - [ ] Creator mit unerfahrener Person
@@ -210,6 +221,7 @@ Quellseitig vorbereitet:
 - [x] `ASSET_RIGHTS_SIGNOFF.md`
 - [x] `operator-release.json` als maschinenlesbare Betreiber-/Hosting-/Support-/Incident-Akte
 - [x] `OPERATOR_RELEASE_SIGNOFF.md`
+- [x] `OPERATOR_EVIDENCE_LOG.md`
 - [x] `HOSTING_DECISION.md`
 - [x] `scripts/operator_release_contract_audit.py` in `npm run validate`
 
@@ -235,6 +247,7 @@ Für Production real zu schließen:
 - [ ] Probe-Supportfall durchgeführt
 - [ ] Probe-SEV-1 durchgeführt
 - [ ] Wartungs-/Hotfixroutine und HTTPS-Rollbackprobe bestätigt
+- [ ] reale Nachweise in `OPERATOR_EVIDENCE_LOG.md` dokumentiert
 
 ## 9. Release Evidence / Freigabe
 
@@ -248,6 +261,7 @@ Für Production real zu schließen:
 - [ ] `scripts/hub_a11y_contract_audit.py` grün
 - [ ] `scripts/secondary_surface_a11y_contract_audit.py` grün
 - [ ] `tests/word-imposter-data-contract.test.js` auf dem RC grün
+- [ ] `tests/party-hub-resume-guard.test.js` auf dem RC grün
 - [ ] `scripts/release_evidence_audit.py` grün
 - [ ] `releaseDecision = GO` erst danach
 
