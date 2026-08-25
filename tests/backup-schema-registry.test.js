@@ -56,6 +56,38 @@ assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-party-hub-v2'),
 assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-settings-v8'), false);
 assert.equal(Registry.isAllowedCompleteStorageKey('other-app-v1'), false);
 
+// Coarse key-specific storage wrappers: reject wrong current versions/shapes before mutation.
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-active-v7', { version: 7, players: [] }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-active-v7', { version: 6, players: [] }), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-custom-v7', []), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-custom-v7', {}), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-history-v7', []), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-settings-v7', { duration: '3' }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-hub-v1', { version: 1, players: [] }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-hub-v1', { version: 999, players: [] }), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-hub-v1', { version: 1 }), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-hub-active-v1', { version: 1, session: {} }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-hub-active-v1', { version: 1 }), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-active-v1', { version: 2, gameId: 'mafia', session: {} }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-active-v1', { version: 1, gameId: 'mafia', session: {} }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-active-v1', { version: 3, gameId: 'mafia', session: {} }), false);
+for (const key of [
+  'secret-circle-party-quick-active-v1',
+  'secret-circle-party-mega-active-v1',
+  'secret-circle-party-viral-active-v1',
+  'secret-circle-party-created-active-v1'
+]) {
+  assert.equal(Registry.validateCompleteStorageValue(key, { version: 1, gameId: 'example' }), true, key);
+  assert.equal(Registry.validateCompleteStorageValue(key, { version: 2, gameId: 'example' }), false, key);
+}
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-created-games-v1', { version: 1, games: [] }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-created-games-v1', { version: 1, games: {} }), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-custom-packs-v1', { version: 1, packs: [] }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-night-v1', { version: 1, steps: [] }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-preferences-v1', { version: 1 }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-catalog-filters-v1', { version: 1 }), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-hub-v2', { version: 2, players: [] }), false);
+
 // Every explicitly managed key must be owned by a current production runtime source,
 // not merely invented inside the registry itself.
 const ownershipSources = [
@@ -97,7 +129,8 @@ for (const marker of [
   'const MAX_ENTRIES = schema.maximumEntries',
   'const MAX_VALUE_BYTES = schema.maximumValueBytes',
   'registry.validateHeader(payload, \'complete\')',
-  'registry.isAllowedCompleteStorageKey'
+  'registry.isAllowedCompleteStorageKey',
+  'registry.validateCompleteStorageValue'
 ]) {
   assert.match(completeTools, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Complete backup central-schema contract missing: ${marker}`);
 }
@@ -122,6 +155,7 @@ console.log(JSON.stringify({
   completeManagedKeys: expectedCompleteKeys.length,
   exactCurrentKeyAllowlist: true,
   futureStorageVersionsPreserved: true,
+  keySpecificStorageWrappersValidated: true,
   managedKeysOwnedByCurrentRuntime: true,
   sharedUtf8Limit: true,
   completeBackupUsesCentralRegistry: true,
