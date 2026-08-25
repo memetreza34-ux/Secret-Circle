@@ -138,3 +138,78 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
   await page.keyboard.press('Tab');
   await expect(page.locator('#finish-hub-game')).toBeFocused();
 });
+
+test('advanced play isolates setup and traps focus inside the active game', async ({ page }) => {
+  await page.goto('/advanced.html?game=two-truths');
+  await expect.poll(() => page.evaluate(() => Boolean(window.SecretCircleSecondarySurfaceA11y))).toBe(true);
+  await expect(page.locator('#advanced-start')).toBeEnabled();
+  await page.locator('#advanced-start').click();
+
+  const play = page.locator('#advanced-play-layer');
+  await expect(play).toBeVisible();
+  await expect(play).toHaveAttribute('role', 'dialog');
+  await expect(play).toHaveAttribute('aria-modal', 'true');
+  await expect.poll(() => page.evaluate(() => document.querySelector('#advanced-main').inert)).toBe(true);
+  await expect.poll(() => page.evaluate(() => document.querySelector('.skip-link').inert)).toBe(true);
+  await expect(page.locator('#play-title')).toHaveAttribute('tabindex', '-1');
+  await expect(page.locator('#play-title')).toBeFocused();
+
+  const buttons = play.locator('button:not([disabled])');
+  await buttons.last().focus();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#advanced-exit')).toBeFocused();
+});
+
+test('quick mode recovers focus when a phase replaces the clicked control', async ({ page }) => {
+  await page.goto('/quick-play.html?game=wavelength');
+  await expect.poll(() => page.evaluate(() => Boolean(window.SecretCircleSecondarySurfaceA11y))).toBe(true);
+  await page.locator('#quick-start').click();
+  await expect(page.locator('#quick-play')).toBeVisible();
+  await expect(page.locator('#quick-pause')).toBeFocused();
+
+  await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
+  await expect(page.locator('#quick-content input[type="range"]')).toBeVisible();
+  await expect(page.locator('#quick-content input[type="range"]')).toBeFocused();
+});
+
+test('creator wizard headings receive focus and template radiogroup supports arrow keys', async ({ page }) => {
+  await page.goto('/creator.html');
+  await expect.poll(() => page.evaluate(() => Boolean(window.SecretCircleSecondarySurfaceA11y))).toBe(true);
+
+  const selected = page.locator('#template-grid [role="radio"][aria-checked="true"]');
+  await expect(selected).toHaveAttribute('tabindex', '0');
+  await selected.focus();
+  await page.keyboard.press('ArrowRight');
+  const nextSelected = page.locator('#template-grid [role="radio"][aria-checked="true"]');
+  await expect(nextSelected).toBeFocused();
+  await expect(nextSelected).toHaveAttribute('tabindex', '0');
+  await expect(page.locator('#template-grid [role="radio"][tabindex="0"]')).toHaveCount(1);
+
+  await page.locator('#wizard-next').click();
+  await expect(page.locator('#details-title')).toHaveAttribute('tabindex', '-1');
+  await expect(page.locator('#details-title')).toBeFocused();
+});
+
+test('creator help modal isolates background, traps focus and returns it to the trigger', async ({ page }) => {
+  await page.goto('/creator.html');
+  await expect.poll(() => page.evaluate(() => Boolean(window.SecretCircleSecondarySurfaceA11y))).toBe(true);
+
+  const trigger = page.locator('[data-creator-help="template"]');
+  await trigger.click();
+  const dialog = page.locator('#creator-help');
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAttribute('role', 'dialog');
+  await expect(dialog).toHaveAttribute('aria-modal', 'true');
+  await expect.poll(() => page.evaluate(() => document.querySelector('.creator-shell').inert)).toBe(true);
+  await expect.poll(() => page.evaluate(() => document.querySelector('.skip-link').inert)).toBe(true);
+  await expect(page.locator('#creator-help-title')).toHaveAttribute('tabindex', '-1');
+  await expect(page.locator('#creator-help-title')).toBeFocused();
+
+  await page.locator('#close-creator-help').focus();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#close-creator-help')).toBeFocused();
+  await page.locator('#close-creator-help').click();
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await expect.poll(() => page.evaluate(() => document.querySelector('.creator-shell').inert)).toBe(false);
+});
