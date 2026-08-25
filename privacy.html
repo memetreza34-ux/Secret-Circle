@@ -35,7 +35,7 @@
       <p>Geheime Rollen und Begriffe werden beim Gerätewechsel verdeckt. Gespeicherte Abstimmungs- und Resume-Zustände werden auf Konsistenz geprüft. Eigene Word-Imposter-Kategorien und Backups werden lokal validiert, bevor bestehende Daten ersetzt werden.</p>
 
       <h2>Advanced- und Hub-Spiele</h2>
-      <p>Private Fragen, Ortskarten, Rollen, Moderatorinformationen und vergleichbare geheime Zustände werden bei unterstützten Flows beim Fokus- oder App-Wechsel verdeckt. Manipulierte oder widersprüchliche gespeicherte Zustände können verworfen werden, statt sie unsicher fortzusetzen.</p>
+      <p>Private Fragen, Ortskarten, Rollen, Moderatorinformationen und vergleichbare geheime Zustände werden bei unterstützten Flows beim Fokus- oder App-Wechsel verdeckt. Manipulierte oder widersprüchliche gespeicherte Zustände können verworfen werden, statt sie unsicher fortzusetzen. Im direkten Hub bleiben Resume-Aktionen während der Guard-Ladeprüfung gesperrt und werden erst nach erfolgreicher Validierung freigegeben.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
@@ -49,8 +49,8 @@
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v49</code>.</p>
-      <p>v49 umfasst die aktuellen Resume-/Privacy-/Accessibility-Schutzmodule einschließlich des expliziten Hub-Resume-Guard-Vertrags. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v50</code>.</p>
+      <p>v50 umfasst die aktuellen Resume-/Privacy-/Accessibility-Schutzmodule und ergänzt für den Hub eine fail-closed Resume-Ladephase: sichtbare Resume-Aktionen bleiben bis zur erfolgreichen Guard-Prüfung deaktiviert. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Exportierte Sicherungsdateien müssen separat im Dateisystem des Geräts entfernt werden.</p>
