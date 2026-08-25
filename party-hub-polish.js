@@ -236,6 +236,20 @@
     }
   }
 
+  function loadHubA11y() {
+    if (window.SecretCirclePartyHubA11y || document.querySelector('script[src="party-hub-a11y.js"]')) return;
+    const script = document.createElement('script');
+    script.src = 'party-hub-a11y.js';
+    script.addEventListener('error', () => {
+      const status = document.querySelector('#hub-status');
+      if (status) {
+        status.textContent = 'Die zusätzliche Fokussteuerung konnte nicht geladen werden. Das Spiel bleibt nutzbar.';
+        status.classList.add('error');
+      }
+    });
+    document.body.append(script);
+  }
+
   const observer = new MutationObserver(updateStartLabel);
   observer.observe(title, { childList: true, characterData: true, subtree: true });
   observer.observe(detail, { attributes: true, attributeFilter: ['hidden'] });
@@ -264,9 +278,10 @@
   updateStartLabel();
   updatePlaySafety();
   loadGuidance();
+  loadHubA11y();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 13,
+    version: 14,
     updateStartLabel,
     updatePlaySafety,
     updatePlayActionLabels,
@@ -277,6 +292,7 @@
     removePrivateCover,
     paranoiaSecretIsOpen,
     loadGuidance,
+    loadHubA11y,
     voluntaryGames,
     roundGuidance
   });
