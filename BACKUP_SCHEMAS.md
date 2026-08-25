@@ -1,7 +1,8 @@
 # Secret Circle – Sicherungsformate
 
 Stand: 25. August 2026  
-Vertragsregister: `backup-schema-registry.js` Version 2
+Vertragsregister: `backup-schema-registry.js` Version 2  
+Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**
 
 ## Gemeinsame Regeln
 
@@ -89,6 +90,7 @@ Eine zukünftige neue Backupversion benötigt:
 
 - `tests/backup-schema-registry.test.js`: Registry Version 2, gemeinsame UTF-8-Grenze, zentrale Complete-Konstanten ohne Runtime-Duplikate
 - `tests/e2e/party-data.spec.js`: Export/Import, Future-Key-Erhalt, ungültige JSON-/Primitive-Werte, Write-Rollback, vollständige Löschung
+- `scripts/backup_contract_audit.py`: Registry/Runtime/Test/Offline-/Dokumentationsgrenze
 - `tests/service-worker.test.js`: Registry und `party-data-tools.js` im v51-Offline-Core
 
 ## Release-Gates
