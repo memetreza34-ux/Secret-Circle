@@ -15,8 +15,9 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - lokaler No-Code-Game-Creator
 - Core Source Review: 15/15 PREPARED
 - Core Source Hardening: 15/15 PREPARED
-- aktueller Offline-Core: **`secret-circle-v46`**
-- Staging-Cache: **`secret-circle-v46-staging`**
+- Accessibility Source Hardening: PREPARED
+- aktueller Offline-Core: **`secret-circle-v47`**
+- Staging-Cache: **`secret-circle-v47-staging`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 - öffentliche Freigabe: **NO_GO**
 
@@ -43,7 +44,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - `BRANCH_PROTECTION.md` abgearbeitet
 - `Secret Circle CI / validate` als Required Check auf echtem Runner bestätigt
 
-Aktueller P0 bleibt Issue #7: auch Run #2575 auf einem aktuellen Release-Foundation-Head endet vor Step 1 mit `steps: []` und ohne Joblogs.
+Aktueller P0 bleibt Issue #7. Der Runner scheitert weiterhin vor Step 1; auch Run #2637 zeigte `steps: []`.
 
 ### Produkt und Core
 
@@ -79,11 +80,12 @@ Zusätzlich:
 
 ### Resume-/Privacy-/Accessibility-Guards im Offline-Core
 
-v46 muss offline enthalten:
+v47 muss offline enthalten:
 
 - `word-imposter-resume-guard.js`
 - `party-hub-resume-guard.js`
 - `party-hub-a11y.js`
+- `secondary-surface-a11y.js`
 - `advanced-resume-guard.js`
 - `advanced-privacy-guard.js`
 
@@ -100,14 +102,18 @@ sowie die zugehörigen Runtime-Module und Test-/Auditverträge.
 - VoiceOver/TalkBack
 - private Reveal-Cover und Fokus-Recovery real
 - Hub-Bereichswechsel verschieben Fokus sinnvoll
-- Detail-/Spieloverlays isolieren den Hintergrund
-- Tab/Shift+Tab bleiben im aktiven Overlay
+- Hub-Detail-/Spieloverlays isolieren den Hintergrund
+- Advanced-Spieloverlay isoliert Setup und hält Tab/Shift+Tab im Spiel
+- Quick-Phasen verlieren nach Re-Render keinen Tastaturfokus
+- Creator-Schrittwechsel fokussieren die neue Schrittüberschrift
+- Creator-Hilfe isoliert den Hintergrund und hält Fokus im Dialog
+- Creator-Template-Auswahl funktioniert mit Pfeiltasten, Home und End
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v46`** bestätigt
+- Offline-Start aus **`secret-circle-v47`** bestätigt
 - Backup-Registry vor Datentools geladen
-- Katalog-/Core-/Guard-Module offline verfügbar
+- Katalog-/Core-/Guard-/A11y-Module offline verfügbar
 - Update von mindestens zwei echten älteren installierten Versionen geprüft
 - aktive Session über kontrolliertes Update wiederherstellbar
 - Export/Import/Löschung geprüft
@@ -126,24 +132,11 @@ sowie die zugehörigen Runtime-Module und Test-/Auditverträge.
 
 ## Automatisierter HTTPS-Staging-Smoke
 
-Vor dem manuellen Browser-/PWA-Smoke muss die tatsächlich ausgelieferte Staging-Origin den HTTP-Smoke bestehen:
-
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v46
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v47
 ```
 
-Der Smoke prüft unter anderem:
-
-- ausschließlich HTTPS
-- Same-Origin-Redirects
-- begrenzte Downloadgrößen
-- Kernseiten/Query-Routen HTTP 200
-- Manifest-/Standalone-Vertrag
-- PNG-Dimensionen
-- Service-Worker-Cachegeneration
-- Backup-Registry-Ladereihenfolge
-- Privacy-/Reference-Source-Verträge
-- PWA-Head-Metadaten
+Der Smoke prüft unter anderem HTTPS, Same-Origin-Redirects, Größenlimits, Kernseiten/Query-Routen, Manifest, PNG-Dimensionen, Service-Worker-Cachegeneration, Backup-Registry-Ladereihenfolge, Privacy-/Reference-Source-Verträge und PWA-Head-Metadaten.
 
 `scripts/staging_smoke_contract_audit.py` schützt den Vertrag statisch. Die echte Netzwerkprüfung läuft nur gegen eine konkrete Deployment-URL.
 
@@ -153,7 +146,7 @@ Zusätzlich:
 
 - Service Worker registriert
 - App installierbar
-- Hub und mindestens eine Unterseite mit korrektem Titel/Icon
+- Hub und Unterseiten mit korrektem Titel/Icon
 - Offline-Neustart
 - Updatebanner und bewusste Aktivierung
 - aktive Session während Update geschützt
@@ -163,16 +156,15 @@ Zusätzlich:
 - direktes Hub-Core-Spiel
 - Timer-Core-Spiel
 - Advanced-Core-Spiel
+- Quick Mode
 - Creator
-- neue Resume-/Privacy-/A11y-Guards offline
+- Resume-/Privacy-/A11y-Guards offline
 - reale Geräte-/Screenreaderprüfung
 
 ## Production-Smoke-Test
 
-Production erhält denselben freigegebenen RC-Stand:
-
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v46 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v47 --production
 ```
 
 Danach Browser-/PWA-Smoke auf Production wiederholen. `--production` verschärft die Placeholder-Prüfung öffentlicher Dateien.
@@ -199,7 +191,7 @@ Bei **jeder offline benötigten Dateiveränderung**:
 4. `ARCHITECTURE.md`, `DEPLOYMENT.md`, `privacy.html`, `ENVIRONMENTS.md` und Release-Dokumente synchronisieren
 5. echte alte installierte Version → neue Version testen
 
-v45 wurde für den 15/15-Core-Hardening-Block eingeführt. **v46** ist die neue Generation für das Hub-Accessibility-Hardening (`party.html`, `party-hub-polish.js`, `party-hub-a11y.js`) und darf deshalb nicht unter v45 ausgeliefert werden.
+v45 wurde für den 15/15-Core-Hardening-Block eingeführt. v46 folgte für das Hub-Accessibility-Hardening. **v47** erweitert den A11y-Vertrag auf Advanced, Quick und Creator und enthält `secondary-surface-a11y.js` offline.
 
 ## Rollback
 
