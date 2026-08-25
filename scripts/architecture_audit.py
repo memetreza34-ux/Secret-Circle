@@ -9,26 +9,31 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 production_js = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js',
-    'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js', 'app.js',
+    'word-imposter-resume-guard.js', 'app.js',
+    'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js', 'party-core-release-catalog.js',
     'party-core-classic-content.js', 'party-routing.js', 'party-release-structure.js',
     'party-filter-state.js', 'party-search-assist.js', 'game-creator.js', 'creator-page.js',
-    'party-custom-packs.js', 'party-hub-timers.js', 'party-hub.js', 'party-hub-plus.js',
-    'party-hub-polish.js', 'party-guide.js', 'party-night.js', 'party-data-tools.js',
-    'party-advanced.js', 'party-advanced-runner.js', 'party-advanced-preferences.js',
+    'party-custom-packs.js', 'party-hub-timers.js', 'party-hub-resume-guard.js',
+    'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-hub-a11y.js',
+    'party-guide.js', 'party-night.js', 'party-data-tools.js',
+    'party-advanced.js', 'advanced-resume-guard.js', 'party-advanced-runner.js',
+    'advanced-privacy-guard.js', 'party-advanced-preferences.js',
     'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
     'party-created-modes.js', 'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html']
-required_asset_contract_files = [
+required_contract_files = [
     'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
     'assets/manifests/asset-provenance.json',
-    'tests/manifest-icons.test.js', 'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py'
+    'tests/manifest-icons.test.js', 'tests/accessibility-contract.test.js',
+    'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
+    'scripts/hub_a11y_contract_audit.py'
 ]
 violations = []
 
-for relative in production_js + html_pages + required_asset_contract_files:
+for relative in production_js + html_pages + required_contract_files:
     if not (ROOT / relative).is_file():
         violations.append(f'Missing architecture file: {relative}')
 if violations:
@@ -81,6 +86,7 @@ catalog_chain = [
     'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js'
 ]
 
+
 def check_order(source: str, names: list[str], context: str) -> None:
     positions = []
     for name in names:
@@ -91,6 +97,7 @@ def check_order(source: str, names: list[str], context: str) -> None:
         positions.append(pos)
     if positions != sorted(positions):
         violations.append(f'{context} module order is invalid: {" -> ".join(names)}')
+
 
 check_order(party_page, catalog_chain, 'party.html')
 check_order(quick_play, catalog_chain, 'quick-play.html')
@@ -104,6 +111,11 @@ contracts = {
     ],
     'session-ledger.js': ['createSessionId', 'legacySessionId', 'completionId', 'recordCompletion'],
     'party-session-controls.js': ['createController', 'remainingMilliseconds', 'function setPaused'],
+    'word-imposter-resume-guard.js': ['validateSnapshot'],
+    'party-hub-resume-guard.js': ['SecretCirclePartyHubResumeGuard'],
+    'advanced-resume-guard.js': ['validateSnapshot', 'expectedRoleCounts'],
+    'advanced-privacy-guard.js': ['SecretCircleAdvancedPrivacyGuard', 'sensitiveContext', 'conceal'],
+    'party-hub-a11y.js': ['SecretCirclePartyHubA11y', 'syncBackgroundInert', 'trapOverlayFocus', 'focusVisibleViewHeading'],
     'party-expansion.js': [
         "id: 'wavelength', title: 'Spektrum-Tipp'",
         "banned: ['Webseite', 'Internet', 'Tab']"
@@ -124,11 +136,14 @@ contracts = {
         "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'", 'Session fortsetzen', 'skipHubRound', 'abortSession'
     ],
     'party-hub-timers.js': ['SecretCirclePartyHubTimers', 'normalizeTimerState', 'createTimerGames'],
+    'party-hub-polish.js': ['party-hub-a11y.js', 'loadHubA11y', 'guardStoredResumeIntegrity'],
     'runtime-guard.js': ['Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession'],
     'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40'],
     'party-data-tools.js': ['SecretCircleBackupSchemas', 'replaceEntries', 'registry.isAllowedCompleteStorageKey'],
     'tests/manifest-icons.test.js': ['pngDimensions', '192x192', '512x512', 'offlineIconContract'],
+    'tests/accessibility-contract.test.js': ['modalBackgroundIsolation', 'modalFocusTrapContract'],
     'scripts/media_inventory_audit.py': ['MEDIA_SUFFIXES', 'EXPECTED_CURRENT_MEDIA', 'all_media_in_provenance_manifest'],
+    'scripts/hub_a11y_contract_audit.py': ['hub_a11y_contract_audit', 'modalFocusTrapContract']
 }
 for relative, markers in contracts.items():
     source = read(relative)
@@ -155,21 +170,29 @@ for relative in ('party-hub.js', 'party-hub-timers.js'):
 syntax_gate = package.get('scripts', {}).get('check', '')
 unit_gate = package.get('scripts', {}).get('test', '')
 validate_gate = package.get('scripts', {}).get('validate', '')
-for module in ('party-expansion.js', 'party-mega-catalog.js', 'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-hub-timers.js'):
+for module in (
+    'party-expansion.js', 'party-mega-catalog.js', 'party-core-release-catalog.js',
+    'party-core-classic-content.js', 'party-hub-timers.js', 'party-hub-resume-guard.js',
+    'party-hub-a11y.js', 'word-imposter-resume-guard.js', 'advanced-resume-guard.js',
+    'advanced-privacy-guard.js'
+):
     if f'node --check {module}' not in syntax_gate:
         violations.append(f'Production module missing from syntax gate: {module}')
 for test in (
     'tests/party-mega-catalog.test.js', 'tests/core-content-quality.test.js',
-    'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js', 'tests/manifest-icons.test.js'
+    'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js',
+    'tests/accessibility-contract.test.js', 'tests/manifest-icons.test.js'
 ):
     if test not in unit_gate:
         violations.append(f'Critical architecture test missing from npm test: {test}')
-    if test == 'tests/manifest-icons.test.js' and f'node --check {test}' not in syntax_gate:
-        violations.append(f'Manifest icon test missing from syntax gate: {test}')
+    if test in ('tests/manifest-icons.test.js', 'tests/accessibility-contract.test.js') and f'node --check {test}' not in syntax_gate:
+        violations.append(f'Critical test missing from syntax gate: {test}')
 for audit in (
-    'scripts/core_content_audit.py', 'scripts/reference_content_audit.py', 'scripts/asset_provenance_audit.py',
-    'scripts/media_inventory_audit.py', 'scripts/public_release_placeholder_audit.py',
-    'scripts/release_audit.py', 'scripts/performance_budget.py'
+    'scripts/core_content_audit.py', 'scripts/reference_content_audit.py',
+    'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
+    'scripts/public_release_placeholder_audit.py', 'scripts/hub_a11y_contract_audit.py',
+    'scripts/operator_release_contract_audit.py', 'scripts/release_audit.py',
+    'scripts/performance_budget.py'
 ):
     if audit not in validate_gate:
         violations.append(f'Critical audit missing from npm validate: {audit}')
@@ -189,9 +212,11 @@ else:
             violations.append(f'Current cache {cache_name} not synchronized in {relative}.')
 
 for asset in (
-    './backup-schema-registry.js', './party-expansion.js', './party-mega-catalog.js',
-    './party-core-release-catalog.js', './party-core-classic-content.js',
-    './party-hub-timers.js', './session-ledger.js', './party-session-controls.js',
+    './backup-schema-registry.js', './word-imposter-resume-guard.js',
+    './party-expansion.js', './party-mega-catalog.js', './party-core-release-catalog.js',
+    './party-core-classic-content.js', './party-hub-timers.js', './party-hub-resume-guard.js',
+    './party-hub-a11y.js', './advanced-resume-guard.js', './advanced-privacy-guard.js',
+    './session-ledger.js', './party-session-controls.js',
     './icon.svg', './icon-192.png', './icon-512.png'
 ):
     if asset not in sw:
@@ -218,10 +243,10 @@ print(json.dumps({
     'pwa_cache': cache.group(1) if cache else None,
     'catalog_chain': catalog_chain,
     'core_classic_content_version': 4,
+    'resume_privacy_guards_audited': True,
+    'hub_accessibility_layer_audited': True,
     'reference_safe_anime_runtime_and_source': True,
     'spectrum_visible_name': 'Spektrum-Tipp',
-    'browser_brand_reference_removed_upstream': True,
-    'franchise_like_lion_reference_removed': True,
     'reference_content_audit_required': True,
     'manifest_icon_test_required': True,
     'media_inventory_audit_required': True,
@@ -230,5 +255,5 @@ print(json.dumps({
     'shared_session_controls': True,
     'split_hub_timer_module': True,
     'exact_once_contract': True,
-    'controlled_pwa_update': True,
+    'controlled_pwa_update': True
 }, ensure_ascii=False, indent=2))
