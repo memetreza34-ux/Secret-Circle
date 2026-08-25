@@ -17,12 +17,12 @@ required = [
     'scripts/lockfile_contract_audit.py',
     'scripts/branch_protection_contract_audit.py',
     'scripts/staging_smoke.py', 'scripts/staging_smoke_contract_audit.py',
-    'scripts/hub_a11y_contract_audit.py',
+    'scripts/hub_a11y_contract_audit.py', 'scripts/secondary_surface_a11y_contract_audit.py',
     'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
     'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
     'scripts/public_release_placeholder_audit.py', 'scripts/operator_release_contract_audit.py',
     'scripts/release_evidence_audit.py', 'scripts/release_audit.py',
-    'tests/pwa-head-metadata.test.js',
+    'tests/pwa-head-metadata.test.js', 'tests/word-imposter-data-contract.test.js',
 ]
 missing = [relative for relative in required if not (ROOT / relative).is_file()]
 if missing:
@@ -48,6 +48,7 @@ legal = read('LEGAL_CHECKLIST.md')
 support = read('SUPPORT.md')
 incident = read('INCIDENT_RESPONSE.md')
 pwa_head_test = read('tests/pwa-head-metadata.test.js')
+word_data_test = read('tests/word-imposter-data-contract.test.js')
 validate = package.get('scripts', {}).get('validate', '')
 unit = package.get('scripts', {}).get('test', '')
 syntax = package.get('scripts', {}).get('check', '')
@@ -62,6 +63,7 @@ required_validate_audits = (
     'scripts/branch_protection_contract_audit.py',
     'scripts/staging_smoke_contract_audit.py',
     'scripts/hub_a11y_contract_audit.py',
+    'scripts/secondary_surface_a11y_contract_audit.py',
     'scripts/privacy_content_audit.py',
     'scripts/reference_content_audit.py',
     'scripts/asset_provenance_audit.py',
@@ -79,6 +81,12 @@ checks = {
     'all_cross_cutting_audits_in_validate': all(marker in validate for marker in required_validate_audits),
     'pwa_head_test_in_unit_gate': 'tests/pwa-head-metadata.test.js' in unit,
     'pwa_head_test_in_syntax_gate': 'node --check tests/pwa-head-metadata.test.js' in syntax,
+    'word_data_test_in_unit_gate': 'tests/word-imposter-data-contract.test.js' in unit,
+    'word_data_test_in_syntax_gate': 'node --check tests/word-imposter-data-contract.test.js' in syntax,
+    'word_data_contract': all(marker in word_data_test for marker in (
+        'MAX_CUSTOM_CATEGORIES = 50', 'MAX_CUSTOM_ENTRIES = 200',
+        'nextPendingVoterIndex', 'silentCategoryTruncationRejected', 'backupUiUsesStoreByteLimit'
+    )),
     'pwa_head_test_contract': all(marker in pwa_head_test for marker in (
         'party.html', 'index.html', 'creator.html', 'advanced.html', 'quick-play.html',
         'apple-mobile-web-app-title', 'apple-mobile-web-app-status-bar-style',
@@ -128,6 +136,7 @@ print(json.dumps({
     'pwa_cache': current_cache,
     'pwa_head_metadata': 'CURRENT_CACHE_CONTRACT_REQUIRED_NOT_RUNNER_VERIFIED',
     'hub_accessibility_contract': 'PREPARED_NOT_REAL_DEVICE_VERIFIED',
+    'word_imposter_data_contract': 'PREPARED_NOT_RUNNER_VERIFIED',
     'online_npm_ci': 'OPEN',
     'github_branch_protection': 'OPEN',
     'https_staging_network_smoke': 'OPEN',
