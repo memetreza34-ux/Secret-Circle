@@ -72,6 +72,50 @@ test('cross-mode timer corruption is discarded instead of resuming the wrong gam
   expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).toBeNull();
 });
 
+test('v50 keeps resume actions disabled until the delayed guard finishes validation', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'truth-dare');
+  await page.getByRole('button', { name: 'Wahrheit' }).click();
+
+  let releaseGuard;
+  await page.route('**/party-hub-resume-guard.js', async route => {
+    await new Promise(resolve => { releaseGuard = resolve; });
+    await route.continue();
+  });
+
+  await page.reload({ waitUntil: 'commit' });
+  const resume = page.locator('#hub-resume-session');
+  const resumeButton = page.getByRole('button', { name: 'Session fortsetzen' });
+  const discardButton = page.getByRole('button', { name: 'Gespeicherten Stand verwerfen' });
+
+  await expect(resume).toBeVisible();
+  await expect(resume).toHaveAttribute('aria-busy', 'true');
+  await expect(resumeButton).toBeDisabled();
+  await expect(discardButton).toBeDisabled();
+  expect(typeof releaseGuard).toBe('function');
+
+  releaseGuard();
+
+  await expect(resume).not.toHaveAttribute('aria-busy', 'true');
+  await expect(resumeButton).toBeEnabled();
+  await expect(discardButton).toBeEnabled();
+  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).not.toBeNull();
+});
+
+test('v50 fails closed when the Hub resume guard cannot load', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'truth-dare');
+  await page.getByRole('button', { name: 'Wahrheit' }).click();
+
+  await page.route('**/party-hub-resume-guard.js', route => route.abort('failed'));
+  await page.reload();
+
+  await expect(page.locator('#play-layer')).toBeHidden();
+  await expect(page.locator('#hub-resume-session')).toHaveCount(0);
+  await expect(page.locator('#hub-status')).toContainText('Resume-Schutz konnte nicht geladen werden');
+  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).not.toBeNull();
+});
+
 test('Charades restores the remaining time paused and continues from that value', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'charades');
