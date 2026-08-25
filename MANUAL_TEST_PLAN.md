@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**  
+Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Dieser Plan ergänzt die automatisierten Prüfungen. Ein technisch startbarer Modus gilt erst nach den jeweils zutreffenden Tests als manuell abgenommen.
@@ -42,7 +42,7 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Aktueller externer Blocker: Issue #7. Auch Run #2575 erreicht keinen ersten Workflow-Step.
+Aktueller externer Blocker: Issue #7. Auch Run #2637 erreicht keinen ersten Workflow-Step.
 
 ## 2. Hub-Smoke
 
@@ -84,18 +84,7 @@ Aktueller externer Blocker: Issue #7. Auch Run #2575 erreicht keinen ersten Work
 
 ## 4. Direkte Hub-Core-Spiele
 
-Vollständiger Durchlauf je Spiel:
-
-- Wahrheit oder Pflicht
-- Ich habe noch nie
-- Wer würde eher?
-- Entweder oder
-- Paranoia
-- Scharade
-- Nicht sagen! / Tabu
-- Heiße Kartoffel
-- Wortkette
-- Nur falsche Antworten
+Vollständiger Durchlauf je Spiel: Wahrheit oder Pflicht, Ich habe noch nie, Wer würde eher?, Entweder oder, Paranoia, Scharade, Nicht sagen!/Tabu, Heiße Kartoffel, Wortkette und Nur falsche Antworten.
 
 Gemeinsam:
 
@@ -119,43 +108,16 @@ Spezifisch:
 
 ## 5. Advanced Core
 
-### Zwei Wahrheiten, eine Lüge
+Für Zwei Wahrheiten/eine Lüge, Question Imposter, Location Spy und Mafia jeweils Fachlogik, Privacy, Resume und Siegerzustand prüfen.
 
-- [ ] private Eingabe
-- [ ] drei unterschiedliche Aussagen
-- [ ] Appwechsel verdeckt Eingabe
-- [ ] Mischung/Lügenindex geschützt
-- [ ] Vote/Result korrekt
-- [ ] manipulierter Outcome-Snapshot verworfen
+Zusätzlich v47-A11y:
 
-### Question Imposter
-
-- [ ] eigene Frage pro Person privat
-- [ ] Appwechsel/Reload schützt Frage
-- [ ] Diskussion/Vote korrekt
-- [ ] manipulierter Rolle-/Vote-Snapshot verworfen
-
-### Location Spy
-
-- [ ] Ort/Spion privat
-- [ ] Appwechsel schützt Karte
-- [ ] Gruppenwahlpfad
-- [ ] Spion-Guesspfad
-- [ ] Sieger getrennt vom Session-Zähler
-- [ ] manipulierter Result-Snapshot verworfen
-
-### Mafia
-
-- [ ] 6 / 8 / 12 / 16+ soweit praktisch
-- [ ] Rollenanzahl/Pack korrekt
-- [ ] Rollen privat
-- [ ] Moderatorübersicht bewusst bestätigt und bei Appwechsel verdeckt
-- [ ] Nachtformular privat
-- [ ] Arzt/Detektiv/Beschützer korrekt
-- [ ] Beschützer nicht zweimal hintereinander gleiche Person
-- [ ] Tageswahl
-- [ ] Dorf-/Mafia-Siegbedingung
-- [ ] manipulierte Rollen-/Alive-/Winner-Snapshots verworfen
+- [ ] `advanced-play-layer` wird als modaler Dialog verstanden
+- [ ] Setup/Skip-Link sind während aktiver Runde per Tastatur nicht erreichbar
+- [ ] Tab vom letzten bedienbaren Control springt wieder zum ersten
+- [ ] Shift+Tab vom ersten Control springt zum letzten
+- [ ] bei dynamischem Rundenwechsel bleibt ein sinnvoller Fokuspunkt
+- [ ] private Reveal-/Moderator-/Nachtinformationen mit Screenreader sinnvoll geschützt
 
 ## 6. Gemeinsame Quick-/Mega-/Viral-/Creator-Sessionsteuerung
 
@@ -171,45 +133,38 @@ Spezifisch:
 
 ## 7. Quick / Extended / Labs
 
-Je Mechanikfamilie mindestens ein kompletter Smoke:
-
-- [ ] Spektrum-Tipp
-- [ ] Zeichnen & Raten
-- [ ] Schnellfeuer
-- [ ] Geräusche/Stirn-Raten/Melodie summen
-- [ ] Buchstaben-Kategorien
-- [ ] Nicht lachen / Gegenstandsjagd
-- [ ] Caption Battle
-- [ ] Blind Ranking
-- [ ] Emoji Quiz
-- [ ] Preis-/Geld-Schätzspiele
-- [ ] Higher/Lower
-- [ ] Wer kennt mich am besten
-- [ ] Hot Seat / Story Chain
+Je Mechanikfamilie mindestens ein kompletter Smoke: Spektrum-Tipp, Zeichnen & Raten, Schnellfeuer, Geräusche/Stirn-Raten/Melodie summen, Buchstaben-Kategorien, Nicht lachen/Gegenstandsjagd, Caption Battle, Blind Ranking, Emoji Quiz, Preis-/Geld-Schätzspiele, Higher/Lower, Wer kennt mich am besten, Hot Seat/Story Chain.
 
 Prüfen:
 
 - [ ] private Ziele geschützt
 - [ ] Timer pausierbar, wo relevant
 - [ ] Labs als experimentell erkennbar
-- [ ] keine automatische Behauptung vollständiger Releaseabnahme
-- [ ] keine unklaren fremden Fan-/Markenassets
 - [ ] Abschluss genau einmal
+- [ ] nach jeder dynamischen Phasenänderung bleibt Fokus auf einem sichtbaren sinnvollen Control
+- [ ] Spektrum-Tipp: nach „Ziel verbergen und Gerät weitergeben“ ist der Range-Regler direkt erreichbar/fokussiert
+- [ ] Resultat/Replays vollständig per Tastatur bedienbar
 
 ## 8. Game Creator
 
 - [ ] alle Vorlagen
-- [ ] mehrere Packs
-- [ ] Mindestkarten
-- [ ] Unicode/Sonderzeichen
-- [ ] HTML-artige Eingabe als Text
+- [ ] Template-Radiogroup besitzt genau einen Tab-Stopp
+- [ ] ArrowRight/ArrowDown wählt nächste Vorlage
+- [ ] ArrowLeft/ArrowUp wählt vorherige Vorlage
+- [ ] Home/End springen zur ersten/letzten Vorlage
+- [ ] Weiter/Zurück fokussiert die neue sichtbare Schrittüberschrift
+- [ ] Hilfe öffnet als modaler Dialog
+- [ ] Creator-Hintergrund ist bei offener Hilfe nicht fokussierbar
+- [ ] Tab/Shift+Tab bleibt im Hilfedialog
+- [ ] Hilfe schließen stellt Fokus auf den Auslöser zurück
+- [ ] mehrere Packs / Mindestkarten
+- [ ] Unicode/Sonderzeichen / HTML-artige Eingabe als Text
 - [ ] strukturierte Karten nach Export/Import erhalten
 - [ ] `updatedAt` korrekt
 - [ ] Kopie eigene ID/Zeitstempel
 - [ ] eigenes Spiel im Hub
 - [ ] Start/Pause/Skip/Abort/Replay
-- [ ] Export/Import
-- [ ] Speicherfehler/Rollback
+- [ ] Export/Import / Speicherfehler-Rollback
 - [ ] unerfahrene Person kann ohne Hilfe erstes valides Spiel erstellen
 
 ## 9. Smart Party Night
@@ -228,14 +183,13 @@ Prüfen:
 - [ ] Word-Imposter-Backup
 - [ ] Gesamtexport
 - [ ] Creator-Bibliothek
-- [ ] ungültiges JSON abgelehnt
-- [ ] unbekannter Namespace abgelehnt
+- [ ] ungültiges JSON / unbekannter Namespace abgelehnt
 - [ ] Größenlimit UTF-8 korrekt
 - [ ] simulierter Schreibfehler Rollback
 - [ ] vollständige lokale Löschung
 - [ ] keine Spieldaten an eigenen Server übertragen
 
-## 11. PWA / Offline – v46
+## 11. PWA / Offline – v47
 
 - [ ] Online-Erststart
 - [ ] Android-Installation
@@ -245,9 +199,12 @@ Prüfen:
 - [ ] Query-Routen offline
 - [ ] Resume-/Privacy-Guards offline
 - [ ] `party-hub-a11y.js` offline geladen
-- [ ] Hub-Bereichsfokus offline funktional
-- [ ] Modal-/Spiel-Fokus-Trap offline funktional
-- [ ] Update von mindestens zwei echten älteren Installationen auf v46/RC
+- [ ] `secondary-surface-a11y.js` offline geladen
+- [ ] Hub-Bereichsfokus / Modal-Fokus-Trap offline
+- [ ] Advanced-Modal-Fokus-Trap offline
+- [ ] Quick-Fokus-Recovery offline
+- [ ] Creator-Wizard-/Help-/Radiogroup-A11y offline
+- [ ] Update von mindestens zwei echten älteren Installationen auf v47/RC
 - [ ] Update zunächst staged
 - [ ] aktive Session nicht ungefragt ersetzt
 - [ ] `Später` behält aktuelle Version
@@ -272,41 +229,39 @@ Muss real auf Android und iOS bestätigt werden.
 
 ## 13. Accessibility / Mobile
 
-### Tastatur und Fokus
+### Hub
 
 - [ ] Tastatur ohne Maus
 - [ ] Skip-Link beim Erstladen
 - [ ] sichtbarer Fokus
-- [ ] Start → Spiele verschiebt Fokus sinnvoll auf `#games-title`
-- [ ] weitere Hub-Bereichswechsel fokussieren die neue Hauptüberschrift
-- [ ] Spieldetail öffnet als modaler Dialog
-- [ ] Spieldetail: Hintergrund nicht fokussierbar
-- [ ] Spieldetail: Tab vom letzten Control springt zum ersten
-- [ ] Spieldetail: Shift+Tab vom ersten Control springt zum letzten
-- [ ] Spieldetail schließen: Fokus kehrt zum Auslöser zurück
-- [ ] aktive Hub-Spielrunde ist modal
-- [ ] aktive Runde: Hintergrund nicht fokussierbar
-- [ ] aktive Runde: Tab/Shift+Tab bleiben im Overlay
+- [ ] Hub-Bereichswechsel fokussieren neue Hauptüberschrift
+- [ ] Spieldetail/aktive Runde: Hintergrund nicht fokussierbar
+- [ ] Fokus-Trap und Rückkehrfokus real
 
-### Screenreader / Darstellung
+### Advanced
 
-- [ ] VoiceOver
-- [ ] TalkBack
+- [ ] aktives Spiel als Modal verständlich
+- [ ] Setup-Hintergrund nicht fokussierbar
+- [ ] Fokus bleibt nach Phasenwechsel sinnvoll
+
+### Quick
+
+- [ ] Fokus geht beim Re-Render nicht verloren
+- [ ] Pause/Skip/Result per Tastatur
+
+### Creator
+
+- [ ] Wizard-Schrittfokus
+- [ ] Radiogroup-Pfeiltasten/Home/End
+- [ ] Hilfe-Modal, Hintergrundisolation, Fokus-Trap und Rückkehrfokus
+
+### Geräte/Screenreader
+
+- [ ] VoiceOver / TalkBack
 - [ ] private Inhalte vor Reveal nicht angesagt
-- [ ] Privacy-Cover verständlich
-- [ ] Bereichswechsel verständlich angekündigt
-- [ ] modale Overlays als solche verständlich
-- [ ] 200-%-Zoom
-- [ ] 320 CSS px
-- [ ] große Systemschrift
-- [ ] Hoch-/Querformat
-- [ ] iPhone-Safe-Areas
-- [ ] Bildschirmtastatur
-- [ ] Touchziele
-- [ ] kein kritischer horizontaler Überlauf
-- [ ] Reduced Motion
-- [ ] Pause über `aria-pressed`
-- [ ] inert Aktionen nicht bedienbar
+- [ ] 200-%-Zoom / 320 CSS px / große Systemschrift
+- [ ] Hoch-/Querformat / iPhone-Safe-Areas / Bildschirmtastatur
+- [ ] Touchziele / Reduced Motion
 - [ ] Status nicht nur Farbe
 
 ## 14. Reale Partytests
@@ -339,10 +294,10 @@ Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
 - [ ] Branch Protection aktiv
 - [ ] HTTPS-Staging/Production-Smoke grün
 - [ ] Android/iPhone/iPad real
-- [ ] Accessibility real inklusive v46-Fokus-/Modalpfade
+- [ ] Accessibility real inklusive v47 Hub-/Advanced-/Quick-/Creator-Pfade
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] G1–G5 und PN1–PN3 abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v46/RC + Rollback
+- [ ] zwei echte PWA-Upgrades auf v47/RC + Rollback
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content-/Rechte-/Legal-/Support-/Hosting-Sign-off
 - [ ] Incident-/Rollback-Drill
