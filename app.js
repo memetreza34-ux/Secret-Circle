@@ -9,6 +9,9 @@ if (!STORE?.keys || !STORE?.loadAll) throw Error('Secret-Circle-Datenspeicher ko
 const WORDS = CONTENT.words;
 const LABELS = CONTENT.labels;
 const KEYS = STORE.keys;
+const MAX_CUSTOM_CATEGORIES = Number.isInteger(STORE.maximumCustomCategories) ? STORE.maximumCustomCategories : 50;
+const MAX_CUSTOM_ENTRIES = Number.isInteger(STORE.maximumCustomEntries) ? STORE.maximumCustomEntries : 200;
+const MAX_BACKUP_BYTES = Number.isInteger(STORE.maximumBackupBytes) ? STORE.maximumBackupBytes : 1_500_000;
 const persisted = STORE.loadAll(E);
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -309,10 +312,25 @@ function clearTimerLoop() {
   timer = null;
 }
 
+function hasVoteFor(player) {
+  return Boolean(game?.votes && Object.prototype.hasOwnProperty.call(game.votes, player));
+}
+
+function nextPendingVoterIndex() {
+  if (!Array.isArray(game?.players)) return 0;
+  const index = game.players.findIndex(player => !hasVoteFor(player));
+  return index >= 0 ? index : game.players.length;
+}
+
+function syncVoteIndex() {
+  voteIndex = nextPendingVoterIndex();
+  return voteIndex;
+}
+
 function beginVoting() {
   clearTimerLoop();
   game = E.startVoting(game);
-  voteIndex = 0;
+  syncVoteIndex();
   saveGame();
   renderVoting();
 }
@@ -320,13 +338,25 @@ function beginVoting() {
 function renderVoting() {
   if (game.phase === 'tie_break') {
     game = E.startVoting(game);
-    voteIndex = 0;
+    syncVoteIndex();
     saveGame();
+  } else syncVoteIndex();
+
+  if (voteIndex >= game.players.length) {
+    game = E.resolveVote(game);
+    if (game.phase === 'completed') completeRound();
+    else {
+      saveGame();
+      showGame();
+    }
+    return;
   }
+
   screen('vote-screen');
   const voter = game.players[voteIndex];
   const tie = game.voteLeaders.length > 0;
-  $('#vote-progress').textContent = `${tie ? 'Stichwahl · ' : ''}Stimme ${voteIndex + 1} von ${game.players.length}`;
+  const castCount = Object.keys(game.votes || {}).length;
+  $('#vote-progress').textContent = `${tie ? 'Stichwahl · ' : ''}Stimme ${castCount + 1} von ${game.players.length}`;
   $('#voter-name').textContent = `${voter}, wen verdächtigst du?`;
   const candidates = (tie ? game.voteLeaders : game.players).filter(name => name !== voter);
   $('#vote-options').innerHTML = candidates
@@ -337,9 +367,11 @@ function renderVoting() {
 
 function castVote(target) {
   try {
+    syncVoteIndex();
     const voter = game.players[voteIndex];
+    if (!voter) throw Error('Die Abstimmung ist bereits vollständig.');
     game = E.castVote(game, voter, target);
-    voteIndex += 1;
+    syncVoteIndex();
     if (voteIndex < game.players.length) {
       saveGame();
       renderVoting();
@@ -432,7 +464,7 @@ function resumeGame() {
     return;
   }
   game = active;
-  voteIndex = Object.keys(game.votes || {}).length;
+  voteIndex = game.phase === 'voting' ? nextPendingVoterIndex() : 0;
   lastPersistedTimerSecond = game.remainingSeconds;
   showGame();
 }
@@ -450,8 +482,12 @@ function newGame() {
 function addCustomCategory(event) {
   event.preventDefault();
   try {
+    if (custom.length >= MAX_CUSTOM_CATEGORIES) throw Error(`Es sind höchstens ${MAX_CUSTOM_CATEGORIES} eigene Kategorien möglich.`);
     const name = $('#custom-name').value.trim();
-    const entries = E.parseCustomEntries($('#custom-words').value);
+    const rawRows = $('#custom-words').value.split(/\n/).map(line => line.trim()).filter(Boolean);
+    if (rawRows.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
+    const entries = E.parseCustomEntries(rawRows.join('\n'));
+    if (entries.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
     if (name.length < 2) throw Error('Bitte einen Kategorienamen eingeben.');
     custom = [...custom, { id: makeId(), name: name.slice(0, 50), entries }];
     if (!write(KEYS.custom, custom)) return;
@@ -519,8 +555,8 @@ async function importData(event) {
   const file = event.target.files?.[0];
   event.target.value = '';
   if (!file) return;
-  if (file.size > 2_000_000) {
-    setStatus('Die Sicherungsdatei ist zu groß.', true);
+  if (file.size > MAX_BACKUP_BYTES) {
+    setStatus('Die Sicherungsdatei ist größer als 1,5 MB.', true);
     return;
   }
   if (!confirm('Die Sicherung ersetzt die aktuell gespeicherten lokalen Daten. Fortfahren?')) return;
