@@ -74,19 +74,20 @@ Der reale Betriebs-/Legalblock bleibt als eigener Releasevertrag modelliert. `op
 - keine npm-Runtime-Dependencies
 - CI/Cross-Browser verwenden `npm ci`
 - Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Word-Imposter-Daten-, Operator- und Release-Readiness-Verträge sind eingebunden
+- `validate_project.py` prüft den dynamischen Hub-Resume-v2-Loadervertrag zusätzlich zu Datei-, Offline- und Unit-Gates
 
 ## CI – extern blockiert
 
-Letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand: **Run #2715**.
+Letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**.
 
-- Run ID `32850361668`
-- Job `validate`, Job ID `97809595781`
-- Head `9f87910567a60e5ce905ced42bb62201b3e3a85d`
+- Run ID `32871536761`
+- Job `validate`, Job ID `97879489858`
+- Head `a9ad91389ff9e966af432b0a77103ddc0960709d`
 - `failure`
 - `steps: null` / separate Step-Abfrage `steps: []`
 - kein Checkout, npm, Test oder Repositorycode ausgeführt
 
-Ein früherer Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Die unmittelbare Fehlerfläche liegt weiterhin vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Für v49 existiert noch kein echter Runner-PASS. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
+Ein früherer Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Run #2787 bestätigt den Pre-Step-Blocker ausdrücklich auch auf v49. Die unmittelbare Fehlerfläche liegt weiterhin vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
 
 ## Offline / PWA – v49
 
