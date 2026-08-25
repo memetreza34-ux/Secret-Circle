@@ -92,7 +92,7 @@ Die zentralen Verträge sind jetzt **transition-safe**:
 - `scripts/release_audit.py`
 - `scripts/validate_project.py`
 
-Sie prüfen weiterhin den heutigen PREPARED/OPEN/NO_GO-Zustand, blockieren aber nicht mehr einen später korrekt belegten PASS/FINAL/GO-Zustand durch hart codierte historische Statusannahmen. `validate_project.py` wurde außerdem auf die aktuellen v49-Scriptketten für Word Imposter, Advanced, Quick und Creator synchronisiert.
+Sie prüfen weiterhin den heutigen PREPARED/OPEN/NO_GO-Zustand, blockieren aber nicht mehr einen später korrekt belegten PASS/FINAL/GO-Zustand durch hart codierte historische Statusannahmen. `validate_project.py` ist auf die aktuellen v49-Scriptketten synchronisiert und prüft zusätzlich den dynamischen Hub-Resume-v2-Loadervertrag.
 
 ## Build / Supply Chain
 
@@ -117,16 +117,16 @@ Reale Installation, Upgrades, Rollback und Offline-Gerätetest bleiben offen.
 
 ## CI – P0
 
-Letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand: **Run #2715**.
+Letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**.
 
-- Run ID `32850361668`
-- Job `validate`, Job ID `97809595781`
-- Head `9f87910567a60e5ce905ced42bb62201b3e3a85d`
+- Run ID `32871536761`
+- Job `validate`, Job ID `97879489858`
+- Head `a9ad91389ff9e966af432b0a77103ddc0960709d`
 - `failure`
 - `steps: null` / separate Step-Abfrage `steps: []`
 - kein Checkout, npm, Test oder Repository-Code ausgeführt
 
-Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit. Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. **Für v49 ist noch kein echter CI-/Runner-PASS belegt.** Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit. Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Run #2787 bestätigt das Pre-Step-Muster ausdrücklich auch auf v49. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## Release Evidence / Assets
 
