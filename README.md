@@ -22,11 +22,12 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - RC: 15. Dezember 2026
 - öffentlicher Release: 4.–15. Januar 2027
 
-Aktueller Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**  
+Aktueller Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**  
 Classic Content: **v4**  
 Core Source Review: **15/15 PREPARED**  
 Core Source Hardening: **15/15 PREPARED**  
 Accessibility Source Hardening: **PREPARED**  
+Word-Imposter Data/Resume Hardening: **PREPARED**  
 Operator / Hosting / Legal: **PREPARED / BLOCKED**  
 Freigabe: **NO_GO**
 
@@ -36,27 +37,26 @@ Der vollständige 15-Core-Codepfad wurde auf Setup, Geheimhaltung, Resume, Timer
 
 Wichtige Verträge: Word-Imposter-Setup/Fairness/Voting/Resume, freiwillige Social-Games, Paranoia-/Scharade-/Tabu-Privacy, Heiße-Kartoffel-Timer 10–25 s, Wortketten-/Wrong-Answers-Regeln sowie Advanced Resume/Privacy inklusive Mafia-Integrität.
 
+## Word-Imposter Data/Resume Hardening – v48
+
+- Voting bestimmt den nächsten **noch offenen** Wähler aus den tatsächlichen Vote-Keys statt aus der Stimmenanzahl.
+- Der strengere Resume-Guard verwirft weiterhin nicht-sequenzielle manipulierte Voting-Snapshots.
+- Maximal **50 eigene Kategorien** und **200 Begriffe je Kategorie**.
+- 51 Kategorien beziehungsweise 201 Begriffe werden abgelehnt statt still gekürzt.
+- Backupgrenze: **1,5 MB UTF-8**.
+- Abgelehnte Imports verändern vorhandene lokale Daten nicht.
+- Die UI erklärt die Grenzen sichtbar.
+- `tests/storage.test.js` und `tests/word-imposter-data-contract.test.js` schützen diese Verträge.
+
+**PREPARED bedeutet hier Source-Hardening, nicht Runner-PASS.**
+
 ## Accessibility-Hardening – v46/v47
 
-**v46** führte `party-hub-a11y.js` für den direkten Hub ein:
+**v46** führte `party-hub-a11y.js` für den direkten Hub ein: Bereichsfokus, modale Hub-Kontexte, `inert`-Hintergrund, Tab-Fokus-Trap und Rückkehrfokus.
 
-- Bereichswechsel fokussieren die sichtbare Hauptüberschrift
-- Spieldetail und aktive Hub-Runde sind modale Tastaturkontexte
-- Hintergrund wird über `inert` isoliert
-- Tab/Shift+Tab bleibt im aktiven Overlay
-- Rückkehrfokus nach Schließen des Spieldetails
+**v47** erweiterte den Qualitätsanspruch über `secondary-surface-a11y.js` auf Advanced, Quick und Creator: Advanced-Modal, Quick-Fokus-Recovery, Creator-Wizard-Fokus, Hilfe-Modal und Template-Radiogroup mit Pfeiltasten/Home/End.
 
-**v47** erweitert denselben Qualitätsanspruch auf Advanced, Quick und Creator über `secondary-surface-a11y.js`:
-
-- Advanced-Spieloverlay als modaler Fokuskontext
-- Quick-Fokus-Recovery nach dynamischen Phasenwechseln
-- Creator-Wizard-Schrittüberschriften tatsächlich programmatisch fokussierbar
-- Creator-Hilfe mit Hintergrundisolation, Fokus-Trap und Rückkehrfokus
-- Creator-Template-Radiogroup mit roving `tabindex`, Pfeiltasten, Home und End
-- neue Unit-/Playwright-Verträge sowie `scripts/secondary_surface_a11y_contract_audit.py`
-- beide A11y-Schichten sind im v47-Offline-Core enthalten
-
-**Noch kein Accessibility PASS:** VoiceOver, TalkBack, reales 200-%-Zoom, Touchbedienung und echte Geräte-/Browserabnahme bleiben offen.
+Beide A11y-Schichten bleiben Bestandteil des aktuellen v48-Offline-Core. **Noch kein Accessibility PASS:** VoiceOver, TalkBack, reales 200-%-Zoom, Touchbedienung und echte Geräte-/Browserabnahme bleiben offen.
 
 ## Zentrale A-bis-Z-Verträge
 
@@ -64,13 +64,7 @@ Wichtige Verträge: Word-Imposter-Setup/Fairness/Voting/Resume, freiwillige Soci
 
 ## Operator / Hosting / Legal
 
-Der reale Betriebs-/Legalblock ist als eigener Releasevertrag modelliert:
-
-- `operator-release.json` startet bewusst mit `PREPARED / BLOCKED`
-- `OPERATOR_RELEASE_SIGNOFF.md` bündelt Betreiber-/Legal-/Support-/Incident-Freigaben
-- `HOSTING_DECISION.md` erzwingt Provider-, Log-, Datenschutz-, Staging-/Production- und Rollbackprüfung
-- `scripts/operator_release_contract_audit.py` läuft in `npm run validate`
-- Issue #14 führt die real offenen Operator-/Hosting-/Legal-/Support-/Incident-Schritte
+Der reale Betriebs-/Legalblock bleibt als eigener Releasevertrag modelliert. `operator-release.json` steht bewusst auf `PREPARED / BLOCKED`; Issue #14 führt die real offenen Provider-, Betreiber-, Kontakt-, Privacy-, Support- und Incident-Schritte.
 
 ## Build / Supply Chain
 
@@ -78,22 +72,29 @@ Der reale Betriebs-/Legalblock ist als eigener Releasevertrag modelliert:
 - Playwright-Testkette exakt 1.54.2
 - keine npm-Runtime-Dependencies
 - CI/Cross-Browser verwenden `npm ci`
-- Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Operator- und Release-Readiness-Audits sind in den Qualitätsgates eingebunden
+- Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Word-Imposter-Daten-, Operator- und Release-Readiness-Verträge sind eingebunden
 
 ## CI – extern blockiert
 
-Der jüngste ausdrücklich untersuchte Lauf vor dem v47-Block war **Run #2637**. Er endete erneut vor Step 1 mit `steps: []`; kein Checkout, npm, Test oder Repositorycode wurde ausgeführt. Ein früherer Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster.
+Aktuellster bestätigter v48-Lauf: **Run #2715**.
 
-Damit liegt die unmittelbare Fehlerfläche weiterhin vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
+- Run ID `32850361668`
+- Job `validate`, Job ID `97809595781`
+- Head `9f87910567a60e5ce905ced42bb62201b3e3a85d`
+- `failure`
+- `steps: null` / separate Step-Abfrage `steps: []`
+- kein Checkout, npm, Test oder Repositorycode ausgeführt
 
-## Offline / PWA – v47
+Ein früherer Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Die unmittelbare Fehlerfläche liegt weiterhin vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
+
+## Offline / PWA – v48
 
 Der Service Worker verwendet:
 
-- `secret-circle-v47`
-- `secret-circle-v47-staging`
+- `secret-circle-v48`
+- `secret-circle-v48-staging`
 
-Zum Offline-Core gehören Hub, Word Imposter, Advanced, Quick, Creator, Privacy, Katalog-/Contentmodule, Backup-Registry, Timer-/Sessioncontroller, Resume-/Privacy-Guards, `party-hub-a11y.js`, `secondary-surface-a11y.js` sowie Manifest/App-Icons.
+Zum Offline-Core gehören Hub, Word Imposter, Advanced, Quick, Creator, Privacy, Katalog-/Contentmodule, Backup-Registry, Timer-/Sessioncontroller, Resume-/Privacy-Guards, beide A11y-Schichten sowie die aktuellen Word-Imposter-UI-/Store-Dateien und Manifest/App-Icons.
 
 Updates werden staged und erst nach bewusster Nutzerentscheidung aktiviert. Reale PWA-Upgrades, Rollbacks und Gerätetests bleiben offen.
 
@@ -111,7 +112,7 @@ Ein späteres `GO` erfordert echte Belege auf **demselben unveränderten RC-Comm
 ## Drei zentrale offene Issues
 
 1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
-2. **#8** – reale Geräte, Offline-PWA, Accessibility und Partytests auf v47
+2. **#8** – reale Geräte, v48 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 Zusätzlich bleibt die Icon-Rechtebasis offen.
@@ -122,10 +123,11 @@ Zusätzlich bleibt die Icon-Rechtebasis offen.
 2. Online-`npm ci` + vollständiges CI/Cross-Browser
 3. Branch Protection real bestätigen
 4. Provider + echte HTTPS-Staging-/Production-Origin
-5. v47 Staging-/PWA-Smoke, Upgrade und Rollback
-6. reale Android/iPhone/iPad-/VoiceOver-/TalkBack-/Tastatur-/Zoom-Abnahme
-7. reale Gruppentests für alle 15 Core-Games
-8. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
-9. unveränderlicher RC + vollständige Release Evidence
+5. v48 Staging-/PWA-Smoke, Upgrade und Rollback
+6. Word-Imposter-v48-Datengrenzen real ausführen
+7. reale Android/iPhone/iPad-/VoiceOver-/TalkBack-/Tastatur-/Zoom-Abnahme
+8. reale Gruppentests für alle 15 Core-Games
+9. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
+10. unveränderlicher RC + vollständige Release Evidence
 
 **Aktuell: NO_GO. PR #13 bleibt Draft und wird nicht gemergt.**
