@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**
+Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**
 
 ## 1. Ziel
 
@@ -35,7 +35,7 @@ Releaseanforderung:
 - `npm run ci`
 - Cross-Browser
 
-Aktuell: **BLOCKED**. Auch Run #2637 endete vor Step 1 mit `steps: []`; ein reiner Bash-Runner-Probe zeigte dasselbe Muster. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Aktuell: **BLOCKED**. Der Hosted Runner endet weiterhin vor Step 1 mit `steps: []`; ein reiner Bash-Runner-Probe zeigte dasselbe Muster. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## 4. HTTPS-Staging
 
@@ -64,13 +64,13 @@ Staging und Production nicht nur über Queryparameter derselben Origin untersche
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v47
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v48
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v47 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v48 --production
 ```
 
 Der Smoke prüft unter anderem HTTPS, Same-Origin-Redirects, Größenlimits, Kernseiten/Query-Routen, Manifest, PNG-IHDR, Service-Worker-/Staging-Cachegeneration, Registry-Ladereihenfolge, Privacy-/Reference-Source-Verträge, PWA-Head-Metadaten und Production-Placeholder.
@@ -115,9 +115,11 @@ Für Local/Staging neutrale Spielernamen und generische Creator-Karten verwenden
 
 Cross-Environment-Backups nur bewusst kopieren und Quellumgebung/Commit dokumentieren.
 
+Word-Imposter-Testbackups müssen zusätzlich die v48-Grenzen abdecken: 50/51 Kategorien, 200/201 Begriffe, 1,5-MB-UTF-8-Limit und unveränderte Bestandsdaten nach abgelehntem Import.
+
 ## 9. PWA-/Cache-Regeln je Umgebung
 
-Aktueller Quellcode: **`secret-circle-v47`**.
+Aktueller Quellcode: **`secret-circle-v48`**.
 
 Relevante Historie:
 
@@ -131,7 +133,8 @@ Relevante Historie:
 - v44: einheitlicher Manifest-/iOS-/Icon-Head-Vertrag auf fünf Einstiegseiten
 - v45: Core-Hardening mit Resume-/Privacy-Guards im Offline-Core
 - v46: Hub-Accessibility-Hardening
-- **v47: Accessibility-Hardening für Advanced, Quick und Creator mit `secondary-surface-a11y.js` offline**
+- v47: Accessibility-Hardening für Advanced, Quick und Creator mit `secondary-surface-a11y.js` offline
+- **v48: Word-Imposter-Voting-Resume plus Custom-/Backup-Datenlimits gehärtet; keine stille Trunkierung**
 
 Regeln:
 
@@ -140,10 +143,11 @@ Regeln:
 - Upgradepfade aus wirklich installierter alter Version testen
 - Rollback erhält ebenfalls neue Cachegeneration
 
-## 10. Offline-v47-Vertrag
+## 10. Offline-v48-Vertrag
 
-v47 muss unter anderem offline verfügbar machen:
+v48 muss unter anderem offline verfügbar machen:
 
+- `index.html`, `app.js`, `data-store.js`
 - `word-imposter-resume-guard.js`
 - `party-hub-resume-guard.js`
 - `party-hub-a11y.js`
@@ -181,7 +185,10 @@ Zusätzlich zum HTTP-Smoke mindestens:
 - finaler Katalog
 - Hub-Datenbereich/Backup-Registry
 - Export/Import neutraler Daten
-- Word Imposter
+- Word Imposter inklusive Voting-Resume und Custom-/Backup-Grenzen
+- 50 Kategorien akzeptiert, 51 abgelehnt
+- 200 Begriffe akzeptiert, 201 abgelehnt
+- abgelehnter Import lässt vorherige Daten unangetastet
 - ein direktes Hub-Core-Spiel
 - ein Timer-Core-Spiel
 - ein Advanced-Core-Spiel
@@ -238,6 +245,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Staging erreichbar/installierbar
 - [ ] `scripts/staging_smoke.py` gegen Staging grün
 - [ ] `tests/pwa-head-metadata.test.js` auf demselben RC grün
+- [ ] Word-Imposter-v48-Datengrenzen auf demselben RC ausgeführt
 - [ ] manueller Browser-/PWA-Smoke abgeschlossen
 - [ ] Upgrade von mindestens zwei älteren Versionen abgeschlossen
 - [ ] Rollbackprobe abgeschlossen
