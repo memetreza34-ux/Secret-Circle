@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**  
+Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**  
 Core Source Hardening: **15/15 PREPARED**  
 Accessibility Source Hardening: **PREPARED**
 
@@ -22,7 +22,7 @@ Die eigentliche RC-Beta beginnt erst, wenn auf demselben Commit dokumentiert gr�
 - Chromium E2E
 - Cross-Browser mit Chromium, Firefox und WebKit
 
-Aktueller Blocker: Issue #7. Auch Run #2575 und ein reiner Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
+Aktueller Blocker: Issue #7. Auch Run #2637 und ein reiner Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
 
 Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als finale RC-Evidence.
 
@@ -51,44 +51,37 @@ Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als fina
 | G5 | 1 unerfahrene Host-Person + Gruppe | Creator | eigenes Spiel ohne Entwicklerhilfe erstellen und spielen |
 | PN1–PN3 | variabel | Smart Party Night | drei vollständige geplante Abende |
 
-Ein einzelner Abend darf mehrere Sessions abdecken, wenn Beobachtung und Evidence getrennt dokumentiert werden.
-
 ## 5. Geräte-Mindestmatrix
 
 ### D1 – Android
 
-- aktuelles reales Android-Smartphone
-- Chrome
+- aktuelles reales Android-Smartphone + Chrome
 - Browser-Tab und installierte PWA
-- Hochformat + mindestens ein Querformat-Core-Flow
-- offline nach vorheriger Installation
-- Hintergrund/Appwechsel
-- Sperrbildschirm bei aktivem Timer
+- Hoch-/Querformat
+- Offline-Neustart
+- Hintergrund/Appwechsel und Sperrbildschirm bei Timer
 - TalkBack-Smoke
 
 ### D2 – iPhone
 
-- reales iPhone
-- Safari
+- reales iPhone + Safari
 - Add-to-Home-Screen-PWA
-- Safe Areas
-- Bildschirmtastatur
-- Hintergrund/Appwechsel
-- Sperrbildschirm bei Timer
+- Safe Areas / Bildschirmtastatur
+- Hintergrund/Appwechsel und Sperrbildschirm
 - VoiceOver-Smoke
 
 ### D3 – Tablet/iPad
 
 - reale Tabletklasse
-- Katalog, private Übergabe, Timer, Advanced und Creator
+- Katalog, private Übergabe, Timer, Advanced, Quick und Creator
 - Quer-/Hochformat
 
 ### D4 – Desktop
 
-- Tastatur ohne Maus für Hauptnavigation/Katalog/Core-Spiel
+- Hauptnavigation/Katalog/Core/Advanced/Quick/Creator ohne Maus
 - 200-%-Zoom
-- Chromium plus mindestens ein weiterer Browser im manuellen Smoke
-- Detail- und Spieloverlay vollständig per Tab/Shift+Tab prüfen
+- Chromium plus mindestens ein weiterer Browser
+- alle modalen Overlays mit Tab/Shift+Tab prüfen
 
 ## 6. Preflight vor jeder Beta
 
@@ -107,7 +100,7 @@ Beobachter:
 Bekannte offene P0/P1-Funde:
 ```
 
-Nicht mit einer unbekannten oder während des Tests wechselnden Version arbeiten. Derselbe Bericht muss eindeutig einem Commit und einer Cachegeneration zugeordnet sein.
+Nicht mit einer unbekannten oder während des Tests wechselnden Version arbeiten.
 
 ## 7. G1 – Kleine Gruppe 3–4 Personen
 
@@ -123,15 +116,7 @@ Nicht mit einer unbekannten oder während des Tests wechselnden Version arbeiten
 10. Nur falsche Antworten spielen und manuelle Verlustregel erklären lassen.
 11. Verlauf prüfen.
 
-Beobachten:
-
-- Setup ohne Entwicklerhilfe verstanden?
-- Unterschied Speichern vs. Verwerfen verstanden?
-- Freiwilligkeitsregel wahrgenommen?
-- private Karte bei Fokusverlust wirklich verdeckt?
-- Fokus nach Reopen/Reload sinnvoll?
-- doppelte Statistik?
-- Timerrestzeit plausibel?
+Beobachten: Setupverständnis, Speichern vs. Verwerfen, Freiwilligkeit, private Karten, Fokus nach Reopen/Reload, doppelte Statistik, Timerrestzeit.
 
 ## 8. G2 – Mittlere Gruppe 5–8 Personen
 
@@ -142,16 +127,13 @@ Spiele:
 - Location Spy
 - optional Never Have / Would Rather
 
-Bei jedem privaten Mechanismus mindestens einmal:
+Bei jedem privaten Mechanismus mindestens einmal App-/Tab-Wechsel, bewusstes Wiederöffnen und – wo unterstützt – Reload testen. Manipulierte neutrale Advanced-Snapshots müssen verworfen werden.
 
-1. geheimen Inhalt öffnen oder private Eingabe beginnen,
-2. App/Tab in Hintergrund schicken,
-3. zurückkehren,
-4. prüfen, dass Inhalt verdeckt ist,
-5. bewusst wieder öffnen,
-6. zusätzlich Reload testen, wo Resume unterstützt wird.
+Zusätzlich **v47-A11y**:
 
-Zusätzlich manipulierte neutrale Test-Snapshots prüfen: inkonsistente Advanced-Zustände müssen verworfen werden.
+- Advanced-Spiel starten: Setup-Hintergrund darf per Tastatur nicht erreichbar sein.
+- Tab/Shift+Tab bleibt im aktiven Advanced-Spiel.
+- Nach Phasenwechsel bleibt ein sinnvoller Fokuspunkt vorhanden.
 
 ## 9. G3 – Große Gruppe 9–12 Personen
 
@@ -164,41 +146,19 @@ Zusätzlich manipulierte neutrale Test-Snapshots prüfen: inkonsistente Advanced
 - mögliche Stichwahl
 - Imposter-Ratechance
 - individueller Punktestand
+- mindestens 20 reale Runden für Reveal-/Rollenfairness protokollieren
 
-Mindestens 20 reale Runden über mehrere Tests protokollieren:
+### Paranoia / Timer-Spiele
 
-- erste Reveal-Person
-- Imposterposition(en)
-- keine systematische Kopplung zwischen Reveal-Reihenfolge und Rolle
-
-### Paranoia
-
-- mehrere Runden
-- Freiwilligkeit/Skip beobachten
-- offene Geheimfrage bei Appwechsel verdecken
-- soziale Wirkung beobachten
-
-### Timer-Spiele
-
-Mindestens Scharade oder Tabu sowie Heiße Kartoffel mit echter Geräteweitergabe.
+- Freiwilligkeit/Skip
+- Geheimfrage bei Appwechsel verdecken
+- Scharade/Tabu sowie Heiße Kartoffel mit echter Geräteweitergabe
 
 ## 10. G4 – Mafia
 
 Gruppengrößen soweit praktisch: 6, 8, 12 und 16+.
 
-Prüfen:
-
-- Mafiaanzahl skaliert korrekt
-- Schnell/Klassisch/Erweitert korrekt
-- Rollen privat
-- Moderatoransicht geschützt
-- Appwechsel verdeckt Moderator-/Nachtinformationen
-- Arzt/Detektiv/Beschützer korrekt
-- Beschützer nicht dieselbe Person zwei Nächte nacheinander
-- Eliminationszustand korrekt
-- Dorf gewinnt nur bei 0 lebenden Mafia
-- Mafia gewinnt nur bei Mafia >= restlicher Dorfseite
-- manipulierte Rollen-/Alive-/Winner-Snapshots werden verworfen
+Prüfen: Rollenanzahl, Packs, private Rollen, Moderatoransicht, Nachtinformationen, Arzt/Detektiv/Beschützer, Eliminationszustand, Dorf-/Mafia-Sieg und manipulierte Resume-Zustände.
 
 ## 11. G5 – Creator mit unerfahrener Person
 
@@ -209,6 +169,11 @@ Aufgabe:
 Prüfen:
 
 - Vorlage selbst gefunden
+- Template-Radiogroup nur mit Tab + Pfeiltasten/Home/End bedienbar
+- Schrittwechsel fokussiert die neue Überschrift sinnvoll
+- Hilfe öffnen: Hintergrund nicht per Tastatur erreichbar
+- Hilfe: Tab/Shift+Tab bleibt im Dialog
+- Hilfe schließen: Fokus kehrt zum Hilfe-Auslöser zurück
 - Pack/Kartenformat verstanden
 - Vorschau hilfreich
 - Speichern erfolgreich
@@ -224,16 +189,9 @@ Wenn ohne Entwicklerhilfe kein valides erstes Spiel erstellt werden kann, ist Cr
 - PN2: mittlere Gruppe, ca. 45–60 Minuten, gemischt/competitive
 - PN3: große Gruppe, ca. 60–90 Minuten, gemischte Core-Auswahl
 
-Prüfen:
+Prüfen: Gruppengröße, Wiederholungen, Wechsel, Dauer, History-Synchronisierung und Abbruch/Wechsel.
 
-- Gruppengröße passt
-- keine unpassenden Wiederholungen
-- Wechsel verständlich
-- Dauer grob plausibel
-- History-Synchronisierung
-- Abbruch/Wechsel möglich
-
-## 13. PWA-v46-Update-Test
+## 13. PWA-v47-Update-Test
 
 Mindestens zwei echte ältere installierte Zustände gegen den finalen RC prüfen.
 
@@ -241,15 +199,14 @@ Mindestens zwei echte ältere installierte Zustände gegen den finalen RC prüfe
 2. Creator-Spiel anlegen.
 3. aktive Hub- oder Advanced-Session erzeugen.
 4. alte installierte PWA starten.
-5. v46/RC bereitstellen.
-6. Updatehinweis prüfen.
-7. Update zunächst verschieben.
-8. laufende Session fortsetzen.
-9. bewusst aktualisieren.
-10. Offline-Neustart.
-11. lokale Daten, Resume-/Privacy-/A11y-Guards und Sessions prüfen.
-12. `party-hub-a11y.js` im Offlinebetrieb praktisch prüfen.
-13. Cachebestand kontrollieren.
+5. v47/RC bereitstellen.
+6. Updatehinweis prüfen und zunächst verschieben.
+7. laufende Session fortsetzen.
+8. bewusst aktualisieren.
+9. Offline-Neustart.
+10. lokale Daten, Resume-/Privacy-/A11y-Guards und Sessions prüfen.
+11. `party-hub-a11y.js` und `secondary-surface-a11y.js` offline praktisch prüfen.
+12. Cachebestand kontrollieren.
 
 Keine alte Cachegeneration künstlich als getestet markieren.
 
@@ -267,58 +224,47 @@ Auf HTTPS-Staging:
 
 ## 15. Accessibility-Realtest
 
-### Tastatur / Fokus
+### Hub
 
-- Erstladen: Skip-Link bleibt erster sinnvoller Tastaturtarget
-- Start → Spiele: sichtbare Hauptüberschrift erhält sinnvollen Fokus
-- Spiele → Spieler/Favoriten/Verlauf/Daten: neuer Bereich wird verständlich angekündigt/fokussiert
-- Suche vollständig per Tastatur
-- Spieldetail öffnen: Fokus im Dialog
-- Spieldetail: Tab und Shift+Tab verlassen das Modal nicht in Richtung Hintergrund
-- Spieldetail schließen: Fokus kehrt zum auslösenden Spiel zurück
-- aktive Hub-Spielrunde: Hintergrund bleibt nicht bedienbar
-- aktive Hub-Spielrunde: Tab/Shift+Tab bleiben im Spieloverlay
-- mindestens ein Core-Spiel vollständig per Tastatur
-- Advanced-Privatereveal
-- Creator
-- Pause/Fortsetzen
+- Erstladen: Skip-Link erster sinnvoller Tastaturtarget
+- Bereichswechsel fokussieren neue Hauptüberschrift
+- Spieldetail und aktive Runde halten Fokus im Modal
+- Schließen stellt Rückkehrfokus her
 
-### 200-%-Zoom / große Schrift
+### Advanced
 
-- kein Verlust primärer Aktionen
-- Dialog scrollbar
-- Sessioncontrols erreichbar
-- kein zwingender horizontaler Scroll
-- 320-CSS-px-Reflow
+- Start öffnet modalen Spielkontext
+- Setup/Skip-Link während Spiel nicht bedienbar
+- Tab/Shift+Tab bleibt im Overlay
+- private Reveal-/Privacy-Cover mit Screenreader
 
-### VoiceOver/TalkBack
+### Quick
 
-- Seitentitel/Überschrift
-- Navigation
-- Bereichswechsel
-- Suche + Vorschläge
-- Spieldialog als modal verständlich
-- aktive Spielrunde als modal verständlich
-- Hintergrund während Modal nicht störend erreichbar
-- private Reveal-Karte
-- Privacy-Cover
-- Pause/Fortsetzen
-- Ergebnis
+- Start/Resume
+- nach einer Aktion, die das DOM ersetzt, Fokus auf neuer sinnvoller Aktion/Control
+- Spektrum-Tipp: nach „Ziel verbergen“ Range-Regler direkt sinnvoll erreichbar
+- Pause/Skip/Result per Tastatur
+
+### Creator
+
+- Wizard-Schrittwechsel fokussiert neue `h3`
+- Template-Radiogroup: genau ein Tab-Stopp; Pfeile/Home/End
+- Hilfe modal, Hintergrund `inert`, Fokus-Trap, Rückkehrfokus
+- komplettes erstes Spiel ohne Maus
+
+### Geräte/A11y allgemein
+
+- 200-%-Zoom / große Schrift / 320 CSS px
+- VoiceOver und TalkBack
+- Reduced Motion
+- Touchziele
+- keine wichtige Information nur über Farbe
 
 Private Inhalte dürfen nicht vor bewusster Reveal-Aktion angesagt werden.
 
 ## 16. Content-Beobachtung
 
-Pro gespieltem Core-Game notieren:
-
-- unklare Karte
-- semantisch fast identische Karte
-- zu lange Karte
-- unangenehmer/übergriffiger Eindruck
-- falsches `all`/`teen`-Gefühl
-- packfremder Inhalt
-- zu schwere/zu leichte Karte
-- Wiederholungsgefühl
+Pro Core-Game notieren: unklare/ähnliche/zu lange Karte, unangenehmer Eindruck, Altersstufe, packfremder Inhalt, Schwierigkeit, Wiederholungsgefühl.
 
 ## 17. Bug-Severity
 
@@ -335,19 +281,11 @@ Pro gespieltem Core-Game notieren:
 - falscher Sieger/Score mit Produktwirkung
 - Resume/Timer systematisch kaputt
 - wichtiger Accessibilityflow blockiert
-- Tastaturfokus kann ein modales Core-Overlay nicht sinnvoll bedienen
+- Tastaturfokus kann ein modales Spiel-/Hilfefenster nicht sinnvoll bedienen
 
-### Medium
+### Medium / Low
 
-- Workaround vorhanden
-- deutliche UX-/Contentstörung
-- einzelner Browser-/Layoutfehler ohne Kernblockade
-
-### Low
-
-- kosmetisch
-- kleine Copy
-- nicht kritische Inkonsistenz
+Workaround-fähige UX-/Content-/Layoutfehler bzw. kosmetische Funde.
 
 ## 18. Testbericht pro Session
 
@@ -380,24 +318,17 @@ Keine Namen der Teilnehmer sind für den Releasebericht erforderlich; Test-IDs r
 
 Vor `REAL USER / DEVICE PASS`:
 
-- [ ] G1 abgeschlossen
-- [ ] G2 abgeschlossen
-- [ ] G3 abgeschlossen
-- [ ] G4 Mafia abgeschlossen
-- [ ] G5 Creator abgeschlossen
+- [ ] G1–G5 abgeschlossen
 - [ ] PN1–PN3 abgeschlossen
-- [ ] reales Android abgeschlossen
-- [ ] reales iPhone abgeschlossen
-- [ ] Tablet abgeschlossen
-- [ ] VoiceOver abgeschlossen
-- [ ] TalkBack abgeschlossen
-- [ ] 200-%-Zoom abgeschlossen
-- [ ] Tastatur-/Modalfokus-v46-Abnahme abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v46/RC abgeschlossen
+- [ ] reales Android / iPhone / Tablet abgeschlossen
+- [ ] VoiceOver / TalkBack / 200-%-Zoom abgeschlossen
+- [ ] Hub-/Advanced-/Creator-Modalfokus real bestanden
+- [ ] Quick-Phasen-Fokus-Recovery real bestanden
+- [ ] Creator-Radiogroup und Wizard-Fokus real bestanden
+- [ ] zwei echte PWA-Upgrades auf v47/RC abgeschlossen
 - [ ] HTTPS-Rollbackprobe abgeschlossen
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
-- [ ] Core-Content-Funde triagiert
 - [ ] Retests aller gefixten Critical/High-Funde abgeschlossen
 
 Bis dahin bleibt Beta/Realgeräte **OPEN bzw. IN PROGRESS** und der öffentliche Release **NO_GO**.
