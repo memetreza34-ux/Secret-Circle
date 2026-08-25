@@ -1,6 +1,6 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Stand: 23. August 2026
+Stand: 25. August 2026
 
 Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentlicht. Eine installierbare PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
 
@@ -15,8 +15,8 @@ Secret Circle wird für Januar 2027 als statische Offline-first-PWA veröffentli
 - lokaler No-Code-Game-Creator
 - Core Source Review: 15/15 PREPARED
 - Core Source Hardening: 15/15 PREPARED
-- aktueller Offline-Core: **`secret-circle-v45`**
-- Staging-Cache: **`secret-circle-v45-staging`**
+- aktueller Offline-Core: **`secret-circle-v46`**
+- Staging-Cache: **`secret-circle-v46-staging`**
 - Release-PR: **Draft-PR #13** auf `agent/release-foundation-2027`
 - öffentliche Freigabe: **NO_GO**
 
@@ -43,7 +43,7 @@ Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release C
 - `BRANCH_PROTECTION.md` abgearbeitet
 - `Secret Circle CI / validate` als Required Check auf echtem Runner bestätigt
 
-Aktueller P0 bleibt Issue #7: App-CI Run #2401 und ein action-/repo-freier Bash-Runner-Probe endeten vor Step 1.
+Aktueller P0 bleibt Issue #7: auch Run #2575 auf einem aktuellen Release-Foundation-Head endet vor Step 1 mit `steps: []` und ohne Joblogs.
 
 ### Produkt und Core
 
@@ -77,16 +77,17 @@ Zusätzlich:
 - `ASSET_RIGHTS_SIGNOFF.md` abgeschlossen
 - keine Releaseassets mehr `unresolved`
 
-### Resume-/Privacy-Guards im Offline-Core
+### Resume-/Privacy-/Accessibility-Guards im Offline-Core
 
-v45 muss offline enthalten:
+v46 muss offline enthalten:
 
 - `word-imposter-resume-guard.js`
 - `party-hub-resume-guard.js`
+- `party-hub-a11y.js`
 - `advanced-resume-guard.js`
 - `advanced-privacy-guard.js`
 
-sowie die zugehörigen Runtime-Module und Tests/Verträge.
+sowie die zugehörigen Runtime-Module und Test-/Auditverträge.
 
 ### Geräte und Accessibility
 
@@ -98,10 +99,13 @@ sowie die zugehörigen Runtime-Module und Tests/Verträge.
 - Tastatur/Fokus/200-%-Zoom/Reflow/Reduced Motion
 - VoiceOver/TalkBack
 - private Reveal-Cover und Fokus-Recovery real
+- Hub-Bereichswechsel verschieben Fokus sinnvoll
+- Detail-/Spieloverlays isolieren den Hintergrund
+- Tab/Shift+Tab bleiben im aktiven Overlay
 
 ### Daten und PWA
 
-- Offline-Start aus **`secret-circle-v45`** bestätigt
+- Offline-Start aus **`secret-circle-v46`** bestätigt
 - Backup-Registry vor Datentools geladen
 - Katalog-/Core-/Guard-Module offline verfügbar
 - Update von mindestens zwei echten älteren installierten Versionen geprüft
@@ -113,6 +117,7 @@ sowie die zugehörigen Runtime-Module und Tests/Verträge.
 ### Recht und Betrieb
 
 - `LEGAL_CHECKLIST.md` abgearbeitet
+- `operator-release.json = FINAL / READY`
 - Betreiber-/Kontakt-/Hostingangaben final
 - Datenschutz auf tatsächliches Hosting angepasst
 - `THIRD_PARTY_NOTICES.md` / `FAN_CONTENT_REVIEW.md` final
@@ -124,7 +129,7 @@ sowie die zugehörigen Runtime-Module und Tests/Verträge.
 Vor dem manuellen Browser-/PWA-Smoke muss die tatsächlich ausgelieferte Staging-Origin den HTTP-Smoke bestehen:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v45
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v46
 ```
 
 Der Smoke prüft unter anderem:
@@ -159,7 +164,7 @@ Zusätzlich:
 - Timer-Core-Spiel
 - Advanced-Core-Spiel
 - Creator
-- neue Resume-/Privacy-Guards offline
+- neue Resume-/Privacy-/A11y-Guards offline
 - reale Geräte-/Screenreaderprüfung
 
 ## Production-Smoke-Test
@@ -167,7 +172,7 @@ Zusätzlich:
 Production erhält denselben freigegebenen RC-Stand:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v45 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v46 --production
 ```
 
 Danach Browser-/PWA-Smoke auf Production wiederholen. `--production` verschärft die Placeholder-Prüfung öffentlicher Dateien.
@@ -194,7 +199,7 @@ Bei **jeder offline benötigten Dateiveränderung**:
 4. `ARCHITECTURE.md`, `DEPLOYMENT.md`, `privacy.html`, `ENVIRONMENTS.md` und Release-Dokumente synchronisieren
 5. echte alte installierte Version → neue Version testen
 
-v45 existiert genau deshalb: Der 15/15-Hardening-Block hat neue Offline-Guard-Dateien eingeführt und durfte nicht unter dem bereits belegten v44-Namen weiterlaufen.
+v45 wurde für den 15/15-Core-Hardening-Block eingeführt. **v46** ist die neue Generation für das Hub-Accessibility-Hardening (`party.html`, `party-hub-polish.js`, `party-hub-a11y.js`) und darf deshalb nicht unter v45 ausgeliefert werden.
 
 ## Rollback
 
