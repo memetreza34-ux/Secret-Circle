@@ -1,6 +1,6 @@
 # Secret Circle – Supportvertrag
 
-Stand: 16. August 2026  
+Stand: 25. August 2026  
 Status: **PREPARED – echter Kontakt vor RC offen**
 
 ## 1. Zweck
@@ -9,16 +9,27 @@ Dieses Dokument definiert, wie Nutzer nach öffentlicher Veröffentlichung Hilfe
 
 Secret Circle ist offline-first und besitzt im V1-Scope kein Benutzerkonto und keinen eigenen Spielserver. Support darf deshalb weder Fernzugriff auf lokale Daten versprechen noch Nutzer auffordern, unnötig private Inhalte zu senden.
 
+Verbindliche zentrale Quelle für reale Kontakte und Tests: `operator-release.json`.
+
 ## 2. Öffentlicher Supportkanal
 
-Vor Release festzulegen:
+Vor Release festzulegen und in `operator-release.json` einzutragen:
 
-- Support-E-Mail: **TBD vor RC**
-- Betreiber/Verantwortlicher: **TBD vor RC**
+- Support-E-Mail: **noch nicht festgelegt**
+- Betreiber/Verantwortlicher: **noch nicht festgelegt**
+- Security-/Privacy-Meldeweg: **noch nicht festgelegt**
 - erwartete Sprache: Deutsch; optional Englisch später
-- öffentlich sichtbare Supportseite oder Legal-Link: **vor Production erforderlich**
+- öffentlich sichtbare Support-/Legal-Verlinkung: **vor Production erforderlich**
 
 **Release-Regel:** Keine Fantasieadresse, kein unbeaufsichtigtes Postfach, kein Kontakt, auf den niemand zuverlässig zugreifen kann.
+
+`operatorGate = READY` verlangt deshalb ausdrücklich:
+
+- gültige Supportadresse
+- getestetes Supportpostfach
+- Security-/Privacy-Meldeweg
+- getestete Securityroute
+- mindestens einen vollständig durchgespielten Probe-Supportfall
 
 ## 3. Welche Angaben ein Supportfall enthalten darf
 
@@ -109,16 +120,27 @@ Aktion:
 
 Featurewünsche sind kein Releaseincident. Neue Funktionen werden gegen Scope, Risiko und Januar-2027-Gates bewertet.
 
-## 5. Standardantworten – inhaltliche Regeln
+## 5. Supportfall-Vorlage
 
-Supportantworten sollen:
+```text
+Support-ID:
+Datum/Uhrzeit:
+App-Version/Cache:
+Gerät/OS/Browser:
+Installierte PWA oder Browser:
+Online/Offline:
+Seite/Spiel:
+Schritte:
+Erwartung:
+Beobachtung:
+Daten-/Privacy-Auswirkung:
+Severity-Vorschlag:
+Reproduzierbar: ja/nein
+An Engineering/Incident eskaliert: ja/nein
+Status:
+```
 
-- konkrete nächste Schritte nennen
-- keine technischen Garantien erfinden
-- klar sagen, wenn ein Problem noch untersucht werden muss
-- lokale Daten respektieren
-- bei unbekanntem Zustand zuerst Sicherung/Schonung bestehender Daten priorisieren
-- keine geheimen oder personenbezogenen Informationen unnötig anfordern
+Keine echten Spielernamen oder privaten Inhalte sind für diese Standardvorlage erforderlich.
 
 ## 6. Offline-/PWA-Support
 
@@ -174,7 +196,7 @@ Interner Zielrahmen nach öffentlichem Release:
 
 Konkrete Antwortzeiten werden erst veröffentlicht, wenn personell real leistbar.
 
-## 10. Übergabe an Engineering
+## 10. Übergabe an Engineering / Incident
 
 Ein reproduzierbarer Bug enthält idealerweise:
 
@@ -189,7 +211,21 @@ Ein reproduzierbarer Bug enthält idealerweise:
 - Regression ja/nein
 - vorgeschlagenen Testfall
 
-## 11. Release-Gates
+S0 sowie ausgewählte S1-Fälle werden direkt nach `INCIDENT_RESPONSE.md` eskaliert.
+
+## 11. Probe-Supportfall vor Release
+
+Vor `SUPPORT PASS` mindestens einmal real durchführen:
+
+1. Testnachricht an den finalen Supportkontakt senden
+2. Empfang praktisch bestätigen
+3. Fall als S2 oder S3 klassifizieren
+4. sichere Rückfrage ohne sensible Daten formulieren
+5. Engineering-Ticket/Testfall ableiten
+6. Abschluss dokumentieren
+7. `operator-release.json.support.sampleSupportCaseCompleted = true` erst danach setzen
+
+## 12. Release-Gates
 
 Vor `SUPPORT PASS`:
 
@@ -197,9 +233,11 @@ Vor `SUPPORT PASS`:
 - [ ] Kontakt praktisch getestet
 - [ ] Legal-/Privacy-Seite verlinkt Support konsistent
 - [ ] Security-Meldeweg festgelegt
+- [ ] Securityroute praktisch getestet
 - [ ] Supportkategorien intern bekannt
 - [ ] kein Prozess verlangt standardmäßig sensible Daten
 - [ ] Incident-Eskalation funktioniert
 - [ ] mindestens ein Probe-Supportfall vollständig durchgespielt
+- [ ] `operator-release.json` enthält dieselben finalen Werte/Nachweise
 
 Bis dahin: **SUPPORT PREPARED / RELEASE NO_GO**.
