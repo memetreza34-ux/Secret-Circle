@@ -24,6 +24,16 @@ Persistierte Bereiche besitzen explizite Versionen. Beschädigte Daten werden no
 
 Complete-Imports akzeptieren nur bekannte versionierte Word-Imposter-Key-Familien sowie definierte `secret-circle-party-*`-Familien. Vollständiges Löschen bleibt absichtlich breiter und entfernt weiterhin alle `secret-circle-*`-Reste.
 
+Für die lokale Word-Imposter-Datenmenge gilt seit v48 zusätzlich:
+
+- maximal **50 eigene Kategorien**,
+- maximal **200 Begriffe pro eigener Kategorie**,
+- Backupgröße maximal **1,5 MB UTF-8**,
+- Überschreitungen werden abgelehnt und nicht still gekürzt,
+- ein abgelehnter Import darf vorhandene lokale Daten nicht verändern.
+
+`data-store.js` ist die verbindliche Quelle dieser Grenzen; `app.js` liest sie aus dem Store statt eigene abweichende Werte zu definieren. `tests/storage.test.js` und `tests/word-imposter-data-contract.test.js` schützen 50/51-, 200/201- und Byte-Limit-Verträge.
+
 ## 4. Katalog- und Contentarchitektur
 
 Der vollständige Party-Katalog wird in dieser Reihenfolge aufgebaut:
@@ -74,6 +84,8 @@ Word Imposter trennt:
 - Resume-Integrität: `word-imposter-resume-guard.js`
 - UI: `app.js`
 
+Der Word-Imposter-Voting-UI-Pfad darf die nächste Person nicht aus der bloßen Anzahl gespeicherter Stimmen ableiten. `app.js` bestimmt den **nächsten noch nicht abstimmenden Spieler** aus den tatsächlichen Vote-Keys; der strengere Resume-Guard verwirft zusätzlich nicht-sequenzielle manipulierte Snapshots.
+
 Advanced Core trennt:
 
 - Fachlogik: `party-advanced.js`
@@ -120,7 +132,7 @@ Abbruch und Skip dürfen keinen künstlichen Abschluss-/Punktzustand erzeugen.
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v47`**.
+Aktueller Offline-Core: **`secret-circle-v48`**.
 
 Historie der letzten relevanten Cachegenerationen:
 
@@ -135,7 +147,8 @@ Historie der letzten relevanten Cachegenerationen:
 - v44: gemeinsamer Manifest-/iOS-/Icon-Head-Vertrag für Hub, Word Imposter, Creator, Advanced und Quick
 - v45: Cachegeneration nach 15/15-Core-Hardening; Resume-/Privacy-Guards explizit offline
 - v46: Hub-Accessibility-Hardening mit Bereichs-Fokusführung, modaler Hintergrundisolation und Fokus-Trap
-- **v47: Accessibility-Hardening auf Advanced, Quick und Creator erweitert; `secondary-surface-a11y.js` ist Teil des Offline-Core**
+- v47: Accessibility-Hardening auf Advanced, Quick und Creator erweitert; `secondary-surface-a11y.js` im Offline-Core
+- **v48: Word-Imposter-Voting-Resume und lokale Custom-/Backup-Grenzen gehärtet; keine stille Kategorie-Trunkierung mehr**
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
