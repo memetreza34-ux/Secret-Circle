@@ -1,6 +1,6 @@
 # Secret Circle – Incident Response
 
-Stand: 16. August 2026  
+Stand: 25. August 2026  
 Status: **PREPARED – reale Verantwortliche/Kommunikationswege vor RC festlegen**
 
 ## 1. Ziel
@@ -10,6 +10,8 @@ Dieses Runbook definiert den Ablauf bei Security-, Privacy-, Daten-, PWA- oder R
 Grundsatz:
 
 **Erst Schaden begrenzen und Daten schützen, dann Ursachenanalyse und neue Features.**
+
+Verbindliche zentrale Quelle für reale Rollen und Drill-Nachweise: `operator-release.json`.
 
 ## 2. Incident-Auslöser
 
@@ -76,12 +78,12 @@ Beispiele:
 
 ## 4. Rollen
 
-Vor RC mit echten Personen festlegen:
+Vor RC mit echten Personen festlegen und in `operator-release.json.incident` spiegeln:
 
-- Incident Lead: **TBD**
-- Engineering Owner: **TBD**
-- Nutzerkommunikation/Support: **TBD**
-- Legal/Privacy-Eskalation: **TBD, falls erforderlich**
+- Incident Lead: **noch nicht festgelegt**
+- Engineering Owner: **noch nicht festgelegt**
+- Nutzerkommunikation/Support: **noch nicht festgelegt**
+- Legal/Privacy-Eskalation: **noch nicht festgelegt**
 
 Eine einzelne Person kann in V1 mehrere Rollen übernehmen, aber die Verantwortlichkeit muss vor Production eindeutig sein.
 
@@ -137,10 +139,10 @@ Fix muss:
 - klein und nachvollziehbar sein
 - Regressionstest besitzen, wo automatisierbar
 - Daten rückwärtsverträglich behandeln
-- bei Offline-Core-Änderung neue Cachegeneration erhalten
+- bei Offline-Core-Änderung **immer eine neue Cachegeneration** erhalten
 - Dokumentation/Gates synchronisieren
 
-Rollback muss den Vertrag aus `DEPLOYMENT.md` befolgen.
+Rollback muss den Vertrag aus `DEPLOYMENT.md` und `HOSTING_DECISION.md` befolgen.
 
 ### Schritt 6 – Verifizieren
 
@@ -151,7 +153,7 @@ Mindestens:
 - relevante E2E-Suite
 - bei PWA: Alt→Neu/Rollbackzustand
 - bei Daten: Import/Migration/Rollback
-- bei Privacy: verdeckter Zustand + Reload
+- bei Privacy: verdeckter Zustand + Reload/Appwechsel
 
 Ein externer CI-Blocker darf nicht als grüner Nachweis interpretiert werden.
 
@@ -169,7 +171,7 @@ Keine Spekulationen als Fakten darstellen.
 
 ### Schritt 8 – Abschluss/Postmortem
 
-Nach SEV-0/SEV-1:
+Nach SEV-0/SEV-1 festhalten:
 
 - Ursache
 - warum bestehende Gates nicht griffen
@@ -178,8 +180,6 @@ Nach SEV-0/SEV-1:
 - neue Regression-Gates
 - Dokumentations-/Prozessänderungen
 - offene Restmaßnahmen
-
-festhalten.
 
 ## 6. PWA-/Cache-Incidents
 
@@ -191,6 +191,8 @@ Bei fehlerhaftem Offline-Core:
 4. aktive Session schützen
 5. Promotion nicht destruktiv durchführen
 6. mindestens zwei Upgradepfade testen, sobald reale Geräte verfügbar sind
+7. HTTPS-Staging-Smoke erneut ausführen
+8. Production erst nach erneutem PASS promoten
 
 ## 7. Daten-/Backup-Incidents
 
@@ -206,6 +208,7 @@ Bei fehlerhaftem Offline-Core:
 - nur minimale Reproduktionsdaten sammeln
 - betroffene Datenarten und mögliche Empfänger klären
 - Rechts-/Meldepflichten bei realer personenbezogener Datenverletzung separat anhand des konkreten Falls prüfen
+- Security-/Privacy-Meldeweg aus `operator-release.json.support.securityReportingRoute` verwenden
 
 ## 9. Content-Incidents
 
@@ -237,7 +240,32 @@ Neue Prävention:
 Status:
 ```
 
-## 11. Release-Gates
+## 11. Verbindlicher Probe-SEV-1 vor Production
+
+Der Drill muss einen realistischen, aber kontrollierten Fall simulieren, z. B.:
+
+> Eine neue PWA-Version zeigt nach einem Update bei einer wiederaufgenommenen privaten Session einen geheimen Inhalt zu früh.
+
+Drill-Schritte:
+
+1. Incident erfassen und als SEV-1 klassifizieren
+2. Deployment/Promotion stoppen
+3. betroffenen Commit/Cache dokumentieren
+4. Nutzerkommunikation entwerfen
+5. Reproduktionsfall und Regressionstest festlegen
+6. Fix- oder Rollbackentscheidung dokumentieren
+7. korrigierte Version mit **neuer Cachegeneration** auf HTTPS-Staging bereitstellen
+8. Staging-Smoke + betroffenen PWA-/Privacy-Flow testen
+9. Rollback-/Recovery-Ergebnis dokumentieren
+10. Postmortem mit neuer Präventionsmaßnahme erstellen
+
+Erst nach realer Durchführung dürfen gesetzt werden:
+
+- `operator-release.json.incident.sev1DrillCompleted = true`
+- `operator-release.json.incident.rollbackDrillCompleted = true`
+- `operator-release.json.incident.userCommunicationRouteConfirmed = true`
+
+## 12. Release-Gates
 
 Vor `INCIDENT RESPONSE PASS`:
 
@@ -245,7 +273,8 @@ Vor `INCIDENT RESPONSE PASS`:
 - [ ] Support→Incident-Eskalation getestet
 - [ ] Rollbackpfad auf HTTPS-Staging praktisch getestet
 - [ ] Probe-SEV-1 vollständig durchgespielt
-- [ ] Nutzerkommunikationsweg festgelegt
+- [ ] Nutzerkommunikationsweg festgelegt und getestet
 - [ ] Security/Privacy-Meldeweg festgelegt
+- [ ] `operator-release.json` enthält dieselben realen Rollen/Nachweise
 
 Bis dahin: **PREPARED / PRODUCTION NO_GO**.
