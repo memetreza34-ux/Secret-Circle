@@ -1,11 +1,14 @@
 # Secret Circle – Branch Protection und Required Checks
 
-Stand: 19. August 2026  
-Status: **PREPARED – GitHub-Einstellung selbst noch nicht belastbar bestätigt**
+Stand: 25. August 2026  
+Status: **PREPARED – GitHub-Einstellung selbst noch nicht belastbar bestätigt**  
+Evidence-Status: **OPEN**
+
+Maschinenlesbare Freigabequelle: `release-evidence.json → gates.branchProtection`.
 
 ## 1. Ziel
 
-Dieser Vertrag definiert, wie der stabile Secret-Circle-Releasezweig geschützt werden soll. Er beschreibt die gewünschte Repository-Konfiguration; er behauptet **nicht**, dass GitHub diese Einstellungen bereits aktiviert hat.
+Dieser Vertrag definiert, wie der stabile Secret-Circle-Releasezweig geschützt werden soll. Er beschreibt die gewünschte Repository-Konfiguration und den späteren Abnahmenachweis; `Evidence-Status: OPEN` behauptet ausdrücklich **nicht**, dass GitHub diese Einstellungen bereits aktiviert hat.
 
 Aktueller PR-Basiszweig: `codex/party-hub-foundation`  
 Arbeitszweig: `agent/release-foundation-2027`
@@ -38,7 +41,7 @@ Vor RC muss der Cross-Browser-Workflow auf dem **exakten unveränderten RC-Commi
 
 ## 4. Reproduzierbarer Installationsvertrag
 
-`package-lock.json` liegt jetzt als Lockfile v3 vor.
+`package-lock.json` liegt als Lockfile v3 vor.
 
 Beide Workflows verwenden:
 
@@ -57,7 +60,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 - Registry-URLs und `sha512`-Integrities
 - `npm ci` in normalem und Cross-Browser-Workflow
 
-Ein lokaler Offline-`npm ci`-Strukturcheck kam bis zum erwarteten `ENOTCACHED`-Downloadfehler; ein **echter Online-`npm ci`-PASS auf dem unveränderten Commit bleibt offen**.
+Ein echter Online-`npm ci`-PASS auf dem unveränderten Commit bleibt erforderlich und wird nicht durch die Existenz des Lockfiles ersetzt.
 
 ## 5. Empfohlene Branch-Protection-Regeln
 
@@ -107,6 +110,7 @@ Successful npm ci run:
 Successful CI run:
 Successful RC cross-browser run:
 Verifier:
+Evidence reference:
 ```
 
 ## 9. Release-Gate
@@ -122,5 +126,7 @@ Verifier:
 - [x] Lockfile/`npm ci` im Workflow technisch aktiv
 - [ ] Online-`npm ci` auf unverändertem Commit grün
 - [ ] RC-Cross-Browser-Lauf separat grün dokumentiert
+- [ ] `release-evidence.json.gates.branchProtection = PASS` mit demselben RC-Commit und echter Evidence
+- [ ] `Evidence-Status` in diesem Dokument auf `PASS` aktualisiert
 
-Bis dahin bleibt Branch Protection **OPEN / RELEASE NO_GO**.
+Solange diese Punkte nicht real erfüllt sind, bleibt `Evidence-Status: OPEN` und Branch Protection **RELEASE NO_GO**. Nach realer Abnahme darf dieses Dokument auf `Evidence-Status: PASS` wechseln; die Auditlogik muss beide Zustände konsistent akzeptieren.
