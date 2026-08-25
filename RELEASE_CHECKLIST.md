@@ -5,7 +5,8 @@ Stand: 25. August 2026
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
 Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
-Aktueller Offline-Core: **`secret-circle-v45` / `secret-circle-v45-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**.  
+Accessibility Source Hardening: **PREPARED**.  
 Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
@@ -34,7 +35,7 @@ Für den RC offen:
 - [ ] `Secret Circle CI / validate` als Required Check aktiv und grün
 - [ ] Branch Protection / Review / Bypass / Force-Push / Löschung final bestätigt
 
-Aktueller CI-Blocker: Issue #7. App-CI Run #2401 und ein reiner Bash-Runner-Probe endeten jeweils vor Step 1 mit `steps: []`.
+Aktueller CI-Blocker: Issue #7. Auch Run #2575 und der isolierte Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
 
 ## 2. Engine / Sessions / Daten
 
@@ -44,7 +45,7 @@ Quellseitig vorbereitet:
 - [x] Hub-Timer-/Resume-Integritätsvertrag
 - [x] `advanced-resume-guard.js`
 - [x] `advanced-privacy-guard.js`
-- [x] Guard-Dateien im Offline-Core v45
+- [x] Guard-Dateien im Offline-Core
 
 Für den RC real zu bestätigen:
 
@@ -96,14 +97,15 @@ Zusätzlich:
 - [ ] Privacy-/Reference-Audits grün
 - [ ] Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
 
-## 4. PWA / Offline – v45
+## 4. PWA / Offline – v46
 
-- [ ] finaler Cache `secret-circle-v45` oder bewusst neuer RC-Cache
+- [ ] finaler Cache `secret-circle-v46` oder bewusst neuer RC-Cache
 - [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
 - [ ] `tests/pwa-head-metadata.test.js` grün
 - [ ] fünf interaktive Einstiegseiten erfüllen denselben Installationsvertrag
 - [ ] Word-Imposter-/Hub-/Advanced-Resume-/Advanced-Privacy-Guards offline
+- [ ] `party-hub-a11y.js` offline
 - [ ] Manifest, SVG, 192er PNG, 512er PNG offline
 - [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
 - [ ] Online → installierte PWA → Offline-Neustart
@@ -111,7 +113,7 @@ Zusätzlich:
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
 - [ ] aktive Session bleibt durch Update geschützt
-- [ ] Update von mindestens zwei älteren installierten Versionen auf v45/RC
+- [ ] Update von mindestens zwei älteren installierten Versionen auf v46/RC
 - [ ] lokale Daten/Sessions überstehen Update
 - [ ] fehlgeschlagene Promotion zerstört bisherigen Offline-Core nicht
 - [ ] Rollback mit neuer Cachegeneration
@@ -123,14 +125,26 @@ Zusätzlich:
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung dokumentiert
 - [ ] getrennte HTTPS-Staging-Origin festgelegt
 - [ ] Production-Origin festgelegt
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v45` grün
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v46` grün
 - [ ] Smoke bestätigt Routen, Redirects, Manifest, PNGs, Cache, Privacy-/Reference-Source und PWA-Head
 - [ ] manueller Browser-/PWA-Staging-Smoke grün
 - [ ] Production nutzt denselben freigegebenen RC
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v45 --production` grün
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v46 --production` grün
 - [ ] manueller Production-Smoke grün
 
 ## 6. Accessibility / Geräte
+
+Quellseitig vorbereitet:
+
+- [x] `party-hub-a11y.js`
+- [x] aktives Hub-Spiel als `aria-modal` Dialog
+- [x] modale Hintergrundisolation mit `inert`
+- [x] Tab-/Shift+Tab-Fokus-Trap
+- [x] Bereichswechsel fokussieren die sichtbare Hauptüberschrift
+- [x] `scripts/hub_a11y_contract_audit.py` in `npm run validate`
+- [x] statische und E2E-Verträge für die neuen Fokuspfade angelegt
+
+Real offen:
 
 - [ ] Android + Chrome
 - [ ] iPhone + Safari
@@ -138,6 +152,9 @@ Zusätzlich:
 - [ ] Hoch-/Querformat und 320 CSS px
 - [ ] 200-%-Zoom
 - [ ] vollständige Tastatur / sichtbarer Fokus
+- [ ] Bereichswechsel-Fokus in realen Browsern sinnvoll
+- [ ] Detailmodal verliert Fokus nicht in den Hintergrund
+- [ ] aktive Spielrunde verliert Fokus nicht in den Hintergrund
 - [ ] VoiceOver
 - [ ] TalkBack
 - [ ] private Reveals mit Screenreader
@@ -205,6 +222,7 @@ Für Production real zu schließen:
 - [ ] jeder PASS-Beleg referenziert exakt denselben RC-Commit
 - [ ] `knownBlockers` leer
 - [ ] `scripts/operator_release_contract_audit.py` grün
+- [ ] `scripts/hub_a11y_contract_audit.py` grün
 - [ ] `scripts/release_evidence_audit.py` grün
 - [ ] `releaseDecision = GO` erst danach
 
