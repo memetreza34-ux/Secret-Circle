@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**  
+Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Dieser Plan ergänzt die automatisierten Prüfungen. Ein technisch startbarer Modus gilt erst nach den jeweils zutreffenden Tests als manuell abgenommen.
@@ -36,13 +36,13 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Checkout ausgeführt
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` grün
-- [ ] `npm test` grün
+- [ ] `npm test` grün inklusive `tests/word-imposter-data-contract.test.js`
 - [ ] `npm run validate` grün
 - [ ] Chromium E2E grün
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Aktueller externer Blocker: Issue #7. Auch Run #2637 erreicht keinen ersten Workflow-Step.
+Aktueller externer Blocker: Issue #7. Aktuellster geprüfter v48-Lauf **#2715** erreicht keinen ersten Workflow-Step (`steps: []`).
 
 ## 2. Hub-Smoke
 
@@ -75,12 +75,24 @@ Aktueller externer Blocker: Issue #7. Auch Run #2637 erreicht keinen ersten Work
 - [ ] Handoff verrät vorige Rolle nicht
 - [ ] Timer Start/Pause/Hintergrund
 - [ ] geheime Abstimmung klar
-- [ ] Teilabstimmung nach Reload korrekt
-- [ ] manipulierter Voting-Snapshot verworfen
+- [ ] Teilabstimmung nach Reload startet beim nächsten tatsächlich offenen Wähler
+- [ ] nicht-sequenziell manipulierter Voting-Snapshot verworfen
 - [ ] Stichwahl
 - [ ] Imposter-Ratechance
 - [ ] Punkte korrekt
 - [ ] Abschluss genau einmal
+
+### Custom-/Backup-Grenzen – v48
+
+- [ ] UI erklärt maximal 50 eigene Kategorien und 2–200 Begriffe je Kategorie
+- [ ] 50 Kategorien akzeptiert
+- [ ] 51 Kategorien vollständig abgelehnt; keine stille Kürzung
+- [ ] nach abgelehntem 51-Kategorien-Import sind vorherige Daten unverändert
+- [ ] 200 Begriffe akzeptiert
+- [ ] 201 Begriffe abgelehnt
+- [ ] 1,5-MB-UTF-8-Backupgrenze korrekt
+- [ ] Multibyte-UTF-8 zählt nach Bytes, nicht Zeichen
+- [ ] korrupter übergroßer lokaler Custom-State wird fail-safe verworfen und gemeldet
 
 ## 4. Direkte Hub-Core-Spiele
 
@@ -110,7 +122,7 @@ Spezifisch:
 
 Für Zwei Wahrheiten/eine Lüge, Question Imposter, Location Spy und Mafia jeweils Fachlogik, Privacy, Resume und Siegerzustand prüfen.
 
-Zusätzlich v47-A11y:
+Zusätzlich historischer v47-A11y-Vertrag auf dem aktuellen v48-RC:
 
 - [ ] `advanced-play-layer` wird als modaler Dialog verstanden
 - [ ] Setup/Skip-Link sind während aktiver Runde per Tastatur nicht erreichbar
@@ -180,16 +192,17 @@ Prüfen:
 
 ## 10. Backup / Datenschutz
 
-- [ ] Word-Imposter-Backup
+- [ ] Word-Imposter-Backup inklusive v48-Grenzen
 - [ ] Gesamtexport
 - [ ] Creator-Bibliothek
 - [ ] ungültiges JSON / unbekannter Namespace abgelehnt
 - [ ] Größenlimit UTF-8 korrekt
 - [ ] simulierter Schreibfehler Rollback
+- [ ] abgelehnter Import verändert Bestandsdaten nicht
 - [ ] vollständige lokale Löschung
 - [ ] keine Spieldaten an eigenen Server übertragen
 
-## 11. PWA / Offline – v47
+## 11. PWA / Offline – v48
 
 - [ ] Online-Erststart
 - [ ] Android-Installation
@@ -200,11 +213,13 @@ Prüfen:
 - [ ] Resume-/Privacy-Guards offline
 - [ ] `party-hub-a11y.js` offline geladen
 - [ ] `secondary-surface-a11y.js` offline geladen
+- [ ] Word-Imposter-v48-UI-/Store-Logik offline aktuell
 - [ ] Hub-Bereichsfokus / Modal-Fokus-Trap offline
 - [ ] Advanced-Modal-Fokus-Trap offline
 - [ ] Quick-Fokus-Recovery offline
 - [ ] Creator-Wizard-/Help-/Radiogroup-A11y offline
-- [ ] Update von mindestens zwei echten älteren Installationen auf v47/RC
+- [ ] Word-Imposter 50/51-, 200/201- und Voting-Resume-Verträge offline
+- [ ] Update von mindestens zwei echten älteren Installationen auf v48/RC
 - [ ] Update zunächst staged
 - [ ] aktive Session nicht ungefragt ersetzt
 - [ ] `Später` behält aktuelle Version
@@ -270,12 +285,13 @@ Muss real auf Android und iOS bestätigt werden.
 - [ ] 5–8 Personen / ≥90 min
 - [ ] 9–12 Personen / ≥90 min
 - [ ] Word Imposter mit mehreren Impostern
+- [ ] Word-Imposter-v48-Datengrenzen mit neutralen Testdaten
 - [ ] Mafia
 - [ ] Scharade/Tabu
 - [ ] Party Night
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 
-Dokumentieren: Regeln, Wartezeit, Content, technische Unterbrechungen, Geheimnisoffenlegung, bevorzugte/vermiedene Spiele, Fehlbedienung und Accessibility-/Fokusprobleme.
+Dokumentieren: Regeln, Wartezeit, Content, technische Unterbrechungen, Geheimnisoffenlegung, Daten-/Importfunde, bevorzugte/vermiedene Spiele, Fehlbedienung und Accessibility-/Fokusprobleme.
 
 ## 15. Content / Rechte
 
@@ -294,10 +310,11 @@ Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
 - [ ] Branch Protection aktiv
 - [ ] HTTPS-Staging/Production-Smoke grün
 - [ ] Android/iPhone/iPad real
-- [ ] Accessibility real inklusive v47 Hub-/Advanced-/Quick-/Creator-Pfade
+- [ ] Accessibility real inklusive Hub-/Advanced-/Quick-/Creator-Pfade
+- [ ] Word-Imposter-v48-Voting-/Daten-/Importverträge real
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
-- [ ] G1–G5 und PN1–PN3 abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v47/RC + Rollback
+- [ ] G1–G5, DWI und PN1–PN3 abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v48/RC + Rollback
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content-/Rechte-/Legal-/Support-/Hosting-Sign-off
 - [ ] Incident-/Rollback-Drill
