@@ -9,13 +9,14 @@ Draft-PR: #13
 
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v45` / `secret-circle-v45-staging`**  
+**Offline-Core:** **`secret-circle-v46` / `secret-circle-v46-staging`**  
 **Classic Content:** **v4**  
 **Core Source Review:** **15/15 PREPARED**  
 **Core Source Hardening:** **15/15 PREPARED**  
+**Accessibility Source Hardening:** **PREPARED**  
 **Operator / Hosting / Legal:** **PREPARED / BLOCKED**
 
-v45 ist die korrekte Cachegeneration nach dem vollständigen Core-Hardening. Die neuen Resume-/Privacy-Guards sind explizit Bestandteil des Offline-Core; v44 wird nicht für veränderte Offline-Inhalte wiederverwendet.
+v45 war die Cachegeneration nach dem Core-Hardening. **v46** ist die neue Generation für das zusätzliche Hub-Accessibility-Hardening und nimmt `party-hub-a11y.js` explizit in den Offline-Core auf.
 
 ## Core-Hardening – 15/15
 
@@ -32,19 +33,37 @@ v45 ist die korrekte Cachegeneration nach dem vollständigen Core-Hardening. Die
 
 Details: `CORE_GAME_ACCEPTANCE.md`.
 
+## Accessibility-Hardening – v46
+
+Neu vorbereitet:
+
+- `party-hub-a11y.js` Version 2
+- Hub-Bereichswechsel fokussieren die neue sichtbare Hauptüberschrift mit `tabindex="-1"`
+- aktive Hub-Spielrunde ist als `role="dialog"` + `aria-modal="true"` ausgezeichnet
+- bei Spieldetail/Spielrunde wird der übrige Body-Hintergrund `inert`
+- Tab/Shift+Tab bleibt innerhalb des aktiven Overlays
+- dynamisch hinzugefügte Body-Siblings werden während eines offenen Overlays ebenfalls isoliert
+- Skip-Link bleibt beim Erstladen erster sinnvoller Tastaturtarget
+- `tests/accessibility-contract.test.js` erweitert
+- `tests/e2e/accessibility-core.spec.js` um reale Browser-Fokuspfade erweitert
+- `scripts/hub_a11y_contract_audit.py` in `npm run validate`
+- `party-hub-a11y.js` Bestandteil von v46
+
+**Noch offen:** echte Ausführung auf Runner, VoiceOver/TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserabnahme. Deshalb weiterhin PREPARED, nicht PASS.
+
 ## Operator / Hosting / Legal / Support
 
-Neu zentralisiert:
+Zentralisiert:
 
-- `operator-release.json` – maschinenlesbare Operator-Akte, aktuell `PREPARED / BLOCKED`
+- `operator-release.json` – aktuell `PREPARED / BLOCKED`
 - `OPERATOR_RELEASE_SIGNOFF.md`
 - `HOSTING_DECISION.md`
 - `scripts/operator_release_contract_audit.py` in `npm run validate`
-- `LEGAL_CHECKLIST.md` auf Stand 25. August 2026
+- `LEGAL_CHECKLIST.md` Stand 25. August 2026
 - `SUPPORT.md` und `INCIDENT_RESPONSE.md` an dieselbe Operator-Akte gebunden
 - Issue #14 führt die real offenen Betreiber-/Hosting-/Legal-/Support-/Incident-Schritte
 
-`legalPrivacy` und `supportIncident` dürfen in `release-evidence.json` erst PASS werden, wenn `operator-release.json = FINAL / READY` und reale Nachweise existieren.
+`legalPrivacy` und `supportIncident` dürfen erst PASS werden, wenn `operator-release.json = FINAL / READY` und reale Nachweise existieren.
 
 ## Build / Supply Chain
 
@@ -53,18 +72,19 @@ Neu zentralisiert:
 - keine npm-Runtime-Dependencies
 - feste Registry-/Integrity-Verträge
 - CI/Cross-Browser verwenden `npm ci`
-- Lockfile-/Operator-/Readiness-Audits in `npm run validate`
+- Lockfile-/A11y-/Operator-/Readiness-Audits in `npm run validate`
+- Operator- und Readiness-Audit leiten die aktuelle Cachegeneration inzwischen dynamisch aus `sw.js` ab
 
 **Offen:** echter Online-`npm ci`-/Integrity-PASS auf funktionierendem Runner.
 
-## PWA v45
+## PWA v46
 
 Service Worker:
 
-- `secret-circle-v45`
-- `secret-circle-v45-staging`
+- `secret-circle-v46`
+- `secret-circle-v46-staging`
 
-Offline enthalten sind unter anderem fünf Einstiegspfade, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Resume-/Privacy-Guards sowie Manifest/PWA-Icons.
+Offline enthalten sind fünf Einstiegspfade, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Resume-/Privacy-Guards, `party-hub-a11y.js` sowie Manifest/PWA-Icons.
 
 Reale Installation, Upgrade älterer Versionen, Rollback und Offline-Gerätetest bleiben offen.
 
@@ -86,15 +106,11 @@ Daher bleibt `ASSETS / THIRD PARTY` blockiert.
 
 ## CI – P0
 
-Aktuellster bestätigter App-CI-Befund:
+Der zuletzt ausdrücklich untersuchte aktuelle-Branch-Lauf war **Run #2575**, Job `97682633520`.
 
-- Run **#2565**
-- Run ID `32808084307`
-- Job ID `97681972379`
-- Head `668c65fce0233553fb2013631be2abe6cfd2f2a4`
 - `failure`
-- Jobliste `steps: null`
-- Step-Abfrage `steps: []`
+- keine ausführbaren Workflow-Schritte sichtbar
+- separate Step-Abfrage `steps: []`
 - Joblogs nicht vorhanden
 - kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
 
@@ -110,8 +126,8 @@ Details: Issue #7 und `CI_TROUBLESHOOTING.md`.
 
 ## HTTPS / Environment
 
-- v45-Vertrag in Architektur/Deployment/Environment/Privacy synchronisiert
-- `HOSTING_DECISION.md` vorbereitet
+- v46 in Architektur/Deployment/Environment/Privacy synchronisiert
+- `HOSTING_DECISION.md` erwartet v46-Smokes
 - konkrete Provider-, Staging- und Production-Entscheidung offen
 - `scripts/staging_smoke.py` vorbereitet
 
@@ -129,10 +145,10 @@ Zusätzlich bleibt die Icon-Rechtebasis offen.
 2. Online-`npm ci` + vollständiges CI/Cross-Browser
 3. Branch Protection tatsächlich aktiv
 4. Hostingprovider + getrennte HTTPS-Staging-/Production-Origin
-5. HTTPS-Staging + automatisierter/manueller PWA-Smoke
-6. PWA v45 Upgrade/Rollback auf real installierten Versionen
+5. HTTPS-Staging + automatisierter/manueller v46-PWA-Smoke
+6. PWA v46 Upgrade/Rollback auf real installierten Versionen
 7. Android / iPhone / Tablet
-8. VoiceOver / TalkBack / Tastatur / 200-%-Zoom
+8. VoiceOver / TalkBack / reale Tastatur-/Modalfokus-/200-%-Zoom-Abnahme
 9. reale Gruppen/Beta für alle 15 Core-Spiele
 10. Icon-Rechtebasis + finaler Visual-/Third-Party-Sign-off
 11. Operator-/Privacy-/Support-/Legalangaben final
