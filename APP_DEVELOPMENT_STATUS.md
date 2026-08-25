@@ -7,15 +7,16 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 ## Gesamtstatus
 
 **Öffentliche Releasefreigabe: NO_GO**  
-**Offline-Core: `secret-circle-v45` / `secret-circle-v45-staging`**  
+**Offline-Core: `secret-circle-v46` / `secret-circle-v46-staging`**  
 **Classic Content: v4**  
 **Core Source Review: 15/15 PREPARED**  
 **Core Source Hardening: 15/15 PREPARED**  
+**Accessibility Source Hardening: PREPARED**  
 **Operator / Hosting / Legal: PREPARED / BLOCKED**
 
 Arbeitsstand: Draft-PR #13 auf `agent/release-foundation-2027`.
 
-v45 ist die korrekte Cachegeneration nach dem 15/15-Core-Hardening. Die neuen Resume-/Privacy-Guard-Dateien sind explizit Teil des Offline-Core.
+v45 war die Cachegeneration nach dem 15/15-Core-Hardening. **v46** ist die neue Generation für das zusätzliche Hub-Accessibility-Hardening und enthält `party-hub-a11y.js` offline.
 
 ## A-bis-Z-Tracker
 
@@ -27,23 +28,23 @@ v45 ist die korrekte Cachegeneration nach dem 15/15-Core-Hardening. Die neuen Re
 | 2 | Produktstrategie / Scope | PREPARED | Scope, Roadmap | reale Gruppen/Nutzer |
 | 3 | Plattformstrategie | PREPARED | Platform Strategy | reale Zielgeräte |
 | 4 | Requirements / Akzeptanz | PREPARED | Requirements, Core Contracts, 15/15 Hardening | Runner + reale Core-Abnahme |
-| 5 | UX / IA / Design | PREPARED | UX Flow, Design System, Live-Core-Guidance | reale UX-Tests |
-| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md` | bei Grundsatzänderung ADR |
+| 5 | UX / IA / Design | PREPARED | UX Flow, Live-Core-Guidance, v46 Fokus-/Modalvertrag | reale UX-/Tastaturtests |
+| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md`, Architecture Audit v46 | bei Grundsatzänderung ADR |
 | 7 | Security / Threat Model | PREPARED | Security, Threat Model, Resume-/Privacy-Guards | Runner + echter Browser |
 | 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | Issue #7 / echter Runner + Branch Protection |
-| 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core Hardening | keine neue Scope-Welle; Evidence schließen |
+| 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core + A11y Hardening | keine neue Scope-Welle; Evidence schließen |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-/Resume-Verträge | reale Quota-/Updatepfade |
-| 11 | Tests / CI | BLOCKED | Run #2565 + Runner Probe | funktionierender Hosted Runner |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker v45 + PWA-/Resume-Verträge | Issue #8 / Install-/Upgrade-/Rollbacktests |
+| 11 | Tests / CI | BLOCKED | Run #2575 + Runner Probe | funktionierender Hosted Runner |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker v46 + Guards/A11y offline | Issue #8 / Install-/Upgrade-/Rollbacktests |
 | 13 | Content / Alter / Privacy | IN PROGRESS | 15/15 Quellreview + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md`, Issue #8 | reale Sessions durchführen |
 | 15 | Datenschutz / Recht / Support | BLOCKED | `operator-release.json`, Legal, Support, Issue #14 | reale Betreiber-/Hosting-/Kontaktangaben |
 | 16 | Release Management / RC | PREPARED | Checklist + Release Evidence | unveränderlichen RC einfrieren |
-| 17 | Deployment / Environments | BLOCKED | v45 Environment + `HOSTING_DECISION.md` | Provider + echte HTTPS-Origins |
+| 17 | Deployment / Environments | BLOCKED | v46 Environment + `HOSTING_DECISION.md` | Provider + echte HTTPS-Origins |
 | 18 | Operations / Incident | BLOCKED | Support + Incident + Operator Evidence | Verantwortliche + Support/SEV-1/Rollback-Drills |
 | 19 | Wartung / Migration | PREPARED | Maintenance, Backups, Changelog | operative Routine real |
 | 20 | Risk Management | IN PROGRESS | Risk Register | laufend aktualisieren |
-| 21 | Accessibility | PREPARED | Contract + E2E + PWA-Head | 200 %, VoiceOver, TalkBack, Geräte |
+| 21 | Accessibility | PREPARED | v46 A11y-Layer + Unit/E2E/Audit | VoiceOver/TalkBack/Zoom/Tastatur/Geräte real |
 | 22 | Third Party / Assetrechte | BLOCKED | Provenienzmanifest + Rights Sign-off | Icon-Rechte menschlich bestätigen |
 | 23 | Fan-/Referenzcontent | IN PROGRESS | Fan Review + Source-Audit | Runner + manuelle Visual/Legal-Abnahme |
 | 24 | Release Evidence | PREPARED | `release-evidence.json` + `operator-release.json` + Audits | reale Belege auf einen RC sammeln |
@@ -63,29 +64,45 @@ v45 ist die korrekte Cachegeneration nach dem 15/15-Core-Hardening. Die neuen Re
 
 Details: `CORE_GAME_ACCEPTANCE.md`.
 
+## Accessibility-Hardening – v46
+
+Quellseitig neu vorbereitet:
+
+- `party-hub-a11y.js` Version 2
+- programmatischer Fokus auf die neue sichtbare Hub-Hauptüberschrift nach Bereichswechsel
+- aktive Hub-Spielrunde als modaler Dialog
+- Hintergrund-Isolation mit `inert` bei Spieldetail/Spielrunde
+- Fokus-Trap für Tab/Shift+Tab
+- neue Accessibility-Unit- und E2E-Verträge
+- `scripts/hub_a11y_contract_audit.py` in `npm run validate`
+- globaler `scripts/architecture_audit.py` kennt jetzt alle Resume-/Privacy-/A11y-Guards als Production-/Offline-Module
+- `party-hub-a11y.js` im v46-Offline-Core
+
+Real offen: VoiceOver, TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserprüfung. Deshalb **PREPARED**, nicht PASS.
+
 ## Operator-/Hosting-/Legal-Block
 
-Neu vorbereitet:
+Vorbereitet:
 
 - `operator-release.json` – aktuell `PREPARED / BLOCKED`
 - `OPERATOR_RELEASE_SIGNOFF.md`
 - `HOSTING_DECISION.md`
 - `scripts/operator_release_contract_audit.py` in `npm run validate`
-- `LEGAL_CHECKLIST.md` auf Stand 25. August 2026
+- `LEGAL_CHECKLIST.md` Stand 25. August 2026
 - `SUPPORT.md` mit Probe-Supportfall
 - `INCIDENT_RESPONSE.md` mit verbindlichem SEV-1-/Rollback-Drill
 - Issue #14 als operative externe Checkliste
 
 Release-Evidence `legalPrivacy` und `supportIncident` dürfen erst PASS werden, wenn die Operator-Akte `FINAL / READY` ist.
 
-## Offline / PWA v45
+## Offline / PWA v46
 
 Der Service Worker verwendet:
 
-- `secret-circle-v45`
-- `secret-circle-v45-staging`
+- `secret-circle-v46`
+- `secret-circle-v46-staging`
 
-Synchronisiert sind Service Worker, Test, Architektur, Deployment, Environment, Privacy und operative Release-Dokumente.
+Offline enthalten sind Word-Imposter-/Hub-/Advanced-Resume-/Privacy-Guards sowie die neue Hub-A11y-Schicht. Architektur, Deployment, Environment, Privacy, Service-Worker-Test und reale Testpläne sind auf v46 synchronisiert.
 
 Reale Upgrade-/Rollback-/Geräte-Evidence bleibt offen.
 
@@ -96,22 +113,18 @@ Reale Upgrade-/Rollback-/Geräte-Evidence bleibt offen.
 - keine npm-Runtime-Dependencies
 - feste Registry-URLs + `sha512`
 - CI/Cross-Browser verwenden `npm ci`
-- Lockfile-, Operator- und Readiness-Audits integriert
+- Lockfile-, A11y-, Operator- und Readiness-Audits integriert
+- aktuelle Cachegeneration wird in Operator-/Readiness-Audits dynamisch aus `sw.js` abgeleitet
 
 Status: **CLOSED IN CODE / ONLINE RUNNER VERIFICATION OPEN**.
 
 ## CI
 
-Aktuellster bestätigter App-CI-Befund:
+Der zuletzt ausdrücklich untersuchte aktuelle-Branch-Lauf war **Run #2575**, Job `97682633520`:
 
-- Run **#2565**
-- Run ID `32808084307`
-- Job ID `97681972379`
-- Head `668c65fce0233553fb2013631be2abe6cfd2f2a4`
 - `failure`
-- Jobliste `steps: null`
 - separate Step-Abfrage `steps: []`
-- Joblogs nicht vorhanden
+- keine Joblogs
 - kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
 
 Ein action-/repo-freier Bash-Runner-Probe endete ebenfalls vor Step 1 mit `steps: []`.
@@ -133,10 +146,10 @@ Zusätzlich bleibt die Icon-Rechtebasis offen.
 3. Cross-Browser auf demselben RC-Kandidaten
 4. Branch Protection real bestätigen
 5. Issue #14: Provider + Betreiber-/Kontakt-/Privacy-/Supportangaben finalisieren
-6. konkrete HTTPS-Staging-Origin + echter v45-Smoke
-7. PWA v45 Upgrade/Rollback + Offline-Neustart
+6. konkrete HTTPS-Staging-Origin + echter v46-Smoke
+7. PWA v46 Upgrade/Rollback + Offline-Neustart
 8. Issue #8: Android / iPhone / Tablet
-9. VoiceOver / TalkBack / Tastatur / 200-%-Zoom
+9. VoiceOver / TalkBack / reale Tastatur-/Modalfokus-/200-%-Zoom-Abnahme
 10. reale Gruppentests für alle 15 Core-Spiele
 11. Icon-Rechte + finaler Visual-/Third-Party-Pass
 12. Support-/Securitytest + SEV-1-/Rollback-Drill
