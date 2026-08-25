@@ -5,7 +5,7 @@ Stand: 25. August 2026
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
 Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
-Aktueller Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**.  
 Accessibility Source Hardening: **PREPARED**.  
 Öffentliche Freigabe: **NO_GO**.
 
@@ -35,7 +35,7 @@ Für den RC offen:
 - [ ] `Secret Circle CI / validate` als Required Check aktiv und grün
 - [ ] Branch Protection / Review / Bypass / Force-Push / Löschung final bestätigt
 
-Aktueller CI-Blocker: Issue #7. Auch Run #2575 und der isolierte Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
+Aktueller CI-Blocker: Issue #7. Auch Run #2637 und der isolierte Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
 
 ## 2. Engine / Sessions / Daten
 
@@ -97,15 +97,16 @@ Zusätzlich:
 - [ ] Privacy-/Reference-Audits grün
 - [ ] Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
 
-## 4. PWA / Offline – v46
+## 4. PWA / Offline – v47
 
-- [ ] finaler Cache `secret-circle-v46` oder bewusst neuer RC-Cache
+- [ ] finaler Cache `secret-circle-v47` oder bewusst neuer RC-Cache
 - [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
 - [ ] `tests/pwa-head-metadata.test.js` grün
 - [ ] fünf interaktive Einstiegseiten erfüllen denselben Installationsvertrag
 - [ ] Word-Imposter-/Hub-/Advanced-Resume-/Advanced-Privacy-Guards offline
 - [ ] `party-hub-a11y.js` offline
+- [ ] `secondary-surface-a11y.js` offline
 - [ ] Manifest, SVG, 192er PNG, 512er PNG offline
 - [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
 - [ ] Online → installierte PWA → Offline-Neustart
@@ -113,7 +114,7 @@ Zusätzlich:
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
 - [ ] aktive Session bleibt durch Update geschützt
-- [ ] Update von mindestens zwei älteren installierten Versionen auf v46/RC
+- [ ] Update von mindestens zwei älteren installierten Versionen auf v47/RC
 - [ ] lokale Daten/Sessions überstehen Update
 - [ ] fehlgeschlagene Promotion zerstört bisherigen Offline-Core nicht
 - [ ] Rollback mit neuer Cachegeneration
@@ -125,11 +126,11 @@ Zusätzlich:
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung dokumentiert
 - [ ] getrennte HTTPS-Staging-Origin festgelegt
 - [ ] Production-Origin festgelegt
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v46` grün
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v47` grün
 - [ ] Smoke bestätigt Routen, Redirects, Manifest, PNGs, Cache, Privacy-/Reference-Source und PWA-Head
 - [ ] manueller Browser-/PWA-Staging-Smoke grün
 - [ ] Production nutzt denselben freigegebenen RC
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v46 --production` grün
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v47 --production` grün
 - [ ] manueller Production-Smoke grün
 
 ## 6. Accessibility / Geräte
@@ -137,12 +138,17 @@ Zusätzlich:
 Quellseitig vorbereitet:
 
 - [x] `party-hub-a11y.js`
-- [x] aktives Hub-Spiel als `aria-modal` Dialog
+- [x] `secondary-surface-a11y.js`
+- [x] Hub- und Advanced-Spieloverlays als `aria-modal` Dialoge
 - [x] modale Hintergrundisolation mit `inert`
-- [x] Tab-/Shift+Tab-Fokus-Trap
-- [x] Bereichswechsel fokussieren die sichtbare Hauptüberschrift
+- [x] Tab-/Shift+Tab-Fokus-Traps für Hub/Advanced/Creator-Hilfe
+- [x] Hub-Bereichswechsel fokussieren die sichtbare Hauptüberschrift
+- [x] Quick-Phasen besitzen Fokus-Recovery nach DOM-Austausch
+- [x] Creator-Schrittüberschriften sind programmatisch fokussierbar
+- [x] Creator-Template-Radiogroup unterstützt Pfeile/Home/End
 - [x] `scripts/hub_a11y_contract_audit.py` in `npm run validate`
-- [x] statische und E2E-Verträge für die neuen Fokuspfade angelegt
+- [x] `scripts/secondary_surface_a11y_contract_audit.py` in `npm run validate`
+- [x] statische und E2E-Verträge für die Fokuspfade angelegt
 
 Real offen:
 
@@ -152,9 +158,13 @@ Real offen:
 - [ ] Hoch-/Querformat und 320 CSS px
 - [ ] 200-%-Zoom
 - [ ] vollständige Tastatur / sichtbarer Fokus
-- [ ] Bereichswechsel-Fokus in realen Browsern sinnvoll
-- [ ] Detailmodal verliert Fokus nicht in den Hintergrund
-- [ ] aktive Spielrunde verliert Fokus nicht in den Hintergrund
+- [ ] Hub-Bereichswechsel-Fokus in realen Browsern sinnvoll
+- [ ] Hub-Detail-/Spielmodal verliert Fokus nicht in den Hintergrund
+- [ ] Advanced-Spieloverlay verliert Fokus nicht in Setup/Hintergrund
+- [ ] Quick-Phasenwechsel landen auf sinnvoller nächster Aktion
+- [ ] Creator-Schrittwechsel verständlich
+- [ ] Creator-Template-Pfeiltasten/Home/End real
+- [ ] Creator-Hilfe Fokus-Trap + Rückkehrfokus real
 - [ ] VoiceOver
 - [ ] TalkBack
 - [ ] private Reveals mit Screenreader
@@ -223,6 +233,7 @@ Für Production real zu schließen:
 - [ ] `knownBlockers` leer
 - [ ] `scripts/operator_release_contract_audit.py` grün
 - [ ] `scripts/hub_a11y_contract_audit.py` grün
+- [ ] `scripts/secondary_surface_a11y_contract_audit.py` grün
 - [ ] `scripts/release_evidence_audit.py` grün
 - [ ] `releaseDecision = GO` erst danach
 
