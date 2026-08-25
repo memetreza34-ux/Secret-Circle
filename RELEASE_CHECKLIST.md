@@ -5,8 +5,9 @@ Stand: 25. August 2026
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
 Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
-Aktueller Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**.  
 Accessibility Source Hardening: **PREPARED**.  
+Word-Imposter Data/Resume Hardening: **PREPARED**.  
 Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
@@ -35,13 +36,18 @@ Für den RC offen:
 - [ ] `Secret Circle CI / validate` als Required Check aktiv und grün
 - [ ] Branch Protection / Review / Bypass / Force-Push / Löschung final bestätigt
 
-Aktueller CI-Blocker: Issue #7. Auch Run #2637 und der isolierte Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
+Aktueller CI-Blocker: Issue #7. Hosted-Runner-Jobs enden weiterhin vor Step 1 mit `steps: []`; der isolierte Bash-Runner-Probe zeigte dasselbe Muster.
 
 ## 2. Engine / Sessions / Daten
 
 Quellseitig vorbereitet:
 
 - [x] Word-Imposter-Resume-Guard
+- [x] Word-Imposter-Voting-UI bestimmt nächsten offenen Wähler aus tatsächlichen Vote-Keys
+- [x] Word-Imposter-Custom-Limits: 50 Kategorien / 200 Begriffe je Kategorie
+- [x] 1,5-MB-UTF-8-Backupgrenze zwischen UI und Store synchron
+- [x] keine stille Kategorie-Trunkierung bei Import
+- [x] `tests/word-imposter-data-contract.test.js`
 - [x] Hub-Timer-/Resume-Integritätsvertrag
 - [x] `advanced-resume-guard.js`
 - [x] `advanced-privacy-guard.js`
@@ -52,6 +58,10 @@ Für den RC real zu bestätigen:
 - [ ] Exact-once-Verlauf/Statistik
 - [ ] Word-Imposter-/Hub-/Advanced-/Quick-Resume
 - [ ] manipulierte Word-Imposter-Voting-Snapshots sicher verworfen
+- [ ] Word-Imposter 50 Kategorien akzeptiert / 51 abgelehnt
+- [ ] Word-Imposter 200 Begriffe akzeptiert / 201 abgelehnt
+- [ ] abgelehnter Word-Imposter-Import verändert bestehende Daten nicht
+- [ ] 1,5-MB-UTF-8-Limit real bestätigt
 - [ ] gekreuzte Hub-Timerzustände sicher verworfen
 - [ ] manipulierte Advanced-Snapshots sicher verworfen
 - [ ] private Reveal-Zustände nach Reload verdeckt
@@ -97,9 +107,9 @@ Zusätzlich:
 - [ ] Privacy-/Reference-Audits grün
 - [ ] Extended/Labs-/Marketing-/Visual-Rechtepass abgeschlossen
 
-## 4. PWA / Offline – v47
+## 4. PWA / Offline – v48
 
-- [ ] finaler Cache `secret-circle-v47` oder bewusst neuer RC-Cache
+- [ ] finaler Cache `secret-circle-v48` oder bewusst neuer RC-Cache
 - [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment synchron
 - [ ] `tests/pwa-head-metadata.test.js` grün
@@ -107,6 +117,7 @@ Zusätzlich:
 - [ ] Word-Imposter-/Hub-/Advanced-Resume-/Advanced-Privacy-Guards offline
 - [ ] `party-hub-a11y.js` offline
 - [ ] `secondary-surface-a11y.js` offline
+- [ ] v48-Word-Imposter-UI/Store-Dateien offline aktuell
 - [ ] Manifest, SVG, 192er PNG, 512er PNG offline
 - [ ] PNG-Dimensionen / Manifestgrößen / SHA-256 stimmen
 - [ ] Online → installierte PWA → Offline-Neustart
@@ -114,7 +125,7 @@ Zusätzlich:
 - [ ] Query-Routen offline
 - [ ] staged update / bewusste Aktivierung
 - [ ] aktive Session bleibt durch Update geschützt
-- [ ] Update von mindestens zwei älteren installierten Versionen auf v47/RC
+- [ ] Update von mindestens zwei älteren installierten Versionen auf v48/RC
 - [ ] lokale Daten/Sessions überstehen Update
 - [ ] fehlgeschlagene Promotion zerstört bisherigen Offline-Core nicht
 - [ ] Rollback mit neuer Cachegeneration
@@ -126,11 +137,12 @@ Zusätzlich:
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung dokumentiert
 - [ ] getrennte HTTPS-Staging-Origin festgelegt
 - [ ] Production-Origin festgelegt
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v47` grün
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v48` grün
 - [ ] Smoke bestätigt Routen, Redirects, Manifest, PNGs, Cache, Privacy-/Reference-Source und PWA-Head
 - [ ] manueller Browser-/PWA-Staging-Smoke grün
+- [ ] Word-Imposter-v48-Datenvertrag auf Staging bestätigt
 - [ ] Production nutzt denselben freigegebenen RC
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v47 --production` grün
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v48 --production` grün
 - [ ] manueller Production-Smoke grün
 
 ## 6. Accessibility / Geräte
@@ -183,6 +195,7 @@ Real offen:
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
 - [ ] großer Word-Imposter-Test mit mehreren Impostern
 - [ ] Word-Imposter-Fairness über mindestens 20 reale Runden protokolliert
+- [ ] Word-Imposter Custom-/Backup-Grenzen mit neutralen Daten praktisch getestet
 - [ ] Mafia mit mehreren Gruppengrößen/Rollen
 - [ ] Smart Party Night mindestens 3 vollständige Abende
 - [ ] Creator mit unerfahrener Person
@@ -234,6 +247,7 @@ Für Production real zu schließen:
 - [ ] `scripts/operator_release_contract_audit.py` grün
 - [ ] `scripts/hub_a11y_contract_audit.py` grün
 - [ ] `scripts/secondary_surface_a11y_contract_audit.py` grün
+- [ ] `tests/word-imposter-data-contract.test.js` auf dem RC grün
 - [ ] `scripts/release_evidence_audit.py` grün
 - [ ] `releaseDecision = GO` erst danach
 
