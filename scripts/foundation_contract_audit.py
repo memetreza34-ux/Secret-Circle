@@ -11,7 +11,7 @@ required = [
     'backup-schema-registry.js', 'party-data-tools.js', 'BACKUP_SCHEMAS.md',
     'session-ledger.js', 'party-session-controls.js', 'party-hub-timers.js', 'party-hub.js',
     'party.html', 'quick-play.html', 'party-release-structure.js', 'party-filter-state.js', 'party-search-assist.js',
-    'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md',
+    'BRANCH_PROTECTION.md', 'ENVIRONMENTS.md', 'release-evidence.json',
     'scripts/lockfile_contract_audit.py', 'scripts/branch_protection_contract_audit.py',
     'scripts/staging_smoke.py', 'scripts/staging_smoke_contract_audit.py',
     'scripts/privacy_content_audit.py', 'scripts/reference_content_audit.py',
@@ -22,6 +22,7 @@ if missing:
 
 package = json.loads(read('package.json'))
 lock = json.loads(read('package-lock.json'))
+evidence = json.loads(read('release-evidence.json'))
 registry = read('backup-schema-registry.js')
 data_tools = read('party-data-tools.js')
 backup_docs = read('BACKUP_SCHEMAS.md')
@@ -48,6 +49,15 @@ if not cache_match or not staging_match:
     raise SystemExit('Foundation contract cannot parse PWA cache generation.')
 cache_name = cache_match.group(1)
 cache_generation = cache_match.group(2)
+
+gates = evidence.get('gates') if isinstance(evidence.get('gates'), dict) else {}
+ci_gate = (gates.get('ci') or {}).get('status')
+branch_gate = (gates.get('branchProtection') or {}).get('status')
+staging_gate = (gates.get('stagingHttpSmoke') or {}).get('status')
+android_gate = (gates.get('android') or {}).get('status')
+ios_gate = (gates.get('ios') or {}).get('status')
+tablet_gate = (gates.get('tablet') or {}).get('status')
+allowed_gate_statuses = {'OPEN', 'BLOCKED', 'PASS', 'FAIL'}
 
 checks = {
     'backup_registry_v2': all(marker in registry for marker in (
@@ -107,7 +117,13 @@ checks = {
     'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
     'lockfile_audit_in_validate': 'scripts/lockfile_contract_audit.py' in validate_gate,
 
-    'branch_contract_prepared': 'Secret Circle CI / validate' in branch_contract and 'OPEN / RELEASE NO_GO' in branch_contract,
+    'release_evidence_gate_states_valid': all(
+        status in allowed_gate_statuses
+        for status in (ci_gate, branch_gate, staging_gate, android_gate, ios_gate, tablet_gate)
+    ),
+    'branch_contract_stateful': all(marker in branch_contract for marker in (
+        'Secret Circle CI / validate', 'Evidence-Status:', 'release-evidence.json → gates.branchProtection'
+    )),
     'branch_audit_in_validate': 'scripts/branch_protection_contract_audit.py' in validate_gate,
     'staging_smoke_documented': 'scripts/staging_smoke.py' in environments and 'npm run staging:smoke' in environments,
     'staging_contract_in_validate': 'scripts/staging_smoke_contract_audit.py' in validate_gate,
@@ -134,9 +150,10 @@ print(json.dumps({
     'backup_registry': 'v2',
     'pwa_cache': cache_name,
     'lockfile': 'v3',
-    'npm_ci_online_verified': False,
-    'branch_protection_verified': False,
-    'https_staging_verified': False,
-    'real_device_verified': False,
+    'npm_ci_online_verified': ci_gate == 'PASS',
+    'branch_protection_verified': branch_gate == 'PASS',
+    'https_staging_verified': staging_gate == 'PASS',
+    'real_device_verified': all(status == 'PASS' for status in (android_gate, ios_gate, tablet_gate)),
+    'release_decision': evidence.get('releaseDecision'),
     'checks': checks,
 }, ensure_ascii=False, indent=2))
