@@ -9,82 +9,79 @@ Draft-PR: #13
 
 **Phase:** Release-Härtung  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v49` / `secret-circle-v49-staging`**  
+**Offline-Core:** **`secret-circle-v50` / `secret-circle-v50-staging`**  
 **Classic Content:** **v4**  
 **Core Source Review:** **15/15 PREPARED**  
 **Core Source Hardening:** **15/15 PREPARED**  
 **Accessibility Source Hardening:** **PREPARED**  
 **Word-Imposter Data/Resume Hardening:** **PREPARED**  
-**Hub Resume Integrity v2:** **PREPARED**  
+**Hub Resume Guard v2 + Lade-Quarantäne:** **PREPARED**  
 **Operator / Hosting / Legal:** **PREPARED / BLOCKED**
 
-v45 war die Core-Hardening-Generation, v46 brachte Hub-A11y, v47 erweiterte Accessibility auf Advanced/Quick/Creator, v48 bündelte Word-Imposter-Voting-Resume und lokale Custom-/Backup-Datenhärtung. **v49** vereinheitlicht die direkte Hub-Resume-Integrität auf den tatsächlich getesteten `party-hub-resume-guard.js` und synchronisiert die Release-Audits auf einen späteren echten FINAL/GO-Übergang.
+Versionslinie:
+
+- v45: Core-Hardening
+- v46: Hub-A11y
+- v47: Advanced-/Quick-/Creator-A11y
+- v48: Word-Imposter Voting-/Datenhärtung
+- v49: zentraler Hub-Resume-Guard v2
+- **v50: fail-closed Sperre der Resume-UI während der Guard-Lade-/Validierungsphase**
 
 ## Core-Hardening – 15/15
 
 Word Imposter, soziale Hub-Spiele, Paranoia, Scharade/Tabu, Heiße Kartoffel, Wortkette, Nur falsche Antworten sowie Advanced/Mafia sind quellsseitig auf Setup, Privacy, Resume, Timer, Regeln und Sieger-/Scoreintegrität gehärtet. Details: `CORE_GAME_ACCEPTANCE.md`.
 
-## Word-Imposter Data/Resume – eingeführt v48, weiterhin in v49
+## Word-Imposter Data/Resume – v48-Verträge im aktuellen v50-Core
 
-- nächste abstimmende Person wird aus den tatsächlich **noch offenen Vote-Keys** abgeleitet
-- nicht-sequenzielle manipulierte Voting-Snapshots bleiben durch den Resume-Guard blockiert
-- maximal 50 eigene Kategorien
-- maximal 200 Begriffe je Kategorie
-- 51/201 werden abgelehnt statt still gekürzt
-- 1,5-MB-UTF-8-Backupgrenze zwischen UI und Store synchron
+- nächster abstimmender Spieler aus tatsächlichen offenen Vote-Keys
+- manipulierte nicht-sequenzielle Voting-Snapshots blockiert
+- 50 eigene Kategorien maximal
+- 200 Begriffe je Kategorie maximal
+- 51/201 fail-closed abgelehnt
+- 1,5-MB-UTF-8-Backupgrenze
 - abgelehnte Imports verändern bestehende Daten nicht
-- sichtbare UI-Hinweise für 50 Kategorien / 2–200 Begriffe
-- `tests/storage.test.js` + `tests/word-imposter-data-contract.test.js`
 
-**Noch offen:** echte Ausführung dieser Tests auf dem Runner sowie realer Browser-/PWA-Smoke. Deshalb PREPARED, nicht PASS.
+Source-Nachweise: `tests/storage.test.js`, `tests/word-imposter-data-contract.test.js`.
 
-## Hub Resume Integrity – v49
+## Hub Resume – v49/v50
 
-- `party-hub-resume-guard.js` Version 2 ist die zentrale getestete Hub-Resume-Quelle
-- `party-hub-polish.js` delegiert an denselben Guard statt die Timer-/Resume-Validierung zu duplizieren
-- gekreuzte oder logisch widersprüchliche Timerzustände werden verworfen
-- beim Verwerfen wird auch eine bereits sichtbare `#hub-resume-session`-Karte entfernt
-- gültige gespeicherte Sessions bleiben unangetastet
-- `tests/party-hub-resume-guard.test.js` prüft Modul, Runtime-Einbindung, Offline-Core und stale-Resume-UI-Regressionsfall
+### v49
 
-## Accessibility-Hardening – v46/v47
+- `party-hub-resume-guard.js` Version 2 als zentrale getestete Runtime-Quelle
+- `party-hub-polish.js` delegiert an denselben Guard
+- Cross-Mode-/Phase-/Restzeit-Inkonsistenzen werden verworfen
+- stale `#hub-resume-session` wird beim Verwerfen entfernt
 
-### Hub / v46
+### v50
 
-- `party-hub-a11y.js`
-- Hub-Bereichsfokus
-- Hub-Spieldetail und aktive Runde als modale Tastaturkontexte
-- Hintergrund `inert`
-- Tab-/Shift+Tab-Fokus-Trap
-- Rückkehrfokus
+- sichtbare Resume-Karte wird während der Guard-Prüfung `aria-busy`
+- Resume-Buttons werden sofort deaktiviert
+- Freigabe erst nach erfolgreicher Guard-Validierung
+- Lade-/Integritätsfehler bleibt fail-closed
+- `tests/party-hub-resume-guard.test.js` schützt diese Quarantäne zusätzlich
 
-### Advanced / Quick / Creator / v47
+## Accessibility – v46/v47
 
-- `secondary-surface-a11y.js` Version 1
-- Advanced-Spieloverlay modal + Hintergrundisolation + Fokus-Trap
-- Quick-Fokus-Recovery bei dynamischen Phasenwechseln
-- Creator-Schrittüberschriften programmatisch fokussierbar
-- Creator-Hilfe modal + Hintergrundisolation + Fokus-Trap + Rückkehrfokus
-- Creator-Template-Radiogroup mit roving `tabindex`, Pfeiltasten, Home und End
-- `scripts/secondary_surface_a11y_contract_audit.py` in `npm run validate`
+- `party-hub-a11y.js`: Hub-Fokus, Modal, `inert`, Fokus-Trap und Rückkehrfokus
+- `secondary-surface-a11y.js`: Advanced, Quick und Creator
+- Creator-Radiogroup mit Pfeilen/Home/End
 
-Beide A11y-Schichten bleiben im v49-Offline-Core. **Noch offen:** echter Runner, VoiceOver/TalkBack, 200-%-Zoom, reale Tastatur-/Touch-/Browserabnahme.
+Beide A11y-Schichten bleiben im v50-Offline-Core. Reale VoiceOver-/TalkBack-/200-%-Zoom-/Touch-/Geräteabnahme bleibt offen.
 
 ## Operator / Hosting / Legal / Support
 
 - `operator-release.json`: `PREPARED / BLOCKED`
 - `OPERATOR_RELEASE_SIGNOFF.md`
-- `OPERATOR_EVIDENCE_LOG.md` als einheitlicher realer Ausführungsnachweis
-- `HOSTING_DECISION.md` auf v49-Smokevertrag
-- `LEGAL_CHECKLIST.md` Stand 25. August 2026
-- `SUPPORT.md` / `INCIDENT_RESPONSE.md`
-- Issue #14 führt reale Operator-/Hosting-/Legal-/Support-/Incident-Schritte
+- `OPERATOR_EVIDENCE_LOG.md`
+- `HOSTING_DECISION.md` auf v50-Smokevertrag
+- `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md`
+- Issue #14 führt die realen Schritte
 
-Der Operator-Audit erzwingt bei einem späteren `READY` reale Privacy-/Legal-Dateien, echte veröffentlichte Werte, getrennte HTTPS-Origins sowie Links von allen fünf öffentlichen Einstiegseiten.
+Kein Betreiber-, Provider-, Kontakt- oder Drill-Nachweis wird erfunden.
 
-## Release-Audits / Final-State-Übergang
+## Release-Audits
 
-Die zentralen Verträge sind jetzt **transition-safe**:
+Die zentralen Verträge sind **transition-safe**:
 
 - `scripts/branch_protection_contract_audit.py`
 - `scripts/foundation_contract_audit.py`
@@ -92,26 +89,25 @@ Die zentralen Verträge sind jetzt **transition-safe**:
 - `scripts/release_audit.py`
 - `scripts/validate_project.py`
 
-Sie prüfen weiterhin den heutigen PREPARED/OPEN/NO_GO-Zustand, blockieren aber nicht mehr einen später korrekt belegten PASS/FINAL/GO-Zustand durch hart codierte historische Statusannahmen. `validate_project.py` ist auf die aktuellen v49-Scriptketten synchronisiert und prüft zusätzlich den dynamischen Hub-Resume-v2-Loadervertrag.
+`validate_project.py` prüft zusätzlich den Hub-Resume-Loadervertrag. Die Audits akzeptieren PREPARED/NO_GO heute und einen später korrekt belegten FINAL/GO-Zustand.
 
 ## Build / Supply Chain
 
 - `package-lock.json` v3
-- Playwright exakt 1.54.2
+- Playwright 1.54.2
 - keine npm-Runtime-Dependencies
 - CI/Cross-Browser verwenden `npm ci`
-- Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Word-Imposter-Daten-, Operator- und Readiness-Verträge eingebunden
 
 **Offen:** echter Online-`npm ci`-/Integrity-PASS auf funktionierendem Runner.
 
-## PWA v49
+## PWA v50
 
 Service Worker:
 
-- `secret-circle-v49`
-- `secret-circle-v49-staging`
+- `secret-circle-v50`
+- `secret-circle-v50-staging`
 
-Offline enthalten sind Hub/Word Imposter/Advanced/Quick/Creator/Privacy, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Word-Imposter-/Hub-/Advanced-Resume-Guards, Privacy-Guards, beide A11y-Schichten, aktuelle Word-Imposter-UI-/Store-Dateien, Manifest und Icons.
+Offline enthalten sind Hub/Word Imposter/Advanced/Quick/Creator/Privacy, Katalog-/Contentmodule, Backup-Registry, Session-/Timercontroller, Word-Imposter-/Hub-/Advanced-Resume-Guards, `party-hub-polish.js` mit v50-Resume-Quarantäne, Privacy-Guards, beide A11y-Schichten, aktuelle Word-Imposter-UI-/Store-Dateien, Manifest und Icons.
 
 Reale Installation, Upgrades, Rollback und Offline-Gerätetest bleiben offen.
 
@@ -126,7 +122,7 @@ Letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**.
 - `steps: null` / separate Step-Abfrage `steps: []`
 - kein Checkout, npm, Test oder Repository-Code ausgeführt
 
-Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit. Die unmittelbare Fehlerfläche bleibt deshalb vor der Step-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Run #2787 bestätigt das Pre-Step-Muster ausdrücklich auch auf v49. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit. Run #2787 bestätigte den Pre-Step-Blocker auf v49. **v50 ist daher ebenfalls noch nicht runnerverifiziert.** Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## Release Evidence / Assets
 
@@ -137,7 +133,7 @@ Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit. Di
 ## Drei zentrale offene GitHub-Blocker
 
 1. **Issue #7** – Hosted Runner vor Step 1
-2. **Issue #8** – reale Geräte, v49 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2 und Partytests
+2. **Issue #8** – reale Geräte, v50 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2/v50-Ladequarantäne und Partytests
 3. **Issue #14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 ## Real offene Releasegates
@@ -146,11 +142,11 @@ Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repositoryabhängigkeit. Di
 2. Online-`npm ci` + CI/Cross-Browser
 3. Branch Protection real aktiv
 4. Hostingprovider + getrennte HTTPS-Origins
-5. v49 Staging-/Production-/PWA-Smokes
-6. v49 Upgrade/Rollback auf echten Installationen
-7. Word-Imposter-Daten-/Voting-Verträge + Hub-Resume-v2 real ausführen
+5. v50 Staging-/Production-/PWA-Smokes
+6. v50 Upgrade/Rollback auf echten Installationen
+7. Word-Imposter-Daten-/Voting-Verträge + Hub-Resume-v2/v50-Quarantäne real
 8. Android / iPhone / Tablet
-9. VoiceOver / TalkBack / Hub-/Advanced-/Quick-/Creator-Tastaturpfade / 200-%-Zoom
+9. VoiceOver / TalkBack / Tastatur / 200-%-Zoom
 10. reale Gruppen/Beta für alle 15 Core-Spiele
 11. Icon-/Visual-/Third-Party-Sign-off
 12. Operator-/Privacy-/Support-/Legal-Sign-off
