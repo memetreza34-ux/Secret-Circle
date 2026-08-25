@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**
+Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**
 
 ## 1. Ziel
 
@@ -35,7 +35,7 @@ Releaseanforderung:
 - `npm run ci`
 - Cross-Browser
 
-Aktuell: **BLOCKED**. Auch Run #2575 auf einem aktuellen Release-Foundation-Head endet vor Step 1 mit `steps: []`; ein reiner Bash-Runner-Probe zeigte dasselbe Muster. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Aktuell: **BLOCKED**. Auch Run #2637 endete vor Step 1 mit `steps: []`; ein reiner Bash-Runner-Probe zeigte dasselbe Muster. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## 4. HTTPS-Staging
 
@@ -64,28 +64,16 @@ Staging und Production nicht nur über Queryparameter derselben Origin untersche
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v46
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v47
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v46 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v47 --production
 ```
 
-Der Smoke prüft unter anderem:
-
-- HTTPS zwingend
-- Redirects Same-Origin
-- begrenzte Downloadgrößen
-- Kernseiten/Query-Routen HTTP 200
-- Manifest-/Standalone-Vertrag
-- PNG-IHDR 192×192 / 512×512
-- Service-Worker- und Staging-Cachegeneration
-- Registry-vor-Datentools-Ladereihenfolge
-- Privacy-/Reference-Source-Verträge
-- PWA-Head-Metadaten
-- Production-Placeholder-Prüfungen
+Der Smoke prüft unter anderem HTTPS, Same-Origin-Redirects, Größenlimits, Kernseiten/Query-Routen, Manifest, PNG-IHDR, Service-Worker-/Staging-Cachegeneration, Registry-Ladereihenfolge, Privacy-/Reference-Source-Verträge, PWA-Head-Metadaten und Production-Placeholder.
 
 `scripts/staging_smoke_contract_audit.py` schützt diesen Vertrag statisch.
 
@@ -129,7 +117,7 @@ Cross-Environment-Backups nur bewusst kopieren und Quellumgebung/Commit dokument
 
 ## 9. PWA-/Cache-Regeln je Umgebung
 
-Aktueller Quellcode: **`secret-circle-v46`**.
+Aktueller Quellcode: **`secret-circle-v47`**.
 
 Relevante Historie:
 
@@ -141,8 +129,9 @@ Relevante Historie:
 - v42: echter 192×192-/512×512-Rastervertrag
 - v43: Private-Device-Truth/Dare-Prompts physisch entfernt + Privacy-Audit
 - v44: einheitlicher Manifest-/iOS-/Icon-Head-Vertrag auf fünf Einstiegseiten
-- v45: Cachegeneration nach 15/15-Core-Hardening; Resume-/Privacy-Guards im Offline-Core
-- **v46: Hub-Accessibility-Hardening; Bereichs-Fokus, modale Hintergrundisolation, Fokus-Trap und `party-hub-a11y.js` offline**
+- v45: Core-Hardening mit Resume-/Privacy-Guards im Offline-Core
+- v46: Hub-Accessibility-Hardening
+- **v47: Accessibility-Hardening für Advanced, Quick und Creator mit `secondary-surface-a11y.js` offline**
 
 Regeln:
 
@@ -151,13 +140,14 @@ Regeln:
 - Upgradepfade aus wirklich installierter alter Version testen
 - Rollback erhält ebenfalls neue Cachegeneration
 
-## 10. Offline-v46-Vertrag
+## 10. Offline-v47-Vertrag
 
-v46 muss unter anderem offline verfügbar machen:
+v47 muss unter anderem offline verfügbar machen:
 
 - `word-imposter-resume-guard.js`
 - `party-hub-resume-guard.js`
 - `party-hub-a11y.js`
+- `secondary-surface-a11y.js`
 - `advanced-resume-guard.js`
 - `advanced-privacy-guard.js`
 - Katalog-/Core-Contentmodule
@@ -195,10 +185,14 @@ Zusätzlich zum HTTP-Smoke mindestens:
 - ein direktes Hub-Core-Spiel
 - ein Timer-Core-Spiel
 - ein Advanced-Core-Spiel
+- ein Quick Mode
 - Creator
-- neue Privacy-/Resume-/A11y-Guards offline
+- Privacy-/Resume-/A11y-Guards offline
 - Hub-Bereichswechsel mit Tastatur/Fokus
-- Detail-/Spieloverlay ohne Fokusleck in den Hintergrund
+- Hub-Detail-/Spieloverlay ohne Fokusleck
+- Advanced-Overlay ohne Fokusleck
+- Quick-Phasen-Fokus-Recovery
+- Creator-Wizard-Fokus, Hilfe-Modal und Template-Pfeiltasten
 - Updatebanner
 - aktive Session während Update
 - Privacy-/Legalnavigation
