@@ -1,6 +1,6 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Stand: 23. August 2026
+Stand: 25. August 2026
 
 Dieses Dokument definiert die technischen Grenzen, die Secret Circle langfristig verständlich, migrierbar, offline nutzbar und testbar halten.
 
@@ -58,8 +58,9 @@ Verantwortung:
 - `party-session-controls.js`: generischer pausierbarer Timer und gemeinsame Sessionaktionen
 - `party-hub-resume-guard.js`: Cross-Mode-/Timer-Resume-Integrität
 - `party-hub-polish.js`: Live-Guidance, Freiwilligkeit und Geheimkarten-Sichtschutz im direkten Hub
+- `party-hub-a11y.js`: Bereichs-Fokusführung, modale Hintergrundisolation über `inert` und Tab-Fokus-Trap für Detail- und Spieloverlay
 
-Ladereihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub.js`.
+Ladereihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub.js → party-hub-polish.js → party-hub-a11y.js` (letzteres wird durch die Polish-Schicht geladen).
 
 Für Datenverwaltung gilt: `backup-schema-registry.js` muss vor `party-data-tools.js` geladen sein.
 
@@ -109,7 +110,7 @@ Abbruch und Skip dürfen keinen künstlichen Abschluss-/Punktzustand erzeugen.
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v45`**.
+Aktueller Offline-Core: **`secret-circle-v46`**.
 
 Historie der letzten relevanten Cachegenerationen:
 
@@ -122,7 +123,8 @@ Historie der letzten relevanten Cachegenerationen:
 - v42: echte 192×192-/512×512-PNGs + Hash/IHDR/Manifestvertrag
 - v43: Private-Device-Truth/Dare-Texte physisch entfernt + Privacy-Source-Audit
 - v44: gemeinsamer Manifest-/iOS-/Icon-Head-Vertrag für Hub, Word Imposter, Creator, Advanced und Quick
-- **v45: Cachegeneration nach 15/15-Core-Hardening erhöht; Word-Imposter-Resume, Advanced-Resume und Advanced-Live-Privacy explizit im Offline-Core**
+- v45: Cachegeneration nach 15/15-Core-Hardening; Resume-/Privacy-Guards explizit offline
+- **v46: Hub-Accessibility-Hardening mit funktionierender Bereichs-Fokusführung, modaler Hintergrundisolation, Fokus-Trap und `party-hub-a11y.js` im Offline-Core**
 
 Neue Versionen werden zuerst vollständig in einem Staging-Cache vorbereitet. Aktivierung erfolgt erst nach sichtbarer Nutzerentscheidung. Der aktive Offline-Core wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -153,9 +155,17 @@ Die interaktiven Einstiegseiten `party.html`, `index.html`, `creator.html`, `adv
 
 Kernoberflächen benötigen semantische Struktur, beschriftete Controls, Tastaturbedienung, sichtbaren Fokus, ausreichend große Touchziele, Reduced Motion, 200-%-Zoom/Reflow, verständliche Live-/Statusmeldungen sowie reale Smartphone-/Tablet-/Desktopprüfung. Farbe allein darf keinen Status erklären.
 
+Für den Party Hub gilt seit v46 zusätzlich:
+
+- sichtbare Bereichswechsel verschieben den programmatischen Fokus auf die neue Hauptüberschrift,
+- Detail- und aktive Spieloverlays sind als modale Dialoge ausgezeichnet,
+- der restliche Dokumenthintergrund wird während eines Overlays `inert`,
+- Tab/Shift+Tab bleibt innerhalb des aktiven Overlays,
+- die normale Skip-Link-Reihenfolge bleibt beim Erstladen unverändert.
+
 Private Reveal-Cover müssen mit Screenreader verständlich und nach bewusster Wiederöffnung fokussierbar sein.
 
-`ACCESSIBILITY.md`, Contracttests und E2E bilden die automatisierbare Grundlage. VoiceOver/TalkBack und echte Touchbedienung bleiben manuelle Release-Gates.
+`ACCESSIBILITY.md`, `tests/accessibility-contract.test.js`, `tests/e2e/accessibility-core.spec.js` und `scripts/hub_a11y_contract_audit.py` bilden die automatisierbare Grundlage. VoiceOver/TalkBack, reales 200-%-Zoom und echte Touchbedienung bleiben manuelle Release-Gates.
 
 ## 12. Inhalts- und Rechtevertrag
 
@@ -190,7 +200,7 @@ Bei Release Candidates zusätzlich:
 
 ## 14. Performance und Assets
 
-Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang.
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. `party-hub-a11y.js` besitzt zusätzlich einen eigenen statischen Grenzwert unter 20 KB im A11y-Audit.
 
 PWA-Icon-Vertrag:
 
