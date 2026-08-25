@@ -41,7 +41,12 @@
     return timerMatchesGame(game, session);
   }
 
+  function removeResumeUi(root) {
+    root?.document?.querySelector?.('#hub-resume-session')?.remove?.();
+  }
+
   function showDiscardNotice(root) {
+    removeResumeUi(root);
     const status = root?.document?.querySelector?.('#hub-status');
     if (!status) return;
     status.textContent = 'Ein inkonsistenter Timer-Spielstand wurde sicher verworfen. Starte das Spiel neu.';
@@ -72,7 +77,8 @@
     timerModes: TIMER_MODES,
     timerMatchesGame,
     validateSnapshot,
+    removeResumeUi,
     install,
-    version: 1
+    version: 2
   });
 });
