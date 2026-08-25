@@ -1,6 +1,6 @@
 # Secret Circle – Release-Checkliste Januar 2027
 
-Stand: 23. August 2026
+Stand: 25. August 2026
 
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
@@ -118,6 +118,9 @@ Zusätzlich:
 
 ## 5. HTTPS-Staging / Production
 
+- [x] `HOSTING_DECISION.md` als Entscheidungskontrakt vorhanden
+- [ ] Hostingprovider/Produkt final ausgewählt
+- [ ] Log-/Retention-/Processor-/Drittlandprüfung dokumentiert
 - [ ] getrennte HTTPS-Staging-Origin festgelegt
 - [ ] Production-Origin festgelegt
 - [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v45` grün
@@ -162,6 +165,16 @@ Operative Detailmatrix: Issue #8, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`.
 
 ## 8. Assets / Third Party / Legal / Betrieb
 
+Quellseitig vorbereitet:
+
+- [x] `ASSET_RIGHTS_SIGNOFF.md`
+- [x] `operator-release.json` als maschinenlesbare Betreiber-/Hosting-/Support-/Incident-Akte
+- [x] `OPERATOR_RELEASE_SIGNOFF.md`
+- [x] `HOSTING_DECISION.md`
+- [x] `scripts/operator_release_contract_audit.py` in `npm run validate`
+
+Für Production real zu schließen:
+
 - [ ] Asset-/Media-Provenienz-Audits grün
 - [ ] `ASSET_RIGHTS_SIGNOFF.md` vollständig
 - [ ] Root-`icon.svg` Rechtebasis final belegt oder Asset ersetzt
@@ -169,20 +182,29 @@ Operative Detailmatrix: Issue #8, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`.
 - [ ] Dependency-/Vulnerability-Review des finalen Lockfiles
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden
 - [ ] `LEGAL_CHECKLIST.md` final
+- [ ] `operator-release.json` wahrheitsgemäß `FINAL / READY`
+- [ ] Betreiberidentität / Rechtsform / ladungsfähige Anschrift / öffentliche Kontaktmöglichkeit final, soweit erforderlich
+- [ ] öffentliche Legal-/Anbieterkennzeichnungsseite final, soweit erforderlich
 - [ ] Privacy auf reales Hosting angepasst
-- [ ] Betreiber-/Impressums-/Supportangaben final
+- [ ] Verbraucherstreitbeilegungsposition anhand des realen Modells final geprüft
+- [ ] keine veraltete EU-OS-Plattform verlinkt
 - [ ] `SUPPORT.md` echter Kontakt
+- [ ] Supportpostfach praktisch getestet
+- [ ] Security-/Privacy-Meldeweg praktisch getestet
 - [ ] `INCIDENT_RESPONSE.md` echte Verantwortliche
+- [ ] Probe-Supportfall durchgeführt
 - [ ] Probe-SEV-1 durchgeführt
-- [ ] Wartungs-/Hotfixroutine und Rollbackprobe bestätigt
+- [ ] Wartungs-/Hotfixroutine und HTTPS-Rollbackprobe bestätigt
 
 ## 9. Release Evidence / Freigabe
 
 - [ ] `release-evidence.json` auf `evidenceStatus = FINAL`
 - [ ] 40-stelliger RC-Commit, Tag, App-Version, Cache, Staging-/Production-URL und Freeze-Zeitpunkt
 - [ ] alle 15 Evidence-Gates `PASS`
+- [ ] `legalPrivacy` und `supportIncident` nur PASS, wenn `operator-release.json = FINAL / READY`
 - [ ] jeder PASS-Beleg referenziert exakt denselben RC-Commit
 - [ ] `knownBlockers` leer
+- [ ] `scripts/operator_release_contract_audit.py` grün
 - [ ] `scripts/release_evidence_audit.py` grün
 - [ ] `releaseDecision = GO` erst danach
 
