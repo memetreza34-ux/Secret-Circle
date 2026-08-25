@@ -12,7 +12,7 @@ Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffe
 - 4 Advanced-Core-Games
 - Word Imposter + Smart Party Night
 - lokaler No-Code-Game-Creator
-- aktueller Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**
+- aktueller Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**
 - Release-PR: Draft-PR #13 auf `agent/release-foundation-2027`
 
 Öffentliche Freigabe: **NO_GO**, bis reale Release-Evidence vorliegt.
@@ -43,25 +43,27 @@ Ein Job mit `steps: []` zählt nicht als Code-/Testnachweis.
 - Punkte-/Siegervertrag nach `CORE_SCORING_RULES.md`
 - Word-Imposter Voting-/Resume- und Custom-/Backup-Grenzen real geprüft
 - Hub-/Advanced-Resume- und Privacy-Guards real geprüft
+- Hub-Resume-v2-Ladequarantäne real geprüft: sichtbare Resume-Aktionen bleiben gesperrt, bis der Guard erfolgreich validiert hat
 - keine offenen Critical/High Bugs
 - finale Content-/Privacy-/Reference-Abnahme
 
 ### PWA / Offline
 
-Der aktuelle RC-Source-Vertrag ist **v49**. Der Offline-Core enthält unter anderem:
+Der aktuelle RC-Source-Vertrag ist **v50**. Der Offline-Core enthält unter anderem:
 
 - Hub, Word Imposter, Advanced, Quick, Creator, Privacy
 - Katalog-/Contentmodule
 - Session-/Timercontroller
 - `word-imposter-resume-guard.js`
 - `party-hub-resume-guard.js`
+- `party-hub-polish.js` mit fail-closed Resume-Ladequarantäne
 - `advanced-resume-guard.js`
 - `advanced-privacy-guard.js`
 - `party-hub-a11y.js`
 - `secondary-surface-a11y.js`
 - Manifest und PWA-Icons
 
-`tests/service-worker.test.js` schützt die CORE-/Cachequelle. `tests/pwa-head-metadata.test.js` schützt Manifest-/iOS-/Icon-Metadaten der interaktiven Einstiegseiten.
+`tests/service-worker.test.js` schützt die CORE-/Cachequelle. `tests/party-hub-resume-guard.test.js` schützt Guard, Runtime-Delegation und die v50-Ladequarantäne. `tests/pwa-head-metadata.test.js` schützt Manifest-/iOS-/Icon-Metadaten der interaktiven Einstiegseiten.
 
 Reale Installation, Offline-Neustart, Update und Rollback bleiben separate Browser-/Geräte-Gates.
 
@@ -70,7 +72,7 @@ Reale Installation, Offline-Neustart, Update und Rollback bleiben separate Brows
 Staging muss eine eigene HTTPS-Origin besitzen, getrennt von Production. Vor manueller PWA-Abnahme:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v49
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v50
 ```
 
 `scripts/staging_smoke.py` prüft unter anderem:
@@ -98,7 +100,8 @@ Mindestens:
 - Query-Routen offline
 - aktive Session während Update geschützt
 - „Später“ und bewusste Aktivierung funktionieren
-- Word-Imposter-v48/v49-Datengrenzen bleiben korrekt
+- Word-Imposter-v48-Datengrenzen bleiben korrekt
+- Hub-Resume-v2 inklusive v50-Ladequarantäne bleibt korrekt
 - Hub-/Advanced-/Quick-/Creator-A11y-Pfade real
 - Export/Import mit neutralen Daten
 - Update aus mindestens zwei real installierten Altständen
@@ -113,7 +116,7 @@ Bei jeder Änderung einer offline benötigten Datei:
 4. Architektur/Deployment/Privacy/Environment/Hosting synchronisieren
 5. Alt→Neu real testen
 
-v49 wurde eingeführt, weil der eigenständige Hub-Resume-Guard in den expliziten Offline-Core-Vertrag aufgenommen wurde und die Release-/Projektvalidatoren auf die aktuelle Runtime synchronisiert wurden.
+v49 machte den eigenständigen Hub-Resume-Guard zur zentralen Runtime-/Offline-Quelle. **v50 sperrt die bereits gerenderte Resume-UI während der asynchronen Guard-Ladephase fail-closed und verhindert damit einen Pre-Validation-Klick.**
 
 ## Rollback
 
@@ -135,7 +138,7 @@ Kein Force-Push auf eine stabile Releasebasis.
 Nach vollständiger Staging-Freigabe:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v49 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v50 --production
 ```
 
 Danach manuellen Browser-/PWA-Smoke wiederholen. Production muss exakt dem freigegebenen RC entsprechen.
