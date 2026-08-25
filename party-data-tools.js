@@ -3,7 +3,7 @@
 (() => {
   const registry = window.SecretCircleBackupSchemas;
   const schema = registry?.get?.('complete');
-  if (!registry || !schema || typeof registry.isAllowedCompleteStorageKey !== 'function') {
+  if (!registry || !schema || typeof registry.isAllowedCompleteStorageKey !== 'function' || typeof registry.validateCompleteStorageValue !== 'function') {
     throw new Error('Zentrales Secret-Circle-Backup-Schema fehlt.');
   }
 
@@ -13,7 +13,7 @@
   const MAX_BYTES = schema.maximumBytes;
   const MAX_ENTRIES = schema.maximumEntries;
   const MAX_VALUE_BYTES = schema.maximumValueBytes;
-  const VERSION = 5;
+  const VERSION = 6;
 
   function byteLength(value) {
     return registry.byteLength(value);
@@ -77,8 +77,8 @@
     const target = Array.isArray(entries) ? entries : Object.entries(entries || {});
     const snapshot = snapshotManagedEntries();
     try {
-      // A restore owns only namespaces registered by BackupSchemaRegistry. Unknown/future
-      // Secret Circle keys must survive an older backup import instead of being erased.
+      // A restore owns only current namespaces registered by BackupSchemaRegistry.
+      // Unknown/future Secret Circle keys survive an older backup import.
       clearManagedEntries();
       writeEntries(target);
       return { ok: true, replaced: target.length };
@@ -100,8 +100,11 @@
     } catch {
       throw new Error(`Ungültiges JSON für ${key}`);
     }
-    if (parsed === null || (typeof parsed !== 'object')) {
+    if (parsed === null || typeof parsed !== 'object') {
       throw new Error(`Ungültige Datenstruktur für ${key}`);
+    }
+    if (!registry.validateCompleteStorageValue(key, parsed)) {
+      throw new Error(`Daten passen nicht zum aktuellen Speicherschema: ${key}`);
     }
     return parsed;
   }
@@ -125,9 +128,8 @@
         throw new Error(`Ungültiger Wert für ${key}`);
       }
       seen.add(key);
-      // Every currently managed Secret Circle storage family is JSON-backed. Accepting
-      // arbitrary plain text would let a formally allowed key overwrite valid data with
-      // a state that the owning runtime can only discard on its next load.
+      // JSON syntax, root shape and the current key-specific storage wrapper are checked
+      // before replaceEntries() can remove or write any managed local key.
       parseStoredJson(key, value);
     }
     return entries;
@@ -154,7 +156,7 @@
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
     const suffix = unsupported.length
-      ? ` ${unsupported.length} unbekannte alte oder neuere Namespace-Datensätze wurden aus Sicherheitsgründen nicht exportiert und werden bei einem Import nicht verändert.`
+      ? ` ${unsupported.length} unbekannte alte oder neuere Namespace-/Versions-Datensätze wurden aus Sicherheitsgründen nicht exportiert und werden bei einem Import nicht verändert.`
       : '';
     setStatus(`${Object.keys(entries).length} anerkannte lokale Datensätze exportiert.${suffix}`);
   }
