@@ -9,6 +9,25 @@ function read(file) {
   return fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
 }
 
+const expectedCompleteKeys = [
+  'secret-circle-active-v7',
+  'secret-circle-custom-v7',
+  'secret-circle-history-v7',
+  'secret-circle-settings-v7',
+  'secret-circle-party-hub-v1',
+  'secret-circle-party-hub-active-v1',
+  'secret-circle-party-active-v1',
+  'secret-circle-party-quick-active-v1',
+  'secret-circle-party-mega-active-v1',
+  'secret-circle-party-viral-active-v1',
+  'secret-circle-party-created-active-v1',
+  'secret-circle-party-created-games-v1',
+  'secret-circle-party-custom-packs-v1',
+  'secret-circle-party-night-v1',
+  'secret-circle-party-preferences-v1',
+  'secret-circle-party-catalog-filters-v1'
+];
+
 assert.equal(Registry.version, 2);
 assert.equal(Registry.maximumFileBytes, 1_500_000);
 assert.equal(Registry.list.length, 3);
@@ -16,6 +35,8 @@ assert.equal(Registry.byteLength('€'), 3);
 assert.equal(Registry.byteLength('🎉'), 4);
 assert.equal(Registry.get('complete').maximumEntries, 100);
 assert.equal(Registry.get('complete').maximumValueBytes, 1_000_000);
+assert.deepEqual(Registry.completeStorageKeys, expectedCompleteKeys);
+assert.deepEqual(Registry.get('complete').allowedKeys, expectedCompleteKeys);
 assert.equal(Registry.get('creator-library').maximumGames, 40);
 assert.equal(Registry.get('creator-library').maximumPacksPerGame, 8);
 assert.equal(Registry.get('creator-library').maximumCardsPerPack, 200);
@@ -28,10 +49,33 @@ assert.equal(Registry.validateHeader({ type: 'secret-circle-created-games', vers
 assert.throws(() => Registry.validateHeader({ format: 'secret-circle-backup', version: 1 }, 'complete'), /entspricht nicht/);
 assert.throws(() => Registry.assertSize('€'.repeat(500_001), 'complete'), /1,5 MB/);
 
-assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-settings-v7'), true);
-assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-party-hub-v1'), true);
+for (const key of expectedCompleteKeys) assert.equal(Registry.isAllowedCompleteStorageKey(key), true, `expected managed key: ${key}`);
 assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-unrelated-v1'), false);
+assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-party-future-feature-v99'), false);
+assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-party-hub-v2'), false);
+assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-settings-v8'), false);
 assert.equal(Registry.isAllowedCompleteStorageKey('other-app-v1'), false);
+
+// Every explicitly managed key must be owned by a current production runtime source,
+// not merely invented inside the registry itself.
+const ownershipSources = [
+  'data-store.js',
+  'runtime-guard.js',
+  'party-hub.js',
+  'party-hub-plus.js',
+  'party-custom-packs.js',
+  'party-night.js',
+  'party-filter-state.js',
+  'game-creator.js',
+  'party-advanced-runner.js',
+  'party-quick-modes.js',
+  'party-mega-modes.js',
+  'party-viral-modes.js',
+  'party-created-modes.js'
+].map(read).join('\n');
+for (const key of expectedCompleteKeys) {
+  assert.ok(ownershipSources.includes(key), `managed backup key has no current runtime owner: ${key}`);
+}
 
 const store = read('data-store.js');
 const completeTools = read('party-data-tools.js');
@@ -75,6 +119,10 @@ console.log(JSON.stringify({
   ok: true,
   registryVersion: Registry.version,
   registeredSchemas: Registry.list.map(schema => schema.id),
+  completeManagedKeys: expectedCompleteKeys.length,
+  exactCurrentKeyAllowlist: true,
+  futureStorageVersionsPreserved: true,
+  managedKeysOwnedByCurrentRuntime: true,
   sharedUtf8Limit: true,
   completeBackupUsesCentralRegistry: true,
   completeBackupNoDuplicatedRegistryConstants: true,
