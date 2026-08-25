@@ -14,6 +14,8 @@
   const KEY_VERSION = 7;
   const ENGINE_VERSION = 7;
   const MAX_BACKUP_BYTES = 1_500_000;
+  const MAX_CUSTOM_CATEGORIES = 50;
+  const MAX_CUSTOM_ENTRIES = 200;
   const IMPORT_PROBE_KEY = '__secret_circle_import_probe__';
   const keys = {
     active: `secret-circle-active-v${KEY_VERSION}`,
@@ -103,16 +105,18 @@
     }
 
     function normalizeCustom(value, engine) {
-      if (!Array.isArray(value)) return null;
+      if (!Array.isArray(value) || value.length > MAX_CUSTOM_CATEGORIES) return null;
       const result = [];
       const seen = new Set();
-      for (const item of value.slice(0, 50)) {
-        if (!item || typeof item !== 'object') return null;
+      for (const item of value) {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
         const id = text(item.id, 100);
         const name = text(item.name, 50);
         if (!id || !name || seen.has(id)) return null;
+        if (!Array.isArray(item.entries) || item.entries.length > MAX_CUSTOM_ENTRIES) return null;
         let entries;
         try { entries = engine.normalizeEntries(item.entries); } catch { return null; }
+        if (entries.length > MAX_CUSTOM_ENTRIES) return null;
         seen.add(id);
         result.push({ id, name, entries });
       }
@@ -320,7 +324,7 @@
       try { snapshot = typeof input === 'string' ? JSON.parse(input) : input; } catch {
         return { ok: false, error: 'Die Sicherungsdatei enthält kein gültiges JSON.' };
       }
-      if (!snapshot || snapshot.format !== BACKUP_FORMAT || snapshot.version !== BACKUP_VERSION || !snapshot.data || typeof snapshot.data !== 'object') {
+      if (!snapshot || snapshot.format !== BACKUP_FORMAT || snapshot.version !== BACKUP_VERSION || !snapshot.data || typeof snapshot.data !== 'object' || Array.isArray(snapshot.data)) {
         return { ok: false, error: 'Die Datei ist keine unterstützte Secret-Circle-Sicherung.' };
       }
 
@@ -372,6 +376,8 @@
       backupFormat: BACKUP_FORMAT,
       backupVersion: BACKUP_VERSION,
       maximumBackupBytes: MAX_BACKUP_BYTES,
+      maximumCustomCategories: MAX_CUSTOM_CATEGORIES,
+      maximumCustomEntries: MAX_CUSTOM_ENTRIES,
       byteLength,
       available,
       loadAll,
@@ -384,5 +390,16 @@
     };
   }
 
-  return { createStore, keys, KEY_VERSION, ENGINE_VERSION, BACKUP_FORMAT, BACKUP_VERSION, MAX_BACKUP_BYTES, byteLength };
+  return {
+    createStore,
+    keys,
+    KEY_VERSION,
+    ENGINE_VERSION,
+    BACKUP_FORMAT,
+    BACKUP_VERSION,
+    MAX_BACKUP_BYTES,
+    MAX_CUSTOM_CATEGORIES,
+    MAX_CUSTOM_ENTRIES,
+    byteLength
+  };
 });
