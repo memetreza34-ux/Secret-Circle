@@ -86,3 +86,55 @@ test('party search remains keyboard reachable with accessible autocomplete', asy
   await search.press('Escape');
   await expect(search).toHaveAttribute('aria-expanded', 'false');
 });
+
+test('hub view changes move programmatic focus to the visible heading', async ({ page }) => {
+  await page.goto('/party.html');
+  await expect.poll(() => page.evaluate(() => Boolean(window.SecretCirclePartyHubA11y))).toBe(true);
+
+  await page.locator('[data-view-target="games"]').first().click();
+  await expect(page.locator('#games-title')).toBeFocused();
+  await expect(page.locator('#games-title')).toHaveAttribute('tabindex', '-1');
+
+  await page.locator('[data-view-target="players"]').first().click();
+  await expect(page.locator('#players-title')).toBeFocused();
+  await expect(page.locator('#players-title')).toHaveAttribute('tabindex', '-1');
+});
+
+test('hub detail modal isolates background and traps keyboard focus', async ({ page }) => {
+  await page.goto('/party.html?view=games');
+  await expect.poll(() => page.evaluate(() => Boolean(window.SecretCirclePartyHubA11y))).toBe(true);
+
+  await page.locator('[data-open-game="truth-dare"]').first().click();
+  await expect(page.locator('#game-detail')).toBeVisible();
+  await expect(page.locator('#game-detail')).toHaveAttribute('role', 'dialog');
+  await expect(page.locator('#game-detail')).toHaveAttribute('aria-modal', 'true');
+  await expect.poll(() => page.evaluate(() => document.querySelector('.hub-shell').inert)).toBe(true);
+  await expect.poll(() => page.evaluate(() => document.querySelector('.skip-link').inert)).toBe(true);
+
+  await page.locator('#favorite-selected').focus();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#close-detail')).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator('#favorite-selected')).toBeFocused();
+
+  await page.locator('#close-detail').click();
+  await expect(page.locator('#game-detail')).toBeHidden();
+  await expect.poll(() => page.evaluate(() => document.querySelector('.hub-shell').inert)).toBe(false);
+  await expect.poll(() => page.evaluate(() => document.querySelector('.skip-link').inert)).toBe(false);
+});
+
+test('active hub game is modal and keeps focus out of the hidden hub', async ({ page }) => {
+  await page.goto('/party.html?view=games');
+  await expect.poll(() => page.evaluate(() => Boolean(window.SecretCirclePartyHubA11y))).toBe(true);
+
+  await page.locator('[data-open-game="truth-dare"]').first().click();
+  await page.locator('#start-selected-game').click();
+  await expect(page.locator('#play-layer')).toBeVisible();
+  await expect(page.locator('#play-layer')).toHaveAttribute('role', 'dialog');
+  await expect(page.locator('#play-layer')).toHaveAttribute('aria-modal', 'true');
+  await expect.poll(() => page.evaluate(() => document.querySelector('.hub-shell').inert)).toBe(true);
+
+  await page.getByRole('button', { name: 'Pflicht' }).focus();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#finish-hub-game')).toBeFocused();
+});
