@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v49` / `secret-circle-v49-staging`**
+Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**
 
 ## 1. Ziel
 
@@ -51,10 +51,10 @@ Nur Queryparameter derselben Origin sind keine ausreichende Staging-Trennung.
 
 Quellstand:
 
-- aktiv: `secret-circle-v49`
-- staging: `secret-circle-v49-staging`
+- aktiv: `secret-circle-v50`
+- staging: `secret-circle-v50-staging`
 
-v49 nimmt den eigenständigen `party-hub-resume-guard.js` explizit in den Offline-Core auf und synchronisiert die Projekt-/Releasevalidatoren mit der realen v48/v49-Runtime-Ladereihenfolge.
+v49 machte den eigenständigen `party-hub-resume-guard.js` zur zentralen getesteten Runtime-/Offline-Quelle. **v50 ergänzt die fail-closed Ladephase: eine bereits sichtbare Hub-Resume-Karte ist bis zur erfolgreichen Guard-Validierung `aria-busy` und ihre Buttons sind deaktiviert.**
 
 Cachegenerationen werden nicht wiederverwendet, wenn sich eine offline benötigte Datei ändert. Rollback/Hotfix erhält ebenfalls eine neue Generation.
 
@@ -63,13 +63,13 @@ Cachegenerationen werden nicht wiederverwendet, wenn sich eine offline benötigt
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v49
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v50
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v49 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v50 --production
 ```
 
 `scripts/staging_smoke.py` prüft unter anderem:
@@ -145,6 +145,7 @@ Mindestens:
 - Hub-Core- und Timer-Core-Smoke
 - Advanced-Core-Smoke
 - Word-Imposter Resume-/Datenlimits
+- Hub Resume Guard v2 einschließlich v50-Ladequarantäne
 - Creator
 - Updatebanner + aktive Session
 - Hub-/Advanced-/Quick-/Creator-Fokuspfade
@@ -192,6 +193,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Provider-/Log-/Datenschutzentscheidung dokumentiert
 - [ ] `scripts/staging_smoke.py` gegen Staging grün
 - [ ] manueller Browser-/PWA-Smoke abgeschlossen
+- [ ] v50-Hub-Resume-Ladequarantäne real bestätigt
 - [ ] Upgrade aus mindestens zwei real installierten Altständen
 - [ ] Rollbackprobe
 - [ ] Datenisolation bestätigt
