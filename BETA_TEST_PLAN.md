@@ -2,9 +2,10 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**  
+Offline-Core: **`secret-circle-v48` / `secret-circle-v48-staging`**  
 Core Source Hardening: **15/15 PREPARED**  
-Accessibility Source Hardening: **PREPARED**
+Accessibility Source Hardening: **PREPARED**  
+Word-Imposter Data/Resume Hardening: **PREPARED**
 
 ## 1. Ziel
 
@@ -22,7 +23,7 @@ Die eigentliche RC-Beta beginnt erst, wenn auf demselben Commit dokumentiert gr�
 - Chromium E2E
 - Cross-Browser mit Chromium, Firefox und WebKit
 
-Aktueller Blocker: Issue #7. Auch Run #2637 und ein reiner Bash-Runner-Probe endeten vor Step 1 mit `steps: []`.
+Aktueller Blocker: Issue #7. Aktuellster geprüfter v48-Lauf **#2715** endet vor Step 1 mit `steps: []`; der reine Bash-Runner-Probe zeigte dasselbe Muster.
 
 Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als finale RC-Evidence.
 
@@ -37,7 +38,7 @@ Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als fina
 - Testbackup möglichst mit neutralen Testnamen/-inhalten.
 - jedes Problem erhält Severity und reproduzierbare Notiz.
 - geheime Inhalte werden absichtlich auch bei App-/Tab-Wechsel getestet.
-- manipulierte Resume-Zustände werden nur mit neutralen Testdaten geprüft.
+- manipulierte Resume-/Importzustände werden nur mit neutralen Testdaten geprüft.
 - Fokus-/Tastaturprobleme werden als funktionale Accessibility-Funde dokumentiert, nicht nur als Kosmetik.
 
 ## 4. Mindest-Testmatrix
@@ -49,6 +50,7 @@ Vorher dürfen informelle UX-Proben stattfinden, aber sie zählen nicht als fina
 | G3 | 9–12 | große Übergaben | Word Imposter, Paranoia, Scharade/Tabu |
 | G4 | 6 / 8 / 12 / 16+ soweit praktisch | Mafia | Rollen-Skalierung, Klassisch + Erweitert |
 | G5 | 1 unerfahrene Host-Person + Gruppe | Creator | eigenes Spiel ohne Entwicklerhilfe erstellen und spielen |
+| DWI | neutraler Testdatensatz | Word-Imposter v48 Daten | 50/51 Kategorien, 200/201 Begriffe, Backupgrenze |
 | PN1–PN3 | variabel | Smart Party Night | drei vollständige geplante Abende |
 
 ## 5. Geräte-Mindestmatrix
@@ -129,7 +131,7 @@ Spiele:
 
 Bei jedem privaten Mechanismus mindestens einmal App-/Tab-Wechsel, bewusstes Wiederöffnen und – wo unterstützt – Reload testen. Manipulierte neutrale Advanced-Snapshots müssen verworfen werden.
 
-Zusätzlich **v47-A11y**:
+Zusätzlich historischer **v47-A11y-Vertrag auf dem aktuellen v48-RC**:
 
 - Advanced-Spiel starten: Setup-Hintergrund darf per Tastatur nicht erreichbar sein.
 - Tab/Shift+Tab bleibt im aktiven Advanced-Spiel.
@@ -147,6 +149,8 @@ Zusätzlich **v47-A11y**:
 - Imposter-Ratechance
 - individueller Punktestand
 - mindestens 20 reale Runden für Reveal-/Rollenfairness protokollieren
+- partielle **sequenzielle** Abstimmung speichern/reloaden und mit dem nächsten offenen Wähler fortsetzen
+- manipulierten nicht-sequenziellen Voting-Snapshot sicher verwerfen
 
 ### Paranoia / Timer-Spiele
 
@@ -154,13 +158,30 @@ Zusätzlich **v47-A11y**:
 - Geheimfrage bei Appwechsel verdecken
 - Scharade/Tabu sowie Heiße Kartoffel mit echter Geräteweitergabe
 
-## 10. G4 – Mafia
+## 10. DWI – Word-Imposter-v48-Datengrenzen
+
+Mit neutralen Testdaten auf demselben RC:
+
+1. 50 eigene Kategorien importieren/speichern → akzeptiert.
+2. 51 Kategorien importieren → vollständig abgelehnt, nicht auf 50 gekürzt.
+3. Vorher gespeicherte Kategorien nach Ablehnung erneut prüfen → unverändert.
+4. Kategorie mit 200 eindeutigen Begriffen → akzeptiert.
+5. Kategorie mit 201 Begriffen → abgelehnt.
+6. sichtbare UI-Hinweise „bis zu 50“ und „2–200“ prüfen.
+7. valide Sicherung unterhalb der Größenobergrenze importieren.
+8. Sicherung über **1,5 MB UTF-8** ablehnen.
+9. Multibyte-Testdatei verwenden, bei der Zeichenanzahl kleiner, Bytegröße aber größer als das Limit ist.
+10. übergroßen/manipulierten lokalen Custom-State simulieren → fail-safe verwerfen und verständliche Warnung zeigen.
+
+Ein abgelehnter Import darf **keine vorherigen lokalen Daten verändern**.
+
+## 11. G4 – Mafia
 
 Gruppengrößen soweit praktisch: 6, 8, 12 und 16+.
 
 Prüfen: Rollenanzahl, Packs, private Rollen, Moderatoransicht, Nachtinformationen, Arzt/Detektiv/Beschützer, Eliminationszustand, Dorf-/Mafia-Sieg und manipulierte Resume-Zustände.
 
-## 11. G5 – Creator mit unerfahrener Person
+## 12. G5 – Creator mit unerfahrener Person
 
 Aufgabe:
 
@@ -183,7 +204,7 @@ Prüfen:
 
 Wenn ohne Entwicklerhilfe kein valides erstes Spiel erstellt werden kann, ist Creator noch nicht RC-bereit.
 
-## 12. Smart Party Night – PN1 bis PN3
+## 13. Smart Party Night – PN1 bis PN3
 
 - PN1: kleine/mittlere Gruppe, ca. 30 Minuten, lustig/friendly
 - PN2: mittlere Gruppe, ca. 45–60 Minuten, gemischt/competitive
@@ -191,26 +212,27 @@ Wenn ohne Entwicklerhilfe kein valides erstes Spiel erstellt werden kann, ist Cr
 
 Prüfen: Gruppengröße, Wiederholungen, Wechsel, Dauer, History-Synchronisierung und Abbruch/Wechsel.
 
-## 13. PWA-v47-Update-Test
+## 14. PWA-v48-Update-Test
 
 Mindestens zwei echte ältere installierte Zustände gegen den finalen RC prüfen.
 
 1. Testspieler/Presets anlegen.
-2. Creator-Spiel anlegen.
+2. Word-Imposter-Custom-Kategorie und Creator-Spiel anlegen.
 3. aktive Hub- oder Advanced-Session erzeugen.
 4. alte installierte PWA starten.
-5. v47/RC bereitstellen.
+5. v48/RC bereitstellen.
 6. Updatehinweis prüfen und zunächst verschieben.
 7. laufende Session fortsetzen.
 8. bewusst aktualisieren.
 9. Offline-Neustart.
 10. lokale Daten, Resume-/Privacy-/A11y-Guards und Sessions prüfen.
 11. `party-hub-a11y.js` und `secondary-surface-a11y.js` offline praktisch prüfen.
-12. Cachebestand kontrollieren.
+12. Word-Imposter-v48-Limits und Voting-Resume offline prüfen.
+13. Cachebestand kontrollieren.
 
 Keine alte Cachegeneration künstlich als getestet markieren.
 
-## 14. Rollback-Test
+## 15. Rollback-Test
 
 Auf HTTPS-Staging:
 
@@ -222,7 +244,7 @@ Auf HTTPS-Staging:
 - keine Force-Push-Annahme
 - alter funktionierender Core darf nicht durch fehlgeschlagene Promotion zerstört werden
 
-## 15. Accessibility-Realtest
+## 16. Accessibility-Realtest
 
 ### Hub
 
@@ -262,11 +284,11 @@ Auf HTTPS-Staging:
 
 Private Inhalte dürfen nicht vor bewusster Reveal-Aktion angesagt werden.
 
-## 16. Content-Beobachtung
+## 17. Content-Beobachtung
 
 Pro Core-Game notieren: unklare/ähnliche/zu lange Karte, unangenehmer Eindruck, Altersstufe, packfremder Inhalt, Schwierigkeit, Wiederholungsgefühl.
 
-## 17. Bug-Severity
+## 18. Bug-Severity
 
 ### Critical
 
@@ -280,6 +302,7 @@ Pro Core-Game notieren: unklare/ähnliche/zu lange Karte, unangenehmer Eindruck,
 - Core-Spiel nicht abschließbar
 - falscher Sieger/Score mit Produktwirkung
 - Resume/Timer systematisch kaputt
+- Import überschreibt Daten trotz Ablehnung
 - wichtiger Accessibilityflow blockiert
 - Tastaturfokus kann ein modales Spiel-/Hilfefenster nicht sinnvoll bedienen
 
@@ -287,7 +310,7 @@ Pro Core-Game notieren: unklare/ähnliche/zu lange Karte, unangenehmer Eindruck,
 
 Workaround-fähige UX-/Content-/Layoutfehler bzw. kosmetische Funde.
 
-## 18. Testbericht pro Session
+## 19. Testbericht pro Session
 
 ```text
 Test-ID:
@@ -307,6 +330,7 @@ Contentfunde:
 Accessibilityfunde:
 PWA/Resume-Funde:
 Privacy-/Secret-Funde:
+Data-/Import-Funde:
 Was war unklar?
 Nächste Maßnahmen:
 Retest nötig: ja/nein
@@ -314,18 +338,19 @@ Retest nötig: ja/nein
 
 Keine Namen der Teilnehmer sind für den Releasebericht erforderlich; Test-IDs reichen.
 
-## 19. Beta-Freigaberegel
+## 20. Beta-Freigaberegel
 
 Vor `REAL USER / DEVICE PASS`:
 
 - [ ] G1–G5 abgeschlossen
+- [ ] DWI-v48-Datengrenzen abgeschlossen
 - [ ] PN1–PN3 abgeschlossen
 - [ ] reales Android / iPhone / Tablet abgeschlossen
 - [ ] VoiceOver / TalkBack / 200-%-Zoom abgeschlossen
 - [ ] Hub-/Advanced-/Creator-Modalfokus real bestanden
 - [ ] Quick-Phasen-Fokus-Recovery real bestanden
 - [ ] Creator-Radiogroup und Wizard-Fokus real bestanden
-- [ ] zwei echte PWA-Upgrades auf v47/RC abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v48/RC abgeschlossen
 - [ ] HTTPS-Rollbackprobe abgeschlossen
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
