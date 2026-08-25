@@ -16,7 +16,7 @@ Stand: 25. August 2026
 - `release-evidence.json` bleibt bewusst `PREPARED / NO_GO`; kein unveränderter RC ist eingefroren.
 - PR #13 bleibt Draft und ungemergt.
 - Branch-Protection-, Foundation-, Readiness- und Release-Audits sind jetzt **transition-safe** und blockieren einen später korrekt belegten `FINAL / GO`-Zustand nicht mehr durch historische OPEN-/NO_GO-Hardcodes.
-- `validate_project.py` wurde auf die aktuellen Word-Imposter-/Advanced-/Quick-/Creator-Scriptketten synchronisiert.
+- `validate_project.py` wurde auf die aktuellen Word-Imposter-/Advanced-/Quick-/Creator-Scriptketten synchronisiert und prüft den dynamischen Hub-Resume-v2-Loadervertrag.
 
 ### Core-Hardening
 
@@ -75,7 +75,7 @@ Stand: 25. August 2026
 - v46-/v47-A11y-Schichten und v48-Word-Imposter-Datenverträge bleiben enthalten.
 - `party-hub-resume-guard.js` ist jetzt explizit Teil des echten Runtime-/Offline-Core.
 - `tests/service-worker.test.js` auf Cachevertrag 49 aktualisiert.
-- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-Plan, Issue #8 und PR #13 auf v49 synchronisiert.
+- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan, A-bis-Z-Status, Issue #8 und PR #13 auf v49 synchronisiert.
 - reale Installations-, Upgrade-, Rollback-, Resume- und Offline-Gerätetests bleiben offen.
 
 ### Build / Supply Chain
@@ -98,12 +98,12 @@ Stand: 25. August 2026
 
 ### CI / Hosted Runner – P0
 
-- letzter vollständig untersuchter App-Actions-Lauf auf dem damaligen v48-Stand: **Run #2715**, Run ID `32850361668`, Job `validate` / `97809595781`, Head `9f87910567a60e5ce905ced42bb62201b3e3a85d`.
+- letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**, Run ID `32871536761`, Job `validate` / `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`.
 - Ergebnis vor Step 1: `steps: null` / separate Abfrage `steps: []`.
 - kein Checkout, npm, Test oder Repository-Code wurde ausgeführt.
 - der isolierte Minimal-Runner-Probe ohne Repository-Code zeigte dasselbe Muster.
+- Run #2787 bestätigt den identischen Pre-Step-Blocker ausdrücklich auch auf v49.
 - unmittelbare Fehlerfläche bleibt vor der Workflow-Step-Ausführung; Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
-- **v49 besitzt daher noch keinen echten Runner-PASS.**
 
 ### Third Party / Assets
 
