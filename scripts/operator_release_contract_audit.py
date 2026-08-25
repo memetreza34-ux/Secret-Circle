@@ -16,6 +16,7 @@ REQUIRED_FILES = [
     'DEPLOYMENT.md',
     'privacy.html',
     'release-evidence.json',
+    'sw.js',
 ]
 
 for relative in REQUIRED_FILES:
@@ -29,6 +30,12 @@ hosting_doc = (ROOT / 'HOSTING_DECISION.md').read_text(encoding='utf-8')
 legal_doc = (ROOT / 'LEGAL_CHECKLIST.md').read_text(encoding='utf-8')
 support_doc = (ROOT / 'SUPPORT.md').read_text(encoding='utf-8')
 incident_doc = (ROOT / 'INCIDENT_RESPONSE.md').read_text(encoding='utf-8')
+sw = (ROOT / 'sw.js').read_text(encoding='utf-8')
+
+cache_match = re.search(r"const CACHE='(secret-circle-v\d+)'", sw)
+if not cache_match:
+    raise SystemExit('Operator release contract cannot parse current service-worker cache.')
+current_cache = cache_match.group(1)
 
 if payload.get('schemaVersion') != 1:
     raise SystemExit('Unsupported operator-release schema version.')
@@ -49,7 +56,7 @@ for marker, source, label in (
     ('Hostingentscheidung', signoff, 'operator sign-off'),
     ('Support', signoff, 'operator sign-off'),
     ('Incident Response', signoff, 'operator sign-off'),
-    ('secret-circle-v45', hosting_doc, 'hosting decision'),
+    (current_cache, hosting_doc, 'hosting decision'),
     ('Legal- und Veröffentlichungscheckliste', legal_doc, 'legal checklist'),
     ('SUPPORT PASS', support_doc, 'support contract'),
     ('INCIDENT RESPONSE PASS', incident_doc, 'incident contract'),
@@ -157,6 +164,7 @@ print(json.dumps({
     'schema_version': payload['schemaVersion'],
     'evidence_status': status,
     'operator_gate': gate,
+    'current_pwa_cache': current_cache,
     'ready_contract_enforced': True,
     'https_origin_separation_required': True,
     'tested_support_and_security_required': True,
