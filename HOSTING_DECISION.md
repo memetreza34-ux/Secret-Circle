@@ -69,15 +69,16 @@ Nicht zulässig als finale Trennung: nur Queryparameter auf derselben Origin.
 Nach Auswahl des Hosts:
 
 1. unveränderten RC auf Staging deployen
-2. `npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v47`
+2. `npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v48`
 3. manuellen Browser-/PWA-Staging-Smoke durchführen
 4. PWA installieren und offline neu starten
 5. Upgrade von mindestens zwei real installierten Altständen prüfen
 6. v47-A11y-Pfade für Hub, Advanced, Quick und Creator offline prüfen
-7. Rollback-/Hotfix-Version mit neuer Cachegeneration testen
-8. erst danach denselben freigegebenen statischen RC nach Production promoten
-9. `npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v47 --production`
-10. manuellen Production-Smoke durchführen
+7. v48-Word-Imposter-Datenvertrag prüfen: Voting-Resume, 50/51 Kategorien, 200/201 Begriffe, 1,5-MB-Importlimit und unveränderte Daten nach Ablehnung
+8. Rollback-/Hotfix-Version mit neuer Cachegeneration testen
+9. erst danach denselben freigegebenen statischen RC nach Production promoten
+10. `npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v48 --production`
+11. manuellen Production-Smoke durchführen
 
 Der erwartete Cache muss stets dem aktuellen `CACHE` aus `sw.js` entsprechen; eine neue Offline-Core-Änderung erzeugt eine neue Generation.
 
@@ -103,9 +104,10 @@ Vor `HOSTING / ENVIRONMENT PASS`:
 - [ ] Log-/Privacybedingungen dokumentiert
 - [ ] Datenschutzrolle/Drittlandbezug geprüft
 - [ ] HTTPS bestätigt
-- [ ] Staging-Smoke grün
+- [ ] Staging-Smoke grün auf `secret-circle-v48` oder bewusst neuerem RC-Cache
 - [ ] realer PWA-Smoke grün
-- [ ] v47 Hub-/Advanced-/Quick-/Creator-A11y offline real geprüft
+- [ ] Hub-/Advanced-/Quick-/Creator-A11y offline real geprüft
+- [ ] Word-Imposter-v48-Daten-/Resume-Grenzen real geprüft
 - [ ] Upgrade-/Rollbackpfad grün
 - [ ] Production-Smoke grün
 
