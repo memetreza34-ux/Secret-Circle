@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v49'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v49-staging'/);
+assert.match(source, /const CACHE='secret-circle-v50'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v50-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -19,6 +19,7 @@ assert.match(source, /canonicalNavigation \? stripSearch\(request\) : request/);
 assert.match(source, /caches\.match\(stripSearch\(request\), \{ cacheName: CACHE \}\)/);
 assert.match(source, /word-imposter-resume-guard\.js/);
 assert.match(source, /party-hub-resume-guard\.js/);
+assert.match(source, /party-hub-polish\.js/);
 assert.match(source, /party-hub-a11y\.js/);
 assert.match(source, /secondary-surface-a11y\.js/);
 assert.match(source, /advanced-resume-guard\.js/);
@@ -42,7 +43,7 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 49,
+  cacheContract: 50,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -50,6 +51,7 @@ console.log(JSON.stringify({
   canonicalNavigationCaching: true,
   wordImposterResumeGuardOffline: true,
   hubResumeGuardOffline: true,
+  hubResumeQuarantinePolishOffline: true,
   hubA11yGuardOffline: true,
   secondarySurfaceA11yOffline: true,
   advancedResumeGuardOffline: true,
