@@ -20,6 +20,17 @@ Jede wiederaufnehmbare Session besitzt eine stabile Session-ID. Ein Abschluss da
 
 Beschädigte oder unbekannte Daten werden nicht blind übernommen. Änderungen an Persistenz benötigen Validierung, Migration, Korruptions-, Quota-, Import- und Rollbacktests. Word Imposter begrenzt eigene Kategorien auf 50 und Begriffe je Kategorie auf 200; ungültige Imports dürfen vorhandene Daten nicht teilweise verändern.
 
+**Seit v51 gilt für Complete Backups zusätzlich:**
+
+- nur vom Registry-Schema verwaltete Keys werden bei einem Restore ersetzt;
+- unbekannte oder zukünftige `secret-circle-*`-Namespaces bleiben bei einem älteren Restore unverändert;
+- verwaltete Storage-Werte müssen valides JSON mit strukturierter Wurzel sein;
+- Validierung erfolgt vollständig **vor** der ersten Mutation;
+- bei Schreibfehlern werden ausschließlich die verwalteten Namespaces auf ihren vorherigen Snapshot zurückgerollt;
+- „Alle lokalen Daten löschen“ bleibt davon getrennt und entfernt bewusst sämtliche `secret-circle-*`-Namespaces.
+
+Damit kann ein älteres Complete Backup weder neuere unbekannte lokale Daten still löschen noch einen bekannten Key mit formal erlaubtem, aber unbrauchbarem Klartext überschreiben.
+
 ## 4. Katalog- und Contentarchitektur
 
 Der Party-Katalog wird in dieser Reihenfolge aufgebaut:
@@ -48,7 +59,7 @@ Privacy-/Reference-Safe-Entscheidungen werden nicht nur in einer späteren Ersat
 - `party-hub-polish.js`: Live-Guidance, Privacy-Handoff, Resume-Guard-Ladesteuerung und ergänzende UI-Schutzlogik
 - `party-hub-a11y.js`: Fokus-, Modal- und Hintergrundisolation des Hubs
 
-Die Hub-A11y-Schicht wird kontrolliert aus `party-hub-polish.js` geladen. Der Resume-Guard ist ein eigenständiger, testbarer Runtime-Vertrag und Bestandteil des Offline-Core. **Seit v50 wird eine bereits sichtbare Resume-Karte während der asynchronen Guard-Prüfung fail-closed gesperrt (`aria-busy`, deaktivierte Buttons) und erst nach erfolgreicher Validierung wieder freigegeben.** Dadurch kann ein inkonsistenter Snapshot nicht in einem kurzen Ladefenster angeklickt werden.
+Die Hub-A11y-Schicht wird kontrolliert aus `party-hub-polish.js` geladen. Der Resume-Guard ist ein eigenständiger, testbarer Runtime-Vertrag und Bestandteil des Offline-Core. Seit v50 wird eine bereits sichtbare Resume-Karte während der asynchronen Guard-Prüfung fail-closed gesperrt (`aria-busy`, deaktivierte Buttons) und erst nach erfolgreicher Validierung wieder freigegeben.
 
 ## 6. Weitere Runtime-Grenzen
 
@@ -68,6 +79,8 @@ Advanced Core trennt Definitionen, Runner und Schutzschichten über `party-advan
 
 Kritische Datenoperationen validieren zuerst, halten den alten Zustand fest, schreiben vollständig und rollen bei Fehlern zurück. Fertige Sessions werden mit stabilen Completion-IDs verbucht. Reload, Wiederholung oder UI-Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
+Complete-Backup-Restore und vollständige Datenlöschung sind bewusst unterschiedliche Transaktionen: Restore besitzt nur registrierte Backup-Namespaces; vollständige Löschung besitzt den gesamten Secret-Circle-Prefix.
+
 ## 8. Datenschutz und Security durch Architektur
 
 - keine Analytics-/Ads-Skripte
@@ -85,7 +98,7 @@ Kritische Datenoperationen validieren zuerst, halten den alten Zustand fest, sch
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**.
+Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**.
 
 Relevante jüngere Generationen:
 
@@ -97,7 +110,8 @@ Relevante jüngere Generationen:
 - v47: Advanced-/Quick-/Creator-Accessibility
 - v48: Word-Imposter Voting-Resume + Custom-/Backup-Datenhärtung
 - v49: zentraler Hub-Resume-Guard + Validator-Synchronisierung
-- **v50: fail-closed Resume-UI-Quarantäne während der Guard-Ladephase**
+- v50: fail-closed Resume-UI-Quarantäne während der Guard-Ladephase
+- **v51: Complete-Backup-Transaktionsgrenze, Forward-Compatibility und strukturierte JSON-Validierung**
 
 Neue Versionen werden zuerst in `STAGING_CACHE` vorbereitet. Aktivierung erfolgt erst nach bewusster Nutzerentscheidung. Der aktive Cache wird nicht vor erfolgreicher Promotion zerstört.
 
