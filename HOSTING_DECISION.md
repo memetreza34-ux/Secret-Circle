@@ -74,13 +74,16 @@ Nicht zulässig als finale Trennung: nur Queryparameter auf derselben Origin.
 Nach Auswahl des Hosts:
 
 1. unveränderten RC auf Staging deployen
-2. `npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v45`
+2. `npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v46`
 3. manuellen Browser-/PWA-Staging-Smoke durchführen
 4. PWA installieren und offline neu starten
 5. Upgrade von mindestens zwei real installierten Altständen prüfen
 6. Rollback-/Hotfix-Version mit neuer Cachegeneration testen
 7. erst danach denselben freigegebenen statischen RC nach Production promoten
-8. Production-Smoke mit `--production` durchführen
+8. `npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v46 --production`
+9. manuellen Production-Smoke durchführen
+
+Der erwartete Cache muss stets dem aktuellen `CACHE` aus `sw.js` entsprechen; eine neue Offline-Core-Änderung erzeugt eine neue Generation.
 
 ## 6. Datenschutzabgleich
 
