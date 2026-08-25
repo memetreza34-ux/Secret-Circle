@@ -7,7 +7,7 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 ## Gesamtstatus
 
 **Öffentliche Releasefreigabe: NO_GO**  
-**Offline-Core: `secret-circle-v49` / `secret-circle-v49-staging`**  
+**Offline-Core: `secret-circle-v50` / `secret-circle-v50-staging`**  
 **Classic Content: v4**  
 **Core Source Review: 15/15 PREPARED**  
 **Core Source Hardening: 15/15 PREPARED**  
@@ -18,7 +18,7 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
 Arbeitsstand: Draft-PR #13 auf `agent/release-foundation-2027`.
 
-v45 war Core-Hardening, v46 Hub-A11y, v47 Secondary-A11y für Advanced/Quick/Creator, v48 Word-Imposter-Voting-/Datenhärtung. **v49** vereinheitlicht den direkten Hub-Resume-Pfad auf den getesteten `party-hub-resume-guard.js` v2 und macht die zentralen Release-Audits für einen späteren echten FINAL/GO-Übergang kompatibel.
+v45 war Core-Hardening, v46 Hub-A11y, v47 Secondary-A11y für Advanced/Quick/Creator, v48 Word-Imposter-Voting-/Datenhärtung. **v49** vereinheitlichte den direkten Hub-Resume-Pfad auf den getesteten `party-hub-resume-guard.js` v2. **v50** schließt zusätzlich das Lade-Race fail-closed: Eine bereits gerenderte Resume-Karte ist während der Guard-Prüfung gesperrt und wird nur nach erfolgreicher Validierung wieder freigegeben.
 
 ## A-bis-Z-Tracker
 
@@ -31,18 +31,18 @@ v45 war Core-Hardening, v46 Hub-A11y, v47 Secondary-A11y für Advanced/Quick/Cre
 | 3 | Plattformstrategie | PREPARED | Platform Strategy | reale Zielgeräte |
 | 4 | Requirements / Akzeptanz | PREPARED | Requirements, Core Contracts, 15/15 Hardening | Runner + reale Core-Abnahme |
 | 5 | UX / IA / Design | PREPARED | UX Flow + A11y-Fokus-/Modal-/Radiogroup-Verträge | reale UX-/Tastaturtests |
-| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md`, Architecture Audit v49 | bei Grundsatzänderung ADR |
+| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md`, Architecture Audit v50 | bei Grundsatzänderung ADR |
 | 7 | Security / Threat Model | PREPARED | Security, Threat Model, Resume-/Privacy-/Import-Guards | Runner + echter Browser |
 | 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | Issue #7 / echter Runner + Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core + A11y + Data + Resume Hardening | keine neue Scope-Welle; Evidence schließen |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-/Resume-/Data-Verträge | reale Quota-/Update-/Import-/Resume-Pfade |
 | 11 | Tests / CI | BLOCKED | Run #2787 + Runner Probe | funktionierender Hosted Runner |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker v49 + Guards/A11y/Data offline | Issue #8 / Install-/Upgrade-/Rollback-/HR2-Tests |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker v50 + Guards/A11y/Data offline | Issue #8 / Install-/Upgrade-/Rollback-/HR2-Tests |
 | 13 | Content / Alter / Privacy | IN PROGRESS | 15/15 Quellreview + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md`, Issue #8 | G1–G5, DWI, HR2, PN1–PN3 durchführen |
 | 15 | Datenschutz / Recht / Support | BLOCKED | `operator-release.json`, `OPERATOR_EVIDENCE_LOG.md`, Legal, Support, Issue #14 | reale Betreiber-/Hosting-/Kontaktangaben |
 | 16 | Release Management / RC | PREPARED | Checklist + transition-safe Release Evidence | unveränderlichen RC einfrieren |
-| 17 | Deployment / Environments | BLOCKED | v49 Environment + `HOSTING_DECISION.md` | Provider + echte HTTPS-Origins |
+| 17 | Deployment / Environments | BLOCKED | v50 Environment + `HOSTING_DECISION.md` | Provider + echte HTTPS-Origins |
 | 18 | Operations / Incident | BLOCKED | Support + Incident + Operator Evidence Log | Verantwortliche + reale Drills |
 | 19 | Wartung / Migration | PREPARED | Maintenance, Backups, Changelog | operative Routine real |
 | 20 | Risk Management | IN PROGRESS | Risk Register | laufend aktualisieren |
@@ -66,16 +66,25 @@ v45 war Core-Hardening, v46 Hub-A11y, v47 Secondary-A11y für Advanced/Quick/Cre
 - Ablehnung verändert bestehende lokale Daten nicht.
 - `tests/storage.test.js` + `tests/word-imposter-data-contract.test.js` schützen den Source-Vertrag.
 
-Diese Verträge bleiben im aktuellen v49-Offline-Core. Real offen: ausgeführte Runner-/Browser-/PWA-Evidence. Daher **PREPARED**, nicht PASS.
+Diese Verträge bleiben im aktuellen v50-Offline-Core. Real offen: ausgeführte Runner-/Browser-/PWA-Evidence. Daher **PREPARED**, nicht PASS.
 
-## Hub Resume Integrity – v49
+## Hub Resume Integrity – v49/v50
+
+**v49:**
 
 - `party-hub-resume-guard.js` Version 2 ist die zentrale getestete Runtime-Quelle.
 - `party-hub-polish.js` delegiert statt Timer-/Resume-Validierung zu duplizieren.
 - Cross-Mode-/Phase-/Restzeit-Inkonsistenzen werden verworfen.
 - beim Verwerfen verschwindet auch eine bereits sichtbare Hub-Resume-Karte.
 - gültige gespeicherte Sessions bleiben unangetastet.
-- `tests/party-hub-resume-guard.test.js` schützt Modul, Runtime-Einbindung, Offline-Core und stale-UI-Regressionsfall.
+
+**v50:**
+
+- eine bereits gerenderte Resume-Karte wird vor Abschluss der Guard-Prüfung sofort als beschäftigt markiert.
+- Resume-/Discard-Aktionen bleiben während der Guard-Ladephase deaktiviert.
+- erst ein erfolgreich validierter Snapshot gibt die Resume-Aktionen wieder frei.
+- Guard-Lade- oder Integritätsfehler bleiben fail-closed und bieten keinen ungeschützten Resume-Pfad an.
+- `tests/party-hub-resume-guard.test.js` schützt Modul, Runtime-Einbindung, Offline-Core, stale-UI-Regressionsfall und die neue Interaktionssperre.
 - BETA/MANUAL/Issue #8 führen HR2 als realen Abnahmefall.
 
 ## Accessibility-Hardening – v46/v47
@@ -92,7 +101,7 @@ Automatische Nachweise:
 - `scripts/secondary_surface_a11y_contract_audit.py`
 - `scripts/architecture_audit.py`
 
-Beide Schichten bleiben Bestandteil des v49-Offline-Core. Real offen: VoiceOver, TalkBack, 200-%-Zoom, Tastatur/Touch und echte Browser/Geräte.
+Beide Schichten bleiben Bestandteil des v50-Offline-Core. Real offen: VoiceOver, TalkBack, 200-%-Zoom, Tastatur/Touch und echte Browser/Geräte.
 
 ## Release-Audit-Übergang
 
@@ -102,22 +111,23 @@ Die zentralen Audits wurden von historischen Momentaufnahmen auf echte Evidence-
 - Foundation leitet CI/Branch/Staging/Geräte aus `release-evidence.json` ab.
 - Release Readiness akzeptiert PREPARED/NO_GO, FINAL/NO_GO oder korrektes FINAL/GO.
 - Release Audit verlangt bei `assetsThirdParty = PASS`, dass kein Releaseasset mehr `unresolved` ist, blockiert aber nicht das spätere Lösen der Rechtefrage.
-- `validate_project.py` kennt die aktuellen Runtime-Scriptketten und prüft den dynamischen Hub-Resume-v2-Loadervertrag.
+- `validate_project.py` kennt die aktuellen Runtime-Scriptketten und prüft den Hub-Resume-v2-Loadervertrag.
 
 ## Operator-/Hosting-/Legal-Block
 
 - `operator-release.json`: `PREPARED / BLOCKED`
 - `OPERATOR_RELEASE_SIGNOFF.md`
 - `OPERATOR_EVIDENCE_LOG.md`
-- `HOSTING_DECISION.md` auf v49
+- `HOSTING_DECISION.md` auf v50
 - `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md`
 - Issue #14 als operative Checkliste
 
-## Offline / PWA v49
+## Offline / PWA v50
 
-- `secret-circle-v49`
-- `secret-circle-v49-staging`
+- `secret-circle-v50`
+- `secret-circle-v50-staging`
 - beide A11y-Schichten, Word-Imposter-/Hub-/Advanced-Resume-Guards, Privacy-Guards, aktuelle UI-/Store-Dateien, Katalog-/Session-/Backupmodule, Manifest/Icons offline
+- direkte Hub-Resume-Aktionen bleiben bis zur Guard-Validierung gesperrt
 
 Reale Upgrade-/Rollback-/Geräte-Evidence bleibt offen.
 
@@ -129,13 +139,14 @@ Reale Upgrade-/Rollback-/Geräte-Evidence bleibt offen.
 - Syntax-/Unit-/Validate-/E2E-Verträge erweitert
 - `tests/word-imposter-data-contract.test.js` und `tests/party-hub-resume-guard.test.js` im Testvertrag
 - letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, erneut `steps: null` / `steps: []`; kein Repositorycode wurde ausgeführt
+- v50 besitzt noch keinen echten Runner-PASS
 
 Status: **CLOSED IN CODE / ONLINE RUNNER VERIFICATION OPEN**.
 
 ## Zentrale offene Issues
 
 - **#7:** GitHub Actions endet vor Step 1
-- **#8:** reale Geräte, v49 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2 und Gruppentests
+- **#8:** reale Geräte, v50 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2 und Gruppentests
 - **#14:** Operator, Hosting, Legal, Support und Incident Evidence
 
 Zusätzlich bleibt die Icon-Rechtebasis offen.
@@ -145,8 +156,8 @@ Zusätzlich bleibt die Icon-Rechtebasis offen.
 1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
 2. Branch Protection
 3. Provider + HTTPS-Staging/Production
-4. v49 PWA-Smoke / Upgrade / Rollback
-5. Word-Imposter-Datengrenzen + Hub Resume Guard v2 real prüfen
+4. v50 PWA-Smoke / Upgrade / Rollback
+5. Word-Imposter-Datengrenzen + Hub Resume Guard v2 inklusive fail-closed Ladephase real prüfen
 6. Android / iPhone / Tablet / VoiceOver / TalkBack / Tastatur / Zoom
 7. reale Gruppentests für alle 15 Core-Spiele
 8. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
