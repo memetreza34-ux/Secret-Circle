@@ -22,7 +22,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - RC: 15. Dezember 2026
 - öffentlicher Release: 4.–15. Januar 2027
 
-Aktueller Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**  
+Aktueller Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**  
 Classic Content: **v4**  
 Core Source Review: **15/15 PREPARED**  
 Core Source Hardening: **15/15 PREPARED**  
@@ -32,62 +32,35 @@ Freigabe: **NO_GO**
 
 ## Core-Hardening
 
-Der vollständige 15-Core-Codepfad wurde auf Setup, Geheimhaltung, Resume, Timer, Punkte und Anfänger-UX geprüft.
+Der vollständige 15-Core-Codepfad wurde auf Setup, Geheimhaltung, Resume, Timer, Punkte und Anfänger-UX geprüft. Details: `CORE_GAME_ACCEPTANCE.md`.
 
-Wichtige Verträge:
+Wichtige Verträge: Word-Imposter-Setup/Fairness/Voting/Resume, freiwillige Social-Games, Paranoia-/Scharade-/Tabu-Privacy, Heiße-Kartoffel-Timer 10–25 s, Wortketten-/Wrong-Answers-Regeln sowie Advanced Resume/Privacy inklusive Mafia-Integrität.
 
-- Word Imposter: Setup-Grenzen, Rollenfairness, Voting-/Resume-Integrität
-- persönliche Hub-Games: sichtbare Freiwilligkeit/Skip-Regel
-- Paranoia: Geheimfrage bei Fokusverlust verdeckt
-- Scharade/Tabu: Geheimkarte bei Fokusverlust verdeckt
-- Heiße Kartoffel: Zufallstimer exakt 10–25 Sekunden
-- Wortkette: klarer manueller Erfolgsvertrag
-- Nur falsche Antworten: klare manuelle Verlustregel, bewusst scorelos
-- direkter Hub: Timerzustand muss zur Spielart passen
-- Advanced: `advanced-resume-guard.js` + `advanced-privacy-guard.js`
-- Mafia-Resume: Rollenanzahl, Alive-Menge und Sieger müssen konsistent sein
+## Accessibility-Hardening – v46/v47
 
-Details: `CORE_GAME_ACCEPTANCE.md`.
+**v46** führte `party-hub-a11y.js` für den direkten Hub ein:
 
-## Accessibility-Hardening – v46
+- Bereichswechsel fokussieren die sichtbare Hauptüberschrift
+- Spieldetail und aktive Hub-Runde sind modale Tastaturkontexte
+- Hintergrund wird über `inert` isoliert
+- Tab/Shift+Tab bleibt im aktiven Overlay
+- Rückkehrfokus nach Schließen des Spieldetails
 
-Der Party Hub besitzt jetzt zusätzlich:
+**v47** erweitert denselben Qualitätsanspruch auf Advanced, Quick und Creator über `secondary-surface-a11y.js`:
 
-- `party-hub-a11y.js` als eigene kleine Accessibility-Schicht
-- programmatischen Fokus auf die sichtbare Hauptüberschrift nach Hub-Bereichswechseln
-- `role="dialog"` + `aria-modal="true"` für die aktive Hub-Spielrunde
-- `inert`-Isolation des Hintergrunds bei Spieldetail und aktiver Spielrunde
-- Tab-/Shift+Tab-Fokus-Trap innerhalb des aktiven Overlays
-- unveränderten Skip-Link als ersten sinnvollen Tastaturtarget beim Erstladen
-- statische Accessibility-Verträge, neue Playwright-E2E-Fälle und `scripts/hub_a11y_contract_audit.py`
-- Offline-Verfügbarkeit dieser A11y-Schicht im v46-Service-Worker-Core
-- globalen Architektur-Audit für alle releasekritischen Resume-/Privacy-/A11y-Module
+- Advanced-Spieloverlay als modaler Fokuskontext
+- Quick-Fokus-Recovery nach dynamischen Phasenwechseln
+- Creator-Wizard-Schrittüberschriften tatsächlich programmatisch fokussierbar
+- Creator-Hilfe mit Hintergrundisolation, Fokus-Trap und Rückkehrfokus
+- Creator-Template-Radiogroup mit roving `tabindex`, Pfeiltasten, Home und End
+- neue Unit-/Playwright-Verträge sowie `scripts/secondary_surface_a11y_contract_audit.py`
+- beide A11y-Schichten sind im v47-Offline-Core enthalten
 
 **Noch kein Accessibility PASS:** VoiceOver, TalkBack, reales 200-%-Zoom, Touchbedienung und echte Geräte-/Browserabnahme bleiben offen.
 
-## A-bis-Z-Grundlage
+## Zentrale A-bis-Z-Verträge
 
-Zentrale Verträge:
-
-- `APP_ENTWICKLUNG_VON_A_BIS_Z.md`
-- `APP_DEVELOPMENT_STATUS.md`
-- `CORE_GAME_ACCEPTANCE.md`
-- `ACCESSIBILITY.md`
-- `RELEASE_STATUS.md`
-- `RELEASE_CHECKLIST.md`
-- `RELEASE_EVIDENCE.md` / `release-evidence.json`
-- `operator-release.json` / `OPERATOR_RELEASE_SIGNOFF.md`
-- `HOSTING_DECISION.md`
-- `BRANCH_PROTECTION.md`
-- `CI_TROUBLESHOOTING.md`
-- `ARCHITECTURE.md`
-- `ENVIRONMENTS.md`
-- `DEPLOYMENT.md`
-- `SECURITY.md` / `THREAT_MODEL.md`
-- `CONTENT_AGE_POLICY.md` / `CORE_CONTENT_REVIEW.md`
-- `THIRD_PARTY_NOTICES.md` / `ASSET_RIGHTS_SIGNOFF.md` / `FAN_CONTENT_REVIEW.md`
-- `BETA_TEST_PLAN.md` / `MANUAL_TEST_PLAN.md`
-- `LEGAL_CHECKLIST.md` / `SUPPORT.md` / `INCIDENT_RESPONSE.md` / `MAINTENANCE.md`
+`APP_ENTWICKLUNG_VON_A_BIS_Z.md`, `APP_DEVELOPMENT_STATUS.md`, `CORE_GAME_ACCEPTANCE.md`, `ACCESSIBILITY.md`, `ARCHITECTURE.md`, `RELEASE_STATUS.md`, `RELEASE_CHECKLIST.md`, `RELEASE_EVIDENCE.md`, `release-evidence.json`, `operator-release.json`, `OPERATOR_RELEASE_SIGNOFF.md`, `HOSTING_DECISION.md`, `BRANCH_PROTECTION.md`, `CI_TROUBLESHOOTING.md`, `ENVIRONMENTS.md`, `DEPLOYMENT.md`, `SECURITY.md`, `THREAT_MODEL.md`, `BETA_TEST_PLAN.md`, `MANUAL_TEST_PLAN.md`, `LEGAL_CHECKLIST.md`, `SUPPORT.md`, `INCIDENT_RESPONSE.md` und `MAINTENANCE.md`.
 
 ## Operator / Hosting / Legal
 
@@ -97,65 +70,36 @@ Der reale Betriebs-/Legalblock ist als eigener Releasevertrag modelliert:
 - `OPERATOR_RELEASE_SIGNOFF.md` bündelt Betreiber-/Legal-/Support-/Incident-Freigaben
 - `HOSTING_DECISION.md` erzwingt Provider-, Log-, Datenschutz-, Staging-/Production- und Rollbackprüfung
 - `scripts/operator_release_contract_audit.py` läuft in `npm run validate`
-- `legalPrivacy` und `supportIncident` dürfen erst PASS werden, wenn die Operator-Akte `FINAL / READY` ist
 - Issue #14 führt die real offenen Operator-/Hosting-/Legal-/Support-/Incident-Schritte
-
-## Content / Privacy / Reference
-
-- alle definierten quantitativen Core-Ziele erreicht
-- 15/15 erster Core-Quellpass dokumentiert
-- 15/15 Core-Hardening dokumentiert
-- unnötige konkrete Marken-/Franchise-/Eventreferenzen generisch ersetzt
-- `anime-guess` → **Anime-Archetypen erraten**
-- stabile ID `wavelength` → sichtbar **Spektrum-Tipp**
-- frühere Private-Device-Truth/Dare-Prompts physisch entfernt
-- Privacy-/Reference-Audits scannen ausgelieferte Contentquellen
-- persönliche Core-Inhalte bleiben freiwillig/überspringbar
 
 ## Build / Supply Chain
 
 - `package-lock.json` v3
-- `@playwright/test`, `playwright`, `playwright-core` exakt 1.54.2
-- optional `fsevents` 2.3.2
-- Registry-URLs + `sha512`-Integrities
+- Playwright-Testkette exakt 1.54.2
 - keine npm-Runtime-Dependencies
-- CI und Cross-Browser verwenden `npm ci`
-- Lockfile-, A11y-, Operator- und Release-Readiness-Audits sind in `npm run validate` eingebunden
+- CI/Cross-Browser verwenden `npm ci`
+- Lockfile-, Architektur-, Hub-A11y-, Secondary-A11y-, Operator- und Release-Readiness-Audits sind in den Qualitätsgates eingebunden
 
 ## CI – extern blockiert
 
-Aktuellster ausdrücklich untersuchter v46-Lauf: **Run #2627**.
+Der jüngste ausdrücklich untersuchte Lauf vor dem v47-Block war **Run #2637**. Er endete erneut vor Step 1 mit `steps: []`; kein Checkout, npm, Test oder Repositorycode wurde ausgeführt. Ein früherer Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster.
 
-- Run ID `32809352564`
-- Job `validate`, Job ID `97685596269`
-- Head `30ef13f84d34f7fa95c46d441463bb58f0cb09c1`
-- `failure`
-- Jobliste `steps: null`
-- separate Step-Abfrage `steps: []`
-- kein Checkout / kein npm / keine Tests / kein Repository-Code ausgeführt
+Damit liegt die unmittelbare Fehlerfläche weiterhin vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung. Details: `CI_TROUBLESHOOTING.md` und Issue #7.
 
-Ein früherer Minimal-Runner-Probe ohne Checkout, Setup-Actions, npm, Playwright oder Repository-Code endete ebenfalls vor Step 1 mit `steps: []`.
-
-Damit liegt die unmittelbare Fehlerfläche vor der Repository-Ausführung: Hosted-Runner-Zuteilung, Actions-/Account-/Billing-/Budget-/Policyzustand oder GitHub-seitige Runner-Störung.
-
-Details: `CI_TROUBLESHOOTING.md` und Issue #7.
-
-## Offline / PWA – v46
+## Offline / PWA – v47
 
 Der Service Worker verwendet:
 
-- `secret-circle-v46`
-- `secret-circle-v46-staging`
+- `secret-circle-v47`
+- `secret-circle-v47-staging`
 
-Zum Offline-Core gehören Hub, Word Imposter, Advanced, Quick, Creator, Privacy, Katalog-/Contentmodule, Backup-Registry, Timer-/Sessioncontroller, Resume-/Privacy-Guards, `party-hub-a11y.js` sowie Manifest/App-Icons.
+Zum Offline-Core gehören Hub, Word Imposter, Advanced, Quick, Creator, Privacy, Katalog-/Contentmodule, Backup-Registry, Timer-/Sessioncontroller, Resume-/Privacy-Guards, `party-hub-a11y.js`, `secondary-surface-a11y.js` sowie Manifest/App-Icons.
 
 Updates werden staged und erst nach bewusster Nutzerentscheidung aktiviert. Reale PWA-Upgrades, Rollbacks und Gerätetests bleiben offen.
 
 ## Assets / Rechte
 
-`assets/manifests/asset-provenance.json` inventarisiert `icon.svg`, `icon-192.png` und `icon-512.png`.
-
-Die technische Ableitung/Dimensionierung ist dokumentiert; die Rechtebasis des SVG ist noch `unresolved`. `ASSET_RIGHTS_SIGNOFF.md` definiert den menschlichen Nachweis. Bis dahin bleibt `ASSETS / THIRD PARTY` blockiert.
+Die technische Icon-Provenienz ist dokumentiert; die Rechtebasis des Root-`icon.svg` bleibt `unresolved`. `ASSET_RIGHTS_SIGNOFF.md` definiert den menschlichen Nachweis. Bis dahin bleibt `ASSETS / THIRD PARTY` blockiert.
 
 ## Release Evidence
 
@@ -167,29 +111,21 @@ Ein späteres `GO` erfordert echte Belege auf **demselben unveränderten RC-Comm
 ## Drei zentrale offene Issues
 
 1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
-2. **#8** – reale Geräte, Offline-PWA, Accessibility und Partytests
+2. **#8** – reale Geräte, Offline-PWA, Accessibility und Partytests auf v47
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 Zusätzlich bleibt die Icon-Rechtebasis offen.
 
 ## Aktuell höchste Priorität
 
-1. Issue #7: Hosted Runner bis zum ersten echten Step reparieren
-2. Online-`npm ci` + vollständiges `npm run ci`
-3. Cross-Browser auf demselben Commit
-4. Branch Protection real bestätigen
-5. Issue #14: Provider + Betreiber-/Kontakt-/Privacy-/Supportangaben finalisieren
-6. HTTPS-Staging-Origin festlegen und v46-Smoke ausführen
-7. Issue #8: PWA v46 Upgrade/Rollback + reale Geräte/A11y/Gruppen
-8. App-Icon-Rechtebasis und restlicher Visual-/Third-Party-Sign-off
-9. Support-/Securitytest + SEV-1-/Rollback-Drill
-10. unveränderlicher RC + vollständige Release Evidence
-
-## Was jetzt nicht priorisiert wird
-
-- keine neue 122-Mode-Scope-Welle
-- kein großes Backend/Accountsystem
-- keine Monetarisierungsarchitektur vor den Release-Gates
-- keine weitere Featuremenge auf Kosten von CI, Geräten, Gruppen, Hosting und Legal
+1. Hosted Runner bis zum ersten echten Step reparieren
+2. Online-`npm ci` + vollständiges CI/Cross-Browser
+3. Branch Protection real bestätigen
+4. Provider + echte HTTPS-Staging-/Production-Origin
+5. v47 Staging-/PWA-Smoke, Upgrade und Rollback
+6. reale Android/iPhone/iPad-/VoiceOver-/TalkBack-/Tastatur-/Zoom-Abnahme
+7. reale Gruppentests für alle 15 Core-Games
+8. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
+9. unveränderlicher RC + vollständige Release Evidence
 
 **Aktuell: NO_GO. PR #13 bleibt Draft und wird nicht gemergt.**
