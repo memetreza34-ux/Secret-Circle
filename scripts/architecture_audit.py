@@ -17,7 +17,7 @@ production_js = [
     'party-filter-state.js', 'party-search-assist.js', 'game-creator.js', 'creator-page.js',
     'party-custom-packs.js', 'party-hub-timers.js', 'party-hub-resume-guard.js',
     'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-hub-a11y.js',
-    'party-guide.js', 'party-night.js', 'party-data-tools.js',
+    'secondary-surface-a11y.js', 'party-guide.js', 'party-night.js', 'party-data-tools.js',
     'party-advanced.js', 'advanced-resume-guard.js', 'party-advanced-runner.js',
     'advanced-privacy-guard.js', 'party-advanced-preferences.js',
     'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
@@ -29,7 +29,7 @@ required_contract_files = [
     'assets/manifests/asset-provenance.json',
     'tests/manifest-icons.test.js', 'tests/accessibility-contract.test.js',
     'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
-    'scripts/hub_a11y_contract_audit.py'
+    'scripts/hub_a11y_contract_audit.py', 'scripts/secondary_surface_a11y_contract_audit.py'
 ]
 violations = []
 
@@ -80,6 +80,8 @@ for relative in html_pages:
 
 party_page = read('party.html')
 quick_play = read('quick-play.html')
+advanced_page = read('advanced.html')
+creator_page = read('creator.html')
 catalog_chain = [
     'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
     'party-mega-catalog.js', 'party-viral-catalog.js',
@@ -103,6 +105,9 @@ check_order(party_page, catalog_chain, 'party.html')
 check_order(quick_play, catalog_chain, 'quick-play.html')
 check_order(party_page, ['party-session-controls.js', 'party-hub-timers.js', 'party-hub.js'], 'party.html timer chain')
 check_order(party_page, ['backup-schema-registry.js', 'party-data-tools.js'], 'party.html backup chain')
+check_order(advanced_page, ['secondary-surface-a11y.js', 'party-advanced-runner.js'], 'advanced.html accessibility chain')
+check_order(quick_play, ['secondary-surface-a11y.js', 'quick-loader.js'], 'quick-play.html accessibility chain')
+check_order(creator_page, ['secondary-surface-a11y.js', 'creator-page.js'], 'creator.html accessibility chain')
 
 contracts = {
     'backup-schema-registry.js': [
@@ -116,6 +121,10 @@ contracts = {
     'advanced-resume-guard.js': ['validateSnapshot', 'expectedRoleCounts'],
     'advanced-privacy-guard.js': ['SecretCircleAdvancedPrivacyGuard', 'sensitiveContext', 'conceal'],
     'party-hub-a11y.js': ['SecretCirclePartyHubA11y', 'syncBackgroundInert', 'trapOverlayFocus', 'focusVisibleViewHeading'],
+    'secondary-surface-a11y.js': [
+        'SecretCircleSecondarySurfaceA11y', 'syncBackgroundInert', 'trapTab',
+        'ensureHeadingFocusable', 'syncTemplateRoving', 'handleTemplateKeys'
+    ],
     'party-expansion.js': [
         "id: 'wavelength', title: 'Spektrum-Tipp'",
         "banned: ['Webseite', 'Internet', 'Tab']"
@@ -141,9 +150,13 @@ contracts = {
     'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40'],
     'party-data-tools.js': ['SecretCircleBackupSchemas', 'replaceEntries', 'registry.isAllowedCompleteStorageKey'],
     'tests/manifest-icons.test.js': ['pngDimensions', '192x192', '512x512', 'offlineIconContract'],
-    'tests/accessibility-contract.test.js': ['modalBackgroundIsolation', 'modalFocusTrapContract'],
+    'tests/accessibility-contract.test.js': [
+        'hubModalBackgroundIsolation', 'hubModalFocusTrapContract',
+        'secondarySurfaceFocusRecovery', 'creatorTemplateRadiogroupKeyboardContract'
+    ],
     'scripts/media_inventory_audit.py': ['MEDIA_SUFFIXES', 'EXPECTED_CURRENT_MEDIA', 'all_media_in_provenance_manifest'],
-    'scripts/hub_a11y_contract_audit.py': ['hub_a11y_contract_audit', 'modalFocusTrapContract']
+    'scripts/hub_a11y_contract_audit.py': ['hub_a11y_contract_audit', 'modalFocusTrapContract'],
+    'scripts/secondary_surface_a11y_contract_audit.py': ['secondary_surface_a11y_contract_audit', 'creator_radiogroup_arrow_navigation']
 }
 for relative, markers in contracts.items():
     source = read(relative)
@@ -173,8 +186,8 @@ validate_gate = package.get('scripts', {}).get('validate', '')
 for module in (
     'party-expansion.js', 'party-mega-catalog.js', 'party-core-release-catalog.js',
     'party-core-classic-content.js', 'party-hub-timers.js', 'party-hub-resume-guard.js',
-    'party-hub-a11y.js', 'word-imposter-resume-guard.js', 'advanced-resume-guard.js',
-    'advanced-privacy-guard.js'
+    'party-hub-a11y.js', 'secondary-surface-a11y.js', 'word-imposter-resume-guard.js',
+    'advanced-resume-guard.js', 'advanced-privacy-guard.js'
 ):
     if f'node --check {module}' not in syntax_gate:
         violations.append(f'Production module missing from syntax gate: {module}')
@@ -191,6 +204,7 @@ for audit in (
     'scripts/core_content_audit.py', 'scripts/reference_content_audit.py',
     'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
     'scripts/public_release_placeholder_audit.py', 'scripts/hub_a11y_contract_audit.py',
+    'scripts/secondary_surface_a11y_contract_audit.py',
     'scripts/operator_release_contract_audit.py', 'scripts/release_audit.py',
     'scripts/performance_budget.py'
 ):
@@ -215,7 +229,8 @@ for asset in (
     './backup-schema-registry.js', './word-imposter-resume-guard.js',
     './party-expansion.js', './party-mega-catalog.js', './party-core-release-catalog.js',
     './party-core-classic-content.js', './party-hub-timers.js', './party-hub-resume-guard.js',
-    './party-hub-a11y.js', './advanced-resume-guard.js', './advanced-privacy-guard.js',
+    './party-hub-a11y.js', './secondary-surface-a11y.js',
+    './advanced-resume-guard.js', './advanced-privacy-guard.js',
     './session-ledger.js', './party-session-controls.js',
     './icon.svg', './icon-192.png', './icon-512.png'
 ):
@@ -245,6 +260,7 @@ print(json.dumps({
     'core_classic_content_version': 4,
     'resume_privacy_guards_audited': True,
     'hub_accessibility_layer_audited': True,
+    'secondary_surface_accessibility_layer_audited': True,
     'reference_safe_anime_runtime_and_source': True,
     'spectrum_visible_name': 'Spektrum-Tipp',
     'reference_content_audit_required': True,
