@@ -2,7 +2,7 @@
 
 Stand: 25. August 2026  
 Status: **PREPARED – reale Abnahme offen**  
-Offline-Core: **`secret-circle-v46` / `secret-circle-v46-staging`**
+Offline-Core: **`secret-circle-v47` / `secret-circle-v47-staging`**
 
 ## 1. Ziel
 
@@ -17,12 +17,13 @@ Secret Circle soll die 15 Kernspiele sowie zentrale Extended-/Labs-/Creator-Flow
 - Skip-Link auf zentrale Inhalte
 - semantische Überschriften und `main`
 - Dialoge mit Rolle/Beschriftung
-- aktive Hub-Spielrunde als `role="dialog"` + `aria-modal="true"`
+- aktive Hub- und Advanced-Spielrunde als `role="dialog"` + `aria-modal="true"`
 
 ### Formulare
 
 - Inputs/Selects/Textareas besitzen sichtbares Label oder ARIA-Beschriftung
 - Statusfelder nutzen `role="status"`/`aria-live`, wo dynamische Rückmeldung wichtig ist
+- Creator-Template-Auswahl ist eine beschriftete Radiogroup mit genau einem Tab-Stopp
 
 ### Fokus und Tastatur
 
@@ -30,10 +31,14 @@ Secret Circle soll die 15 Kernspiele sowie zentrale Extended-/Labs-/Creator-Flow
 - Suchvorschläge mit ARIA-Listbox/Autocomplete
 - Pfeiltasten, Enter, Escape
 - dynamische Hub-Bereichswechsel fokussieren die neue Hauptüberschrift programmatisch
-- Spieldetail und aktive Hub-Spielrunde isolieren den restlichen Dokumenthintergrund mit `inert`
-- Tab/Shift+Tab bleibt über `party-hub-a11y.js` innerhalb des aktiven Overlays
+- Hub-Spieldetail und aktive Hub-Spielrunde isolieren den restlichen Dokumenthintergrund mit `inert`
+- Tab/Shift+Tab bleibt im aktiven Hub-Overlay
+- Advanced-Spieloverlay isoliert den Setup-Hintergrund und hält Fokus im Spiel
+- Quick-Phasen stellen Fokus wieder her, wenn die vorherige Aktion beim Re-Render entfernt wurde
+- Creator-Schrittüberschriften sind programmatisch fokussierbar
+- Creator-Hilfe isoliert den Hintergrund und hält Tab/Shift+Tab im Dialog
+- Creator-Template-Radiogroup unterstützt Pfeiltasten sowie Home/End
 - beim Erstladen bleibt die Skip-Link-Reihenfolge unverändert
-- nach Schließen des Spieldetails kehrt Fokus zum auslösenden Spielbutton zurück
 
 ### Touch
 
@@ -55,23 +60,33 @@ Hub und Advanced erklären sichtbar:
 
 ## 3. v46 Hub-Accessibility-Hardening
 
-Neu in v46:
+v46 führte `party-hub-a11y.js` ein:
 
-- `party-hub-a11y.js` als eigenständige kleine Accessibility-Schicht
-- `party-hub-polish.js` lädt die A11y-Schicht
-- `party.html` kennzeichnet die aktive Spielrunde als modalen Dialog
-- Hintergrund-Siblings werden während Detail-/Spieloverlay `inert`
-- dynamisch neu hinzugefügte Body-Siblings werden bei offenem Overlay ebenfalls isoliert
-- Fokus-Trap behandelt Tab und Shift+Tab
-- neue sichtbare Hub-Ansicht erhält einen programmatischen Fokuspunkt auf `h1/h2` mit `tabindex="-1"`
-- `tests/accessibility-contract.test.js` schützt den statischen Vertrag
-- `tests/e2e/accessibility-core.spec.js` schützt Bereichsfokus, Modal-Isolation und Fokus-Trap im Browser
-- `scripts/hub_a11y_contract_audit.py` ist Teil von `npm run validate`
-- `party-hub-a11y.js` ist Bestandteil des v46-Offline-Core
+- Hub-Bereichsfokus auf sichtbare Hauptüberschrift
+- modale Hintergrundisolation mit `inert`
+- Fokus-Trap für Spieldetail und aktive Hub-Spielrunde
+- stabiler Rückkehrfokus nach Schließen des Spieldetails
+- Unit-/E2E-/Auditverträge
+
+## 4. v47 Advanced-/Quick-/Creator-Hardening
+
+Neu in v47:
+
+- `secondary-surface-a11y.js` als gemeinsame kleine Accessibility-Schicht
+- Advanced-Spielrunde als modaler Dialog mit Hintergrundisolation und Tab-Fokus-Trap
+- Quick-Phasen-Fokus-Recovery nach dynamischem DOM-Austausch
+- Creator-Wizard-Schrittüberschriften erhalten `tabindex="-1"` für echte programmatische Fokusführung
+- Creator-Hilfe verhält sich als modaler Tastaturkontext; Hintergrund wird `inert`
+- Creator-Template-Radiogroup verwendet roving `tabindex` und unterstützt ArrowRight/ArrowDown/ArrowLeft/ArrowUp, Home und End
+- `tests/accessibility-contract.test.js` schützt die statischen Verträge
+- `tests/e2e/accessibility-core.spec.js` enthält echte Browserpfade für Advanced, Quick und Creator
+- `scripts/secondary_surface_a11y_contract_audit.py` ist Teil von `npm run validate`
+- `scripts/architecture_audit.py` behandelt die Schicht als Production-/Offline-Modul
+- `secondary-surface-a11y.js` ist Bestandteil des v47-Offline-Core
 
 **PREPARED bleibt bewusst bestehen:** Ohne funktionierenden Runner sowie reale VoiceOver-/TalkBack-/Zoom-/Touchprüfung ist dies noch kein Accessibility PASS.
 
-## 4. Anzeigenamen und Screenreader
+## 5. Anzeigenamen und Screenreader
 
 Technische IDs sind kein Nutzerlabel.
 
@@ -82,36 +97,41 @@ Aktuell müssen sichtbare/angesagte Titel dem finalen Katalog entsprechen:
 
 Ein Screenreader soll nicht versehentlich interne IDs oder veraltete sichtbare Namen als Hauptbezeichnung erhalten.
 
-## 5. Core-/Hub-Flow-Matrix
+## 6. Flow-Matrix
 
 | Flow | Automatische Grundlage | Manuelle Abnahme |
 |---|---|---|
 | Hub-Start/Katalog | Struktur, Skip-Link, Bereichsfokus, Labels, Suche | 200 % Zoom, Screenreader |
 | Spieler/Presets | Labels, Textarea, Status | lange Namen, Zoom, VoiceOver/TalkBack |
-| Spieldetail-Dialog | Dialogrolle, `aria-modal`, Hintergrund `inert`, Fokus-Trap, Rückkehrfokus | Screenreader-/Browserrealität |
+| Hub-Spieldetail | Dialogrolle, `aria-modal`, Hintergrund `inert`, Fokus-Trap, Rückkehrfokus | Screenreader-/Browserrealität |
 | direkte Hub-Spiele | modales Spieloverlay, Fokus-/Statusgrundlage, 44px Controls | komplette Tastatur-/Screenreader-Runde |
 | private Reveals | verdeckter Zustand/Status | Übergabe mit Screenreader real |
 | Timer | Pausezustand, Live-Status | Sperrbildschirm + Reduced Motion |
-| Advanced | semantischer Setup-Bereich | private Rollen/Abstimmung per Screenreader |
-| Quick/Extended | Labels/Status/Sessioncontrols | Spektrum-Tipp + andere Flows real |
-| Creator | Labels, Wizardstruktur | kompletter Wizard ohne Maus |
+| Advanced | modales Spieloverlay, Fokus-Recovery, Privacy-/Resume-Guards | private Rollen/Abstimmung per Screenreader |
+| Quick/Extended | dynamisches Fokus-Recovery, Labels/Status/Sessioncontrols | Spektrum-Tipp + weitere Flows real |
+| Creator | Wizard-Schrittfokus, Radiogroup-Tastatur, modale Hilfe | kompletter Wizard ohne Maus + Screenreader |
 | Daten/Backup | Labels, Status, Bestätigung | Dateiimport mit assistiver Technik |
 
-## 6. Manuelle Release-Gates
+## 7. Manuelle Release-Gates
 
 Vor `ACCESSIBILITY PASS`:
 
 - [ ] gesamte App bei 200 % Browserzoom ohne verlorene Kernfunktion
 - [ ] kleine Smartphonebreite ohne horizontale Pflichtnavigation
 - [ ] vollständiger Hub-Kernflow nur Tastatur
-- [ ] Bereichswechsel Fokus in Chrome/Safari/Firefox real nachvollziehbar
-- [ ] Spieldetail-Modal verliert Tab-Fokus nicht in den Hintergrund
+- [ ] Hub-Bereichswechsel Fokus in Chrome/Safari/Firefox real nachvollziehbar
+- [ ] Hub-Spieldetail verliert Tab-Fokus nicht in den Hintergrund
 - [ ] aktive Hub-Spielrunde verliert Tab-Fokus nicht in den Hintergrund
+- [ ] Advanced-Spielrunde verliert Tab-Fokus nicht in Setup/Seitenhintergrund
+- [ ] Quick-Phasenwechsel behalten einen sinnvollen Fokuspunkt
+- [ ] Creator-Schrittwechsel werden mit Tastatur/Screenreader verständlich angekündigt
+- [ ] Creator-Template-Radiogroup mit Pfeiltasten/Home/End real bedienbar
+- [ ] Creator-Hilfe verliert Fokus nicht in den Hintergrund und kehrt zum Auslöser zurück
 - [ ] mindestens ein Core-Spiel nur Tastatur
 - [ ] Word-Imposter-Reveal mit Screenreader-Smoke
 - [ ] Advanced-Private-Reveal mit Screenreader-Smoke
 - [ ] Spektrum-Tipp verständlich benannt/bedienbar
-- [ ] Creator-Wizard nur Tastatur
+- [ ] Creator-Wizard komplett nur Tastatur
 - [ ] VoiceOver auf iPhone/iPad
 - [ ] TalkBack auf Android
 - [ ] Reduced Motion real geprüft
@@ -119,7 +139,7 @@ Vor `ACCESSIBILITY PASS`:
 - [ ] keine Information ausschließlich durch Farbe
 - [ ] Touchziele real geprüft
 
-## 7. Screenreader-Prüffragen
+## 8. Screenreader-Prüffragen
 
 1. Ist klar, welche Seite/Phase geöffnet ist?
 2. Wird die aktive Person verständlich benannt?
@@ -128,10 +148,11 @@ Vor `ACCESSIBILITY PASS`:
 5. Ist die nächste Aktion auffindbar?
 6. Wird Pause/Fortsetzen programmatisch vermittelt?
 7. Bleibt nach Dialogschluss ein sinnvoller Fokuspunkt?
-8. Bleibt während eines modalen Overlays der Hintergrund aus der Lesereihenfolge/Interaktion heraus?
-9. Wird der aktuelle sichtbare Produktname statt einer technischen ID angesagt?
+8. Bleibt während eines modalen Overlays der Hintergrund aus Interaktion und Lesereihenfolge heraus?
+9. Wird ein Creator-Schrittwechsel sinnvoll angekündigt?
+10. Wird der aktuelle sichtbare Produktname statt einer technischen ID angesagt?
 
-## 8. Zoom-/Reflow-Prüfung
+## 9. Zoom-/Reflow-Prüfung
 
 Bei 200 % Zoom:
 
@@ -140,13 +161,14 @@ Bei 200 % Zoom:
 - Dialoge scrollbar
 - Timer und zentrale Spielkarte erreichbar
 - Sessioncontrols bedienbar
+- Creator-Wizard und Hilfe erreichbar
 - keine wichtige horizontale Scrollpflicht
 - Safe Areas berücksichtigt
 
-## 9. Grenzen der Automatisierung
+## 10. Grenzen der Automatisierung
 
 Ein statischer Test oder Playwright-Vertrag kann Attribute, Fokuspfade und CSS-/DOM-Grenzen prüfen, aber nicht beweisen, dass VoiceOver/TalkBack sinnvoll klingen oder ein reales 200-%-Layout verständlich ist.
 
-**`tests/accessibility-contract.test.js` + E2E + A11y-Audit grün ≠ ACCESSIBILITY PASS.**
+**Unit/E2E/A11y-Audits grün ≠ ACCESSIBILITY PASS.**
 
 Finaler Pass benötigt dokumentierte reale Bedienung.
