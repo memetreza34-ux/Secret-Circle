@@ -3,7 +3,7 @@
 Stand: 25. August 2026  
 Status: **PREPARED – reale Betreiber-/Kontakt-/Hostingangaben offen**
 
-Dieses Dokument bündelt die menschliche Freigabe für die Bereiche Betreiber, Hosting, Datenschutz, Support und Incident Response. Die maschinenlesbare Spiegelakte ist `operator-release.json`.
+Dieses Dokument bündelt die menschliche Freigabe für die Bereiche Betreiber, Hosting, Datenschutz, Support und Incident Response. Die maschinenlesbare Spiegelakte ist `operator-release.json`. Die reale Ausführung und die zugehörigen Nachweise werden in `OPERATOR_EVIDENCE_LOG.md` protokolliert.
 
 **Wichtig:** Keine erfundenen Namen, Adressen, E-Mail-Adressen, Hostingangaben oder Testnachweise eintragen. Falls das Repository später öffentlich wird, nur Daten committen, die bewusst veröffentlicht werden sollen.
 
@@ -61,6 +61,8 @@ Vor `SUPPORT PASS`:
 - mindestens einen Probe-Supportfall vollständig durchspielen
 - sicherstellen, dass Support keine unnötigen privaten Chats, Passwörter, Fotos oder persönlichen Backups anfordert
 
+Die praktische Ausführung wird unter **Supportkontakt-Test**, **Security-/Privacy-Meldeweg-Test** und **Probe-Supportfall** in `OPERATOR_EVIDENCE_LOG.md` festgehalten.
+
 ## 5. Incident Response
 
 Vor `INCIDENT RESPONSE PASS`:
@@ -73,7 +75,7 @@ Vor `INCIDENT RESPONSE PASS`:
 - HTTPS-Staging-Rollback praktisch durchspielen
 - Nutzerkommunikationsweg bestätigen
 
-Eine Person darf in V1 mehrere Rollen übernehmen; die Zuordnung muss trotzdem eindeutig dokumentiert sein.
+Eine Person darf in V1 mehrere Rollen übernehmen; die Zuordnung muss trotzdem eindeutig dokumentiert sein. Probe-SEV-1 und Rollback-Drill werden in `OPERATOR_EVIDENCE_LOG.md` mit Commit, Cachegeneration, Staging-Origin und Ergebnis dokumentiert.
 
 ## 6. Finale Rechtsprüfung
 
@@ -99,19 +101,37 @@ Dieses Dokument ist ein Releaseprüfvertrag und keine individuelle Rechtsberatun
 
 `operatorGate = READY` ist erst zulässig, wenn alle für das reale Modell erforderlichen Felder wahrheitsgemäß ausgefüllt, Support-/Securitykontakte getestet, Hosting/Privacy final geprüft und die Incident-/Rollback-Drills durchgeführt wurden.
 
-## 8. Sign-off-Protokoll
+`scripts/operator_release_contract_audit.py` prüft bei `READY` zusätzlich, dass:
+
+- Privacy- und Legal-Seite real existieren,
+- keine bekannten Platzhalter enthalten sind,
+- finale Betreiber-/Hosting-/Kontaktangaben tatsächlich veröffentlicht sind,
+- alle zentralen Einstiegseiten Privacy und Legal verlinken,
+- Staging und Production verschiedene HTTPS-Origins sind,
+- Support-/Securitytests sowie Incident-/Rollback-Drills als durchgeführt markiert sind.
+
+## 8. Evidence-Akte
+
+`OPERATOR_EVIDENCE_LOG.md` ist die operative Beweisakte. Für jeden realen Test werden mindestens exakter RC-Commit, Cachegeneration, Datum, Umgebung, Ergebnis und eine belastbare Referenz festgehalten.
+
+Die Datei startet bewusst als **PREPARED**. Leere Vorlagen oder angekreuzte Punkte ohne tatsächliche Durchführung zählen nicht als Evidence.
+
+## 9. Sign-off-Protokoll
 
 ```text
 Datum:
 Release-/RC-Commit:
+Cachegeneration:
 Operator/Verantwortlicher final geprüft: ja/nein
 Hosting final geprüft: ja/nein
 Privacy final geprüft: ja/nein
 Legal-/Anbieterkennzeichnung final geprüft: ja/nein
 Supportkontakt getestet: ja/nein
 Security-Meldeweg getestet: ja/nein
+Probe-Supportfall: ja/nein
 SEV-1-Drill: ja/nein
 Rollback-Drill: ja/nein
+Evidence-Log vollständig: ja/nein
 Reviewer/Verantwortlicher:
 Offene Punkte:
 Operator Gate: BLOCKED / READY
