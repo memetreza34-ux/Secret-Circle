@@ -24,9 +24,8 @@ for (const [name, source] of Object.entries(pages)) {
 
 const party = pages['party.html'];
 assert.match(party, /role="status" aria-live="polite"/);
-assert.match(party, /role="dialog"/);
-assert.match(party, /aria-modal="true"/);
-assert.match(party, /aria-labelledby="detail-title"/);
+assert.match(party, /id="game-detail"[^>]*aria-modal="true"[^>]*role="dialog"/);
+assert.match(party, /id="play-layer"[^>]*aria-labelledby="play-title"[^>]*aria-modal="true"[^>]*role="dialog"/);
 assert.match(party, /Persönliche Inhalte sind freiwillig/);
 assert.match(party, /Überspringen ist jederzeit erlaubt/);
 assert.match(party, /id="pause-hub-game"[^>]*aria-pressed="false"/);
@@ -48,6 +47,8 @@ const partyCss = read('party.css');
 const extraCss = read('party-extra.css');
 const creatorCss = read('creator.css');
 const searchSource = read('party-search-assist.js');
+const polishSource = read('party-hub-polish.js');
+const hubA11y = read('party-hub-a11y.js');
 
 assert.match(partyCss, /:focus-visible/);
 assert.match(partyCss, /outline:3px solid var\(--accent\)/);
@@ -65,12 +66,26 @@ assert.match(extraCss, /\.hub-session-controls \.ghost-button\{min-height:44px/)
 assert.match(extraCss, /\.favorite-button[^}]*min-height:44px/);
 assert.match(extraCss, /\.close-button[^}]*min-height:44px/);
 
+assert.match(polishSource, /party-hub-a11y\.js/);
+assert.match(polishSource, /loadHubA11y/);
+assert.match(hubA11y, /version: 2/);
+assert.match(hubA11y, /node\.inert = Boolean\(overlay\)/);
+assert.match(hubA11y, /heading\.setAttribute\('tabindex', '-1'\)/);
+assert.match(hubA11y, /document\.addEventListener\('keydown', trapOverlayFocus, true\)/);
+assert.match(hubA11y, /event\.key !== 'Tab'/);
+assert.match(hubA11y, /last\.focus\(\)/);
+assert.match(hubA11y, /first\.focus\(\)/);
+
 console.log(JSON.stringify({
   accessibilityContract: 'PASS',
   languageAndViewport: true,
   skipLinks: true,
   mainLandmarks: true,
   visibleFocusContract: true,
+  hubViewHeadingFocusContract: true,
+  modalBackgroundIsolation: true,
+  modalFocusTrapContract: true,
+  activeGameDialogSemantics: true,
   reducedMotionContract: true,
   minimumCriticalTouchTarget: 44,
   searchKeyboardContract: true,
