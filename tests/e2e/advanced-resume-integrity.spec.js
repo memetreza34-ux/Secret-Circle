@@ -39,6 +39,13 @@ async function seedForgedSession(page, gameId, advanced, pack) {
   await page.reload();
 }
 
+async function expectDiscarded(page) {
+  await expect(page.locator('#advanced-status')).toContainText('inkonsistenter gespeicherter Rundenzustand');
+  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).toBeNull();
+  await expect(page.locator('#advanced-play-layer')).toBeHidden();
+  await expect(page.locator('#advanced-start')).not.toContainText('fortsetzen');
+}
+
 test('forged Two Truths outcome is discarded before resume UI can use it', async ({ page }) => {
   await seedHub(page);
   await seedForgedSession(page, 'two-truths', {
@@ -50,9 +57,24 @@ test('forged Two Truths outcome is discarded before resume UI can use it', async
     correct: false
   }, 'Persönlich');
 
-  await expect(page.locator('#advanced-status')).toContainText('inkonsistenter gespeicherter Rundenzustand');
-  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).toBeNull();
-  await expect(page.locator('#advanced-start')).not.toContainText('fortsetzen');
+  await expectDiscarded(page);
+});
+
+test('Location Spy rejects an impossible result containing vote and guess paths at once', async ({ page }) => {
+  await seedHub(page);
+  await seedForgedSession(page, 'location-spy', {
+    stage: 'result',
+    revealIndex: 7,
+    revealed: false,
+    location: 'Bahnhof',
+    spy: 'Lina',
+    voted: 'Lina',
+    correct: true,
+    guess: 'Bahnhof',
+    spyCorrect: true
+  }, 'Reise');
+
+  await expectDiscarded(page);
 });
 
 test('forged Mafia winner is discarded before moderator state is restored', async ({ page }) => {
@@ -77,7 +99,29 @@ test('forged Mafia winner is discarded before moderator state is restored', asyn
     winner: 'Mafia'
   }, 'Klassisch');
 
-  await expect(page.locator('#advanced-status')).toContainText('inkonsistenter gespeicherter Rundenzustand');
-  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).toBeNull();
-  await expect(page.locator('#advanced-play-layer')).toBeHidden();
+  await expectDiscarded(page);
+});
+
+test('Mafia rejects a non-finished stage when the alive state already has a winner', async ({ page }) => {
+  await seedHub(page);
+  const roles = {
+    Alex: 'Mafia', Sam: 'Mafia', Mika: 'Detektiv', Lina: 'Arzt',
+    Noah: 'Dorfbewohner', Lea: 'Dorfbewohner', Emil: 'Dorfbewohner', Sara: 'Dorfbewohner'
+  };
+  await seedForgedSession(page, 'mafia', {
+    stage: 'night',
+    revealIndex: 7,
+    revealed: false,
+    day: 2,
+    roles,
+    alive: ['Mika', 'Lina', 'Noah', 'Lea', 'Emil', 'Sara'],
+    nightTarget: null,
+    saved: null,
+    protected: null,
+    lastProtected: null,
+    inspected: null,
+    nightResult: ''
+  }, 'Klassisch');
+
+  await expectDiscarded(page);
 });
