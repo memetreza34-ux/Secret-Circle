@@ -787,12 +787,25 @@
   function renderParanoia() {
     $('#play-player').textContent = `${currentPlayer()} liest allein`;
     $('#play-content').textContent = 'Gerät so halten, dass niemand mitlesen kann.';
-    $('#play-options').append(actionButton('Geheime Frage anzeigen', () => {
-      const question = pickUnused(contentItems('paranoia', session.pack));
-      $('#play-content').textContent = question || 'Keine Frage verfügbar.';
+    const resolved = session.current?.kind === 'paranoia' && session.current.phase === 'resolved';
+    $('#play-options').append(actionButton(resolved ? 'Rundenergebnis anzeigen' : 'Geheime Frage anzeigen', () => {
+      const selected = R.ensureCurrent(session, 'paranoia', contentItems('paranoia', session.pack), randomInt);
+      const question = selected?.value || 'Keine Frage verfügbar.';
       clearNode($('#play-options'));
+
+      if (session.current?.kind === 'paranoia' && session.current.phase === 'resolved') {
+        $('#play-content').textContent = session.current.reveal ? `Frage wird aufgedeckt: ${question}` : 'Die Frage bleibt geheim.';
+        $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
+        persistActiveSession();
+        focusPlayPrimary();
+        return;
+      }
+
+      R.markParanoiaQuestion(session);
+      $('#play-content').textContent = question;
       $('#play-actions').append(actionButton('Name wurde genannt · Münze werfen', () => {
         const reveal = randomInt(2) === 1;
+        R.resolveParanoia(session, reveal);
         $('#play-content').textContent = reveal ? `Frage wird aufgedeckt: ${question}` : 'Die Frage bleibt geheim.';
         clearNode($('#play-actions'));
         $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
