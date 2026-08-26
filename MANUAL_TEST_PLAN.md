@@ -2,7 +2,7 @@
 
 Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**  
+Offline-Core: **`secret-circle-v52` / `secret-circle-v52-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
@@ -15,13 +15,13 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Checkout ausgeführt
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` grün
-- [ ] `npm test` grün inklusive Word-Imposter-, Hub-Resume- und Backup-Registry-Tests
-- [ ] `npm run validate` grün inklusive `backup_contract_audit.py`
-- [ ] Chromium E2E grün inklusive Complete-Backup-/Forward-Compatibility-Fällen
+- [ ] `npm test` grün inklusive Word-Imposter-, Hub-Resume-, Hub-Round-State- und Backup-Registry-Tests
+- [ ] `npm run validate` grün inklusive `backup_contract_audit.py` und `architecture_audit.py`
+- [ ] Chromium E2E grün inklusive Complete-Backup-/Forward-Compatibility- und HR52-Fällen
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 und v51 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50, v51 und v52 sind nicht runnerverifiziert.**
 
 ## 2. Hub-Smoke
 
@@ -70,8 +70,11 @@ Gemeinsam:
 
 Spezifisch:
 
+- [ ] Wahrheit/Pflicht: geöffnete Karte über Reload/Resume identisch
+- [ ] Wahrheit/Pflicht: gleiche numerische Kartenindizes blockieren sich nicht gegenseitig
+- [ ] normale Prompt-/Choice-Runde behält sichere Current-Karte über Resume
 - [ ] persönliche Games freiwillig
-- [ ] Paranoia Secret Cover
+- [ ] Paranoia Secret Cover; keine automatische Wiederöffnung über v52-Current
 - [ ] Scharade/Tabu Secret Cover + Timer
 - [ ] Hot Potato 10–25 s
 - [ ] Word Chain manuelle Gültigkeit
@@ -85,15 +88,28 @@ Spezifisch:
 - [ ] Charades + Taboo-Timer verworfen
 - [ ] running + 0 ms verworfen
 - [ ] stale Resume-Karte wird beim Verwerfen entfernt
-- [ ] **während Guard lädt: Resume-Karte `aria-busy`**
-- [ ] **Resume-Buttons während Guard lädt deaktiviert**
+- [ ] während Guard lädt: Resume-Karte `aria-busy`
+- [ ] Resume-Buttons während Guard lädt deaktiviert
 - [ ] kein Klick vor Validierung möglich
 - [ ] gültige Session wird nach erfolgreicher Prüfung wieder bedienbar
 - [ ] Ladefehler bleibt fail-closed
 - [ ] gültige Session bleibt unverändert
 - [ ] online und offline identisch
 
-## 6. Advanced Core
+## 6. HR52 – Hub Round Resume
+
+- [ ] Wahrheit öffnen, Text notieren, reloaden, Session fortsetzen → exakt derselbe Text
+- [ ] Pflicht entsprechend prüfen
+- [ ] Wahrheit/Pflicht dürfen denselben numerischen Index unabhängig verwenden
+- [ ] sichere Prompt-Karte bleibt über Reload identisch
+- [ ] sichere Choice-Karte bleibt über Reload identisch
+- [ ] ungültiger/out-of-range Current wird verworfen
+- [ ] `next` löscht Current vor nächster Runde
+- [ ] globales Skip löscht Current vor nächster Runde
+- [ ] Paranoia wird nach Reload nicht automatisch über Current geöffnet
+- [ ] derselbe Vertrag in installierter Offline-PWA
+
+## 7. Advanced Core
 
 Für Two Truths, Question Imposter, Location Spy und Mafia:
 
@@ -104,7 +120,7 @@ Für Two Truths, Question Imposter, Location Spy und Mafia:
 - [ ] Modal/Fokus-Trap
 - [ ] Hintergrund nicht fokussierbar
 
-## 7. Quick / Extended / Labs
+## 8. Quick / Extended / Labs
 
 Je Mechanikfamilie mindestens ein kompletter Smoke:
 
@@ -118,7 +134,7 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Hot Seat / Story Chain
 - [ ] Fokus bleibt nach dynamischem Re-Render sinnvoll
 
-## 8. Creator
+## 9. Creator
 
 - [ ] Template-Radiogroup mit Tab + Pfeile/Home/End
 - [ ] Wizard-Schrittfokus
@@ -129,7 +145,7 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Export/Import
 - [ ] unerfahrene Person kann valides Spiel erstellen
 
-## 9. Smart Party Night
+## 10. Smart Party Night
 
 - [ ] 15 / 30 / 45 / 60 / 90 Minuten
 - [ ] unterschiedliche Gruppen/Stimmungen
@@ -137,7 +153,7 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Neustart/Abbruch
 - [ ] drei vollständige reale Abende
 
-## 10. Backup / Datenschutz – BK51
+## 11. Backup / Datenschutz – BK51
 
 ### Word Imposter / Creator
 
@@ -150,19 +166,17 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 
 - [ ] Gesamtexport enthält aktuelle registrierte lokale Appdaten
 - [ ] regulärer Complete-Restore ersetzt managed Bestandsdaten sauber
-- [ ] vorhandener unbekannter Namespace bleibt nach Restore byte-/inhaltlich unverändert
-- [ ] vorhandenes `secret-circle-party-hub-v2` bleibt nach Restore unverändert
-- [ ] Backup mit `secret-circle-party-hub-v2` wird als nicht unterstützter Key abgelehnt
-- [ ] aktueller managed Key mit falscher interner Storage-Version wird vor Mutation abgelehnt
-- [ ] Klartext statt JSON wird vor Mutation abgelehnt
-- [ ] primitive JSON-Wurzel wird vor Mutation abgelehnt
+- [ ] unbekannter Namespace bleibt nach Restore unverändert
+- [ ] `secret-circle-party-hub-v2` bleibt nach Restore unverändert
+- [ ] Backup mit Future-Key wird abgelehnt
+- [ ] managed Key mit falscher Storage-Version wird vor Mutation abgelehnt
+- [ ] Klartext / primitive JSON-Wurzel wird vor Mutation abgelehnt
 - [ ] >1,5 MB UTF-8 wird vor Mutation abgelehnt
-- [ ] simulierte/echte Quota-Schreibstörung löst managed Rollback aus
-- [ ] Rollback verändert unbekannte/future Namespaces nicht
+- [ ] Quota-/Write-Störung löst managed Rollback aus
+- [ ] Rollback verändert unknown/future Namespaces nicht
 - [ ] vollständige lokale Löschung entfernt nach expliziter Bestätigung sämtliche `secret-circle-*`-Keys
-- [ ] Exportdatei als unverschlüsselte Datei behandeln und anschließend Testdatei löschen
 
-## 11. PWA / Offline – v51
+## 12. PWA / Offline – v52
 
 - [ ] Android-Installation
 - [ ] iOS Add to Home Screen
@@ -171,17 +185,19 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Query-Routen offline
 - [ ] Word-/Hub-/Advanced-Guards offline
 - [ ] `party-hub-polish.js` v50-Quarantäne offline
+- [ ] `party-hub-round-state.js` offline
 - [ ] `backup-schema-registry.js` + `party-data-tools.js` v6 offline
 - [ ] A11y-Schichten offline
 - [ ] DWI offline
-- [ ] Hub Resume v50 offline
-- [ ] BK51 Export/Restore offline bzw. nach Offline-Neustart soweit Browser-Dateizugriff dies unterstützt
-- [ ] Update von mindestens zwei älteren Installationen auf v51/RC
+- [ ] HR2 offline
+- [ ] BK51 offline bzw. nach Offline-Neustart soweit Browser-Dateizugriff dies unterstützt
+- [ ] HR52 offline
+- [ ] Update von mindestens zwei älteren Installationen auf v52/RC
 - [ ] aktive Session über Update geschützt
 - [ ] lokale managed und future Testdaten erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
-## 12. Hintergrund / Sperrbildschirm / Reload
+## 13. Hintergrund / Sperrbildschirm / Reload
 
 - [ ] Appwechsel
 - [ ] Sperren/Entsperren
@@ -189,8 +205,9 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Timer korrekt
 - [ ] keine doppelte Statistik
 - [ ] private Inhalte verdeckt
+- [ ] sichere Current-Karten korrekt fortgesetzt
 
-## 13. Accessibility / Mobile
+## 14. Accessibility / Mobile
 
 - [ ] Tastatur ohne Maus
 - [ ] Skip-Link
@@ -204,7 +221,7 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Touchziele / Reduced Motion
 - [ ] Resume-Quarantäne verständlich und nicht fokussierbar solange gesperrt
 
-## 14. Reale Partytests
+## 15. Reale Partytests
 
 - [ ] 3–4 Personen / ≥60 min
 - [ ] 5–8 Personen / ≥90 min
@@ -213,12 +230,13 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] DWI mit neutralen Daten
 - [ ] HR2/v50 mit neutralem Zustand
 - [ ] BK51 mit neutralen Daten
+- [ ] HR52 mit neutralem Zustand + realer Truth/Dare-Runde
 - [ ] Mafia
 - [ ] Scharade/Tabu
 - [ ] Party Night
 - [ ] mindestens ein Nachweis pro Core-Spiel
 
-## 15. Content / Rechte
+## 16. Content / Rechte
 
 - [ ] Ton/Privacy/Safety/Alter
 - [ ] keine problematischen Wiederholungen
@@ -228,7 +246,7 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 
 Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
 
-## 16. Release-Freigabekriterium
+## 17. Release-Freigabekriterium
 
 - [ ] automatisierter Preflight grün
 - [ ] Branch Protection aktiv
@@ -236,11 +254,12 @@ Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
 - [ ] Android/iPhone/iPad real
 - [ ] Accessibility real
 - [ ] DWI real
-- [ ] Hub Resume v2/v50-Ladequarantäne real
-- [ ] BK51 Complete Backup / Forward Compatibility / Rollback real
+- [ ] Hub Resume v2/v50 real
+- [ ] BK51 real
+- [ ] HR52 real
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
-- [ ] G1–G5 / DWI / HR2 / BK51 / PN1–PN3 abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v51 + Rollback
+- [ ] G1–G5 / DWI / HR2 / BK51 / HR52 / PN1–PN3 abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v52 + Rollback
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content/Rechte/Legal/Support/Hosting-Sign-off
 - [ ] Incident-/Rollback-Drill
