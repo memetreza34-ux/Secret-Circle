@@ -6,112 +6,75 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 Stand: 26. August 2026
 
-### Release-Status
+### Aktueller Status
 
-- 15/15 Core Source Review: **PREPARED**
-- 15/15 Core Source Hardening: **PREPARED**
-- Accessibility Source Hardening: **PREPARED**
-- Word-Imposter Data/Resume: **PREPARED**
-- Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**
-- Complete Backup v51: **PREPARED**
-- Hub Round Resume v52: **PREPARED**
-- Paranoia Resume/Privacy v53: **PREPARED**
+- Core Source Review/Hardening: **15/15 PREPARED**
+- Accessibility: **PREPARED**
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54: **quellsseitig PREPARED, real offen**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 
-### v46 – Hub Accessibility
+### v46–v47 – Accessibility
 
-`party-hub-a11y.js`: Bereichsfokus, modale Hintergrundisolation, Fokus-Trap und Rückkehrfokus; Unit-/E2E-/Auditverträge ergänzt.
-
-### v47 – Advanced/Quick/Creator Accessibility
-
-`secondary-surface-a11y.js`: Advanced-Modal-Isolation, Quick-Fokus-Recovery, Creator-Wizard-Fokus und Radiogroup-Tastaturvertrag.
+Hub-A11y sowie Advanced/Quick/Creator-Fokus-/Modal-/Radiogroup-Hardening eingeführt. Reale Screenreader-/Geräteabnahme bleibt offen.
 
 ### v48 – Word-Imposter Data/Resume
 
-- nächster Wähler aus tatsächlichen offenen Vote-Keys
-- manipulierte nicht-sequenzielle Voting-Snapshots verworfen
-- maximal 50 Kategorien / 200 Begriffe je Kategorie
-- 1,5 MB UTF-8 pro Word-Imposter-Backup
-- 51/201 fail-closed; kein stilles Trunkieren
-- abgelehnte Imports verändern Bestandsdaten nicht
+Voting-Resume, 50 Kategorien, 200 Begriffe je Kategorie, 1,5-MB-UTF-8-Grenze, kein stilles Trunkieren und keine Bestandsmutation bei abgelehntem Import.
 
-### v49 – Hub Resume Integrity
+### v49–v50 – Hub Resume Guard
 
-`party-hub-resume-guard.js` v2 wurde zentrale Runtime-/Testquelle. Cross-Mode-/Timer-Inkonsistenzen werden verworfen; stale Resume UI wird entfernt.
-
-### v50 – Fail-closed Hub Resume Loading
-
-Sichtbare Resume-Aktionen bleiben während Guard-Prüfung gesperrt (`aria-busy`, deaktivierte Buttons). Guard-Lade-/Integritätsfehler bleiben fail-closed. Browserfälle für verzögerte/fehlgeschlagene Guard-Ladung ergänzt.
+Zentraler `party-hub-resume-guard.js` v2; Cross-Mode-/Timer-Inkonsistenzen fail-closed; stale Resume UI entfernt; Resume-Aktionen während Guard-Ladung bis erfolgreicher Validierung deaktiviert.
 
 ### v51 – Complete Backup / Forward Compatibility
 
-- `backup-schema-registry.js` v2 als zentrale aktuelle Key-/Schemaquelle
-- breite Party-Wildcard entfernt
-- Future-Namespaces/-Storage-Versionen bleiben außerhalb heutigen Restore-Eigentums
-- `party-data-tools.js` v6
-- vollständige Vorvalidierung vor Mutation
-- managed-only Snapshot/Restore/Rollback
-- explizite Komplettlöschung bleibt prefixweit
-- BK51 als eigener Realtest definiert
+Registry-basierte aktuelle Key-Eigentümerschaft, Future-Key/-Version-Erhalt, key-spezifische Vorvalidierung, `party-data-tools.js` v6 und managed-only Restore/Rollback. BK51 als Realtest definiert.
 
 ### v52 – Hub Round Resume / Truth-Dare Usage
 
-- neues `party-hub-round-state.js`
-- sichere Truth-Dare-/Prompt-/Choice-Current-Referenzen
-- geöffnete sichere Karte bleibt nach Reload/Resume identisch
-- Wahrheit/Pflicht besitzen getrennte Usage-Pools
-- manipulierte/out-of-range Current-Referenzen werden verworfen
-- `next` und Skip löschen alten Current-Zustand
-- HR52 als eigener Realtest definiert
+`party-hub-round-state.js` eingeführt. Sichere Truth-Dare-/Prompt-/Choice-Karten bleiben über Reload identisch; Wahrheit/Pflicht besitzen getrennte Usage-Pools; ungültige Current-Referenzen werden verworfen. HR52 definiert.
 
 ### v53 – Paranoia Resume / Privacy
 
-- `party-hub-round-state.js` auf **Version 2** erweitert.
-- Paranoia speichert eine validierte Kartenreferenz statt freien Geheimtext im Current-Zustand.
-- erlaubte Phasen: private Frage offen bzw. bereits aufgelöster Münzwurfzustand; ungültige Referenzen/Phasen werden verworfen.
-- Reload/Resume öffnet die Geheimfrage **nicht automatisch**.
-- nach bewusster Reveal-Aktion wird **dieselbe zuvor verwendete Frage** wieder angezeigt.
-- ein bereits gefällter Münzwurf bleibt über Reload/Resume identisch; es erfolgt kein zweiter Zufallswurf.
-- `party-hub-polish.js` auf **Version 17**: Fokus-/Appverlust verdeckt Paranoia auch nach dem Münzwurf/Auflösungszustand.
-- `tests/hub-resume-contract.test.js` schützt Paranoia-Referenz, Phase, Ergebnis und Bounds.
-- `tests/e2e/core-hub-resume.spec.js` schützt same-question/no-auto-reveal/same-result Resume.
-- `tests/e2e/core-hub-controls.spec.js` schützt Blur-Concealment nach der Auflösung.
-- `party-hub.js` wurde ohne Lockerung der Architekturgrenze wieder deutlich unter 1000 Zeilen gehalten.
-- `scripts/architecture_audit.py` prüft den präzisierten Secret-Resume-Vertrag.
-- **PR53** als eigener Realtest in Beta/Manual/Issue #8 definiert.
+`party-hub-round-state.js` v2: Paranoia hält validierte Kartenreferenz/Phase und bereits gefälltes Münzwurf-Ergebnis, bleibt nach Reload aber gedeckt. `party-hub-polish.js` v17 verdeckt auch den aufgelösten Zustand bei Fokusverlust. Same-question/same-result-E2E und PR53 ergänzt.
 
-### PWA / Offline – v53
+### v54 – Pre-Timer Resume
 
-- Offline-Core: **`secret-circle-v53` / `secret-circle-v53-staging`**.
-- `party-hub-round-state.js` v2 und `party-hub-polish.js` v17 sind offline enthalten.
-- v46–v52-Verträge bleiben Bestandteil des Offline-Core.
-- Service-Worker-Test, Architektur, Deployment, Environment, Privacy und Hosting sind auf v53 synchronisiert.
-- reale Installation, Upgrade, Rollback, DWI, HR2, BK51, HR52 und PR53 bleiben offen.
+- `party-hub-round-state.js` auf **Version 3** erhöht.
+- `hot-potato` und `word-chain` sind sichere Pre-Start-Current-Modi.
+- Hot Potato behält die bereits angezeigte Aufgabe über Reload/Resume vor Timerstart.
+- Wortkette behält den bereits angezeigten Startbuchstaben über Reload/Resume vor Timerstart.
+- Beim tatsächlichen Timerstart wird `current` **vor** Erstellung des Timer-Snapshots gelöscht.
+- derselbe Hot-Potato-Wert wird danach in `timer.prompt`, derselbe Wortkettenwert in `timer.letter` fortgeführt.
+- Scharade/Tabu sind ausdrücklich nicht in den sichtbaren Pre-Start-Current-Modi enthalten.
+- neues `tests/e2e/core-hub-prestart-resume.spec.js` schützt beide Browserpfade.
+- `tests/hub-resume-contract.test.js` und `tests/hub-timer-contract.test.js` schützen RoundState-v3-/Handoff-Verträge.
+- neues `scripts/hub_prestart_resume_audit.py` bündelt Runtime, Tests, PWA und Deploymentvertrag und läuft in `npm run validate`; der Audit prüft seine eigene Validate-Einbindung.
+- PT54 als eigener Realtest definiert.
 
-### Build / Supply Chain
+### PWA / Offline – v54
 
-- `package-lock.json` v3
-- Playwright exakt 1.54.2
-- keine npm-Runtime-Dependencies
-- CI/Cross-Browser verwenden `npm ci`
-- Syntax-/Unit-/Validate-/E2E-Gates enthalten die aktuellen Hub-Round-/Paranoia-Verträge
-- Online-`npm ci`-/Test-PASS bleibt wegen Hosted-Runner-Blocker offen
+- Offline-Core: **`secret-circle-v54` / `secret-circle-v54-staging`**.
+- Service-Worker-Test auf Cachevertrag 54.
+- Architektur, Deployment, Environment, Privacy und Hosting auf v54/PT54 synchronisiert.
+- alle v46–v53 Schutzschichten bleiben enthalten.
 
-### CI / Hosted Runner – P0
+### Build / CI
 
-Letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Checkout, npm, Test oder Repositorycode wurde ausgeführt. Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repository-Code.
-
-**Für v50–v53 wird daraus kein Test-PASS abgeleitet.**
+- `package-lock.json` v3; Playwright exakt 1.54.2; keine npm-Runtime-Dependencies.
+- CI/Cross-Browser verwenden `npm ci`.
+- PT54-E2E im Syntax-Preflight und PT54-Audit im Validate-Gate.
+- Letzter vollständig untersuchter Actions-Lauf bleibt historisch **Run #2787 auf v49**, `steps: null` / `steps: []`, ohne ausgeführten Repositorycode.
+- **v50–v54 haben keinen Runner-PASS.**
 
 ### Operator / Assets
 
 - `operator-release.json` bleibt `PREPARED / BLOCKED`.
 - reale Hosting-/Legal-/Support-/Incident-Evidence bleibt offen.
-- Root-`icon.svg` und Ableitungen bleiben bis echter Rechtebestätigung `unresolved`.
+- Root-`icon.svg` bleibt bis echter Rechtebestätigung `unresolved`.
 
 ### Releaseentscheidung
 
-Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53**, **#14 Operator/Hosting/Legal/Support**.
+Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54**, **#14 Operator/Hosting/Legal/Support**.
 
 Öffentlicher Release: **NO_GO**.
