@@ -68,7 +68,7 @@ test('shared controls pause a running timer, skip, abort, replay and offer next 
   await expect(page.locator('#quick-progress')).toContainText('Runde 1 von 3');
 });
 
-test('every fast engine loads the shared controls runtime before its engine', async ({ page }) => {
+test('every fast engine loads controls and replacement guard before its engine', async ({ page }) => {
   await seedHub(page);
   const cases = [
     ['rapid-fire', 'party-quick-modes.js'],
@@ -81,9 +81,11 @@ test('every fast engine loads the shared controls runtime before its engine', as
     await expect(page.locator('#quick-title')).not.toHaveText('Spiel laden');
     const sources = await page.locator('script[src]').evaluateAll(nodes => nodes.map(node => node.getAttribute('src')));
     const controlsIndex = sources.indexOf('party-session-controls.js');
+    const guardIndex = sources.indexOf('quick-session-replacement-guard.js');
     const engineIndex = sources.indexOf(engineSource);
     expect(controlsIndex).toBeGreaterThanOrEqual(0);
-    expect(engineIndex).toBeGreaterThan(controlsIndex);
+    expect(guardIndex).toBeGreaterThan(controlsIndex);
+    expect(engineIndex).toBeGreaterThan(guardIndex);
     await expect(page.getByRole('button', { name: 'Pause' })).toBeDisabled();
   }
 });
