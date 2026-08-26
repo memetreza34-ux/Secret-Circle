@@ -51,7 +51,7 @@ Privacy-/Reference-Safe-Entscheidungen werden nicht nur in einer späteren Ersat
 ## 5. Hub-, Runden- und Timergrenzen
 
 - `party-hub.js`: direkte Hub-Sessions, Navigation, Persistenz und nicht zeitgesteuerte Flows
-- `party-hub-round-state.js`: sichere nicht-geheime Current-Card-Referenzen, Truth/Dare-Pooltrennung und Resume-Normalisierung
+- `party-hub-round-state.js`: validierte Current-Referenzen, Truth/Dare-Pooltrennung sowie sichere und verdeckte Resume-Phasen
 - `party-hub-timers.js`: Scharade, Tabu, Heiße Kartoffel und Wortkette
 - `party-session-controls.js`: gemeinsame pausierbare Session-/Timersteuerung
 - `party-hub-resume-guard.js`: eigenständige Validierung gespeicherter Hub-Timerzustände
@@ -68,8 +68,17 @@ Seit **v52** gilt für einfache direkte Hub-Runden:
 - Reload/Resume rendert dieselbe laufende Karte statt sie still als verbraucht zu verlieren und eine Ersatzkarte zu ziehen;
 - Wahrheit und Pflicht besitzen getrennte `usedByPool.truth`-/`usedByPool.dare`-Indexräume;
 - `next` und globales Skip löschen `current`, bevor die nächste Runde erzeugt wird;
-- gespeicherte Current-Referenzen werden gegen Modus, Pack, Index und Content geprüft;
-- **geheime Modi wie Paranoia gehören ausdrücklich nicht zu den safe-current Modi** und öffnen nach Reload weiterhin keinen geheimen Inhalt automatisch.
+- gespeicherte Current-Referenzen werden gegen Modus, Pack, Index und Content geprüft.
+
+Seit **v53** gilt zusätzlich für Paranoia:
+
+- eine gestartete geheime Frage darf als **validierte Kartenreferenz** (`kind`, `index`, Phase) fortgesetzt werden, aber nicht als automatisch sichtbarer Geheimtext;
+- nach Reload erscheint zunächst nur der gedeckte Paranoia-Einstieg; die Frage wird erst nach einer erneuten bewussten Reveal-Aktion gezeigt;
+- nach einem Münzwurf wird das bereits entschiedene boolesche Ergebnis gespeichert und bei Resume nicht neu ausgewürfelt;
+- auch ein bereits aufgelöster Paranoia-Zustand wird bei Fokus-/App-Verlust durch `party-hub-polish.js` Version 17 wieder verdeckt;
+- ungültige/out-of-range Referenzen sowie ein `resolved`-Zustand ohne boolesches `reveal` werden verworfen.
+
+Damit wird **Kontinuität nicht mit automatischer Offenlegung verwechselt**: sichere Karten dürfen direkt wieder erscheinen; geheime Paranoia-Zustände dürfen nur ihre Referenz/Phase behalten und bleiben UI-seitig verdeckt.
 
 Der Resume-Guard bleibt ein eigenständiger Runtime-Vertrag. Seit v50 wird eine bereits sichtbare Resume-Karte während der asynchronen Guard-Prüfung fail-closed gesperrt (`aria-busy`, deaktivierte Buttons) und erst nach erfolgreicher Validierung wieder freigegeben.
 
@@ -101,8 +110,10 @@ Complete-Backup-Restore und vollständige Datenlöschung sind bewusst unterschie
 - Nutzereingaben bevorzugt über `textContent`
 - Importgrenzen nach Format, Version, Größe, exakter Key-Allowlist und Struktur
 - geheime Karten/Fragen/Rollen bei Fokusverlust verdecken
-- geheime Zustände nach Reload nicht automatisch öffnen
-- Safe-Current-Resume nur für ausdrücklich nicht-geheime direkte Hub-Modi
+- geheime Zustände nach Reload niemals automatisch sichtbar öffnen
+- sichere Current-Karten dürfen unmittelbar fortgesetzt werden
+- geheime Paranoia-Current-Referenzen dürfen nur gedeckt fortgesetzt und erst nach expliziter Aktion angezeigt werden
+- bereits aufgelöste Paranoia-Inhalte werden bei Fokusverlust erneut verdeckt
 - lokale Daten exportierbar und löschbar
 - persönliche Inhalte freiwillig und überspringbar
 - Built-ins verlangen keine Offenlegung privater Nachrichten, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten
@@ -111,7 +122,7 @@ Complete-Backup-Restore und vollständige Datenlöschung sind bewusst unterschie
 
 ## 9. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v52` / `secret-circle-v52-staging`**.
+Aktueller Offline-Core: **`secret-circle-v53` / `secret-circle-v53-staging`**.
 
 Relevante jüngere Generationen:
 
@@ -125,7 +136,8 @@ Relevante jüngere Generationen:
 - v49: zentraler Hub-Resume-Guard + Validator-Synchronisierung
 - v50: fail-closed Resume-UI-Quarantäne während der Guard-Ladephase
 - v51: Complete-Backup-Transaktionsgrenze, Forward-Compatibility und key-spezifische Restore-Validierung
-- **v52: direkte Hub-Rundenkontinuität für sichere Karten + getrennte Wahrheit/Pflicht-Wiederholungspools**
+- v52: direkte Hub-Rundenkontinuität für sichere Karten + getrennte Wahrheit/Pflicht-Wiederholungspools
+- **v53: Paranoia-Referenz/Phase und Münzwurf-Ergebnis resume-fähig, aber weiterhin gedeckt; resolved-state Blur-Concealment**
 
 Neue Versionen werden zuerst in `STAGING_CACHE` vorbereitet. Aktivierung erfolgt erst nach bewusster Nutzerentscheidung. Der aktive Cache wird nicht vor erfolgreicher Promotion zerstört.
 
@@ -164,7 +176,7 @@ Quellseitige Schutzschichten sind `party-hub-a11y.js` und `secondary-surface-a11
 
 Bei normalen Änderungen: Syntaxchecks, Unit-/Contracttests, Architektur-/Foundation-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
 
-Der Hub-Rundenstatus wird durch `tests/hub-resume-contract.test.js` funktional und durch `tests/e2e/core-hub-resume.spec.js` im Browservertrag geschützt.
+Der Hub-Rundenstatus wird durch `tests/hub-resume-contract.test.js` funktional und durch `tests/e2e/core-hub-resume.spec.js` sowie `tests/e2e/core-hub-controls.spec.js` im Browservertrag geschützt.
 
 Beim Release Candidate zusätzlich: echter Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, PWA Upgrade/Rollback, Android/iPhone/Tablet, VoiceOver/TalkBack/Zoom/Tastatur sowie reale Gruppen.
 
@@ -172,7 +184,7 @@ Audits müssen **zustandsfähig** sein: Sie dürfen PREPARED/NO_GO heute validie
 
 ## 14. Performance und Assets
 
-Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. `party-hub-round-state.js` hält Rundenkontinuität bewusst außerhalb des bereits großen `party-hub.js`-Moduls.
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets aus `scripts/performance_budget.py` haben Vorrang. Nach dem v53-Paranoia-Ausbau wurde `party-hub.js` wieder deutlich unter die 1000-Zeilen-Grenze kompaktiert, statt die Architekturgrenze zu erhöhen.
 
 PWA-Assets:
 
