@@ -71,8 +71,9 @@ test('Mafia role overview requires moderator confirmation again after reload', a
   await seedPlayers(page);
   await page.goto('/advanced.html?game=mafia');
   await page.evaluate(({ activeKey, players }) => {
+    // 8-player Klassisch contract: 2 Mafia, 1 Detektiv, 1 Arzt, 4 Dorfbewohner.
     const roles = {
-      Alex: 'Mafia', Sam: 'Detektiv', Mika: 'Arzt', Lina: 'Dorfbewohner',
+      Alex: 'Mafia', Sam: 'Mafia', Mika: 'Detektiv', Lina: 'Arzt',
       Noah: 'Dorfbewohner', Lea: 'Dorfbewohner', Emil: 'Dorfbewohner', Sara: 'Dorfbewohner'
     };
     localStorage.setItem(activeKey, JSON.stringify({
@@ -91,7 +92,8 @@ test('Mafia role overview requires moderator confirmation again after reload', a
         startedAt: '2026-08-07T12:00:00.000Z',
         advanced: {
           stage: 'overview', revealIndex: players.length - 1, revealed: false, day: 1,
-          roles, alive: players, nightTarget: null, saved: null, inspected: null, nightResult: ''
+          roles, alive: players, nightTarget: null, saved: null, protected: null,
+          lastProtected: null, inspected: null, nightResult: '', winner: null
         }
       }
     }));
