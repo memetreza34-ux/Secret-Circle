@@ -1,6 +1,6 @@
 # Secret Circle – Releasefahrplan bis Januar 2027
 
-Stand: 8. August 2026
+Stand: 26. August 2026
 
 ## Verbindliches Ziel
 
@@ -34,13 +34,14 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] Offline-Navigation mit Query-Parametern reparieren
 - [x] Service-Worker-Regressionstest ergänzen
 - [x] Release-Checkliste auf Januar-2027-Gates aktualisieren
+- [x] reproduzierbares `package-lock.json` v3 erzeugen
+- [x] CI und Cross-Browser auf `npm ci` umstellen
 - [ ] GitHub-Actions-Runner wieder funktionsfähig machen
 - [ ] geschützte stabile Releasebasis festlegen
 - [ ] Branch Protection und verpflichtende Checks aktivieren
 - [ ] veralteten `main`-Stand nicht mehr als Produktstand behandeln
 - [ ] PR #11 in überprüfbare Themenbereiche zerlegen oder kontrolliert konsolidieren
 - [ ] Release- und Hotfix-Branchstrategie dokumentieren
-- [ ] reproduzierbares `package-lock.json` erzeugen und CI auf `npm ci` umstellen
 
 ### Kerntechnik
 
@@ -49,6 +50,10 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] alle Speicher- und Sicherungsformate inventarisieren
 - [x] zentrales Backup-Schemaregister einführen
 - [x] UTF-8-Bytegrenzen für alle aktuell unterstützten Importwege vereinheitlichen
+- [x] Complete-Restore auf exakt registrierte aktuelle Storage-Keys begrenzen
+- [x] zukünftige Namespaces/Storage-Versionen aus heutiger Restore-Eigentümerschaft ausschließen
+- [x] key-spezifische Root-/Storage-Version-/Minimalwrapper-Prüfung vor Restore-Mutation ergänzen
+- [x] Complete-Restore/Rollback auf managed Keys begrenzen
 - [x] Creator-Zeitstempel korrigieren
 - [x] wiederholte Sessionabschlüsse in Creator und klassischer Quick-Engine verhindern
 - [x] Mega- und Viral-Abschlüsse während der Migration vorübergehend deduplizieren
@@ -60,6 +65,9 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [x] direkte Hub-Sessions versioniert speichern und nach Reload explizit wiederaufnehmbar machen
 - [x] direkte Hub-Timerrestzeit für Scharade, Tabu, Heiße Kartoffel und Wortkette über Reload sichern
 - [x] private Hub-/Advanced-Reveal-Zustände nach Reload standardmäßig wieder verdecken
+- [x] Hub-Resume-Aktionen während asynchroner Guard-Prüfung fail-closed sperren
+
+Aktueller technischer Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**. Diese Checkboxen beschreiben Source-/Contract-Arbeit und ersetzen keine Runner-, Browser-, PWA- oder Realgeräte-Evidence.
 
 ## September 2026 – Bedienung und Kernspiele
 
@@ -81,7 +89,7 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 
 ### Kernspiele
 
-- [ ] Release-Kernspiele aus `RELEASE_SCOPE_2027.md` vollständig prüfen
+- [ ] Release-Kernspiele aus `RELEASE_SCOPE_2027.md` vollständig real prüfen
 - [ ] Regeln jeder Runde vor dem Start in höchstens vier Schritten erklären
 - [x] Überspringen, Pause, Abbruch, Wiederholen und nächstes Spiel für Quick-, Mega-, Viral- und Creator-Modi vereinheitlichen
 - [x] laufende Timer dieser vier Enginefamilien während einer Pause tatsächlich einfrieren
@@ -130,9 +138,11 @@ Secret Circle wird nicht durch möglichst viele sichtbare Modi perfekt, sondern 
 - [ ] vollständiges `npm run ci` grün dokumentieren
 - [ ] Chromium, Firefox und WebKit grün dokumentieren
 - [x] beschädigte Daten, Quota, Rollback und Importgrenzen durch Unit- und Contract-Tests abdecken
+- [x] Complete-Backup-Forward-Compatibility durch Unit-/E2E-/Auditverträge abdecken
+- [ ] BK51 Complete Backup / Future-Key / Write-Rollback in echten Browserläufen bestätigen
 - [ ] alle Query-Routen offline in echten Browserläufen testen
-- [ ] Service-Worker-Update von mindestens zwei älteren Cacheversionen testen
-- [ ] Accessibility-E2E mit Axe oder gleichwertiger Prüfung ergänzen
+- [ ] Service-Worker-Update von mindestens zwei älteren Cacheversionen auf v51/RC testen
+- [ ] Accessibility-E2E mit Axe oder gleichwertiger Prüfung ergänzen oder den gewählten gleichwertigen Prüfpfad dokumentieren
 - [ ] Performancebudget für Erststart und Offline-Core einhalten
 
 ### Reale Geräte
@@ -179,6 +189,7 @@ Erlaubt sind nur:
 - [ ] Lizenz und Drittanbieterhinweise
 - [ ] vollständiger Changelog
 - [ ] Deployment- und Rollbacktest
+- [ ] BK51 Export→Import/Forward-Compatibility auf dem unveränderten RC bestanden
 - [ ] signierte Release-Checkliste mit Commit und Testgeräten
 - [ ] keine offenen kritischen oder hohen Fehler
 
@@ -204,7 +215,8 @@ Secret Circle wird nicht öffentlich veröffentlicht, wenn mindestens einer dies
 - kritische oder hohe Fehler sind offen.
 - notwendige Betreiber-, Datenschutz- oder Lizenzangaben fehlen.
 - Kernspiele wurden nicht mit realen Gruppen getestet.
-- Import oder Löschung kann lokale Daten ohne funktionierenden Rollback zerstören.
+- Import, Restore oder Löschung kann lokale Daten ohne funktionierenden Rollback zerstören.
+- ein heutiger Complete-Restore kann unbekannte oder zukünftige Storage-Daten ohne ausdrückliche Löschbestätigung entfernen.
 
 ## Nach dem Release
 
