@@ -1,7 +1,8 @@
 # Secret Circle – Wartung, Migration und Lebenszyklus
 
-Stand: 16. August 2026  
-Status: **PREPARED**
+Stand: 26. August 2026  
+Status: **PREPARED**  
+Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**
 
 ## 1. Ziel
 
@@ -62,7 +63,7 @@ Nicht ohne dokumentierte Migration ändern:
 
 - Spiel-IDs
 - Pack-IDs, wenn persistiert/referenziert
-- Storage-Key-Familien
+- exakte persistierte Storage-Keys und deren Versionen
 - Backupformat/-version
 - Session-ID-/Completion-ID-Logik
 - PWA-Scope/Manifest-ID
@@ -87,18 +88,25 @@ Jede migrationsrelevante Änderung benötigt:
 
 Keine Migration direkt auf Productiondaten entwerfen, ohne alte Snapshots getestet zu haben.
 
-## 5. Backupwartung
+## 5. Backupwartung – v51+
 
-`backup-schema-registry.js` ist Vertragsmittelpunkt.
+`backup-schema-registry.js` ist Vertragsmittelpunkt. Registry-Version 2 besitzt für Complete Restore aktuell **16 explizite heutige Storage-Keys**. `party-data-tools.js` Version 6 konsumiert diesen Vertrag.
 
 Bei Änderungen:
 
 - Registry-Version nur für Registry-/Policyänderung erhöhen
-- Datei-Formatversion nur bei externer Schemaänderung erhöhen
+- Datei-Formatversion nur bei externer Backup-Schemaänderung erhöhen
 - `BACKUP_SCHEMAS.md` synchronisieren
-- Runtime darf keine abweichenden Grenzwerte duplizieren
-- Allowlist neuer Storage-Key-Familien bewusst erweitern
-- unbekannte Namespaces nicht „zur Sicherheit“ pauschal erlauben
+- Runtime darf keine abweichenden Complete-Format-/Limitwerte duplizieren
+- neuen Storage-Key **nicht automatisch** über eine Wildcard in den alten Restore aufnehmen
+- für jeden neuen managed Key Root-Typ, aktuelle Storage-Version und minimale Pflichtstruktur definieren
+- Eigentümer/runtime source für jeden managed Key nachweisbar halten
+- unbekannte oder zukünftige Namespaces/Storage-Versionen nicht „zur Sicherheit“ pauschal verwalten
+- Forward-Compatibility entscheiden: ältere Runtime darf neuere lokale Daten nicht still löschen
+- `tests/backup-schema-registry.test.js`, `tests/e2e/party-data.spec.js`, `tests/e2e/backup-forward-compat.spec.js` und `scripts/backup_contract_audit.py` anpassen
+- bei Offline-Core-Änderung Cachegeneration erhöhen
+
+Eine neue Storage-Version wie `secret-circle-party-hub-v2` gehört **nicht** automatisch dem heutigen v1-Restore. Erst nach expliziter Migration-/Backupentscheidung darf sie in eine neue Registry-Allowlist aufgenommen werden.
 
 ## 6. PWA-/Service-Worker-Wartung
 
@@ -113,11 +121,18 @@ Bei jeder Änderung an offline benötigten Dateien:
 
 Nie eine bereits ausgelieferte Cachegeneration für andere Inhalte wiederverwenden.
 
+Rollback/Hotfix erhält ebenfalls eine neue Generation.
+
 ## 7. Dependency-Wartung
 
-Vor Release wird zunächst ein reproduzierbares `package-lock.json` benötigt.
+Der reproduzierbare Repositoryvertrag ist vorhanden:
 
-Danach regelmäßig:
+- `package-lock.json` v3
+- CI/Cross-Browser verwenden `npm ci`
+- Playwright exakt 1.54.2
+- keine npm-Runtime-Dependencies
+
+Regelmäßig:
 
 - bekannte Schwachstellen prüfen
 - Major-Updates nicht blind automatisch mergen
@@ -126,7 +141,7 @@ Danach regelmäßig:
 - Dependencies minimieren
 - Playwright-/Node-Baseline bewusst ändern und Tests anpassen
 
-Production-Runtime bleibt nach Möglichkeit ohne unnötige npm-Laufzeitdependencies.
+**Noch offen:** echter Online-`npm ci`-/Runner-PASS auf dem unveränderten RC.
 
 ## 8. Browser-/Plattformwartung
 
@@ -138,6 +153,7 @@ Mindestens vor jedem größeren Release erneut prüfen:
 - Service Worker
 - Background/Lockscreen bei Timern
 - Storage-/Quota-Verhalten
+- Complete-Backup-Restore/BK51
 - Standalone Safe Areas
 - Reduced Motion
 - Screenreader
@@ -187,7 +203,7 @@ Bei jeder neuen Funktion fragen:
 - neue Daten?
 - neue Netzwerkverbindung?
 - neue Berechtigung?
-- neue Storage-Familie?
+- neuer persistierter Storage-Key oder neue Storage-Version?
 - neue Third Party?
 - neue geheime Inhalte?
 - neue Importfläche?
@@ -197,11 +213,13 @@ Bei Ja:
 - Threat Model
 - Risk Register
 - Privacy
-- Backup
+- Backup/Registry
 - Legal
 - Tests
 
 aktualisieren.
+
+Ein neuer persistierter Key benötigt außerdem explizite Entscheidung, ob und ab welcher App-/Backupversion er Teil eines Complete Backups ist.
 
 ## 12. Dokumentationspflege
 
@@ -247,7 +265,7 @@ Bei einer Änderung darf Code nicht absichtlich einem alten Dokument widersprech
 - vollständige RC-Gates
 - Rechts-/Privacy-Updatecheck
 - Geräte/A11y
-- Backup/Migration
+- Backup/Migration/BK51
 - Rollbackprobe
 
 ## 14. Deprecation
@@ -259,8 +277,9 @@ Ablauf:
 1. Nutzung/Abhängigkeiten identifizieren
 2. Migrations-/Fallbackpfad bereitstellen
 3. mindestens eine kompatible Übergangsphase, wenn Daten betroffen sind
-4. alte Struktur erst entfernen, wenn Tests/Snapshots zeigen, dass Daten nicht verloren gehen
-5. Changelog/Architecture aktualisieren
+4. Future-/unbekannte Daten nicht durch ältere Restore-Logik besitzen oder löschen
+5. alte Struktur erst entfernen, wenn Tests/Snapshots zeigen, dass Daten nicht verloren gehen
+6. Changelog/Architecture/Backup-Registry aktualisieren
 
 ## 15. End-of-Life / Aufgabe des Projekts
 
@@ -277,11 +296,12 @@ Falls Secret Circle irgendwann nicht weiterbetrieben wird:
 `MAINTENANCE PASS` vor Production bedeutet:
 
 - [ ] Verantwortliche für Updates bekannt
-- [ ] Changelogprozess festgelegt
-- [ ] Backup-/Migrationsvertrag dokumentiert
-- [ ] PWA-Cacheprozess dokumentiert
-- [ ] Incident-/Hotfixpfad dokumentiert
-- [ ] Dependencystrategie nach Lockfile vorhanden
-- [ ] Browser-/Plattformprüfung vor RC terminiert
+- [x] Changelogprozess festgelegt
+- [x] Backup-/Migrationsvertrag dokumentiert
+- [x] PWA-Cacheprozess dokumentiert
+- [x] Dependencystrategie nach Lockfile vorhanden
+- [ ] BK51/Forward-Compatibility auf echtem RC ausgeführt
+- [ ] Incident-/Hotfixpfad real belegt
+- [ ] Browser-/Plattformprüfung vor RC terminiert/ausgeführt
 
-Aktuell: **PREPARED – operative Umsetzung nach CI/Lockfile und vor RC weiter schließen**.
+Aktuell: **PREPARED – Source-/Wartungsverträge vorhanden; operative Runner-/Browser-/Geräte-/BK51-/Incident-Evidence bleibt offen**.
