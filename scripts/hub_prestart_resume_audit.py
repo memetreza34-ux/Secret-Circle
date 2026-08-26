@@ -47,9 +47,9 @@ for marker in (
 
 hot_start = re.search(r'function startHotPotato[\s\S]*?function renderWordChainStart', timers)
 word_start = re.search(r'function startWordChain[\s\S]*?function renderStoredTimerSession', timers)
-if not hot_start or hot_start.group(0).find('R.clearCurrent(current)') > hot_start.group(0).find("current.timer = {"):
+if not hot_start or hot_start.group(0).find('R.clearCurrent(current)') > hot_start.group(0).find('current.timer = {'):
     violations.append('Hot Potato must clear pre-start current before creating the timer snapshot.')
-if not word_start or word_start.group(0).find('R.clearCurrent(current)') > word_start.group(0).find("current.timer = {"):
+if not word_start or word_start.group(0).find('R.clearCurrent(current)') > word_start.group(0).find('current.timer = {'):
     violations.append('Word Chain must clear pre-start current before creating the timer snapshot.')
 
 for marker in (
@@ -63,8 +63,11 @@ for marker in (
         violations.append(f'PT54 browser contract marker missing: {marker}')
 
 check = package.get('scripts', {}).get('check', '')
+validate = package.get('scripts', {}).get('validate', '')
 if 'node --check tests/e2e/core-hub-prestart-resume.spec.js' not in check:
     violations.append('PT54 browser spec missing from syntax preflight.')
+if 'scripts/hub_prestart_resume_audit.py' not in validate:
+    violations.append('PT54 audit missing from npm run validate.')
 
 cache = re.search(r"const CACHE='(secret-circle-v(\d+))'", sw)
 staging = re.search(r"const STAGING_CACHE='(secret-circle-v(\d+)-staging)'", sw)
@@ -82,7 +85,6 @@ else:
 if 'PT54' not in read('DEPLOYMENT.md') or 'PT54' not in read('ENVIRONMENTS.md') or 'PT54' not in read('HOSTING_DECISION.md'):
     violations.append('PT54 real-evidence gate is not synchronized across deployment/environment/hosting contracts.')
 
-# Secret/private timer cards must not be added to the safe pre-start current set.
 safe_match = re.search(r"SAFE_CURRENT_MODES = new Set\(\[([^\]]+)\]\)", round_state)
 if safe_match:
     safe_values = safe_match.group(1)
@@ -102,6 +104,7 @@ print(json.dumps({
     'private_prestart_modes_excluded': ['charades', 'taboo'],
     'current_to_timer_snapshot_handoff': True,
     'browser_contract': 'tests/e2e/core-hub-prestart-resume.spec.js',
+    'validate_gate_self_checked': True,
     'pwa_cache': cache.group(1) if cache else None,
     'real_evidence_gate': 'PT54'
 }, ensure_ascii=False, indent=2))
