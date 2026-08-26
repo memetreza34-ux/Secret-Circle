@@ -12,7 +12,7 @@ Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffe
 - 4 Advanced-Core-Games
 - Word Imposter + Smart Party Night
 - lokaler No-Code-Game-Creator
-- aktueller Offline-Core: **`secret-circle-v52` / `secret-circle-v52-staging`**
+- aktueller Offline-Core: **`secret-circle-v53` / `secret-circle-v53-staging`**
 - Release-PR: Draft-PR #13 auf `agent/release-foundation-2027`
 
 Öffentliche Freigabe: **NO_GO**, bis reale Release-Evidence vorliegt.
@@ -44,31 +44,29 @@ Ein Job mit `steps: []` zählt nicht als Code-/Testnachweis.
 - Word-Imposter Voting-/Resume- und Custom-/Backup-Grenzen real geprüft
 - Hub-/Advanced-Resume- und Privacy-Guards real geprüft
 - Hub-Resume-v2-Ladequarantäne real geprüft
-- v52 direkte Hub-Rundenkontinuität real geprüft: gleiche sichere Karte nach Reload, getrennte Wahrheit/Pflicht-Pools, geheime Current-Karten nicht automatisch wiederhergestellt
+- v52 sichere Direkt-Hub-Rundenkontinuität real geprüft
+- **v53 Paranoia real geprüft: gleiche geheime Frage nach Reload erst auf explizite Reveal-Aktion, gleiches bereits feststehendes Münzwurf-Ergebnis und erneutes Verdecken auch nach Auflösung**
 - Complete Backup v51 real geprüft: managed-only Restore, Future-Key-Erhalt, key-spezifische Vorvalidierung und Rollback
 - keine offenen Critical/High Bugs
 - finale Content-/Privacy-/Reference-Abnahme
 
 ### PWA / Offline
 
-Der aktuelle RC-Source-Vertrag ist **v52**. Der Offline-Core enthält unter anderem:
+Der aktuelle RC-Source-Vertrag ist **v53**. Der Offline-Core enthält unter anderem:
 
 - Hub, Word Imposter, Advanced, Quick, Creator, Privacy
 - Katalog-/Contentmodule
 - Session-/Timercontroller
 - `word-imposter-resume-guard.js`
 - `party-hub-resume-guard.js`
-- `party-hub-round-state.js` für sichere Current-Card-Resume-Kontinuität
-- `party-hub-polish.js` mit fail-closed Resume-Ladequarantäne
+- `party-hub-round-state.js` Version 2 für sichere und verdeckte Current-Referenzen
+- `party-hub-polish.js` Version 17 mit fail-closed Resume-Ladequarantäne und Paranoia-Concealment auch nach Auflösung
 - `backup-schema-registry.js`
 - `party-data-tools.js` Version 6 mit v51-Complete-Backup-Hardening
-- `advanced-resume-guard.js`
-- `advanced-privacy-guard.js`
-- `party-hub-a11y.js`
-- `secondary-surface-a11y.js`
+- Advanced-Resume-/Privacy- und Accessibility-Schichten
 - Manifest und PWA-Icons
 
-`tests/service-worker.test.js` schützt die CORE-/Cachequelle. `tests/hub-resume-contract.test.js` schützt die v52-Rundenstatuslogik. `tests/e2e/core-hub-resume.spec.js` schützt Reload-/Resume- und Privacy-Verhalten im Browservertrag. Backupverträge bleiben über Registry-/E2E-/Audittests geschützt.
+`tests/service-worker.test.js` schützt die CORE-/Cachequelle. `tests/hub-resume-contract.test.js` schützt die Rundenstatuslogik. `tests/e2e/core-hub-resume.spec.js` schützt Reload-/Resume-Verhalten; `tests/e2e/core-hub-controls.spec.js` schützt unter anderem Blur-Concealment nach Paranoia-Auflösung.
 
 Reale Installation, Offline-Neustart, Update und Rollback bleiben separate Browser-/Geräte-Gates.
 
@@ -77,10 +75,8 @@ Reale Installation, Offline-Neustart, Update und Rollback bleiben separate Brows
 Staging muss eine eigene HTTPS-Origin besitzen, getrennt von Production. Vor manueller PWA-Abnahme:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v52
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v53
 ```
-
-`scripts/staging_smoke.py` prüft unter anderem HTTPS, Same-Origin-Redirects, Kernseiten/Query-Routen, Manifest-/Standalone-Vertrag, PNG-Dimensionen, Service-Worker-Cachegeneration, PWA-Head-Metadaten und Privacy-/Reference-Safe-Source.
 
 Der HTTP-Smoke ersetzt keine Service-Worker-Installation, keinen Offline-Neustart und keine Realgeräteprüfung.
 
@@ -88,24 +84,18 @@ Der HTTP-Smoke ersetzt keine Service-Worker-Installation, keinen Offline-Neustar
 
 Mindestens:
 
-- Service Worker registriert
-- PWA installierbar
-- Hub + mindestens eine Unterseite mit korrektem Titel/Icon
-- Offline-Neustart
-- Hub, Word Imposter, Advanced, Quick, Creator und Privacy offline
+- Service Worker registriert und PWA installierbar
+- Hub + Kernunterseiten online/offline
 - Query-Routen offline
 - aktive Session während Update geschützt
-- „Später“ und bewusste Aktivierung funktionieren
-- Word-Imposter-v48-Datengrenzen bleiben korrekt
-- Hub-Resume-v2 inklusive v50-Ladequarantäne bleibt korrekt
-- v52 Wahrheit/Pflicht: angezeigte sichere Karte nach Reload/Resume identisch
-- v52 Wahrheit/Pflicht: Wahrheit-/Pflicht-Usage-Pools unabhängig
-- v52 Prompt/Choice: sichere Current-Karte nach Reload identisch
-- Paranoia: geheime Frage nach Reload nicht automatisch offen
-- Complete Backup v51: Future-Key/Future-Version überlebt Restore
-- Complete Backup v51: falsche Storage-Version/Klartext/Primitive vor Mutation abgelehnt
-- Complete Backup v51: Write-Fail rollt managed Keys zurück
-- Hub-/Advanced-/Quick-/Creator-A11y-Pfade real
+- Word-Imposter-v48-Datengrenzen
+- Hub-Resume-v2 inklusive v50-Ladequarantäne
+- v52 Wahrheit/Pflicht/Prompt/Choice sichere Current-Kontinuität
+- **v53 Paranoia-Frage: nach Reload gedeckt, nach explizitem Reveal exakt dieselbe Frage**
+- **v53 Paranoia-Ergebnis: nach Reload gedeckt, nach explizitem Anzeigen exakt dasselbe Münzwurf-Ergebnis**
+- **v53 Paranoia nach Münzwurf: Blur/Appwechsel verdeckt den Zustand erneut**
+- Complete Backup v51 Future-Key/Future-Version/Vorvalidierung/Rollback
+- Accessibility-Pfade
 - Update aus mindestens zwei real installierten Altständen
 
 ## Update-Regel
@@ -118,7 +108,7 @@ Bei jeder Änderung einer offline benötigten Datei:
 4. Architektur/Deployment/Privacy/Environment/Hosting synchronisieren
 5. Alt→Neu real testen
 
-Historie: v49 zentralisierte den Hub-Resume-Guard; v50 sperrte Resume-Aktionen bis zur Guard-Validierung; v51 härtete Complete Backup/Restore; **v52 erhält sichere laufende Direkt-Hub-Karten über Reload und trennt Wahrheit/Pflicht-Wiederholungspools.**
+Historie: v49 zentralisierte den Hub-Resume-Guard; v50 sperrte Resume-Aktionen bis zur Guard-Validierung; v51 härtete Complete Backup; v52 erhielt sichere laufende Direkt-Hub-Karten über Reload; **v53 erhält verdeckte Paranoia-Rundenreferenzen und ein unveränderliches bereits gefälltes Münzwurf-Ergebnis, ohne Auto-Reveal.**
 
 ## Rollback
 
@@ -140,7 +130,7 @@ Kein Force-Push auf eine stabile Releasebasis.
 Nach vollständiger Staging-Freigabe:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v52 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v53 --production
 ```
 
 Danach manuellen Browser-/PWA-Smoke wiederholen. Production muss exakt dem freigegebenen RC entsprechen.
