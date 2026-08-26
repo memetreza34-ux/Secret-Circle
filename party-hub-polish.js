@@ -181,7 +181,11 @@
     const game = currentPlayGame();
     if (!game || !playContent || playContent.hidden) return null;
 
-    if (game.id === 'paranoia' && playActions && [...playActions.querySelectorAll('button')].some(button => button.textContent.includes('Name wurde genannt'))) {
+    if (
+      game.id === 'paranoia'
+      && playActions?.querySelector('button')
+      && !playOptions?.querySelector('button')
+    ) {
       return { gameId: game.id, label: 'Geheime Frage', revealLabel: 'Geheime Frage wieder anzeigen' };
     }
 
@@ -311,7 +315,7 @@
   loadHubA11y();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 16,
+    version: 17,
     updateStartLabel,
     updatePlaySafety,
     updatePlayActionLabels,
