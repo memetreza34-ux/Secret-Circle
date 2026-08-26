@@ -16,6 +16,7 @@ required = [
     'tests/e2e/advanced-core-round-flow.spec.js',
     'tests/e2e/advanced-core-smoke.spec.js',
     'tests/e2e/advanced-live-privacy.spec.js',
+    'tests/e2e/advanced-new-session-guard.spec.js',
     'tests/e2e/advanced-resume-integrity.spec.js',
     'tests/e2e/advanced-secret-resume.spec.js',
     'tests/e2e/mafia-extended.spec.js',
@@ -35,6 +36,7 @@ privacy = read('advanced-privacy-guard.js')
 unit = read('tests/advanced-resume-guard.test.js')
 resume_integrity = read('tests/e2e/advanced-resume-integrity.spec.js')
 completion = read('tests/e2e/advanced-completion-exact-once.spec.js')
+new_session = read('tests/e2e/advanced-new-session-guard.spec.js')
 secret_resume = read('tests/e2e/advanced-secret-resume.spec.js')
 live_privacy = read('tests/e2e/advanced-live-privacy.spec.js')
 package = json.loads(read('package.json'))
@@ -77,10 +79,11 @@ for marker in (
     "const historyId = `advanced-${cleanText(session.id, 100) || makeSessionId()}`;",
     'const alreadySaved = nextHubState.history.some',
     'if (!alreadySaved)',
-    'if (!clearActive())'
+    'if (!clearActive())',
+    "window.confirm('Gespeicherte Session verwerfen und eine neue beginnen?')"
 ):
     if marker not in runner:
-        violations.append(f'Advanced exact-once runner marker missing: {marker}')
+        violations.append(f'Advanced runner integrity marker missing: {marker}')
 
 for marker in (
     'Mafia finished round is counted exactly once when the session is saved before starting another round',
@@ -89,6 +92,16 @@ for marker in (
 ):
     if marker not in completion:
         violations.append(f'Advanced completion browser marker missing: {marker}')
+
+for marker in (
+    'cancelling New Session keeps the existing Advanced resume state untouched',
+    'confirmed New Session replaces the old Advanced session only after explicit discard',
+    'New Session stays fail-closed when the old active marker cannot be removed',
+    'expect(after.session.id).toBe(before.session.id)',
+    'expect(after.session.id).not.toBe(before.session.id)'
+):
+    if marker not in new_session:
+        violations.append(f'Advanced new-session browser marker missing: {marker}')
 
 for marker in (
     "button(ctx, 'Session beenden', ctx.finishSession, 'secondary')",
@@ -129,6 +142,7 @@ critical_specs = [
     'tests/e2e/advanced-core-round-flow.spec.js',
     'tests/e2e/advanced-core-smoke.spec.js',
     'tests/e2e/advanced-live-privacy.spec.js',
+    'tests/e2e/advanced-new-session-guard.spec.js',
     'tests/e2e/advanced-resume-integrity.spec.js',
     'tests/e2e/advanced-secret-resume.spec.js',
     'tests/e2e/mafia-extended.spec.js'
@@ -155,6 +169,8 @@ print(json.dumps({
     'location_result_paths_exclusive': True,
     'mafia_terminal_stage_integrity': True,
     'mafia_finished_exact_once': True,
+    'confirmed_new_session_replacement': True,
+    'failed_active_removal_stays_closed': True,
     'abort_preserves_without_completion': True,
     'secret_resume_reconcealment': True,
     'critical_e2e_syntax_preflight': len(critical_specs),
