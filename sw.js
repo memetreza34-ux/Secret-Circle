@@ -1,8 +1,8 @@
 'use strict';
 
-const CACHE='secret-circle-v51';
-const STAGING_CACHE='secret-circle-v51-staging';
-const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./pwa-update.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./party-release.css','./party-search.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./word-imposter-resume-guard.js','./backup-schema-registry.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-core-release-catalog.js','./party-core-classic-content.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub-timers.js','./party-hub-resume-guard.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-hub-a11y.js','./secondary-surface-a11y.js','./party-guide.js','./party-release-structure.js','./party-filter-state.js','./party-search-assist.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./advanced-resume-guard.js','./party-advanced-runner.js','./advanced-privacy-guard.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./session-ledger.js','./party-session-controls.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const CACHE='secret-circle-v52';
+const STAGING_CACHE='secret-circle-v52-staging';
+const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./pwa-update.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./party-release.css','./party-search.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./word-imposter-resume-guard.js','./backup-schema-registry.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-core-release-catalog.js','./party-core-classic-content.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub-timers.js','./party-hub-resume-guard.js','./party-hub-round-state.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-hub-a11y.js','./secondary-surface-a11y.js','./party-guide.js','./party-release-structure.js','./party-filter-state.js','./party-search-assist.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./advanced-resume-guard.js','./party-advanced-runner.js','./advanced-privacy-guard.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./session-ledger.js','./party-session-controls.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 function stripSearch(value) {
   const url = new URL(typeof value === 'string' ? value : value.url);
@@ -27,7 +27,7 @@ async function promoteStagedCore() {
   await Promise.all(requests.map(async request => {
     const response = await staging.match(request);
     if (!response) throw new Error(`Vorbereitete Ressource fehlt: ${request.url}`);
-    await active.put(request, response);
+    await active.put(request, response.clone());
   }));
 
   const activeRequests = await active.keys();
