@@ -1,6 +1,6 @@
 # Secret Circle – CI Troubleshooting
 
-Stand: 25. August 2026
+Stand: 26. August 2026
 
 ## Aktueller Befund
 
@@ -22,9 +22,9 @@ Aktuellster vollständig untersuchter App-CI-Befund bleibt der v49-Lauf **Run #2
 - kein Playwright
 - kein Repositorycode ausgeführt
 
-Run #2787 liegt auf dem **v49-/Hub-Resume-v2-/Release-Audit-/Operator-Evidence-Hardening-Stand**. Damit wurden der zentrale `party-hub-resume-guard.js` v2, der stale-Resume-UI-Regressionsfall und die transition-safe Release-Audits nicht durch einen GitHub-Runner ausgeführt.
+Run #2787 liegt historisch auf dem **v49-/Hub-Resume-v2-/Release-Audit-/Operator-Evidence-Hardening-Stand**. Dieser historische Bezug bleibt absichtlich v49.
 
-Der aktuelle Source-/Offline-Core ist inzwischen **v50**. v50 ergänzt die fail-closed Ladephase des Hub-Resume-Schutzes: Bereits gerenderte Resume-Aktionen sind bis zum Abschluss der Guard-Validierung gesperrt. Auch dieser v50-Vertrag besitzt weiterhin **keinen echten Runner-PASS**.
+Der aktuelle Source-/Offline-Core ist inzwischen **v51**. v50 ergänzte die fail-closed Ladephase des Hub-Resume-Schutzes. v51 ergänzt Complete-Backup-/Restore-Hardening mit exakter Storage-Key-Eigentümerschaft, Forward-Compatibility, key-spezifischer Vorvalidierung und managed-only Rollback. **Weder v50 noch v51 besitzen derzeit einen echten Runner-PASS.**
 
 Das wiederholte Muster ist **kein Beweis für einen Codefehler**, weil der Repositorycode nicht startet.
 
@@ -49,12 +49,16 @@ Der verbleibende Fehlerbereich liegt **vor der Step-Ausführung**, insbesondere 
 
 Das gleiche Pre-Step-Muster wurde über viele Heads beobachtet, darunter Run #2244, #2334, #2359, #2363, #2387, #2401, #2565, #2575, #2627, #2637, #2685, #2715 und **#2787** sowie der isolierte Runner-Probe Run #7.
 
-Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A11y, v47-Secondary-A11y, v48-Word-Imposter-Datenhardening und v49-Hub-Resume-/Release-Audit-Hardening hinweg verstärkt die Diagnose: Der unmittelbare Fehler tritt **vor jeder Repositoryausführung** auf. v50 ändert an dieser externen Diagnose nichts.
+Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A11y, v47-Secondary-A11y, v48-Word-Imposter-Datenhardening und v49-Hub-Resume-/Release-Audit-Hardening hinweg verstärkt die Diagnose: Der unmittelbare Fehler tritt **vor jeder Repositoryausführung** auf. Die späteren v50-/v51-Änderungen ändern an dieser externen Diagnose nichts.
 
 ## Aktueller Buildvertrag
 
-- Offline-Core `secret-circle-v50` / `secret-circle-v50-staging`
-- Hub Resume Guard v2 + fail-closed Lade-/Button-Sperre
+- Offline-Core `secret-circle-v51` / `secret-circle-v51-staging`
+- Hub Resume Guard v2 + v50 fail-closed Lade-/Button-Sperre
+- Complete Backup v51: Registry v2 + `party-data-tools.js` v6
+- exakte 16-Key-Restore-Allowlist; Future-Namespace/-Storage-Version-Erhalt
+- key-spezifische Root-/Storage-Version-/Minimalwrapper-Prüfung vor Restore-Mutation
+- managed-only Restore-/Rollback-Transaktion
 - `package-lock.json` v3
 - `@playwright/test`, `playwright`, `playwright-core` 1.54.2; optional `fsevents` 2.3.2
 - feste Registry-URLs + `sha512`-Integrities
@@ -62,8 +66,13 @@ Die Wiederholung über Core-Hardening, Operator-/Legal-Erweiterungen, v46-Hub-A1
 - `scripts/lockfile_contract_audit.py`
 - `scripts/hub_a11y_contract_audit.py`
 - `scripts/secondary_surface_a11y_contract_audit.py`
+- `scripts/backup_contract_audit.py`
 - `tests/word-imposter-data-contract.test.js`
 - `tests/party-hub-resume-guard.test.js`
+- `tests/backup-schema-registry.test.js`
+- `tests/e2e/core-hub-resume.spec.js`
+- `tests/e2e/party-data.spec.js`
+- `tests/e2e/backup-forward-compat.spec.js`
 - `scripts/operator_release_contract_audit.py`
 - `scripts/release_readiness_contract_audit.py`
 - `scripts/release_audit.py`
@@ -79,7 +88,9 @@ Unter anderem vorhanden:
 - Lockfile-/Branch-Protection-Audits
 - Hub- und Secondary-Surface-A11y-Audits
 - Word-Imposter-Daten-/Voting-Contracttest
-- Hub-Resume-v2-Contracttest inklusive v50-Ladephasen-Sperre
+- Hub-Resume-v2-Contracttest inklusive v50-Ladephasen-Sperre und Browserfälle für verzögerte/fehlgeschlagene Guard-Ladung
+- Complete-Backup-v51 Unit-/Browser-/Forward-Compatibility-Verträge
+- eigener Complete-Backup-Contract-Audit im Validate-Gate
 - HTTPS-Staging-Smoke + Contract-Audit
 - PWA-Head-Metadata-Test für fünf interaktive Einstiegseiten
 - Privacy-/Reference-/Asset-/Media-/Placeholder-Audits
@@ -138,10 +149,10 @@ Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere Reposit
 2. Checkout bestätigen
 3. Online-`npm ci` / Integrity-Download prüfen
 4. ersten echten Repositoryfehler isolieren
-5. `npm run check`
-6. `npm test` inklusive `tests/word-imposter-data-contract.test.js` und `tests/party-hub-resume-guard.test.js`
-7. `npm run validate` einschließlich A11y-/Architektur-/Operator-/Release-Evidence-Audits
-8. Chromium E2E
+5. `npm run check` inklusive Backup-E2E-Syntax-Preflight
+6. `npm test` inklusive `tests/word-imposter-data-contract.test.js`, `tests/party-hub-resume-guard.test.js` und `tests/backup-schema-registry.test.js`
+7. `npm run validate` einschließlich `scripts/backup_contract_audit.py`, A11y-/Architektur-/Operator-/Release-Evidence-Audits
+8. Chromium E2E inklusive Hub-Resume-Loading, Complete Backup und Backup-Forward-Compatibility
 9. vollständiges `npm run ci`
 10. Cross-Browser auf demselben RC-Commit
 11. unveränderten Commit erneut vollständig testen
