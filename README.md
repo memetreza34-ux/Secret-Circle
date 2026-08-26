@@ -1,6 +1,6 @@
 # Secret Circle Party Hub
 
-Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere private Übergaben, Wiederaufnahme nach Unterbrechungen, lokale Datenkontrolle, Accessibility und belastbare Release-Gates.
+Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere private Übergaben, belastbare Wiederaufnahme nach Unterbrechungen, lokale Datenkontrolle, Accessibility und nachvollziehbare Release-Gates.
 
 ## Aktueller Stand
 
@@ -12,7 +12,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - lokaler No-Code-Game-Creator
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 
-Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**  
+Aktueller Offline-Core: **`secret-circle-v52` / `secret-circle-v52-staging`**  
 Classic Content: **v4**  
 Core Source Review: **15/15 PREPARED**  
 Core Source Hardening: **15/15 PREPARED**  
@@ -20,6 +20,7 @@ Accessibility Source Hardening: **PREPARED**
 Word-Imposter Data/Resume Hardening: **PREPARED**  
 Hub Resume Guard v2 + Lade-Quarantäne: **PREPARED**  
 Complete Backup v51 Hardening: **PREPARED**  
+Hub Round Resume v52: **PREPARED**  
 Operator / Hosting / Legal: **PREPARED / BLOCKED**  
 Freigabe: **NO_GO**
 
@@ -34,13 +35,13 @@ Freigabe: **NO_GO**
 
 ## Core-Hardening
 
-Der vollständige 15-Core-Codepfad wurde auf Setup, Geheimhaltung, Resume, Timer, Punkte und Anfänger-UX geprüft. Details: `CORE_GAME_ACCEPTANCE.md`.
+Der vollständige 15-Core-Codepfad wird auf Setup, Geheimhaltung, Resume, Timer, Punkte und Anfänger-UX geprüft. Details: `CORE_GAME_ACCEPTANCE.md`.
 
 Wichtige Verträge: Word-Imposter-Setup/Fairness/Voting/Resume, freiwillige Social-Games, Paranoia-/Scharade-/Tabu-Privacy, Heiße-Kartoffel-Timer 10–25 s, Wortketten-/Wrong-Answers-Regeln sowie Advanced Resume/Privacy inklusive Mafia-Integrität.
 
 ## Word Imposter – v48-Verträge
 
-Die in v48 eingeführten Daten-/Resume-Verträge bleiben im aktuellen v51-Core enthalten:
+Die in v48 eingeführten Daten-/Resume-Verträge bleiben im aktuellen v52-Core enthalten:
 
 - nächster Wähler aus den tatsächlich offenen Vote-Keys
 - manipulierte nicht-sequenzielle Voting-Snapshots werden verworfen
@@ -56,30 +57,44 @@ Die in v48 eingeführten Daten-/Resume-Verträge bleiben im aktuellen v51-Core e
 
 **v49** zentralisierte die direkte Hub-Resume-Integrität auf `party-hub-resume-guard.js` Version 2. `party-hub-polish.js` delegiert an denselben Guard, den die Tests prüfen.
 
-**v50** schließt zusätzlich das Ladefenster vor der Guard-Validierung:
+**v50** schloss zusätzlich das Ladefenster vor der Guard-Validierung:
 
-- eine bereits sichtbare Resume-Karte wird während der Guard-Prüfung `aria-busy`
+- sichtbare Resume-Karte wird während der Guard-Prüfung `aria-busy`
 - Resume-Buttons werden sofort deaktiviert
 - erst ein erfolgreich validierter Snapshot wird wieder freigegeben
-- bei Lade-/Integritätsfehler bleibt der Flow fail-closed
-- ein verworfener Snapshot entfernt auch eine bereits gerenderte Resume-Karte
+- Lade-/Integritätsfehler bleibt fail-closed
 
-Zusätzlich deckt `tests/e2e/core-hub-resume.spec.js` die Browserwirkung der verzögerten bzw. fehlschlagenden Guard-Ladung ab.
+`tests/e2e/core-hub-resume.spec.js` deckt die Browserwirkung dieser Guard-Pfade ab.
 
 ## Complete Backup – v51
 
-v51 härtet vollständige lokale Exporte/Restores, ohne das Backup-Dateiformat Version 1 unnötig zu ändern:
+v51 härtete vollständige lokale Exporte/Restores, ohne das Backup-Dateiformat Version 1 unnötig zu ändern:
 
 - `backup-schema-registry.js` Version 2 ist die zentrale Quelle
 - `party-data-tools.js` Version 6 konsumiert diesen Vertrag
-- Restore besitzt nur 16 explizit registrierte aktuelle Storage-Keys
+- Restore besitzt nur explizit registrierte aktuelle Storage-Keys
 - zukünftige Namespaces und Storage-Versionen werden weder importiert noch von einem heutigen Restore gelöscht
 - jeder managed Wert braucht gültiges JSON, den erwarteten Root-Typ, die erwartete aktuelle Storage-Version und minimale Pflichtwrapper
 - vollständige Validierung erfolgt vor der ersten Mutation
 - Schreibfehler rollen nur den managed Zustand auf den vorherigen Snapshot zurück
-- die bewusst bestätigte Funktion „Alle lokalen Daten löschen“ bleibt dagegen prefixweit
+- „Alle lokalen Daten löschen“ bleibt bewusst prefixweit
 
 Automatische Grenzen: `tests/backup-schema-registry.test.js`, `tests/e2e/party-data.spec.js`, `tests/e2e/backup-forward-compat.spec.js` und `scripts/backup_contract_audit.py`.
+
+## Hub Round Resume – v52
+
+v52 schließt einen Kontinuitätsfehler bei direkten Hub-Runden:
+
+- neues kleines Runtime-Modul `party-hub-round-state.js`
+- sichere nicht-geheime aktuelle Karten können über Reload/Resume wiederhergestellt werden
+- Wahrheit und Pflicht besitzen getrennte Usage-Pools; gleiche numerische Indizes blockieren sich nicht mehr gegenseitig
+- eine bereits geöffnete Wahrheit/Pflicht-Karte bleibt nach Reload dieselbe Karte
+- normale Prompt-/Choice-Karten können denselben laufenden Rundeninhalt wiederherstellen
+- ungültige oder manipulierte `current`-Referenzen werden verworfen
+- Paranoia und andere geheime Inhalte werden **nicht** über diesen Current-Pfad automatisch wieder geöffnet
+- `next` und globales Skip löschen den laufenden Current-Zustand vor der nächsten Runde
+
+Source-/Browserverträge: `tests/hub-resume-contract.test.js` und `tests/e2e/core-hub-resume.spec.js`.
 
 ## Accessibility – v46/v47
 
@@ -87,7 +102,7 @@ Automatische Grenzen: `tests/backup-schema-registry.test.js`, `tests/e2e/party-d
 - `secondary-surface-a11y.js`: Advanced, Quick und Creator
 - Creator-Radiogroup mit Pfeiltasten/Home/End
 
-Beide Schichten bleiben Bestandteil von v51. **Noch kein Accessibility PASS:** VoiceOver, TalkBack, 200-%-Zoom, Touch und reale Geräte-/Browserabnahme bleiben offen.
+Beide Schichten bleiben Bestandteil von v52. **Noch kein Accessibility PASS:** VoiceOver, TalkBack, 200-%-Zoom, Touch und reale Geräte-/Browserabnahme bleiben offen.
 
 ## Release-/Operator-Verträge
 
@@ -114,8 +129,9 @@ Die zentralen Release-Audits sind **transition-safe**: Sie akzeptieren heute PRE
 - Playwright 1.54.2 exakt
 - keine npm-Runtime-Dependencies
 - CI/Cross-Browser verwenden `npm ci`
-- `npm run validate` enthält den eigenen Complete-Backup-Contract-Audit
-- `validate_project.py` prüft aktuelle Runtime-Scriptketten und den Hub-Resume-Loadervertrag
+- `npm run validate` enthält den Complete-Backup-Contract-Audit
+- `validate_project.py` und `architecture_audit.py` prüfen aktuelle Runtime-Scriptketten
+- `party-hub-round-state.js` sowie der erweiterte Hub-Resume-E2E-Vertrag sind im Syntax-Preflight
 
 ## CI – extern blockiert
 
@@ -128,7 +144,7 @@ Letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**.
 - `steps: null` / separate Abfrage `steps: []`
 - kein Checkout, npm, Test oder Repositorycode ausgeführt
 
-Der frühere Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Run #2787 bestätigt den Pre-Step-Blocker historisch auf v49; **v50 und v51 sind deshalb ebenfalls noch nicht runnerverifiziert**. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Der frühere Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Run #2787 bestätigt den Pre-Step-Blocker historisch auf v49; **v50, v51 und v52 sind deshalb noch nicht runnerverifiziert**. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## Assets / Rechte
 
@@ -137,7 +153,7 @@ Die technische Icon-Provenienz ist dokumentiert. Die Rechtebasis des Root-`icon.
 ## Zentrale offene Issues
 
 1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
-2. **#8** – reale Geräte, v51 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2/v50-Ladequarantäne, Complete-Backup-v51 und Partytests
+2. **#8** – reale Geräte, v52 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2/v50-Ladequarantäne, Complete-Backup-v51, Hub-Round-Resume-v52 und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 ## Höchste Priorität
@@ -146,8 +162,8 @@ Die technische Icon-Provenienz ist dokumentiert. Die Rechtebasis des Root-`icon.
 2. Online-`npm ci` + CI/Cross-Browser
 3. Branch Protection real bestätigen
 4. Provider + getrennte HTTPS-Staging-/Production-Origin
-5. v51 PWA-/Staging-Smoke, Upgrade und Rollback
-6. Word-Imposter-Datengrenzen + Hub Resume Guard v2/v50-Ladequarantäne + Complete-Backup-v51 real prüfen
+5. v52 PWA-/Staging-Smoke, Upgrade und Rollback
+6. Word-Imposter-Datengrenzen + Hub Resume Guard v2/v50 + Complete-Backup-v51 + Hub-Round-Resume-v52 real prüfen
 7. Android/iPhone/iPad/VoiceOver/TalkBack/Tastatur/Zoom
 8. reale Gruppentests für alle 15 Core-Games
 9. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
