@@ -7,7 +7,7 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 ## Gesamtstatus
 
 **Öffentliche Releasefreigabe: NO_GO**  
-**Offline-Core: `secret-circle-v52` / `secret-circle-v52-staging`**  
+**Offline-Core: `secret-circle-v53` / `secret-circle-v53-staging`**  
 **Classic Content: v4**  
 **Core Source Review: 15/15 PREPARED**  
 **Core Source Hardening: 15/15 PREPARED**  
@@ -16,105 +16,93 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 **Hub Resume Integrity v2 + v50-Ladequarantäne: PREPARED**  
 **Complete Backup v51 Hardening: PREPARED**  
 **Hub Round Resume v52: PREPARED**  
+**Paranoia Resume/Privacy v53: PREPARED**  
 **Operator / Hosting / Legal: PREPARED / BLOCKED**
 
 Arbeitsstand: Draft-PR #13 auf `agent/release-foundation-2027`.
 
-Versionslinie: v45 Core-Hardening, v46 Hub-A11y, v47 Secondary-A11y, v48 Word-Imposter-Voting-/Datenhärtung, v49 zentraler Hub-Resume-Guard v2, v50 fail-closed Resume-Ladequarantäne, v51 Complete-Backup-/Forward-Compatibility-Härtung. **v52** ergänzt sicheren direkten Hub-Rundenstatus: laufende nicht-geheime Karten können korrekt fortgesetzt werden, Wahrheit/Pflicht verwenden getrennte Usage-Pools und geheime Current-Inhalte bleiben aus dem Auto-Resume ausgeschlossen.
+## Versionslinie
+
+- v45: Core-Hardening
+- v46: Hub-A11y
+- v47: Secondary-Surface-A11y
+- v48: Word-Imposter Voting-/Datenhärtung
+- v49: zentraler Hub-Resume-Guard v2
+- v50: fail-closed Resume-Ladequarantäne
+- v51: Complete Backup / Forward Compatibility
+- v52: sichere direkte Hub-Current-Runden + getrennte Wahrheit/Pflicht-Pools
+- **v53: Paranoia-Frage und bereits gefällter Münzwurf bleiben über Resume konsistent, ohne Auto-Reveal; Privacy-Cover gilt auch nach der Auflösung**
 
 ## A-bis-Z-Tracker
 
 | # | Bereich | Status | Hauptnachweis | Nächste Aktion |
 |---|---|---|---|---|
 | 0 | Produktziel / Releasegrenze | DONE | Product Brief, Release Scope | bei Scopeänderung aktualisieren |
-| A | Querschnittsverträge | PREPARED | Foundation + Readiness + Release/Operator Evidence | reale Gates schließen |
+| A | Querschnittsverträge | PREPARED | Foundation + Release/Operator Evidence | reale Gates schließen |
 | 1 | Discovery / Nutzer / Markt | DONE | Brief, Scenarios, Market Research | reale Nutzer weiter validieren |
 | 2 | Produktstrategie / Scope | PREPARED | Scope, Roadmap | reale Gruppen/Nutzer |
 | 3 | Plattformstrategie | PREPARED | Platform Strategy | reale Zielgeräte |
-| 4 | Requirements / Akzeptanz | PREPARED | Requirements, Core Contracts, 15/15 Hardening | Runner + reale Core-Abnahme |
+| 4 | Requirements / Akzeptanz | PREPARED | Requirements, Core Contracts | Runner + reale Core-Abnahme |
 | 5 | UX / IA / Design | PREPARED | UX Flow + A11y-/Resume-Verträge | reale UX-/Tastaturtests |
-| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md`, Architecture Audit v52 | bei Grundsatzänderung ADR |
-| 7 | Security / Threat Model | PREPARED | Security, Threat Model, Resume-/Privacy-/Import-Guards | Runner + echter Browser |
-| 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | Issue #7 / echter Runner + Branch Protection |
-| 9 | Feature-Entwicklungsloop | PREPARED | Tests/Contracts/PR #13, Core + A11y + Data + Resume + Backup + Hub Round | keine Scope-Welle; gezielt weiter härten |
-| 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/PWA-/Resume-/Current-Verträge | reale Quota-/Update-/Import-/Resume-Pfade |
+| 6 | Architektur / ADR | PREPARED | `ARCHITECTURE.md`, Architecture Audit v53 | bei Grundsatzänderung ADR |
+| 7 | Security / Threat Model | PREPARED | Security, Threat Model, Privacy-/Resume-/Import-Guards | Runner + echter Browser |
+| 8 | Repo / Git / Build | BLOCKED | Lockfile v3, npm-ci-Workflows, Branch Contract | Issue #7 / Runner + Branch Protection |
+| 9 | Feature-Entwicklungsloop | PREPARED | Core + A11y + Data + Resume + Backup Hardening | gezielt weiter härten; kein Scope-Bloat |
+| 10 | Fehlerbehandlung / Resilienz | PREPARED | Backup-/Session-/Resume-/Current-Verträge | reale Quota-/Update-/Resume-Pfade |
 | 11 | Tests / CI | BLOCKED | Run #2787 + Runner Probe | funktionierender Hosted Runner |
-| 12 | Offline / PWA / Resume | PREPARED | Service Worker v52 + Guards/A11y/Data/Backup/Hub-Round offline | Issue #8 / Install-/Upgrade-/Rollback-Tests |
+| 12 | Offline / PWA / Resume | PREPARED | Service Worker v53 + Guards/A11y/Data/Backup | Install-/Upgrade-/Rollback-/PR53-Tests |
 | 13 | Content / Alter / Privacy | IN PROGRESS | 15/15 Quellreview + Privacy-/Reference-Audits | reale Gruppen + finaler Sign-off |
-| 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md`, Issue #8 | G1–G5, DWI, HR2, BK51, HR52, PN1–PN3 durchführen |
+| 14 | Beta / reale Gruppen | PREPARED | `BETA_TEST_PLAN.md`, Issue #8 | G1–G5, DWI, HR2, BK51, HR52, PR53, PN1–PN3 |
 | 15 | Datenschutz / Recht / Support | BLOCKED | Operator Evidence, Legal, Support, Issue #14 | reale Betreiber-/Hosting-/Kontaktangaben |
-| 16 | Release Management / RC | PREPARED | Checklist + transition-safe Release Evidence | unveränderlichen RC einfrieren |
-| 17 | Deployment / Environments | BLOCKED | v52 Environment + `HOSTING_DECISION.md` | Provider + echte HTTPS-Origins |
-| 18 | Operations / Incident | BLOCKED | Support + Incident + Operator Evidence Log | Verantwortliche + reale Drills |
-| 19 | Wartung / Migration | PREPARED | Maintenance, Backups, Changelog, v51/v52 Verträge | operative Routine real |
+| 16 | Release Management / RC | PREPARED | Checklist + transition-safe Evidence | unveränderlichen RC einfrieren |
+| 17 | Deployment / Environments | BLOCKED | v53 Environment + Hosting-Vertrag | Provider + echte HTTPS-Origins |
+| 18 | Operations / Incident | BLOCKED | Support + Incident + Operator Evidence | Verantwortliche + reale Drills |
+| 19 | Wartung / Migration | PREPARED | Maintenance, Backups, Changelog | operative Routine real |
 | 20 | Risk Management | IN PROGRESS | Risk Register | laufend aktualisieren |
-| 21 | Accessibility | PREPARED | Hub + Secondary A11y, Unit/E2E/Audits | VoiceOver/TalkBack/Zoom/Tastatur/Geräte real |
+| 21 | Accessibility | PREPARED | Hub + Secondary A11y | VoiceOver/TalkBack/Zoom/Tastatur/Geräte |
 | 22 | Third Party / Assetrechte | BLOCKED | Provenienzmanifest + Rights Sign-off | Icon-Rechte menschlich bestätigen |
 | 23 | Fan-/Referenzcontent | IN PROGRESS | Fan Review + Source-Audit | Runner + manuelle Visual/Legal-Abnahme |
-| 24 | Release Evidence | PREPARED | `release-evidence.json` + `operator-release.json` + transition-safe Audits | reale Belege auf einen RC sammeln |
+| 24 | Release Evidence | PREPARED | `release-evidence.json` + `operator-release.json` | reale Belege auf einen RC sammeln |
 
-## Word-Imposter Data/Resume – v48
+## Quellsseitige Hardening-Blöcke
 
-- nächster noch nicht abstimmender Spieler wird aus tatsächlichen Vote-Keys bestimmt
-- manipulierte nicht-sequenzielle Voting-Snapshots werden blockiert
-- 50 eigene Kategorien / 200 Begriffe pro Kategorie
-- 51/201 fail-closed
-- 1,5-MB-UTF-8-Backupgrenze
-- abgelehnte Imports verändern lokale Bestandsdaten nicht
+### v48 – Word Imposter
 
-Status: **PREPARED**, nicht PASS.
+Voting-Resume, 50/51 Kategorien, 200/201 Begriffe, 1,5-MB-UTF-8-Backupgrenze und fail-closed Import ohne Bestandsmutation.
 
-## Hub Resume Integrity – v49/v50
+### v49/v50 – Hub Resume Guard
 
-**v49:** zentraler `party-hub-resume-guard.js` v2, Cross-Mode-/Phase-/Restzeit-Prüfung, stale Resume UI wird entfernt.
+Zentrale Timer-/Resume-Integrität; stale UI entfernt; Resume-Aktionen während Guard-Ladung blockiert; Ladefehler fail-closed.
 
-**v50:** sichtbare Resume-Karte bleibt während Guard-Ladung `aria-busy`, Aktionen sind deaktiviert und werden erst nach erfolgreicher Validierung freigegeben; Lade-/Integritätsfehler bleiben fail-closed.
+### v51 – Complete Backup
 
-## Complete Backup – v51
+Registry-basierte aktuelle Key-Eigentümerschaft, Future-Key-Erhalt, key-spezifische Vorvalidierung und managed-only Rollback.
 
-- `backup-schema-registry.js` Version 2 ist zentrale Quelle
-- `party-data-tools.js` Version 6 konsumiert die Registry
-- Restore besitzt nur registrierte aktuelle Storage-Keys
-- Future-Namespaces/-Versionen bleiben erhalten
-- managed Werte werden vollständig vor Mutation validiert
-- Restore und Rollback verändern nur managed Keys
-- vollständige Datenlöschung bleibt separat prefixweit
+### v52 – sichere Hub-Rundenkontinuität
 
-Status: **PREPARED**, weil echter Runner, Browser, PWA-Upgrade und Restore-Evidence offen sind.
+`party-hub-round-state.js`: Truth-Dare-/Prompt-/Choice-Current-Referenzen, getrennte Wahrheit/Pflicht-Pools, ungültige Referenzen verworfen, `next`/Skip bereinigen den Current-Zustand.
 
-## Hub Round Resume – v52
+### v53 – Paranoia Resume / Privacy
 
-- neues Modul `party-hub-round-state.js`
-- sichere laufende Truth-Dare-/Prompt-/Choice-Karten erhalten einen validierten Current-Zustand
-- bereits geöffnete Wahrheit/Pflicht-Karte bleibt nach Reload/Resume dieselbe Karte
-- Wahrheit und Pflicht besitzen getrennte Usage-Pools und dürfen denselben numerischen Index unabhängig verwenden
-- ungültige Current-Referenzen werden nicht übernommen
-- Paranoia und andere geheime Inhalte werden über diesen Pfad nicht automatisch wieder geöffnet
-- `next` und globales Skip löschen den vorherigen Current-Zustand
-- `tests/hub-resume-contract.test.js` und `tests/e2e/core-hub-resume.spec.js` schützen den Vertrag
-- `scripts/architecture_audit.py` prüft Modulgrenze, Scriptreihenfolge und Secret-Current-Verbot
+- Paranoia speichert nur validierte Kartenreferenz/Phase/Ergebnis, keinen frei eingebetteten Geheimtext.
+- Reload/Resume öffnet die Geheimfrage nicht automatisch.
+- bewusste Reveal-Aktion zeigt wieder dieselbe Frage.
+- ein bereits gefällter Münzwurf bleibt über Reload identisch und wird nicht neu randomisiert.
+- Fokus-/Appverlust verdeckt private Inhalte sowohl vor als auch nach der Auflösung.
+- ungültige/out-of-range Paranoia-Referenzen werden verworfen.
+- `party-hub.js` bleibt unter der 1000-Zeilen-Architekturgrenze.
 
-Status: **PREPARED**, reale Runner-/Browser-/PWA-/Gruppen-Evidence bleibt offen.
+Verträge: `tests/hub-resume-contract.test.js`, `tests/e2e/core-hub-resume.spec.js`, `tests/e2e/core-hub-controls.spec.js`, `scripts/architecture_audit.py`.
 
-## Accessibility-Hardening – v46/v47
+Status aller Blöcke: **PREPARED**, weil echte Runner-/Browser-/PWA-/Gruppen-Evidence offen ist.
 
-**v46 / Hub:** `party-hub-a11y.js`, Bereichsfokus, Hub-Modals, `inert`, Fokus-Trap und Rückkehrfokus.
+## Offline / PWA v53
 
-**v47 / Advanced, Quick, Creator:** `secondary-surface-a11y.js`, Advanced-Modal-Isolation, Quick-Fokus-Recovery, Creator-Schrittfokus und Template-Radiogroup.
-
-Beide Schichten bleiben Bestandteil des v52-Offline-Core. Real offen: VoiceOver, TalkBack, 200-%-Zoom, Tastatur/Touch und echte Browser/Geräte.
-
-## Offline / PWA v52
-
-- `secret-circle-v52`
-- `secret-circle-v52-staging`
-- `party-hub-round-state.js` ist Bestandteil des Offline-Core
-- alle vorherigen A11y-, Resume-, Privacy-, Session-, Backup- und Katalogmodule bleiben offline
-- direkte Hub-Resume-Aktionen bleiben bis Guard-Validierung gesperrt
-- sichere direkte Hub-Current-Runden können kontrolliert wiederhergestellt werden
-- geheime Current-Inhalte bleiben ausgeschlossen
-
-Reale Upgrade-/Rollback-/Geräte-/BK51-/HR52-Evidence bleibt offen.
+- `secret-circle-v53`
+- `secret-circle-v53-staging`
+- `party-hub-round-state.js` v2 und `party-hub-polish.js` v17 offline
+- alle vorherigen Resume-, Privacy-, A11y-, Backup- und Katalogmodule bleiben offline
+- DWI / HR2 / BK51 / HR52 / PR53 müssen auf realer installierter PWA bestätigt werden
 
 ## Build / CI
 
@@ -122,26 +110,26 @@ Reale Upgrade-/Rollback-/Geräte-/BK51-/HR52-Evidence bleibt offen.
 - Playwright 1.54.2
 - keine npm-Runtime-Dependencies
 - Syntax-/Unit-/Validate-/E2E-Verträge erweitert
-- letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`
-- **v50, v51 und v52 besitzen noch keinen echten Runner-PASS**
+- letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, `steps: null` / `steps: []`, kein Repositorycode ausgeführt
+- **v50–v53 besitzen keinen echten Runner-PASS**
 
 Status: **CLOSED IN CODE / ONLINE RUNNER VERIFICATION OPEN**.
 
 ## Zentrale offene Issues
 
 - **#7:** GitHub Actions endet vor Step 1
-- **#8:** reale Geräte, v52 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2/v50, BK51 und HR52
+- **#8:** reale Geräte, v53 Offline-PWA, Accessibility, DWI, HR2, BK51, HR52, PR53 und Partytests
 - **#14:** Operator, Hosting, Legal, Support und Incident Evidence
 
 Zusätzlich bleibt die Icon-Rechtebasis offen.
 
-## Höchste Prioritäten ab jetzt
+## Höchste Prioritäten
 
 1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
 2. Branch Protection
 3. Provider + HTTPS-Staging/Production
-4. v52 PWA-Smoke / Upgrade / Rollback
-5. Word-Imposter-Datengrenzen + Hub Resume v49/v50 + Complete Backup BK51 + Hub Round Resume HR52 real prüfen
+4. v53 PWA-Smoke / Upgrade / Rollback
+5. DWI + HR2 + BK51 + HR52 + PR53 real prüfen
 6. Android / iPhone / Tablet / VoiceOver / TalkBack / Tastatur / Zoom
 7. reale Gruppentests für alle 15 Core-Spiele
 8. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
@@ -149,4 +137,4 @@ Zusätzlich bleibt die Icon-Rechtebasis offen.
 
 ## Nicht als bestanden behaupten
 
-Online-`npm ci`, CI/Cross-Browser, Branch Protection, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/Word-Imposter-Grenz-/Hub-Resume-/BK51-/HR52-/Gruppentests, Asset-/Operator-/Legal-/Support-Sign-off und finaler Release Evidence GO sind weiterhin offen.
+Online-`npm ci`, CI/Cross-Browser, Branch Protection, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/DWI-/HR2-/BK51-/HR52-/PR53-/Gruppentests, Asset-/Operator-/Legal-/Support-Sign-off und finaler Release Evidence GO sind weiterhin offen.
