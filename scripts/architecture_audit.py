@@ -5,34 +5,37 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
+violations = []
 
 production_js = [
     'runtime-guard.js', 'setup-ux.js', 'privacy-guard.js', 'wake-lock.js',
     'game-engine.js', 'role-assignment.js', 'word-packs.js', 'data-store.js',
-    'word-imposter-resume-guard.js', 'app.js',
-    'backup-schema-registry.js', 'session-ledger.js', 'party-session-controls.js',
-    'party-catalog.js', 'party-expansion.js', 'party-trending-catalog.js',
-    'party-mega-catalog.js', 'party-viral-catalog.js', 'party-core-release-catalog.js',
+    'word-imposter-resume-guard.js', 'app.js', 'backup-schema-registry.js',
+    'session-ledger.js', 'party-session-controls.js', 'party-catalog.js',
+    'party-expansion.js', 'party-trending-catalog.js', 'party-mega-catalog.js',
+    'party-viral-catalog.js', 'party-core-release-catalog.js',
     'party-core-classic-content.js', 'party-routing.js', 'party-release-structure.js',
-    'party-filter-state.js', 'party-search-assist.js', 'game-creator.js', 'creator-page.js',
-    'party-custom-packs.js', 'party-hub-timers.js', 'party-hub-resume-guard.js',
-    'party-hub-round-state.js', 'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js',
-    'party-hub-a11y.js', 'secondary-surface-a11y.js', 'party-guide.js', 'party-night.js',
+    'party-filter-state.js', 'party-search-assist.js', 'game-creator.js',
+    'creator-page.js', 'party-custom-packs.js', 'party-hub-timers.js',
+    'party-hub-resume-guard.js', 'party-hub-round-state.js', 'party-hub.js',
+    'party-hub-plus.js', 'party-hub-polish.js', 'party-hub-a11y.js',
+    'secondary-surface-a11y.js', 'party-guide.js', 'party-night.js',
     'party-data-tools.js', 'party-advanced.js', 'advanced-resume-guard.js',
-    'party-advanced-runner.js', 'advanced-privacy-guard.js', 'party-advanced-preferences.js',
-    'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-    'party-created-modes.js', 'quick-loader.js', 'sw.js'
+    'party-advanced-runner.js', 'advanced-privacy-guard.js',
+    'party-advanced-preferences.js', 'party-quick-modes.js', 'party-mega-modes.js',
+    'party-viral-modes.js', 'party-created-modes.js',
+    'quick-session-replacement-guard.js', 'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html']
 required_contract_files = [
     'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png',
-    'assets/manifests/asset-provenance.json',
-    'tests/manifest-icons.test.js', 'tests/accessibility-contract.test.js',
-    'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
-    'scripts/hub_a11y_contract_audit.py', 'scripts/secondary_surface_a11y_contract_audit.py',
-    'scripts/advanced_integrity_audit.py', 'scripts/backup_contract_audit.py'
+    'assets/manifests/asset-provenance.json', 'tests/manifest-icons.test.js',
+    'tests/accessibility-contract.test.js', 'scripts/asset_provenance_audit.py',
+    'scripts/media_inventory_audit.py', 'scripts/hub_a11y_contract_audit.py',
+    'scripts/secondary_surface_a11y_contract_audit.py',
+    'scripts/advanced_integrity_audit.py', 'scripts/quick_session_replacement_audit.py',
+    'scripts/backup_contract_audit.py'
 ]
-violations = []
 
 for relative in production_js + html_pages + required_contract_files:
     if not (ROOT / relative).is_file():
@@ -46,7 +49,8 @@ for marker in (
     'Hub- und Timergrenzen', 'Lokale Transaktionen und Exact-once',
     'Datenschutz und Security durch Architektur', 'Offline- und Updatevertrag',
     'Accessibility als Definition of Done', 'Inhalts- und Rechtevertrag', 'Testpyramide',
-    'Performance und Assets', 'Betrieb, Deprecation und Rollback'
+    'Performance und Assets', 'Betrieb, Deprecation und Rollback',
+    'Quick-/Mega-/Viral-/Creator-Session-Ersatz – v56'
 ):
     if marker not in architecture:
         violations.append(f'Architecture contract marker missing: {marker}')
@@ -92,11 +96,11 @@ catalog_chain = [
 def check_order(source: str, names: list[str], context: str) -> None:
     positions = []
     for name in names:
-        pos = source.find(name)
-        if pos < 0:
+        position = source.find(name)
+        if position < 0:
             violations.append(f'{context} missing ordered module: {name}')
             return
-        positions.append(pos)
+        positions.append(position)
     if positions != sorted(positions):
         violations.append(f'{context} module order is invalid: {" -> ".join(names)}')
 
@@ -138,6 +142,15 @@ contracts = {
         'if (!clearActive()) return;'
     ],
     'advanced-privacy-guard.js': ['SecretCircleAdvancedPrivacyGuard', 'sensitiveContext', 'conceal'],
+    'quick-session-replacement-guard.js': [
+        'SecretCircleQuickSessionReplacementGuard', 'FAMILY_KEYS', 'plausibleSnapshot',
+        'authorizeStart', 'blockPagehideRetry = true', 'root.location?.reload?.()'
+    ],
+    'quick-loader.js': [
+        "REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js'",
+        'replacementGuardReady = false', 'plan.push(REPLACEMENT_GUARD_SOURCE)',
+        'version: 7'
+    ],
     'party-hub-a11y.js': ['SecretCirclePartyHubA11y', 'syncBackgroundInert', 'trapOverlayFocus', 'focusVisibleViewHeading'],
     'secondary-surface-a11y.js': [
         'SecretCircleSecondarySurfaceA11y', 'syncBackgroundInert', 'trapTab',
@@ -175,6 +188,7 @@ contracts = {
     'scripts/hub_a11y_contract_audit.py': ['hub_a11y_contract_audit', 'modalFocusTrapContract'],
     'scripts/secondary_surface_a11y_contract_audit.py': ['secondary_surface_a11y_contract_audit', 'creator_radiogroup_arrow_navigation'],
     'scripts/advanced_integrity_audit.py': ['advanced_integrity_audit', 'resume_guard_version', 'confirmed_new_session_replacement'],
+    'scripts/quick_session_replacement_audit.py': ['quick_session_replacement_audit', 'families_guarded', 'failed_write_preserves_previous_snapshot'],
     'scripts/backup_contract_audit.py': ['backup_contract_audit', 'unknown_future_namespaces_preserved_on_restore']
 }
 for relative, markers in contracts.items():
@@ -206,7 +220,8 @@ for module in (
     'party-expansion.js', 'party-mega-catalog.js', 'party-core-release-catalog.js',
     'party-core-classic-content.js', 'party-hub-timers.js', 'party-hub-resume-guard.js',
     'party-hub-round-state.js', 'party-hub-a11y.js', 'secondary-surface-a11y.js',
-    'word-imposter-resume-guard.js', 'advanced-resume-guard.js', 'party-advanced-runner.js', 'advanced-privacy-guard.js'
+    'word-imposter-resume-guard.js', 'advanced-resume-guard.js', 'party-advanced-runner.js',
+    'advanced-privacy-guard.js', 'quick-session-replacement-guard.js', 'quick-loader.js'
 ):
     if f'node --check {module}' not in syntax_gate:
         violations.append(f'Production module missing from syntax gate: {module}')
@@ -214,18 +229,17 @@ for test in (
     'tests/party-mega-catalog.test.js', 'tests/core-content-quality.test.js',
     'tests/hub-resume-contract.test.js', 'tests/hub-control-contract.test.js',
     'tests/advanced-resume-guard.test.js', 'tests/advanced-resume-contract.test.js',
+    'tests/quick-loader.test.js', 'tests/quick-session-replacement-guard.test.js',
     'tests/accessibility-contract.test.js', 'tests/manifest-icons.test.js'
 ):
     if test not in unit_gate:
         violations.append(f'Critical architecture test missing from npm test: {test}')
-    if test in ('tests/manifest-icons.test.js', 'tests/accessibility-contract.test.js') and f'node --check {test}' not in syntax_gate:
-        violations.append(f'Critical test missing from syntax gate: {test}')
 for audit in (
-    'scripts/advanced_integrity_audit.py', 'scripts/backup_contract_audit.py',
-    'scripts/core_content_audit.py', 'scripts/reference_content_audit.py',
-    'scripts/asset_provenance_audit.py', 'scripts/media_inventory_audit.py',
-    'scripts/public_release_placeholder_audit.py', 'scripts/hub_a11y_contract_audit.py',
-    'scripts/secondary_surface_a11y_contract_audit.py',
+    'scripts/advanced_integrity_audit.py', 'scripts/quick_session_replacement_audit.py',
+    'scripts/backup_contract_audit.py', 'scripts/core_content_audit.py',
+    'scripts/reference_content_audit.py', 'scripts/asset_provenance_audit.py',
+    'scripts/media_inventory_audit.py', 'scripts/public_release_placeholder_audit.py',
+    'scripts/hub_a11y_contract_audit.py', 'scripts/secondary_surface_a11y_contract_audit.py',
     'scripts/operator_release_contract_audit.py', 'scripts/release_audit.py',
     'scripts/performance_budget.py'
 ):
@@ -252,6 +266,7 @@ for asset in (
     './party-core-classic-content.js', './party-hub-timers.js', './party-hub-resume-guard.js',
     './party-hub-round-state.js', './party-hub-a11y.js', './secondary-surface-a11y.js',
     './advanced-resume-guard.js', './party-advanced-runner.js', './advanced-privacy-guard.js',
+    './quick-session-replacement-guard.js', './quick-loader.js',
     './session-ledger.js', './party-session-controls.js',
     './icon.svg', './icon-192.png', './icon-512.png'
 ):
@@ -285,6 +300,10 @@ print(json.dumps({
     'advanced_result_path_integrity': True,
     'advanced_terminal_state_integrity': True,
     'advanced_confirmed_session_replacement': True,
+    'quick_replacement_guard_version': 1,
+    'quick_loader_version': 7,
+    'quick_session_replacement_audit_required': True,
+    'quick_family_replacement_fail_closed': True,
     'hub_safe_round_state_audited': True,
     'truth_dare_independent_usage_pools': True,
     'concealed_paranoia_reference_resume': True,
