@@ -89,7 +89,6 @@ catalog_chain = [
     'party-core-release-catalog.js', 'party-core-classic-content.js', 'party-routing.js'
 ]
 
-
 def check_order(source: str, names: list[str], context: str) -> None:
     positions = []
     for name in names:
@@ -100,7 +99,6 @@ def check_order(source: str, names: list[str], context: str) -> None:
         positions.append(pos)
     if positions != sorted(positions):
         violations.append(f'{context} module order is invalid: {" -> ".join(names)}')
-
 
 check_order(party_page, catalog_chain, 'party.html')
 check_order(quick_play, catalog_chain, 'quick-play.html')
@@ -124,8 +122,9 @@ contracts = {
     'word-imposter-resume-guard.js': ['validateSnapshot'],
     'party-hub-resume-guard.js': ['SecretCirclePartyHubResumeGuard'],
     'party-hub-round-state.js': [
-        'SecretCirclePartyHubRoundState', 'SAFE_CURRENT_MODES', 'truthDarePools',
-        'normalizeCurrent', 'normalizeResume', 'ensureCurrent', 'clearCurrent'
+        'SecretCirclePartyHubRoundState', 'SAFE_CURRENT_MODES', 'CONCEALED_CURRENT_MODES',
+        'truthDarePools', 'normalizeCurrent', 'normalizeResume', 'ensureCurrent',
+        'markParanoiaQuestion', 'resolveParanoia', 'clearCurrent'
     ],
     'advanced-resume-guard.js': ['validateSnapshot', 'expectedRoleCounts'],
     'advanced-privacy-guard.js': ['SecretCircleAdvancedPrivacyGuard', 'sensitiveContext', 'conceal'],
@@ -134,14 +133,8 @@ contracts = {
         'SecretCircleSecondarySurfaceA11y', 'syncBackgroundInert', 'trapTab',
         'ensureHeadingFocusable', 'syncTemplateRoving', 'handleTemplateKeys'
     ],
-    'party-expansion.js': [
-        "id: 'wavelength', title: 'Spektrum-Tipp'",
-        "banned: ['Webseite', 'Internet', 'Tab']"
-    ],
-    'party-mega-catalog.js': [
-        "id: 'anime-guess', title: 'Anime-Archetypen erraten'",
-        "['🦁🌾', 'Löwe']"
-    ],
+    'party-expansion.js': ["id: 'wavelength', title: 'Spektrum-Tipp'", "banned: ['Webseite', 'Internet', 'Tab']"],
+    'party-mega-catalog.js': ["id: 'anime-guess', title: 'Anime-Archetypen erraten'", "['🦁🌾', 'Löwe']"],
     'party-core-release-catalog.js': ['coreReleaseContentVersion', 'coreReleaseContentGames', 'function mergeContent'],
     'party-core-classic-content.js': [
         'const VERSION = 4;', 'coreClassicContentVersion', 'coreClassicContentGames',
@@ -152,11 +145,14 @@ contracts = {
     'party-hub.js': [
         'SecretCircleSessionLedger', 'SecretCircleSessionControls', 'SecretCirclePartyHubTimers',
         'SecretCirclePartyHubRoundState', "ACTIVE_KEY = 'secret-circle-party-hub-active-v1'",
-        'R.normalizeResume', 'R.ensureCurrent', 'R.clearCurrent',
-        'Session fortsetzen', 'skipHubRound', 'abortSession'
+        'R.normalizeResume', 'R.ensureCurrent', 'R.markParanoiaQuestion', 'R.resolveParanoia', 'R.clearCurrent',
+        'Rundenergebnis anzeigen', 'Session fortsetzen', 'skipHubRound', 'abortSession'
     ],
     'party-hub-timers.js': ['SecretCirclePartyHubTimers', 'normalizeTimerState', 'createTimerGames'],
-    'party-hub-polish.js': ['party-hub-a11y.js', 'loadHubA11y', 'guardStoredResumeIntegrity'],
+    'party-hub-polish.js': [
+        'party-hub-a11y.js', 'loadHubA11y', 'guardStoredResumeIntegrity',
+        'version: 17', 'privatePromptContext', "game.id === 'paranoia'", "!playOptions?.querySelector('button')"
+    ],
     'runtime-guard.js': ['Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'hasActiveSession'],
     'game-creator.js': ["STORAGE_KEY = 'secret-circle-party-created-games-v1'", 'MAX_GAMES = 40'],
     'party-data-tools.js': ['SecretCircleBackupSchemas', 'replaceEntries', 'registry.isAllowedCompleteStorageKey'],
@@ -273,7 +269,9 @@ print(json.dumps({
     'resume_privacy_guards_audited': True,
     'hub_safe_round_state_audited': True,
     'truth_dare_independent_usage_pools': True,
-    'secret_current_cards_not_resumed': True,
+    'concealed_paranoia_reference_resume': True,
+    'immutable_paranoia_resolution_resume': True,
+    'resolved_paranoia_blur_concealment': True,
     'hub_accessibility_layer_audited': True,
     'secondary_surface_accessibility_layer_audited': True,
     'reference_safe_anime_runtime_and_source': True,
