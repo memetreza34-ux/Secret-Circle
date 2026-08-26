@@ -27,6 +27,8 @@ Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backu
 
 ## 5. Automatisierter HTTPS-Smoke
 
+Der HTTPS-Netzwerkvertrag wird mit **`scripts/staging_smoke.py`** geprüft; die lokalen/deployten PWA-Head-Metadaten werden zusätzlich durch **`tests/pwa-head-metadata.test.js`** geschützt.
+
 Staging:
 
 ```bash
