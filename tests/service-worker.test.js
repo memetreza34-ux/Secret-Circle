@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v52'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v52-staging'/);
+assert.match(source, /const CACHE='secret-circle-v53'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v53-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -45,7 +45,7 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 52,
+  cacheContract: 53,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -54,7 +54,9 @@ console.log(JSON.stringify({
   wordImposterResumeGuardOffline: true,
   hubResumeGuardOffline: true,
   hubRoundStateOffline: true,
+  concealedParanoiaResumeOffline: true,
   hubResumeQuarantinePolishOffline: true,
+  resolvedParanoiaConcealmentOffline: true,
   hubA11yGuardOffline: true,
   secondarySurfaceA11yOffline: true,
   advancedResumeGuardOffline: true,
