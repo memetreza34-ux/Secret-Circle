@@ -2,24 +2,19 @@
 
 Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**  
+Offline-Core: **`secret-circle-v52` / `secret-circle-v52-staging`**  
 Core Source Hardening: **15/15 PREPARED**  
 Accessibility Source Hardening: **PREPARED**  
 Word-Imposter Data/Resume Hardening: **PREPARED**  
 Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**  
-Complete Backup v51 Hardening: **PREPARED**
+Complete Backup v51 Hardening: **PREPARED**  
+Hub Round Resume v52: **PREPARED**
 
 ## 1. Eintrittskriterium
 
-Finale RC-Beta erst nach demselben unveränderten Commit mit:
+Finale RC-Beta erst nach demselben unveränderten Commit mit sichtbaren GitHub-Actions-Steps, Online-`npm ci`, `npm run ci` und Chromium/Firefox/WebKit.
 
-- sichtbaren GitHub-Actions-Steps
-- Online-`npm ci`
-- `npm run ci`
-- Chromium E2E
-- Chromium / Firefox / WebKit
-
-Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 und v51 sind daher ebenfalls nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50, v51 und v52 sind daher nicht runnerverifiziert.**
 
 Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 
@@ -33,7 +28,6 @@ Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 - geheime Inhalte werden bewusst bei App-/Tab-Wechsel getestet.
 - Fokus-/Tastaturprobleme gelten als funktionale Accessibility-Funde.
 - Restore-/Rollbacktests verwenden ausschließlich neutrale Testdaten.
-- Future-Key-Tests dokumentieren vorher/nachher exakt dieselben unbekannten Werte.
 
 ## 3. Mindest-Testmatrix
 
@@ -47,6 +41,7 @@ Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 | DWI | neutral | Word-Imposter 50/51, 200/201, Backup |
 | HR2 | neutral | Hub Resume Guard v2 + v50-Ladequarantäne |
 | BK51 | neutral | Complete Backup v51 / Forward Compatibility / Rollback |
+| HR52 | neutral + 3–4 | sichere Hub-Current-Runden / Truth-Dare Usage-Pools |
 | PN1 | klein/mittel | Smart Party Night 1 |
 | PN2 | mittel | Smart Party Night 2 |
 | PN3 | groß | Smart Party Night 3 |
@@ -55,19 +50,19 @@ Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 
 ### Android
 
-- aktuelles reales **Android** + Chrome
+- aktuelles reales Android + Chrome
 - Browser und installierte PWA
 - Offline-Neustart
 - Appwechsel/Sperrbildschirm bei Timer
-- **TalkBack**-Smoke
+- TalkBack-Smoke
 
 ### iPhone
 
-- reales **iPhone** + Safari
+- reales iPhone + Safari
 - Add to Home Screen
 - Safe Areas / Tastatur
 - Appwechsel/Sperrbildschirm
-- **VoiceOver**-Smoke
+- VoiceOver-Smoke
 
 ### Tablet/iPad
 
@@ -102,6 +97,7 @@ Bekannte P0/P1-Funde:
 
 - Word Imposter komplett
 - Wahrheit oder Pflicht inklusive Skip
+- **Wahrheit/Pflicht während geöffneter Karte reloaden und exakt dieselbe Karte fortsetzen**
 - Scharade Pause/Resume/Appwechsel
 - Reload während Session
 - Hub Resume fortsetzen
@@ -139,7 +135,7 @@ Beobachten: Setup, Freiwilligkeit, Privacy, Timer, Resume, Exact-once, Fokus.
 
 ## 9. DWI – Word-Imposter-Datengrenzen
 
-Auf v51-RC bestätigen, obwohl Vertrag in v48 eingeführt wurde:
+Auf v52-RC bestätigen, obwohl Vertrag in v48 eingeführt wurde:
 
 1. 50 Kategorien akzeptiert.
 2. 51 Kategorien abgelehnt, keine Kürzung.
@@ -162,9 +158,9 @@ Mit neutralen Zuständen:
 4. Scharade + Tabu-Timer → verworfen.
 5. `running` + `remainingMs = 0` → verworfen.
 6. bereits gerenderte Resume-Karte → verschwindet bei ungültigem Snapshot.
-7. **während der Guard-Ladephase: Resume-Karte `aria-busy`, Buttons deaktiviert.**
+7. während der Guard-Ladephase: Resume-Karte `aria-busy`, Buttons deaktiviert.
 8. kein Resume-Klick möglich, bevor Validierung abgeschlossen ist.
-9. nach erfolgreicher Validierung einer gültigen Session werden Buttons wieder freigegeben.
+9. nach erfolgreicher Validierung werden Buttons wieder freigegeben.
 10. Guard-Ladefehler bleibt fail-closed.
 11. gültige Session wird nicht mutiert.
 12. dasselbe offline in installierter PWA.
@@ -173,24 +169,42 @@ Mit neutralen Zuständen:
 
 Nur neutrale Testdaten verwenden. Vor jedem Fall Bestandswerte dokumentieren.
 
-1. Gesamtexport enthält die aktuell vorhandenen registrierten Hub-/Word-/Creator-Daten.
-2. regulärer Restore ersetzt die managed v1/v7-Bestandsdaten vollständig und lädt sauber neu.
-3. vorhandener unbekannter Namespace, z. B. `secret-circle-party-future-feature-v99`, überlebt den Restore unverändert.
-4. vorhandene zukünftige Version eines heute bekannten Keys, z. B. `secret-circle-party-hub-v2`, überlebt den Restore unverändert.
-5. Backup, das `secret-circle-party-hub-v2` schreiben will, wird vor Mutation abgelehnt.
-6. managed `secret-circle-party-hub-v1` mit syntaktisch gültigem `{ "version": 999, ... }` wird vor Mutation abgelehnt.
+1. Gesamtexport enthält registrierte Hub-/Word-/Creator-Daten.
+2. regulärer Restore ersetzt managed Bestandsdaten vollständig.
+3. unbekannter Namespace überlebt Restore unverändert.
+4. zukünftige Version eines heute bekannten Keys überlebt Restore unverändert.
+5. Backup mit nicht registriertem Future-Key wird vor Mutation abgelehnt.
+6. managed Key mit falscher interner Storage-Version wird vor Mutation abgelehnt.
 7. Klartext statt JSON wird vor Mutation abgelehnt.
 8. primitive JSON-Wurzel wird vor Mutation abgelehnt.
 9. >1,5-MB-Datei wird vor Mutation abgelehnt.
-10. simulierter/quota-bedingter Schreibfehler stellt alle vorherigen managed Werte wieder her.
-11. Future-/unknown Daten bleiben auch während eines Rollbacks unverändert.
-12. ausdrücklich bestätigte Funktion „Alle lokalen Daten löschen“ entfernt dagegen sämtliche `secret-circle-*`-Reste.
-13. Export→Restore in installierter v51-PWA online und nach Offline-Neustart prüfen.
-14. nach PWA-Upgrade aus einem älteren Stand BK51 erneut durchführen.
+10. Write-/Quota-Fehler stellt managed Werte wieder her.
+11. Future-/unknown Daten bleiben auch im Rollback unverändert.
+12. „Alle lokalen Daten löschen“ entfernt dagegen sämtliche `secret-circle-*`-Reste.
+13. Export→Restore in installierter v52-PWA online und nach Offline-Neustart prüfen.
+14. nach PWA-Upgrade aus älterem Stand BK51 erneut durchführen.
 
-Ein BK51-PASS erfordert **keinen** künstlich erfundenen Future-Migrationssupport; er beweist nur, dass der heutige Restore Daten neuerer/unbekannter Versionen nicht besitzt oder zerstört.
+## 12. HR52 – Hub Round Resume v52
 
-## 12. G4 – Mafia
+Mit neutralen Karten/Spielern und anschließend real in G1:
+
+1. Wahrheit auswählen und Karteninhalt notieren.
+2. gespeicherten Active-State prüfen: `current` enthält nur eine sichere Referenz, keinen beliebigen Secret-Text.
+3. Seite reloaden; Spiel darf nicht automatisch offen erscheinen, sondern über normalen Resume-Einstieg fortgesetzt werden.
+4. Session fortsetzen; **dieselbe Wahrheit** muss wieder angezeigt werden.
+5. Runde abschließen; `current` muss vor der nächsten Runde gelöscht sein.
+6. neue Runde: Pflicht wählen und notieren.
+7. Wahrheit und Pflicht dürfen denselben numerischen Kartenindex unabhängig verwenden; eine Wahrheit darf die gleich nummerierte Pflicht nicht blockieren.
+8. Prompt-Core-Spiel starten, Karte öffnen, reloaden, fortsetzen → dieselbe sichere Karte.
+9. Choice-Core-Spiel entsprechend prüfen.
+10. manipulierte/out-of-range Current-Referenz → wird verworfen; App bleibt bedienbar.
+11. Paranoia-Frage öffnen, reloaden, fortsetzen → geheime Frage darf **nicht** über den v52-Current-Pfad automatisch offen erscheinen.
+12. globales Skip während sicherer Runde → alte Current-Referenz darf nicht in die nächste Runde getragen werden.
+13. dieselben Fälle offline in installierter v52-PWA.
+
+**HR52 PASS** bedeutet Kontinuität für sichere Karten, ohne die Privacy-Grenze für geheime Karten aufzuweichen.
+
+## 13. G4 – Mafia
 
 - mehrere Gruppengrößen
 - Classic/Extended Packs
@@ -201,22 +215,13 @@ Ein BK51-PASS erfordert **keinen** künstlich erfundenen Future-Migrationssuppor
 - Dorf-/Mafia-Sieg
 - manipulierte Resume-Zustände
 
-## 13. G5 – Creator
+## 14. G5 – Creator
 
 Unerfahrene Person erstellt ohne Entwicklerhilfe ein eigenes Spiel.
 
-Prüfen:
+Prüfen: Template-Radiogroup, Wizard-Fokus, Hilfe-Modal, Packs/Inhalte, Speichern, Hub-Integration, Editieren/Kopieren/Löschen, Export/Import.
 
-- Template-Radiogroup Tab + Pfeile/Home/End
-- Wizard-Fokus
-- Hilfe-Modal + Fokus-Trap/Rückkehr
-- Packs/Inhalte
-- Speichern
-- im Hub finden
-- Editieren/Kopieren/Löschen
-- Export/Import
-
-## 14. PN1–PN3 – Smart Party Night
+## 15. PN1–PN3 – Smart Party Night
 
 - PN1 ca. 30 Minuten
 - PN2 ca. 45–60 Minuten
@@ -224,23 +229,23 @@ Prüfen:
 
 Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch.
 
-## 15. PWA-Update-Test
+## 16. PWA-Update-Test
 
-**PWA-Update-Test** mit mindestens zwei echten älteren Installationen:
+Mit mindestens zwei echten älteren Installationen:
 
 1. neutrale lokale Daten + aktive Session.
-2. v51/RC bereitstellen.
+2. v52/RC bereitstellen.
 3. Update zunächst verschieben.
 4. aktive Session fortsetzen.
 5. bewusst aktualisieren.
 6. Offline-Neustart.
 7. Daten/Guards/A11y prüfen.
-8. DWI + HR2 + BK51 offline prüfen.
+8. DWI + HR2 + BK51 + HR52 offline prüfen.
 9. Future-Testkey vor Upgrade anlegen und nach Upgrade/Restore auf Unverändertheit prüfen.
 
-## 16. Rollback-Test
+## 17. Rollback-Test
 
-**Rollback-Test** auf HTTPS-Staging:
+Auf HTTPS-Staging:
 
 - RC bereitstellen
 - Fehlerstand oder isolierten Rollbackpfad nutzen
@@ -248,46 +253,19 @@ Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch
 - Daten erhalten
 - Offline-Core vollständig
 - BK51-Daten-/Forward-Compatibility-Grenzen erhalten
+- HR52 sichere Current-Runden weiter kompatibel
 - alter funktionierender Core darf nicht durch fehlgeschlagene Promotion zerstört werden
 
-## 17. Accessibility-Realtest
+## 18. Accessibility-Realtest
 
-### Hub
+Hub, Advanced, Quick, Creator sowie allgemein 200-%-Zoom, 320 CSS px, VoiceOver/TalkBack, Reduced Motion, Touchziele und Fokuspfade real prüfen. Resume-Ladequarantäne und HR52-Restore dürfen keine unverständlichen Fokuszustände erzeugen.
 
-- Skip-Link
-- Bereichsüberschriften
-- Detail-/Spielmodal Fokus-Trap
-- Resume-Ladequarantäne darf nicht zu unverständlichem Fokus führen
-
-### Advanced
-
-- Modal / Hintergrund `inert`
-- private Reveals
-
-### Quick
-
-- Fokus-Recovery nach dynamischem DOM-Austausch
-
-### Creator
-
-- Wizard-Fokus
-- Radiogroup
-- Hilfe-Modal
-
-### Allgemein
-
-- 200-%-Zoom / große Schrift / 320 CSS px
-- VoiceOver / TalkBack
-- Reduced Motion
-- Touchziele
-- keine kritische Information nur über Farbe
-
-## 18. Bug-Severity
+## 19. Bug-Severity
 
 ### Critical
 
 - Datenverlust ohne Recovery
-- heutiger Restore löscht unbekannte/zukünftige Daten ohne explizite Löschbestätigung
+- Restore löscht unbekannte/zukünftige Daten ohne explizite Löschbestätigung
 - private Informationen unerwartet offengelegt
 - weitreichender Securityfehler
 - Hauptzielgruppe kann App nicht nutzen
@@ -297,13 +275,14 @@ Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch
 - Core-Spiel nicht abschließbar
 - falscher Sieger/Score
 - Resume/Timer systematisch kaputt
+- geöffnete sichere Runde wird nach Reload durch eine andere Karte ersetzt
+- Truth/Dare Usage-Pools blockieren sich gegenseitig
+- Secret-Current wird nach Reload automatisch offengelegt
 - Import verändert Daten trotz Ablehnung
-- Restore akzeptiert falsche Storage-Version eines managed Keys
-- Rollback stellt managed Bestandsdaten nicht wieder her
+- Rollback stellt Bestandsdaten nicht wieder her
 - wichtiger Accessibilityflow blockiert
-- ungültige Resume-Session kann vor Guard-Validierung gestartet werden
 
-## 19. Testbericht
+## 20. Testbericht
 
 ```text
 Test-ID:
@@ -327,7 +306,7 @@ Data-/Import-/Restore-Funde:
 Retest nötig: ja/nein
 ```
 
-## 20. Beta-Freigaberegel
+## 21. Beta-Freigaberegel
 
 Vor `REAL USER / DEVICE PASS`:
 
@@ -335,15 +314,14 @@ Vor `REAL USER / DEVICE PASS`:
 - [ ] DWI abgeschlossen
 - [ ] HR2 inklusive v50-Ladequarantäne abgeschlossen
 - [ ] BK51 vollständig abgeschlossen
+- [ ] HR52 vollständig abgeschlossen
 - [ ] PN1–PN3 abgeschlossen
 - [ ] Android / iPhone / Tablet real
 - [ ] VoiceOver / TalkBack / 200-%-Zoom real
-- [ ] zwei echte PWA-Upgrades auf v51/RC
+- [ ] zwei echte PWA-Upgrades auf v52/RC
 - [ ] Rollback-Test bestanden
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
 - [ ] Retests aller gefixten Critical/High-Funde
 
 Bis dahin bleibt die **reale Durchführung offen** und der öffentliche Release **NO_GO**.
-
-Release **NO_GO** bedeutet: vorhandene Source-Verträge sind kein Ersatz für reale Evidence.
