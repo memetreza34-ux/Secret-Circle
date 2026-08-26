@@ -2,7 +2,7 @@
 
 Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v52` / `secret-circle-v52-staging`**  
+Offline-Core: **`secret-circle-v53` / `secret-circle-v53-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
@@ -15,13 +15,13 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Checkout ausgeführt
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` grün
-- [ ] `npm test` grün inklusive Word-Imposter-, Hub-Resume-, Hub-Round-State- und Backup-Registry-Tests
-- [ ] `npm run validate` grün inklusive `backup_contract_audit.py` und `architecture_audit.py`
-- [ ] Chromium E2E grün inklusive Complete-Backup-/Forward-Compatibility- und HR52-Fällen
+- [ ] `npm test` grün
+- [ ] `npm run validate` grün
+- [ ] Chromium E2E grün inklusive HR52/BK51/PR53
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50, v51 und v52 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v53 sind nicht runnerverifiziert.**
 
 ## 2. Hub-Smoke
 
@@ -37,23 +37,16 @@ Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `3
 
 - [ ] 3 / 8 / 20 Personen
 - [ ] doppelte Namen / ungültige Gruppen abgelehnt
-- [ ] 1 / mehrere / max. 6 Imposter
-- [ ] 7 Imposter abgelehnt
+- [ ] 1 / mehrere / max. 6 Imposter; 7 abgelehnt
 - [ ] mindestens 20 Fairnessrunden
 - [ ] Secret Handoff / Appwechsel
-- [ ] Timer
-- [ ] geheimes Voting
-- [ ] Teilabstimmung nach Reload beim nächsten offenen Wähler
+- [ ] Timer / geheimes Voting / Teilvoting-Resume
 - [ ] manipuliertes nicht-sequenzielles Voting verworfen
 - [ ] Stichwahl / Guess / Punkte / Exact-once
-
-### Datengrenzen
-
-- [ ] 50 Kategorien akzeptiert / 51 abgelehnt
-- [ ] 200 Begriffe akzeptiert / 201 abgelehnt
+- [ ] 50/51 Kategorien
+- [ ] 200/201 Begriffe
+- [ ] 1,5-MB-UTF-8-Grenze inkl. Multibyte
 - [ ] Ablehnung verändert Bestandsdaten nicht
-- [ ] 1,5-MB-UTF-8-Grenze
-- [ ] Multibyte-Datei nach Bytes bewertet
 
 ## 4. Direkte Hub-Core-Spiele
 
@@ -70,46 +63,53 @@ Gemeinsam:
 
 Spezifisch:
 
-- [ ] Wahrheit/Pflicht: geöffnete Karte über Reload/Resume identisch
-- [ ] Wahrheit/Pflicht: gleiche numerische Kartenindizes blockieren sich nicht gegenseitig
-- [ ] normale Prompt-/Choice-Runde behält sichere Current-Karte über Resume
-- [ ] persönliche Games freiwillig
-- [ ] Paranoia Secret Cover; keine automatische Wiederöffnung über v52-Current
-- [ ] Scharade/Tabu Secret Cover + Timer
-- [ ] Hot Potato 10–25 s
-- [ ] Word Chain manuelle Gültigkeit
-- [ ] Wrong Answers scorelos
+- [ ] Wahrheit/Pflicht: geöffnete Karte über Reload identisch
+- [ ] Wahrheit/Pflicht: unabhängige Usage-Pools
+- [ ] Prompt/Choice: sichere Current-Karte identisch
+- [ ] Paranoia: PR53 vollständig
+- [ ] Scharade/Tabu: Secret Cover + Timer
+- [ ] Hot Potato: 10–25 s
+- [ ] Word Chain: manuelle Gültigkeit
+- [ ] Wrong Answers: scorelos
 
-## 5. Hub Resume Guard v2 / v50
+## 5. HR2 – Hub Resume Guard v2 / v50
 
-- [ ] gültige normale Session bleibt fortsetzbar
-- [ ] gültiger Scharade-Timer bleibt fortsetzbar
-- [ ] Truth/Dare + Charades-Timer verworfen
-- [ ] Charades + Taboo-Timer verworfen
-- [ ] running + 0 ms verworfen
-- [ ] stale Resume-Karte wird beim Verwerfen entfernt
-- [ ] während Guard lädt: Resume-Karte `aria-busy`
-- [ ] Resume-Buttons während Guard lädt deaktiviert
-- [ ] kein Klick vor Validierung möglich
-- [ ] gültige Session wird nach erfolgreicher Prüfung wieder bedienbar
-- [ ] Ladefehler bleibt fail-closed
-- [ ] gültige Session bleibt unverändert
+- [ ] gültige normale und Timer-Session fortsetzbar
+- [ ] Cross-Mode-/0-ms-Running-Timer verworfen
+- [ ] stale Resume-Karte entfernt
+- [ ] während Guard lädt: `aria-busy`, Buttons deaktiviert
+- [ ] kein Klick vor Validierung
+- [ ] gültige Session danach wieder bedienbar
+- [ ] Ladefehler fail-closed
 - [ ] online und offline identisch
 
-## 6. HR52 – Hub Round Resume
+## 6. HR52 – sichere Hub-Current-Runden
 
-- [ ] Wahrheit öffnen, Text notieren, reloaden, Session fortsetzen → exakt derselbe Text
-- [ ] Pflicht entsprechend prüfen
-- [ ] Wahrheit/Pflicht dürfen denselben numerischen Index unabhängig verwenden
-- [ ] sichere Prompt-Karte bleibt über Reload identisch
-- [ ] sichere Choice-Karte bleibt über Reload identisch
-- [ ] ungültiger/out-of-range Current wird verworfen
-- [ ] `next` löscht Current vor nächster Runde
-- [ ] globales Skip löscht Current vor nächster Runde
-- [ ] Paranoia wird nach Reload nicht automatisch über Current geöffnet
-- [ ] derselbe Vertrag in installierter Offline-PWA
+- [ ] Wahrheit → Reload → identische Karte
+- [ ] Pflicht → Reload → identische Karte
+- [ ] Wahrheit/Pflicht gleicher numerischer Index unabhängig nutzbar
+- [ ] Prompt-/Choice-Current identisch
+- [ ] ungültiger Current verworfen
+- [ ] `next`/Skip löschen Current
+- [ ] Secret-Modi nicht automatisch offen
+- [ ] offline identisch
 
-## 7. Advanced Core
+## 7. PR53 – Paranoia Resume / Privacy
+
+- [ ] geheime Frage öffnen und Text notieren
+- [ ] Reload → Resume bleibt zunächst verdeckt
+- [ ] bewusste Reveal-Aktion zeigt exakt dieselbe Frage
+- [ ] Münzwurf einmal ausführen und Ergebnis notieren
+- [ ] Reload → Ergebnis bleibt zunächst verdeckt
+- [ ] bewusste Ergebnisanzeige zeigt exakt dasselbe Ergebnis
+- [ ] kein neuer Zufallswurf nach Resume
+- [ ] Blur/Appwechsel bei offener Frage verdeckt automatisch
+- [ ] Blur/Appwechsel nach Münzwurf/Auflösung verdeckt ebenfalls automatisch
+- [ ] ungültige/out-of-range Paranoia-Referenz verworfen
+- [ ] nächste Person / globales Skip entfernt privaten Rundenstatus
+- [ ] installierte v53-PWA offline identisch
+
+## 8. Advanced Core
 
 Für Two Truths, Question Imposter, Location Spy und Mafia:
 
@@ -120,32 +120,21 @@ Für Two Truths, Question Imposter, Location Spy und Mafia:
 - [ ] Modal/Fokus-Trap
 - [ ] Hintergrund nicht fokussierbar
 
-## 8. Quick / Extended / Labs
+## 9. Quick / Extended / Labs
 
-Je Mechanikfamilie mindestens ein kompletter Smoke:
+Je Mechanikfamilie mindestens ein kompletter Smoke: Spektrum-Tipp, Zeichnen/Raten, Schnellfeuer, Sound/Stirn/Melodie, Kategorien, Blind Ranking/Emoji/Schätzen, Higher/Lower, Hot Seat/Story Chain. Dynamische Re-Renders müssen sinnvollen Fokus behalten.
 
-- [ ] Spektrum-Tipp
-- [ ] Zeichnen/Raten
-- [ ] Schnellfeuer
-- [ ] Sound/Stirn/Melodie
-- [ ] Kategorien
-- [ ] Blind Ranking / Emoji / Schätzen
-- [ ] Higher/Lower
-- [ ] Hot Seat / Story Chain
-- [ ] Fokus bleibt nach dynamischem Re-Render sinnvoll
+## 10. Creator
 
-## 9. Creator
-
-- [ ] Template-Radiogroup mit Tab + Pfeile/Home/End
+- [ ] Template-Radiogroup Tab + Pfeile/Home/End
 - [ ] Wizard-Schrittfokus
 - [ ] Hilfe-Modal + Fokus-Trap/Rückkehr
-- [ ] mehrere Packs
-- [ ] sichere Textbehandlung
+- [ ] mehrere Packs / sichere Textbehandlung
 - [ ] Speichern/Editieren/Kopieren/Löschen
 - [ ] Export/Import
-- [ ] unerfahrene Person kann valides Spiel erstellen
+- [ ] unerfahrene Person erstellt valides Spiel ohne Entwicklerhilfe
 
-## 10. Smart Party Night
+## 11. Smart Party Night
 
 - [ ] 15 / 30 / 45 / 60 / 90 Minuten
 - [ ] unterschiedliche Gruppen/Stimmungen
@@ -153,73 +142,48 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Neustart/Abbruch
 - [ ] drei vollständige reale Abende
 
-## 11. Backup / Datenschutz – BK51
+## 12. BK51 – Complete Backup
 
-### Word Imposter / Creator
+- [ ] Gesamtexport enthält registrierte lokale Appdaten
+- [ ] regulärer Restore ersetzt managed Bestandsdaten sauber
+- [ ] unbekannter Namespace bleibt unverändert
+- [ ] Future-Version wie `secret-circle-party-hub-v2` bleibt unverändert
+- [ ] nicht unterstützter Future-Key im Backup wird abgelehnt
+- [ ] falsche Storage-Version / Klartext / primitive JSON-Wurzel vor Mutation abgelehnt
+- [ ] >1,5 MB UTF-8 abgelehnt
+- [ ] Write-/Quota-Störung löst managed Rollback aus
+- [ ] unknown/future Daten bleiben während Rollback unverändert
+- [ ] explizite Komplettlöschung entfernt alle `secret-circle-*`-Keys
 
-- [ ] Word-Imposter-Backup
-- [ ] Creator-Bibliothek Export/Import
-- [ ] Größenlimits
-- [ ] abgelehnte Imports verändern Bestandsdaten nicht
-
-### Complete Backup v51
-
-- [ ] Gesamtexport enthält aktuelle registrierte lokale Appdaten
-- [ ] regulärer Complete-Restore ersetzt managed Bestandsdaten sauber
-- [ ] unbekannter Namespace bleibt nach Restore unverändert
-- [ ] `secret-circle-party-hub-v2` bleibt nach Restore unverändert
-- [ ] Backup mit Future-Key wird abgelehnt
-- [ ] managed Key mit falscher Storage-Version wird vor Mutation abgelehnt
-- [ ] Klartext / primitive JSON-Wurzel wird vor Mutation abgelehnt
-- [ ] >1,5 MB UTF-8 wird vor Mutation abgelehnt
-- [ ] Quota-/Write-Störung löst managed Rollback aus
-- [ ] Rollback verändert unknown/future Namespaces nicht
-- [ ] vollständige lokale Löschung entfernt nach expliziter Bestätigung sämtliche `secret-circle-*`-Keys
-
-## 12. PWA / Offline – v52
+## 13. PWA / Offline – v53
 
 - [ ] Android-Installation
 - [ ] iOS Add to Home Screen
 - [ ] Offline-Neustart
-- [ ] alle Kernseiten offline
-- [ ] Query-Routen offline
+- [ ] alle Kernseiten + Query-Routen offline
 - [ ] Word-/Hub-/Advanced-Guards offline
-- [ ] `party-hub-polish.js` v50-Quarantäne offline
-- [ ] `party-hub-round-state.js` offline
-- [ ] `backup-schema-registry.js` + `party-data-tools.js` v6 offline
+- [ ] `party-hub-round-state.js` v2 offline
+- [ ] `party-hub-polish.js` v17 offline
+- [ ] Backup-Registry + `party-data-tools.js` v6 offline
 - [ ] A11y-Schichten offline
-- [ ] DWI offline
-- [ ] HR2 offline
-- [ ] BK51 offline bzw. nach Offline-Neustart soweit Browser-Dateizugriff dies unterstützt
-- [ ] HR52 offline
-- [ ] Update von mindestens zwei älteren Installationen auf v52/RC
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 offline
+- [ ] Update von mindestens zwei älteren Installationen auf v53/RC
 - [ ] aktive Session über Update geschützt
-- [ ] lokale managed und future Testdaten erhalten
+- [ ] lokale managed/future Testdaten erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
-## 13. Hintergrund / Sperrbildschirm / Reload
+## 14. Hintergrund / Accessibility / Mobile
 
-- [ ] Appwechsel
-- [ ] Sperren/Entsperren
-- [ ] Reload während Session
-- [ ] Timer korrekt
-- [ ] keine doppelte Statistik
+- [ ] Appwechsel / Sperren / Entsperren / Reload
+- [ ] Timer korrekt und keine doppelte Statistik
 - [ ] private Inhalte verdeckt
 - [ ] sichere Current-Karten korrekt fortgesetzt
-
-## 14. Accessibility / Mobile
-
-- [ ] Tastatur ohne Maus
-- [ ] Skip-Link
-- [ ] sichtbarer Fokus
+- [ ] Tastatur ohne Maus / sichtbarer Fokus / Skip-Link
 - [ ] Hub-/Advanced-/Creator-Modalfokus
-- [ ] Quick-Fokus-Recovery
-- [ ] VoiceOver
-- [ ] TalkBack
+- [ ] VoiceOver / TalkBack
 - [ ] 200-%-Zoom / 320 CSS px
 - [ ] große Systemschrift / Safe Areas
 - [ ] Touchziele / Reduced Motion
-- [ ] Resume-Quarantäne verständlich und nicht fokussierbar solange gesperrt
 
 ## 15. Reale Partytests
 
@@ -227,39 +191,27 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] 5–8 Personen / ≥90 min
 - [ ] 9–12 Personen / ≥90 min
 - [ ] Multi-Imposter
-- [ ] DWI mit neutralen Daten
-- [ ] HR2/v50 mit neutralem Zustand
-- [ ] BK51 mit neutralen Daten
-- [ ] HR52 mit neutralem Zustand + realer Truth/Dare-Runde
+- [ ] DWI
+- [ ] HR2
+- [ ] BK51
+- [ ] HR52
+- [ ] PR53
 - [ ] Mafia
 - [ ] Scharade/Tabu
 - [ ] Party Night
 - [ ] mindestens ein Nachweis pro Core-Spiel
 
-## 16. Content / Rechte
-
-- [ ] Ton/Privacy/Safety/Alter
-- [ ] keine problematischen Wiederholungen
-- [ ] keine ungeklärten Fan-/Markenbezüge
-- [ ] keine ungeklärten visuellen Rechte
-- [ ] `ASSET_RIGHTS_SIGNOFF.md` vollständig
-
-Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
-
-## 17. Release-Freigabekriterium
+## 16. Release-Freigabekriterium
 
 - [ ] automatisierter Preflight grün
 - [ ] Branch Protection aktiv
 - [ ] HTTPS-Staging/Production grün
 - [ ] Android/iPhone/iPad real
 - [ ] Accessibility real
-- [ ] DWI real
-- [ ] Hub Resume v2/v50 real
-- [ ] BK51 real
-- [ ] HR52 real
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 real
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
-- [ ] G1–G5 / DWI / HR2 / BK51 / HR52 / PN1–PN3 abgeschlossen
-- [ ] zwei echte PWA-Upgrades auf v52 + Rollback
+- [ ] G1–G5 und PN1–PN3 abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v53 + Rollback
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content/Rechte/Legal/Support/Hosting-Sign-off
 - [ ] Incident-/Rollback-Drill
