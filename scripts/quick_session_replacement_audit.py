@@ -11,6 +11,7 @@ required = [
     'quick-session-replacement-guard.js', 'quick-loader.js',
     'tests/quick-session-replacement-guard.test.js',
     'tests/e2e/quick-session-replacement.spec.js',
+    'tests/e2e/party-session-controls.spec.js',
     'package.json', 'sw.js'
 ]
 for relative in required:
@@ -24,6 +25,7 @@ guard = read('quick-session-replacement-guard.js')
 loader = read('quick-loader.js')
 unit = read('tests/quick-session-replacement-guard.test.js')
 e2e = read('tests/e2e/quick-session-replacement.spec.js')
+controls_e2e = read('tests/e2e/party-session-controls.spec.js')
 package = json.loads(read('package.json'))
 sw = read('sw.js')
 
@@ -35,9 +37,9 @@ for marker in (
     "quick: 'secret-circle-party-quick-active-v1'",
     'function plausibleSnapshot(value)',
     'function authorizeStart(root, catalog, gameId)',
-    "event.stopImmediatePropagation();",
-    "blockPagehideRetry = true;",
-    "root.location?.reload?.();"
+    'event.stopImmediatePropagation();',
+    'blockPagehideRetry = true;',
+    'root.location?.reload?.();'
 ):
     if marker not in guard:
         violations.append(f'Quick replacement guard marker missing: {marker}')
@@ -65,10 +67,20 @@ for marker in (
     'starting again requires confirmation and cancel preserves the same Quick session',
     'cross-game start in the same Quick family cannot silently overwrite another game session',
     'failed replacement write reloads fail-closed and preserves the previous stored session',
-    "expect(preserved.sessionId).toBe(before.sessionId)"
+    'expect(preserved.sessionId).toBe(before.sessionId)'
 ):
     if marker not in e2e:
         violations.append(f'Quick replacement browser marker missing: {marker}')
+
+for marker in (
+    'every fast engine loads controls and replacement guard before its engine',
+    "sources.indexOf('party-session-controls.js')",
+    "sources.indexOf('quick-session-replacement-guard.js')",
+    'expect(guardIndex).toBeGreaterThan(controlsIndex)',
+    'expect(engineIndex).toBeGreaterThan(guardIndex)'
+):
+    if marker not in controls_e2e:
+        violations.append(f'Quick replacement load-order browser marker missing: {marker}')
 
 scripts = package.get('scripts', {})
 if 'node tests/quick-session-replacement-guard.test.js' not in scripts.get('test', ''):
@@ -76,7 +88,8 @@ if 'node tests/quick-session-replacement-guard.test.js' not in scripts.get('test
 for relative in (
     'quick-session-replacement-guard.js',
     'tests/quick-session-replacement-guard.test.js',
-    'tests/e2e/quick-session-replacement.spec.js'
+    'tests/e2e/quick-session-replacement.spec.js',
+    'tests/e2e/party-session-controls.spec.js'
 ):
     if f'node --check {relative}' not in scripts.get('check', ''):
         violations.append(f'Quick replacement file missing from syntax preflight: {relative}')
@@ -100,5 +113,6 @@ print(json.dumps({
     'same_game_confirmation': True,
     'cross_game_family_confirmation': True,
     'failed_write_preserves_previous_snapshot': True,
+    'browser_load_order_guarded': True,
     'pwa_cache': f"secret-circle-v{cache.group(1)}"
 }, ensure_ascii=False, indent=2))
