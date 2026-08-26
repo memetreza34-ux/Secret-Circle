@@ -1,12 +1,13 @@
 # Secret Circle – Beta-, Geräte- und Gruppentestplan
 
-Stand: 25. August 2026  
+Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**  
+Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**  
 Core Source Hardening: **15/15 PREPARED**  
 Accessibility Source Hardening: **PREPARED**  
 Word-Imposter Data/Resume Hardening: **PREPARED**  
-Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**
+Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**  
+Complete Backup v51 Hardening: **PREPARED**
 
 ## 1. Eintrittskriterium
 
@@ -18,7 +19,7 @@ Finale RC-Beta erst nach demselben unveränderten Commit mit:
 - Chromium E2E
 - Chromium / Firefox / WebKit
 
-Letzter vollständig untersuchter v49-App-Actions-Lauf: **#2787**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 ist daher ebenfalls nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 und v51 sind daher ebenfalls nicht runnerverifiziert.**
 
 Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 
@@ -31,6 +32,8 @@ Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 - jedes Problem bekommt Severity und reproduzierbare Notiz.
 - geheime Inhalte werden bewusst bei App-/Tab-Wechsel getestet.
 - Fokus-/Tastaturprobleme gelten als funktionale Accessibility-Funde.
+- Restore-/Rollbacktests verwenden ausschließlich neutrale Testdaten.
+- Future-Key-Tests dokumentieren vorher/nachher exakt dieselben unbekannten Werte.
 
 ## 3. Mindest-Testmatrix
 
@@ -43,6 +46,7 @@ Informelle UX-Proben davor zählen nicht als finale Release-Evidence.
 | G5 | 1 unerfahrener Host + Gruppe | Creator |
 | DWI | neutral | Word-Imposter 50/51, 200/201, Backup |
 | HR2 | neutral | Hub Resume Guard v2 + v50-Ladequarantäne |
+| BK51 | neutral | Complete Backup v51 / Forward Compatibility / Rollback |
 | PN1 | klein/mittel | Smart Party Night 1 |
 | PN2 | mittel | Smart Party Night 2 |
 | PN3 | groß | Smart Party Night 3 |
@@ -135,7 +139,7 @@ Beobachten: Setup, Freiwilligkeit, Privacy, Timer, Resume, Exact-once, Fokus.
 
 ## 9. DWI – Word-Imposter-Datengrenzen
 
-Auf v50-RC bestätigen, obwohl Vertrag in v48 eingeführt wurde:
+Auf v51-RC bestätigen, obwohl Vertrag in v48 eingeführt wurde:
 
 1. 50 Kategorien akzeptiert.
 2. 51 Kategorien abgelehnt, keine Kürzung.
@@ -165,7 +169,28 @@ Mit neutralen Zuständen:
 11. gültige Session wird nicht mutiert.
 12. dasselbe offline in installierter PWA.
 
-## 11. G4 – Mafia
+## 11. BK51 – Complete Backup v51
+
+Nur neutrale Testdaten verwenden. Vor jedem Fall Bestandswerte dokumentieren.
+
+1. Gesamtexport enthält die aktuell vorhandenen registrierten Hub-/Word-/Creator-Daten.
+2. regulärer Restore ersetzt die managed v1/v7-Bestandsdaten vollständig und lädt sauber neu.
+3. vorhandener unbekannter Namespace, z. B. `secret-circle-party-future-feature-v99`, überlebt den Restore unverändert.
+4. vorhandene zukünftige Version eines heute bekannten Keys, z. B. `secret-circle-party-hub-v2`, überlebt den Restore unverändert.
+5. Backup, das `secret-circle-party-hub-v2` schreiben will, wird vor Mutation abgelehnt.
+6. managed `secret-circle-party-hub-v1` mit syntaktisch gültigem `{ "version": 999, ... }` wird vor Mutation abgelehnt.
+7. Klartext statt JSON wird vor Mutation abgelehnt.
+8. primitive JSON-Wurzel wird vor Mutation abgelehnt.
+9. >1,5-MB-Datei wird vor Mutation abgelehnt.
+10. simulierter/quota-bedingter Schreibfehler stellt alle vorherigen managed Werte wieder her.
+11. Future-/unknown Daten bleiben auch während eines Rollbacks unverändert.
+12. ausdrücklich bestätigte Funktion „Alle lokalen Daten löschen“ entfernt dagegen sämtliche `secret-circle-*`-Reste.
+13. Export→Restore in installierter v51-PWA online und nach Offline-Neustart prüfen.
+14. nach PWA-Upgrade aus einem älteren Stand BK51 erneut durchführen.
+
+Ein BK51-PASS erfordert **keinen** künstlich erfundenen Future-Migrationssupport; er beweist nur, dass der heutige Restore Daten neuerer/unbekannter Versionen nicht besitzt oder zerstört.
+
+## 12. G4 – Mafia
 
 - mehrere Gruppengrößen
 - Classic/Extended Packs
@@ -176,7 +201,7 @@ Mit neutralen Zuständen:
 - Dorf-/Mafia-Sieg
 - manipulierte Resume-Zustände
 
-## 12. G5 – Creator
+## 13. G5 – Creator
 
 Unerfahrene Person erstellt ohne Entwicklerhilfe ein eigenes Spiel.
 
@@ -191,7 +216,7 @@ Prüfen:
 - Editieren/Kopieren/Löschen
 - Export/Import
 
-## 13. PN1–PN3 – Smart Party Night
+## 14. PN1–PN3 – Smart Party Night
 
 - PN1 ca. 30 Minuten
 - PN2 ca. 45–60 Minuten
@@ -199,20 +224,21 @@ Prüfen:
 
 Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch.
 
-## 14. PWA-Update-Test
+## 15. PWA-Update-Test
 
 **PWA-Update-Test** mit mindestens zwei echten älteren Installationen:
 
 1. neutrale lokale Daten + aktive Session.
-2. v50/RC bereitstellen.
+2. v51/RC bereitstellen.
 3. Update zunächst verschieben.
 4. aktive Session fortsetzen.
 5. bewusst aktualisieren.
 6. Offline-Neustart.
 7. Daten/Guards/A11y prüfen.
-8. DWI + HR2 offline prüfen.
+8. DWI + HR2 + BK51 offline prüfen.
+9. Future-Testkey vor Upgrade anlegen und nach Upgrade/Restore auf Unverändertheit prüfen.
 
-## 15. Rollback-Test
+## 16. Rollback-Test
 
 **Rollback-Test** auf HTTPS-Staging:
 
@@ -221,9 +247,10 @@ Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch
 - korrigierten Stand mit neuer Cachegeneration deployen
 - Daten erhalten
 - Offline-Core vollständig
+- BK51-Daten-/Forward-Compatibility-Grenzen erhalten
 - alter funktionierender Core darf nicht durch fehlgeschlagene Promotion zerstört werden
 
-## 16. Accessibility-Realtest
+## 17. Accessibility-Realtest
 
 ### Hub
 
@@ -255,11 +282,12 @@ Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch
 - Touchziele
 - keine kritische Information nur über Farbe
 
-## 17. Bug-Severity
+## 18. Bug-Severity
 
 ### Critical
 
 - Datenverlust ohne Recovery
+- heutiger Restore löscht unbekannte/zukünftige Daten ohne explizite Löschbestätigung
 - private Informationen unerwartet offengelegt
 - weitreichender Securityfehler
 - Hauptzielgruppe kann App nicht nutzen
@@ -270,10 +298,12 @@ Prüfen: Gruppengröße, Wiederholungen, Übergänge, Dauer, History und Abbruch
 - falscher Sieger/Score
 - Resume/Timer systematisch kaputt
 - Import verändert Daten trotz Ablehnung
+- Restore akzeptiert falsche Storage-Version eines managed Keys
+- Rollback stellt managed Bestandsdaten nicht wieder her
 - wichtiger Accessibilityflow blockiert
 - ungültige Resume-Session kann vor Guard-Validierung gestartet werden
 
-## 18. Testbericht
+## 19. Testbericht
 
 ```text
 Test-ID:
@@ -293,21 +323,22 @@ Contentfunde:
 Accessibilityfunde:
 PWA/Resume-Funde:
 Privacy-/Secret-Funde:
-Data-/Import-Funde:
+Data-/Import-/Restore-Funde:
 Retest nötig: ja/nein
 ```
 
-## 19. Beta-Freigaberegel
+## 20. Beta-Freigaberegel
 
 Vor `REAL USER / DEVICE PASS`:
 
 - [ ] G1–G5 abgeschlossen
 - [ ] DWI abgeschlossen
 - [ ] HR2 inklusive v50-Ladequarantäne abgeschlossen
+- [ ] BK51 vollständig abgeschlossen
 - [ ] PN1–PN3 abgeschlossen
 - [ ] Android / iPhone / Tablet real
 - [ ] VoiceOver / TalkBack / 200-%-Zoom real
-- [ ] zwei echte PWA-Upgrades auf v50/RC
+- [ ] zwei echte PWA-Upgrades auf v51/RC
 - [ ] Rollback-Test bestanden
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
