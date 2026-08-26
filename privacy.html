@@ -29,35 +29,34 @@
       <p>Rollen, Fragen, Orte, Begriffe und andere geheime Informationen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Verdeckungs-, Übergabe- und Resume-Schutz verringern versehentliches Mitlesen, können absichtliches Schulterblicken aber nicht vollständig verhindern.</p>
 
       <h2>Built-in-Privacy-Schutz</h2>
-      <p>Die eingebauten Spiele sollen keine privaten Nachrichten, Kamerarollen oder privaten Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial verlangen. Persönliche Inhalte bleiben freiwillig und überspringbar.</p>
+      <p>Die eingebauten Spiele verlangen keine privaten Nachrichten, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial. Persönliche Inhalte bleiben freiwillig und überspringbar.</p>
 
-      <h2>Word Imposter und Resume</h2>
+      <h2>Word Imposter und Hub Resume</h2>
       <p>Geheime Rollen und Begriffe werden beim Gerätewechsel verdeckt. Gespeicherte Abstimmungs- und Resume-Zustände werden auf Konsistenz geprüft. Eigene Kategorien und Backups werden lokal validiert, bevor bestehende Daten ersetzt werden.</p>
+      <p>Seit v52 bleiben sichere sichtbare Hub-Karten über Reload stabil; v53 schützt Paranoia-Frage und bereits entschiedenes Münzwurf-Ergebnis ohne Auto-Reveal; v54 erhält sichtbare Hot-Potato-/Wortketten-Pre-Timer-Werte bis zum kontrollierten Übergang in den Timer-Snapshot.</p>
 
-      <h2>Advanced- und Hub-Spiele</h2>
-      <p>Private Fragen, Ortskarten, Rollen, Moderatorinformationen und vergleichbare geheime Zustände werden bei unterstützten Flows beim Fokus- oder App-Wechsel verdeckt. Manipulierte oder widersprüchliche gespeicherte Zustände können verworfen werden. Hub-Resume-Aktionen bleiben während der Guard-Prüfung gesperrt.</p>
-      <p>Seit v52 kann der direkte Hub ausdrücklich nicht-geheime Karten wie Wahrheit/Pflicht, normale Fragen und Entweder-oder als lokale Indexreferenz wiederherstellen, sodass nach Reload dieselbe sichere Karte erscheint.</p>
-      <p>Seit v53 kann eine begonnene Paranoia-Runde ihre validierte Kartenreferenz, Phase und gegebenenfalls das bereits gefällte Münzwurf-Ergebnis lokal behalten. Die geheime Frage oder das Ergebnis werden nach Reload trotzdem nicht automatisch gezeigt; erst eine bewusste Reveal-Aktion macht denselben Zustand wieder sichtbar. Auch nach Auflösung wird Paranoia bei Fokus- oder App-Wechsel erneut verdeckt.</p>
-      <p>Seit <strong>v54</strong> dürfen auch die sichtbare Hot-Potato-Aufgabe und der sichtbare Wortketten-Startbuchstabe <strong>vor Timerstart</strong> als sichere Indexreferenz fortgesetzt werden. Nach dem Timerstart wird diese Referenz gelöscht und nur noch der Timer-Snapshot mit Aufgabe beziehungsweise Buchstabe gespeichert. Scharade- und Tabu-Geheimkarten sind von diesem sichtbaren Pre-Start-Resume ausgeschlossen.</p>
+      <h2>Advanced-Spiele – v55</h2>
+      <p>Advanced-Rollen, Ortskarten, private Fragen und Moderatorinformationen werden bei unterstützten Flows bei Fokus- oder App-Wechsel verdeckt. Geöffnete Secret-Reveals werden nach Reload wieder geschlossen; eine Mafia-Moderatorübersicht verlangt erneut eine bewusste Bestätigung.</p>
+      <p>Seit v55 verwirft der Advanced-Resume-Schutz gespeicherte Zustände, die fachlich nicht möglich sind, zum Beispiel einen Location-Spy-Result-State mit gleichzeitigem Gruppenwahl- und Ortsguess-Pfad oder eine Mafia-Nachtphase, obwohl die lebenden Rollen bereits eindeutig einen Sieger ergeben.</p>
+      <p>Eine vorhandene gespeicherte Advanced-Session wird durch „Neue Session beginnen“ nicht mehr still ersetzt. Vor dem Verwerfen ist eine ausdrückliche Bestätigung nötig. Kann der alte Session-Marker nicht sicher entfernt werden, startet keine neue Session.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
 
       <h2>Sicherung und Import</h2>
       <p>JSON-Sicherungen können lokale Spielernamen, Presets, Favoriten, Verlauf, Statistiken, eigene Inhalte, Einstellungen und aktive Sessions enthalten. Exportierte Sicherungen sind nicht automatisch verschlüsselt und sollten nur an vertrauenswürdigen Orten gespeichert werden.</p>
-      <p>Imports werden nach Format, Version, erlaubten Storage-Keys, UTF-8-Größe und Datenstruktur geprüft, bevor lokale Daten verändert werden. Verwaltete Complete-Backup-Werte müssen valides strukturiertes JSON mit passender Storage-Version und minimaler Pflichtstruktur enthalten.</p>
-      <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Secret-Circle-Keys. Unbekannte oder neuere <code>secret-circle-*</code>-Namespaces und Storage-Versionen werden durch ein älteres Backup nicht still gelöscht. Scheitert ein Schreibvorgang, werden die zuvor verwalteten Daten soweit möglich auf ihren Snapshot zurückgerollt. Die ausdrückliche Funktion „Alle lokalen Daten löschen“ bleibt davon getrennt und entfernt bewusst sämtliche Secret-Circle-Namespaces.</p>
+      <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Keys. Unbekannte oder neuere Secret-Circle-Namespaces und Storage-Versionen werden durch einen älteren Restore nicht still gelöscht. Schreibfehler rollen verwaltete Werte soweit möglich zurück. „Alle lokalen Daten löschen“ bleibt davon getrennt und entfernt bewusst sämtliche Secret-Circle-Namespaces.</p>
 
       <h2>Hosting und technische Verbindungsdaten</h2>
-      <p>Beim Laden oder Aktualisieren ruft der Browser statische App-Dateien vom später final festgelegten Hostinganbieter ab. Dabei können technisch notwendige Verbindungs- oder Serverlogdaten beim Hostinganbieter anfallen. Vor öffentlicher Veröffentlichung werden Anbieter, Verantwortlicher, Kontakt, konkrete Logverarbeitung, Aufbewahrung und gegebenenfalls Drittlandbezug hier anhand des tatsächlich gewählten Hostings ergänzt und geprüft.</p>
+      <p>Beim Laden oder Aktualisieren ruft der Browser statische App-Dateien vom später final festgelegten Hostinganbieter ab. Dabei können technisch notwendige Verbindungs- oder Serverlogdaten anfallen. Anbieter, Verantwortlicher, Kontakt, Logverarbeitung, Aufbewahrung und gegebenenfalls Drittlandbezug werden vor Veröffentlichung anhand des realen Hostings ergänzt.</p>
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v54</code>.</p>
-      <p>v54 enthält die bisherigen Resume-/Privacy-/Accessibility-/Backup-Schutzmodule und ergänzt die stabile sichere Pre-Timer-Rundenkontinuität für Hot Potato und Wortkette. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v55</code>.</p>
+      <p>v55 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-Schutzmodule sowie den Advanced-Resume-Guard Version 4 und den bestätigten Advanced-Session-Ersatz. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
-      <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem des Geräts entfernt werden.</p>
+      <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem entfernt werden.</p>
 
       <h2>Browsergrenzen</h2>
       <p>Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck, manueller Löschung oder Neuinstallation entfernen. Für wichtige eigene Spiele und Packs empfiehlt sich eine lokale Sicherung.</p>
@@ -66,7 +65,7 @@
       <p>Secret Circle verwendet im aktuellen V1-Scope keine Analyse-, Werbe- oder Tracking-SDKs und lädt keine externen Spielskripte oder Webfonts zur Laufzeit.</p>
 
       <h2>Vor öffentlicher Veröffentlichung</h2>
-      <p>Diese Seite ist noch keine finale Production-Datenschutzerklärung. Betreiber, öffentliche Kontaktmöglichkeit, Hostinganbieter und die konkrete Hosting-/Logverarbeitung werden erst nach ihrer realen Festlegung veröffentlicht. Der Releaseprozess verhindert eine finale Freigabe, solange diese Angaben und die zugehörige Prüfung fehlen.</p>
+      <p>Diese Seite ist noch keine finale Production-Datenschutzerklärung. Betreiber, öffentliche Kontaktmöglichkeit, Hostinganbieter und die konkrete Hosting-/Logverarbeitung werden erst nach ihrer realen Festlegung veröffentlicht.</p>
 
       <div class="actions">
         <a class="button-link" href="party.html">Zurück zum Party Hub</a>
