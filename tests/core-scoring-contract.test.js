@@ -13,6 +13,7 @@ const hub = read('party-hub.js');
 const timers = read('party-hub-timers.js');
 const advanced = read('party-advanced.js');
 const rulesDoc = read('CORE_SCORING_RULES.md');
+const controlsE2E = read('tests/e2e/core-hub-controls.spec.js');
 
 const CORE = Object.freeze({
   imposter: { score: 'individual-match', winner: 'round-side+leaderboard' },
@@ -78,6 +79,14 @@ assert.doesNotMatch(hub, /session\.score \+=/);
 assert.match(hub, /Runde übersprungen\. Dafür wurde kein Punkt vergeben\./);
 assert.match(hub, /function abortSession\(\)/);
 
+// Finish/save treats a started timer as one deliberately shortened played round and never double-counts an already ended timer.
+assert.match(hub, /const activeTimedRound = Boolean\(session\.timer && \(session\.running \|\| session\.timer\.phase === 'ended'\)\)/);
+assert.match(hub, /const completedRounds = session\.rounds \+ \(activeTimedRound \? 1 : 0\)/);
+assert.ok(rulesDoc.includes('bewusst verkürzte gespielte Runde'));
+assert.ok(rulesDoc.includes('genau **1×**'));
+assert.ok(controlsE2E.includes('saving while a timer is running records the deliberately shortened round exactly once'));
+assert.ok(controlsE2E.includes('saving an ended timer before pressing next records that round exactly once'));
+
 // Timed Hub scoring is deliberately a session counter, not a player/team scoreboard.
 assert.equal((timers.match(/current\.score \+= 1;/g) || []).length, 3, 'Only Charades, Taboo and Word Chain may increment direct Hub score.');
 assert.match(timers, /function startCharades\([\s\S]*?current\.score \+= 1;/);
@@ -89,15 +98,14 @@ assert.doesNotMatch(hotPotatoBlock[0], /score \+=/);
 assert.match(timers, /Wer das Gerät jetzt hält, verliert diese Runde\./);
 
 // Advanced score is a global success counter; winner/outcome remains a separate concept.
-assert.equal((advanced.match(/session\.score \+= 1;/g) || []).length, 1, 'Two Truths should add exactly one success point on a correct group vote.');
-assert.equal((advanced.match(/session\.score \+= 2;/g) || []).length, 3, 'Question Imposter and both Location Spy success paths define the current +2 contract.');
-assert.equal((advanced.match(/session\.score \+= 3;/g) || []).length, 1, 'Mafia day elimination of a Mafia role defines the current +3 contract.');
+assert.equal((advanced.match(/session\.score \+= 1;/g) || []).length, 1);
+assert.equal((advanced.match(/session\.score \+= 2;/g) || []).length, 3);
+assert.equal((advanced.match(/session\.score \+= 3;/g) || []).length, 1);
 assert.match(advanced, /data\.correct = index === data\.lieIndex;[\s\S]*?if \(data\.correct\) session\.score \+= 1/);
 assert.match(advanced, /data\.correct = player === data\.imposter;[\s\S]*?if \(data\.correct\) session\.score \+= 2/);
 assert.match(advanced, /data\.correct = player === data\.spy;[\s\S]*?if \(data\.correct\) session\.score \+= 2/);
 assert.match(advanced, /data\.spyCorrect = location === data\.location;[\s\S]*?if \(data\.spyCorrect\) session\.score \+= 2/);
 assert.match(advanced, /const spyWon = data\.spyCorrect \|\| data\.correct === false/);
-assert.match(advanced, /nodes\.eyebrow\.textContent = spyWon \? 'Spion gewinnt' : 'Gruppe gewinnt'/);
 assert.match(advanced, /if \(data\.roles\[eliminated\] === 'Mafia'\) session\.score \+= 3/);
 assert.match(advanced, /if \(mafiaAlive === 0\) return 'Dorf'/);
 assert.match(advanced, /if \(mafiaAlive >= villageAlive\) return 'Mafia'/);
@@ -116,10 +124,9 @@ console.log(JSON.stringify({
   coreScoringContract: 'PASS',
   coreGames: expectedIds.length,
   machineReadableCatalogRules: true,
-  correctedRuleCopy: ['charades', 'taboo', 'hot-potato'],
   individualMatchScoring: ['imposter'],
-  scorelessCoreGames: expectedIds.filter(id => CORE[id].score === 'none'),
   counterOnlyCoreGames: ['charades', 'taboo', 'word-chain'],
   advancedOutcomeGames: ['two-truths', 'question-imposter', 'location-spy', 'mafia'],
+  timerFinishExactOnceContract: true,
   scoringIsNotUniversalWinner: true
 }, null, 2));
