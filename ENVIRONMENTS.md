@@ -2,7 +2,7 @@
 
 Stand: 26. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**
+Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**
 
 ## 1. Ziel
 
@@ -20,23 +20,23 @@ Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum und muss 
 
 ## 4. Aktueller Cachevertrag
 
-- aktiv: `secret-circle-v55`
-- staging: `secret-circle-v55-staging`
+- aktiv: `secret-circle-v56`
+- staging: `secret-circle-v56-staging`
 
-Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → **v55 Advanced Resume-/Winner-/Result-Integrität und bestätigter Session-Ersatz**.
+Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → **v56 bestätigter/fail-closed Quick-/Mega-/Viral-/Creator-Session-Ersatz**.
 
 ## 5. Automatisierter HTTPS-Smoke
 
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v55
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v56
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v55 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v56 --production
 ```
 
 Der Netzwerk-Smoke beweist nicht Installation, Offline-Neustart, Update, Resume, Privacy oder reale Gerätefunktion.
@@ -47,11 +47,12 @@ Mindestens:
 
 - Service Worker / Installation / Offline-Neustart
 - Hub/Word Imposter/Advanced/Quick/Creator/Privacy + Query-Routen offline
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54
-- **AD55 Location Spy:** Vote- und Guess-Result dürfen nicht gleichzeitig fortgesetzt werden
-- **AD55 Mafia:** nicht-fertiger Stage mit bereits eindeutiger Winner-Verteilung wird verworfen
-- **AD55 Mafia Exact-once:** `stage=finished` direkt speichern zählt die fertige Runde genau einmal
-- **AD55 New Session:** Cancel erhält die alte Session; Confirm ersetzt sie; Remove-Fehler startet keine neue
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55
+- **QR56 Same Game:** vorhandene Quick-Family-Session → Start → Cancel → identische Session-ID bleibt
+- **QR56 Cross Game:** anderes Spiel derselben Quick-/Mega-/Viral-/Creator-Familie → Start → Cancel → alter Game-ID-/Session-ID-Snapshot bleibt
+- **QR56 Confirm:** bestätigter Ersatz erzeugt einen neuen Snapshot erst durch erfolgreichen Engine-Write
+- **QR56 Storage Fail:** simulierter Replacement-Write-Fehler → kontrollierter Reload → alter Snapshot bleibt erhalten
+- `quick-loader.js` v7 lädt Replacement Guard vor der jeweiligen Engine
 - Advanced Secret Resume + Moderator-/Nachtprivacy
 - Updatebanner + aktive Session
 - Accessibility-/Fokuspfade
@@ -62,7 +63,7 @@ Ein RC wird durch unveränderten Commit, Tag, App-Version, Cachegeneration, Stag
 
 ## 8. Datenisolation
 
-Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt, sichere Hub-Current-/Pre-Timer-Werte und Advanced-v55-Resume-Integrität werden getrennt geprüft.
+Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt, sichere Hub-Current-/Pre-Timer-Werte, Advanced-v55-Resume-Integrität und v56-Quick-Family-Replacement werden getrennt geprüft.
 
 ## 9. Rollbackprobe
 
@@ -77,7 +78,7 @@ Staging smoke result:
 RC commit/cache:
 Production URL/commit/cache:
 Production smoke result:
-DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 evidence:
+DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 evidence:
 Rollback tested from/to:
 Evidence reference:
 ```
@@ -90,7 +91,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Provider-/Log-/Datenschutzentscheidung dokumentiert
 - [ ] Staging-Smoke grün
 - [ ] manueller PWA-Smoke
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / **AD55** real bestätigt
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / **QR56** real bestätigt
 - [ ] Upgrade aus mindestens zwei real installierten Altständen
 - [ ] Rollbackprobe
 - [ ] derselbe freigegebene RC für Production
