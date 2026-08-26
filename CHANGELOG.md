@@ -10,7 +10,8 @@ Stand: 26. August 2026
 
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54: **quellsseitig PREPARED, real offen**
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55: **quellsseitig PREPARED, real offen**
+- Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 
@@ -24,48 +25,55 @@ Voting-Resume, 50 Kategorien, 200 Begriffe je Kategorie, 1,5-MB-UTF-8-Grenze, ke
 
 ### v49–v50 – Hub Resume Guard
 
-Zentraler `party-hub-resume-guard.js` v2; Cross-Mode-/Timer-Inkonsistenzen fail-closed; stale Resume UI entfernt; Resume-Aktionen während Guard-Ladung bis erfolgreicher Validierung deaktiviert.
+Zentraler Hub-Resume-Guard v2; Cross-Mode-/Timer-Inkonsistenzen fail-closed; Resume-Aktionen während Guard-Ladung deaktiviert.
 
-### v51 – Complete Backup / Forward Compatibility
+### v51 – Complete Backup
 
-Registry-basierte aktuelle Key-Eigentümerschaft, Future-Key/-Version-Erhalt, key-spezifische Vorvalidierung, `party-data-tools.js` v6 und managed-only Restore/Rollback. BK51 als Realtest definiert.
+Registry-basierte Key-Eigentümerschaft, Future-Key/-Version-Erhalt, Vorvalidierung und managed-only Restore/Rollback.
 
-### v52 – Hub Round Resume / Truth-Dare Usage
+### v52 – Hub Round Resume
 
-`party-hub-round-state.js` eingeführt. Sichere Truth-Dare-/Prompt-/Choice-Karten bleiben über Reload identisch; Wahrheit/Pflicht besitzen getrennte Usage-Pools; ungültige Current-Referenzen werden verworfen. HR52 definiert.
+Sichere Truth-Dare-/Prompt-/Choice-Karten bleiben über Reload identisch; Wahrheit/Pflicht besitzen getrennte Usage-Pools.
 
 ### v53 – Paranoia Resume / Privacy
 
-`party-hub-round-state.js` v2: Paranoia hält validierte Kartenreferenz/Phase und bereits gefälltes Münzwurf-Ergebnis, bleibt nach Reload aber gedeckt. `party-hub-polish.js` v17 verdeckt auch den aufgelösten Zustand bei Fokusverlust. Same-question/same-result-E2E und PR53 ergänzt.
+Paranoia hält validierte Kartenreferenz/Phase und bereits gefälltes Münzwurf-Ergebnis, bleibt nach Reload aber gedeckt. Aufgelöster Zustand wird bei Fokusverlust erneut verdeckt.
 
 ### v54 – Pre-Timer Resume
 
-- `party-hub-round-state.js` auf **Version 3** erhöht.
-- `hot-potato` und `word-chain` sind sichere Pre-Start-Current-Modi.
-- Hot Potato behält die bereits angezeigte Aufgabe über Reload/Resume vor Timerstart.
-- Wortkette behält den bereits angezeigten Startbuchstaben über Reload/Resume vor Timerstart.
-- Beim tatsächlichen Timerstart wird `current` **vor** Erstellung des Timer-Snapshots gelöscht.
-- derselbe Hot-Potato-Wert wird danach in `timer.prompt`, derselbe Wortkettenwert in `timer.letter` fortgeführt.
-- Scharade/Tabu sind ausdrücklich nicht in den sichtbaren Pre-Start-Current-Modi enthalten.
-- neues `tests/e2e/core-hub-prestart-resume.spec.js` schützt beide Browserpfade.
-- `tests/hub-resume-contract.test.js` und `tests/hub-timer-contract.test.js` schützen RoundState-v3-/Handoff-Verträge.
-- neues `scripts/hub_prestart_resume_audit.py` bündelt Runtime, Tests, PWA und Deploymentvertrag und läuft in `npm run validate`; der Audit prüft seine eigene Validate-Einbindung.
-- PT54 als eigener Realtest definiert.
+Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart über Reload stabil. Beim Start wird `current` gelöscht und derselbe Wert in `timer.prompt`/`timer.letter` übernommen. PT54-Audit und Browser-Spec ergänzt.
 
-### PWA / Offline – v54
+### v55 – Advanced Integrity
 
-- Offline-Core: **`secret-circle-v54` / `secret-circle-v54-staging`**.
-- Service-Worker-Test auf Cachevertrag 54.
-- Architektur, Deployment, Environment, Privacy und Hosting auf v54/PT54 synchronisiert.
-- alle v46–v53 Schutzschichten bleiben enthalten.
+- `advanced-resume-guard.js` auf **Version 4** erhöht.
+- Location Spy akzeptiert im Result-State genau einen Ergebnisweg: Vote oder Guess, nicht beide zugleich.
+- Mafia verwirft non-finished Stages, wenn die Alive-Verteilung bereits eindeutig einen Gewinner bestimmt.
+- Mafia-Winner und Rollenanzahl bleiben an die tatsächliche Alive-/Pack-/Spielerstruktur gebunden.
+- `stage=finished` kann direkt gespeichert werden; die fertige Mafia-Runde wird dabei exact-once verbucht.
+- erneutes Speichern derselben Advanced-Session-ID erzeugt keinen zweiten History-/Stats-Eintrag.
+- „Neue Session beginnen“ ersetzt eine bestehende Advanced-Resume-Session erst nach expliziter Bestätigung.
+- schlägt das Entfernen des alten Active-State fehl, startet keine neue Session.
+- `tests/e2e/advanced-secret-resume.spec.js`: veralteter 8-Spieler-Klassisch-Fixture auf korrekte 2 Mafia korrigiert.
+- neues `tests/e2e/advanced-new-session-guard.spec.js` für Cancel/Confirm/Storage-Fail.
+- `tests/e2e/advanced-resume-integrity.spec.js` um Location-Hybrid- und Mafia-Terminalzustände erweitert.
+- `tests/e2e/advanced-completion-exact-once.spec.js` um den Mafia-finished-Direktabschluss erweitert.
+- neun kritische Advanced-E2Es im Syntax-Preflight.
+- neues `scripts/advanced_integrity_audit.py` in `npm run validate`.
+- AD55 als eigener realer Abnahmetest definiert.
+
+### PWA / Offline – v55
+
+- Offline-Core auf **`secret-circle-v55` / `secret-circle-v55-staging`** erhöht.
+- Advanced Resume Guard v4 und der gehärtete Advanced Runner werden offline ausgeliefert.
+- alle früheren A11y-/Resume-/Privacy-/Backup-/Timerverträge bleiben enthalten.
 
 ### Build / CI
 
 - `package-lock.json` v3; Playwright exakt 1.54.2; keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- PT54-E2E im Syntax-Preflight und PT54-Audit im Validate-Gate.
-- Letzter vollständig untersuchter Actions-Lauf bleibt historisch **Run #2787 auf v49**, `steps: null` / `steps: []`, ohne ausgeführten Repositorycode.
-- **v50–v54 haben keinen Runner-PASS.**
+- PT54- und AD55-Audits im Validate-Gate.
+- letzter vollständig untersuchter Actions-Lauf bleibt historisch **Run #2787 auf v49**, `steps: null` / `steps: []`, ohne ausgeführten Repositorycode.
+- **v50–v55 haben keinen Runner-PASS.**
 
 ### Operator / Assets
 
@@ -75,6 +83,6 @@ Registry-basierte aktuelle Key-Eigentümerschaft, Future-Key/-Version-Erhalt, ke
 
 ### Releaseentscheidung
 
-Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54**, **#14 Operator/Hosting/Legal/Support**.
+Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54/AD55**, **#14 Operator/Hosting/Legal/Support**.
 
 Öffentlicher Release: **NO_GO**.
