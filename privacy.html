@@ -40,6 +40,11 @@
       <p>Seit v55 verwirft der Advanced-Resume-Schutz gespeicherte Zustände, die fachlich nicht möglich sind, zum Beispiel einen Location-Spy-Result-State mit gleichzeitigem Gruppenwahl- und Ortsguess-Pfad oder eine Mafia-Nachtphase, obwohl die lebenden Rollen bereits eindeutig einen Sieger ergeben.</p>
       <p>Eine vorhandene gespeicherte Advanced-Session wird durch „Neue Session beginnen“ nicht mehr still ersetzt. Vor dem Verwerfen ist eine ausdrückliche Bestätigung nötig. Kann der alte Session-Marker nicht sicher entfernt werden, startet keine neue Session.</p>
 
+      <h2>Quick-, Mega-, Viral- und Creator-Sessions – v56</h2>
+      <p>Diese Schnellspiel-Familien speichern aktive Sessions lokal je Enginefamilie. Seit v56 darf ein normaler Spielstart einen plausiblen vorhandenen Session-Snapshot nicht mehr still überschreiben. Das gilt sowohl für dasselbe Spiel als auch für ein anderes Spiel, das denselben Family-Storage-Key nutzt.</p>
+      <p>Vor dem Ersatz wird ausdrücklich gefragt, ob die gespeicherte Session verworfen werden soll. Bei Abbruch bleibt der bisherige Snapshot unverändert. Der alte Snapshot wird nicht vorsorglich gelöscht; erst ein erfolgreicher lokaler Schreibvorgang der neuen Session ersetzt ihn.</p>
+      <p>Schlägt dieser Schreibvorgang fehl, verhindert der Replacement Guard einen späteren automatischen Wiederholungs-Write aus dem fehlerhaften In-Memory-Zustand und lädt die Seite kontrolliert neu. Der vorher gespeicherte Snapshot bleibt erhalten.</p>
+
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
 
@@ -52,8 +57,8 @@
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v55</code>.</p>
-      <p>v55 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-Schutzmodule sowie den Advanced-Resume-Guard Version 4 und den bestätigten Advanced-Session-Ersatz. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v56</code>.</p>
+      <p>v56 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>quick-session-replacement-guard.js</code> Version 1 und <code>quick-loader.js</code> Version 7. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem entfernt werden.</p>
