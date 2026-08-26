@@ -92,13 +92,16 @@ test('a normal prompt card also resumes without silently consuming a replacement
   expect(after.session.used).toEqual(before.session.used);
 });
 
-test('Paranoia reload requires explicit resume and never auto-opens the secret question', async ({ page }) => {
+test('Paranoia reload stays concealed but restores the exact same secret question on demand', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'paranoia');
   await page.getByRole('button', { name: 'Geheime Frage anzeigen' }).click();
+  const question = (await page.locator('#play-content').textContent())?.trim();
+  expect(question).toBeTruthy();
+
   const before = await activeState(page);
-  expect(before.session.used.length).toBeGreaterThan(0);
-  expect(before.session.current).toBeNull();
+  expect(before.session.used).toHaveLength(1);
+  expect(before.session.current).toMatchObject({ kind: 'paranoia', phase: 'question' });
 
   await page.reload();
   await expect(page.locator('#play-layer')).toBeHidden();
@@ -108,6 +111,40 @@ test('Paranoia reload requires explicit resume and never auto-opens the secret q
   await page.getByRole('button', { name: 'Session fortsetzen' }).click();
   await expect(page.locator('#play-content')).toContainText('Gerät so halten');
   await expect(page.getByRole('button', { name: 'Geheime Frage anzeigen' })).toBeVisible();
+  await expect(page.locator('#play-content')).not.toHaveText(question || '');
+
+  await page.getByRole('button', { name: 'Geheime Frage anzeigen' }).click();
+  await expect(page.locator('#play-content')).toHaveText(question || '');
+  const after = await activeState(page);
+  expect(after.session.current).toEqual(before.session.current);
+  expect(after.session.used).toEqual(before.session.used);
+});
+
+test('Paranoia reload preserves the already decided coin outcome without exposing it automatically', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'paranoia');
+  await page.getByRole('button', { name: 'Geheime Frage anzeigen' }).click();
+  await page.getByRole('button', { name: 'Name wurde genannt · Münze werfen' }).click();
+
+  const outcome = (await page.locator('#play-content').textContent())?.trim();
+  expect(outcome).toBeTruthy();
+  const before = await activeState(page);
+  expect(before.session.current).toMatchObject({ kind: 'paranoia', phase: 'resolved' });
+  expect(typeof before.session.current.reveal).toBe('boolean');
+
+  await page.reload();
+  await expect(page.locator('#play-layer')).toBeHidden();
+  await page.getByRole('button', { name: 'Session fortsetzen' }).click();
+
+  await expect(page.locator('#play-content')).toContainText('Gerät so halten');
+  await expect(page.locator('#play-content')).not.toHaveText(outcome || '');
+  await expect(page.getByRole('button', { name: 'Rundenergebnis anzeigen' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Rundenergebnis anzeigen' }).click();
+  await expect(page.locator('#play-content')).toHaveText(outcome || '');
+  await expect(page.getByRole('button', { name: 'Nächste Person' })).toBeVisible();
+  const after = await activeState(page);
+  expect(after.session.current).toEqual(before.session.current);
 });
 
 test('cross-mode timer corruption is discarded instead of resuming the wrong game runner', async ({ page }) => {
