@@ -33,12 +33,72 @@ function clockSeconds(text) {
   return match ? Number(match[1]) * 60 + Number(match[2]) : -1;
 }
 
+test('Truth or Dare restores the exact safe current card after reload', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'truth-dare');
+  await page.getByRole('button', { name: 'Wahrheit' }).click();
+
+  const card = (await page.locator('#play-content').textContent())?.trim();
+  expect(card).toBeTruthy();
+  const before = await activeState(page);
+  expect(before.session.current).toMatchObject({ kind: 'truth-dare', pool: 'truth' });
+  expect(before.session.usedByPool.truth).toHaveLength(1);
+  expect(before.session.usedByPool.dare).toHaveLength(0);
+  expect(before.session.used).toHaveLength(0);
+
+  await page.reload();
+  await expect(page.locator('#hub-resume-session')).toBeVisible();
+  await page.getByRole('button', { name: 'Session fortsetzen' }).click();
+
+  await expect(page.locator('#play-content')).toHaveText(card || '');
+  await expect(page.getByRole('button', { name: 'Erledigt · nächste Person' })).toBeVisible();
+  const after = await activeState(page);
+  expect(after.session.current).toEqual(before.session.current);
+  expect(after.session.usedByPool).toEqual(before.session.usedByPool);
+});
+
+test('Truth and Dare keep independent used-card index spaces', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'truth-dare');
+
+  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  const truth = await activeState(page);
+  expect(truth.session.usedByPool.truth).toHaveLength(1);
+  expect(truth.session.usedByPool.dare).toHaveLength(0);
+  expect(truth.session.used).toHaveLength(0);
+
+  await page.getByRole('button', { name: 'Erledigt · nächste Person' }).click();
+  await page.getByRole('button', { name: 'Pflicht' }).click();
+  const dare = await activeState(page);
+  expect(dare.session.usedByPool.truth).toEqual(truth.session.usedByPool.truth);
+  expect(dare.session.usedByPool.dare).toHaveLength(1);
+  expect(dare.session.used).toHaveLength(0);
+});
+
+test('a normal prompt card also resumes without silently consuming a replacement', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'never-have');
+  const card = (await page.locator('#play-content').textContent())?.trim();
+  expect(card).toBeTruthy();
+  const before = await activeState(page);
+  expect(before.session.current).toMatchObject({ kind: 'prompt' });
+  expect(before.session.used).toHaveLength(1);
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Session fortsetzen' }).click();
+  await expect(page.locator('#play-content')).toHaveText(card || '');
+  const after = await activeState(page);
+  expect(after.session.current).toEqual(before.session.current);
+  expect(after.session.used).toEqual(before.session.used);
+});
+
 test('Paranoia reload requires explicit resume and never auto-opens the secret question', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'paranoia');
   await page.getByRole('button', { name: 'Geheime Frage anzeigen' }).click();
   const before = await activeState(page);
   expect(before.session.used.length).toBeGreaterThan(0);
+  expect(before.session.current).toBeNull();
 
   await page.reload();
   await expect(page.locator('#play-layer')).toBeHidden();
