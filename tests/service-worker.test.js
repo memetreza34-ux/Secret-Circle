@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v55'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v55-staging'/);
+assert.match(source, /const CACHE='secret-circle-v56'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v56-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -27,6 +27,8 @@ assert.match(source, /secondary-surface-a11y\.js/);
 assert.match(source, /advanced-resume-guard\.js/);
 assert.match(source, /party-advanced-runner\.js/);
 assert.match(source, /advanced-privacy-guard\.js/);
+assert.match(source, /quick-session-replacement-guard\.js/);
+assert.match(source, /quick-loader\.js/);
 assert.match(source, /backup-schema-registry\.js/);
 assert.match(source, /party-data-tools\.js/);
 assert.match(source, /party-catalog\.js/);
@@ -46,7 +48,7 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 55,
+  cacheContract: 56,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -64,6 +66,8 @@ console.log(JSON.stringify({
   advancedResumeGuardOffline: true,
   advancedRunnerIntegrityOffline: true,
   advancedPrivacyGuardOffline: true,
+  quickSessionReplacementGuardOffline: true,
+  quickLoaderV7Offline: true,
   backupSchemaRegistryOffline: true,
   completeBackupHardeningOffline: true,
   baseCatalogOffline: true,
