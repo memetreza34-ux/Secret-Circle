@@ -5,11 +5,12 @@ Stand: 26. August 2026
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
 Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
-Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v52` / `secret-circle-v52-staging`**.  
 Accessibility Source Hardening: **PREPARED**.  
 Word-Imposter Data/Resume Hardening: **PREPARED**.  
 Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**.  
 Complete Backup v51 Hardening: **PREPARED**.  
+Hub Round Resume v52: **PREPARED**.  
 Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
@@ -18,13 +19,11 @@ Quellsseitig vorbereitet:
 
 - [x] `package-lock.json` v3
 - [x] CI und Cross-Browser verwenden `npm ci`
-- [x] Lockfile-/Branch-/Foundation-/Readiness-/Release-Audits
-- [x] `scripts/backup_contract_audit.py` im normalen `npm run validate`
+- [x] Release-/Foundation-/Backup-/Architecture-Audits
 - [x] `release-evidence.json` + Audit
 - [x] transition-safe FINAL/GO-Verträge
-- [x] `validate_project.py` auf aktuelle Runtime-Scriptketten und Hub-Resume-Loader synchronisiert
-- [x] Backup-E2E-Dateien im Syntax-Preflight
-- [x] Runner-Problem durch action-/repo-freien Minimalprobe als Pre-Step-Problem isoliert
+- [x] v52-Runtime-/E2E-Dateien im Syntax-Preflight
+- [x] Runner-Problem durch action-/repo-freie Minimalprobe als Pre-Step-Problem isoliert
 
 Für den RC offen:
 
@@ -38,10 +37,10 @@ Für den RC offen:
 - [ ] Chromium E2E grün
 - [ ] `npm run ci` vollständig grün
 - [ ] Chromium / Firefox / WebKit auf demselben Commit grün
-- [ ] `Secret Circle CI / validate` als **Required Check aktiv und grün**
+- [ ] `Secret Circle CI / validate` als Required Check aktiv und grün
 - [ ] Branch Protection / Review / Bypass / Force-Push / Löschung real bestätigt
 
-Letzter vollständig untersuchter App-Actions-Lauf: Run #2787 auf v49, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 und v51 sind deshalb ebenfalls nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: Run #2787 auf v49, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50, v51 und v52 sind deshalb nicht runnerverifiziert.**
 
 ## 2. Engine / Sessions / Daten
 
@@ -50,23 +49,17 @@ Quellsseitig vorbereitet:
 - [x] Word-Imposter Voting-/Resume-Guard
 - [x] 50 Kategorien / 200 Begriffe / 1,5-MB-UTF-8-Grenze
 - [x] kein stilles Trunkieren bei Import
-- [x] `tests/word-imposter-data-contract.test.js`
 - [x] `party-hub-resume-guard.js` v2
-- [x] `party-hub-polish.js` delegiert an denselben Guard
-- [x] stale Resume UI wird beim Verwerfen entfernt
-- [x] v50: sichtbare Resume-UI während Guard-Ladephase `aria-busy` + Buttons deaktiviert
-- [x] Freigabe der Resume-Buttons erst nach erfolgreicher Validierung
-- [x] Browserverträge für verzögerte/fehlgeschlagene Guard-Ladung
+- [x] v50-Ladequarantäne für sichtbare Resume-UI
 - [x] Advanced Resume-/Privacy-Guards
-- [x] Backup-Registry v2 als zentrale Complete-Backup-Quelle
-- [x] `party-data-tools.js` v6
-- [x] exakte Allowlist mit 16 aktuellen managed Storage-Keys
-- [x] zukünftige Namespaces/Storage-Versionen sind kein heutiges Restore-Eigentum
-- [x] key-spezifische Root-/Storage-Version-/Minimalwrapper-Prüfung vor Mutation
-- [x] managed-only Snapshot/Restore/Rollback
-- [x] `tests/backup-schema-registry.test.js`
-- [x] `tests/e2e/party-data.spec.js`
-- [x] `tests/e2e/backup-forward-compat.spec.js`
+- [x] Backup-Registry v2 + `party-data-tools.js` v6
+- [x] exakte managed Storage-Key-Allowlist + managed-only Rollback
+- [x] `party-hub-round-state.js` für sichere Current-Runden
+- [x] Wahrheit/Pflicht mit getrennten Usage-Pools
+- [x] sichere Prompt-/Choice-/Truth-Dare-Current-Referenzen validiert
+- [x] geheime Current-Inhalte werden nicht über v52 automatisch geöffnet
+- [x] `tests/hub-resume-contract.test.js`
+- [x] erweiterte `tests/e2e/core-hub-resume.spec.js`
 
 Real auf RC zu bestätigen:
 
@@ -77,21 +70,21 @@ Real auf RC zu bestätigen:
 - [ ] abgelehnter Word-Imposter-Import verändert Bestandsdaten nicht
 - [ ] gültige Hub-Resume-Session bleibt erhalten
 - [ ] gekreuzte Hub-Timerzustände werden verworfen
-- [ ] stale Hub-Resume-Karte verschwindet bei ungültigem Snapshot
-- [ ] **vor Abschluss der Guard-Prüfung ist keine Hub-Resume-Aktion anklickbar**
-- [ ] nach erfolgreicher Guard-Prüfung wird eine gültige Resume-Session wieder bedienbar
+- [ ] vor Abschluss der Guard-Prüfung ist keine Hub-Resume-Aktion anklickbar
 - [ ] Guard-Ladefehler bleibt fail-closed
 - [ ] manipulierte Advanced-Snapshots verworfen
 - [ ] private Reveals bei Reload/Fokusverlust geschützt
 - [ ] Abschluss/Verlauf/Statistik exact-once
 - [ ] Complete Backup Export→Import auf neutralen Testdaten
-- [ ] unbekannter Future-Namespace bleibt bei Restore erhalten
-- [ ] zukünftige Version eines bekannten Keys, z. B. `secret-circle-party-hub-v2`, bleibt erhalten
-- [ ] Backup mit nicht registriertem Future-Key wird abgelehnt, ohne Bestandsdaten zu verändern
-- [ ] syntaktisch gültiger managed Key mit falscher Storage-Version wird vor Mutation abgelehnt
-- [ ] Klartext/primitive JSON-Wurzel in managed Key wird vor Mutation abgelehnt
+- [ ] Future-Namespace/-Version bleibt bei älterem Restore erhalten
+- [ ] ungültiger managed Wert wird vor Mutation abgelehnt
 - [ ] simulierter Write-/Quota-Fehler stellt managed Snapshot wieder her
 - [ ] ausdrücklich bestätigte Komplettlöschung entfernt alle `secret-circle-*`-Reste
+- [ ] **Wahrheit/Pflicht: geöffnete Karte bleibt nach Reload/Resume exakt dieselbe**
+- [ ] **Wahrheit und Pflicht können denselben numerischen Kartenindex unabhängig verwenden**
+- [ ] normale Prompt-/Choice-Runde behält sicheren Current-Inhalt nach Resume
+- [ ] Paranoia/andere geheime Inhalte werden nach Reload nicht über `current` automatisch geöffnet
+- [ ] `next`/Skip entfernen den alten Current-Zustand vor der nächsten Runde
 
 ## 3. Core / UX / Content
 
@@ -107,35 +100,36 @@ Für **jedes** Core-Spiel real:
 - [ ] Score-/Winner-Vertrag korrekt
 - [ ] Verlauf/Statistik korrekt
 - [ ] Tastatur/Fokus/Zoom/Reduced Motion
-- [ ] mindestens eine **reale Gruppe** ohne Entwicklerhilfe
+- [ ] mindestens eine reale Gruppe ohne Entwicklerhilfe
 
 Spezialfälle:
 
 - [ ] Word Imposter: Mehrfach-Imposter, geheimes Voting, Stichwahl
+- [ ] Wahrheit oder Pflicht: v52-Reload-/Usage-Pool-Vertrag
 - [ ] Paranoia: Geheimfrage geschützt
 - [ ] Scharade/Tabu: Geheimkarten + Timer
 - [ ] Heiße Kartoffel: real ausschließlich 10–25 s
 - [ ] Mafia: Rollen/Alive/Sieger
 - [ ] Wrong Answers: manuelle Verlustregel, scorelos
 
-## 4. PWA / Offline – v51
+## 4. PWA / Offline – v52
 
-- [ ] finaler Cache `secret-circle-v51` oder bewusst neuerer RC-Cache
+- [ ] finaler Cache `secret-circle-v52` oder bewusst neuerer RC-Cache
 - [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment/Hosting synchron
 - [ ] Installationsmetadaten grün
 - [ ] Word-Imposter-/Hub-/Advanced-Guards offline
-- [ ] `party-hub-polish.js` mit v50-Ladequarantäne offline
+- [ ] `party-hub-round-state.js` offline
 - [ ] `backup-schema-registry.js` + `party-data-tools.js` v6 offline
 - [ ] Hub-/Secondary-A11y offline
 - [ ] Online → installierte PWA → Offline-Neustart
 - [ ] Hub/Word Imposter/Advanced/Quick/Creator/Privacy offline
 - [ ] Query-Routen offline
 - [ ] Complete Backup Export/Restore aus installierter PWA
+- [ ] v52 Hub-Current-Resume aus installierter PWA
 - [ ] aktive Session über Update geschützt
-- [ ] Update von mindestens zwei älteren Installationen auf v51/RC
+- [ ] Update von mindestens zwei älteren Installationen auf v52/RC
 - [ ] lokale Daten/Sessions bleiben erhalten
-- [ ] Future-/neue Storage-Daten werden durch älteren Restore nicht zerstört
 - [ ] Rollback mit neuer Cachegeneration
 
 ## 5. HTTPS-Staging / Production
@@ -145,13 +139,14 @@ Spezialfälle:
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung
 - [ ] getrennte HTTPS-Staging-Origin
 - [ ] Production-Origin
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v51` grün
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v52` grün
 - [ ] manueller PWA-Staging-Smoke
 - [ ] Word-Imposter-Datenvertrag real
-- [ ] Hub-Resume-v2/v50-Ladequarantäne real
-- [ ] Complete-Backup-v51-Vertrag real
+- [ ] Hub-Resume-v2/v50 real
+- [ ] Complete-Backup-v51 real
+- [ ] Hub-Round-Resume-v52 real
 - [ ] Production nutzt denselben RC
-- [ ] **Production-Smoke**: `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v51 --production` grün
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v52 --production` grün
 
 ## 6. Accessibility / Geräte
 
@@ -170,7 +165,7 @@ Real offen:
 - [ ] Hub-/Advanced-/Creator-Modalfokus
 - [ ] Quick-Fokus-Recovery
 - [ ] Creator-Radiogroup
-- [ ] **VoiceOver**
+- [ ] VoiceOver
 - [ ] TalkBack
 - [ ] private Reveals mit Screenreader
 - [ ] Safe Areas / große Systemschrift / Reduced Motion / Touchziele
@@ -185,6 +180,7 @@ Real offen:
 - [ ] DWI Word-Imposter-Datengrenzen
 - [ ] HR2 Hub Resume v2 + v50-Ladequarantäne
 - [ ] BK51 Complete Backup / Forward Compatibility / Rollback
+- [ ] HR52 sichere Hub-Current-Runden / Wahrheit-Pflicht-Pools / Secret-Grenze
 - [ ] PN1–PN3 Smart Party Night
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
@@ -208,7 +204,6 @@ Real offen:
 - [ ] finale Lockfile-/Dependencyprüfung
 - [ ] Betreiberidentität/Kontakt final
 - [ ] Privacy auf reales Hosting angepasst
-- [ ] Legal-/Anbieterkennzeichnung final, soweit erforderlich
 - [ ] Support-/Securitywege real getestet
 - [ ] Probe-Supportfall
 - [ ] Probe-SEV-1
