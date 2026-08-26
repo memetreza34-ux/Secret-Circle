@@ -5,8 +5,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createPartyHubRoundState() {
   'use strict';
 
-  const VERSION = 1;
+  const VERSION = 2;
   const SAFE_CURRENT_MODES = new Set(['truth-dare', 'prompt', 'choice']);
+  const CONCEALED_CURRENT_MODES = new Set(['paranoia']);
+  const RESTORABLE_CURRENT_MODES = new Set([...SAFE_CURRENT_MODES, ...CONCEALED_CURRENT_MODES]);
 
   function indexList(value, maximum = 500, maxExclusive = Number.POSITIVE_INFINITY) {
     if (!Array.isArray(value)) return [];
@@ -24,7 +26,7 @@
   }
 
   function currentItems(game, pack, current, catalog) {
-    if (!game || !current || typeof current !== 'object' || Array.isArray(current) || !SAFE_CURRENT_MODES.has(game.mode)) return null;
+    if (!game || !current || typeof current !== 'object' || Array.isArray(current) || !RESTORABLE_CURRENT_MODES.has(game.mode)) return null;
     const index = current.index;
     if (!Number.isInteger(index) || index < 0) return null;
     if (game.mode === 'truth-dare') {
@@ -45,6 +47,13 @@
       const pair = resolved.items[resolved.index];
       if (!Array.isArray(pair) || pair.length < 2) return null;
     }
+    if (resolved.kind === 'paranoia') {
+      const phase = value.phase === 'resolved' ? 'resolved' : 'question';
+      if (phase === 'resolved' && typeof value.reveal !== 'boolean') return null;
+      return phase === 'resolved'
+        ? { kind: 'paranoia', index: resolved.index, phase, reveal: value.reveal }
+        : { kind: 'paranoia', index: resolved.index, phase };
+    }
     return resolved.pool
       ? { kind: resolved.kind, pool: resolved.pool, index: resolved.index }
       : { kind: resolved.kind, index: resolved.index };
@@ -52,8 +61,9 @@
 
   function normalizeResume(game, pack, source, catalog, maximum = 500) {
     const truthDareContent = catalog?.content?.['truth-dare']?.[pack];
+    const genericContent = catalog?.content?.[game?.id]?.[pack];
     return {
-      used: indexList(source?.used, maximum),
+      used: indexList(source?.used, maximum, Array.isArray(genericContent) ? genericContent.length : Number.POSITIVE_INFINITY),
       usedByPool: truthDarePools(source?.usedByPool, truthDareContent, maximum),
       current: normalizeCurrent(game, pack, source?.current, catalog)
     };
@@ -86,6 +96,20 @@
     return selected;
   }
 
+  function markParanoiaQuestion(session) {
+    if (session?.current?.kind !== 'paranoia') return false;
+    session.current.phase = 'question';
+    delete session.current.reveal;
+    return true;
+  }
+
+  function resolveParanoia(session, reveal) {
+    if (session?.current?.kind !== 'paranoia' || typeof reveal !== 'boolean') return false;
+    session.current.phase = 'resolved';
+    session.current.reveal = reveal;
+    return true;
+  }
+
   function clearCurrent(session) {
     if (session) session.current = null;
   }
@@ -93,12 +117,16 @@
   return Object.freeze({
     version: VERSION,
     safeCurrentModes: SAFE_CURRENT_MODES,
+    concealedCurrentModes: CONCEALED_CURRENT_MODES,
+    restorableCurrentModes: RESTORABLE_CURRENT_MODES,
     indexList,
     truthDarePools,
     normalizeCurrent,
     normalizeResume,
     select,
     ensureCurrent,
+    markParanoiaQuestion,
+    resolveParanoia,
     clearCurrent
   });
 });
