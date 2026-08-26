@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 ## Unreleased – Januar-2027 Release Foundation
 
-Stand: 25. August 2026
+Stand: 26. August 2026
 
 ### Release-/A-bis-Z-Prozess
 
@@ -12,11 +12,12 @@ Stand: 25. August 2026
 - 15/15 Core Source Review und 15/15 Core Source Hardening stehen auf **PREPARED**.
 - Accessibility Source Hardening steht auf **PREPARED**.
 - Word-Imposter Data/Resume Hardening steht auf **PREPARED**.
-- Hub Resume Integrity v2 steht auf **PREPARED**.
+- Hub Resume Integrity v2 + v50-Ladequarantäne stehen auf **PREPARED**.
+- Complete Backup v51 Hardening steht auf **PREPARED**.
 - `release-evidence.json` bleibt bewusst `PREPARED / NO_GO`; kein unveränderter RC ist eingefroren.
 - PR #13 bleibt Draft und ungemergt.
 - Branch-Protection-, Foundation-, Readiness- und Release-Audits sind **transition-safe** und blockieren einen später korrekt belegten `FINAL / GO`-Zustand nicht durch historische OPEN-/NO_GO-Hardcodes.
-- `validate_project.py` kennt die aktuellen Word-Imposter-/Advanced-/Quick-/Creator-Scriptketten und schützt den Hub-Resume-v2-Loadervertrag.
+- `scripts/backup_contract_audit.py` ist Teil des normalen Validate-Gates.
 
 ### Core-Hardening
 
@@ -75,15 +76,35 @@ Stand: 25. August 2026
 - erst nach erfolgreicher Guard-Validierung werden die Aktionen wieder freigegeben.
 - Guard-Lade- oder Integritätsfehler bleiben fail-closed; ein ungeschützter Resume-Pfad wird nicht angeboten.
 - `tests/party-hub-resume-guard.test.js` schützt zusätzlich den Ladephasen-/Interaktionsvertrag.
+- `tests/e2e/core-hub-resume.spec.js` deckt verzögerte Guard-Ladung sowie Guard-Ladefehler als echte Browserfälle ab.
 - Beta-/Manual-Testpläne führen die fehlende Interaktionsmöglichkeit vor Guard-Abschluss als realen HR2-Abnahmefall.
 
-### PWA / Offline – v50
+### Complete Backup / Forward Compatibility – v51
 
-- Offline-Core auf **`secret-circle-v50` / `secret-circle-v50-staging`** erhöht, weil `party-hub-polish.js` als Offline-Core-Runtime geändert wurde.
-- v46-/v47-A11y-Schichten, v48-Word-Imposter-Datenverträge und v49-Hub-Resume-Guard bleiben enthalten.
-- `tests/service-worker.test.js` schützt Cachevertrag 50.
-- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan und A-bis-Z-Status sind auf v50 synchronisiert.
-- reale Installations-, Upgrade-, Rollback-, Resume- und Offline-Gerätetests bleiben offen.
+- `backup-schema-registry.js` bleibt Schema-Registry Version 2 und ist jetzt die verbindliche Quelle für **exakt 16 aktuelle Complete-Backup-Storage-Keys**.
+- die frühere breite Party-Wildcard wurde entfernt; ein heutiger Restore besitzt zukünftige Namespaces/Storage-Versionen nicht.
+- `secret-circle-party-hub-v2`, `secret-circle-settings-v8` und unbekannte `secret-circle-*`-Namespaces werden von der heutigen Restore-Transaktion nicht gelöscht.
+- ein Backup, das einen nicht registrierten Future-Key schreiben will, wird vor Mutation abgelehnt.
+- die Registry enthält pro managed Key einen groben Storage-Vertrag: Root-Typ, aktuelle Storage-Version und minimale Pflichtwrapper.
+- syntaktisch korrektes JSON mit falscher interner Storage-Version, z. B. Hub v1 mit `{version:999}`, wird vor Mutation abgelehnt.
+- `party-data-tools.js` auf Version **6** erhöht und vollständig an den Registry-Vertrag gebunden.
+- Complete Restore validiert alle Entries vor Mutation, snapshotet nur managed Keys, ersetzt nur managed Keys und rollt bei Schreibfehlern nur diesen Bereich zurück.
+- unbekannte/future Namespaces bleiben auch während Restore-Rollback unverändert.
+- ausdrücklich bestätigte Komplettlöschung bleibt dagegen bewusst prefixweit und entfernt alle `secret-circle-*`-Reste.
+- stale Tests synchronisiert: Registry-Test erwartet nicht mehr alte Registry-/Runtime-Versionen oder duplizierte Konstanten.
+- `tests/e2e/party-data.spec.js` erweitert um Future-Key-Erhalt, Klartext-/Primitive-/falsche-Storage-Version-Reject und managed Rollback.
+- neues `tests/e2e/backup-forward-compat.spec.js` schützt Future-Namespace-/Future-Version-Erhalt und Future-Key-Reject.
+- neues `scripts/backup_contract_audit.py` bindet Registry, Runtime, Tests, Offline-Core und Dokumentation zusammen und läuft in `npm run validate`.
+- Backup-E2E-Dateien sind zusätzlich im Syntax-Preflight.
+- BK51 wurde als eigener realer Beta-/Manual-Testfall definiert.
+
+### PWA / Offline – v51
+
+- Offline-Core auf **`secret-circle-v51` / `secret-circle-v51-staging`** erhöht, weil `party-data-tools.js` als Offline-Core-Runtime geändert wurde.
+- v46-/v47-A11y-Schichten, v48-Word-Imposter-Datenverträge und v49/v50-Hub-Resume-Schutz bleiben enthalten.
+- `tests/service-worker.test.js` schützt Cachevertrag 51 und den Complete-Backup-Hardening-Core.
+- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan, Backup-Vertrag und A-bis-Z-Status sind auf v51 synchronisiert.
+- reale Installations-, Upgrade-, Rollback-, Resume-, Backup- und Offline-Gerätetests bleiben offen.
 
 ### Build / Supply Chain
 
@@ -91,7 +112,7 @@ Stand: 25. August 2026
 - Playwright-Kette exakt 1.54.2.
 - keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- Syntax-/Unit-/Validate-Gates enthalten A11y-, Word-Imposter-Daten-, Operator- und Resume-Verträge.
+- Syntax-/Unit-/Validate-Gates enthalten A11y-, Word-Imposter-Daten-, Operator-, Resume- und v51-Backup-Verträge.
 - Online-`npm ci`-/Test-PASS bleibt wegen Hosted-Runner-Blocker offen.
 
 ### Operator / Hosting / Legal / Support
@@ -99,17 +120,17 @@ Stand: 25. August 2026
 - `operator-release.json` bleibt `PREPARED / BLOCKED`.
 - `OPERATOR_EVIDENCE_LOG.md` bündelt reale Hosting-, Support-, Security-, Probe-Support-, SEV-1-, Rollback- und Legal-/Privacy-Nachweise.
 - Operator-Audit erzwingt bei späterem READY reale Privacy-/Legal-Dateien, veröffentlichte Betreiber-/Kontaktwerte, getrennte HTTPS-Origins und konsistente Links von allen fünf öffentlichen Einstiegseiten.
-- `HOSTING_DECISION.md` erwartet v50 für Staging-/Production-Smokes.
+- `HOSTING_DECISION.md` erwartet v51 für Staging-/Production-Smokes.
 - Issue #14 führt reale Betreiber-/Hosting-/Legal-/Support-/Incident-Evidence.
 - reale Betreiberwerte, Provider/Origins, Support-/Securitytests und Drills bleiben offen.
 
 ### CI / Hosted Runner – P0
 
-- letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**, Run ID `32871536761`, Job `validate` / `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`.
+- letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `validate` / `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`.
 - Ergebnis vor Step 1: `steps: null` / separate Abfrage `steps: []`.
 - kein Checkout, npm, Test oder Repository-Code wurde ausgeführt.
 - der isolierte Minimal-Runner-Probe ohne Repository-Code zeigte dasselbe Muster.
-- Run #2787 bestätigt den identischen Pre-Step-Blocker ausdrücklich auf v49; für v50 wird daraus kein Test-PASS abgeleitet.
+- Run #2787 bestätigt den identischen Pre-Step-Blocker ausdrücklich auf v49; für **v50 oder v51 wird daraus kein Test-PASS abgeleitet**.
 - unmittelbare Fehlerfläche bleibt vor der Workflow-Step-Ausführung; Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ### Third Party / Assets
@@ -119,6 +140,6 @@ Stand: 25. August 2026
 
 ### Release-Status
 
-- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/Word-Imposter-Daten/Hub-Resume-v2**, **#14 Operator/Hosting/Legal/Support**.
+- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/Word-Imposter-Daten/Hub-Resume-v2/BK51**, **#14 Operator/Hosting/Legal/Support**.
 - öffentlicher Release: **NO_GO**.
-- kein CI-, Geräte-, Accessibility-, Daten-Grenz-, Resume-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echte Ausführung behauptet.
+- kein CI-, Geräte-, Accessibility-, Daten-Grenz-, Resume-, Backup-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echte Ausführung behauptet.
