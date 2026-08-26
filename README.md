@@ -12,13 +12,14 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - lokaler No-Code-Game-Creator
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 
-Aktueller Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**  
+Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**  
 Classic Content: **v4**  
 Core Source Review: **15/15 PREPARED**  
 Core Source Hardening: **15/15 PREPARED**  
 Accessibility Source Hardening: **PREPARED**  
 Word-Imposter Data/Resume Hardening: **PREPARED**  
 Hub Resume Guard v2 + Lade-Quarantäne: **PREPARED**  
+Complete Backup v51 Hardening: **PREPARED**  
 Operator / Hosting / Legal: **PREPARED / BLOCKED**  
 Freigabe: **NO_GO**
 
@@ -39,7 +40,7 @@ Wichtige Verträge: Word-Imposter-Setup/Fairness/Voting/Resume, freiwillige Soci
 
 ## Word Imposter – v48-Verträge
 
-Die in v48 eingeführten Daten-/Resume-Verträge bleiben im aktuellen v50-Core enthalten:
+Die in v48 eingeführten Daten-/Resume-Verträge bleiben im aktuellen v51-Core enthalten:
 
 - nächster Wähler aus den tatsächlich offenen Vote-Keys
 - manipulierte nicht-sequenzielle Voting-Snapshots werden verworfen
@@ -63,7 +64,22 @@ Die in v48 eingeführten Daten-/Resume-Verträge bleiben im aktuellen v50-Core e
 - bei Lade-/Integritätsfehler bleibt der Flow fail-closed
 - ein verworfener Snapshot entfernt auch eine bereits gerenderte Resume-Karte
 
-`tests/party-hub-resume-guard.test.js` schützt Guard, Runtime-Delegation, stale-UI-Fall und die v50-Ladequarantäne.
+Zusätzlich deckt `tests/e2e/core-hub-resume.spec.js` die Browserwirkung der verzögerten bzw. fehlschlagenden Guard-Ladung ab.
+
+## Complete Backup – v51
+
+v51 härtet vollständige lokale Exporte/Restores, ohne das Backup-Dateiformat Version 1 unnötig zu ändern:
+
+- `backup-schema-registry.js` Version 2 ist die zentrale Quelle
+- `party-data-tools.js` Version 6 konsumiert diesen Vertrag
+- Restore besitzt nur 16 explizit registrierte aktuelle Storage-Keys
+- zukünftige Namespaces und Storage-Versionen werden weder importiert noch von einem heutigen Restore gelöscht
+- jeder managed Wert braucht gültiges JSON, den erwarteten Root-Typ, die erwartete aktuelle Storage-Version und minimale Pflichtwrapper
+- vollständige Validierung erfolgt vor der ersten Mutation
+- Schreibfehler rollen nur den managed Zustand auf den vorherigen Snapshot zurück
+- die bewusst bestätigte Funktion „Alle lokalen Daten löschen“ bleibt dagegen prefixweit
+
+Automatische Grenzen: `tests/backup-schema-registry.test.js`, `tests/e2e/party-data.spec.js`, `tests/e2e/backup-forward-compat.spec.js` und `scripts/backup_contract_audit.py`.
 
 ## Accessibility – v46/v47
 
@@ -71,7 +87,7 @@ Die in v48 eingeführten Daten-/Resume-Verträge bleiben im aktuellen v50-Core e
 - `secondary-surface-a11y.js`: Advanced, Quick und Creator
 - Creator-Radiogroup mit Pfeiltasten/Home/End
 
-Beide Schichten bleiben Bestandteil von v50. **Noch kein Accessibility PASS:** VoiceOver, TalkBack, 200-%-Zoom, Touch und reale Geräte-/Browserabnahme bleiben offen.
+Beide Schichten bleiben Bestandteil von v51. **Noch kein Accessibility PASS:** VoiceOver, TalkBack, 200-%-Zoom, Touch und reale Geräte-/Browserabnahme bleiben offen.
 
 ## Release-/Operator-Verträge
 
@@ -98,11 +114,12 @@ Die zentralen Release-Audits sind **transition-safe**: Sie akzeptieren heute PRE
 - Playwright 1.54.2 exakt
 - keine npm-Runtime-Dependencies
 - CI/Cross-Browser verwenden `npm ci`
+- `npm run validate` enthält den eigenen Complete-Backup-Contract-Audit
 - `validate_project.py` prüft aktuelle Runtime-Scriptketten und den Hub-Resume-Loadervertrag
 
 ## CI – extern blockiert
 
-Letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**.
+Letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**.
 
 - Run ID `32871536761`
 - Job `validate`, Job ID `97879489858`
@@ -111,7 +128,7 @@ Letzter vollständig untersuchter v49-App-Actions-Lauf: **Run #2787**.
 - `steps: null` / separate Abfrage `steps: []`
 - kein Checkout, npm, Test oder Repositorycode ausgeführt
 
-Der frühere Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Run #2787 bestätigt den Pre-Step-Blocker auf v49; die spätere v50-Änderung ist deshalb ebenfalls **nicht runnerverifiziert**. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Der frühere Minimal-Runner-Probe ohne Checkout/Setup/npm/Playwright zeigte dasselbe Muster. Run #2787 bestätigt den Pre-Step-Blocker historisch auf v49; **v50 und v51 sind deshalb ebenfalls noch nicht runnerverifiziert**. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## Assets / Rechte
 
@@ -120,7 +137,7 @@ Die technische Icon-Provenienz ist dokumentiert. Die Rechtebasis des Root-`icon.
 ## Zentrale offene Issues
 
 1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
-2. **#8** – reale Geräte, v50 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2/v50-Ladequarantäne und Partytests
+2. **#8** – reale Geräte, v51 Offline-PWA, Accessibility, Word-Imposter-Datengrenzen, Hub-Resume-v2/v50-Ladequarantäne, Complete-Backup-v51 und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 ## Höchste Priorität
@@ -129,8 +146,8 @@ Die technische Icon-Provenienz ist dokumentiert. Die Rechtebasis des Root-`icon.
 2. Online-`npm ci` + CI/Cross-Browser
 3. Branch Protection real bestätigen
 4. Provider + getrennte HTTPS-Staging-/Production-Origin
-5. v50 PWA-/Staging-Smoke, Upgrade und Rollback
-6. Word-Imposter-Datengrenzen + Hub Resume Guard v2/v50-Ladequarantäne real prüfen
+5. v51 PWA-/Staging-Smoke, Upgrade und Rollback
+6. Word-Imposter-Datengrenzen + Hub Resume Guard v2/v50-Ladequarantäne + Complete-Backup-v51 real prüfen
 7. Android/iPhone/iPad/VoiceOver/TalkBack/Tastatur/Zoom
 8. reale Gruppentests für alle 15 Core-Games
 9. Icon-/Third-Party- und Operator-/Legal-/Support-/Incident-Sign-off
