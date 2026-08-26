@@ -36,7 +36,8 @@
 
       <h2>Advanced- und Hub-Spiele</h2>
       <p>Private Fragen, Ortskarten, Rollen, Moderatorinformationen und vergleichbare geheime Zustände werden bei unterstützten Flows beim Fokus- oder App-Wechsel verdeckt. Manipulierte oder widersprüchliche gespeicherte Zustände können verworfen werden, statt sie unsicher fortzusetzen. Im direkten Hub bleiben Resume-Aktionen während der Guard-Ladeprüfung gesperrt und werden erst nach erfolgreicher Validierung freigegeben.</p>
-      <p>Seit v52 kann der direkte Hub bei ausdrücklich nicht-geheimen Karten wie Wahrheit oder Pflicht, normalen Fragen und Entweder-oder die laufende Karte als lokale Indexreferenz wiederherstellen. Dadurch erscheint nach einem Reload dieselbe sichere Karte statt unbemerkt eine neue zu verbrauchen. Geheime Modi wie Paranoia sind davon ausgeschlossen und öffnen nach einem Reload weiterhin keinen geheimen Inhalt automatisch.</p>
+      <p>Seit v52 kann der direkte Hub bei ausdrücklich nicht-geheimen Karten wie Wahrheit oder Pflicht, normalen Fragen und Entweder-oder die laufende Karte als lokale Indexreferenz wiederherstellen. Dadurch erscheint nach einem Reload dieselbe sichere Karte statt unbemerkt eine neue zu verbrauchen.</p>
+      <p>Seit v53 kann auch eine begonnene Paranoia-Runde ihre **Kartenreferenz, Phase und gegebenenfalls das bereits gefällte Münzwurf-Ergebnis** lokal behalten. Die geheime Frage wird nach einem Reload trotzdem nicht automatisch angezeigt: Erst nach einer erneuten bewussten Reveal-Aktion wird dieselbe Frage beziehungsweise dasselbe bereits entschiedene Ergebnis wieder sichtbar. Ein bereits aufgelöster Paranoia-Zustand wird bei Fokus- oder App-Wechsel erneut verdeckt.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
@@ -51,8 +52,8 @@
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v52</code>.</p>
-      <p>v52 enthält weiterhin die Resume-/Privacy-/Accessibility- und v51-Backup-Schutzmodule und ergänzt die sichere Rundenkontinuität für nicht-geheime direkte Hub-Karten. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v53</code>.</p>
+      <p>v53 enthält weiterhin die Resume-/Privacy-/Accessibility-, v51-Backup- und v52-Safe-Current-Schutzmodule. Neu ist die gedeckte Paranoia-Rundenkontinuität mit stabilem bereits entschiedenen Münzwurf-Ergebnis und erneutem Verdecken nach Auflösung. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem des Geräts entfernt werden.</p>
