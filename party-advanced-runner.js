@@ -422,7 +422,8 @@
       $('#advanced-player-help').textContent = `Gespeicherte Session mit ${active.players.length} Personen. Die aktuelle Lobby hat ${hubState.players.length} Personen.`;
       start.addEventListener('click', () => resumeSession(active), { once: true });
       const fresh = actionButton('Neue Session beginnen', () => {
-        clearActive();
+        if (!window.confirm('Gespeicherte Session verwerfen und eine neue beginnen?')) return;
+        if (!clearActive()) return;
         startNewSession();
       }, 'secondary');
       fresh.disabled = !currentValid;
