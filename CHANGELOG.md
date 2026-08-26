@@ -6,130 +6,112 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 Stand: 26. August 2026
 
-### Release-/A-bis-Z-Prozess
+### Release-Status
 
-- A-bis-Z-Masterprozess, Status-/Risk-/Release-/Operator-/Hosting-/Accessibility-/Beta-/Legal-/Support-/Incident-Verträge aufgebaut.
-- 15/15 Core Source Review und 15/15 Core Source Hardening stehen auf **PREPARED**.
-- Accessibility Source Hardening steht auf **PREPARED**.
-- Word-Imposter Data/Resume Hardening steht auf **PREPARED**.
-- Hub Resume Integrity v2 + v50-Ladequarantäne stehen auf **PREPARED**.
-- Complete Backup v51 Hardening steht auf **PREPARED**.
-- Hub Round Resume v52 steht auf **PREPARED**.
-- `release-evidence.json` bleibt bewusst `PREPARED / NO_GO`; kein unveränderter RC ist eingefroren.
-- PR #13 bleibt Draft und ungemergt.
-- zentrale Release-Audits sind transition-safe.
+- 15/15 Core Source Review: **PREPARED**
+- 15/15 Core Source Hardening: **PREPARED**
+- Accessibility Source Hardening: **PREPARED**
+- Word-Imposter Data/Resume: **PREPARED**
+- Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**
+- Complete Backup v51: **PREPARED**
+- Hub Round Resume v52: **PREPARED**
+- Paranoia Resume/Privacy v53: **PREPARED**
+- `release-evidence.json`: **PREPARED / NO_GO**
+- PR #13: **Draft / ungemergt**
 
-### Core-Hardening
+### v46 – Hub Accessibility
 
-- Word Imposter: Setup, Rollenfairness, Voting-/Resume-Integrität und Geheimkarten-Schutz.
-- Social Hub: Freiwilligkeit/Skip und verständliche Live-Regeln.
-- Paranoia/Scharade/Tabu: private Inhalte bei Fokusverlust geschützt.
-- Heiße Kartoffel: versteckter Timer exakt 10–25 Sekunden.
-- Wortkette / Nur falsche Antworten: manueller Regel-/Ergebnisvertrag geklärt.
-- Advanced: Privacy-/Resume-Guards für Two Truths, Question Imposter, Location Spy und Mafia.
+`party-hub-a11y.js`: Bereichsfokus, modale Hintergrundisolation, Fokus-Trap und Rückkehrfokus; Unit-/E2E-/Auditverträge ergänzt.
 
-### Hub-Accessibility-Hardening – v46
+### v47 – Advanced/Quick/Creator Accessibility
 
-- `party-hub-a11y.js` Version 2 ergänzt.
-- Bereichswechsel, Modal-Fokus, `inert`, Fokus-Trap und Rückkehrfokus gehärtet.
-- Unit-/Playwright-/Auditverträge ergänzt.
+`secondary-surface-a11y.js`: Advanced-Modal-Isolation, Quick-Fokus-Recovery, Creator-Wizard-Fokus und Radiogroup-Tastaturvertrag.
 
-### Advanced-/Quick-/Creator-Accessibility-Hardening – v47
+### v48 – Word-Imposter Data/Resume
 
-- `secondary-surface-a11y.js` ergänzt.
-- Advanced-Modal-Isolation, Quick-Fokus-Recovery und Creator-Wizard-/Radiogroup-Tastaturvertrag gehärtet.
-- reale VoiceOver-/TalkBack-/Zoom-/Touch-/Browser-Abnahme bleibt offen.
+- nächster Wähler aus tatsächlichen offenen Vote-Keys
+- manipulierte nicht-sequenzielle Voting-Snapshots verworfen
+- maximal 50 Kategorien / 200 Begriffe je Kategorie
+- 1,5 MB UTF-8 pro Word-Imposter-Backup
+- 51/201 fail-closed; kein stilles Trunkieren
+- abgelehnte Imports verändern Bestandsdaten nicht
 
-### Word-Imposter Data/Resume Hardening – v48
+### v49 – Hub Resume Integrity
 
-- nächste abstimmende Person wird aus tatsächlichen offenen Vote-Keys bestimmt.
-- nicht-sequenzielle manipulierte Voting-Snapshots werden verworfen.
-- maximal 50 eigene Kategorien, maximal 200 Begriffe je Kategorie, 1,5 MB UTF-8 pro Word-Imposter-Backup.
-- 51/201 werden fail-closed abgelehnt; kein stilles Trunkieren.
-- abgelehnte Imports verändern Bestandsdaten nicht.
-- Source-Verträge in `tests/storage.test.js` und `tests/word-imposter-data-contract.test.js`.
+`party-hub-resume-guard.js` v2 wurde zentrale Runtime-/Testquelle. Cross-Mode-/Timer-Inkonsistenzen werden verworfen; stale Resume UI wird entfernt.
 
-### Hub Resume Integrity – v49
+### v50 – Fail-closed Hub Resume Loading
 
-- `party-hub-resume-guard.js` Version 2 wurde zentrale Runtime-/Testquelle.
-- gekreuzte oder widersprüchliche Timer-Snapshots werden verworfen.
-- stale Resume UI wird beim Verwerfen entfernt.
+Sichtbare Resume-Aktionen bleiben während Guard-Prüfung gesperrt (`aria-busy`, deaktivierte Buttons). Guard-Lade-/Integritätsfehler bleiben fail-closed. Browserfälle für verzögerte/fehlgeschlagene Guard-Ladung ergänzt.
 
-### Fail-closed Hub Resume Loading – v50
+### v51 – Complete Backup / Forward Compatibility
 
-- sichtbare Resume-Karte ist während Guard-Prüfung `aria-busy`.
-- Resume-/Discard-Aktionen bleiben bis erfolgreicher Validierung deaktiviert.
-- Guard-Lade-/Integritätsfehler bleiben fail-closed.
-- Browserfälle in `tests/e2e/core-hub-resume.spec.js` ergänzt.
+- `backup-schema-registry.js` v2 als zentrale aktuelle Key-/Schemaquelle
+- breite Party-Wildcard entfernt
+- Future-Namespaces/-Storage-Versionen bleiben außerhalb heutigen Restore-Eigentums
+- `party-data-tools.js` v6
+- vollständige Vorvalidierung vor Mutation
+- managed-only Snapshot/Restore/Rollback
+- explizite Komplettlöschung bleibt prefixweit
+- BK51 als eigener Realtest definiert
 
-### Complete Backup / Forward Compatibility – v51
+### v52 – Hub Round Resume / Truth-Dare Usage
 
-- `backup-schema-registry.js` Version 2 ist verbindliche Quelle für aktuelle Complete-Backup-Storage-Keys.
-- breite Party-Wildcard entfernt; zukünftige Namespaces/Storage-Versionen gehören nicht einem heutigen Restore.
-- managed Keys besitzen Root-/Storage-Version-/Minimalwrapper-Verträge.
-- `party-data-tools.js` auf Version 6 erhöht und an Registry gebunden.
-- Complete Restore validiert vor Mutation, snapshotet/ersetzt/rollt nur managed Keys zurück.
-- unbekannte/future Namespaces bleiben auch bei Rollback unverändert.
-- vollständige Datenlöschung bleibt bewusst prefixweit.
-- `tests/e2e/backup-forward-compat.spec.js` und `scripts/backup_contract_audit.py` ergänzt.
-- BK51 als eigener realer Beta-/Manual-Testfall definiert.
+- neues `party-hub-round-state.js`
+- sichere Truth-Dare-/Prompt-/Choice-Current-Referenzen
+- geöffnete sichere Karte bleibt nach Reload/Resume identisch
+- Wahrheit/Pflicht besitzen getrennte Usage-Pools
+- manipulierte/out-of-range Current-Referenzen werden verworfen
+- `next` und Skip löschen alten Current-Zustand
+- HR52 als eigener Realtest definiert
 
-### Hub Round Resume / Truth-Dare Usage – v52
+### v53 – Paranoia Resume / Privacy
 
-- neuen kleinen Runtime-Vertrag `party-hub-round-state.js` ergänzt.
-- direkter Hub nutzt `session.current` jetzt tatsächlich für **sichere, nicht-geheime** laufende Karten.
-- bereits angezeigte Wahrheit-/Pflicht-Karte bleibt nach Reload/Resume dieselbe Karte, statt verloren zu gehen und eine neue Karte zu ziehen.
-- Wahrheit und Pflicht besitzen getrennte Usage-Pools; gleiche numerische Indizes blockieren sich nicht mehr gegenseitig.
-- normale Prompt-/Choice-Runden können denselben sicheren Current-Zustand wiederherstellen.
-- gespeicherte Current-Referenzen werden gegen Spielmodus, Typ und Kartenbereich validiert.
-- manipulierte/out-of-range Current-Referenzen werden verworfen.
-- Paranoia und andere geheime Inhalte sind ausdrücklich nicht Teil des v52-Current-Auto-Resume.
-- `nextSimpleRound()` und globales Skip löschen Current vor der nächsten Runde.
-- `tests/hub-resume-contract.test.js` um funktionale Round-State-Verträge erweitert.
-- `tests/e2e/core-hub-resume.spec.js` um Truth/Dare-/Prompt-/Privacy-Reloadfälle erweitert.
-- `scripts/architecture_audit.py` prüft das neue Modul, Scriptreihenfolge, Offline-Core und Secret-Current-Grenze.
-- HR52 als eigener realer Beta-/Manual-Testfall definiert.
+- `party-hub-round-state.js` auf **Version 2** erweitert.
+- Paranoia speichert eine validierte Kartenreferenz statt freien Geheimtext im Current-Zustand.
+- erlaubte Phasen: private Frage offen bzw. bereits aufgelöster Münzwurfzustand; ungültige Referenzen/Phasen werden verworfen.
+- Reload/Resume öffnet die Geheimfrage **nicht automatisch**.
+- nach bewusster Reveal-Aktion wird **dieselbe zuvor verwendete Frage** wieder angezeigt.
+- ein bereits gefällter Münzwurf bleibt über Reload/Resume identisch; es erfolgt kein zweiter Zufallswurf.
+- `party-hub-polish.js` auf **Version 17**: Fokus-/Appverlust verdeckt Paranoia auch nach dem Münzwurf/Auflösungszustand.
+- `tests/hub-resume-contract.test.js` schützt Paranoia-Referenz, Phase, Ergebnis und Bounds.
+- `tests/e2e/core-hub-resume.spec.js` schützt same-question/no-auto-reveal/same-result Resume.
+- `tests/e2e/core-hub-controls.spec.js` schützt Blur-Concealment nach der Auflösung.
+- `party-hub.js` wurde ohne Lockerung der Architekturgrenze wieder deutlich unter 1000 Zeilen gehalten.
+- `scripts/architecture_audit.py` prüft den präzisierten Secret-Resume-Vertrag.
+- **PR53** als eigener Realtest in Beta/Manual/Issue #8 definiert.
 
-### PWA / Offline – v52
+### PWA / Offline – v53
 
-- Offline-Core auf **`secret-circle-v52` / `secret-circle-v52-staging`** erhöht, weil `party-hub-round-state.js` neue Offline-Runtime ist.
-- `party-hub-round-state.js` in die CORE-Liste aufgenommen.
-- `tests/service-worker.test.js` schützt Cachevertrag 52 und Offline-Einbindung des neuen Moduls.
-- v46/v47 A11y, v48 Word-Imposter, v49/v50 Hub Guard und v51 Complete Backup bleiben enthalten.
-- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan und A-bis-Z-Status werden auf v52 synchronisiert.
-- reale Installations-, Upgrade-, Rollback-, Resume-, Backup- und Offline-Gerätetests bleiben offen.
+- Offline-Core: **`secret-circle-v53` / `secret-circle-v53-staging`**.
+- `party-hub-round-state.js` v2 und `party-hub-polish.js` v17 sind offline enthalten.
+- v46–v52-Verträge bleiben Bestandteil des Offline-Core.
+- Service-Worker-Test, Architektur, Deployment, Environment, Privacy und Hosting sind auf v53 synchronisiert.
+- reale Installation, Upgrade, Rollback, DWI, HR2, BK51, HR52 und PR53 bleiben offen.
 
 ### Build / Supply Chain
 
-- `package-lock.json` v3.
-- Playwright-Kette exakt 1.54.2.
-- keine npm-Runtime-Dependencies.
-- CI/Cross-Browser verwenden `npm ci`.
-- Syntax-/Unit-/Validate-/E2E-Gates enthalten v52-Round-State-Verträge.
-- Online-`npm ci`-/Test-PASS bleibt wegen Hosted-Runner-Blocker offen.
-
-### Operator / Hosting / Legal / Support
-
-- `operator-release.json` bleibt `PREPARED / BLOCKED`.
-- `OPERATOR_EVIDENCE_LOG.md` bündelt reale Hosting-, Support-, Security-, SEV-1-, Rollback- und Legal-/Privacy-Nachweise.
-- `HOSTING_DECISION.md` erwartet v52 für Staging-/Production-Smokes und HR52 zusätzlich zu BK51.
-- reale Betreiberwerte, Provider/Origins, Support-/Securitytests und Drills bleiben offen.
+- `package-lock.json` v3
+- Playwright exakt 1.54.2
+- keine npm-Runtime-Dependencies
+- CI/Cross-Browser verwenden `npm ci`
+- Syntax-/Unit-/Validate-/E2E-Gates enthalten die aktuellen Hub-Round-/Paranoia-Verträge
+- Online-`npm ci`-/Test-PASS bleibt wegen Hosted-Runner-Blocker offen
 
 ### CI / Hosted Runner – P0
 
-- letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `validate` / `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`.
-- Ergebnis vor Step 1: `steps: null` / separate Abfrage `steps: []`.
-- kein Checkout, npm, Test oder Repository-Code wurde ausgeführt.
-- der isolierte Minimal-Runner-Probe ohne Repository-Code zeigte dasselbe Muster.
-- **für v50, v51 oder v52 wird daraus kein Test-PASS abgeleitet.**
+Letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Checkout, npm, Test oder Repositorycode wurde ausgeführt. Der Minimal-Runner-Probe zeigte dasselbe Muster ohne Repository-Code.
 
-### Third Party / Assets
+**Für v50–v53 wird daraus kein Test-PASS abgeleitet.**
 
-- Asset-Provenienz- und Rights-Sign-off-Verträge vorhanden.
+### Operator / Assets
+
+- `operator-release.json` bleibt `PREPARED / BLOCKED`.
+- reale Hosting-/Legal-/Support-/Incident-Evidence bleibt offen.
 - Root-`icon.svg` und Ableitungen bleiben bis echter Rechtebestätigung `unresolved`.
 
-### Release-Status
+### Releaseentscheidung
 
-- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/Daten/Hub-Resume/BK51/HR52**, **#14 Operator/Hosting/Legal/Support**.
-- öffentlicher Release: **NO_GO**.
-- kein CI-, Geräte-, Accessibility-, Resume-, Backup-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echte Ausführung behauptet.
+Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53**, **#14 Operator/Hosting/Legal/Support**.
+
+Öffentlicher Release: **NO_GO**.
