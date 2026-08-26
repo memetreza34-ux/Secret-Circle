@@ -69,9 +69,11 @@
     if (!integer(data.revealIndex) || data.revealIndex < 0 || data.revealIndex >= players.length) return false;
     if (typeof data.revealed !== 'boolean') return false;
     if (data.stage === 'result') {
-      const votePath = member(data.voted, players) && typeof data.correct === 'boolean' && data.correct === (data.voted === data.spy);
-      const guessPath = text(data.guess) && typeof data.spyCorrect === 'boolean' && data.spyCorrect === (data.guess === data.location);
-      if (!votePath && !guessPath) return false;
+      const hasVoteFields = data.voted !== undefined || data.correct !== undefined;
+      const hasGuessFields = data.guess !== undefined || data.spyCorrect !== undefined;
+      if (hasVoteFields === hasGuessFields) return false;
+      if (hasVoteFields) return member(data.voted, players) && typeof data.correct === 'boolean' && data.correct === (data.voted === data.spy);
+      return text(data.guess) && typeof data.spyCorrect === 'boolean' && data.spyCorrect === (data.guess === data.location);
     }
     return true;
   }
@@ -128,8 +130,9 @@
     const computedWinner = mafiaWinner(data);
     if (data.stage === 'finished') {
       if (!computedWinner || data.winner !== computedWinner) return false;
-    } else if (data.winner !== undefined && data.winner !== null) {
-      return false;
+    } else {
+      if (computedWinner) return false;
+      if (data.winner !== undefined && data.winner !== null) return false;
     }
     return true;
   }
@@ -181,7 +184,7 @@
   }
 
   return Object.freeze({
-    version: 3,
+    version: 4,
     activeKey: ACTIVE_KEY,
     validateSnapshot,
     validateAdvanced,
