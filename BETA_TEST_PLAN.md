@@ -2,13 +2,13 @@
 
 Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v54` / `secret-circle-v54-staging`**
+Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**
 
 ## 1. Eintrittskriterium
 
 Finale RC-Beta erst auf demselben unveränderten Commit mit sichtbaren GitHub-Actions-Steps, Online-`npm ci`, `npm run ci` und Chromium/Firefox/WebKit.
 
-Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v54 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v55 sind nicht runnerverifiziert.**
 
 ## 2. Mindest-Testmatrix
 
@@ -21,79 +21,57 @@ Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `3
 | HR52 | sichere Hub-Current-Runden / Truth-Dare-Pools |
 | PR53 | Paranoia Resume + Privacy |
 | PT54 | Hot-Potato-/Word-Chain-Pre-Timer-Resume |
+| **AD55** | Advanced Result-/Winner-/Resume-Integrität und Session-Ersatz |
 | PN1–PN3 | Smart Party Night |
 
-## 3. DWI
+## 3. DWI / HR2 / BK51 / HR52 / PR53 / PT54
 
-- [ ] 50 Kategorien akzeptiert / 51 abgelehnt
-- [ ] 200 Begriffe akzeptiert / 201 abgelehnt
-- [ ] 1,5 MB UTF-8 nach Bytes
-- [ ] abgelehnter Import verändert Bestandsdaten nicht
-- [ ] partielles Voting setzt beim nächsten offenen Wähler fort
-- [ ] manipuliertes nicht-sequenzielles Voting wird verworfen
+Die bestehenden Spezialgates bleiben unverändert verbindlich:
 
-## 4. HR2 – Hub Resume Guard v2 / v50
+- DWI: 50/51 Kategorien, 200/201 Begriffe, 1,5 MB UTF-8, Import-Rollback, sequenzielles Voting-Resume.
+- HR2: Cross-Mode-/0-ms-Timer verwerfen; Resume-Loader fail-closed.
+- BK51: managed-only Restore/Rollback; Future-Daten erhalten; falsche Versionen vor Mutation ablehnen.
+- HR52: Wahrheit/Pflicht/Prompt/Choice nach Reload identisch; Truth/Dare-Pools unabhängig.
+- PR53: Paranoia gleiche Frage/gleiches Ergebnis ohne Auto-Reveal; Blur-Concealment.
+- PT54: Hot-Potato-Aufgabe/Wortketten-Buchstabe vor Timerstart identisch; Timerstart löscht `current` und übernimmt denselben Wert in den Timer-Snapshot.
 
-- [ ] gültige normale/Timer-Session bleibt fortsetzbar
-- [ ] Cross-Mode-/0-ms-Running-Timer verworfen
-- [ ] stale Resume-Karte entfernt
-- [ ] während Guard-Prüfung `aria-busy` + Aktionen deaktiviert
-- [ ] Erfolg reaktiviert Aktionen; Ladefehler bleibt fail-closed
-- [ ] offline identisch
+## 4. AD55 – Advanced Integrity
 
-## 5. BK51 – Complete Backup
+Mit neutralen Testdaten:
 
-- [ ] regulärer managed Restore
-- [ ] unbekannter Future-Namespace/Future-Version bleibt unverändert
-- [ ] nicht unterstützter Future-Key im Backup abgelehnt
-- [ ] falsche Storage-Version / Klartext / primitive JSON-Wurzel abgelehnt
-- [ ] >1,5 MB UTF-8 abgelehnt
-- [ ] Write-/Quota-Fehler rollt managed Snapshot zurück
-- [ ] explizite Komplettlöschung entfernt alle `secret-circle-*`-Reste
+### Location Spy
 
-## 6. HR52 – sichere direkte Hub-Runden
+- [ ] gültiger Vote-Result-State bleibt fortsetzbar.
+- [ ] gültiger Guess-Result-State bleibt fortsetzbar.
+- [ ] Result-State mit **Vote und Guess gleichzeitig** wird vor Resume verworfen.
+- [ ] gespeicherter Active-Key ist danach entfernt und die Play-Ebene bleibt geschlossen.
 
-- [ ] Wahrheit/Pflicht nach Reload exakt dieselbe Karte
-- [ ] Wahrheit/Pflicht gleiche numerische Indizes unabhängig nutzbar
-- [ ] Prompt-/Choice-Current nach Reload identisch
-- [ ] ungültiger Current verworfen
-- [ ] next/Skip löscht Current
+### Mafia
 
-## 7. PR53 – Paranoia Resume / Privacy
+- [ ] bei 8 Personen/Klassisch exakt 2 Mafia, 1 Detektiv, 1 Arzt, 4 Dorfbewohner.
+- [ ] gültiger laufender Mafia-State bleibt fortsetzbar.
+- [ ] nicht-fertiger Stage mit bereits eindeutigem Dorf-/Mafia-Sieger wird verworfen.
+- [ ] `stage=finished` benötigt einen Winner, der exakt zur Alive-Verteilung passt.
+- [ ] fertige Mafia-Runde direkt über „Session beenden“ speichern → genau 1 History-Runde.
+- [ ] denselben Session-ID-Stand erneut anbieten/speichern → kein zweiter History-/Stats-Eintrag.
 
-- [ ] Frage öffnen → Reload/Resume bleibt gedeckt → explizites Reveal zeigt exakt dieselbe Frage
-- [ ] Münzwurf einmal entscheiden → Reload/Resume bleibt gedeckt → Ergebnisanzeige zeigt exakt dasselbe Ergebnis
-- [ ] kein erneuter Zufallswurf
-- [ ] Blur/Appwechsel verdeckt Frage und auch bereits aufgelösten Zustand
-- [ ] ungültige Paranoia-Referenz verworfen
+### Gespeicherte Advanced-Session ersetzen
 
-## 8. PT54 – Pre-Timer Resume
+- [ ] „Neue Session beginnen“ zeigt eine explizite Verwerfbestätigung.
+- [ ] Abbrechen erhält alte Session-ID und Rundenzustand unverändert.
+- [ ] Bestätigen erzeugt erst nach erfolgreichem Entfernen des Altstands eine neue Session-ID.
+- [ ] simuliertes `localStorage.removeItem`-Fehlschlagen → alte Session bleibt, keine neue Session startet, Fehlermeldung sichtbar.
 
-### Hot Potato
+### Privacy / Resume
 
-1. Aufgabe vor Timerstart notieren.
-2. Active-State: `timer === null`, `current.kind === 'hot-potato'`.
-3. Reload → Session fortsetzen → **exakt dieselbe Aufgabe**.
-4. `used` und `current` dürfen durch den Reload nicht zusätzlich verändert werden.
-5. Zufallstimer starten.
-6. Active-State: `current === null`, `timer.kind === 'hot-potato'`, `timer.prompt` entspricht exakt der vorherigen Aufgabe.
-7. zufällige Dauer bleibt real zwischen 10 und 25 Sekunden und Countdown bleibt verborgen.
+- [ ] Question Imposter / Location Spy / Mafia geöffnete Geheimkarten werden nach Reload wieder geschlossen.
+- [ ] Mafia-Moderatorübersicht verlangt nach Reload erneut Bestätigung.
+- [ ] Two Truths private Eingabe, Mafia-Moderatorübersicht, Nachtphase und Detektiv-Info werden bei Fokusverlust verdeckt.
+- [ ] dieselben AD55-Fälle soweit anwendbar offline in installierter v55-PWA.
 
-### Wortkette
+Source-Verträge: `advanced-resume-guard.js` v4, `party-advanced-runner.js`, `tests/advanced-resume-guard.test.js`, neun kritische Advanced-E2Es und `scripts/advanced_integrity_audit.py`.
 
-1. Startbuchstaben vor Timerstart notieren.
-2. Active-State: `timer === null`, `current.kind === 'word-chain'`.
-3. Reload → Session fortsetzen → **exakt derselbe Startbuchstabe**.
-4. 30-Sekunden-Runde starten.
-5. Active-State: `current === null`, `timer.kind === 'word-chain'`, `timer.letter` entspricht dem vorherigen Buchstaben.
-6. nach weiterem Reload läuft der bestehende Timer-Resume-Pfad pausiert mit demselben Buchstaben weiter.
-
-### Privacy-Grenze
-
-- [ ] Scharade und Tabu besitzen **keinen sichtbaren Pre-Start-Current-Vertrag**.
-- [ ] PT54 wird offline in installierter v54-PWA wiederholt.
-
-## 9. Reale Gruppen / Geräte
+## 5. Reale Gruppen / Geräte
 
 - [ ] G1 3–4 Personen ≥60 min
 - [ ] G2 5–8 Personen ≥90 min
@@ -105,15 +83,15 @@ Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `3
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] PN1–PN3
 
-## 10. PWA Update / Rollback
+## 6. PWA Update / Rollback
 
-- [ ] mindestens zwei ältere installierte Versionen auf v54/RC aktualisieren
+- [ ] mindestens zwei ältere installierte Versionen auf v55/RC aktualisieren
 - [ ] aktive Sessions und lokale Daten erhalten
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 offline prüfen
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 offline prüfen
 - [ ] Rollback/Hotfix mit neuer Cachegeneration
 
-## 11. Beta-Freigabe
+## 7. Beta-Freigabe
 
-Vor `REAL USER / DEVICE PASS` müssen G1–G5, DWI, HR2, BK51, HR52, PR53, **PT54**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
+Vor `REAL USER / DEVICE PASS` müssen G1–G5, DWI, HR2, BK51, HR52, PR53, PT54, **AD55**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
 
 Bis dahin bleibt die reale Durchführung offen und der öffentliche Release **NO_GO**.
