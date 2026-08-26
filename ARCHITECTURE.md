@@ -63,11 +63,30 @@ Seit **v55** gilt zusätzlich:
 
 `tests/e2e/advanced-*.spec.js`, `tests/advanced-resume-guard.test.js` und `scripts/advanced_integrity_audit.py` schützen diese Grenze.
 
-## 7. Lokale Transaktionen und Exact-once
+## 7. Quick-/Mega-/Viral-/Creator-Session-Ersatz – v56
+
+Die vier Schnellspiel-Enginefamilien teilen je Familie einen Active-Storage-Key. Deshalb darf ein normaler Start weder eine bestehende Session desselben Spiels noch die Session eines anderen Spiels derselben Familie still überschreiben.
+
+Seit **v56** gilt:
+
+- `quick-session-replacement-guard.js` Version **1** ordnet Quick/Trending, Mega, Viral und Creator ihrem jeweiligen Active-Key zu;
+- `quick-loader.js` Version **7** lädt Session Ledger → Session Controls → Replacement Guard → Engine;
+- ein plausibler vorhandener Snapshot verlangt vor „Spiel starten“ eine explizite Verwerfbestätigung;
+- Cancel verändert weder Storage noch Session-ID;
+- Cross-Game-Wechsel innerhalb derselben Familie benötigt dieselbe Bestätigung, auch wenn die aktuelle Seite den fremden Snapshot nicht als fortsetzbar anzeigen kann;
+- der Guard löscht den alten Snapshot **nicht** vor dem Neustart; der neue Engine-`setItem` ersetzt ihn atomar;
+- schlägt der Replacement-Write fehl, erkennt der Guard den unveränderten Alt-Snapshot, verhindert den späteren `pagehide`-Retry des fehlerhaften In-Memory-Zustands und lädt kontrolliert neu;
+- der gespeicherte Alt-Snapshot bleibt dadurch erhalten.
+
+`tests/quick-session-replacement-guard.test.js`, `tests/e2e/quick-session-replacement.spec.js` und `scripts/quick_session_replacement_audit.py` schützen diese Grenze.
+
+## 8. Lokale Transaktionen und Exact-once
 
 Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreiben vollständig und rollen bei Fehlern zurück. Fertige Sessions besitzen stabile Completion-/History-IDs. Reload, Retry oder Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
-## 8. Datenschutz und Security durch Architektur
+Session-Ersatz ist ebenfalls eine lokale Transaktion: Ein vorhandener Quick-Family-Snapshot bleibt bis zum erfolgreichen Schreiben seines Nachfolgers erhalten.
+
+## 9. Datenschutz und Security durch Architektur
 
 - keine Analytics-/Ads-Skripte oder externen Runtime-Fonts/CDNs
 - restriktive CSP
@@ -78,11 +97,12 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreib
 - sichere Current-/Pre-Timer-Werte dürfen kontrolliert fortgesetzt werden
 - Advanced-Snapshots mit unmöglichen Ergebnis-/Winnerzuständen werden fail-closed verworfen
 - vorhandene Advanced-Resume-Sessions werden nicht still durch einen Neustart ersetzt
+- vorhandene Quick-/Mega-/Viral-/Creator-Sessions werden nicht still durch einen normalen Start ersetzt
 - persönliche Inhalte freiwillig/überspringbar
 
-## 9. Offline- und Updatevertrag
+## 10. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**.
+Aktueller Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**.
 
 Jüngere Generationen:
 
@@ -93,40 +113,41 @@ Jüngere Generationen:
 - v52 sichere direkte Hub-Current-Runden
 - v53 Paranoia Resume/Privacy
 - v54 sichere Pre-Timer-Kontinuität für Hot Potato/Wortkette
-- **v55 Advanced Resume-/Winner-/Result-Integrität + bestätigter Session-Ersatz**
+- v55 Advanced Resume-/Winner-/Result-Integrität + bestätigter Session-Ersatz
+- **v56 bestätigter und fail-closed Quick-/Mega-/Viral-/Creator-Session-Ersatz**
 
 Neue Versionen werden zuerst im `STAGING_CACHE` vorbereitet und erst nach bewusster Nutzeraktivierung übernommen. Der aktive Cache wird nicht vor erfolgreicher Promotion zerstört.
 
 Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Alt→Neu/Rollback real testen.
 
-## 10. PWA-Installationsmetadaten
+## 11. PWA-Installationsmetadaten
 
 `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
 
-## 11. Accessibility
+## 12. Accessibility als Definition of Done
 
 Kernoberflächen benötigen semantische Struktur, Labels, sichtbaren Fokus, Tastaturbedienung, modale Fokusgrenzen, Touchziele, Reduced Motion und Reflow. Quellschichten: `party-hub-a11y.js` und `secondary-surface-a11y.js`. VoiceOver/TalkBack/Touch/Zoom bleiben reale Gates.
 
-## 12. Inhalts- und Rechtevertrag
+## 13. Inhalts- und Rechtevertrag
 
 Keine kopierten proprietären Karten, fremden Medien/Logos ohne Rechte oder unnötigen konkreten Marken-/Franchisebezug. Nutzerinhalte bleiben getrennt. Ein `unresolved` Releaseasset blockiert `assetsThirdParty = PASS`.
 
-## 13. Testpyramide
+## 14. Testpyramide
 
-Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Advanced-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
+Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Advanced-/Quick-Replacement-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
 
-Advanced besitzt seit v55 einen eigenen **`scripts/advanced_integrity_audit.py`** im Validate-Gate sowie neun kritische E2E-Specs im Syntax-Preflight.
+Advanced besitzt seit v55 einen eigenen `scripts/advanced_integrity_audit.py`. Quick-Family-Session-Ersatz besitzt seit v56 `scripts/quick_session_replacement_audit.py` sowie Unit- und Browser-Verträge.
 
 Release Candidate zusätzlich: Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, PWA Upgrade/Rollback, Android/iPhone/Tablet, VoiceOver/TalkBack/Zoom/Tastatur und reale Gruppen.
 
-## 14. Performance und Assets
+## 15. Performance und Assets
 
 Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB; engere Budgets haben Vorrang. PWA-Assets: `icon.svg`, `icon-192.png`, `icon-512.png`, Provenienzmanifest. Rechtebasis wird separat menschlich freigegeben.
 
-## 15. Betrieb, Deprecation und Rollback
+## 16. Betrieb, Deprecation und Rollback
 
 Kein Force-Push auf stabile Release-Basen. Rollback/Hotfix erhält nach Offline-Core-Änderungen eine neue Cachegeneration. Persistierte Daten müssen kompatibel bleiben oder explizit migriert werden.
 
-## 16. Releaseentscheidung
+## 17. Releaseentscheidung
 
 Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und reale Gates tatsächlich ausgeführt wurden**. `release-evidence.json` ist die finale Quelle; `GO` erst bei belegten PASS-Gates auf demselben unveränderten RC.
