@@ -15,7 +15,7 @@ Letzter vollständig untersuchter App-CI-Befund bleibt der historische **v49 Run
 - separate Step-Abfrage `steps: []`
 - kein Checkout / Node-/Python-Setup / npm / Test / Playwright / Repositorycode ausgeführt
 
-Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v55**. **v50–v55 besitzen keinen echten Runner-PASS.**
+Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v56**. **v50–v56 besitzen keinen echten Runner-PASS.**
 
 ## Isolierter Hosted-Runner-Probe
 
@@ -25,21 +25,23 @@ Run #7: Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`, Run-ID `32650097848`, J
 
 Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-Code als **unmittelbare Ursache dieses Pre-Step-Fehlers** ausgeschlossen. Die exakte externe Ursache ist nicht bewiesen. Prüfflächen bleiben Hosted-Runner-Zuteilung, Account/Billing/Budget, Repo-/Org-/Enterprise-Policy und GitHub-seitige Runner-Störung.
 
-## Aktueller Buildvertrag – v55
+## Aktueller Buildvertrag – v56
 
-- Offline-Core `secret-circle-v55` / `secret-circle-v55-staging`
+- Offline-Core `secret-circle-v56` / `secret-circle-v56-staging`
 - v50 Hub Resume Loader fail-closed
 - v51 Complete Backup Registry v2 + PartyDataTools v6
 - v52 Safe Hub Current
 - v53 Paranoia Resume/Privacy
 - v54 PT54 Pre-Timer Resume + `hub_prestart_resume_audit.py`
-- **v55 Advanced Resume Guard v4**
-- **Location Spy Result-Pfade Vote/Guess gegenseitig exklusiv**
-- **Mafia non-finished Stage bei bereits eindeutigem Winner fail-closed**
-- **Mafia finished direct-save exact-once**
-- **Advanced „Neue Session beginnen“ nur nach Bestätigung; Active-Remove-Fehler startet keine neue Session**
-- `scripts/advanced_integrity_audit.py` in `npm run validate`
-- **9 kritische Advanced-E2Es** zusätzlich im Syntax-Preflight
+- v55 Advanced Resume Guard v4 + `advanced_integrity_audit.py`
+- **v56 `quick-session-replacement-guard.js` v1**
+- **v56 `quick-loader.js` v7: Ledger → Controls → Replacement Guard → Engine**
+- **Same-/Cross-Game Quick-Family-Ersatz nur nach Bestätigung**
+- **Replacement-Write-Fehler erhält den alten Snapshot fail-closed**
+- `tests/quick-session-replacement-guard.test.js` in `npm test`
+- `tests/e2e/quick-session-replacement.spec.js` und `tests/e2e/party-session-controls.spec.js` im Syntax-Preflight
+- `scripts/quick_session_replacement_audit.py` in `npm run validate`
+- bestehender Staging-Smoke-Dokumentvertrag wieder synchronisiert
 - `package-lock.json` v3
 - Playwright 1.54.2 exakt
 - CI/Cross-Browser verwenden `npm ci`
@@ -72,8 +74,8 @@ Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere reposit
 2. Online-`npm ci` / Integrity-Download
 3. `npm run check`
 4. `npm test`
-5. `npm run validate` inklusive **AD55**, PT54, Backup, A11y, Architecture, Operator und Release-Audits
-6. Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/**AD55**
+5. `npm run validate` inklusive PT54 / AD55 / **QR56** / Backup / A11y / Architecture / Operator / Release-Audits
+6. Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/**QR56**
 7. vollständiges `npm run ci`
 8. Cross-Browser auf demselben RC-Commit
 9. unveränderten Commit vollständig retesten
