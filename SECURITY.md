@@ -1,10 +1,12 @@
 # Secret Circle – Sicherheitsrichtlinie
 
-Stand: 16. August 2026
+Stand: 26. August 2026
 
 ## Unterstützte Versionen
 
 Während der Beta wird ausschließlich der neueste Commit des aktiven Release-Branches gepflegt. Frühere Entwicklungsstände erhalten keine separaten Sicherheitskorrekturen.
+
+Aktueller Source-/Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**. Ein Source-Vertrag ist kein Sicherheits-PASS ohne echte Runner-/Browser-/Geräte-Evidence.
 
 ## Sicherheitsproblem melden
 
@@ -88,13 +90,20 @@ Für jedes neue Feature gelten ab Entwurf:
 - sichere Textdarstellung
 - Speicher-/Löschfehler stellen vorherigen Zustand wieder her
 
-### Gesamtsicherung und Löschung
+### Gesamtsicherung und Löschung – v51
 
 - 1,5-MB-Grenze basiert auf tatsächlichen UTF-8-Bytes
 - Mehrbyte-Zeichen umgehen die Grenze nicht
-- Import und vollständige Löschung arbeiten transaktional
-- bei Fehlern wird der vorherige Zustand wiederhergestellt
-- fehlgeschlagener Rollback erzeugt gesonderte kritische Meldung
+- `backup-schema-registry.js` Version 2 ist die zentrale Complete-Backup-Quelle
+- `party-data-tools.js` Version 6 konsumiert die Registry statt Format-/Limitwerte zu duplizieren
+- Complete Restore besitzt ausschließlich **16 explizit registrierte aktuelle Storage-Keys**
+- unbekannte/future Namespaces und zukünftige Storage-Versionen sind kein heutiges Restore-Eigentum
+- managed Werte benötigen gültiges JSON, erwarteten Root-Typ, aktuelle Storage-Version und minimale Pflichtwrapper
+- alle Entries werden vor der ersten Mutation geprüft
+- Restore snapshotet, ersetzt und rollt nur managed Keys zurück
+- unbekannte/future Daten bleiben auch bei einem Restore-Rollback unangetastet
+- ausdrücklich bestätigte Komplettlöschung bleibt bewusst prefixweit und entfernt alle `secret-circle-*`-Daten
+- fehlgeschlagener Rollback erzeugt eine gesonderte kritische Meldung
 
 Diese Maßnahmen reduzieren unbeabsichtigten lokalen Datenverlust. Sie ersetzen keine verschlüsselte Datenbank und keinen Schutz vor einer Person, die das eigene Gerät und den Browser-Speicher bewusst manipuliert.
 
@@ -104,9 +113,10 @@ Secret Circle schützt primär gegen **unbeabsichtigte Offenlegung im normalen P
 
 ### Bestehende Maßnahmen
 
-- Word-Imposter-Geheimnis wird bei `visibilitychange`, `blur` und `pagehide` verdeckt
+- Word-Imposter-Geheimnisse werden bei `visibilitychange`, `blur`, `pagehide` und unterstütztem Freeze verdeckt und aus dem Secret-DOM entfernt
 - Fokus kehrt nach automatischem Verdecken zur sicheren Reveal-Aktion zurück
 - direkte Hub- und Advanced-Private-States öffnen nach Reload nicht automatisch offen
+- Hub-Resume-Aktionen sind seit v50 während der asynchronen Guard-Prüfung fail-closed gesperrt
 - Mafia-Moderatorübersicht verlangt nach Reload erneute Bestätigung
 
 ### Nicht garantiert
@@ -122,40 +132,50 @@ Daher bleiben echte Android-/iPhone-Privacy-Tests Releasepflicht.
 ### Unterstützte globale Grenzen
 
 - maximal 1.500.000 UTF-8-Bytes je unterstützter Sicherungsdatei
-- Complete Backup: begrenzte Eintragszahl und Einzelwertgröße
+- Complete Backup: maximal 100 Einträge und 1.000.000 Bytes je Wert
 - Creator: begrenzte Spiele/Packs/Karten
 - Format-/Versionsprüfung
+- exakte Complete-Key-Allowlist
+- key-spezifische Root-/Storage-Version-/Wrapper-Prüfung
 
-### Importreihenfolge
+### Importreihenfolge Complete Backup
 
 1. Dateigröße prüfen
 2. vollständig lesen
 3. JSON parsen
-4. Format/Version prüfen
-5. Struktur validieren
-6. erst danach schreiben
-7. bei Fehler alten Zustand wiederherstellen
+4. Backupformat/-version prüfen
+5. exakte Storage-Key-Allowlist prüfen
+6. Wertgröße und JSON-Root prüfen
+7. key-spezifische Storage-Version/Pflichtstruktur prüfen
+8. managed Snapshot erstellen
+9. erst danach managed Keys ersetzen
+10. bei Fehler managed Zustand rollbacken
+11. unbekannte/future Namespaces unangetastet lassen
 
-### Offener Hardening-Fund SEC-F01 – Schema-Drift
+### SEC-F01 – Schema-Drift
 
-`backup-schema-registry.js` ist als zentrales Registry vorhanden. `party-data-tools.js` dupliziert aktuell jedoch Format-, Versions- und Limitkonstanten des Complete-Backups.
+**Status: CLOSED IN CODE / CI-Evidence offen.**
 
-**Risiko:** Registry und tatsächlicher Importpfad könnten später auseinanderlaufen.
+`backup-schema-registry.js` ist die zentrale Quelle. `party-data-tools.js` leitet Complete-Backup-Format und Limits aus der Registry ab. `tests/backup-schema-registry.test.js` und `scripts/backup_contract_audit.py` schützen gegen erneute Duplikation/Drift.
 
-**Maßnahme:** direkten Registry-Vertrag oder zusätzlichen Drift-Test einführen.
+### SEC-F02 – generischer Complete-Backup-Namespace
 
-### Offener Hardening-Fund SEC-F02 – generischer Complete-Backup-Namespace
+**Status: CLOSED IN CODE / BK51-Evidence offen.**
 
-Complete Backup akzeptiert generisch `secret-circle-*`-Keys innerhalb seiner Grenzen.
+Die frühere offene Entscheidung ist getroffen: **keine generische `secret-circle-party-*`-Restore-Wildcard**. Die Registry verwaltet nur die aktuell bekannten exakten Keys. Zukünftige Namespaces oder Storage-Versionen werden von einer heutigen Sicherung nicht importiert und bei Restore nicht gelöscht.
 
-**Vorteil:** zukunftskompatible vollständige Sicherung.
+### SEC-F03 – syntaktisch gültige, semantisch falsche Storage-Wrapper
 
-**Risiko:** größere importierbare Zustandsfläche.
+**Status: CLOSED IN CODE / BK51-Evidence offen.**
 
-Vor Release wird bewusst entschieden zwischen:
+Ein gültiges JSON allein reicht nicht. Die Registry prüft pro managed Key Root-Typ, aktuelle Storage-Version und minimale Pflichtwrapper. Ein Hub-v1-Wert mit `{ "version": 999, ... }` wird vor Mutation abgelehnt.
 
-- versionierter Namespace-Allowlist oder
-- generischer Sicherung + strikt validierenden Consumern + Contract-Test.
+Source-/Browser-Verträge:
+
+- `tests/backup-schema-registry.test.js`
+- `tests/e2e/party-data.spec.js`
+- `tests/e2e/backup-forward-compat.spec.js`
+- `scripts/backup_contract_audit.py`
 
 ## localStorage
 
@@ -203,19 +223,19 @@ Sicherheits-/Integritätsregeln:
 - keine stille Aktivierung mitten in laufender Session
 - Rollback hält Daten kompatibel
 
+Aktueller Sourcevertrag: **v51**. Reale Upgrade-/Rollback-Evidence bleibt offen.
+
 ## Supply Chain
 
-### Releaseanforderungen
+### Repositoryvertrag
 
-- Abhängigkeiten minimieren
-- reproduzierbares `package-lock.json`
-- CI mit `npm ci`
-- keine unnötigen Install-Skripte
-- bekannte Sicherheitslücken prüfen
-- Lizenzen/Drittanbieter dokumentieren
-- wichtige Toolversionen pinnen
+- `package-lock.json` v3 vorhanden
+- CI und Cross-Browser verwenden `npm ci`
+- Playwright 1.54.2 exakt gepinnt
+- keine npm-Runtime-Dependencies
+- Lockfile-/Lizenz-/Third-Party-Verträge vorhanden
 
-Aktuell bleibt `package-lock.json` / `npm ci` ein offenes P1-Releasegate.
+**Status:** CLOSED IN CODE / ONLINE VERIFICATION OPEN. Ein echter Online-`npm ci`-PASS fehlt weiterhin, weil GitHub Actions vor Step 1 endet.
 
 ## Repository-Sicherheit
 
@@ -228,7 +248,9 @@ Vor Release:
 - kein Force-Push auf stabile Releasebasis
 - unveränderlicher Release-Commit/Tag
 
-Ein CI-Lauf ist nur dann ein Sicherheitsnachweis, wenn ein Runner tatsächlich Checkout und Prüfungen ausführt. `runner_id: 0` / `steps: []` ist ausdrücklich **kein** grüner Sicherheitsnachweis.
+Ein CI-Lauf ist nur dann ein Sicherheitsnachweis, wenn ein Runner tatsächlich Checkout und Prüfungen ausführt. `steps: []` ist ausdrücklich **kein** grüner Sicherheitsnachweis.
+
+Historisch letzter vollständig untersuchter App-Lauf: Run #2787 auf v49. v50/v51 besitzen keinen Runner-PASS.
 
 ## Logging und Telemetrie
 
@@ -262,10 +284,15 @@ Vor Sicherheitsfreigabe mindestens:
 - unbekannte/doppelte Katalog-IDs
 - ungültige/übergroße Sicherungsdateien
 - Mehrbyte-Datei über Byte-Grenze
-- Quota-/Rollbackfehler
+- unbekannter Future-Namespace bleibt bei Restore erhalten
+- Future-Version eines bekannten Storage-Keys bleibt bei Restore erhalten
+- Backup mit Future-Key wird vor Mutation abgelehnt
+- falsche interne Storage-Version eines managed Keys wird vor Mutation abgelehnt
+- Quota-/Write-Rollbackfehler
 - Import-/Löschfehler
 - doppelte Completion
 - private Blur-/Visibility-/Reload-Wege
+- Hub-Resume-Guard-Ladephase fail-closed
 - unbekannte Query-IDs
 - CSP ohne `unsafe-inline`/`unsafe-eval`
 - Offline-Start ohne externe Runtime-Ressourcen
@@ -288,15 +315,19 @@ Eine öffentliche Produktionsfreigabe ist blockiert, solange ein bestätigter kr
 
 - [ ] `THREAT_MODEL.md` aktuell
 - [ ] keine offenen kritischen/hohen Securitybugs
-- [ ] XSS-/Creator-Input-Tests grün
-- [ ] Import/Quota/Rollback grün
-- [ ] private Reveal-/Reload-/Blur-Wege grün
+- [ ] XSS-/Creator-Input-Tests real grün
+- [ ] Import/Quota/BK51-Rollback real grün
+- [ ] private Reveal-/Reload-/Blur-Wege real grün
+- [ ] Hub Resume v2/v50-Ladephase real grün
 - [ ] echte Android/iPhone-Privacy-Unterbrechung geprüft
 - [ ] PWA-Update/Rollback real geprüft
-- [ ] Lockfile + `npm ci`
-- [ ] Dependency-/Lizenzprüfung
+- [x] Lockfile + `npm ci` im Repositoryvertrag
+- [ ] Online-`npm ci` auf funktionierendem Runner
+- [ ] Dependency-/Lizenzprüfung auf unverändertem RC final
 - [ ] Branch Protection
 - [ ] CI führt echten Code aus
 - [ ] Security-/Incidentkontakt final
-- [ ] SEC-F01 geschlossen
-- [ ] SEC-F02 geschlossen oder bewusst akzeptiert
+- [x] SEC-F01 im Sourcevertrag geschlossen
+- [x] SEC-F02 im Sourcevertrag geschlossen
+- [x] SEC-F03 im Sourcevertrag geschlossen
+- [ ] BK51/Cross-Browser-Evidence auf dem unveränderten RC
