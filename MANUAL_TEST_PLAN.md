@@ -2,7 +2,7 @@
 
 Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v54` / `secret-circle-v54-staging`**  
+Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
@@ -14,10 +14,10 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Actions erreicht sichtbare Steps / Checkout
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` / `npm test` / `npm run validate` / `npm run ci` grün
-- [ ] Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54 grün
+- [ ] Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/**AD55** grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`, kein Repositorycode ausgeführt. **v50–v54 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`, kein Repositorycode ausgeführt. **v50–v55 sind nicht runnerverifiziert.**
 
 ## 2. Hub / Word Imposter
 
@@ -32,59 +32,52 @@ Je vollständige Runde: Wahrheit oder Pflicht, Ich habe noch nie, Wer würde ehe
 
 Gemeinsam: Regeln, Skip ohne Punkt, Finish vs. Abort, Reload/Resume, Verlauf exact-once, Tastatur-/Modalverhalten.
 
-## 4. HR2 / HR52 / PR53
+## 4. Hub-Spezialgates
 
-### HR2
+- **HR2:** gültige normale/Timer-Session fortsetzbar; widersprüchliche Timer verworfen; Loader fail-closed.
+- **HR52:** Wahrheit/Pflicht/Prompt/Choice nach Reload identisch; getrennte Truth/Dare-Pools.
+- **PR53:** Paranoia gleiche Frage/gleiches Ergebnis nur nach bewusster Wiederöffnung; Blur-Concealment.
+- **PT54:** Hot-Potato-Aufgabe und Wortketten-Buchstabe vor Timerstart identisch; danach `current=null` und derselbe Wert im Timer-Snapshot; Scharade/Tabu ohne sichtbaren Pre-Start-Current.
 
-- [ ] gültige normale/Timer-Session fortsetzbar
-- [ ] Cross-Mode-/0-ms-Timer verworfen
-- [ ] Resume-Aktionen während Guard-Prüfung gesperrt; Ladefehler fail-closed
+## 5. AD55 – Advanced Integrity
 
-### HR52
+### Allgemein
 
-- [ ] Wahrheit/Pflicht nach Reload exakt dieselbe Karte
-- [ ] getrennte Truth/Dare-Pools
-- [ ] Prompt-/Choice-Current identisch
-- [ ] ungültiger Current verworfen; next/Skip löscht Current
+- [ ] Two Truths / Question Imposter / Location Spy / Mafia normal vollständig spielbar.
+- [ ] aktive Session reloaden → explizite Resume-Aktion.
+- [ ] Safe Exit erhält Session, ohne Play/Stats zu verbuchen.
+- [ ] fertige Sessions werden pro Session-ID exact-once verbucht.
 
-### PR53
+### Location Spy
 
-- [ ] Paranoia-Frage nach Reload gedeckt, explizites Reveal zeigt dieselbe Frage
-- [ ] bereits gefällter Münzwurf nach Reload gedeckt, Ergebnis identisch
-- [ ] kein erneuter Zufallswurf
-- [ ] Blur/Appwechsel verdeckt vor und nach Auflösung
+- [ ] gültiger Gruppenwahl-Result-State fortsetzbar.
+- [ ] gültiger Spion-Ortsguess-Result-State fortsetzbar.
+- [ ] manipuliertes Resultat mit Vote **und** Guess gleichzeitig wird verworfen.
 
-## 5. PT54 – Pre-Timer Resume
+### Mafia
 
-### Hot Potato
+- [ ] 8 Spieler/Klassisch: 2 Mafia + Detektiv + Arzt + 4 Dorfbewohner.
+- [ ] Pack-/Spielerzahl-Rollenverteilung korrekt.
+- [ ] nicht-fertiger Stage mit bereits eindeutigem Alive-Sieger wird verworfen.
+- [ ] `stage=finished` Winner muss zur Alive-Verteilung passen.
+- [ ] fertige Runde direkt „Session beenden“ → History/Stats genau einmal.
+- [ ] Retry derselben Session-ID → keine Doppelbuchung.
+- [ ] Moderatorübersicht nach Reload wieder hinter Bestätigung.
 
-- [ ] Pre-Start-Aufgabe notieren
-- [ ] Active-State vor Start: `timer=null`, `current.kind=hot-potato`
-- [ ] Reload/Resume → exakt dieselbe Aufgabe
-- [ ] kein zusätzlicher Kartenverbrauch durch Reload
-- [ ] Timer starten → `current=null`, `timer.kind=hot-potato`, `timer.prompt` exakt gleich
-- [ ] Dauer real 10–25 s; Countdown bleibt verborgen
+### Neue Session bei vorhandenem Resume-State
 
-### Wortkette
+- [ ] „Neue Session beginnen“ fragt vor dem Verwerfen nach.
+- [ ] Dialog abbrechen → alte Session-ID/State unverändert.
+- [ ] bestätigen → neue Session-ID.
+- [ ] simuliertes Entfernen des Active-Keys schlägt fehl → keine neue Session; alter Stand bleibt; Statusfehler sichtbar.
 
-- [ ] Pre-Start-Buchstabe notieren
-- [ ] Active-State vor Start: `timer=null`, `current.kind=word-chain`
-- [ ] Reload/Resume → exakt derselbe Buchstabe
-- [ ] Timer starten → `current=null`, `timer.kind=word-chain`, `timer.letter` exakt gleich
-- [ ] laufender Timer nach weiterem Reload pausiert mit demselben Buchstaben fortsetzbar
+### Privacy
 
-### Privacy-Grenze
+- [ ] Q-Imposter-Frage / Location-Karte / Mafia-Rolle bei Blur verdeckt.
+- [ ] Two-Truths-private Eingabe bleibt beim kurzfristigen Blur erhalten, aber verdeckt.
+- [ ] Mafia Moderatorübersicht, Nachtaktionen und Detektiv-Info bei Fokusverlust verdeckt.
 
-- [ ] Scharade/Tabu erhalten keinen sichtbaren Pre-Start-Current
-- [ ] PT54 offline in installierter v54-PWA identisch
-
-## 6. Advanced / Quick / Creator
-
-- [ ] Two Truths / Question Imposter / Location Spy / Mafia Fachlogik, Privacy, Resume, Sieger
-- [ ] Quick-Mechanikfamilien komplett smoken; Fokus nach Re-Render sinnvoll
-- [ ] Creator Radiogroup, Wizard-/Hilfefokus, CRUD, Export/Import; unerfahrene Person ohne Entwicklerhilfe
-
-## 7. BK51 – Complete Backup
+## 6. BK51 – Complete Backup
 
 - [ ] managed Export→Restore
 - [ ] Future-Namespace/-Version bleibt unverändert
@@ -94,14 +87,20 @@ Gemeinsam: Regeln, Skip ohne Punkt, Finish vs. Abort, Reload/Resume, Verlauf exa
 - [ ] Write-/Quota-Fehler rollt managed Zustand zurück
 - [ ] explizite Komplettlöschung entfernt alle `secret-circle-*`-Keys
 
-## 8. PWA / Offline – v54
+## 7. Quick / Creator
+
+- [ ] Quick-Mechanikfamilien komplett smoken; Fokus nach Re-Render sinnvoll
+- [ ] Creator Radiogroup, Wizard-/Hilfefokus, CRUD, Export/Import
+- [ ] unerfahrene Person kann ohne Entwicklerhilfe ein valides eigenes Spiel erstellen
+
+## 8. PWA / Offline – v55
 
 - [ ] Android-Installation / iOS Add to Home Screen
 - [ ] Offline-Neustart / Kernseiten / Query-Routen
 - [ ] Resume-/Privacy-/A11y-/Backup-Schichten offline
-- [ ] `party-hub-round-state.js` v3 + Timervertrag offline
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 offline
-- [ ] Update von mindestens zwei älteren Installationen auf v54/RC
+- [ ] Advanced Guard v4 + Runner-Neustartschutz offline
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 offline soweit anwendbar
+- [ ] Update von mindestens zwei älteren Installationen auf v55/RC
 - [ ] aktive Session und lokale Daten erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
@@ -120,7 +119,7 @@ Gemeinsam: Regeln, Skip ohne Punkt, Finish vs. Abort, Reload/Resume, Verlauf exa
 - [ ] Branch Protection
 - [ ] HTTPS-Staging/Production
 - [ ] Android/iPhone/iPad + Accessibility
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / **PT54**
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / **AD55**
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content/Rechte/Legal/Support/Hosting/Incident-Sign-off
 - [ ] zwei PWA-Upgrades + Rollback
