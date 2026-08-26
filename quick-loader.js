@@ -10,6 +10,7 @@
 
   const LEDGER_SOURCE = 'session-ledger.js';
   const CONTROLS_SOURCE = 'party-session-controls.js';
+  const REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js';
 
   function selectSource(catalog, gameId) {
     if (!catalog || !gameId) return null;
@@ -20,12 +21,13 @@
     return null;
   }
 
-  function scriptPlan(catalog, gameId, ledgerReady = false, controlsReady = false) {
+  function scriptPlan(catalog, gameId, ledgerReady = false, controlsReady = false, replacementGuardReady = false) {
     const source = selectSource(catalog, gameId);
     if (!source) return [];
     const plan = [];
     if (!ledgerReady) plan.push(LEDGER_SOURCE);
     if (!controlsReady) plan.push(CONTROLS_SOURCE);
+    if (!replacementGuardReady) plan.push(REPLACEMENT_GUARD_SOURCE);
     plan.push(source);
     return plan;
   }
@@ -71,7 +73,8 @@
       catalog,
       gameId,
       Boolean(windowRef.SecretCircleSessionLedger),
-      Boolean(windowRef.SecretCircleSessionControls)
+      Boolean(windowRef.SecretCircleSessionControls),
+      Boolean(windowRef.SecretCircleQuickSessionReplacementGuard)
     );
 
     const loadNext = index => {
@@ -80,7 +83,11 @@
       const isEngine = nextSource === source;
       const attributes = isEngine
         ? { gameEngine: gameId }
-        : { sharedRuntime: nextSource === LEDGER_SOURCE ? 'session-ledger' : 'session-controls' };
+        : { sharedRuntime: nextSource === LEDGER_SOURCE
+          ? 'session-ledger'
+          : nextSource === CONTROLS_SOURCE
+            ? 'session-controls'
+            : 'session-replacement-guard' };
 
       appendScript(documentRef, nextSource, attributes, () => {
         if (nextSource === LEDGER_SOURCE && !windowRef.SecretCircleSessionLedger) {
@@ -91,13 +98,19 @@
           showFailure(documentRef, 'Die gemeinsame Spielsteuerung konnte nicht initialisiert werden.');
           return;
         }
+        if (nextSource === REPLACEMENT_GUARD_SOURCE && !windowRef.SecretCircleQuickSessionReplacementGuard) {
+          showFailure(documentRef, 'Der Schutz für gespeicherte Sessions konnte nicht initialisiert werden.');
+          return;
+        }
         loadNext(index + 1);
       }, () => {
         const message = isEngine
           ? 'Die Spiel-Engine konnte nicht geladen werden. Bitte Seite neu laden.'
           : nextSource === CONTROLS_SOURCE
             ? 'Die gemeinsame Spielsteuerung konnte nicht geladen werden. Bitte Seite neu laden.'
-            : 'Die gemeinsame Sitzungsverwaltung konnte nicht geladen werden. Bitte Seite neu laden.';
+            : nextSource === REPLACEMENT_GUARD_SOURCE
+              ? 'Der Schutz für gespeicherte Sessions konnte nicht geladen werden. Bitte Seite neu laden.'
+              : 'Die gemeinsame Sitzungsverwaltung konnte nicht geladen werden. Bitte Seite neu laden.';
         showFailure(documentRef, message);
       });
     };
@@ -107,9 +120,10 @@
   }
 
   return Object.freeze({
-    version: 6,
+    version: 7,
     ledgerSource: LEDGER_SOURCE,
     controlsSource: CONTROLS_SOURCE,
+    replacementGuardSource: REPLACEMENT_GUARD_SOURCE,
     selectSource,
     scriptPlan,
     showFailure,
