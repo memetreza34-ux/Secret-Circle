@@ -61,6 +61,8 @@ Reale Installation, Offline-Neustart, Update und Rollback bleiben separate Gates
 
 ## HTTPS-Staging
 
+Der Netzwerk-Smoke wird durch **`scripts/staging_smoke.py`** ausgeführt. Der lokale/deployte PWA-Head-Vertrag wird zusätzlich durch **`tests/pwa-head-metadata.test.js`** geschützt.
+
 ```bash
 npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v56
 ```
@@ -101,7 +103,9 @@ Historie: v49 Hub Resume Guard; v50 fail-closed Loader; v51 Complete Backup; v52
 7. Upgrade-/Rollbackpfad real prüfen
 8. erst danach Production aktualisieren
 
-## Production-Smoke
+## Production-Smoke-Test
+
+Production nutzt ebenfalls `scripts/staging_smoke.py` auf demselben freigegebenen RC:
 
 ```bash
 npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v56 --production
