@@ -1,14 +1,15 @@
 # Secret Circle – Release-Checkliste Januar 2027
 
-Stand: 25. August 2026
+Stand: 26. August 2026
 
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme. Die finale Beweiskette wird zusätzlich in `release-evidence.json` geführt.
 
 Aktueller Quellstand: **15/15 Core Source Review PREPARED + 15/15 Core Source Hardening PREPARED**.  
-Aktueller Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**.  
 Accessibility Source Hardening: **PREPARED**.  
 Word-Imposter Data/Resume Hardening: **PREPARED**.  
 Hub Resume Guard v2 + v50-Ladequarantäne: **PREPARED**.  
+Complete Backup v51 Hardening: **PREPARED**.  
 Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
@@ -18,9 +19,11 @@ Quellsseitig vorbereitet:
 - [x] `package-lock.json` v3
 - [x] CI und Cross-Browser verwenden `npm ci`
 - [x] Lockfile-/Branch-/Foundation-/Readiness-/Release-Audits
+- [x] `scripts/backup_contract_audit.py` im normalen `npm run validate`
 - [x] `release-evidence.json` + Audit
 - [x] transition-safe FINAL/GO-Verträge
 - [x] `validate_project.py` auf aktuelle Runtime-Scriptketten und Hub-Resume-Loader synchronisiert
+- [x] Backup-E2E-Dateien im Syntax-Preflight
 - [x] Runner-Problem durch action-/repo-freien Minimalprobe als Pre-Step-Problem isoliert
 
 Für den RC offen:
@@ -38,7 +41,7 @@ Für den RC offen:
 - [ ] `Secret Circle CI / validate` als **Required Check aktiv und grün**
 - [ ] Branch Protection / Review / Bypass / Force-Push / Löschung real bestätigt
 
-Letzter vollständig untersuchter v49-App-Actions-Lauf: Run #2787, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. v50 ist deshalb ebenfalls nicht runnerverifiziert.
+Letzter vollständig untersuchter App-Actions-Lauf: Run #2787 auf v49, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 und v51 sind deshalb ebenfalls nicht runnerverifiziert.**
 
 ## 2. Engine / Sessions / Daten
 
@@ -53,8 +56,17 @@ Quellsseitig vorbereitet:
 - [x] stale Resume UI wird beim Verwerfen entfernt
 - [x] v50: sichtbare Resume-UI während Guard-Ladephase `aria-busy` + Buttons deaktiviert
 - [x] Freigabe der Resume-Buttons erst nach erfolgreicher Validierung
-- [x] `tests/party-hub-resume-guard.test.js` schützt v50-Ladequarantäne
+- [x] Browserverträge für verzögerte/fehlgeschlagene Guard-Ladung
 - [x] Advanced Resume-/Privacy-Guards
+- [x] Backup-Registry v2 als zentrale Complete-Backup-Quelle
+- [x] `party-data-tools.js` v6
+- [x] exakte Allowlist mit 16 aktuellen managed Storage-Keys
+- [x] zukünftige Namespaces/Storage-Versionen sind kein heutiges Restore-Eigentum
+- [x] key-spezifische Root-/Storage-Version-/Minimalwrapper-Prüfung vor Mutation
+- [x] managed-only Snapshot/Restore/Rollback
+- [x] `tests/backup-schema-registry.test.js`
+- [x] `tests/e2e/party-data.spec.js`
+- [x] `tests/e2e/backup-forward-compat.spec.js`
 
 Real auf RC zu bestätigen:
 
@@ -62,7 +74,7 @@ Real auf RC zu bestätigen:
 - [ ] manipulierte Voting-Snapshots verworfen
 - [ ] 50/51 Kategorien und 200/201 Begriffe
 - [ ] 1,5-MB-UTF-8-Grenze
-- [ ] abgelehnter Import verändert Bestandsdaten nicht
+- [ ] abgelehnter Word-Imposter-Import verändert Bestandsdaten nicht
 - [ ] gültige Hub-Resume-Session bleibt erhalten
 - [ ] gekreuzte Hub-Timerzustände werden verworfen
 - [ ] stale Hub-Resume-Karte verschwindet bei ungültigem Snapshot
@@ -72,6 +84,14 @@ Real auf RC zu bestätigen:
 - [ ] manipulierte Advanced-Snapshots verworfen
 - [ ] private Reveals bei Reload/Fokusverlust geschützt
 - [ ] Abschluss/Verlauf/Statistik exact-once
+- [ ] Complete Backup Export→Import auf neutralen Testdaten
+- [ ] unbekannter Future-Namespace bleibt bei Restore erhalten
+- [ ] zukünftige Version eines bekannten Keys, z. B. `secret-circle-party-hub-v2`, bleibt erhalten
+- [ ] Backup mit nicht registriertem Future-Key wird abgelehnt, ohne Bestandsdaten zu verändern
+- [ ] syntaktisch gültiger managed Key mit falscher Storage-Version wird vor Mutation abgelehnt
+- [ ] Klartext/primitive JSON-Wurzel in managed Key wird vor Mutation abgelehnt
+- [ ] simulierter Write-/Quota-Fehler stellt managed Snapshot wieder her
+- [ ] ausdrücklich bestätigte Komplettlöschung entfernt alle `secret-circle-*`-Reste
 
 ## 3. Core / UX / Content
 
@@ -98,21 +118,24 @@ Spezialfälle:
 - [ ] Mafia: Rollen/Alive/Sieger
 - [ ] Wrong Answers: manuelle Verlustregel, scorelos
 
-## 4. PWA / Offline – v50
+## 4. PWA / Offline – v51
 
-- [ ] finaler Cache `secret-circle-v50` oder bewusst neuerer RC-Cache
+- [ ] finaler Cache `secret-circle-v51` oder bewusst neuerer RC-Cache
 - [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment/Hosting synchron
 - [ ] Installationsmetadaten grün
 - [ ] Word-Imposter-/Hub-/Advanced-Guards offline
 - [ ] `party-hub-polish.js` mit v50-Ladequarantäne offline
+- [ ] `backup-schema-registry.js` + `party-data-tools.js` v6 offline
 - [ ] Hub-/Secondary-A11y offline
 - [ ] Online → installierte PWA → Offline-Neustart
 - [ ] Hub/Word Imposter/Advanced/Quick/Creator/Privacy offline
 - [ ] Query-Routen offline
+- [ ] Complete Backup Export/Restore aus installierter PWA
 - [ ] aktive Session über Update geschützt
-- [ ] Update von mindestens zwei älteren Installationen auf v50/RC
+- [ ] Update von mindestens zwei älteren Installationen auf v51/RC
 - [ ] lokale Daten/Sessions bleiben erhalten
+- [ ] Future-/neue Storage-Daten werden durch älteren Restore nicht zerstört
 - [ ] Rollback mit neuer Cachegeneration
 
 ## 5. HTTPS-Staging / Production
@@ -122,12 +145,13 @@ Spezialfälle:
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung
 - [ ] getrennte HTTPS-Staging-Origin
 - [ ] Production-Origin
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v50` grün
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v51` grün
 - [ ] manueller PWA-Staging-Smoke
 - [ ] Word-Imposter-Datenvertrag real
 - [ ] Hub-Resume-v2/v50-Ladequarantäne real
+- [ ] Complete-Backup-v51-Vertrag real
 - [ ] Production nutzt denselben RC
-- [ ] **Production-Smoke**: `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v50 --production` grün
+- [ ] **Production-Smoke**: `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v51 --production` grün
 
 ## 6. Accessibility / Geräte
 
@@ -160,6 +184,7 @@ Real offen:
 - [ ] G5 Creator mit unerfahrener Person
 - [ ] DWI Word-Imposter-Datengrenzen
 - [ ] HR2 Hub Resume v2 + v50-Ladequarantäne
+- [ ] BK51 Complete Backup / Forward Compatibility / Rollback
 - [ ] PN1–PN3 Smart Party Night
 - [ ] mindestens ein realer Testnachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
