@@ -14,10 +14,10 @@ Stand: 26. August 2026
 - Word-Imposter Data/Resume Hardening steht auf **PREPARED**.
 - Hub Resume Integrity v2 + v50-Ladequarantäne stehen auf **PREPARED**.
 - Complete Backup v51 Hardening steht auf **PREPARED**.
+- Hub Round Resume v52 steht auf **PREPARED**.
 - `release-evidence.json` bleibt bewusst `PREPARED / NO_GO`; kein unveränderter RC ist eingefroren.
 - PR #13 bleibt Draft und ungemergt.
-- Branch-Protection-, Foundation-, Readiness- und Release-Audits sind **transition-safe** und blockieren einen später korrekt belegten `FINAL / GO`-Zustand nicht durch historische OPEN-/NO_GO-Hardcodes.
-- `scripts/backup_contract_audit.py` ist Teil des normalen Validate-Gates.
+- zentrale Release-Audits sind transition-safe.
 
 ### Core-Hardening
 
@@ -31,79 +31,72 @@ Stand: 26. August 2026
 ### Hub-Accessibility-Hardening – v46
 
 - `party-hub-a11y.js` Version 2 ergänzt.
-- Bereichswechsel fokussieren eine programmatisch fokussierbare Hauptüberschrift.
-- Spieldetail und aktive Hub-Runde als modale Tastaturkontexte gehärtet.
-- Hintergrund über `inert` isoliert; Tab/Shift+Tab bleibt im Overlay.
-- Rückkehrfokus nach Schließen des Spieldetails.
+- Bereichswechsel, Modal-Fokus, `inert`, Fokus-Trap und Rückkehrfokus gehärtet.
 - Unit-/Playwright-/Auditverträge ergänzt.
 
 ### Advanced-/Quick-/Creator-Accessibility-Hardening – v47
 
-- `secondary-surface-a11y.js` Version 1 ergänzt.
-- **Advanced:** Spieloverlay als modalen Fokuskontext mit Hintergrundisolation und Fokus-Trap gehärtet.
-- **Quick:** Fokus-Recovery nach dynamischen DOM-Phasenwechseln.
-- **Creator:** Wizard-Schrittfokus, Hilfe-Modal mit Fokus-Trap/Rückkehrfokus und Template-Radiogroup mit roving `tabindex`, Pfeiltasten sowie Home/End.
-- `tests/accessibility-contract.test.js`, Playwright-E2E und `scripts/secondary_surface_a11y_contract_audit.py` erweitert.
-- reale VoiceOver-/TalkBack-/Zoom-/Touch-/Browser-Abnahme bleibt offen; Accessibility bleibt **PREPARED**, nicht PASS.
+- `secondary-surface-a11y.js` ergänzt.
+- Advanced-Modal-Isolation, Quick-Fokus-Recovery und Creator-Wizard-/Radiogroup-Tastaturvertrag gehärtet.
+- reale VoiceOver-/TalkBack-/Zoom-/Touch-/Browser-Abnahme bleibt offen.
 
 ### Word-Imposter Data/Resume Hardening – v48
 
-- `app.js` leitet die nächste abstimmende Person nicht mehr aus `Object.keys(votes).length` ab, sondern sucht den nächsten Spieler ohne gespeicherte Stimme.
-- `word-imposter-resume-guard.js` verwirft nicht-sequenzielle manipulierte Voting-Snapshots.
-- `data-store.js` definiert maximal **50 eigene Kategorien**, maximal **200 Begriffe je eigener Kategorie** und maximal **1,5 MB UTF-8** pro Word-Imposter-Backup.
-- frühere stille Kategorie-Trunkierung entfernt: 51 Kategorien werden fail-closed abgelehnt.
-- 201 Begriffe werden vor Normalisierung abgelehnt.
-- Backup-`data` muss ein echtes Objekt und darf kein Array sein.
-- abgelehnte Imports verändern bestehende lokale Daten nicht.
-- `app.js` liest die Limits aus dem Store statt eigene unabhängige Werte zu verwenden.
-- `index.html` erklärt 50 Kategorien und 2–200 Begriffe sichtbar.
-- `tests/storage.test.js` deckt 50/51, 200/201, UTF-8-Byte-Limit, korrupte lokale Übergrößen und Import-Rollback ab.
-- `tests/word-imposter-data-contract.test.js` schützt Voting-, UI-, Store- und Backup-Grenzen.
+- nächste abstimmende Person wird aus tatsächlichen offenen Vote-Keys bestimmt.
+- nicht-sequenzielle manipulierte Voting-Snapshots werden verworfen.
+- maximal 50 eigene Kategorien, maximal 200 Begriffe je Kategorie, 1,5 MB UTF-8 pro Word-Imposter-Backup.
+- 51/201 werden fail-closed abgelehnt; kein stilles Trunkieren.
+- abgelehnte Imports verändern Bestandsdaten nicht.
+- Source-Verträge in `tests/storage.test.js` und `tests/word-imposter-data-contract.test.js`.
 
 ### Hub Resume Integrity – v49
 
-- `party-hub-resume-guard.js` Version 2 wurde zur zentralen getesteten Runtime-Quelle für direkte Hub-Resume-Integrität.
-- `party-hub-polish.js` delegiert an denselben Guard statt Timer-/Resume-Validierung zu duplizieren.
-- gekreuzte oder logisch widersprüchliche Timer-Snapshots werden verworfen.
-- beim Verwerfen wird auch eine bereits sichtbare `#hub-resume-session`-Karte entfernt.
-- gültige gespeicherte Sessions bleiben unangetastet.
-- `tests/party-hub-resume-guard.test.js` prüft Modul, Runtime-Einbindung, Offline-Core, gültigen Resume und stale-Resume-UI-Race.
+- `party-hub-resume-guard.js` Version 2 wurde zentrale Runtime-/Testquelle.
+- gekreuzte oder widersprüchliche Timer-Snapshots werden verworfen.
+- stale Resume UI wird beim Verwerfen entfernt.
 
 ### Fail-closed Hub Resume Loading – v50
 
-- konkretes Rest-Race geschlossen: Eine bereits gerenderte Resume-Karte darf nicht mehr anklickbar sein, während der Resume-Guard noch geladen beziehungsweise ausgeführt wird.
-- `party-hub-polish.js` markiert die Resume-Fläche während der Prüfung als beschäftigt und deaktiviert Resume-/Discard-Aktionen sofort.
-- erst nach erfolgreicher Guard-Validierung werden die Aktionen wieder freigegeben.
-- Guard-Lade- oder Integritätsfehler bleiben fail-closed; ein ungeschützter Resume-Pfad wird nicht angeboten.
-- `tests/party-hub-resume-guard.test.js` schützt zusätzlich den Ladephasen-/Interaktionsvertrag.
-- `tests/e2e/core-hub-resume.spec.js` deckt verzögerte Guard-Ladung sowie Guard-Ladefehler als echte Browserfälle ab.
-- Beta-/Manual-Testpläne führen die fehlende Interaktionsmöglichkeit vor Guard-Abschluss als realen HR2-Abnahmefall.
+- sichtbare Resume-Karte ist während Guard-Prüfung `aria-busy`.
+- Resume-/Discard-Aktionen bleiben bis erfolgreicher Validierung deaktiviert.
+- Guard-Lade-/Integritätsfehler bleiben fail-closed.
+- Browserfälle in `tests/e2e/core-hub-resume.spec.js` ergänzt.
 
 ### Complete Backup / Forward Compatibility – v51
 
-- `backup-schema-registry.js` bleibt Schema-Registry Version 2 und ist jetzt die verbindliche Quelle für **exakt 16 aktuelle Complete-Backup-Storage-Keys**.
-- die frühere breite Party-Wildcard wurde entfernt; ein heutiger Restore besitzt zukünftige Namespaces/Storage-Versionen nicht.
-- `secret-circle-party-hub-v2`, `secret-circle-settings-v8` und unbekannte `secret-circle-*`-Namespaces werden von der heutigen Restore-Transaktion nicht gelöscht.
-- ein Backup, das einen nicht registrierten Future-Key schreiben will, wird vor Mutation abgelehnt.
-- die Registry enthält pro managed Key einen groben Storage-Vertrag: Root-Typ, aktuelle Storage-Version und minimale Pflichtwrapper.
-- syntaktisch korrektes JSON mit falscher interner Storage-Version, z. B. Hub v1 mit `{version:999}`, wird vor Mutation abgelehnt.
-- `party-data-tools.js` auf Version **6** erhöht und vollständig an den Registry-Vertrag gebunden.
-- Complete Restore validiert alle Entries vor Mutation, snapshotet nur managed Keys, ersetzt nur managed Keys und rollt bei Schreibfehlern nur diesen Bereich zurück.
-- unbekannte/future Namespaces bleiben auch während Restore-Rollback unverändert.
-- ausdrücklich bestätigte Komplettlöschung bleibt dagegen bewusst prefixweit und entfernt alle `secret-circle-*`-Reste.
-- stale Tests synchronisiert: Registry-Test erwartet nicht mehr alte Registry-/Runtime-Versionen oder duplizierte Konstanten.
-- `tests/e2e/party-data.spec.js` erweitert um Future-Key-Erhalt, Klartext-/Primitive-/falsche-Storage-Version-Reject und managed Rollback.
-- neues `tests/e2e/backup-forward-compat.spec.js` schützt Future-Namespace-/Future-Version-Erhalt und Future-Key-Reject.
-- neues `scripts/backup_contract_audit.py` bindet Registry, Runtime, Tests, Offline-Core und Dokumentation zusammen und läuft in `npm run validate`.
-- Backup-E2E-Dateien sind zusätzlich im Syntax-Preflight.
-- BK51 wurde als eigener realer Beta-/Manual-Testfall definiert.
+- `backup-schema-registry.js` Version 2 ist verbindliche Quelle für aktuelle Complete-Backup-Storage-Keys.
+- breite Party-Wildcard entfernt; zukünftige Namespaces/Storage-Versionen gehören nicht einem heutigen Restore.
+- managed Keys besitzen Root-/Storage-Version-/Minimalwrapper-Verträge.
+- `party-data-tools.js` auf Version 6 erhöht und an Registry gebunden.
+- Complete Restore validiert vor Mutation, snapshotet/ersetzt/rollt nur managed Keys zurück.
+- unbekannte/future Namespaces bleiben auch bei Rollback unverändert.
+- vollständige Datenlöschung bleibt bewusst prefixweit.
+- `tests/e2e/backup-forward-compat.spec.js` und `scripts/backup_contract_audit.py` ergänzt.
+- BK51 als eigener realer Beta-/Manual-Testfall definiert.
 
-### PWA / Offline – v51
+### Hub Round Resume / Truth-Dare Usage – v52
 
-- Offline-Core auf **`secret-circle-v51` / `secret-circle-v51-staging`** erhöht, weil `party-data-tools.js` als Offline-Core-Runtime geändert wurde.
-- v46-/v47-A11y-Schichten, v48-Word-Imposter-Datenverträge und v49/v50-Hub-Resume-Schutz bleiben enthalten.
-- `tests/service-worker.test.js` schützt Cachevertrag 51 und den Complete-Backup-Hardening-Core.
-- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan, Backup-Vertrag und A-bis-Z-Status sind auf v51 synchronisiert.
+- neuen kleinen Runtime-Vertrag `party-hub-round-state.js` ergänzt.
+- direkter Hub nutzt `session.current` jetzt tatsächlich für **sichere, nicht-geheime** laufende Karten.
+- bereits angezeigte Wahrheit-/Pflicht-Karte bleibt nach Reload/Resume dieselbe Karte, statt verloren zu gehen und eine neue Karte zu ziehen.
+- Wahrheit und Pflicht besitzen getrennte Usage-Pools; gleiche numerische Indizes blockieren sich nicht mehr gegenseitig.
+- normale Prompt-/Choice-Runden können denselben sicheren Current-Zustand wiederherstellen.
+- gespeicherte Current-Referenzen werden gegen Spielmodus, Typ und Kartenbereich validiert.
+- manipulierte/out-of-range Current-Referenzen werden verworfen.
+- Paranoia und andere geheime Inhalte sind ausdrücklich nicht Teil des v52-Current-Auto-Resume.
+- `nextSimpleRound()` und globales Skip löschen Current vor der nächsten Runde.
+- `tests/hub-resume-contract.test.js` um funktionale Round-State-Verträge erweitert.
+- `tests/e2e/core-hub-resume.spec.js` um Truth/Dare-/Prompt-/Privacy-Reloadfälle erweitert.
+- `scripts/architecture_audit.py` prüft das neue Modul, Scriptreihenfolge, Offline-Core und Secret-Current-Grenze.
+- HR52 als eigener realer Beta-/Manual-Testfall definiert.
+
+### PWA / Offline – v52
+
+- Offline-Core auf **`secret-circle-v52` / `secret-circle-v52-staging`** erhöht, weil `party-hub-round-state.js` neue Offline-Runtime ist.
+- `party-hub-round-state.js` in die CORE-Liste aufgenommen.
+- `tests/service-worker.test.js` schützt Cachevertrag 52 und Offline-Einbindung des neuen Moduls.
+- v46/v47 A11y, v48 Word-Imposter, v49/v50 Hub Guard und v51 Complete Backup bleiben enthalten.
+- Architektur, Deployment, Environment, Privacy, Hosting, README, Release-Status, Release-Checkliste, Beta-/Manual-Plan und A-bis-Z-Status werden auf v52 synchronisiert.
 - reale Installations-, Upgrade-, Rollback-, Resume-, Backup- und Offline-Gerätetests bleiben offen.
 
 ### Build / Supply Chain
@@ -112,16 +105,14 @@ Stand: 26. August 2026
 - Playwright-Kette exakt 1.54.2.
 - keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- Syntax-/Unit-/Validate-Gates enthalten A11y-, Word-Imposter-Daten-, Operator-, Resume- und v51-Backup-Verträge.
+- Syntax-/Unit-/Validate-/E2E-Gates enthalten v52-Round-State-Verträge.
 - Online-`npm ci`-/Test-PASS bleibt wegen Hosted-Runner-Blocker offen.
 
 ### Operator / Hosting / Legal / Support
 
 - `operator-release.json` bleibt `PREPARED / BLOCKED`.
-- `OPERATOR_EVIDENCE_LOG.md` bündelt reale Hosting-, Support-, Security-, Probe-Support-, SEV-1-, Rollback- und Legal-/Privacy-Nachweise.
-- Operator-Audit erzwingt bei späterem READY reale Privacy-/Legal-Dateien, veröffentlichte Betreiber-/Kontaktwerte, getrennte HTTPS-Origins und konsistente Links von allen fünf öffentlichen Einstiegseiten.
-- `HOSTING_DECISION.md` erwartet v51 für Staging-/Production-Smokes.
-- Issue #14 führt reale Betreiber-/Hosting-/Legal-/Support-/Incident-Evidence.
+- `OPERATOR_EVIDENCE_LOG.md` bündelt reale Hosting-, Support-, Security-, SEV-1-, Rollback- und Legal-/Privacy-Nachweise.
+- `HOSTING_DECISION.md` erwartet v52 für Staging-/Production-Smokes und HR52 zusätzlich zu BK51.
 - reale Betreiberwerte, Provider/Origins, Support-/Securitytests und Drills bleiben offen.
 
 ### CI / Hosted Runner – P0
@@ -130,8 +121,7 @@ Stand: 26. August 2026
 - Ergebnis vor Step 1: `steps: null` / separate Abfrage `steps: []`.
 - kein Checkout, npm, Test oder Repository-Code wurde ausgeführt.
 - der isolierte Minimal-Runner-Probe ohne Repository-Code zeigte dasselbe Muster.
-- Run #2787 bestätigt den identischen Pre-Step-Blocker ausdrücklich auf v49; für **v50 oder v51 wird daraus kein Test-PASS abgeleitet**.
-- unmittelbare Fehlerfläche bleibt vor der Workflow-Step-Ausführung; Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+- **für v50, v51 oder v52 wird daraus kein Test-PASS abgeleitet.**
 
 ### Third Party / Assets
 
@@ -140,6 +130,6 @@ Stand: 26. August 2026
 
 ### Release-Status
 
-- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/Word-Imposter-Daten/Hub-Resume-v2/BK51**, **#14 Operator/Hosting/Legal/Support**.
+- zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/Daten/Hub-Resume/BK51/HR52**, **#14 Operator/Hosting/Legal/Support**.
 - öffentlicher Release: **NO_GO**.
-- kein CI-, Geräte-, Accessibility-, Daten-Grenz-, Resume-, Backup-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echte Ausführung behauptet.
+- kein CI-, Geräte-, Accessibility-, Resume-, Backup-, Gruppen-, Asset-, Legal- oder Release-Evidence-PASS wird ohne echte Ausführung behauptet.
