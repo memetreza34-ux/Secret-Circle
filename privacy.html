@@ -29,15 +29,16 @@
       <p>Rollen, Fragen, Orte, Begriffe und andere geheime Informationen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Verdeckungs-, Übergabe- und Resume-Schutz verringern versehentliches Mitlesen, können absichtliches Schulterblicken aber nicht vollständig verhindern.</p>
 
       <h2>Built-in-Privacy-Schutz</h2>
-      <p>Die eingebauten Spiele sollen keine privaten Nachrichten, Kamerarollen oder privaten Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial verlangen. Persönliche Inhalte bleiben freiwillig und überspringbar. Source-Audits schützen diese redaktionelle Grenze.</p>
+      <p>Die eingebauten Spiele sollen keine privaten Nachrichten, Kamerarollen oder privaten Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial verlangen. Persönliche Inhalte bleiben freiwillig und überspringbar.</p>
 
       <h2>Word Imposter und Resume</h2>
-      <p>Geheime Rollen und Begriffe werden beim Gerätewechsel verdeckt. Gespeicherte Abstimmungs- und Resume-Zustände werden auf Konsistenz geprüft. Eigene Word-Imposter-Kategorien und Backups werden lokal validiert, bevor bestehende Daten ersetzt werden.</p>
+      <p>Geheime Rollen und Begriffe werden beim Gerätewechsel verdeckt. Gespeicherte Abstimmungs- und Resume-Zustände werden auf Konsistenz geprüft. Eigene Kategorien und Backups werden lokal validiert, bevor bestehende Daten ersetzt werden.</p>
 
       <h2>Advanced- und Hub-Spiele</h2>
-      <p>Private Fragen, Ortskarten, Rollen, Moderatorinformationen und vergleichbare geheime Zustände werden bei unterstützten Flows beim Fokus- oder App-Wechsel verdeckt. Manipulierte oder widersprüchliche gespeicherte Zustände können verworfen werden, statt sie unsicher fortzusetzen. Im direkten Hub bleiben Resume-Aktionen während der Guard-Ladeprüfung gesperrt und werden erst nach erfolgreicher Validierung freigegeben.</p>
-      <p>Seit v52 kann der direkte Hub bei ausdrücklich nicht-geheimen Karten wie Wahrheit oder Pflicht, normalen Fragen und Entweder-oder die laufende Karte als lokale Indexreferenz wiederherstellen. Dadurch erscheint nach einem Reload dieselbe sichere Karte statt unbemerkt eine neue zu verbrauchen.</p>
-      <p>Seit v53 kann auch eine begonnene Paranoia-Runde ihre **Kartenreferenz, Phase und gegebenenfalls das bereits gefällte Münzwurf-Ergebnis** lokal behalten. Die geheime Frage wird nach einem Reload trotzdem nicht automatisch angezeigt: Erst nach einer erneuten bewussten Reveal-Aktion wird dieselbe Frage beziehungsweise dasselbe bereits entschiedene Ergebnis wieder sichtbar. Ein bereits aufgelöster Paranoia-Zustand wird bei Fokus- oder App-Wechsel erneut verdeckt.</p>
+      <p>Private Fragen, Ortskarten, Rollen, Moderatorinformationen und vergleichbare geheime Zustände werden bei unterstützten Flows beim Fokus- oder App-Wechsel verdeckt. Manipulierte oder widersprüchliche gespeicherte Zustände können verworfen werden. Hub-Resume-Aktionen bleiben während der Guard-Prüfung gesperrt.</p>
+      <p>Seit v52 kann der direkte Hub ausdrücklich nicht-geheime Karten wie Wahrheit/Pflicht, normale Fragen und Entweder-oder als lokale Indexreferenz wiederherstellen, sodass nach Reload dieselbe sichere Karte erscheint.</p>
+      <p>Seit v53 kann eine begonnene Paranoia-Runde ihre validierte Kartenreferenz, Phase und gegebenenfalls das bereits gefällte Münzwurf-Ergebnis lokal behalten. Die geheime Frage oder das Ergebnis werden nach Reload trotzdem nicht automatisch gezeigt; erst eine bewusste Reveal-Aktion macht denselben Zustand wieder sichtbar. Auch nach Auflösung wird Paranoia bei Fokus- oder App-Wechsel erneut verdeckt.</p>
+      <p>Seit <strong>v54</strong> dürfen auch die sichtbare Hot-Potato-Aufgabe und der sichtbare Wortketten-Startbuchstabe <strong>vor Timerstart</strong> als sichere Indexreferenz fortgesetzt werden. Nach dem Timerstart wird diese Referenz gelöscht und nur noch der Timer-Snapshot mit Aufgabe beziehungsweise Buchstabe gespeichert. Scharade- und Tabu-Geheimkarten sind von diesem sichtbaren Pre-Start-Resume ausgeschlossen.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
@@ -52,8 +53,8 @@
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v53</code>.</p>
-      <p>v53 enthält weiterhin die Resume-/Privacy-/Accessibility-, v51-Backup- und v52-Safe-Current-Schutzmodule. Neu ist die gedeckte Paranoia-Rundenkontinuität mit stabilem bereits entschiedenen Münzwurf-Ergebnis und erneutem Verdecken nach Auflösung. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v54</code>.</p>
+      <p>v54 enthält die bisherigen Resume-/Privacy-/Accessibility-/Backup-Schutzmodule und ergänzt die stabile sichere Pre-Timer-Rundenkontinuität für Hot Potato und Wortkette. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem des Geräts entfernt werden.</p>
