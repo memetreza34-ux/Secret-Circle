@@ -51,13 +51,14 @@
       getSession,
       renderPlayRound
     } = deps || {};
+    const R = window.SecretCirclePartyHubRoundState;
 
     for (const [name, value] of Object.entries({
       S, hubTimer, $, makeElement, clearNode, cleanText, safeInteger,
       contentItems, pickUnused, persistActiveSession, currentPlayer,
       actionButton, nextSimpleRound, syncHubPauseUi, focusPlayPrimary,
       setHubPaused, setStatus, preparePlayCard, randomInt, randomItem,
-      getSession, renderPlayRound
+      getSession, renderPlayRound, R
     })) {
       if (!value) throw new Error(`Hub-Timer-Abhängigkeit fehlt: ${name}`);
     }
@@ -196,7 +197,8 @@
 
     function renderHotPotatoStart() {
       const current = session();
-      const prompt = pickUnused(contentItems('hot-potato', current.pack));
+      const selected = R.ensureCurrent(current, 'hot-potato', contentItems('hot-potato', current.pack), randomInt);
+      const prompt = selected?.value || '';
       $('#play-content').textContent = prompt || 'Keine Aufgabe verfügbar.';
       $('#play-player').textContent = `${currentPlayer()} beginnt mit dem Gerät`;
       $('#play-options').append(actionButton('Zufallstimer starten', () => startHotPotato(prompt, HOT_POTATO_MIN_MS + randomInt(HOT_POTATO_RANGE_MS))));
@@ -218,6 +220,7 @@
 
     function startHotPotato(prompt, remainingMs) {
       const current = session();
+      R.clearCurrent(current);
       current.running = true;
       current.timer = {
         kind: 'hot-potato', phase: 'running', remainingMs,
@@ -236,7 +239,8 @@
 
     function renderWordChainStart() {
       const current = session();
-      const letter = randomItem(contentItems('word-chain', current.pack)) || 'A';
+      const selected = R.ensureCurrent(current, 'word-chain', contentItems('word-chain', current.pack), randomInt);
+      const letter = selected?.value || 'A';
       $('#play-content').textContent = `Kategorie: ${current.pack} · Startbuchstabe: ${letter}`;
       $('#play-player').textContent = `${currentPlayer()} beginnt`;
       $('#play-options').append(actionButton('30-Sekunden-Runde starten', () => startWordChain(letter, 30_000)));
@@ -257,6 +261,7 @@
 
     function startWordChain(letter, remainingMs) {
       const current = session();
+      R.clearCurrent(current);
       current.running = true;
       current.timer = {
         kind: 'word-chain', phase: 'running', remainingMs,
