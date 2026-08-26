@@ -5,8 +5,8 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createPartyHubRoundState() {
   'use strict';
 
-  const VERSION = 2;
-  const SAFE_CURRENT_MODES = new Set(['truth-dare', 'prompt', 'choice']);
+  const VERSION = 3;
+  const SAFE_CURRENT_MODES = new Set(['truth-dare', 'prompt', 'choice', 'hot-potato', 'word-chain']);
   const CONCEALED_CURRENT_MODES = new Set(['paranoia']);
   const RESTORABLE_CURRENT_MODES = new Set([...SAFE_CURRENT_MODES, ...CONCEALED_CURRENT_MODES]);
 
