@@ -107,6 +107,27 @@ test('Paranoia conceals an open secret question when the app loses focus', async
   await expect(page.locator('#play-actions')).toContainText('Name wurde genannt');
 });
 
+test('Paranoia also conceals the resolved round state after the coin toss', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'paranoia');
+
+  await page.getByRole('button', { name: 'Geheime Frage anzeigen' }).click();
+  await page.getByRole('button', { name: 'Name wurde genannt · Münze werfen' }).click();
+  await expect(page.getByRole('button', { name: 'Nächste Person' })).toBeVisible();
+  const resultBefore = await page.locator('#play-content').textContent();
+  expect(resultBefore?.trim().length).toBeGreaterThan(0);
+
+  await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+
+  await expect(page.locator('#play-content')).toBeHidden();
+  await expect(page.locator('#play-actions')).toBeHidden();
+  await expect(page.locator('#hub-private-prompt-cover')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Geheime Frage wieder anzeigen' }).click();
+  await expect(page.locator('#play-content')).toHaveText(resultBefore || '');
+  await expect(page.getByRole('button', { name: 'Nächste Person' })).toBeVisible();
+});
+
 test('global skip advances a round without awarding a point and finish records it once', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
