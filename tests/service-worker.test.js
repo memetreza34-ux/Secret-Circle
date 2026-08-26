@@ -6,8 +6,8 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v53'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v53-staging'/);
+assert.match(source, /const CACHE='secret-circle-v54'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v54-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -20,6 +20,7 @@ assert.match(source, /caches\.match\(stripSearch\(request\), \{ cacheName: CACHE
 assert.match(source, /word-imposter-resume-guard\.js/);
 assert.match(source, /party-hub-resume-guard\.js/);
 assert.match(source, /party-hub-round-state\.js/);
+assert.match(source, /party-hub-timers\.js/);
 assert.match(source, /party-hub-polish\.js/);
 assert.match(source, /party-hub-a11y\.js/);
 assert.match(source, /secondary-surface-a11y\.js/);
@@ -35,7 +36,6 @@ assert.match(source, /party-core-release-catalog\.js/);
 assert.match(source, /party-core-classic-content\.js/);
 assert.match(source, /session-ledger\.js/);
 assert.match(source, /party-session-controls\.js/);
-assert.match(source, /party-hub-timers\.js/);
 assert.match(source, /icon\.svg/);
 assert.match(source, /icon-192\.png/);
 assert.match(source, /icon-512\.png/);
@@ -45,7 +45,7 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 53,
+  cacheContract: 54,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -54,6 +54,7 @@ console.log(JSON.stringify({
   wordImposterResumeGuardOffline: true,
   hubResumeGuardOffline: true,
   hubRoundStateOffline: true,
+  preStartTimerResumeOffline: true,
   concealedParanoiaResumeOffline: true,
   hubResumeQuarantinePolishOffline: true,
   resolvedParanoiaConcealmentOffline: true,
