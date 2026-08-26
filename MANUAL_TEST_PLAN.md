@@ -1,8 +1,8 @@
 # Secret Circle Party Hub – Manueller Testplan Januar 2027
 
-Stand: 25. August 2026  
+Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v50` / `secret-circle-v50-staging`**  
+Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
@@ -15,13 +15,13 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Checkout ausgeführt
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` grün
-- [ ] `npm test` grün inklusive Word-Imposter- und Hub-Resume-Tests
-- [ ] `npm run validate` grün
-- [ ] Chromium E2E grün
+- [ ] `npm test` grün inklusive Word-Imposter-, Hub-Resume- und Backup-Registry-Tests
+- [ ] `npm run validate` grün inklusive `backup_contract_audit.py`
+- [ ] Chromium E2E grün inklusive Complete-Backup-/Forward-Compatibility-Fällen
 - [ ] vollständiges `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Letzter vollständig untersuchter v49-App-Actions-Lauf: **#2787**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. v50 ist nicht runnerverifiziert.
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50 und v51 sind nicht runnerverifiziert.**
 
 ## 2. Hub-Smoke
 
@@ -137,18 +137,32 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Neustart/Abbruch
 - [ ] drei vollständige reale Abende
 
-## 10. Backup / Datenschutz
+## 10. Backup / Datenschutz – BK51
+
+### Word Imposter / Creator
 
 - [ ] Word-Imposter-Backup
-- [ ] Gesamtexport
-- [ ] Creator-Bibliothek
-- [ ] ungültiges JSON / unbekannter Namespace abgelehnt
-- [ ] Größenlimit
-- [ ] Schreibfehler-Rollback
-- [ ] abgelehnter Import verändert Bestandsdaten nicht
-- [ ] vollständige lokale Löschung
+- [ ] Creator-Bibliothek Export/Import
+- [ ] Größenlimits
+- [ ] abgelehnte Imports verändern Bestandsdaten nicht
 
-## 11. PWA / Offline – v50
+### Complete Backup v51
+
+- [ ] Gesamtexport enthält aktuelle registrierte lokale Appdaten
+- [ ] regulärer Complete-Restore ersetzt managed Bestandsdaten sauber
+- [ ] vorhandener unbekannter Namespace bleibt nach Restore byte-/inhaltlich unverändert
+- [ ] vorhandenes `secret-circle-party-hub-v2` bleibt nach Restore unverändert
+- [ ] Backup mit `secret-circle-party-hub-v2` wird als nicht unterstützter Key abgelehnt
+- [ ] aktueller managed Key mit falscher interner Storage-Version wird vor Mutation abgelehnt
+- [ ] Klartext statt JSON wird vor Mutation abgelehnt
+- [ ] primitive JSON-Wurzel wird vor Mutation abgelehnt
+- [ ] >1,5 MB UTF-8 wird vor Mutation abgelehnt
+- [ ] simulierte/echte Quota-Schreibstörung löst managed Rollback aus
+- [ ] Rollback verändert unbekannte/future Namespaces nicht
+- [ ] vollständige lokale Löschung entfernt nach expliziter Bestätigung sämtliche `secret-circle-*`-Keys
+- [ ] Exportdatei als unverschlüsselte Datei behandeln und anschließend Testdatei löschen
+
+## 11. PWA / Offline – v51
 
 - [ ] Android-Installation
 - [ ] iOS Add to Home Screen
@@ -157,12 +171,14 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Query-Routen offline
 - [ ] Word-/Hub-/Advanced-Guards offline
 - [ ] `party-hub-polish.js` v50-Quarantäne offline
+- [ ] `backup-schema-registry.js` + `party-data-tools.js` v6 offline
 - [ ] A11y-Schichten offline
 - [ ] DWI offline
 - [ ] Hub Resume v50 offline
-- [ ] Update von mindestens zwei älteren Installationen
+- [ ] BK51 Export/Restore offline bzw. nach Offline-Neustart soweit Browser-Dateizugriff dies unterstützt
+- [ ] Update von mindestens zwei älteren Installationen auf v51/RC
 - [ ] aktive Session über Update geschützt
-- [ ] lokale Daten erhalten
+- [ ] lokale managed und future Testdaten erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
 ## 12. Hintergrund / Sperrbildschirm / Reload
@@ -196,6 +212,7 @@ Je Mechanikfamilie mindestens ein kompletter Smoke:
 - [ ] Multi-Imposter
 - [ ] DWI mit neutralen Daten
 - [ ] HR2/v50 mit neutralem Zustand
+- [ ] BK51 mit neutralen Daten
 - [ ] Mafia
 - [ ] Scharade/Tabu
 - [ ] Party Night
@@ -220,9 +237,10 @@ Root-`icon.svg` bleibt bis belegter Rechtebasis oder Ersatz offen.
 - [ ] Accessibility real
 - [ ] DWI real
 - [ ] Hub Resume v2/v50-Ladequarantäne real
+- [ ] BK51 Complete Backup / Forward Compatibility / Rollback real
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
-- [ ] G1–G5 / DWI / HR2 / PN1–PN3 abgeschlossen
-- [ ] zwei echte PWA-Upgrades + Rollback
+- [ ] G1–G5 / DWI / HR2 / BK51 / PN1–PN3 abgeschlossen
+- [ ] zwei echte PWA-Upgrades auf v51 + Rollback
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content/Rechte/Legal/Support/Hosting-Sign-off
 - [ ] Incident-/Rollback-Drill
