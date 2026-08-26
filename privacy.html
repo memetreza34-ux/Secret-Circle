@@ -36,22 +36,23 @@
 
       <h2>Advanced- und Hub-Spiele</h2>
       <p>Private Fragen, Ortskarten, Rollen, Moderatorinformationen und vergleichbare geheime Zustände werden bei unterstützten Flows beim Fokus- oder App-Wechsel verdeckt. Manipulierte oder widersprüchliche gespeicherte Zustände können verworfen werden, statt sie unsicher fortzusetzen. Im direkten Hub bleiben Resume-Aktionen während der Guard-Ladeprüfung gesperrt und werden erst nach erfolgreicher Validierung freigegeben.</p>
+      <p>Seit v52 kann der direkte Hub bei ausdrücklich nicht-geheimen Karten wie Wahrheit oder Pflicht, normalen Fragen und Entweder-oder die laufende Karte als lokale Indexreferenz wiederherstellen. Dadurch erscheint nach einem Reload dieselbe sichere Karte statt unbemerkt eine neue zu verbrauchen. Geheime Modi wie Paranoia sind davon ausgeschlossen und öffnen nach einem Reload weiterhin keinen geheimen Inhalt automatisch.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
 
       <h2>Sicherung und Import</h2>
       <p>JSON-Sicherungen können lokale Spielernamen, Presets, Favoriten, Verlauf, Statistiken, eigene Inhalte, Einstellungen und aktive Sessions enthalten. Exportierte Sicherungen sind nicht automatisch verschlüsselt und sollten nur an vertrauenswürdigen Orten gespeichert werden.</p>
-      <p>Imports werden nach Format, Version, erlaubten Storage-Key-Familien, UTF-8-Größe und Datenstruktur geprüft, bevor lokale Daten verändert werden. Verwaltete Complete-Backup-Werte müssen valides strukturiertes JSON enthalten.</p>
-      <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Secret-Circle-Namespaces. Unbekannte oder neuere <code>secret-circle-*</code>-Namespaces werden durch ein älteres Backup nicht still gelöscht. Scheitert ein Schreibvorgang, werden die zuvor verwalteten Daten soweit möglich auf ihren Snapshot zurückgerollt. Die ausdrückliche Funktion „Alle lokalen Daten löschen“ bleibt davon getrennt und entfernt bewusst sämtliche Secret-Circle-Namespaces.</p>
+      <p>Imports werden nach Format, Version, erlaubten Storage-Keys, UTF-8-Größe und Datenstruktur geprüft, bevor lokale Daten verändert werden. Verwaltete Complete-Backup-Werte müssen valides strukturiertes JSON mit passender Storage-Version und minimaler Pflichtstruktur enthalten.</p>
+      <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Secret-Circle-Keys. Unbekannte oder neuere <code>secret-circle-*</code>-Namespaces und Storage-Versionen werden durch ein älteres Backup nicht still gelöscht. Scheitert ein Schreibvorgang, werden die zuvor verwalteten Daten soweit möglich auf ihren Snapshot zurückgerollt. Die ausdrückliche Funktion „Alle lokalen Daten löschen“ bleibt davon getrennt und entfernt bewusst sämtliche Secret-Circle-Namespaces.</p>
 
       <h2>Hosting und technische Verbindungsdaten</h2>
       <p>Beim Laden oder Aktualisieren ruft der Browser statische App-Dateien vom später final festgelegten Hostinganbieter ab. Dabei können technisch notwendige Verbindungs- oder Serverlogdaten beim Hostinganbieter anfallen. Vor öffentlicher Veröffentlichung werden Anbieter, Verantwortlicher, Kontakt, konkrete Logverarbeitung, Aufbewahrung und gegebenenfalls Drittlandbezug hier anhand des tatsächlich gewählten Hostings ergänzt und geprüft.</p>
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v51</code>.</p>
-      <p>v51 enthält weiterhin die aktuellen Resume-/Privacy-/Accessibility-Schutzmodule und ergänzt die Complete-Backup-Transaktions- und Forward-Compatibility-Härtung. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v52</code>.</p>
+      <p>v52 enthält weiterhin die Resume-/Privacy-/Accessibility- und v51-Backup-Schutzmodule und ergänzt die sichere Rundenkontinuität für nicht-geheime direkte Hub-Karten. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem des Geräts entfernt werden.</p>
