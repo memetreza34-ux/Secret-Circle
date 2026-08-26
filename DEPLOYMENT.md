@@ -12,7 +12,7 @@ Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffe
 - 4 Advanced-Core-Games
 - Word Imposter + Smart Party Night
 - lokaler No-Code-Game-Creator
-- aktueller Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**
+- aktueller Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**
 - Release-PR: Draft-PR #13 auf `agent/release-foundation-2027`
 
 Öffentliche Freigabe: **NO_GO**.
@@ -41,19 +41,20 @@ Ein Job mit `steps: []` zählt nicht als Code-/Testnachweis.
 Real zu prüfen:
 
 - 15/15 Core
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54
-- **AD55 Advanced Integrity:** unmögliche Location-Spy-Hybridresultate verworfen; Mafia-Terminalzustände konsistent; fertige Mafia-Runde exact-once; bestehende Advanced-Session nur nach Bestätigung ersetzt; Löschfehler bleibt fail-closed
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55
+- **QR56 Quick Replacement:** Same-Game-Neustart verlangt Bestätigung; Cross-Game-Wechsel derselben Enginefamilie verlangt Bestätigung; Cancel erhält den Alt-Snapshot; fehlgeschlagener Replacement-Write erhält den Alt-Snapshot fail-closed
 - Advanced Secret Resume/Privacy
 - keine offenen Critical/High Bugs
 
 ### PWA / Offline
 
-Der aktuelle RC-Source-Vertrag ist **v55**. Offline enthalten sind unter anderem:
+Der aktuelle RC-Source-Vertrag ist **v56**. Offline enthalten sind unter anderem:
 
-- `advanced-resume-guard.js` Version 4
-- `party-advanced-runner.js` mit bestätigtem Session-Ersatz
-- `advanced-privacy-guard.js`
-- `scripts/advanced_integrity_audit.py` als Buildvertrag
+- `quick-session-replacement-guard.js` Version 1
+- `quick-loader.js` Version 7 mit Reihenfolge Ledger → Controls → Replacement Guard → Engine
+- Quick-/Mega-/Viral-/Creator-Engines
+- `scripts/quick_session_replacement_audit.py` als Buildvertrag
+- `advanced-resume-guard.js` Version 4 und Advanced-Hardening v55
 - alle bisherigen Hub-/Word-/Backup-/A11y-/Timer-Schutzmodule
 
 Reale Installation, Offline-Neustart, Update und Rollback bleiben separate Gates.
@@ -61,7 +62,7 @@ Reale Installation, Offline-Neustart, Update und Rollback bleiben separate Gates
 ## HTTPS-Staging
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v55
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v56
 ```
 
 Der HTTP-Smoke ersetzt keine Service-Worker-Installation oder Realgeräteprüfung.
@@ -73,8 +74,12 @@ Mindestens:
 - Service Worker registriert und PWA installierbar
 - Kernseiten + Query-Routen offline
 - aktive Session während Update geschützt
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54
-- **AD55:** Location Spy Hybrid-State blockiert; Mafia non-finished winner-State blockiert; bestehende Advanced-Session bei „Neue Session beginnen“ erst nach Bestätigung ersetzt; Cancel erhält alte Session; Storage-Remove-Fehler startet keine neue Session
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55
+- **QR56 Same Game:** Quick-Session starten → Reload → „Spiel starten“ → Cancel → identische Session-ID bleibt gespeichert
+- **QR56 Cross Game:** laufende Quick-Family-Session → anderes Spiel derselben Familie öffnen → Start → Cancel → alter Game-ID-/Session-ID-Snapshot bleibt erhalten
+- **QR56 Confirm:** bestätigter Ersatz erzeugt erst nach erfolgreichem Write eine neue Session-ID
+- **QR56 Storage Fail:** Replacement-Write künstlich fehlschlagen lassen → Guard lädt fail-closed neu → Alt-Snapshot bleibt erhalten
+- QR56 auch für Mega/Viral/Creator-Familien stichprobenartig real prüfen
 - Advanced Secret Resume/Blur-Concealment
 - Accessibility-Pfade
 - Update aus mindestens zwei älteren Installationen
@@ -83,7 +88,7 @@ Mindestens:
 
 Bei Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Alt→Neu real testen.
 
-Historie: v49 Hub Resume Guard; v50 fail-closed Loader; v51 Complete Backup; v52 sichere Hub Current-Runden; v53 Paranoia Resume/Privacy; v54 Pre-Timer Resume; **v55 Advanced Integrity + bestätigter Session-Ersatz**.
+Historie: v49 Hub Resume Guard; v50 fail-closed Loader; v51 Complete Backup; v52 sichere Hub Current-Runden; v53 Paranoia Resume/Privacy; v54 Pre-Timer Resume; v55 Advanced Integrity; **v56 bestätigter und fail-closed Quick-/Mega-/Viral-/Creator-Session-Ersatz**.
 
 ## Rollback
 
@@ -99,7 +104,7 @@ Historie: v49 Hub Resume Guard; v50 fail-closed Loader; v51 Complete Backup; v52
 ## Production-Smoke
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v55 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v56 --production
 ```
 
 Production muss exakt dem freigegebenen RC entsprechen.
