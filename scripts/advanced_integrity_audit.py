@@ -153,12 +153,15 @@ for spec in critical_specs:
 if 'scripts/advanced_integrity_audit.py' not in validate:
     violations.append('Advanced integrity audit missing from npm run validate.')
 
-if './advanced-resume-guard.js' not in sw or './advanced-privacy-guard.js' not in sw:
-    violations.append('Advanced integrity/privacy guards missing from offline core.')
+for asset in ('./advanced-resume-guard.js', './party-advanced-runner.js', './advanced-privacy-guard.js'):
+    if asset not in sw:
+        violations.append(f'Advanced offline core asset missing: {asset}')
 
 cache = re.search(r"const CACHE='(secret-circle-v(\d+))'", sw)
 if not cache:
     violations.append('Advanced integrity audit could not parse Service Worker cache generation.')
+elif int(cache.group(2)) < 55:
+    violations.append('Advanced v55 integrity requires offline cache generation 55 or newer.')
 
 if violations:
     raise SystemExit('\n'.join(sorted(set(violations))))
@@ -174,5 +177,6 @@ print(json.dumps({
     'abort_preserves_without_completion': True,
     'secret_resume_reconcealment': True,
     'critical_e2e_syntax_preflight': len(critical_specs),
-    'pwa_cache': cache.group(1) if cache else None
+    'pwa_cache': cache.group(1) if cache else None,
+    'minimum_cache_generation': 55
 }, ensure_ascii=False, indent=2))
