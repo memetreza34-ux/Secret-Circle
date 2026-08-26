@@ -5,10 +5,12 @@
   const L = window.SecretCircleSessionLedger;
   const S = window.SecretCircleSessionControls;
   const T = window.SecretCirclePartyHubTimers;
+  const R = window.SecretCirclePartyHubRoundState;
   if (!C) throw new Error('Party-Katalog konnte nicht geladen werden.');
   if (!L) throw new Error('Gemeinsames Session-Register für den Party Hub fehlt.');
   if (!S) throw new Error('Gemeinsame Sessionsteuerung für den Party Hub fehlt.');
   if (!T) throw new Error('Timer-Modul für den Party Hub fehlt.');
+  if (!R) throw new Error('Rundenstatus-Modul für den Party Hub fehlt.');
 
   const STORAGE_KEY = 'secret-circle-party-hub-v1';
   const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
@@ -130,9 +132,7 @@
     const sessionId = L.normalizeSessionId(source.sessionId);
     if (!sessionId) return null;
     const startedAt = Number.isNaN(Date.parse(source.startedAt)) ? new Date().toISOString() : new Date(source.startedAt).toISOString();
-    const used = Array.isArray(source.used)
-      ? [...new Set(source.used.filter(index => Number.isInteger(index) && index >= 0))].slice(0, MAX_ACTIVE_USED)
-      : [];
+    const roundState = R.normalizeResume(game, pack, source, C, MAX_ACTIVE_USED);
     return {
       gameId: game.id,
       sessionId,
@@ -141,8 +141,9 @@
       rounds: safeInteger(source.rounds, 10_000),
       score: safeInteger(source.score),
       playerIndex: safeInteger(source.playerIndex, 10_000) % players.length,
-      used,
-      current: null,
+      used: roundState.used,
+      usedByPool: roundState.usedByPool,
+      current: roundState.current,
       startedAt,
       running: Boolean(source.running),
       timer: normalizeTimerState(source.timer)
@@ -561,8 +562,7 @@
       rounds: 0,
       score: 0,
       playerIndex: 0,
-      used: [],
-      current: null,
+      used: [], usedByPool: { truth: [], dare: [] }, current: null,
       startedAt: new Date().toISOString(),
       running: false,
       timer: null
@@ -629,13 +629,9 @@
   }
 
   function pickUnused(items) {
-    if (!items.length) return null;
-    if (session.used.length >= items.length) session.used = [];
-    const available = items.map((_, index) => index).filter(index => !session.used.includes(index));
-    const index = available[randomInt(available.length)];
-    session.used.push(index);
-    persistActiveSession();
-    return items[index];
+    const selected = R.select(items, session.used, randomInt);
+    if (selected) persistActiveSession();
+    return selected?.value ?? null;
   }
 
   function sessionPlayers() {
@@ -686,6 +682,7 @@
   function nextSimpleRound() {
     session.timer = null;
     session.running = false;
+    R.clearCurrent(session);
     session.rounds += 1;
     advancePlayer();
     persistActiveSession();
@@ -722,6 +719,7 @@
     stopHubTimer();
     session.timer = null;
     session.running = false;
+    R.clearCurrent(session);
     session.rounds += 1;
     advancePlayer();
     persistActiveSession();
@@ -748,6 +746,7 @@
 
   function renderTruthDare() {
     $('#play-player').textContent = `${currentPlayer()} ist dran`;
+    if (session.current?.kind === 'truth-dare') return revealTruthDare(session.current.pool);
     $('#play-content').textContent = 'Wähle Wahrheit oder Pflicht.';
     $('#play-options').append(
       actionButton('Wahrheit', () => revealTruthDare('truth')),
@@ -758,25 +757,26 @@
 
   function revealTruthDare(type) {
     const items = C.content['truth-dare'][session.pack]?.[type] || [];
-    const value = pickUnused(items);
+    const selected = R.ensureCurrent(session, 'truth-dare', items, randomInt, type);
     clearNode($('#play-options'));
     $('#play-eyebrow').textContent = type === 'truth' ? `${session.pack} · Wahrheit` : `${session.pack} · Pflicht`;
-    $('#play-content').textContent = value || 'Keine Karte verfügbar.';
+    $('#play-content').textContent = selected?.value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Erledigt · nächste Person', nextSimpleRound));
     persistActiveSession();
     focusPlayPrimary();
   }
 
   function renderPromptGame() {
-    const value = pickUnused(contentItems(session.gameId, session.pack));
+    const selected = R.ensureCurrent(session, 'prompt', contentItems(session.gameId, session.pack), randomInt);
     if (session.gameId === 'wrong-answers') $('#play-player').textContent = `${currentPlayer()} beginnt`;
-    $('#play-content').textContent = value || 'Keine Karte verfügbar.';
+    $('#play-content').textContent = selected?.value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Nächste Karte', nextSimpleRound));
     persistActiveSession();
   }
 
   function renderChoiceGame() {
-    const pair = pickUnused(contentItems(session.gameId, session.pack));
+    const selected = R.ensureCurrent(session, 'choice', contentItems(session.gameId, session.pack), randomInt);
+    const pair = selected?.value;
     const grid = makeElement('div', 'choice-grid');
     grid.append(makeElement('div', 'choice-card', pair?.[0] || 'Option A'), makeElement('div', 'choice-card', pair?.[1] || 'Option B'));
     $('#play-content').append(grid);
