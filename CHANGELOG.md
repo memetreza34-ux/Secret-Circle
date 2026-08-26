@@ -10,8 +10,8 @@ Stand: 26. August 2026
 
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56: **quellsseitig PREPARED, real offen**
+- Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 
@@ -45,35 +45,48 @@ Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart über Re
 
 ### v55 – Advanced Integrity
 
-- `advanced-resume-guard.js` auf **Version 4** erhöht.
-- Location Spy akzeptiert im Result-State genau einen Ergebnisweg: Vote oder Guess, nicht beide zugleich.
-- Mafia verwirft non-finished Stages, wenn die Alive-Verteilung bereits eindeutig einen Gewinner bestimmt.
-- Mafia-Winner und Rollenanzahl bleiben an die tatsächliche Alive-/Pack-/Spielerstruktur gebunden.
-- `stage=finished` kann direkt gespeichert werden; die fertige Mafia-Runde wird dabei exact-once verbucht.
-- erneutes Speichern derselben Advanced-Session-ID erzeugt keinen zweiten History-/Stats-Eintrag.
-- „Neue Session beginnen“ ersetzt eine bestehende Advanced-Resume-Session erst nach expliziter Bestätigung.
-- schlägt das Entfernen des alten Active-State fehl, startet keine neue Session.
-- `tests/e2e/advanced-secret-resume.spec.js`: veralteter 8-Spieler-Klassisch-Fixture auf korrekte 2 Mafia korrigiert.
-- neues `tests/e2e/advanced-new-session-guard.spec.js` für Cancel/Confirm/Storage-Fail.
-- `tests/e2e/advanced-resume-integrity.spec.js` um Location-Hybrid- und Mafia-Terminalzustände erweitert.
-- `tests/e2e/advanced-completion-exact-once.spec.js` um den Mafia-finished-Direktabschluss erweitert.
-- neun kritische Advanced-E2Es im Syntax-Preflight.
-- neues `scripts/advanced_integrity_audit.py` in `npm run validate`.
-- AD55 als eigener realer Abnahmetest definiert.
+- `advanced-resume-guard.js` auf Version 4 erhöht.
+- Location Spy akzeptiert im Result-State genau einen Ergebnisweg: Vote oder Guess.
+- Mafia verwirft non-finished Stages bei bereits eindeutigem Alive-Winner.
+- Mafia-Winner/Rollenanzahl bleiben an Alive-/Pack-/Spielerstruktur gebunden.
+- `stage=finished` kann direct-save exact-once abgeschlossen werden.
+- bestehende Advanced-Resume-Session wird nur nach Bestätigung ersetzt; Remove-Fehler bleibt fail-closed.
+- neun kritische Advanced-E2Es + `scripts/advanced_integrity_audit.py` ergänzt.
+- AD55 als realer Abnahmetest definiert.
 
-### PWA / Offline – v55
+### v56 – Quick Session Replacement
 
-- Offline-Core auf **`secret-circle-v55` / `secret-circle-v55-staging`** erhöht.
-- Advanced Resume Guard v4 und der gehärtete Advanced Runner werden offline ausgeliefert.
-- alle früheren A11y-/Resume-/Privacy-/Backup-/Timerverträge bleiben enthalten.
+- neues `quick-session-replacement-guard.js` Version **1**.
+- `quick-loader.js` auf **Version 7** erhöht und Loader-Reihenfolge auf Ledger → Controls → Replacement Guard → Engine erweitert.
+- Guard schützt die gemeinsamen Active-Keys von Quick/Trending, Mega, Viral und Creator.
+- normaler „Spiel starten“-Pfad darf eine gespeicherte Session desselben Spiels nicht mehr still überschreiben.
+- Cross-Game-Wechsel innerhalb derselben Enginefamilie wird ebenfalls erkannt, selbst wenn der fremde Snapshot auf der aktuellen Seite nicht als Resume-Karte erscheint.
+- Same-/Cross-Game-Ersatz benötigt eine ausdrückliche Bestätigung.
+- Cancel verändert den gespeicherten Game-ID-/Session-ID-Snapshot nicht.
+- der Alt-Snapshot wird nicht vorzeitig gelöscht; ein erfolgreicher Engine-`setItem` ersetzt ihn atomar.
+- schlägt der Replacement-Write fehl und der Alt-Snapshot ist weiterhin gespeichert, blockiert der Guard den `pagehide`-Retry des fehlerhaften neuen In-Memory-Zustands und lädt kontrolliert neu.
+- `tests/quick-session-replacement-guard.test.js` ergänzt.
+- `tests/e2e/quick-session-replacement.spec.js` ergänzt: Same Game, Cross Game, Storage-Fail.
+- `tests/e2e/party-session-controls.spec.js` prüft Controls → Guard → Engine für Quick/Mega/Viral.
+- `tests/quick-loader.test.js` auf Loader v7 einschließlich Creator-Familie erweitert.
+- `scripts/quick_session_replacement_audit.py` ergänzt und in `npm run validate` aufgenommen.
+- `party-session-controls.spec.js` zusätzlich in den Syntax-Preflight aufgenommen.
+- bestehender Staging-Smoke-Dokumentvertrag repariert: Deployment/Environment/Release-Checkliste enthalten wieder die verlangten `scripts/staging_smoke.py`-/`tests/pwa-head-metadata.test.js`-/Smoke-Marker.
+- QR56 als eigener realer Abnahmetest definiert.
+
+### PWA / Offline – v56
+
+- Offline-Core auf **`secret-circle-v56` / `secret-circle-v56-staging`** erhöht.
+- Quick Replacement Guard v1 und Quick Loader v7 werden offline ausgeliefert.
+- alle früheren Advanced-/A11y-/Resume-/Privacy-/Backup-/Timerverträge bleiben enthalten.
 
 ### Build / CI
 
 - `package-lock.json` v3; Playwright exakt 1.54.2; keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- PT54- und AD55-Audits im Validate-Gate.
+- PT54-, AD55- und QR56-Audits im Validate-Gate.
 - letzter vollständig untersuchter Actions-Lauf bleibt historisch **Run #2787 auf v49**, `steps: null` / `steps: []`, ohne ausgeführten Repositorycode.
-- **v50–v55 haben keinen Runner-PASS.**
+- **v50–v56 haben keinen Runner-PASS.**
 
 ### Operator / Assets
 
@@ -83,6 +96,6 @@ Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart über Re
 
 ### Releaseentscheidung
 
-Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54/AD55**, **#14 Operator/Hosting/Legal/Support**.
+Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56**, **#14 Operator/Hosting/Legal/Support**.
 
 Öffentlicher Release: **NO_GO**.
