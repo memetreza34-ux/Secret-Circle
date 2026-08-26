@@ -2,13 +2,13 @@
 
 Stand: 26. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v55` / `secret-circle-v55-staging`**
+Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**
 
 ## 1. Eintrittskriterium
 
 Finale RC-Beta erst auf demselben unveränderten Commit mit sichtbaren GitHub-Actions-Steps, Online-`npm ci`, `npm run ci` und Chromium/Firefox/WebKit.
 
-Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v55 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v56 sind nicht runnerverifiziert.**
 
 ## 2. Mindest-Testmatrix
 
@@ -21,55 +21,48 @@ Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `3
 | HR52 | sichere Hub-Current-Runden / Truth-Dare-Pools |
 | PR53 | Paranoia Resume + Privacy |
 | PT54 | Hot-Potato-/Word-Chain-Pre-Timer-Resume |
-| **AD55** | Advanced Result-/Winner-/Resume-Integrität und Session-Ersatz |
+| AD55 | Advanced Result-/Winner-/Resume-Integrität und Session-Ersatz |
+| **QR56** | Quick-/Mega-/Viral-/Creator-Session-Ersatz |
 | PN1–PN3 | Smart Party Night |
 
-## 3. DWI / HR2 / BK51 / HR52 / PR53 / PT54
+## 3. Bestehende Spezialgates
 
-Die bestehenden Spezialgates bleiben unverändert verbindlich:
+DWI, HR2, BK51, HR52, PR53, PT54 und AD55 bleiben unverändert verbindlich. Vorhandene Source-Tests sind kein realer PASS.
 
-- DWI: 50/51 Kategorien, 200/201 Begriffe, 1,5 MB UTF-8, Import-Rollback, sequenzielles Voting-Resume.
-- HR2: Cross-Mode-/0-ms-Timer verwerfen; Resume-Loader fail-closed.
-- BK51: managed-only Restore/Rollback; Future-Daten erhalten; falsche Versionen vor Mutation ablehnen.
-- HR52: Wahrheit/Pflicht/Prompt/Choice nach Reload identisch; Truth/Dare-Pools unabhängig.
-- PR53: Paranoia gleiche Frage/gleiches Ergebnis ohne Auto-Reveal; Blur-Concealment.
-- PT54: Hot-Potato-Aufgabe/Wortketten-Buchstabe vor Timerstart identisch; Timerstart löscht `current` und übernimmt denselben Wert in den Timer-Snapshot.
+## 4. QR56 – Quick Session Replacement
 
-## 4. AD55 – Advanced Integrity
+### Same Game
 
-Mit neutralen Testdaten:
+- [ ] Quick-Family-Session starten und Session-ID notieren.
+- [ ] Seite reloaden.
+- [ ] normalen Button „Spiel starten“ drücken.
+- [ ] Verwerfbestätigung erscheint.
+- [ ] Cancel → alte Game-ID, Session-ID und Rundendaten unverändert.
+- [ ] Confirm → neue Session-ID erst nach erfolgreichem lokalen Write.
 
-### Location Spy
+### Cross Game derselben Familie
 
-- [ ] gültiger Vote-Result-State bleibt fortsetzbar.
-- [ ] gültiger Guess-Result-State bleibt fortsetzbar.
-- [ ] Result-State mit **Vote und Guess gleichzeitig** wird vor Resume verworfen.
-- [ ] gespeicherter Active-Key ist danach entfernt und die Play-Ebene bleibt geschlossen.
+- [ ] laufende Quick/Trending-Session anlegen.
+- [ ] anderes Quick/Trending-Spiel öffnen.
+- [ ] obwohl keine fremde Resume-Karte angezeigt wird, verlangt „Spiel starten“ die Verwerfbestätigung.
+- [ ] Cancel → alter Game-ID-/Session-ID-Snapshot bleibt erhalten.
+- [ ] Confirm → neuer Snapshot gehört zum neuen Spiel.
+- [ ] denselben Ablauf stichprobenartig für Mega, Viral und Creator wiederholen.
 
-### Mafia
+### Storage-Fail
 
-- [ ] bei 8 Personen/Klassisch exakt 2 Mafia, 1 Detektiv, 1 Arzt, 4 Dorfbewohner.
-- [ ] gültiger laufender Mafia-State bleibt fortsetzbar.
-- [ ] nicht-fertiger Stage mit bereits eindeutigem Dorf-/Mafia-Sieger wird verworfen.
-- [ ] `stage=finished` benötigt einen Winner, der exakt zur Alive-Verteilung passt.
-- [ ] fertige Mafia-Runde direkt über „Session beenden“ speichern → genau 1 History-Runde.
-- [ ] denselben Session-ID-Stand erneut anbieten/speichern → kein zweiter History-/Stats-Eintrag.
+- [ ] Replacement-`localStorage.setItem` gezielt fehlschlagen lassen.
+- [ ] Fehlerstatus erscheint.
+- [ ] kontrollierter Reload erfolgt.
+- [ ] alter Snapshot bleibt gespeichert.
+- [ ] kein späterer `pagehide`-Retry überschreibt den Altstand.
 
-### Gespeicherte Advanced-Session ersetzen
+### Loader / Offline
 
-- [ ] „Neue Session beginnen“ zeigt eine explizite Verwerfbestätigung.
-- [ ] Abbrechen erhält alte Session-ID und Rundenzustand unverändert.
-- [ ] Bestätigen erzeugt erst nach erfolgreichem Entfernen des Altstands eine neue Session-ID.
-- [ ] simuliertes `localStorage.removeItem`-Fehlschlagen → alte Session bleibt, keine neue Session startet, Fehlermeldung sichtbar.
+- [ ] `quick-loader.js` v7 lädt Ledger → Controls → Replacement Guard → Engine.
+- [ ] QR56 in installierter v56-PWA offline wiederholen.
 
-### Privacy / Resume
-
-- [ ] Question Imposter / Location Spy / Mafia geöffnete Geheimkarten werden nach Reload wieder geschlossen.
-- [ ] Mafia-Moderatorübersicht verlangt nach Reload erneut Bestätigung.
-- [ ] Two Truths private Eingabe, Mafia-Moderatorübersicht, Nachtphase und Detektiv-Info werden bei Fokusverlust verdeckt.
-- [ ] dieselben AD55-Fälle soweit anwendbar offline in installierter v55-PWA.
-
-Source-Verträge: `advanced-resume-guard.js` v4, `party-advanced-runner.js`, `tests/advanced-resume-guard.test.js`, neun kritische Advanced-E2Es und `scripts/advanced_integrity_audit.py`.
+Source-Verträge: `quick-session-replacement-guard.js` v1, `quick-loader.js` v7, `tests/quick-session-replacement-guard.test.js`, `tests/e2e/quick-session-replacement.spec.js`, `tests/e2e/party-session-controls.spec.js` und `scripts/quick_session_replacement_audit.py`.
 
 ## 5. Reale Gruppen / Geräte
 
@@ -85,13 +78,13 @@ Source-Verträge: `advanced-resume-guard.js` v4, `party-advanced-runner.js`, `te
 
 ## 6. PWA Update / Rollback
 
-- [ ] mindestens zwei ältere installierte Versionen auf v55/RC aktualisieren
+- [ ] mindestens zwei ältere installierte Versionen auf v56/RC aktualisieren
 - [ ] aktive Sessions und lokale Daten erhalten
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 offline prüfen
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 offline prüfen
 - [ ] Rollback/Hotfix mit neuer Cachegeneration
 
 ## 7. Beta-Freigabe
 
-Vor `REAL USER / DEVICE PASS` müssen G1–G5, DWI, HR2, BK51, HR52, PR53, PT54, **AD55**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
+Vor `REAL USER / DEVICE PASS` müssen G1–G5, DWI, HR2, BK51, HR52, PR53, PT54, AD55, **QR56**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
 
 Bis dahin bleibt die reale Durchführung offen und der öffentliche Release **NO_GO**.
