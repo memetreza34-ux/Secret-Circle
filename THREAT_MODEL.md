@@ -1,10 +1,10 @@
 # Secret Circle – Threat Model
 
-Stand: 16. August 2026
+Stand: 26. August 2026
 
 ## 1. Scope
 
-Dieses Threat Model gilt für den Januar-2027-Release der statischen offline-first PWA.
+Dieses Threat Model gilt für den Januar-2027-Release der statischen offline-first PWA. Aktueller Source-/Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**.
 
 In Scope:
 
@@ -39,6 +39,7 @@ Wenn einer dieser Bereiche später hinzukommt, muss dieses Threat Model vor Impl
 | geheime Rollen/Wörter/Fragen | Offenlegung zerstört Spiel/Privatsphäre |
 | aktive Session | darf nicht doppelt, beschädigt oder unkontrolliert fortgesetzt werden |
 | lokale Spieler-/Verlaufsdaten | dürfen nicht still verloren oder vermischt werden |
+| zukünftige/unbekannte lokale Appdaten | dürfen von einem älteren Restore nicht still gelöscht werden |
 | Creator-Inhalte | untrusted User Content |
 | Backups | enthalten lokale Appdaten im Klartext |
 | Offline-Core | muss konsistent und rollbackfähig bleiben |
@@ -76,6 +77,7 @@ Kann enthalten:
 - übergroße Strings
 - unerwartete Keys
 - unbekannte Versionen
+- syntaktisch gültige, aber semantisch falsche Storage-Wrapper
 - HTML-/Scripttext
 - widersprüchliche Sessiondaten
 
@@ -85,7 +87,7 @@ Kann entstehen durch:
 
 - manipulierte Dependency
 - falsche Dependency-Version
-- fehlendes Lockfile
+- Lockfile-/Registry-Drift
 - CI, das keinen echten Code ausführt
 - falschen Release-Commit
 
@@ -128,36 +130,56 @@ Kann entstehen durch:
 
 **Auswirkung:** kritisch
 
-**Gegenmaßnahmen:**
+**Gegenmaßnahmen v51:**
 
-- Größenlimit
+- 1,5-MB-UTF-8-Größenlimit
 - JSON-Parse
-- Format-/Versionsprüfung
-- Strukturprüfung
-- Snapshot vor Schreiben
-- Rollback bei Schreibfehler
+- Backupformat/-version
+- exakte aktuelle Key-Allowlist
+- Root-Typ-Prüfung
+- key-spezifische Storage-Version und minimale Pflichtwrapper
+- vollständige Validierung vor Mutation
+- Snapshot der managed Keys
+- managed-only Restore/Rollback
 
-**Rest-Risiko:** Complete Backup validiert aktuell primär generische Storage-Einträge; semantische Consumer-Validierung bleibt wichtig.
+**Rest-Risiko:** tiefe Fachsemantik wird weiterhin von den jeweiligen Consumern normalisiert; reale Browser-/Quota-Evidence bleibt nötig.
+
+**Releasegate:** BK51 auf echten Browsern/PWA + Cross-Browser.
 
 ### TM-03 – Backup-Schema-Drift
 
-**Risiko:** Registry und konkreter Importpfad verwenden unterschiedliche Konstanten/Regeln.
+**Risiko:** Registry, Runtime, Tests und Dokumentation verwenden unterschiedliche Konstanten/Regeln.
 
 **Auswirkung:** hoch
 
-**Beobachtung:** `backup-schema-registry.js` ist zentral vorhanden; `party-data-tools.js` dupliziert derzeit Format-/Versions-/Limitwerte.
+**Status:** **CLOSED IN CODE / CI-Evidence offen.**
 
-**Maßnahme:** Registry-Nutzung oder verbindlicher Drift-Contract.
+**Gegenmaßnahmen:**
 
-### TM-04 – beliebige `secret-circle-*` Keys im Komplettimport
+- `backup-schema-registry.js` Version 2 als zentrale Quelle
+- `party-data-tools.js` Version 6 konsumiert diesen Vertrag
+- keine duplizierten Complete-Format-/Limitkonstanten in der Runtime
+- `tests/backup-schema-registry.test.js`
+- `scripts/backup_contract_audit.py` im normalen `npm run validate`
 
-**Risiko:** manipulierte Sicherung führt neue/unerwartete Namespaces ein.
+### TM-04 – älterer Restore besitzt unbekannte oder zukünftige Storage-Daten
 
-**Auswirkung:** mittel-hoch
+**Risiko:** Ein älteres Complete Backup importiert, überschreibt oder löscht einen zukünftigen Namespace oder eine neue Storage-Version.
 
-**Gegenmaßnahmen aktuell:** Prefix, Länge, Count, Value-Byte-Limit, JSON-Syntax.
+**Auswirkung:** kritisch
 
-**Entscheidung offen:** bekannte Namespace-Allowlist vs. bewusst generische Zukunftskompatibilität + strikte Consumer-Validierung.
+**Status:** **CLOSED IN CODE / BK51-Evidence offen.**
+
+**Gegenmaßnahmen v51:**
+
+- Restore besitzt exakt 16 aktuell registrierte Storage-Keys
+- keine generische `secret-circle-party-*`-Wildcard
+- zukünftige Versionen wie `secret-circle-party-hub-v2` sind nicht managed
+- unbekannte/future Keys werden nicht importiert
+- unbekannte/future lokale Keys werden beim Restore/Rollback nicht gelöscht
+- `tests/e2e/backup-forward-compat.spec.js`
+
+Die ausdrücklich bestätigte Funktion „Alle lokalen Daten löschen“ bleibt davon getrennt und darf bewusst alle `secret-circle-*`-Reste löschen.
 
 ### TM-05 – private Karte bleibt bei Appwechsel sichtbar
 
@@ -167,10 +189,9 @@ Kann entstehen durch:
 
 **Gegenmaßnahmen:**
 
-- `privacy-guard.js`
-- `visibilitychange`
-- `blur`
-- `pagehide`
+- `privacy-guard.js` v4
+- `visibilitychange`, `blur`, `pagehide`, unterstütztes Freeze
+- geheime DOM-Texte werden geleert
 - Fokus zurück auf sichere Reveal-Aktion
 
 **Rest-Risiko:** OS-Screenshot/App-Switcher-Verhalten kann browserabhängig sein.
@@ -188,8 +209,10 @@ Kann entstehen durch:
 - sichere Resume-Verträge
 - private Zustände rekonstruieren gedeckt
 - bewusste Sessionfortsetzung
+- Hub Resume Guard v2
+- v50: Resume-Aktionen während asynchroner Guard-Prüfung fail-closed gesperrt
 
-**Releasegate:** E2E + reale Übergabetests.
+**Releasegate:** E2E + reale Übergabetests HR2.
 
 ### TM-07 – doppelte Sessioncompletion
 
@@ -241,6 +264,7 @@ Kann entstehen durch:
 - alter Snapshot
 - Rollback
 - klare Fehlermeldung
+- v51 Complete-Restore rollt nur managed Keys zurück und lässt Future-Daten unangetastet
 
 ### TM-11 – Service-Worker-Update zerstört funktionierende Offlineversion
 
@@ -256,7 +280,7 @@ Kann entstehen durch:
 - alter Core bleibt bis erfolgreicher Promotion
 - aktive Sessions werden erkannt
 
-**Releasegate:** alte→neue Versionen + fehlgeschlagene Promotion real testen.
+**Releasegate:** mindestens zwei echte Altstände → v51/RC + Rollback real testen.
 
 ### TM-12 – bösartige/kompromittierte Dependency
 
@@ -264,15 +288,16 @@ Kann entstehen durch:
 
 **Auswirkung:** kritisch
 
-**Gegenmaßnahmen geplant:**
+**Gegenmaßnahmen im Repository:**
 
 - minimale Dependencies
-- `package-lock.json`
+- `package-lock.json` v3
 - `npm ci`
-- keine unnötigen Install-Skripte
-- Dependency-/Lizenzprüfung
+- keine npm-Runtime-Dependencies
+- Playwright exakt 1.54.2
+- Lockfile-/Third-Party-/Lizenzverträge
 
-**Aktueller Status:** Lockfile-Gate offen.
+**Status:** CLOSED IN CODE / echter Online-Install und finaler Vulnerability-Review offen.
 
 ### TM-13 – CI zeigt „grün“, führt aber keinen Code aus
 
@@ -280,9 +305,9 @@ Kann entstehen durch:
 
 **Auswirkung:** kritisch
 
-**Aktueller realer Blocker:** Jobs wurden mit `runner_id: 0` und `steps: []` beobachtet.
+**Aktueller realer Blocker:** historisch letzter vollständig untersuchter App-Lauf ist Run #2787 auf v49 mit `steps: []`.
 
-**Gegenmaßnahme:** keine Freigabe ohne sichtbaren Checkout und echte Schritte.
+**Gegenmaßnahme:** keine Freigabe ohne sichtbaren Checkout und echte Schritte. v50/v51 besitzen keinen Runner-PASS.
 
 ### TM-14 – fremde Fan-/Markeninhalte erzeugen Rechts-/Trustproblem
 
@@ -303,6 +328,23 @@ Kann entstehen durch:
 **Auswirkung:** mittel
 
 **Gegenmaßnahme:** Sicherheitsmodell klar dokumentieren: lokale PWA schützt gegen unbeabsichtigte Offenlegung im normalen Pass-and-Play-Flow, nicht gegen den Gerätebesitzer mit DevTools/Storagezugriff.
+
+### TM-16 – syntaktisch gültiger managed Backupwert trägt falsche Storage-Version/Pflichtstruktur
+
+**Risiko:** Angreifer oder beschädigte Datei verwendet einen erlaubten heutigen Key, aber einen semantisch falschen Wrapper, zum Beispiel Hub v1 mit `{version:999}`.
+
+**Auswirkung:** kritisch
+
+**Status:** **CLOSED IN CODE / BK51-Evidence offen.**
+
+**Gegenmaßnahmen:**
+
+- zentrale per-Key-Store-Contracts in `backup-schema-registry.js`
+- Root-Typ
+- erwartete Storage-Version
+- minimale Pflichtfelder
+- Ablehnung vor Snapshot-/Restore-Mutation
+- Unit- und Browsercontract
 
 ## 6. Abuse-/Misuse-Fälle
 
@@ -326,13 +368,17 @@ Echtgerätetest erforderlich; Browser/PWA-Verhalten kann nicht allein aus DOM-Ev
 
 Backup enthält lokale Daten im Klartext.
 
-Nutzer muss vor Export/Weitergabe verstehen, dass Sicherungsdatei nicht verschlüsselt ist.
+Nutzer muss vor Export/Weitergabe verstehen, dass die Sicherungsdatei nicht verschlüsselt ist.
 
 ### PT-03 – zukünftiger externer Dienst
 
 Neue Netzwerkfunktion könnte Datenschutzversprechen verletzen.
 
 Daher: kein neuer `connect-src`/Remote-Service ohne Product + Privacy + Threat Review.
+
+### PT-04 – ältere Restore-Version zerstört zukünftige lokale Daten
+
+v51 verhindert dies source-seitig durch exakte aktuelle Key-Eigentümerschaft. Reale BK51-/Upgrade-Evidence bleibt Pflicht.
 
 ## 8. Residual Risks, die wir akzeptieren können
 
@@ -348,24 +394,29 @@ Diese Risiken dürfen nicht dazu führen, dass manipulierte Daten Scriptcode aus
 ## 9. Release-Security-Gates
 
 - [ ] keine offenen kritischen/hohen Securitybugs
-- [ ] XSS-/Creator-Input-Tests grün
-- [ ] Import/Quota/Rollback grün
-- [ ] private Reveal-/Reload-Wege grün
+- [ ] XSS-/Creator-Input-Tests real grün
+- [ ] Import/Quota/BK51-Rollback real grün
+- [ ] private Reveal-/Reload-Wege real grün
+- [ ] HR2 Hub Resume v2/v50 real grün
 - [ ] echte Android/iPhone-Privacy-Unterbrechung geprüft
 - [ ] PWA-Update/Rollback real geprüft
-- [ ] Lockfile + `npm ci`
-- [ ] Dependency-/Lizenzprüfung
+- [x] Lockfile + `npm ci` als Repositoryvertrag
+- [ ] Online-`npm ci` auf funktionierendem Runner
+- [ ] Dependency-/Lizenzprüfung auf unverändertem RC final
 - [ ] CI führt echten Code aus
 - [ ] Branch Protection
 - [ ] Securitykontakt/Incidentprozess final
-- [ ] Backup-Registry-Driftentscheidung geschlossen
-- [ ] Complete-Backup-Namespaceentscheidung geschlossen oder bewusst akzeptiert
+- [x] Backup-Registry-Drift im Sourcevertrag geschlossen
+- [x] generischer Complete-Backup-Namespace im Sourcevertrag geschlossen
+- [x] falsche interne Storage-Version/Pflichtstruktur im Sourcevertrag blockiert
+- [ ] BK51 + Cross-Browser + PWA-Upgrade auf unverändertem RC bestanden
 
 ## 10. Review-Regel
 
 Dieses Threat Model wird aktualisiert, wenn mindestens eines davon passiert:
 
-- neue persistierte Daten
+- neue persistierte Daten oder neuer Storage-Key
+- Änderung einer Storage-Version
 - neue Dependency
 - neuer Netzwerkzugriff
 - neue Browserberechtigung
@@ -374,3 +425,5 @@ Dieses Threat Model wird aktualisiert, wenn mindestens eines davon passiert:
 - Backend/Auth/Cloud
 - öffentliche Creator-/Contentfreigabe
 - Store-/Native-App
+
+**Wichtig für v51+:** Jeder neue persistierte Key wird nicht automatisch vom heutigen Complete Restore besessen. Eine Aufnahme in die Registry benötigt expliziten Storage-Contract, Tests, Backup-Audit-Anpassung und eine Migration-/Forward-Compatibility-Entscheidung.
