@@ -25,6 +25,8 @@ function snapshot(gameId, advanced, pack = 'Klassisch') {
   };
 }
 
+assert.equal(guard.version, 4);
+
 const twoTruths = snapshot('two-truths', {
   stage: 'result',
   author: 'Alex',
@@ -66,6 +68,10 @@ assert.equal(guard.validateSnapshot(locationSpy, 'location-spy'), true);
 const inconsistentLocation = structuredClone(locationSpy);
 inconsistentLocation.session.advanced.correct = false;
 assert.equal(guard.validateSnapshot(inconsistentLocation, 'location-spy'), false);
+const hybridLocation = structuredClone(locationSpy);
+hybridLocation.session.advanced.guess = 'Bahnhof';
+hybridLocation.session.advanced.spyCorrect = true;
+assert.equal(guard.validateSnapshot(hybridLocation, 'location-spy'), false, 'vote and guess result paths must be mutually exclusive');
 
 const roles = {
   Alex: 'Mafia', Sam: 'Mafia', Mika: 'Detektiv', Lina: 'Arzt',
@@ -93,6 +99,10 @@ assert.equal(guard.validateSnapshot(forgedMafiaWinner, 'mafia'), false);
 const forgedRoleCount = structuredClone(mafia);
 forgedRoleCount.session.advanced.roles.Sara = 'Mafia';
 assert.equal(guard.validateSnapshot(forgedRoleCount, 'mafia'), false);
+const terminalNight = structuredClone(mafia);
+terminalNight.session.advanced.stage = 'night';
+delete terminalNight.session.advanced.winner;
+assert.equal(guard.validateSnapshot(terminalNight, 'mafia'), false, 'a decisive alive state cannot resume into another Mafia phase');
 
 assert.deepEqual(guard.expectedRoleCounts(8, 'Klassisch'), {
   Mafia: 2,
@@ -104,9 +114,12 @@ assert.deepEqual(guard.expectedRoleCounts(8, 'Klassisch'), {
 
 console.log(JSON.stringify({
   advancedResumeGuard: 'PASS',
+  version: guard.version,
   guardedModes: ['two-truths', 'question-imposter', 'location-spy', 'mafia'],
   strictGameIdMatch: true,
   outcomeConsistency: true,
+  locationResultPathExclusive: true,
   mafiaWinnerIntegrity: true,
-  mafiaRoleCountIntegrity: true
+  mafiaRoleCountIntegrity: true,
+  mafiaTerminalStageIntegrity: true
 }, null, 2));
