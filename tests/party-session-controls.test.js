@@ -8,17 +8,9 @@ function node() {
   const classes = new Set();
   const attributes = new Map();
   return {
-    textContent: '',
-    hidden: false,
-    disabled: false,
-    inert: false,
-    href: '',
-    dataset: {},
+    textContent: '', hidden: false, disabled: false, inert: false, href: '', dataset: {},
     classList: {
-      toggle(name, value) {
-        if (value) classes.add(name);
-        else classes.delete(name);
-      },
+      toggle(name, value) { if (value) classes.add(name); else classes.delete(name); },
       contains(name) { return classes.has(name); }
     },
     addEventListener(type, callback) { listeners.set(type, callback); },
@@ -29,13 +21,77 @@ function node() {
   };
 }
 
-const nodes = Object.fromEntries([
-  '#quick-play', '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay',
-  '#quick-next-game', '#quick-pause-overlay', '#quick-pause-state', '#quick-content',
-  '#quick-controls', '#quick-actions'
-].map(selector => [selector, node()]));
-const documentRef = { querySelector(selector) { return nodes[selector] || null; } };
+function createStorage(initial = {}) {
+  const values = new Map(Object.entries(initial));
+  return {
+    getItem(key) { return values.has(key) ? values.get(key) : null; },
+    setItem(key, value) { values.set(key, String(value)); },
+    removeItem(key) { values.delete(key); },
+    dump(key) { return values.get(key) ?? null; }
+  };
+}
 
+function createWindow(storage) {
+  const listeners = new Map();
+  return {
+    localStorage: storage,
+    navigator: { vibrate() {} },
+    addEventListener(type, callback) {
+      if (!listeners.has(type)) listeners.set(type, []);
+      listeners.get(type).push(callback);
+    },
+    dispatch(type) { for (const callback of listeners.get(type) || []) callback({ type }); }
+  };
+}
+
+function createNodes() {
+  return Object.fromEntries([
+    '#quick-play', '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay',
+    '#quick-next-game', '#quick-pause-overlay', '#quick-pause-state', '#quick-content',
+    '#quick-controls', '#quick-actions'
+  ].map(selector => [selector, node()]));
+}
+
+const catalogGames = {
+  one: { id: 'one', status: 'playable' },
+  two: { id: 'two', status: 'playable' },
+  viral: { id: 'viral', status: 'playable' },
+  custom: { id: 'custom', status: 'playable' },
+  hidden: { id: 'hidden', status: 'planned' }
+};
+const catalog = {
+  trendingGameIds: ['one', 'hidden'],
+  quickGameIds: ['one'],
+  megaGameIds: ['two'],
+  viralGameIds: ['viral'],
+  createdGameIds: ['custom'],
+  getGame(id) { return catalogGames[id] || null; }
+};
+
+assert.equal(Controls.version, 2);
+assert.equal(Controls.tickMilliseconds, 250);
+assert.equal(Controls.timerStoreKey, 'secret-circle-party-quick-timers-v1');
+assert.equal(Controls.timerStoreVersion, 1);
+assert.deepEqual(Controls.timerFamilies, ['quick', 'mega', 'viral', 'created']);
+assert.equal(Controls.familyForGame(catalog, 'one'), 'quick');
+assert.equal(Controls.familyForGame(catalog, 'two'), 'mega');
+assert.equal(Controls.familyForGame(catalog, 'viral'), 'viral');
+assert.equal(Controls.familyForGame(catalog, 'custom'), 'created');
+assert.equal(Controls.familyForGame(catalog, 'missing'), null);
+assert.equal(Controls.formatMilliseconds(0), '0:00');
+assert.equal(Controls.formatMilliseconds(1), '0:01');
+assert.equal(Controls.formatMilliseconds(61_000), '1:01');
+assert.deepEqual(Controls.orderedGameIds(catalog), ['one', 'two', 'viral', 'custom']);
+assert.equal(Controls.nextGameId(catalog, 'one'), 'two');
+assert.equal(Controls.nextGameId(catalog, 'two'), 'viral');
+assert.equal(Controls.nextGameHref(catalog, 'one'), 'quick-play.html?game=two');
+assert.equal(Controls.normalizeTimerSnapshot({ gameId: 'one', sessionId: 's1', round: 1, phase: 'running', durationMs: 5000, remainingMs: 3000 }).remainingMs, 3000);
+assert.equal(Controls.normalizeTimerSnapshot({ gameId: 'one', sessionId: 's1', round: 1, phase: 'running', durationMs: 5000, remainingMs: 6000 }), null);
+
+const nodes = createNodes();
+const documentRef = { querySelector(selector) { return nodes[selector] || null; } };
+const storage = createStorage();
+const windowRef = createWindow(storage);
 let currentTime = 0;
 let intervalId = 0;
 const intervals = new Map();
@@ -44,32 +100,16 @@ let aborted = 0;
 let replayed = 0;
 let ended = 0;
 let vibrations = 0;
-
-const catalogGames = {
-  one: { id: 'one', status: 'playable' },
-  two: { id: 'two', status: 'playable' },
-  hidden: { id: 'hidden', status: 'planned' }
-};
-const catalog = {
-  trendingGameIds: ['one', 'hidden'],
-  quickGameIds: ['one'],
-  megaGameIds: ['two'],
-  viralGameIds: [],
-  createdGameIds: [],
-  getGame(id) { return catalogGames[id] || null; }
-};
+windowRef.navigator.vibrate = () => { vibrations += 1; };
 
 const controller = Controls.createController({
   documentRef,
-  windowRef: { navigator: { vibrate() { vibrations += 1; } } },
+  windowRef,
+  storageRef: storage,
   catalog,
   gameId: 'one',
   now: () => currentTime,
-  setIntervalFn(callback) {
-    intervalId += 1;
-    intervals.set(intervalId, callback);
-    return intervalId;
-  },
+  setIntervalFn(callback) { intervalId += 1; intervals.set(intervalId, callback); return intervalId; },
   clearIntervalFn(id) { intervals.delete(id); },
   confirmFn: () => true,
   onSkip() { skipped += 1; },
@@ -77,19 +117,9 @@ const controller = Controls.createController({
   onReplay() { replayed += 1; }
 });
 
-assert.equal(Controls.version, 1);
-assert.equal(Controls.tickMilliseconds, 250);
-assert.equal(Controls.formatMilliseconds(0), '0:00');
-assert.equal(Controls.formatMilliseconds(1), '0:01');
-assert.equal(Controls.formatMilliseconds(61_000), '1:01');
-assert.deepEqual(Controls.orderedGameIds(catalog), ['one', 'two']);
-assert.equal(Controls.nextGameId(catalog, 'one'), 'two');
-assert.equal(Controls.nextGameId(catalog, 'two'), 'one');
-assert.equal(Controls.nextGameHref(catalog, 'one'), 'quick-play.html?game=two');
-assert.equal(nodes['#quick-next-game'].dataset.nextGameId, 'two');
-
 assert.equal(controller.isSessionActive(), false);
 assert.equal(nodes['#quick-pause'].disabled, true);
+assert.equal(nodes['#quick-next-game'].dataset.nextGameId, 'two');
 controller.setSessionActive(true);
 assert.equal(nodes['#quick-pause'].disabled, false);
 
@@ -143,11 +173,101 @@ assert.equal(controller.isPaused(), false);
 assert.equal(nodes['#quick-pause-overlay'].hidden, true);
 assert.equal(nodes['#quick-content'].inert, false);
 
+// v57: running Quick-family timers persist only technical remaining-time metadata on pagehide.
+const resumeStorage = createStorage({
+  'secret-circle-party-quick-active-v1': JSON.stringify({
+    version: 1, gameId: 'one', sessionId: 'session-one', round: 1, phase: 'running', completedRecorded: false
+  })
+});
+let resumeTime = 0;
+let resumeIntervalId = 0;
+const resumeIntervals = new Map();
+const resumeNodes1 = createNodes();
+const resumeWindow1 = createWindow(resumeStorage);
+const resumeController1 = Controls.createController({
+  documentRef: { querySelector(selector) { return resumeNodes1[selector] || null; } },
+  windowRef: resumeWindow1,
+  storageRef: resumeStorage,
+  catalog,
+  gameId: 'one',
+  now: () => resumeTime,
+  setIntervalFn(callback) { resumeIntervalId += 1; resumeIntervals.set(resumeIntervalId, callback); return resumeIntervalId; },
+  clearIntervalFn(id) { resumeIntervals.delete(id); }
+});
+resumeController1.setSessionActive(true);
+const runningNode = node();
+resumeController1.countdown(5, runningNode, () => {});
+resumeTime = 2_000;
+[...resumeIntervals.values()][0]();
+assert.equal(resumeController1.remainingMilliseconds(), 3_000);
+resumeWindow1.dispatch('pagehide');
+let persistedStore = JSON.parse(resumeStorage.dump(Controls.timerStoreKey));
+assert.equal(persistedStore.version, 1);
+assert.equal(persistedStore.snapshots.quick.gameId, 'one');
+assert.equal(persistedStore.snapshots.quick.sessionId, 'session-one');
+assert.equal(persistedStore.snapshots.quick.round, 1);
+assert.equal(persistedStore.snapshots.quick.phase, 'running');
+assert.equal(persistedStore.snapshots.quick.durationMs, 5_000);
+assert.equal(persistedStore.snapshots.quick.remainingMs, 3_000);
+resumeController1.stopTimer();
+assert.notEqual(resumeStorage.dump(Controls.timerStoreKey), null, 'engine pagehide stop must preserve the captured snapshot');
+
+const resumeNodes2 = createNodes();
+const resumeWindow2 = createWindow(resumeStorage);
+const resumeIntervals2 = new Map();
+let resumeIntervalId2 = 0;
+const resumeController2 = Controls.createController({
+  documentRef: { querySelector(selector) { return resumeNodes2[selector] || null; } },
+  windowRef: resumeWindow2,
+  storageRef: resumeStorage,
+  catalog,
+  gameId: 'one',
+  now: () => 0,
+  setIntervalFn(callback) { resumeIntervalId2 += 1; resumeIntervals2.set(resumeIntervalId2, callback); return resumeIntervalId2; },
+  clearIntervalFn(id) { resumeIntervals2.delete(id); }
+});
+resumeController2.setSessionActive(true);
+const resumedNode = node();
+resumeController2.countdown(5, resumedNode, () => {});
+assert.equal(resumedNode.textContent, '0:03');
+assert.equal(resumeController2.remainingMilliseconds(), 3_000);
+assert.equal(resumeStorage.dump(Controls.timerStoreKey), null, 'matching snapshot is consumed once');
+resumeController2.stopTimer();
+
+// Stale session/round snapshots never alter a new or different active session.
+resumeStorage.setItem(Controls.timerStoreKey, JSON.stringify({
+  version: 1,
+  snapshots: {
+    quick: { gameId: 'one', sessionId: 'other-session', round: 1, phase: 'running', durationMs: 5000, remainingMs: 1000 }
+  }
+}));
+const staleNodes = createNodes();
+const staleController = Controls.createController({
+  documentRef: { querySelector(selector) { return staleNodes[selector] || null; } },
+  windowRef: createWindow(resumeStorage),
+  storageRef: resumeStorage,
+  catalog,
+  gameId: 'one',
+  now: () => 0,
+  setIntervalFn: () => 1,
+  clearIntervalFn: () => {}
+});
+staleController.setSessionActive(true);
+const staleNode = node();
+staleController.countdown(5, staleNode, () => {});
+assert.equal(staleNode.textContent, '0:05');
+assert.equal(staleController.remainingMilliseconds(), 5_000);
+assert.equal(resumeStorage.dump(Controls.timerStoreKey), null, 'stale snapshot is discarded');
+
 console.log(JSON.stringify({
   ok: true,
+  controllerVersion: Controls.version,
   pausableTimer: true,
   pauseBlocksRoundActions: true,
   sharedAbortReplaySkip: true,
   deterministicNextGame: true,
-  accessibilityState: true
+  accessibilityState: true,
+  quickFamilyTimerResume: true,
+  timerSnapshotPromptFree: true,
+  staleTimerSnapshotRejected: true
 }, null, 2));
