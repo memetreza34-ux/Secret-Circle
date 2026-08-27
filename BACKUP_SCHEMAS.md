@@ -2,7 +2,7 @@
 
 Stand: 27. August 2026  
 Vertragsregister: `backup-schema-registry.js` Version 2  
-Aktueller Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**
+Aktueller Offline-Core: **`secret-circle-v58` / `secret-circle-v58-staging`**
 
 ## Gemeinsame Regeln
 
@@ -66,6 +66,8 @@ Wildcard-Verträge wie `secret-circle-party-<name>-v<version>` sind absichtlich 
 
 Der Store enthält **keinen Prompt, keine Antwort, keine Mission, keine Identität und keinen geheimen Karteninhalt**. Ein Timer-Snapshot darf nur wiederverwendet werden, wenn Game-ID, Session-ID, Runde, Phase und ursprüngliche Dauer exakt zur aktiven Session passen. Stale Snapshots werden verworfen.
 
+v58 ändert das Backup-Dateiformat nicht. Die BFCache-Härtung nutzt denselben promptfreien Timer-Store und verändert ausschließlich den Browser-Lifecycle bei `pageshow.persisted`.
+
 ### Restore-Vertrag seit Offline-Core v51
 
 - Complete Restore besitzt nur die vom Registry-Schema explizit verwalteten aktuellen Keys.
@@ -110,7 +112,7 @@ Der Store enthält **keinen Prompt, keine Antwort, keine Mission, keine Identit�
 
 ## Migration
 
-Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiformats**, nicht bei jeder Appversion. v51 verschärfte Restore-Sicherheit; v57 ergänzt einen weiteren exakt verwalteten aktuellen Storage-Key, ohne das Backup-Dateiformat Version 1 zu ändern.
+Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiformats**, nicht bei jeder Appversion. v51 verschärfte Restore-Sicherheit; v57 ergänzt einen weiteren exakt verwalteten aktuellen Storage-Key; v58 ändert nur den BFCache-Lifecycle. Das Backup-Dateiformat bleibt Version 1.
 
 Eine zukünftige neue Backupversion benötigt:
 
@@ -126,10 +128,11 @@ Eine zukünftige neue Backupversion benötigt:
 - `tests/backup-schema-registry.test.js`: Registry Version 2, exakte 17-Key-Allowlist, Key-Eigentümer, Root-/Storage-Version-/Wrapper-Verträge einschließlich Quick-Timer-Store
 - `tests/e2e/party-data.spec.js`: Export/Import, Future-Key-Erhalt, ungültige JSON-/Primitive-/Storage-Version-Werte, Write-Rollback, vollständige Löschung
 - `tests/e2e/backup-forward-compat.spec.js`: zukünftiger Namespace und `party-hub-v2` überleben heutigen Restore; Future-Version-Import wird abgelehnt
-- `tests/party-session-controls.test.js` + `tests/e2e/quick-timer-resume.spec.js`: Timer-Snapshot-Konsistenz und Stale-Reject
+- `tests/party-session-controls.test.js` + `tests/e2e/quick-timer-resume.spec.js`: Timer-Snapshot-Konsistenz, Stale-Reject und BFCache-Lifecycle
 - `scripts/backup_contract_audit.py`: Registry/Runtime/Test/Offline-/Dokumentationsgrenze
 - `scripts/quick_timer_resume_audit.py`: QT57-Timerresume-Vertrag
-- `tests/service-worker.test.js`: Registry und gemeinsame Session-Controls im v57-Offline-Core
+- `scripts/quick_bfcache_resume_audit.py`: BF58-Browser-Lifecycle-Vertrag
+- `tests/service-worker.test.js`: Registry und gemeinsame Session-Controls im v58-Offline-Core
 
 ## Release-Gates
 
@@ -143,6 +146,7 @@ Eine zukünftige neue Backupversion benötigt:
 - [ ] Klartext, primitive JSON-Wurzeln und falsche Storage-Versionen werden vor Mutation abgelehnt
 - [ ] Quick-Timer-Store enthält nur technische Metadaten
 - [ ] Quick-Timer-Snapshot wird nur bei exakt passender Session/Runde/Phase/Dauer verwendet
+- [ ] BFCache-Rückkehr verändert den Timer-Store nur gemäß BF58-Vertrag
 - [ ] Validierung vollständig vor Schreiben
 - [ ] Write-Rollback simuliert
 - [ ] vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces
