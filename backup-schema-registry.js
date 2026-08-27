@@ -7,6 +7,7 @@
 
   const VERSION = 2;
   const MAX_FILE_BYTES = 1_500_000;
+  const QUICK_TIMER_FAMILIES = new Set(['quick', 'mega', 'viral', 'created']);
   const COMPLETE_STORAGE_KEYS = Object.freeze([
     'secret-circle-active-v7',
     'secret-circle-custom-v7',
@@ -19,6 +20,7 @@
     'secret-circle-party-mega-active-v1',
     'secret-circle-party-viral-active-v1',
     'secret-circle-party-created-active-v1',
+    'secret-circle-party-quick-timers-v1',
     'secret-circle-party-created-games-v1',
     'secret-circle-party-custom-packs-v1',
     'secret-circle-party-night-v1',
@@ -45,8 +47,6 @@
       maximumValueBytes: 1_000_000,
       storagePrefix: 'secret-circle-',
       allowedKeys: COMPLETE_STORAGE_KEYS,
-      // Backward-compatible descriptor name for older audits/UI. Values are exact,
-      // not wildcard families, so a future storage version survives an older restore.
       allowedKeyFamilies: COMPLETE_STORAGE_KEYS,
       scope: 'Alle aktuell anerkannten lokalen Secret-Circle-Daten',
       extension: '.json'
@@ -74,6 +74,20 @@
 
   function isObject(value) {
     return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  function validQuickTimerSnapshot(value) {
+    if (!isObject(value)) return false;
+    const gameId = String(value.gameId ?? '');
+    const sessionId = String(value.sessionId ?? '');
+    const phase = String(value.phase ?? '');
+    const round = Number(value.round);
+    const durationMs = Number(value.durationMs);
+    const remainingMs = Number(value.remainingMs);
+    return Boolean(gameId && sessionId && phase)
+      && Number.isInteger(round) && round >= 1 && round <= 20
+      && Number.isInteger(durationMs) && durationMs >= 1 && durationMs <= 3_600_000
+      && Number.isInteger(remainingMs) && remainingMs >= 1 && remainingMs <= durationMs;
   }
 
   function get(id) {
@@ -133,6 +147,10 @@
       case 'secret-circle-party-viral-active-v1':
       case 'secret-circle-party-created-active-v1':
         return isObject(value) && value.version === 1 && typeof value.gameId === 'string';
+      case 'secret-circle-party-quick-timers-v1': {
+        if (!isObject(value) || value.version !== 1 || !isObject(value.snapshots)) return false;
+        return Object.entries(value.snapshots).every(([family, snapshot]) => QUICK_TIMER_FAMILIES.has(family) && validQuickTimerSnapshot(snapshot));
+      }
       case 'secret-circle-party-created-games-v1':
         return isObject(value) && value.version === 1 && Array.isArray(value.games);
       case 'secret-circle-party-custom-packs-v1':
