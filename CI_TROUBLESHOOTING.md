@@ -1,6 +1,6 @@
 # Secret Circle – CI Troubleshooting
 
-Stand: 26. August 2026
+Stand: 27. August 2026
 
 ## Aktueller Befund
 
@@ -15,7 +15,7 @@ Letzter vollständig untersuchter App-CI-Befund bleibt der historische **v49 Run
 - separate Step-Abfrage `steps: []`
 - kein Checkout / Node-/Python-Setup / npm / Test / Playwright / Repositorycode ausgeführt
 
-Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v56**. **v50–v56 besitzen keinen echten Runner-PASS.**
+Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v57**. **v50–v57 besitzen keinen echten Runner-PASS.**
 
 ## Isolierter Hosted-Runner-Probe
 
@@ -25,23 +25,26 @@ Run #7: Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`, Run-ID `32650097848`, J
 
 Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-Code als **unmittelbare Ursache dieses Pre-Step-Fehlers** ausgeschlossen. Die exakte externe Ursache ist nicht bewiesen. Prüfflächen bleiben Hosted-Runner-Zuteilung, Account/Billing/Budget, Repo-/Org-/Enterprise-Policy und GitHub-seitige Runner-Störung.
 
-## Aktueller Buildvertrag – v56
+## Aktueller Buildvertrag – v57
 
-- Offline-Core `secret-circle-v56` / `secret-circle-v56-staging`
+- Offline-Core `secret-circle-v57` / `secret-circle-v57-staging`
 - v50 Hub Resume Loader fail-closed
 - v51 Complete Backup Registry v2 + PartyDataTools v6
 - v52 Safe Hub Current
 - v53 Paranoia Resume/Privacy
 - v54 PT54 Pre-Timer Resume + `hub_prestart_resume_audit.py`
 - v55 Advanced Resume Guard v4 + `advanced_integrity_audit.py`
-- **v56 `quick-session-replacement-guard.js` v1**
-- **v56 `quick-loader.js` v7: Ledger → Controls → Replacement Guard → Engine**
-- **Same-/Cross-Game Quick-Family-Ersatz nur nach Bestätigung**
-- **Replacement-Write-Fehler erhält den alten Snapshot fail-closed**
-- `tests/quick-session-replacement-guard.test.js` in `npm test`
-- `tests/e2e/quick-session-replacement.spec.js` und `tests/e2e/party-session-controls.spec.js` im Syntax-Preflight
-- `scripts/quick_session_replacement_audit.py` in `npm run validate`
-- bestehender Staging-Smoke-Dokumentvertrag wieder synchronisiert
+- v56 Quick Replacement Guard v1 + Quick Loader v7 + `quick_session_replacement_audit.py`
+- **v57 `party-session-controls.js` Version 2**
+- **v57 Quick/Mega/Viral/Creator Timer-Restzeit über Reload**
+- **promptfreier Store `secret-circle-party-quick-timers-v1`**
+- **Resume nur bei exakt passender Game-ID + Session-ID + Runde + Phase + Ausgangsdauer**
+- **stale/fremde Timer-Snapshots werden verworfen**
+- Complete Backup verwaltet **17 exakte aktuelle Storage-Keys** einschließlich Timer-Store
+- `tests/party-session-controls.test.js` in `npm test`
+- `tests/e2e/quick-timer-resume.spec.js` im Syntax-Preflight
+- `scripts/quick_timer_resume_audit.py` in `npm run validate`
+- `scripts/backup_contract_audit.py` und `scripts/architecture_audit.py` erzwingen QT57 ebenfalls
 - `package-lock.json` v3
 - Playwright 1.54.2 exakt
 - CI/Cross-Browser verwenden `npm ci`
@@ -74,8 +77,8 @@ Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere reposit
 2. Online-`npm ci` / Integrity-Download
 3. `npm run check`
 4. `npm test`
-5. `npm run validate` inklusive PT54 / AD55 / **QR56** / Backup / A11y / Architecture / Operator / Release-Audits
-6. Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/**QR56**
+5. `npm run validate` inklusive PT54 / AD55 / QR56 / **QT57** / Backup / A11y / Architecture / Operator / Release-Audits
+6. Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/**QT57**
 7. vollständiges `npm run ci`
 8. Cross-Browser auf demselben RC-Commit
 9. unveränderten Commit vollständig retesten
