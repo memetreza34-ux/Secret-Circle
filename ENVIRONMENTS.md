@@ -2,7 +2,7 @@
 
 Stand: 27. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**
+Offline-Core: **`secret-circle-v58` / `secret-circle-v58-staging`**
 
 ## 1. Ziel
 
@@ -20,10 +20,10 @@ Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum und muss 
 
 ## 4. Aktueller Cachevertrag
 
-- aktiv: `secret-circle-v57`
-- staging: `secret-circle-v57-staging`
+- aktiv: `secret-circle-v58`
+- staging: `secret-circle-v58-staging`
 
-Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → **v57 Quick-Family Timer-Restzeit-Resume**.
+Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → v57 Quick-Family Timer-Restzeit-Resume → **v58 BFCache Timer Resume**.
 
 ## 5. Automatisierter HTTPS-Smoke
 
@@ -32,13 +32,13 @@ Der HTTPS-Netzwerkvertrag wird mit **`scripts/staging_smoke.py`** geprüft; die 
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v57
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v58
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v57 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v58 --production
 ```
 
 Der Netzwerk-Smoke beweist nicht Installation, Offline-Neustart, Update, Resume, Privacy oder reale Gerätefunktion.
@@ -50,10 +50,12 @@ Mindestens:
 - Service Worker / Installation / Offline-Neustart
 - Hub/Word Imposter/Advanced/Quick/Creator/Privacy + Query-Routen offline
 - DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56
-- **QT57 Rapid Fire:** Timer teilweise ablaufen → Reload → Resume → Restzeit statt voller Dauer
+- **QT57 Reload:** laufender Quick-Family-Timer teilweise ablaufen → Reload → Resume → Restzeit statt voller Dauer
 - **QT57 Stale:** falsche Session-ID/Runde/Phase/Dauer wird ignoriert und entfernt
-- **QT57 Families:** Quick/Mega/Viral/Creator soweit zeitgesteuert repräsentativ prüfen
-- **QT57 Backup:** `secret-circle-party-quick-timers-v1` bleibt strukturell gültig und promptfrei
+- **BF58 BFCache:** laufender Timer → Seite in History/BFCache verlassen → zurück → passender Timerzustand führt kontrolliert in den normalen Resume-Pfad statt eingefrorenem Timer
+- **BF58 Stale:** BFCache-Rückkehr mit fremdem/veraltetem Timer-Snapshot löscht nur den Snapshot und lädt nicht unnötig neu
+- QT57/BF58 repräsentativ in Quick/Mega/Viral/Creator prüfen
+- Timer-Store `secret-circle-party-quick-timers-v1` bleibt promptfrei und Teil des 17-Key-Backupvertrags
 - QR56 Same-/Cross-Game Replacement weiter prüfen
 - `quick-loader.js` v7 lädt Replacement Guard vor der jeweiligen Engine
 - Advanced Secret Resume + Moderator-/Nachtprivacy
@@ -66,7 +68,7 @@ Ein RC wird durch unveränderten Commit, Tag, App-Version, Cachegeneration, Stag
 
 ## 8. Datenisolation
 
-Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt, sichere Hub-Current-/Pre-Timer-Werte, Advanced-v55-Integrität, v56-Quick-Replacement und v57-Timer-Restzeit werden getrennt geprüft.
+Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt, sichere Hub-Current-/Pre-Timer-Werte, Advanced-v55-Integrität, v56-Quick-Replacement, v57-Timer-Restzeit und v58-BFCache-Restore werden getrennt geprüft.
 
 ## 9. Rollbackprobe
 
@@ -81,7 +83,7 @@ Staging smoke result:
 RC commit/cache:
 Production URL/commit/cache:
 Production smoke result:
-DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 evidence:
+DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 evidence:
 Rollback tested from/to:
 Evidence reference:
 ```
@@ -94,7 +96,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Provider-/Log-/Datenschutzentscheidung dokumentiert
 - [ ] Staging-Smoke grün
 - [ ] manueller PWA-Smoke
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / **QT57** real bestätigt
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / **BF58** real bestätigt
 - [ ] Upgrade aus mindestens zwei real installierten Altständen
 - [ ] Rollbackprobe
 - [ ] derselbe freigegebene RC für Production
