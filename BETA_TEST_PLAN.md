@@ -2,13 +2,13 @@
 
 Stand: 27. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**
+Offline-Core: **`secret-circle-v58` / `secret-circle-v58-staging`**
 
 ## 1. Eintrittskriterium
 
 Finale RC-Beta erst auf demselben unveränderten Commit mit sichtbaren GitHub-Actions-Steps, Online-`npm ci`, `npm run ci` und Chromium/Firefox/WebKit.
 
-Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v57 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v58 sind nicht runnerverifiziert.**
 
 ## 2. Mindest-Testmatrix
 
@@ -23,50 +23,50 @@ Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `3
 | PT54 | Hot-Potato-/Word-Chain-Pre-Timer-Resume |
 | AD55 | Advanced Result-/Winner-/Resume-Integrität und Session-Ersatz |
 | QR56 | Quick-/Mega-/Viral-/Creator-Session-Ersatz |
-| **QT57** | Quick-Family Timer-Restzeit über Reload |
+| QT57 | Quick-Family Timer-Restzeit über normalen Reload |
+| **BF58** | mobile BFCache-Rückkehr laufender Quick-Family-Timer |
 | PN1–PN3 | Smart Party Night |
 
 ## 3. Bestehende Spezialgates
 
-DWI, HR2, BK51, HR52, PR53, PT54, AD55 und QR56 bleiben verbindlich. Vorhandene Source-Tests sind kein realer PASS.
+DWI, HR2, BK51, HR52, PR53, PT54, AD55, QR56 und QT57 bleiben verbindlich. Vorhandene Source-Tests sind kein realer PASS.
 
 ## 4. QT57 – Quick Timer Resume
 
-### Restzeit
+- [ ] Rapid Fire oder anderer Quick-Family-Timer mindestens 1 Sekunde laufen lassen.
+- [ ] Reload → gespeicherte Session bewusst fortsetzen.
+- [ ] Timer startet mit Restzeit, nicht voller Ausgangsdauer.
+- [ ] Fremd-/Stale-Snapshots nach Session/Runde/Phase/Dauer werden ignoriert und gelöscht.
+- [ ] Timer-Store enthält nur technische Metadaten; keine Prompt-/Antwort-/Mission-/Identitäts-/Kartenfelder.
+- [ ] Complete Backup exportiert/restauriert den gültigen Timer-Store als einen von 17 aktuellen managed Keys.
+- [ ] Quick/Mega/Viral/Creator repräsentativ prüfen, soweit zeitgesteuert.
 
-- [ ] Rapid Fire mit sichtbarem Timer starten.
-- [ ] Timer mindestens 1 Sekunde laufen lassen und Restzeit notieren.
-- [ ] Seite reloaden.
-- [ ] gespeicherte Session bewusst fortsetzen.
-- [ ] Timer startet mit der zuvor verbleibenden Zeit, **nicht** mit voller Ausgangsdauer.
-- [ ] passender Snapshot wird danach aus `secret-circle-party-quick-timers-v1` entfernt.
+## 5. BF58 – BFCache Timer Resume
 
-### Stale / Manipulation
+### Matching Snapshot
 
-- [ ] Timer-Snapshot mit anderer Session-ID wird ignoriert und gelöscht.
-- [ ] andere Runde wird ignoriert.
-- [ ] andere Phase wird ignoriert.
-- [ ] andere Ausgangsdauer wird ignoriert.
-- [ ] ungültige Restzeit > Ausgangsdauer wird durch Registry/Runtime abgelehnt.
+- [ ] laufenden Timer starten und Restzeit notieren.
+- [ ] zu einer anderen Seite navigieren, sodass der Browser die Spielseite in den Back-Forward-Cache legen kann.
+- [ ] per Zurück-Navigation auf die Spielseite zurückkehren.
+- [ ] bei `pageshow.persisted` mit passendem Timer-Snapshot erfolgt ein kontrollierter Reload in den normalen QT57-Resume-Pfad.
+- [ ] danach wird dieselbe Restzeit fortgesetzt; kein eingefrorener In-Memory-Timer bleibt sichtbar.
 
-### Privacy / Backup
+### Stale Snapshot
 
-- [ ] Timer-Store enthält nur Familie, Game-ID, Session-ID, Runde, Phase, `durationMs`, `remainingMs`.
-- [ ] keine Prompt-/Antwort-/Mission-/Identitäts-/Kartenfelder im Store.
-- [ ] Complete Backup exportiert/restauriert den gültigen Timer-Store als einen der 17 aktuellen managed Keys.
-- [ ] Future-/Unknown-Keys bleiben weiterhin unangetastet.
+- [ ] BFCache-Rückkehr mit anderer Session-ID/Runde/Phase/Dauer simulieren.
+- [ ] stale Snapshot wird entfernt.
+- [ ] kein unnötiger Reload erfolgt.
 
-### Familien / Offline
+### Mobile / PWA
 
-- [ ] mindestens ein zeitgesteuerter Quick-/Trending-Modus.
-- [ ] mindestens ein Mega-Modus mit Timer.
-- [ ] mindestens ein Viral-Modus mit Timer, sofern vorhanden.
-- [ ] mindestens ein Creator-Spiel mit Timer, sofern vorhanden.
-- [ ] denselben QT57-Ablauf in installierter v57-PWA offline wiederholen.
+- [ ] Safari auf iPhone/iPad real prüfen.
+- [ ] Chrome auf Android real prüfen.
+- [ ] installierte v58-PWA prüfen, soweit der Plattform-Lifecycle BFCache zulässt.
+- [ ] Offlinezustand + BFCache/History-Rückkehr gemeinsam testen.
 
-Source-Verträge: `party-session-controls.js` v2, `tests/party-session-controls.test.js`, `tests/e2e/quick-timer-resume.spec.js`, `tests/backup-schema-registry.test.js`, `scripts/quick_timer_resume_audit.py` und `scripts/backup_contract_audit.py`.
+Source-Verträge: `party-session-controls.js` v3, `tests/party-session-controls.test.js`, `scripts/quick_bfcache_resume_audit.py`, `scripts/quick_timer_resume_audit.py` und `scripts/architecture_audit.py`.
 
-## 5. QR56 – Quick Session Replacement
+## 6. QR56 – Quick Session Replacement
 
 - [ ] Same Game: Start verlangt Verwerfbestätigung; Cancel erhält Session-ID.
 - [ ] Cross Game derselben Familie: Start verlangt ebenfalls Bestätigung.
@@ -74,7 +74,7 @@ Source-Verträge: `party-session-controls.js` v2, `tests/party-session-controls.
 - [ ] Replacement-Write-Fail erhält den alten Snapshot fail-closed.
 - [ ] Quick/Mega/Viral/Creator repräsentativ prüfen.
 
-## 6. Reale Gruppen / Geräte
+## 7. Reale Gruppen / Geräte
 
 - [ ] G1 3–4 Personen ≥60 min
 - [ ] G2 5–8 Personen ≥90 min
@@ -86,15 +86,15 @@ Source-Verträge: `party-session-controls.js` v2, `tests/party-session-controls.
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] PN1–PN3
 
-## 7. PWA Update / Rollback
+## 8. PWA Update / Rollback
 
-- [ ] mindestens zwei ältere installierte Versionen auf v57/RC aktualisieren
+- [ ] mindestens zwei ältere installierte Versionen auf v58/RC aktualisieren
 - [ ] aktive Sessions und lokale Daten erhalten
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 offline prüfen
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 offline soweit anwendbar prüfen
 - [ ] Rollback/Hotfix mit neuer Cachegeneration
 
-## 8. Beta-Freigabe
+## 9. Beta-Freigabe
 
-Vor `REAL USER / DEVICE PASS` müssen G1–G5, DWI, HR2, BK51, HR52, PR53, PT54, AD55, QR56, **QT57**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
+Vor `REAL USER / DEVICE PASS` müssen G1–G5, DWI, HR2, BK51, HR52, PR53, PT54, AD55, QR56, QT57, **BF58**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
 
 Bis dahin bleibt die reale Durchführung offen und der öffentliche Release **NO_GO**.
