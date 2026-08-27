@@ -1,7 +1,7 @@
 'use strict';
 
-const CACHE='secret-circle-v57';
-const STAGING_CACHE='secret-circle-v57-staging';
+const CACHE='secret-circle-v58';
+const STAGING_CACHE='secret-circle-v58-staging';
 const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./pwa-update.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./party-release.css','./party-search.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./word-imposter-resume-guard.js','./backup-schema-registry.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-core-release-catalog.js','./party-core-classic-content.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub-timers.js','./party-hub-resume-guard.js','./party-hub-round-state.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-hub-a11y.js','./secondary-surface-a11y.js','./party-guide.js','./party-release-structure.js','./party-filter-state.js','./party-search-assist.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./advanced-resume-guard.js','./party-advanced-runner.js','./advanced-privacy-guard.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./session-ledger.js','./party-session-controls.js','./quick-session-replacement-guard.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
 function stripSearch(value) {
@@ -21,7 +21,6 @@ async function promoteStagedCore() {
   const staging = await caches.open(STAGING_CACHE);
   const requests = await staging.keys();
   if (!requests.length) throw new Error('Der vorbereitete Offline-Core ist leer.');
-
   const active = await caches.open(CACHE);
   const stagedUrls = new Set(requests.map(request => request.url));
   await Promise.all(requests.map(async request => {
@@ -29,30 +28,16 @@ async function promoteStagedCore() {
     if (!response) throw new Error(`Vorbereitete Ressource fehlt: ${request.url}`);
     await active.put(request, response.clone());
   }));
-
   const activeRequests = await active.keys();
-  await Promise.all(activeRequests
-    .filter(request => !stagedUrls.has(request.url))
-    .map(request => active.delete(request)));
+  await Promise.all(activeRequests.filter(request => !stagedUrls.has(request.url)).map(request => active.delete(request)));
   await caches.delete(STAGING_CACHE);
-
   const keys = await caches.keys();
-  await Promise.all(keys
-    .filter(key => key.startsWith('secret-circle-') && key !== CACHE)
-    .map(key => caches.delete(key)));
+  await Promise.all(keys.filter(key => key.startsWith('secret-circle-') && key !== CACHE).map(key => caches.delete(key)));
 }
 
-self.addEventListener('install', event => {
-  event.waitUntil(stageCore());
-});
-
-self.addEventListener('message', event => {
-  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(promoteStagedCore().then(() => self.clients.claim()));
-});
+self.addEventListener('install', event => { event.waitUntil(stageCore()); });
+self.addEventListener('message', event => { if (event.data?.type === 'SKIP_WAITING') self.skipWaiting(); });
+self.addEventListener('activate', event => { event.waitUntil(promoteStagedCore().then(() => self.clients.claim())); });
 
 async function fetchAndCache(request, canonicalNavigation = false) {
   const response = await fetch(request);
@@ -65,9 +50,8 @@ async function fetchAndCache(request, canonicalNavigation = false) {
 }
 
 async function handleNavigation(request) {
-  try {
-    return await fetchAndCache(request, true);
-  } catch {
+  try { return await fetchAndCache(request, true); }
+  catch {
     return await caches.match(stripSearch(request), { cacheName: CACHE })
       || await caches.match('./party.html', { cacheName: CACHE })
       || await caches.match('./index.html', { cacheName: CACHE })
@@ -78,18 +62,13 @@ async function handleNavigation(request) {
 async function handleAsset(request) {
   const cached = await caches.match(request, { cacheName: CACHE });
   if (cached) return cached;
-  try {
-    return await fetchAndCache(request);
-  } catch {
-    return new Response('Offline', { status: 503, statusText: 'Offline' });
-  }
+  try { return await fetchAndCache(request); }
+  catch { return new Response('Offline', { status: 503, statusText: 'Offline' }); }
 }
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const requestUrl = new URL(event.request.url);
   if (requestUrl.origin !== self.location.origin) return;
-  event.respondWith(event.request.mode === 'navigate'
-    ? handleNavigation(event.request)
-    : handleAsset(event.request));
+  event.respondWith(event.request.mode === 'navigate' ? handleNavigation(event.request) : handleAsset(event.request));
 });
