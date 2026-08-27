@@ -5,8 +5,17 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createSessionControlsModule() {
   'use strict';
 
-  const VERSION = 1;
+  const VERSION = 2;
   const TICK_MS = 250;
+  const TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1';
+  const TIMER_STORE_VERSION = 1;
+  const TIMER_FAMILIES = Object.freeze(['quick', 'mega', 'viral', 'created']);
+  const FAMILY_ACTIVE_KEYS = Object.freeze({
+    quick: 'secret-circle-party-quick-active-v1',
+    mega: 'secret-circle-party-mega-active-v1',
+    viral: 'secret-circle-party-viral-active-v1',
+    created: 'secret-circle-party-created-active-v1'
+  });
 
   function formatMilliseconds(value) {
     const milliseconds = Math.max(0, Math.ceil(Number(value) || 0));
@@ -48,15 +57,116 @@
     return id ? `quick-play.html?game=${encodeURIComponent(id)}` : 'party.html?view=games';
   }
 
+  function familyForGame(catalog, gameId) {
+    if (!gameId) return null;
+    if (Array.isArray(catalog?.createdGameIds) && catalog.createdGameIds.includes(gameId)) return 'created';
+    if (Array.isArray(catalog?.viralGameIds) && catalog.viralGameIds.includes(gameId)) return 'viral';
+    if (Array.isArray(catalog?.megaGameIds) && catalog.megaGameIds.includes(gameId)) return 'mega';
+    if ((Array.isArray(catalog?.quickGameIds) && catalog.quickGameIds.includes(gameId))
+      || (Array.isArray(catalog?.trendingGameIds) && catalog.trendingGameIds.includes(gameId))) return 'quick';
+    return null;
+  }
+
+  function normalizeTimerSnapshot(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+    const gameId = String(value.gameId ?? '').slice(0, 80);
+    const sessionId = String(value.sessionId ?? '').slice(0, 160);
+    const phase = String(value.phase ?? '').slice(0, 40);
+    const round = Number(value.round);
+    const durationMs = Number(value.durationMs);
+    const remainingMs = Number(value.remainingMs);
+    if (!gameId || !sessionId || !phase) return null;
+    if (!Number.isInteger(round) || round < 1 || round > 20) return null;
+    if (!Number.isInteger(durationMs) || durationMs < 1 || durationMs > 3_600_000) return null;
+    if (!Number.isInteger(remainingMs) || remainingMs < 1 || remainingMs > durationMs) return null;
+    return Object.freeze({ gameId, sessionId, round, phase, durationMs, remainingMs });
+  }
+
+  function normalizeTimerStore(value) {
+    const store = { version: TIMER_STORE_VERSION, snapshots: {} };
+    if (!value || typeof value !== 'object' || Array.isArray(value) || value.version !== TIMER_STORE_VERSION) return store;
+    const snapshots = value.snapshots && typeof value.snapshots === 'object' && !Array.isArray(value.snapshots)
+      ? value.snapshots
+      : {};
+    for (const family of TIMER_FAMILIES) {
+      const snapshot = normalizeTimerSnapshot(snapshots[family]);
+      if (snapshot) store.snapshots[family] = snapshot;
+    }
+    return store;
+  }
+
+  function readTimerStore(storage) {
+    if (!storage?.getItem) return normalizeTimerStore(null);
+    try {
+      return normalizeTimerStore(JSON.parse(storage.getItem(TIMER_STORE_KEY)));
+    } catch {
+      return normalizeTimerStore(null);
+    }
+  }
+
+  function writeTimerStore(storage, store) {
+    if (!storage?.setItem || !storage?.removeItem) return false;
+    try {
+      const normalized = normalizeTimerStore(store);
+      if (!Object.keys(normalized.snapshots).length) storage.removeItem(TIMER_STORE_KEY);
+      else storage.setItem(TIMER_STORE_KEY, JSON.stringify(normalized));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function familyTimerSnapshot(storage, family) {
+    if (!TIMER_FAMILIES.includes(family)) return null;
+    return normalizeTimerSnapshot(readTimerStore(storage).snapshots[family]);
+  }
+
+  function setFamilyTimerSnapshot(storage, family, snapshot) {
+    if (!TIMER_FAMILIES.includes(family)) return false;
+    const store = readTimerStore(storage);
+    const normalized = normalizeTimerSnapshot(snapshot);
+    if (normalized) store.snapshots[family] = normalized;
+    else delete store.snapshots[family];
+    return writeTimerStore(storage, store);
+  }
+
+  function activeContext(storage, family, expectedGameId) {
+    const activeKey = FAMILY_ACTIVE_KEYS[family];
+    if (!activeKey || !storage?.getItem) return null;
+    try {
+      const value = JSON.parse(storage.getItem(activeKey));
+      const gameId = String(value?.gameId ?? '');
+      const sessionId = String(value?.sessionId ?? '');
+      const phase = String(value?.phase ?? '').slice(0, 40);
+      const round = Number(value?.round);
+      if (!value || value.version !== 1 || gameId !== expectedGameId || !sessionId || !phase) return null;
+      if (!Number.isInteger(round) || round < 1 || round > 20 || value.completedRecorded === true) return null;
+      return { gameId, sessionId, round, phase };
+    } catch {
+      return null;
+    }
+  }
+
+  function timerContextMatches(snapshot, context, durationMs) {
+    return Boolean(snapshot && context
+      && snapshot.gameId === context.gameId
+      && snapshot.sessionId === context.sessionId
+      && snapshot.round === context.round
+      && snapshot.phase === context.phase
+      && snapshot.durationMs === durationMs);
+  }
+
   function createController(options = {}) {
     const documentRef = options.documentRef || null;
     const windowRef = options.windowRef || null;
+    const storage = options.storageRef || windowRef?.localStorage || null;
     const now = typeof options.now === 'function' ? options.now : () => Date.now();
     const setIntervalFn = typeof options.setIntervalFn === 'function' ? options.setIntervalFn : (callback, delay) => setInterval(callback, delay);
     const clearIntervalFn = typeof options.clearIntervalFn === 'function' ? options.clearIntervalFn : id => clearInterval(id);
     const confirmFn = typeof options.confirmFn === 'function'
       ? options.confirmFn
       : message => windowRef?.confirm ? windowRef.confirm(message) : true;
+    const timerFamily = familyForGame(options.catalog, options.gameId);
 
     let bound = false;
     let sessionActive = false;
@@ -65,8 +175,10 @@
     let timerNode = null;
     let timerEnd = null;
     let timerFinished = false;
+    let timerDurationMs = 0;
     let remainingMs = 0;
     let lastTickAt = 0;
+    let preservePersistedOnNextStop = false;
 
     const query = selector => documentRef?.querySelector?.(selector) || null;
 
@@ -104,14 +216,28 @@
       if (timerNode) timerNode.textContent = formatMilliseconds(remainingMs);
     }
 
-    function stopTimer() {
+    function resetRuntimeTimer() {
       if (timerId !== null) clearIntervalFn(timerId);
       timerId = null;
       timerNode = null;
       timerEnd = null;
       timerFinished = false;
+      timerDurationMs = 0;
       remainingMs = 0;
       lastTickAt = 0;
+    }
+
+    function clearPersistedTimer() {
+      if (timerFamily) setFamilyTimerSnapshot(storage, timerFamily, null);
+    }
+
+    function stopTimer() {
+      resetRuntimeTimer();
+      if (preservePersistedOnNextStop) {
+        preservePersistedOnNextStop = false;
+        return;
+      }
+      clearPersistedTimer();
     }
 
     function finishTimer() {
@@ -121,9 +247,11 @@
       timerId = null;
       remainingMs = 0;
       renderTimer();
+      clearPersistedTimer();
       const onEnd = timerEnd;
       timerNode = null;
       timerEnd = null;
+      timerDurationMs = 0;
       windowRef?.navigator?.vibrate?.([120, 80, 120]);
       onEnd?.();
     }
@@ -139,12 +267,24 @@
       if (remainingMs <= 0) finishTimer();
     }
 
-    function countdown(seconds, node, onEnd) {
-      stopTimer();
-      const safeSeconds = Math.max(0, Math.min(60 * 60, Number(seconds) || 0));
+    function consumePersistedRemaining(durationMs) {
+      if (!timerFamily || durationMs <= 0) return null;
+      const snapshot = familyTimerSnapshot(storage, timerFamily);
+      if (!snapshot) return null;
+      const context = activeContext(storage, timerFamily, options.gameId);
+      const matches = timerContextMatches(snapshot, context, durationMs);
+      setFamilyTimerSnapshot(storage, timerFamily, null);
+      return matches ? snapshot.remainingMs : null;
+    }
+
+    function countdownMilliseconds(milliseconds, node, onEnd) {
+      const durationMs = Math.max(0, Math.min(3_600_000, Math.round(Number(milliseconds) || 0)));
+      const resumedMs = consumePersistedRemaining(durationMs);
+      resetRuntimeTimer();
       timerNode = node || null;
       timerEnd = typeof onEnd === 'function' ? onEnd : null;
-      remainingMs = Math.round(safeSeconds * 1000);
+      timerDurationMs = durationMs;
+      remainingMs = resumedMs ?? durationMs;
       lastTickAt = now();
       renderTimer();
       if (remainingMs <= 0) {
@@ -153,6 +293,24 @@
       }
       timerId = setIntervalFn(tick, TICK_MS);
       return timerId;
+    }
+
+    function countdown(seconds, node, onEnd) {
+      const safeSeconds = Math.max(0, Math.min(60 * 60, Number(seconds) || 0));
+      return countdownMilliseconds(safeSeconds * 1000, node, onEnd);
+    }
+
+    function persistRunningTimerSnapshot() {
+      if (!timerFamily || !timerEnd || timerDurationMs <= 0 || remainingMs <= 0) return false;
+      const context = activeContext(storage, timerFamily, options.gameId);
+      if (!context) return false;
+      const saved = setFamilyTimerSnapshot(storage, timerFamily, {
+        ...context,
+        durationMs: timerDurationMs,
+        remainingMs: Math.max(1, Math.min(timerDurationMs, Math.ceil(remainingMs)))
+      });
+      if (saved) preservePersistedOnNextStop = true;
+      return saved;
     }
 
     function setPaused(value) {
@@ -216,13 +374,17 @@
       return true;
     }
 
+    windowRef?.addEventListener?.('pagehide', persistRunningTimerSnapshot, { capture: true });
+    windowRef?.addEventListener?.('pageshow', () => { preservePersistedOnNextStop = false; });
     bind();
 
     return Object.freeze({
       version: VERSION,
       bind,
       countdown,
+      countdownMilliseconds,
       stopTimer,
+      persistRunningTimerSnapshot,
       setPaused,
       togglePause,
       isPaused: () => paused,
@@ -236,10 +398,17 @@
   return Object.freeze({
     version: VERSION,
     tickMilliseconds: TICK_MS,
+    timerStoreKey: TIMER_STORE_KEY,
+    timerStoreVersion: TIMER_STORE_VERSION,
+    timerFamilies: TIMER_FAMILIES,
+    familyActiveKeys: FAMILY_ACTIVE_KEYS,
     formatMilliseconds,
     orderedGameIds,
     nextGameId,
     nextGameHref,
+    familyForGame,
+    normalizeTimerSnapshot,
+    normalizeTimerStore,
     createController
   });
 });
