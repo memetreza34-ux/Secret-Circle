@@ -4,14 +4,14 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 ## Unreleased – Januar-2027 Release Foundation
 
-Stand: 26. August 2026
+Stand: 27. August 2026
 
 ### Aktueller Status
 
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57: **quellsseitig PREPARED, real offen**
+- Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 
@@ -56,37 +56,44 @@ Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart über Re
 
 ### v56 – Quick Session Replacement
 
-- neues `quick-session-replacement-guard.js` Version **1**.
-- `quick-loader.js` auf **Version 7** erhöht und Loader-Reihenfolge auf Ledger → Controls → Replacement Guard → Engine erweitert.
-- Guard schützt die gemeinsamen Active-Keys von Quick/Trending, Mega, Viral und Creator.
-- normaler „Spiel starten“-Pfad darf eine gespeicherte Session desselben Spiels nicht mehr still überschreiben.
-- Cross-Game-Wechsel innerhalb derselben Enginefamilie wird ebenfalls erkannt, selbst wenn der fremde Snapshot auf der aktuellen Seite nicht als Resume-Karte erscheint.
-- Same-/Cross-Game-Ersatz benötigt eine ausdrückliche Bestätigung.
-- Cancel verändert den gespeicherten Game-ID-/Session-ID-Snapshot nicht.
-- der Alt-Snapshot wird nicht vorzeitig gelöscht; ein erfolgreicher Engine-`setItem` ersetzt ihn atomar.
-- schlägt der Replacement-Write fehl und der Alt-Snapshot ist weiterhin gespeichert, blockiert der Guard den `pagehide`-Retry des fehlerhaften neuen In-Memory-Zustands und lädt kontrolliert neu.
-- `tests/quick-session-replacement-guard.test.js` ergänzt.
-- `tests/e2e/quick-session-replacement.spec.js` ergänzt: Same Game, Cross Game, Storage-Fail.
-- `tests/e2e/party-session-controls.spec.js` prüft Controls → Guard → Engine für Quick/Mega/Viral.
-- `tests/quick-loader.test.js` auf Loader v7 einschließlich Creator-Familie erweitert.
-- `scripts/quick_session_replacement_audit.py` ergänzt und in `npm run validate` aufgenommen.
-- `party-session-controls.spec.js` zusätzlich in den Syntax-Preflight aufgenommen.
-- bestehender Staging-Smoke-Dokumentvertrag repariert: Deployment/Environment/Release-Checkliste enthalten wieder die verlangten `scripts/staging_smoke.py`-/`tests/pwa-head-metadata.test.js`-/Smoke-Marker.
-- QR56 als eigener realer Abnahmetest definiert.
+- `quick-session-replacement-guard.js` Version 1.
+- `quick-loader.js` Version 7: Ledger → Controls → Replacement Guard → Engine.
+- Same-/Cross-Game-Ersatz innerhalb Quick/Trending, Mega, Viral und Creator benötigt Bestätigung.
+- Cancel erhält den Alt-Snapshot; Replacement-Write-Fail bleibt fail-closed.
+- Unit-/Browser-/Load-Order-Verträge + `scripts/quick_session_replacement_audit.py` ergänzt.
+- QR56 als realer Abnahmetest definiert.
 
-### PWA / Offline – v56
+### v57 – Quick Timer Resume
 
-- Offline-Core auf **`secret-circle-v56` / `secret-circle-v56-staging`** erhöht.
-- Quick Replacement Guard v1 und Quick Loader v7 werden offline ausgeliefert.
-- alle früheren Advanced-/A11y-/Resume-/Privacy-/Backup-/Timerverträge bleiben enthalten.
+- `party-session-controls.js` auf **Version 2** erhöht.
+- laufende Quick-/Trending-/Mega-/Viral-/Creator-Timer sichern bei `pagehide` ihre verbleibende Zeit vor dem späteren Engine-Stop.
+- neuer technischer Store `secret-circle-party-quick-timers-v1` Version 1.
+- Timer-Snapshots enthalten ausschließlich `gameId`, `sessionId`, `round`, `phase`, `durationMs` und `remainingMs` je Enginefamilie.
+- keine Prompts, Antworten, Missionen, Identitäten oder geheimen Karteninhalte im Timer-Store.
+- Resume nur bei exakt passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer.
+- passender Snapshot wird einmalig konsumiert; stale/fremde Snapshots werden verworfen.
+- `backup-schema-registry.js` verwaltet nun **17 exakte aktuelle Storage-Keys** einschließlich Timer-Store; Complete-Backup-Dateiformat bleibt Version 1.
+- `tests/party-session-controls.test.js` um Restzeit-Persistenz, Pagehide-Handoff und Stale-Reject erweitert.
+- neues `tests/e2e/quick-timer-resume.spec.js`: Rapid Fire nimmt Restzeit statt voller Dauer wieder auf; Fremdsession-Snapshot darf neuen Timer nicht verkürzen.
+- `tests/backup-schema-registry.test.js` um Timer-Store-Schema und Runtime-Eigentum erweitert.
+- neues `scripts/quick_timer_resume_audit.py` in `npm run validate`.
+- `scripts/backup_contract_audit.py` und `scripts/architecture_audit.py` auf QT57 erweitert.
+- QT57 als eigener realer Abnahmetest definiert.
+
+### PWA / Offline – v57
+
+- Offline-Core auf **`secret-circle-v57` / `secret-circle-v57-staging`** erhöht.
+- SessionControls v2, Timer-Resume, Quick Replacement Guard v1 und Quick Loader v7 werden offline ausgeliefert.
+- alle früheren Advanced-/A11y-/Resume-/Privacy-/Backup-Verträge bleiben enthalten.
 
 ### Build / CI
 
 - `package-lock.json` v3; Playwright exakt 1.54.2; keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- PT54-, AD55- und QR56-Audits im Validate-Gate.
+- PT54-, AD55-, QR56- und QT57-Audits im Validate-Gate.
+- QT57-Browser-Spec im Syntax-Preflight.
 - letzter vollständig untersuchter Actions-Lauf bleibt historisch **Run #2787 auf v49**, `steps: null` / `steps: []`, ohne ausgeführten Repositorycode.
-- **v50–v56 haben keinen Runner-PASS.**
+- **v50–v57 haben keinen Runner-PASS.**
 
 ### Operator / Assets
 
@@ -96,6 +103,6 @@ Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart über Re
 
 ### Releaseentscheidung
 
-Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56**, **#14 Operator/Hosting/Legal/Support**.
+Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/QT57**, **#14 Operator/Hosting/Legal/Support**.
 
 Öffentlicher Release: **NO_GO**.
