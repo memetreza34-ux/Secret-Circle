@@ -9,11 +9,11 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - Word Imposter + Smart Party Night + lokaler No-Code-Game-Creator
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 
-Aktueller Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**  
+Aktueller Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**  
 Classic Content: **v4**  
 Core Source Review/Hardening: **15/15 PREPARED**  
 Accessibility: **PREPARED**  
-DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56: **source PREPARED, real evidence OPEN**  
+DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57: **source PREPARED, real evidence OPEN**  
 Operator / Hosting / Legal: **PREPARED / BLOCKED**  
 Freigabe: **NO_GO**
 
@@ -34,44 +34,49 @@ Freigabe: **NO_GO**
 - **v52:** sichere Hub-Current-Runden + getrennte Truth/Dare-Pools
 - **v53:** Paranoia same-question/same-result ohne Auto-Reveal
 - **v54:** Hot-Potato-/Word-Chain-Pre-Timer-Resume
-- **v55:** Advanced Result-/Winner-/Resume-Integrität + bestätigter Ersatz einer gespeicherten Advanced-Session
-- **v56:** bestätigter und fail-closed Ersatz gespeicherter Quick-/Mega-/Viral-/Creator-Sessions
+- **v55:** Advanced Result-/Winner-/Resume-Integrität
+- **v56:** bestätigter/fail-closed Quick-Family-Session-Ersatz
+- **v57:** Quick-Family-Timer behalten Restzeit über Reload
 
-## v56 – Quick Session Replacement
+## v57 – Quick Timer Resume
 
 Neu gehärtet:
 
-- neues `quick-session-replacement-guard.js` **Version 1**
-- `quick-loader.js` **Version 7** lädt Ledger → Controls → Replacement Guard → Engine
-- schützt Quick/Trending, Mega, Viral und Creator mit ihren jeweiligen Active-Storage-Keys
-- „Spiel starten“ darf einen plausiblen gespeicherten Snapshot nicht mehr still überschreiben
-- Same-Game-Neustart verlangt eine ausdrückliche Verwerfbestätigung
-- Cross-Game-Wechsel innerhalb derselben Enginefamilie verlangt dieselbe Bestätigung, auch wenn der fremde Snapshot auf der neuen Spielseite nicht als Resume-Karte angezeigt wird
-- Cancel lässt Game-ID, Session-ID und Storage unverändert
-- der alte Snapshot wird vor dem Neustart **nicht** gelöscht; erst der erfolgreiche Engine-Write ersetzt ihn
-- schlägt dieser Write fehl, erkennt der Guard den unveränderten Alt-Snapshot, verhindert den `pagehide`-Retry des fehlerhaften In-Memory-Zustands und lädt fail-closed neu
+- `party-session-controls.js` **Version 2**
+- gemeinsamer Timer-Restzeit-Resume für Quick/Trending, Mega, Viral und Creator
+- `pagehide` sichert die verbleibende Zeit vor dem Engine-Stop
+- Store: `secret-circle-party-quick-timers-v1`
+- gespeichert werden nur technische Metadaten: Game-ID, Session-ID, Runde, Phase, Ausgangsdauer und Restzeit
+- **keine Prompts, Antworten, Missionen, Identitäten oder geheimen Karteninhalte** im Timer-Store
+- Snapshot wird nur bei exakt passender Game-ID + Session-ID + Runde + Phase + Ausgangsdauer verwendet
+- stale/fremde Snapshots werden verworfen
+- Complete Backup verwaltet jetzt **17 exakte aktuelle Keys** inklusive Timer-Store
 
 Verträge:
 
-- `tests/quick-session-replacement-guard.test.js`
-- `tests/e2e/quick-session-replacement.spec.js`
-- `tests/e2e/party-session-controls.spec.js` prüft Controls → Guard → Engine für Quick/Mega/Viral
-- `tests/quick-loader.test.js` prüft Loader v7 inklusive Creator-Familie
-- `scripts/quick_session_replacement_audit.py` in `npm run validate`
-- `scripts/architecture_audit.py` erzwingt Modul-, Offline- und Buildgrenzen
+- `tests/party-session-controls.test.js`
+- `tests/e2e/quick-timer-resume.spec.js`
+- `tests/backup-schema-registry.test.js`
+- `scripts/quick_timer_resume_audit.py`
+- `scripts/backup_contract_audit.py`
+- `scripts/architecture_audit.py`
 
-Realer RC-Nachweis: **QR56**.
+Realer RC-Nachweis: **QT57**.
+
+## v56 – Quick Session Replacement
+
+`quick-session-replacement-guard.js` v1 + `quick-loader.js` v7 schützen Quick/Trending, Mega, Viral und Creator vor stillem Same-/Cross-Game-Überschreiben. Cancel erhält den Alt-Snapshot; Write-Fail bleibt fail-closed. Realer RC-Nachweis: **QR56**.
 
 ## CI – extern blockiert
 
 Letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Checkout, npm, Test oder Repositorycode wurde ausgeführt. Der Minimal-Runner-Probe zeigte dasselbe Muster.
 
-**v50–v56 sind deshalb nicht runnerverifiziert.** Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+**v50–v57 sind deshalb nicht runnerverifiziert.** Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## Zentrale offene Issues
 
 1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
-2. **#8** – reale Geräte, v56 Offline-PWA, Accessibility, DWI, HR2, BK51, HR52, PR53, PT54, AD55, QR56 und Partytests
+2. **#8** – reale Geräte, v57 Offline-PWA, Accessibility, DWI, HR2, BK51, HR52, PR53, PT54, AD55, QR56, QT57 und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 Zusätzlich bleibt die Rechtebasis des Root-`icon.svg` `unresolved`.
@@ -81,8 +86,8 @@ Zusätzlich bleibt die Rechtebasis des Root-`icon.svg` `unresolved`.
 1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
 2. Branch Protection
 3. Provider + getrennte HTTPS-Staging-/Production-Origin
-4. v56 PWA-Smoke / Upgrade / Rollback
-5. DWI + HR2 + BK51 + HR52 + PR53 + PT54 + AD55 + **QR56** real prüfen
+4. v57 PWA-Smoke / Upgrade / Rollback
+5. DWI + HR2 + BK51 + HR52 + PR53 + PT54 + AD55 + QR56 + **QT57** real prüfen
 6. Android/iPhone/iPad/VoiceOver/TalkBack/Tastatur/Zoom
 7. reale Gruppentests für alle 15 Core-Games
 8. Asset-/Operator-/Legal-/Support-/Incident-Sign-off
