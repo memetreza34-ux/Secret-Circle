@@ -28,7 +28,7 @@ sw = read('sw.js')
 sw_test = read('tests/service-worker.test.js')
 
 for marker in (
-    'const VERSION = 3;',
+    'const VERSION = 4;',
     'function handlePageShow(event)',
     'if (!event?.persisted || !timerFamily) return false;',
     'timerContextMatches(snapshot, context, snapshot.durationMs)',
@@ -80,7 +80,7 @@ if violations:
     raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({
     'quick_bfcache_resume_audit': 'PASS',
-    'session_controls_version': 3,
+    'session_controls_version': 4,
     'matching_bfcache_snapshot_reload': True,
     'stale_bfcache_snapshot_no_reload': True,
     'snapshot_preserved_for_normal_resume': True,
