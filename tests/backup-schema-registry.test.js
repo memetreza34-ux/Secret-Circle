@@ -21,6 +21,7 @@ const expectedCompleteKeys = [
   'secret-circle-party-mega-active-v1',
   'secret-circle-party-viral-active-v1',
   'secret-circle-party-created-active-v1',
+  'secret-circle-party-quick-timers-v1',
   'secret-circle-party-created-games-v1',
   'secret-circle-party-custom-packs-v1',
   'secret-circle-party-night-v1',
@@ -56,7 +57,6 @@ assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-party-hub-v2'),
 assert.equal(Registry.isAllowedCompleteStorageKey('secret-circle-settings-v8'), false);
 assert.equal(Registry.isAllowedCompleteStorageKey('other-app-v1'), false);
 
-// Coarse key-specific storage wrappers: reject wrong current versions/shapes before mutation.
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-active-v7', { version: 7, players: [] }), true);
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-active-v7', { version: 6, players: [] }), false);
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-custom-v7', []), true);
@@ -80,6 +80,17 @@ for (const key of [
   assert.equal(Registry.validateCompleteStorageValue(key, { version: 1, gameId: 'example' }), true, key);
   assert.equal(Registry.validateCompleteStorageValue(key, { version: 2, gameId: 'example' }), false, key);
 }
+const validTimerStore = {
+  version: 1,
+  snapshots: {
+    quick: { gameId: 'rapid-fire', sessionId: 'session-1', round: 2, phase: 'running', durationMs: 5000, remainingMs: 2300 },
+    mega: { gameId: 'who-am-i', sessionId: 'session-2', round: 1, phase: 'guess', durationMs: 60000, remainingMs: 41000 }
+  }
+};
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-quick-timers-v1', validTimerStore), true);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-quick-timers-v1', { version: 2, snapshots: {} }), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-quick-timers-v1', { version: 1, snapshots: { unknown: validTimerStore.snapshots.quick } }), false);
+assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-quick-timers-v1', { version: 1, snapshots: { quick: { ...validTimerStore.snapshots.quick, remainingMs: 6000 } } }), false);
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-created-games-v1', { version: 1, games: [] }), true);
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-created-games-v1', { version: 1, games: {} }), false);
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-custom-packs-v1', { version: 1, packs: [] }), true);
@@ -88,8 +99,6 @@ assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-preferen
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-catalog-filters-v1', { version: 1 }), true);
 assert.equal(Registry.validateCompleteStorageValue('secret-circle-party-hub-v2', { version: 2, players: [] }), false);
 
-// Every explicitly managed key must be owned by a current production runtime source,
-// not merely invented inside the registry itself.
 const ownershipSources = [
   'data-store.js',
   'runtime-guard.js',
@@ -103,7 +112,8 @@ const ownershipSources = [
   'party-quick-modes.js',
   'party-mega-modes.js',
   'party-viral-modes.js',
-  'party-created-modes.js'
+  'party-created-modes.js',
+  'party-session-controls.js'
 ].map(read).join('\n');
 for (const key of expectedCompleteKeys) {
   assert.ok(ownershipSources.includes(key), `managed backup key has no current runtime owner: ${key}`);
@@ -114,12 +124,10 @@ const completeTools = read('party-data-tools.js');
 const creator = read('game-creator.js');
 const creatorPage = read('creator-page.js');
 
-// Word Imposter still owns its dedicated legacy-compatible backup contract.
 for (const marker of ["BACKUP_FORMAT = 'secret-circle-backup'", 'BACKUP_VERSION = 1', 'MAX_BACKUP_BYTES = 1_500_000']) {
   assert.match(store, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Word-Imposter backup drift: ${marker}`);
 }
 
-// Complete backup values must come from the central registry instead of duplicated literals.
 for (const marker of [
   "registry?.get?.('complete')",
   'const PREFIX = schema.storagePrefix',
@@ -156,6 +164,7 @@ console.log(JSON.stringify({
   exactCurrentKeyAllowlist: true,
   futureStorageVersionsPreserved: true,
   keySpecificStorageWrappersValidated: true,
+  quickTimerStoreValidated: true,
   managedKeysOwnedByCurrentRuntime: true,
   sharedUtf8Limit: true,
   completeBackupUsesCentralRegistry: true,
