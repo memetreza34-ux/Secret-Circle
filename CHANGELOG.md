@@ -10,8 +10,8 @@ Stand: 27. August 2026
 
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**
+- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58: **quellsseitig PREPARED, real offen**
+- Offline-Core: **`secret-circle-v58` / `secret-circle-v58-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 
@@ -65,35 +65,43 @@ Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart über Re
 
 ### v57 – Quick Timer Resume
 
-- `party-session-controls.js` auf **Version 2** erhöht.
+- `party-session-controls.js` auf Version 2 erhöht.
 - laufende Quick-/Trending-/Mega-/Viral-/Creator-Timer sichern bei `pagehide` ihre verbleibende Zeit vor dem späteren Engine-Stop.
 - neuer technischer Store `secret-circle-party-quick-timers-v1` Version 1.
 - Timer-Snapshots enthalten ausschließlich `gameId`, `sessionId`, `round`, `phase`, `durationMs` und `remainingMs` je Enginefamilie.
 - keine Prompts, Antworten, Missionen, Identitäten oder geheimen Karteninhalte im Timer-Store.
 - Resume nur bei exakt passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer.
 - passender Snapshot wird einmalig konsumiert; stale/fremde Snapshots werden verworfen.
-- `backup-schema-registry.js` verwaltet nun **17 exakte aktuelle Storage-Keys** einschließlich Timer-Store; Complete-Backup-Dateiformat bleibt Version 1.
-- `tests/party-session-controls.test.js` um Restzeit-Persistenz, Pagehide-Handoff und Stale-Reject erweitert.
-- neues `tests/e2e/quick-timer-resume.spec.js`: Rapid Fire nimmt Restzeit statt voller Dauer wieder auf; Fremdsession-Snapshot darf neuen Timer nicht verkürzen.
-- `tests/backup-schema-registry.test.js` um Timer-Store-Schema und Runtime-Eigentum erweitert.
-- neues `scripts/quick_timer_resume_audit.py` in `npm run validate`.
-- `scripts/backup_contract_audit.py` und `scripts/architecture_audit.py` auf QT57 erweitert.
+- `backup-schema-registry.js` verwaltet nun 17 exakte aktuelle Storage-Keys einschließlich Timer-Store; Complete-Backup-Dateiformat bleibt Version 1.
+- `tests/e2e/quick-timer-resume.spec.js` und `scripts/quick_timer_resume_audit.py` ergänzt.
 - QT57 als eigener realer Abnahmetest definiert.
 
-### PWA / Offline – v57
+### v58 – BFCache Timer Resume
 
-- Offline-Core auf **`secret-circle-v57` / `secret-circle-v57-staging`** erhöht.
-- SessionControls v2, Timer-Resume, Quick Replacement Guard v1 und Quick Loader v7 werden offline ausgeliefert.
+- `party-session-controls.js` auf **Version 3** erhöht.
+- `pageshow.persisted` wird als eigener Browser-Lifecycle behandelt.
+- wenn ein passender Timer-Snapshot zur aktuellen Game-ID/Session-ID/Runde/Phase existiert, wird kontrolliert neu geladen und anschließend der normale QT57-Restzeit-Resume verwendet.
+- der passende Snapshot wird vor dem Reload nicht entfernt.
+- ein stale/fremder Snapshot wird entfernt, ohne unnötigen Reload.
+- damit bleibt nach Safari-/Chrome-BFCache-Rückkehr kein durch `pagehide` gestoppter In-Memory-Timer eingefroren sichtbar.
+- `tests/party-session-controls.test.js` um Matching-/Stale-BFCache-Pfade erweitert.
+- neues `scripts/quick_bfcache_resume_audit.py` in `npm run validate`.
+- `scripts/quick_timer_resume_audit.py` und `scripts/architecture_audit.py` auf SessionControls v3/BF58 kompatibel gemacht.
+- BF58 als eigener realer Mobile-/PWA-Abnahmetest definiert.
+
+### PWA / Offline – v58
+
+- Offline-Core auf **`secret-circle-v58` / `secret-circle-v58-staging`** erhöht.
+- SessionControls v3, QT57, BF58, Quick Replacement Guard v1 und Quick Loader v7 werden offline ausgeliefert.
 - alle früheren Advanced-/A11y-/Resume-/Privacy-/Backup-Verträge bleiben enthalten.
 
 ### Build / CI
 
 - `package-lock.json` v3; Playwright exakt 1.54.2; keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- PT54-, AD55-, QR56- und QT57-Audits im Validate-Gate.
-- QT57-Browser-Spec im Syntax-Preflight.
+- PT54-, AD55-, QR56-, QT57- und BF58-Audits im Validate-Gate.
 - letzter vollständig untersuchter Actions-Lauf bleibt historisch **Run #2787 auf v49**, `steps: null` / `steps: []`, ohne ausgeführten Repositorycode.
-- **v50–v57 haben keinen Runner-PASS.**
+- **v50–v58 haben keinen Runner-PASS.**
 
 ### Operator / Assets
 
@@ -103,6 +111,6 @@ Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart über Re
 
 ### Releaseentscheidung
 
-Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/QT57**, **#14 Operator/Hosting/Legal/Support**.
+Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y/DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/QT57/BF58**, **#14 Operator/Hosting/Legal/Support**.
 
 Öffentlicher Release: **NO_GO**.
