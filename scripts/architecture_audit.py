@@ -32,7 +32,8 @@ required_contract_files = [
     'scripts/media_inventory_audit.py', 'scripts/hub_a11y_contract_audit.py',
     'scripts/secondary_surface_a11y_contract_audit.py', 'scripts/advanced_integrity_audit.py',
     'scripts/quick_session_replacement_audit.py', 'scripts/quick_timer_resume_audit.py',
-    'scripts/quick_bfcache_resume_audit.py', 'scripts/backup_contract_audit.py'
+    'scripts/quick_bfcache_resume_audit.py', 'scripts/quick_background_pause_audit.py',
+    'scripts/backup_contract_audit.py', 'tests/e2e/quick-background-pause.spec.js'
 ]
 for relative in production_js + html_pages + required_contract_files:
     if not (ROOT / relative).is_file(): violations.append(f'Missing architecture file: {relative}')
@@ -46,7 +47,7 @@ for marker in (
     'Accessibility als Definition of Done', 'Inhalts- und Rechtevertrag', 'Testpyramide',
     'Performance und Assets', 'Betrieb, Deprecation und Rollback',
     'Quick-/Mega-/Viral-/Creator-Session-Ersatz – v56', 'Quick-Family Timer Resume – v57',
-    'Quick-Family BFCache Resume – v58'
+    'Quick-Family BFCache Resume – v58', 'Quick-Family Background Pause – v59'
 ):
     if marker not in architecture: violations.append(f'Architecture contract marker missing: {marker}')
 
@@ -93,7 +94,14 @@ check_order(creator_page, ['secondary-surface-a11y.js','creator-page.js'], 'crea
 contracts = {
     'backup-schema-registry.js': ['const VERSION = 2;','MAX_FILE_BYTES = 1_500_000',"format: 'secret-circle-complete-backup'",'isAllowedCompleteStorageKey',"'secret-circle-party-quick-timers-v1'",'validQuickTimerSnapshot'],
     'session-ledger.js': ['createSessionId','legacySessionId','completionId','recordCompletion'],
-    'party-session-controls.js': ['const VERSION = 3;','createController','remainingMilliseconds','function setPaused',"TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1'",'familyForGame','consumePersistedRemaining','persistRunningTimerSnapshot','timerContextMatches','function handlePageShow(event)','if (!event?.persisted || !timerFamily) return false;','reloadFn();'],
+    'party-session-controls.js': [
+        'const VERSION = 4;','createController','remainingMilliseconds','function setPaused',
+        "TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1'",'familyForGame','consumePersistedRemaining',
+        'persistRunningTimerSnapshot','timerContextMatches','function handlePageShow(event)',
+        'if (!event?.persisted || !timerFamily) return false;','reloadFn();','function handleVisibilityChange()',
+        'if (!documentRef?.hidden) return false;','setPaused(true);',
+        "documentRef?.addEventListener?.('visibilitychange', handleVisibilityChange);"
+    ],
     'word-imposter-resume-guard.js': ['validateSnapshot'],
     'party-hub-resume-guard.js': ['SecretCirclePartyHubResumeGuard'],
     'party-hub-round-state.js': ['SecretCirclePartyHubRoundState','SAFE_CURRENT_MODES','CONCEALED_CURRENT_MODES','truthDarePools','normalizeCurrent','normalizeResume','ensureCurrent','markParanoiaQuestion','resolveParanoia','clearCurrent'],
@@ -123,7 +131,8 @@ contracts = {
     'scripts/advanced_integrity_audit.py': ['advanced_integrity_audit','resume_guard_version','confirmed_new_session_replacement'],
     'scripts/quick_session_replacement_audit.py': ['quick_session_replacement_audit','families_guarded','failed_write_preserves_previous_snapshot'],
     'scripts/quick_timer_resume_audit.py': ['quick_timer_resume_audit','prompt_free_timer_snapshot','stale_timer_snapshots_rejected'],
-    'scripts/quick_bfcache_resume_audit.py': ['quick_bfcache_resume_audit','matching_bfcache_snapshot_reload','stale_bfcache_snapshot_no_reload'],
+    'scripts/quick_bfcache_resume_audit.py': ['quick_bfcache_resume_audit','matching_bfcache_snapshot_reload','browser_lifecycle_contract'],
+    'scripts/quick_background_pause_audit.py': ['quick_background_pause_audit','hidden_auto_pause','visible_requires_explicit_resume','browser_visibility_contract'],
     'scripts/backup_contract_audit.py': ['backup_contract_audit','unknown_future_namespaces_preserved_on_restore','quick_timer_store_managed']
 }
 for relative, markers in contracts.items():
@@ -148,7 +157,9 @@ for module in ('party-expansion.js','party-mega-catalog.js','party-core-release-
     if f'node --check {module}' not in syntax_gate: violations.append(f'Production module missing from syntax gate: {module}')
 for test in ('tests/party-mega-catalog.test.js','tests/core-content-quality.test.js','tests/hub-resume-contract.test.js','tests/hub-control-contract.test.js','tests/party-session-controls.test.js','tests/advanced-resume-guard.test.js','tests/advanced-resume-contract.test.js','tests/quick-loader.test.js','tests/quick-session-replacement-guard.test.js','tests/accessibility-contract.test.js','tests/manifest-icons.test.js'):
     if test not in unit_gate: violations.append(f'Critical architecture test missing from npm test: {test}')
-for audit in ('scripts/advanced_integrity_audit.py','scripts/quick_session_replacement_audit.py','scripts/quick_timer_resume_audit.py','scripts/quick_bfcache_resume_audit.py','scripts/backup_contract_audit.py','scripts/core_content_audit.py','scripts/reference_content_audit.py','scripts/asset_provenance_audit.py','scripts/media_inventory_audit.py','scripts/public_release_placeholder_audit.py','scripts/hub_a11y_contract_audit.py','scripts/secondary_surface_a11y_contract_audit.py','scripts/operator_release_contract_audit.py','scripts/release_audit.py','scripts/performance_budget.py'):
+for e2e in ('tests/e2e/quick-timer-resume.spec.js','tests/e2e/quick-background-pause.spec.js'):
+    if f'node --check {e2e}' not in syntax_gate: violations.append(f'Critical timer E2E missing from syntax gate: {e2e}')
+for audit in ('scripts/advanced_integrity_audit.py','scripts/quick_session_replacement_audit.py','scripts/quick_timer_resume_audit.py','scripts/quick_bfcache_resume_audit.py','scripts/quick_background_pause_audit.py','scripts/backup_contract_audit.py','scripts/core_content_audit.py','scripts/reference_content_audit.py','scripts/asset_provenance_audit.py','scripts/media_inventory_audit.py','scripts/public_release_placeholder_audit.py','scripts/hub_a11y_contract_audit.py','scripts/secondary_surface_a11y_contract_audit.py','scripts/operator_release_contract_audit.py','scripts/release_audit.py','scripts/performance_budget.py'):
     if audit not in validate_gate: violations.append(f'Critical audit missing from npm validate: {audit}')
 
 sw=read('sw.js'); cache=re.search(r"const CACHE='(secret-circle-v(\d+))'",sw); staging=re.search(r"const STAGING_CACHE='(secret-circle-v(\d+)-staging)'",sw)
@@ -174,11 +185,13 @@ print(json.dumps({
     'pwa_cache':cache.group(1) if cache else None,'catalog_chain':catalog_chain,'core_classic_content_version':4,
     'resume_privacy_guards_audited':True,'advanced_resume_guard_version':4,'advanced_integrity_audit_required':True,
     'quick_replacement_guard_version':1,'quick_loader_version':7,'quick_session_replacement_audit_required':True,
-    'session_controls_version':3,'quick_timer_resume_audit_required':True,'quick_timer_prompt_free_store':True,
+    'session_controls_version':4,'quick_timer_resume_audit_required':True,'quick_timer_prompt_free_store':True,
     'quick_timer_stale_snapshot_rejection':True,'quick_bfcache_resume_audit_required':True,
     'matching_bfcache_snapshot_reload':True,'stale_bfcache_snapshot_no_reload':True,
-    'hub_safe_round_state_audited':True,'hub_accessibility_layer_audited':True,
-    'secondary_surface_accessibility_layer_audited':True,'reference_content_audit_required':True,
-    'manifest_icon_test_required':True,'media_inventory_audit_required':True,'backup_registry_version':2,
-    'shared_session_controls':True,'split_hub_timer_module':True,'exact_once_contract':True,'controlled_pwa_update':True
+    'quick_background_pause_audit_required':True,'hidden_timer_auto_pause':True,
+    'visible_timer_requires_explicit_resume':True,'hub_safe_round_state_audited':True,
+    'hub_accessibility_layer_audited':True,'secondary_surface_accessibility_layer_audited':True,
+    'reference_content_audit_required':True,'manifest_icon_test_required':True,'media_inventory_audit_required':True,
+    'backup_registry_version':2,'shared_session_controls':True,'split_hub_timer_module':True,
+    'exact_once_contract':True,'controlled_pwa_update':True
 },ensure_ascii=False,indent=2))
