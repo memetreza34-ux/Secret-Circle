@@ -40,7 +40,9 @@ function createWindow(storage) {
       if (!listeners.has(type)) listeners.set(type, []);
       listeners.get(type).push(callback);
     },
-    dispatch(type) { for (const callback of listeners.get(type) || []) callback({ type }); }
+    dispatch(type, detail = {}) {
+      for (const callback of listeners.get(type) || []) callback({ type, ...detail });
+    }
   };
 }
 
@@ -68,7 +70,7 @@ const catalog = {
   getGame(id) { return catalogGames[id] || null; }
 };
 
-assert.equal(Controls.version, 2);
+assert.equal(Controls.version, 3);
 assert.equal(Controls.tickMilliseconds, 250);
 assert.equal(Controls.timerStoreKey, 'secret-circle-party-quick-timers-v1');
 assert.equal(Controls.timerStoreVersion, 1);
@@ -127,7 +129,6 @@ const timerNode = node();
 controller.countdown(2, timerNode, () => { ended += 1; });
 assert.equal(timerNode.textContent, '0:02');
 assert.equal(intervals.size, 1);
-
 currentTime = 1_000;
 [...intervals.values()][0]();
 assert.equal(timerNode.textContent, '0:01');
@@ -140,7 +141,6 @@ assert.equal(nodes['#quick-pause'].getAttribute('aria-pressed'), 'true');
 assert.equal(nodes['#quick-pause-overlay'].hidden, false);
 assert.equal(nodes['#quick-content'].inert, true);
 assert.equal(nodes['#quick-actions'].inert, true);
-
 currentTime = 6_000;
 [...intervals.values()][0]();
 assert.equal(timerNode.textContent, '0:01');
@@ -156,7 +156,6 @@ assert.equal(timerNode.textContent, '0:00');
 assert.equal(ended, 1);
 assert.equal(vibrations, 1);
 assert.equal(intervals.size, 0);
-
 nodes['#quick-skip'].click();
 assert.equal(skipped, 1);
 nodes['#quick-exit'].click();
@@ -165,7 +164,6 @@ assert.equal(controller.isSessionActive(), false);
 assert.equal(nodes['#quick-pause'].disabled, true);
 nodes['#quick-replay'].click();
 assert.equal(replayed, 1);
-
 controller.setSessionActive(true);
 controller.setPaused(true);
 controller.setSessionActive(false);
@@ -212,6 +210,25 @@ assert.equal(persistedStore.snapshots.quick.remainingMs, 3_000);
 resumeController1.stopTimer();
 assert.notEqual(resumeStorage.dump(Controls.timerStoreKey), null, 'engine pagehide stop must preserve the captured snapshot');
 
+// v58: a BFCache restore with a matching timer snapshot reloads into the normal explicit resume path.
+let bfcacheReloads = 0;
+const bfcacheWindow = createWindow(resumeStorage);
+const bfcacheController = Controls.createController({
+  documentRef: { querySelector(selector) { return createNodes()[selector] || null; } },
+  windowRef: bfcacheWindow,
+  storageRef: resumeStorage,
+  catalog,
+  gameId: 'one',
+  reloadFn() { bfcacheReloads += 1; },
+  setIntervalFn: () => 1,
+  clearIntervalFn: () => {}
+});
+assert.equal(bfcacheController.handlePageShow({ persisted: false }), false);
+assert.equal(bfcacheReloads, 0);
+assert.equal(bfcacheController.handlePageShow({ persisted: true }), true);
+assert.equal(bfcacheReloads, 1);
+assert.notEqual(resumeStorage.dump(Controls.timerStoreKey), null, 'BFCache reload must leave the matching snapshot for the normal resume path');
+
 const resumeNodes2 = createNodes();
 const resumeWindow2 = createWindow(resumeStorage);
 const resumeIntervals2 = new Map();
@@ -234,30 +251,35 @@ assert.equal(resumeController2.remainingMilliseconds(), 3_000);
 assert.equal(resumeStorage.dump(Controls.timerStoreKey), null, 'matching snapshot is consumed once');
 resumeController2.stopTimer();
 
-// Stale session/round snapshots never alter a new or different active session.
+// Stale session snapshots neither reload from BFCache nor alter a new timer.
 resumeStorage.setItem(Controls.timerStoreKey, JSON.stringify({
   version: 1,
   snapshots: {
     quick: { gameId: 'one', sessionId: 'other-session', round: 1, phase: 'running', durationMs: 5000, remainingMs: 1000 }
   }
 }));
+let staleReloads = 0;
+const staleWindow = createWindow(resumeStorage);
 const staleNodes = createNodes();
 const staleController = Controls.createController({
   documentRef: { querySelector(selector) { return staleNodes[selector] || null; } },
-  windowRef: createWindow(resumeStorage),
+  windowRef: staleWindow,
   storageRef: resumeStorage,
   catalog,
   gameId: 'one',
   now: () => 0,
+  reloadFn() { staleReloads += 1; },
   setIntervalFn: () => 1,
   clearIntervalFn: () => {}
 });
+assert.equal(staleController.handlePageShow({ persisted: true }), false);
+assert.equal(staleReloads, 0);
+assert.equal(resumeStorage.dump(Controls.timerStoreKey), null, 'stale BFCache snapshot is discarded without reload');
 staleController.setSessionActive(true);
 const staleNode = node();
 staleController.countdown(5, staleNode, () => {});
 assert.equal(staleNode.textContent, '0:05');
 assert.equal(staleController.remainingMilliseconds(), 5_000);
-assert.equal(resumeStorage.dump(Controls.timerStoreKey), null, 'stale snapshot is discarded');
 
 console.log(JSON.stringify({
   ok: true,
@@ -269,5 +291,7 @@ console.log(JSON.stringify({
   accessibilityState: true,
   quickFamilyTimerResume: true,
   timerSnapshotPromptFree: true,
-  staleTimerSnapshotRejected: true
+  staleTimerSnapshotRejected: true,
+  bfcacheTimerReloadGuard: true,
+  staleBfcacheSnapshotNoReload: true
 }, null, 2));
