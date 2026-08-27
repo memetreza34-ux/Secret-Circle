@@ -1,8 +1,8 @@
 # Secret Circle – Hosting-Entscheidungsvertrag
 
-Stand: 26. August 2026  
+Stand: 27. August 2026  
 Status: **PREPARED – Provider und Domains offen**  
-Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v56`**
+Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v57`**
 
 Secret Circle ist eine statische offline-first PWA ohne eigenes Backend. Der Hostinganbieter verarbeitet dennoch HTTP-Verbindungen und kann technische Access-/Securitylogs erzeugen. Hosting bleibt deshalb ein eigenes Release-Gate.
 
@@ -40,7 +40,7 @@ Vor Production Request-/IP-/User-Agent-/Securitydaten, Zwecke, Retention/Löschu
 ## 4. Staging-Vertrag
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v56
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v57
 ```
 
 Danach folgen Browser-/PWA-Smoke, Installation, Offline-Neustart, Updatepfade, Daten-/Resume-/Privacy-Checks und Accessibility-/Gerätetests.
@@ -51,24 +51,25 @@ Zusätzlich real prüfen:
 - **HR52:** sichere Hub-Karten bleiben nach Reload identisch; Wahrheit/Pflicht-Pools unabhängig.
 - **PR53:** Paranoia same-question/same-result ohne Auto-Reveal.
 - **PT54:** Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart stabil und wechseln korrekt in den Timer-Snapshot.
-- **AD55:** Advanced-Guard v4 verwirft unmögliche Location-/Mafia-Zustände; eine bestehende Advanced-Session wird nur nach expliziter Bestätigung ersetzt; Löschfehler bleibt fail-closed.
-- **QR56:** Quick-/Mega-/Viral-/Creator-Session-Ersatz verlangt bei vorhandenem Family-Snapshot Bestätigung; Same-/Cross-Game-Cancel erhält den Alt-Snapshot; ein fehlgeschlagener Replacement-Write bleibt fail-closed.
+- **AD55:** Advanced-Guard v4 verwirft unmögliche Location-/Mafia-Zustände; bestehende Advanced-Session nur nach expliziter Bestätigung ersetzen.
+- **QR56:** Quick-/Mega-/Viral-/Creator-Session-Ersatz verlangt bei vorhandenem Family-Snapshot Bestätigung; Same-/Cross-Game-Cancel erhält den Alt-Snapshot; Write-Fail bleibt fail-closed.
+- **QT57:** laufender Quick-Family-Timer behält seine Restzeit über Reload; Stale-Snapshot wird verworfen; Timer-Store enthält nur technische Metadaten und wird vom 17-Key-Backupvertrag validiert.
 
 ## 5. Production-Vertrag
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v56 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v57 --production
 ```
 
 ## 6. Cache-/Rollback-Regel
 
-- aktuell: `secret-circle-v56`
-- Staging: `secret-circle-v56-staging`
+- aktuell: `secret-circle-v57`
+- Staging: `secret-circle-v57-staging`
 - Cachegeneration nach Offline-Core-Änderung nicht wiederverwenden
 - Rollback/Hotfix erhält eine neue Generation
 - lokale Daten und aktive Sessions soweit vorgesehen erhalten
 
-Historie: v49 Hub Resume Guard → v50 fail-closed Resume-UI → v51 Complete Backup → v52 sichere Hub Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → **v56 bestätigter/fail-closed Quick-Family-Session-Ersatz**.
+Historie: v49 Hub Resume Guard → v50 fail-closed Resume-UI → v51 Complete Backup → v52 sichere Hub Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → **v57 Quick-Family Timer-Restzeit-Resume**.
 
 ## 7. Release-Gate
 
@@ -78,8 +79,8 @@ Vor `HOSTING PASS`:
 - [ ] Region/Datenroute, Logs, Retention, Processor-/AVV- und Drittlandrolle dokumentiert
 - [ ] Abuse-/Security-Kontakt geprüft
 - [ ] getrennte HTTPS-Staging-/Production-Origin
-- [ ] v56/RC Staging-Smoke grün
-- [ ] HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / **QR56** real bestätigt
+- [ ] v57/RC Staging-Smoke grün
+- [ ] HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / **QT57** real bestätigt
 - [ ] manueller PWA-Smoke grün
 - [ ] Rollback real getestet
 - [ ] Privacy-Text auf reales Hosting angepasst
