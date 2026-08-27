@@ -45,10 +45,11 @@
       <p>Vor dem Ersatz wird ausdrücklich gefragt, ob die gespeicherte Session verworfen werden soll. Bei Abbruch bleibt der bisherige Snapshot unverändert. Der alte Snapshot wird nicht vorsorglich gelöscht; erst ein erfolgreicher lokaler Schreibvorgang der neuen Session ersetzt ihn.</p>
       <p>Schlägt dieser Schreibvorgang fehl, verhindert der Replacement Guard einen späteren automatischen Wiederholungs-Write aus dem fehlerhaften In-Memory-Zustand und lädt die Seite kontrolliert neu. Der vorher gespeicherte Snapshot bleibt erhalten.</p>
 
-      <h2>Quick-Family Timer Resume – v57</h2>
+      <h2>Quick-Family Timer Resume – v57/v58</h2>
       <p>Seit v57 speichert die gemeinsame Sessionsteuerung bei einem laufenden Quick-/Mega-/Viral-/Creator-Timer die verbleibende Zeit lokal, damit ein Reload den Timer nicht wieder auf die volle Ausgangsdauer setzt.</p>
       <p>Der Store <code>secret-circle-party-quick-timers-v1</code> enthält ausschließlich technische Metadaten: Enginefamilie, Spiel-ID, Session-ID, Runde, Phase, Ausgangsdauer und verbleibende Millisekunden. Er enthält <strong>keinen Prompt, keine Antwort, Mission, Identität, Karte oder anderen geheimen Spielinhalt</strong>.</p>
       <p>Ein gespeicherter Timer wird nur übernommen, wenn Spiel, Session, Runde, Phase und Ausgangsdauer exakt passen. Fremde oder veraltete Timer-Snapshots werden verworfen.</p>
+      <p>Seit v58 wird zusätzlich die Wiederkehr aus dem Browser-Back-Forward-Cache geschützt. Wenn eine Seite aus dem BFCache wiederhergestellt wird und ein passender gespeicherter Timer existiert, wird kontrolliert in den normalen Resume-Pfad neu geladen, statt einen zuvor gestoppten In-Memory-Timer eingefroren anzuzeigen. Ein veralteter oder fremder Timer-Snapshot wird dabei entfernt, ohne unnötigen Reload.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
@@ -63,8 +64,8 @@
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v57</code>.</p>
-      <p>v57 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 2, <code>quick-session-replacement-guard.js</code> Version 1 und <code>quick-loader.js</code> Version 7. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v58</code>.</p>
+      <p>v58 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 3, <code>quick-session-replacement-guard.js</code> Version 1 und <code>quick-loader.js</code> Version 7. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem entfernt werden.</p>
