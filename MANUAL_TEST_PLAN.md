@@ -1,8 +1,8 @@
 # Secret Circle Party Hub – Manueller Testplan Januar 2027
 
-Stand: 26. August 2026  
+Stand: 27. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v56` / `secret-circle-v56-staging`**  
+Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
@@ -14,10 +14,10 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Actions erreicht sichtbare Steps / Checkout
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` / `npm test` / `npm run validate` / `npm run ci` grün
-- [ ] Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/**QR56** grün
+- [ ] Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/**QT57** grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`, kein Repositorycode ausgeführt. **v50–v56 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`, kein Repositorycode ausgeführt. **v50–v57 sind nicht runnerverifiziert.**
 
 ## 2. Hub / Word Imposter / Core
 
@@ -39,32 +39,47 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 
 ## 4. QR56 – Quick Session Replacement
 
-### Same Game
+- [ ] Same Game: Start verlangt Verwerfbestätigung; Cancel erhält Session-ID/Runde
+- [ ] Cross Game derselben Familie: Start verlangt ebenfalls Bestätigung
+- [ ] Confirm ersetzt erst durch erfolgreichen Engine-Write
+- [ ] Replacement-Write-Fail erhält den Alt-Snapshot fail-closed
+- [ ] Quick, Mega, Viral und Creator repräsentativ prüfen
 
-- [ ] Rapid Fire oder anderes Quick-Spiel starten; Session-ID notieren
-- [ ] Reload → Resume-Box sichtbar
-- [ ] „Spiel starten“ statt „Fortsetzen“ drücken
-- [ ] Verwerfbestätigung erscheint
-- [ ] Cancel → alte Session-ID/Runde bleiben unverändert
-- [ ] Confirm → neue Session-ID und neue Runde starten
+## 5. QT57 – Quick Timer Resume
 
-### Cross Game
+### Restzeit
 
-- [ ] aktive Quick-Family-Session anlegen
-- [ ] anderes Quick/Trending-Spiel derselben Familie öffnen
-- [ ] normaler Start verlangt Bestätigung, obwohl der fremde Stand nicht als Resume-Karte dargestellt wird
-- [ ] Cancel → alte Game-ID und Session-ID bleiben gespeichert
-- [ ] Confirm → neuer Snapshot gehört zum neuen Spiel
-- [ ] Mega, Viral und Creator jeweils mindestens einmal wiederholen
+- [ ] Rapid Fire starten und sichtbaren Timer mindestens 1 Sekunde laufen lassen
+- [ ] Restzeit notieren
+- [ ] Seite reloaden
+- [ ] gespeicherte Session bewusst fortsetzen
+- [ ] Timer zeigt Restzeit statt voller Ausgangsdauer
+- [ ] Timer läuft danach normal weiter und endet genau einmal
 
-### Storage-Fail / Load Order
+### Stale-Snapshot
 
-- [ ] Replacement-Write künstlich fehlschlagen lassen
-- [ ] Guard lädt kontrolliert neu; Alt-Snapshot bleibt erhalten
-- [ ] kein `pagehide`-Retry überschreibt den Altstand
-- [ ] Script-Reihenfolge real: `party-session-controls.js` → `quick-session-replacement-guard.js` → jeweilige Engine
+- [ ] andere Session-ID → Snapshot ignoriert/gelöscht
+- [ ] andere Runde → ignoriert/gelöscht
+- [ ] andere Phase → ignoriert/gelöscht
+- [ ] andere Ausgangsdauer → ignoriert/gelöscht
+- [ ] Restzeit > Ausgangsdauer → abgelehnt
 
-## 5. BK51 – Complete Backup
+### Privacy / Backup
+
+- [ ] `secret-circle-party-quick-timers-v1` enthält nur technische Metadaten
+- [ ] keine Prompts/Antworten/Missionen/Identitäten/Karten im Timer-Store
+- [ ] Complete Backup enthält den Store als einen von 17 managed Keys
+- [ ] Export→Restore mit gültigem Timer-Store
+- [ ] ungültiger Timer-Store wird vor Mutation abgelehnt
+
+### Familien
+
+- [ ] Quick/Trending repräsentativ
+- [ ] Mega mit Timer repräsentativ
+- [ ] Viral mit Timer, sofern vorhanden
+- [ ] Creator mit Timer, sofern vorhanden
+
+## 6. BK51 – Complete Backup
 
 - [ ] managed Export→Restore
 - [ ] Future-Namespace/-Version bleibt unverändert
@@ -74,7 +89,7 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 - [ ] Write-/Quota-Fehler rollt managed Zustand zurück
 - [ ] explizite Komplettlöschung entfernt alle `secret-circle-*`-Keys
 
-## 6. Quick / Creator allgemein
+## 7. Quick / Creator allgemein
 
 - [ ] Quick-Mechanikfamilien komplett smoken; Fokus nach Re-Render sinnvoll
 - [ ] gemeinsame Pause/Skip/Abort/Replay-Steuerung
@@ -82,19 +97,19 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 - [ ] Creator Radiogroup, Wizard-/Hilfefokus, CRUD, Export/Import
 - [ ] unerfahrene Person kann ohne Entwicklerhilfe ein valides eigenes Spiel erstellen
 
-## 7. PWA / Offline – v56
+## 8. PWA / Offline – v57
 
 - [ ] Android-Installation / iOS Add to Home Screen
 - [ ] Offline-Neustart / Kernseiten / Query-Routen
 - [ ] Resume-/Privacy-/A11y-/Backup-Schichten offline
-- [ ] Advanced Guard v4 offline
+- [ ] SessionControls v2 + QT57 offline
 - [ ] Quick Replacement Guard v1 + Quick Loader v7 offline
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 offline soweit anwendbar
-- [ ] Update von mindestens zwei älteren Installationen auf v56/RC
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 offline soweit anwendbar
+- [ ] Update von mindestens zwei älteren Installationen auf v57/RC
 - [ ] aktive Session und lokale Daten erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
-## 8. Accessibility / reale Gruppen
+## 9. Accessibility / reale Gruppen
 
 - [ ] Tastatur ohne Maus / sichtbarer Fokus / Skip-Link
 - [ ] VoiceOver / TalkBack
@@ -103,13 +118,13 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 - [ ] PN1–PN3 Smart Party Night
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 
-## 9. Release-Freigabe
+## 10. Release-Freigabe
 
 - [ ] CI/Cross-Browser auf unverändertem RC
 - [ ] Branch Protection
 - [ ] HTTPS-Staging/Production
 - [ ] Android/iPhone/iPad + Accessibility
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / **QR56**
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / **QT57**
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content/Rechte/Legal/Support/Hosting/Incident-Sign-off
 - [ ] zwei PWA-Upgrades + Rollback
