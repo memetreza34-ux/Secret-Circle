@@ -45,20 +45,26 @@
       <p>Vor dem Ersatz wird ausdrücklich gefragt, ob die gespeicherte Session verworfen werden soll. Bei Abbruch bleibt der bisherige Snapshot unverändert. Der alte Snapshot wird nicht vorsorglich gelöscht; erst ein erfolgreicher lokaler Schreibvorgang der neuen Session ersetzt ihn.</p>
       <p>Schlägt dieser Schreibvorgang fehl, verhindert der Replacement Guard einen späteren automatischen Wiederholungs-Write aus dem fehlerhaften In-Memory-Zustand und lädt die Seite kontrolliert neu. Der vorher gespeicherte Snapshot bleibt erhalten.</p>
 
+      <h2>Quick-Family Timer Resume – v57</h2>
+      <p>Seit v57 speichert die gemeinsame Sessionsteuerung bei einem laufenden Quick-/Mega-/Viral-/Creator-Timer die verbleibende Zeit lokal, damit ein Reload den Timer nicht wieder auf die volle Ausgangsdauer setzt.</p>
+      <p>Der Store <code>secret-circle-party-quick-timers-v1</code> enthält ausschließlich technische Metadaten: Enginefamilie, Spiel-ID, Session-ID, Runde, Phase, Ausgangsdauer und verbleibende Millisekunden. Er enthält <strong>keinen Prompt, keine Antwort, Mission, Identität, Karte oder anderen geheimen Spielinhalt</strong>.</p>
+      <p>Ein gespeicherter Timer wird nur übernommen, wenn Spiel, Session, Runde, Phase und Ausgangsdauer exakt passen. Fremde oder veraltete Timer-Snapshots werden verworfen.</p>
+
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
 
       <h2>Sicherung und Import</h2>
       <p>JSON-Sicherungen können lokale Spielernamen, Presets, Favoriten, Verlauf, Statistiken, eigene Inhalte, Einstellungen und aktive Sessions enthalten. Exportierte Sicherungen sind nicht automatisch verschlüsselt und sollten nur an vertrauenswürdigen Orten gespeichert werden.</p>
       <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Keys. Unbekannte oder neuere Secret-Circle-Namespaces und Storage-Versionen werden durch einen älteren Restore nicht still gelöscht. Schreibfehler rollen verwaltete Werte soweit möglich zurück. „Alle lokalen Daten löschen“ bleibt davon getrennt und entfernt bewusst sämtliche Secret-Circle-Namespaces.</p>
+      <p>Seit v57 umfasst der Complete-Backup-Vertrag 17 exakte aktuelle Keys einschließlich des promptfreien Quick-Timer-Stores.</p>
 
       <h2>Hosting und technische Verbindungsdaten</h2>
       <p>Beim Laden oder Aktualisieren ruft der Browser statische App-Dateien vom später final festgelegten Hostinganbieter ab. Dabei können technisch notwendige Verbindungs- oder Serverlogdaten anfallen. Anbieter, Verantwortlicher, Kontakt, Logverarbeitung, Aufbewahrung und gegebenenfalls Drittlandbezug werden vor Veröffentlichung anhand des realen Hostings ergänzt.</p>
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v56</code>.</p>
-      <p>v56 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>quick-session-replacement-guard.js</code> Version 1 und <code>quick-loader.js</code> Version 7. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v57</code>.</p>
+      <p>v57 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 2, <code>quick-session-replacement-guard.js</code> Version 1 und <code>quick-loader.js</code> Version 7. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem entfernt werden.</p>
