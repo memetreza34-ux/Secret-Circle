@@ -2,7 +2,7 @@
 
 Stand: 27. August 2026  
 Status: **PREPARED – Provider und Domains offen**  
-Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v58`**
+Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v59`**
 
 Secret Circle ist eine statische offline-first PWA ohne eigenes Backend. Der Hostinganbieter verarbeitet dennoch HTTP-Verbindungen und kann technische Access-/Securitylogs erzeugen. Hosting bleibt deshalb ein eigenes Release-Gate.
 
@@ -40,7 +40,7 @@ Vor Production Request-/IP-/User-Agent-/Securitydaten, Zwecke, Retention/Löschu
 ## 4. Staging-Vertrag
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v58
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v59
 ```
 
 Danach folgen Browser-/PWA-Smoke, Installation, Offline-Neustart, Updatepfade, Daten-/Resume-/Privacy-Checks und Accessibility-/Gerätetests.
@@ -52,25 +52,26 @@ Zusätzlich real prüfen:
 - **PR53:** Paranoia same-question/same-result ohne Auto-Reveal.
 - **PT54:** Hot-Potato-Aufgabe und Wortketten-Startbuchstabe bleiben vor Timerstart stabil und wechseln korrekt in den Timer-Snapshot.
 - **AD55:** Advanced-Guard v4 verwirft unmögliche Location-/Mafia-Zustände; bestehende Advanced-Session nur nach expliziter Bestätigung ersetzen.
-- **QR56:** Quick-/Mega-/Viral-/Creator-Session-Ersatz verlangt bei vorhandenem Family-Snapshot Bestätigung; Same-/Cross-Game-Cancel erhält den Alt-Snapshot; Write-Fail bleibt fail-closed.
-- **QT57:** laufender Quick-Family-Timer behält seine Restzeit über Reload; Stale-Snapshot wird verworfen; Timer-Store enthält nur technische Metadaten und wird vom 17-Key-Backupvertrag validiert.
-- **BF58:** mobile BFCache-Rückkehr mit passendem Timer-Snapshot führt kontrolliert in den normalen Resume-Pfad; ein stale Snapshot wird entfernt, ohne unnötigen Reload.
+- **QR56:** Quick-Family-Session-Ersatz verlangt Bestätigung; Cancel erhält den Alt-Snapshot; Write-Fail bleibt fail-closed.
+- **QT57:** laufender Quick-Family-Timer behält Restzeit über Reload; stale Snapshot wird verworfen; Timer-Store bleibt promptfrei.
+- **BF58:** mobile BFCache-Rückkehr mit passendem Timer-Snapshot führt kontrolliert in den normalen Resume-Pfad; stale Snapshot wird ohne Reload entfernt.
+- **BG59:** App-/Tabwechsel oder Screen-Lock pausiert einen laufenden Quick-Family-Timer automatisch; nach Rückkehr bleibt er pausiert, bis „Fortsetzen“ bewusst gewählt wird.
 
 ## 5. Production-Vertrag
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v58 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v59 --production
 ```
 
 ## 6. Cache-/Rollback-Regel
 
-- aktuell: `secret-circle-v58`
-- Staging: `secret-circle-v58-staging`
+- aktuell: `secret-circle-v59`
+- Staging: `secret-circle-v59-staging`
 - Cachegeneration nach Offline-Core-Änderung nicht wiederverwenden
 - Rollback/Hotfix erhält eine neue Generation
 - lokale Daten und aktive Sessions soweit vorgesehen erhalten
 
-Historie: v49 Hub Resume Guard → v50 fail-closed Resume-UI → v51 Complete Backup → v52 sichere Hub Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → v57 Quick-Family Timer-Restzeit-Resume → **v58 BFCache Timer Resume**.
+Historie: v49 Hub Resume Guard → v50 fail-closed Resume-UI → v51 Complete Backup → v52 sichere Hub Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → v57 Quick Timer Resume → v58 BFCache Timer Resume → **v59 Background Timer Pause**.
 
 ## 7. Release-Gate
 
@@ -80,8 +81,8 @@ Vor `HOSTING PASS`:
 - [ ] Region/Datenroute, Logs, Retention, Processor-/AVV- und Drittlandrolle dokumentiert
 - [ ] Abuse-/Security-Kontakt geprüft
 - [ ] getrennte HTTPS-Staging-/Production-Origin
-- [ ] v58/RC Staging-Smoke grün
-- [ ] HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / **BF58** real bestätigt
+- [ ] v59/RC Staging-Smoke grün
+- [ ] HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / **BG59** real bestätigt
 - [ ] manueller PWA-Smoke grün
 - [ ] Rollback real getestet
 - [ ] Privacy-Text auf reales Hosting angepasst
