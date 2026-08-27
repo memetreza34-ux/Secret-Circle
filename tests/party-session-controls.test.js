@@ -46,6 +46,21 @@ function createWindow(storage) {
   };
 }
 
+function createDocument(nodes = createNodes()) {
+  const listeners = new Map();
+  return {
+    hidden: false,
+    querySelector(selector) { return nodes[selector] || null; },
+    addEventListener(type, callback) {
+      if (!listeners.has(type)) listeners.set(type, []);
+      listeners.get(type).push(callback);
+    },
+    dispatch(type) {
+      for (const callback of listeners.get(type) || []) callback({ type });
+    }
+  };
+}
+
 function createNodes() {
   return Object.fromEntries([
     '#quick-play', '#quick-pause', '#quick-skip', '#quick-exit', '#quick-replay',
@@ -70,7 +85,7 @@ const catalog = {
   getGame(id) { return catalogGames[id] || null; }
 };
 
-assert.equal(Controls.version, 3);
+assert.equal(Controls.version, 4);
 assert.equal(Controls.tickMilliseconds, 250);
 assert.equal(Controls.timerStoreKey, 'secret-circle-party-quick-timers-v1');
 assert.equal(Controls.timerStoreVersion, 1);
@@ -91,7 +106,7 @@ assert.equal(Controls.normalizeTimerSnapshot({ gameId: 'one', sessionId: 's1', r
 assert.equal(Controls.normalizeTimerSnapshot({ gameId: 'one', sessionId: 's1', round: 1, phase: 'running', durationMs: 5000, remainingMs: 6000 }), null);
 
 const nodes = createNodes();
-const documentRef = { querySelector(selector) { return nodes[selector] || null; } };
+const documentRef = createDocument(nodes);
 const storage = createStorage();
 const windowRef = createWindow(storage);
 let currentTime = 0;
@@ -171,6 +186,51 @@ assert.equal(controller.isPaused(), false);
 assert.equal(nodes['#quick-pause-overlay'].hidden, true);
 assert.equal(nodes['#quick-content'].inert, false);
 
+// v59: backgrounding a running timer pauses it; becoming visible never auto-resumes.
+const backgroundNodes = createNodes();
+const backgroundDocument = createDocument(backgroundNodes);
+const backgroundStorage = createStorage();
+const backgroundWindow = createWindow(backgroundStorage);
+let backgroundTime = 0;
+let backgroundIntervalId = 0;
+const backgroundIntervals = new Map();
+const backgroundController = Controls.createController({
+  documentRef: backgroundDocument,
+  windowRef: backgroundWindow,
+  storageRef: backgroundStorage,
+  catalog,
+  gameId: 'one',
+  now: () => backgroundTime,
+  setIntervalFn(callback) { backgroundIntervalId += 1; backgroundIntervals.set(backgroundIntervalId, callback); return backgroundIntervalId; },
+  clearIntervalFn(id) { backgroundIntervals.delete(id); }
+});
+backgroundController.setSessionActive(true);
+const backgroundTimerNode = node();
+backgroundController.countdown(5, backgroundTimerNode, () => {});
+backgroundTime = 1_000;
+[...backgroundIntervals.values()][0]();
+assert.equal(backgroundController.remainingMilliseconds(), 4_000);
+backgroundDocument.hidden = true;
+backgroundDocument.dispatch('visibilitychange');
+assert.equal(backgroundController.isPaused(), true);
+assert.equal(backgroundNodes['#quick-pause'].textContent, 'Fortsetzen');
+assert.equal(backgroundNodes['#quick-pause-overlay'].hidden, false);
+backgroundTime = 61_000;
+[...backgroundIntervals.values()][0]();
+assert.equal(backgroundController.remainingMilliseconds(), 4_000, 'background time must not reduce the timer');
+backgroundDocument.hidden = false;
+backgroundDocument.dispatch('visibilitychange');
+assert.equal(backgroundController.isPaused(), true, 'returning visible must require explicit resume');
+backgroundTime = 70_000;
+[...backgroundIntervals.values()][0]();
+assert.equal(backgroundController.remainingMilliseconds(), 4_000, 'visible state alone must not restart the timer');
+backgroundNodes['#quick-pause'].click();
+assert.equal(backgroundController.isPaused(), false);
+backgroundTime = 71_000;
+[...backgroundIntervals.values()][0]();
+assert.equal(backgroundController.remainingMilliseconds(), 3_000, 'timer continues only after explicit resume');
+backgroundController.stopTimer();
+
 // v57: running Quick-family timers persist only technical remaining-time metadata on pagehide.
 const resumeStorage = createStorage({
   'secret-circle-party-quick-active-v1': JSON.stringify({
@@ -183,7 +243,7 @@ const resumeIntervals = new Map();
 const resumeNodes1 = createNodes();
 const resumeWindow1 = createWindow(resumeStorage);
 const resumeController1 = Controls.createController({
-  documentRef: { querySelector(selector) { return resumeNodes1[selector] || null; } },
+  documentRef: createDocument(resumeNodes1),
   windowRef: resumeWindow1,
   storageRef: resumeStorage,
   catalog,
@@ -214,7 +274,7 @@ assert.notEqual(resumeStorage.dump(Controls.timerStoreKey), null, 'engine pagehi
 let bfcacheReloads = 0;
 const bfcacheWindow = createWindow(resumeStorage);
 const bfcacheController = Controls.createController({
-  documentRef: { querySelector(selector) { return createNodes()[selector] || null; } },
+  documentRef: createDocument(createNodes()),
   windowRef: bfcacheWindow,
   storageRef: resumeStorage,
   catalog,
@@ -234,7 +294,7 @@ const resumeWindow2 = createWindow(resumeStorage);
 const resumeIntervals2 = new Map();
 let resumeIntervalId2 = 0;
 const resumeController2 = Controls.createController({
-  documentRef: { querySelector(selector) { return resumeNodes2[selector] || null; } },
+  documentRef: createDocument(resumeNodes2),
   windowRef: resumeWindow2,
   storageRef: resumeStorage,
   catalog,
@@ -262,7 +322,7 @@ let staleReloads = 0;
 const staleWindow = createWindow(resumeStorage);
 const staleNodes = createNodes();
 const staleController = Controls.createController({
-  documentRef: { querySelector(selector) { return staleNodes[selector] || null; } },
+  documentRef: createDocument(staleNodes),
   windowRef: staleWindow,
   storageRef: resumeStorage,
   catalog,
@@ -293,5 +353,7 @@ console.log(JSON.stringify({
   timerSnapshotPromptFree: true,
   staleTimerSnapshotRejected: true,
   bfcacheTimerReloadGuard: true,
-  staleBfcacheSnapshotNoReload: true
+  staleBfcacheSnapshotNoReload: true,
+  backgroundVisibilityAutoPause: true,
+  visibleRequiresExplicitResume: true
 }, null, 2));
