@@ -33,7 +33,7 @@ sw = read('sw.js')
 sw_test = read('tests/service-worker.test.js')
 
 for marker in (
-    'const VERSION = 2;',
+    'const VERSION = 3;',
     "const TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1';",
     "Object.freeze(['quick', 'mega', 'viral', 'created'])",
     'function normalizeTimerSnapshot(value)',
@@ -67,7 +67,7 @@ for marker in (
         violations.append(f'QT57 backup registry marker missing: {marker}')
 
 for marker in (
-    'Controls.version, 2',
+    'Controls.version, 3',
     "Controls.timerStoreKey, 'secret-circle-party-quick-timers-v1'",
     'quickFamilyTimerResume: true',
     'timerSnapshotPromptFree: true',
@@ -116,7 +116,7 @@ if violations:
 
 print(json.dumps({
     'quick_timer_resume_audit': 'PASS',
-    'session_controls_version': 2,
+    'session_controls_version': 3,
     'timer_store_version': 1,
     'families': ['quick', 'mega', 'viral', 'created'],
     'prompt_free_timer_snapshot': True,
