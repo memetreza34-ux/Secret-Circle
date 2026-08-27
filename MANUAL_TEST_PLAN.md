@@ -2,7 +2,7 @@
 
 Stand: 27. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**  
+Offline-Core: **`secret-circle-v58` / `secret-circle-v58-staging`**  
 Produktstand: **45 Built-ins · 15 Core · 13 Extended · 17 Labs · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
@@ -14,10 +14,10 @@ Vor finaler RC-Abnahme auf demselben Commit:
 - [ ] Actions erreicht sichtbare Steps / Checkout
 - [ ] Online-`npm ci` grün
 - [ ] `npm run check` / `npm test` / `npm run validate` / `npm run ci` grün
-- [ ] Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/**QT57** grün
+- [ ] Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/QT57/**BF58** grün
 - [ ] Chromium / Firefox / WebKit grün
 
-Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`, kein Repositorycode ausgeführt. **v50–v57 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`, kein Repositorycode ausgeführt. **v50–v58 sind nicht runnerverifiziert.**
 
 ## 2. Hub / Word Imposter / Core
 
@@ -47,39 +47,39 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 
 ## 5. QT57 – Quick Timer Resume
 
-### Restzeit
-
 - [ ] Rapid Fire starten und sichtbaren Timer mindestens 1 Sekunde laufen lassen
-- [ ] Restzeit notieren
-- [ ] Seite reloaden
-- [ ] gespeicherte Session bewusst fortsetzen
-- [ ] Timer zeigt Restzeit statt voller Ausgangsdauer
-- [ ] Timer läuft danach normal weiter und endet genau einmal
-
-### Stale-Snapshot
-
-- [ ] andere Session-ID → Snapshot ignoriert/gelöscht
-- [ ] andere Runde → ignoriert/gelöscht
-- [ ] andere Phase → ignoriert/gelöscht
-- [ ] andere Ausgangsdauer → ignoriert/gelöscht
-- [ ] Restzeit > Ausgangsdauer → abgelehnt
-
-### Privacy / Backup
-
+- [ ] Reload → gespeicherte Session bewusst fortsetzen
+- [ ] Timer zeigt Restzeit statt voller Ausgangsdauer und endet genau einmal
+- [ ] Stale-Snapshot nach Session/Runde/Phase/Dauer wird ignoriert und gelöscht
 - [ ] `secret-circle-party-quick-timers-v1` enthält nur technische Metadaten
-- [ ] keine Prompts/Antworten/Missionen/Identitäten/Karten im Timer-Store
 - [ ] Complete Backup enthält den Store als einen von 17 managed Keys
-- [ ] Export→Restore mit gültigem Timer-Store
-- [ ] ungültiger Timer-Store wird vor Mutation abgelehnt
+- [ ] Quick/Mega/Viral/Creator repräsentativ prüfen
 
-### Familien
+## 6. BF58 – BFCache Timer Resume
 
-- [ ] Quick/Trending repräsentativ
-- [ ] Mega mit Timer repräsentativ
-- [ ] Viral mit Timer, sofern vorhanden
-- [ ] Creator mit Timer, sofern vorhanden
+### Matching
 
-## 6. BK51 – Complete Backup
+- [ ] laufenden Quick-Family-Timer starten
+- [ ] zu einer anderen Seite wechseln, sodass Browser-History/BFCache genutzt werden kann
+- [ ] per Zurück-Navigation zurückkehren
+- [ ] `pageshow.persisted` mit passendem Snapshot führt kontrolliert zum Reload in den QT57-Resume-Pfad
+- [ ] danach läuft der Timer mit Restzeit weiter; kein eingefrorener alter In-Memory-Timer bleibt sichtbar
+
+### Stale
+
+- [ ] Snapshot einer anderen Session/Runde/Phase/Dauer vorbereiten
+- [ ] BFCache-Rückkehr auslösen
+- [ ] stale Snapshot wird entfernt
+- [ ] kein unnötiger Reload
+
+### Geräte
+
+- [ ] iPhone Safari
+- [ ] iPad Safari
+- [ ] Android Chrome
+- [ ] installierte v58-PWA soweit Plattform-BFCache unterstützt
+
+## 7. BK51 – Complete Backup
 
 - [ ] managed Export→Restore
 - [ ] Future-Namespace/-Version bleibt unverändert
@@ -89,7 +89,7 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 - [ ] Write-/Quota-Fehler rollt managed Zustand zurück
 - [ ] explizite Komplettlöschung entfernt alle `secret-circle-*`-Keys
 
-## 7. Quick / Creator allgemein
+## 8. Quick / Creator allgemein
 
 - [ ] Quick-Mechanikfamilien komplett smoken; Fokus nach Re-Render sinnvoll
 - [ ] gemeinsame Pause/Skip/Abort/Replay-Steuerung
@@ -97,19 +97,19 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 - [ ] Creator Radiogroup, Wizard-/Hilfefokus, CRUD, Export/Import
 - [ ] unerfahrene Person kann ohne Entwicklerhilfe ein valides eigenes Spiel erstellen
 
-## 8. PWA / Offline – v57
+## 9. PWA / Offline – v58
 
 - [ ] Android-Installation / iOS Add to Home Screen
 - [ ] Offline-Neustart / Kernseiten / Query-Routen
 - [ ] Resume-/Privacy-/A11y-/Backup-Schichten offline
-- [ ] SessionControls v2 + QT57 offline
+- [ ] SessionControls v3 + QT57 + BF58 offline
 - [ ] Quick Replacement Guard v1 + Quick Loader v7 offline
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 offline soweit anwendbar
-- [ ] Update von mindestens zwei älteren Installationen auf v57/RC
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 offline soweit anwendbar
+- [ ] Update von mindestens zwei älteren Installationen auf v58/RC
 - [ ] aktive Session und lokale Daten erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
-## 9. Accessibility / reale Gruppen
+## 10. Accessibility / reale Gruppen
 
 - [ ] Tastatur ohne Maus / sichtbarer Fokus / Skip-Link
 - [ ] VoiceOver / TalkBack
@@ -118,13 +118,13 @@ Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `step
 - [ ] PN1–PN3 Smart Party Night
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 
-## 10. Release-Freigabe
+## 11. Release-Freigabe
 
 - [ ] CI/Cross-Browser auf unverändertem RC
 - [ ] Branch Protection
 - [ ] HTTPS-Staging/Production
 - [ ] Android/iPhone/iPad + Accessibility
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / **QT57**
+- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / **BF58**
 - [ ] keine offenen Critical/High-Funde
 - [ ] Content/Rechte/Legal/Support/Hosting/Incident-Sign-off
 - [ ] zwei PWA-Upgrades + Rollback
