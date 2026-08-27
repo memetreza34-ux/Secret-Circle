@@ -5,7 +5,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createSessionControlsModule() {
   'use strict';
 
-  const VERSION = 3;
+  const VERSION = 4;
   const TICK_MS = 250;
   const TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1';
   const TIMER_STORE_VERSION = 1;
@@ -318,6 +318,13 @@
       return true;
     }
 
+    function handleVisibilityChange() {
+      if (!documentRef?.hidden) return false;
+      if (!sessionActive || !timerNode || !timerEnd || timerFinished || timerDurationMs <= 0) return false;
+      setPaused(true);
+      return true;
+    }
+
     function togglePause() { return setPaused(!paused); }
 
     function setSessionActive(value) {
@@ -362,6 +369,7 @@
       return true;
     }
 
+    documentRef?.addEventListener?.('visibilitychange', handleVisibilityChange);
     windowRef?.addEventListener?.('pagehide', persistRunningTimerSnapshot, { capture: true });
     windowRef?.addEventListener?.('pageshow', handlePageShow);
     bind();
@@ -374,6 +382,7 @@
       stopTimer,
       persistRunningTimerSnapshot,
       handlePageShow,
+      handleVisibilityChange,
       setPaused,
       togglePause,
       isPaused: () => paused,
