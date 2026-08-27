@@ -50,24 +50,33 @@ Ein Snapshot wird nur bei exakt passender Game-ID, Session-ID, Runde, Phase und 
 
 ## 9. Quick-Family BFCache Resume – v58
 
-`party-session-controls.js` steht seit **v58 auf Version 3**.
+Bei `pageshow.persisted === true` prüft die gemeinsame Sessionsteuerung den gespeicherten Timer-Snapshot. Ein exakt passender Snapshot führt kontrolliert in den normalen QT57-Resume-Pfad; der Snapshot bleibt bis dahin erhalten. Ein stale/fremder Snapshot wird gelöscht, ohne unnötigen Reload. BFCache darf keinen eingefrorenen „running“-Timer als interaktiven Zustand zurücklassen.
 
-Bei `pagehide` kann ein mobiler Browser die Seite in den Back-Forward-Cache legen. Die Engine stoppt dabei ihren In-Memory-Timer. Deshalb gilt:
+`tests/party-session-controls.test.js`, `tests/e2e/quick-timer-resume.spec.js` und `scripts/quick_bfcache_resume_audit.py` schützen diese Grenze.
 
-- `pageshow.persisted === true` wird explizit behandelt;
-- liegt ein zur aktuellen Game-/Session-/Round-/Phase-/Duration-Struktur passender Timer-Snapshot vor, wird **kontrolliert neu geladen**, damit der normale explizite Resume-Pfad die Restzeit wiederherstellt;
-- der passende Snapshot bleibt bis zu diesem normalen Resume erhalten und wird nicht vor dem Reload konsumiert;
-- ein stale/fremder BFCache-Snapshot wird gelöscht, **ohne** Reload;
-- normales `pageshow` ohne BFCache führt zu keinem Reload;
-- BFCache darf keinen eingefrorenen „running“-Timer als interaktiven Zustand zurücklassen.
+## 10. Quick-Family Background Pause – v59
 
-`tests/party-session-controls.test.js` und `scripts/quick_bfcache_resume_audit.py` schützen BF58 quellsseitig. Reale Safari-/Chrome-BFCache-Abnahme bleibt ein Gerätegate.
+`party-session-controls.js` steht seit **v59 auf Version 4**.
 
-## 10. Lokale Transaktionen und Exact-once
+Für Quick/Trending, Mega, Viral und Creator gilt bei einem tatsächlich laufenden Timer:
+
+- `document.hidden === true` löst über `visibilitychange` automatisch `setPaused(true)` aus;
+- Hintergrundzeit durch App-Wechsel, Tabwechsel oder Screen-Lock wird nicht vom Timer abgezogen;
+- beim erneuten Sichtbarwerden erfolgt **kein Auto-Resume**;
+- die Oberfläche bleibt im Pausenstatus mit „Fortsetzen“ und gesperrten Rundenaktionen;
+- erst eine bewusste Nutzeraktion setzt den Timer fort und setzt den Zeitanker neu;
+- bereits manuell pausierte Runden bleiben ebenfalls pausiert;
+- ohne aktive laufende Timer-Runde verändert `visibilitychange` keinen Spielzustand.
+
+Damit ist die Fairnessregel: **Hidden pausiert, Visible fordert explizites Resume.**
+
+`tests/party-session-controls.test.js`, `tests/e2e/quick-background-pause.spec.js` und `scripts/quick_background_pause_audit.py` schützen BG59. Reale App-Wechsel-/Screen-Lock-Tests auf iOS/Android bleiben Geräte-Evidence.
+
+## 11. Lokale Transaktionen und Exact-once
 
 Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreiben vollständig und rollen bei Fehlern zurück. Fertige Sessions besitzen stabile Completion-/History-IDs. Reload, Retry oder Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
-## 11. Datenschutz und Security durch Architektur
+## 12. Datenschutz und Security durch Architektur
 
 - keine Analytics-/Ads-Skripte oder externen Runtime-CDNs
 - restriktive CSP
@@ -75,43 +84,45 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreib
 - Geheimkarten/Rollen/Fragen bei Fokusverlust verdecken
 - geheime Zustände nach Reload nie automatisch sichtbar öffnen
 - Timer-Resume speichert nur technische Restzeit-Metadaten
+- Hintergrundwechsel pausieren laufende Quick-Family-Timer statt Zeit unsichtbar abzuziehen
+- Sichtbarwerden startet einen pausierten Timer nicht automatisch
 - manipulierte Resume-Zustände werden fail-closed verworfen
 - Session-Ersatz erfolgt nicht still
 
-## 12. Offline- und Updatevertrag
+## 13. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v58` / `secret-circle-v58-staging`**.
+Aktueller Offline-Core: **`secret-circle-v59` / `secret-circle-v59-staging`**.
 
-Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Quick Timer Resume → **v58 BFCache Timer Restore**.
+Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Quick Timer Resume → v58 BFCache Timer Restore → **v59 Background Timer Pause**.
 
 Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Alt→Neu/Rollback real testen.
 
-## 13. PWA-Installationsmetadaten
+## 14. PWA-Installationsmetadaten
 
 `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
 
-## 14. Accessibility als Definition of Done
+## 15. Accessibility als Definition of Done
 
 Kernoberflächen benötigen semantische Struktur, Labels, sichtbaren Fokus, Tastaturbedienung, modale Fokusgrenzen, Touchziele, Reduced Motion und Reflow. VoiceOver/TalkBack/Touch/Zoom bleiben reale Gates.
 
-## 15. Inhalts- und Rechtevertrag
+## 16. Inhalts- und Rechtevertrag
 
 Keine kopierten proprietären Karten, fremden Medien/Logos ohne Rechte oder unnötigen konkreten Marken-/Franchisebezug. Ein `unresolved` Releaseasset blockiert `assetsThirdParty = PASS`.
 
-## 16. Testpyramide
+## 17. Testpyramide
 
-Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
+Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
 
-QT57: `scripts/quick_timer_resume_audit.py`. BF58: `scripts/quick_bfcache_resume_audit.py`. Release Candidate zusätzlich: Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/Gruppentests.
+QT57: `scripts/quick_timer_resume_audit.py`. BF58: `scripts/quick_bfcache_resume_audit.py`. BG59: `scripts/quick_background_pause_audit.py`. Release Candidate zusätzlich: Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/Gruppentests.
 
-## 17. Performance und Assets
+## 18. Performance und Assets
 
 Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB. PWA-Assets: `icon.svg`, `icon-192.png`, `icon-512.png`, Provenienzmanifest. Rechtebasis wird separat menschlich freigegeben.
 
-## 18. Betrieb, Deprecation und Rollback
+## 19. Betrieb, Deprecation und Rollback
 
 Kein Force-Push auf stabile Release-Basen. Rollback/Hotfix erhält nach Offline-Core-Änderungen eine neue Cachegeneration. Persistierte Daten müssen kompatibel bleiben oder explizit migriert werden.
 
-## 19. Releaseentscheidung
+## 20. Releaseentscheidung
 
 Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und reale Gates tatsächlich ausgeführt wurden**. `release-evidence.json` ist die finale Quelle; `GO` erst bei belegten PASS-Gates auf demselben unveränderten RC.
