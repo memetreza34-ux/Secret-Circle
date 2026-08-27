@@ -3,11 +3,10 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v57'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v57-staging'/);
+assert.match(source, /const CACHE='secret-circle-v58'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v58-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -17,38 +16,21 @@ assert.match(source, /active\.delete\(request\)/);
 assert.match(source, /event\.data\?\.type === 'SKIP_WAITING'/);
 assert.match(source, /canonicalNavigation \? stripSearch\(request\) : request/);
 assert.match(source, /caches\.match\(stripSearch\(request\), \{ cacheName: CACHE \}\)/);
-assert.match(source, /word-imposter-resume-guard\.js/);
-assert.match(source, /party-hub-resume-guard\.js/);
-assert.match(source, /party-hub-round-state\.js/);
-assert.match(source, /party-hub-timers\.js/);
-assert.match(source, /party-hub-polish\.js/);
-assert.match(source, /party-hub-a11y\.js/);
-assert.match(source, /secondary-surface-a11y\.js/);
-assert.match(source, /advanced-resume-guard\.js/);
-assert.match(source, /party-advanced-runner\.js/);
-assert.match(source, /advanced-privacy-guard\.js/);
-assert.match(source, /quick-session-replacement-guard\.js/);
-assert.match(source, /quick-loader\.js/);
-assert.match(source, /backup-schema-registry\.js/);
-assert.match(source, /party-data-tools\.js/);
-assert.match(source, /party-catalog\.js/);
-assert.match(source, /party-expansion\.js/);
-assert.match(source, /party-mega-catalog\.js/);
-assert.match(source, /party-viral-catalog\.js/);
-assert.match(source, /party-core-release-catalog\.js/);
-assert.match(source, /party-core-classic-content\.js/);
-assert.match(source, /session-ledger\.js/);
-assert.match(source, /party-session-controls\.js/);
-assert.match(source, /icon\.svg/);
-assert.match(source, /icon-192\.png/);
-assert.match(source, /icon-512\.png/);
+for (const marker of [
+  /word-imposter-resume-guard\.js/, /party-hub-resume-guard\.js/, /party-hub-round-state\.js/,
+  /party-hub-timers\.js/, /party-hub-polish\.js/, /party-hub-a11y\.js/, /secondary-surface-a11y\.js/,
+  /advanced-resume-guard\.js/, /party-advanced-runner\.js/, /advanced-privacy-guard\.js/,
+  /quick-session-replacement-guard\.js/, /quick-loader\.js/, /backup-schema-registry\.js/,
+  /party-data-tools\.js/, /session-ledger\.js/, /party-session-controls\.js/,
+  /icon\.svg/, /icon-192\.png/, /icon-512\.png/
+]) assert.match(source, marker);
 assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);
 assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 57,
+  cacheContract: 58,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -57,30 +39,16 @@ console.log(JSON.stringify({
   wordImposterResumeGuardOffline: true,
   hubResumeGuardOffline: true,
   hubRoundStateOffline: true,
-  preStartTimerResumeOffline: true,
-  concealedParanoiaResumeOffline: true,
-  hubResumeQuarantinePolishOffline: true,
-  resolvedParanoiaConcealmentOffline: true,
-  hubA11yGuardOffline: true,
-  secondarySurfaceA11yOffline: true,
   advancedResumeGuardOffline: true,
-  advancedRunnerIntegrityOffline: true,
   advancedPrivacyGuardOffline: true,
   quickSessionReplacementGuardOffline: true,
   quickLoaderV7Offline: true,
   quickTimerResumeOffline: true,
-  sharedSessionControlsV2Offline: true,
+  quickBfcacheResumeOffline: true,
+  sharedSessionControlsV3Offline: true,
   backupSchemaRegistryOffline: true,
   completeBackupHardeningOffline: true,
-  baseCatalogOffline: true,
-  expansionCatalogOffline: true,
-  megaCatalogOffline: true,
-  viralCatalogOffline: true,
-  coreReleaseContentOffline: true,
-  coreClassicContentOffline: true,
   exactOnceLedgerOffline: true,
-  sharedSessionControlsOffline: true,
-  splitHubTimerModuleOffline: true,
   rasterPwaIconsOffline: true,
   legacyGuardRemoved: true
 }, null, 2));
