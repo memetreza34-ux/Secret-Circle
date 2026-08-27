@@ -5,7 +5,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createSessionControlsModule() {
   'use strict';
 
-  const VERSION = 2;
+  const VERSION = 3;
   const TICK_MS = 250;
   const TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1';
   const TIMER_STORE_VERSION = 1;
@@ -26,13 +26,7 @@
   function orderedGameIds(catalog) {
     const result = [];
     const seen = new Set();
-    for (const list of [
-      catalog?.trendingGameIds,
-      catalog?.quickGameIds,
-      catalog?.megaGameIds,
-      catalog?.viralGameIds,
-      catalog?.createdGameIds
-    ]) {
+    for (const list of [catalog?.trendingGameIds, catalog?.quickGameIds, catalog?.megaGameIds, catalog?.viralGameIds, catalog?.createdGameIds]) {
       for (const id of Array.isArray(list) ? list : []) {
         if (!id || seen.has(id)) continue;
         const game = catalog?.getGame?.(id);
@@ -85,9 +79,7 @@
   function normalizeTimerStore(value) {
     const store = { version: TIMER_STORE_VERSION, snapshots: {} };
     if (!value || typeof value !== 'object' || Array.isArray(value) || value.version !== TIMER_STORE_VERSION) return store;
-    const snapshots = value.snapshots && typeof value.snapshots === 'object' && !Array.isArray(value.snapshots)
-      ? value.snapshots
-      : {};
+    const snapshots = value.snapshots && typeof value.snapshots === 'object' && !Array.isArray(value.snapshots) ? value.snapshots : {};
     for (const family of TIMER_FAMILIES) {
       const snapshot = normalizeTimerSnapshot(snapshots[family]);
       if (snapshot) store.snapshots[family] = snapshot;
@@ -97,11 +89,8 @@
 
   function readTimerStore(storage) {
     if (!storage?.getItem) return normalizeTimerStore(null);
-    try {
-      return normalizeTimerStore(JSON.parse(storage.getItem(TIMER_STORE_KEY)));
-    } catch {
-      return normalizeTimerStore(null);
-    }
+    try { return normalizeTimerStore(JSON.parse(storage.getItem(TIMER_STORE_KEY))); }
+    catch { return normalizeTimerStore(null); }
   }
 
   function writeTimerStore(storage, store) {
@@ -111,9 +100,7 @@
       if (!Object.keys(normalized.snapshots).length) storage.removeItem(TIMER_STORE_KEY);
       else storage.setItem(TIMER_STORE_KEY, JSON.stringify(normalized));
       return true;
-    } catch {
-      return false;
-    }
+    } catch { return false; }
   }
 
   function familyTimerSnapshot(storage, family) {
@@ -142,9 +129,7 @@
       if (!value || value.version !== 1 || gameId !== expectedGameId || !sessionId || !phase) return null;
       if (!Number.isInteger(round) || round < 1 || round > 20 || value.completedRecorded === true) return null;
       return { gameId, sessionId, round, phase };
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }
 
   function timerContextMatches(snapshot, context, durationMs) {
@@ -163,9 +148,8 @@
     const now = typeof options.now === 'function' ? options.now : () => Date.now();
     const setIntervalFn = typeof options.setIntervalFn === 'function' ? options.setIntervalFn : (callback, delay) => setInterval(callback, delay);
     const clearIntervalFn = typeof options.clearIntervalFn === 'function' ? options.clearIntervalFn : id => clearInterval(id);
-    const confirmFn = typeof options.confirmFn === 'function'
-      ? options.confirmFn
-      : message => windowRef?.confirm ? windowRef.confirm(message) : true;
+    const confirmFn = typeof options.confirmFn === 'function' ? options.confirmFn : message => windowRef?.confirm ? windowRef.confirm(message) : true;
+    const reloadFn = typeof options.reloadFn === 'function' ? options.reloadFn : () => windowRef?.location?.reload?.();
     const timerFamily = familyForGame(options.catalog, options.gameId);
 
     let bound = false;
@@ -212,9 +196,7 @@
       }
     }
 
-    function renderTimer() {
-      if (timerNode) timerNode.textContent = formatMilliseconds(remainingMs);
-    }
+    function renderTimer() { if (timerNode) timerNode.textContent = formatMilliseconds(remainingMs); }
 
     function resetRuntimeTimer() {
       if (timerId !== null) clearIntervalFn(timerId);
@@ -227,9 +209,7 @@
       lastTickAt = 0;
     }
 
-    function clearPersistedTimer() {
-      if (timerFamily) setFamilyTimerSnapshot(storage, timerFamily, null);
-    }
+    function clearPersistedTimer() { if (timerFamily) setFamilyTimerSnapshot(storage, timerFamily, null); }
 
     function stopTimer() {
       resetRuntimeTimer();
@@ -313,6 +293,20 @@
       return saved;
     }
 
+    function handlePageShow(event) {
+      preservePersistedOnNextStop = false;
+      if (!event?.persisted || !timerFamily) return false;
+      const snapshot = familyTimerSnapshot(storage, timerFamily);
+      if (!snapshot) return false;
+      const context = activeContext(storage, timerFamily, options.gameId);
+      if (!timerContextMatches(snapshot, context, snapshot.durationMs)) {
+        setFamilyTimerSnapshot(storage, timerFamily, null);
+        return false;
+      }
+      reloadFn();
+      return true;
+    }
+
     function setPaused(value) {
       const next = Boolean(value);
       if (next && !sessionActive) return false;
@@ -324,9 +318,7 @@
       return true;
     }
 
-    function togglePause() {
-      return setPaused(!paused);
-    }
+    function togglePause() { return setPaused(!paused); }
 
     function setSessionActive(value) {
       sessionActive = Boolean(value);
@@ -354,12 +346,8 @@
       const exit = query('#quick-exit');
       const replay = query('#quick-replay');
       if (!pause || !skip || !exit || !replay) return false;
-
       pause.addEventListener('click', () => togglePause());
-      skip.addEventListener('click', () => {
-        if (!sessionActive || paused) return;
-        options.onSkip?.();
-      });
+      skip.addEventListener('click', () => { if (sessionActive && !paused) options.onSkip?.(); });
       exit.addEventListener('click', () => {
         if (!sessionActive) return;
         if (!confirmFn('Session beenden und bisherigen Fortschritt verwerfen?')) return;
@@ -375,7 +363,7 @@
     }
 
     windowRef?.addEventListener?.('pagehide', persistRunningTimerSnapshot, { capture: true });
-    windowRef?.addEventListener?.('pageshow', () => { preservePersistedOnNextStop = false; });
+    windowRef?.addEventListener?.('pageshow', handlePageShow);
     bind();
 
     return Object.freeze({
@@ -385,6 +373,7 @@
       countdownMilliseconds,
       stopTimer,
       persistRunningTimerSnapshot,
+      handlePageShow,
       setPaused,
       togglePause,
       isPaused: () => paused,
