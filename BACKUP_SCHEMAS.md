@@ -1,8 +1,8 @@
 # Secret Circle – Sicherungsformate
 
-Stand: 26. August 2026  
+Stand: 27. August 2026  
 Vertragsregister: `backup-schema-registry.js` Version 2  
-Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**
+Aktueller Offline-Core: **`secret-circle-v57` / `secret-circle-v57-staging`**
 
 ## Gemeinsame Regeln
 
@@ -30,7 +30,7 @@ Aktueller Offline-Core: **`secret-circle-v51` / `secret-circle-v51-staging`**
 - max. 100 Einträge
 - max. 1.000.000 Bytes je Wert
 
-Der Complete-Restore verwaltet **nur die 16 aktuell registrierten exakten Storage-Keys**:
+Der Complete-Restore verwaltet **nur die 17 aktuell registrierten exakten Storage-Keys**:
 
 - `secret-circle-active-v7`
 - `secret-circle-custom-v7`
@@ -43,6 +43,7 @@ Der Complete-Restore verwaltet **nur die 16 aktuell registrierten exakten Storag
 - `secret-circle-party-mega-active-v1`
 - `secret-circle-party-viral-active-v1`
 - `secret-circle-party-created-active-v1`
+- `secret-circle-party-quick-timers-v1`
 - `secret-circle-party-created-games-v1`
 - `secret-circle-party-custom-packs-v1`
 - `secret-circle-party-night-v1`
@@ -50,6 +51,20 @@ Der Complete-Restore verwaltet **nur die 16 aktuell registrierten exakten Storag
 - `secret-circle-party-catalog-filters-v1`
 
 Wildcard-Verträge wie `secret-circle-party-<name>-v<version>` sind absichtlich **nicht** Restore-Eigentum. Eine zukünftige Version wie `secret-circle-party-hub-v2` oder `secret-circle-settings-v8` muss von einem heutigen Restore unangetastet bleiben.
+
+### Quick-Timer-Metadaten seit v57
+
+`secret-circle-party-quick-timers-v1` enthält ausschließlich technische Resume-Metadaten für laufende Quick-/Mega-/Viral-/Creator-Timer:
+
+- Familie: `quick`, `mega`, `viral` oder `created`
+- `gameId`
+- `sessionId`
+- `round`
+- `phase`
+- ursprüngliche `durationMs`
+- verbleibende `remainingMs`
+
+Der Store enthält **keinen Prompt, keine Antwort, keine Mission, keine Identität und keinen geheimen Karteninhalt**. Ein Timer-Snapshot darf nur wiederverwendet werden, wenn Game-ID, Session-ID, Runde, Phase und ursprüngliche Dauer exakt zur aktiven Session passen. Stale Snapshots werden verworfen.
 
 ### Restore-Vertrag seit Offline-Core v51
 
@@ -95,7 +110,7 @@ Wildcard-Verträge wie `secret-circle-party-<name>-v<version>` sind absichtlich 
 
 ## Migration
 
-Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiformats**, nicht bei jeder Appversion. Die v51-Härtung ändert nicht das Backup-Dateiformat Version 1, sondern verschärft ausschließlich die Restore-Sicherheitssemantik der aktuellen Runtime.
+Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiformats**, nicht bei jeder Appversion. v51 verschärfte Restore-Sicherheit; v57 ergänzt einen weiteren exakt verwalteten aktuellen Storage-Key, ohne das Backup-Dateiformat Version 1 zu ändern.
 
 Eine zukünftige neue Backupversion benötigt:
 
@@ -108,11 +123,13 @@ Eine zukünftige neue Backupversion benötigt:
 
 ## Automatische Verträge
 
-- `tests/backup-schema-registry.test.js`: Registry Version 2, exakte 16-Key-Allowlist, Key-Eigentümer, Root-/Storage-Version-/Wrapper-Verträge
+- `tests/backup-schema-registry.test.js`: Registry Version 2, exakte 17-Key-Allowlist, Key-Eigentümer, Root-/Storage-Version-/Wrapper-Verträge einschließlich Quick-Timer-Store
 - `tests/e2e/party-data.spec.js`: Export/Import, Future-Key-Erhalt, ungültige JSON-/Primitive-/Storage-Version-Werte, Write-Rollback, vollständige Löschung
 - `tests/e2e/backup-forward-compat.spec.js`: zukünftiger Namespace und `party-hub-v2` überleben heutigen Restore; Future-Version-Import wird abgelehnt
+- `tests/party-session-controls.test.js` + `tests/e2e/quick-timer-resume.spec.js`: Timer-Snapshot-Konsistenz und Stale-Reject
 - `scripts/backup_contract_audit.py`: Registry/Runtime/Test/Offline-/Dokumentationsgrenze
-- `tests/service-worker.test.js`: Registry und `party-data-tools.js` im v51-Offline-Core
+- `scripts/quick_timer_resume_audit.py`: QT57-Timerresume-Vertrag
+- `tests/service-worker.test.js`: Registry und gemeinsame Session-Controls im v57-Offline-Core
 
 ## Release-Gates
 
@@ -124,6 +141,8 @@ Eine zukünftige neue Backupversion benötigt:
 - [ ] zukünftige Version eines bekannten Keys überlebt Restore
 - [ ] Future-Key darf vom heutigen Backup nicht importiert werden
 - [ ] Klartext, primitive JSON-Wurzeln und falsche Storage-Versionen werden vor Mutation abgelehnt
+- [ ] Quick-Timer-Store enthält nur technische Metadaten
+- [ ] Quick-Timer-Snapshot wird nur bei exakt passender Session/Runde/Phase/Dauer verwendet
 - [ ] Validierung vollständig vor Schreiben
 - [ ] Write-Rollback simuliert
 - [ ] vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces
