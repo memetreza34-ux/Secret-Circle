@@ -85,7 +85,7 @@ const catalog = {
   getGame(id) { return catalogGames[id] || null; }
 };
 
-assert.equal(Controls.version, 4);
+assert.equal(Controls.version, 5);
 assert.equal(Controls.tickMilliseconds, 250);
 assert.equal(Controls.timerStoreKey, 'secret-circle-party-quick-timers-v1');
 assert.equal(Controls.timerStoreVersion, 1);
@@ -186,10 +186,14 @@ assert.equal(controller.isPaused(), false);
 assert.equal(nodes['#quick-pause-overlay'].hidden, true);
 assert.equal(nodes['#quick-content'].inert, false);
 
-// v59: backgrounding a running timer pauses it; becoming visible never auto-resumes.
+// v59/v60: backgrounding auto-pauses and hidden alone persists a durable remaining-time snapshot.
 const backgroundNodes = createNodes();
 const backgroundDocument = createDocument(backgroundNodes);
-const backgroundStorage = createStorage();
+const backgroundStorage = createStorage({
+  'secret-circle-party-quick-active-v1': JSON.stringify({
+    version: 1, gameId: 'one', sessionId: 'background-session', round: 1, phase: 'running', completedRecorded: false
+  })
+});
 const backgroundWindow = createWindow(backgroundStorage);
 let backgroundTime = 0;
 let backgroundIntervalId = 0;
@@ -215,6 +219,9 @@ backgroundDocument.dispatch('visibilitychange');
 assert.equal(backgroundController.isPaused(), true);
 assert.equal(backgroundNodes['#quick-pause'].textContent, 'Fortsetzen');
 assert.equal(backgroundNodes['#quick-pause-overlay'].hidden, false);
+let hiddenStore = JSON.parse(backgroundStorage.dump(Controls.timerStoreKey));
+assert.equal(hiddenStore.snapshots.quick.sessionId, 'background-session');
+assert.equal(hiddenStore.snapshots.quick.remainingMs, 4_000, 'hidden must persist remaining time even without pagehide');
 backgroundTime = 61_000;
 [...backgroundIntervals.values()][0]();
 assert.equal(backgroundController.remainingMilliseconds(), 4_000, 'background time must not reduce the timer');
@@ -230,8 +237,59 @@ backgroundTime = 71_000;
 [...backgroundIntervals.values()][0]();
 assert.equal(backgroundController.remainingMilliseconds(), 3_000, 'timer continues only after explicit resume');
 backgroundController.stopTimer();
+assert.equal(backgroundStorage.dump(Controls.timerStoreKey), null, 'normal same-page stop clears visibility snapshot');
 
-// v57: running Quick-family timers persist only technical remaining-time metadata on pagehide.
+// v60: a cold controller can resume from a hidden-only snapshot when pagehide never fired.
+const killStorage = createStorage({
+  'secret-circle-party-quick-active-v1': JSON.stringify({
+    version: 1, gameId: 'one', sessionId: 'kill-session', round: 1, phase: 'running', completedRecorded: false
+  })
+});
+const killNodes1 = createNodes();
+const killDocument1 = createDocument(killNodes1);
+const killWindow1 = createWindow(killStorage);
+let killTime = 0;
+let killIntervalId = 0;
+const killIntervals1 = new Map();
+const killController1 = Controls.createController({
+  documentRef: killDocument1,
+  windowRef: killWindow1,
+  storageRef: killStorage,
+  catalog,
+  gameId: 'one',
+  now: () => killTime,
+  setIntervalFn(callback) { killIntervalId += 1; killIntervals1.set(killIntervalId, callback); return killIntervalId; },
+  clearIntervalFn(id) { killIntervals1.delete(id); }
+});
+killController1.setSessionActive(true);
+killController1.countdown(5, node(), () => {});
+killTime = 2_000;
+[...killIntervals1.values()][0]();
+killDocument1.hidden = true;
+killDocument1.dispatch('visibilitychange');
+assert.equal(JSON.parse(killStorage.dump(Controls.timerStoreKey)).snapshots.quick.remainingMs, 3_000);
+const killNodes2 = createNodes();
+const killIntervals2 = new Map();
+let killIntervalId2 = 0;
+const killController2 = Controls.createController({
+  documentRef: createDocument(killNodes2),
+  windowRef: createWindow(killStorage),
+  storageRef: killStorage,
+  catalog,
+  gameId: 'one',
+  now: () => 0,
+  setIntervalFn(callback) { killIntervalId2 += 1; killIntervals2.set(killIntervalId2, callback); return killIntervalId2; },
+  clearIntervalFn(id) { killIntervals2.delete(id); }
+});
+killController2.setSessionActive(true);
+const coldResumeNode = node();
+killController2.countdown(5, coldResumeNode, () => {});
+assert.equal(coldResumeNode.textContent, '0:03');
+assert.equal(killController2.remainingMilliseconds(), 3_000);
+assert.equal(killStorage.dump(Controls.timerStoreKey), null, 'hidden-only snapshot is consumed once after cold resume');
+killController2.stopTimer();
+
+// v57: pagehide persistence still preserves the snapshot across the engine's immediate stop.
 const resumeStorage = createStorage({
   'secret-circle-party-quick-active-v1': JSON.stringify({
     version: 1, gameId: 'one', sessionId: 'session-one', round: 1, phase: 'running', completedRecorded: false
@@ -355,5 +413,7 @@ console.log(JSON.stringify({
   bfcacheTimerReloadGuard: true,
   staleBfcacheSnapshotNoReload: true,
   backgroundVisibilityAutoPause: true,
-  visibleRequiresExplicitResume: true
+  visibleRequiresExplicitResume: true,
+  hiddenSnapshotDurableWithoutPagehide: true,
+  visibilitySnapshotClearsOnNormalStop: true
 }, null, 2));
