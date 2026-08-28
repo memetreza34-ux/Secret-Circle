@@ -15,7 +15,7 @@ Letzter vollständig untersuchter App-CI-Befund bleibt der historische **v49 Run
 - separate Step-Abfrage `steps: []`
 - kein Checkout / Node-/Python-Setup / npm / Test / Playwright / Repositorycode ausgeführt
 
-Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v59**. **v50–v59 besitzen keinen echten Runner-PASS.**
+Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v60**. **v50–v60 besitzen keinen echten Runner-PASS.**
 
 ## Isolierter Hosted-Runner-Probe
 
@@ -25,30 +25,30 @@ Run #7: Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`, Run-ID `32650097848`, J
 
 Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-Code als **unmittelbare Ursache dieses Pre-Step-Fehlers** ausgeschlossen. Die exakte externe Ursache ist nicht bewiesen. Prüfflächen bleiben Hosted-Runner-Zuteilung, Account/Billing/Budget, Repo-/Org-/Enterprise-Policy und GitHub-seitige Runner-Störung.
 
-## Aktueller Buildvertrag – v59
+## Aktueller Buildvertrag – v60
 
-- Offline-Core `secret-circle-v59` / `secret-circle-v59-staging`
+- Offline-Core `secret-circle-v60` / `secret-circle-v60-staging`
 - v50 Hub Resume Loader fail-closed
 - v51 Complete Backup Registry v2 + PartyDataTools v6
 - v52 Safe Hub Current
 - v53 Paranoia Resume/Privacy
 - v54 PT54 Pre-Timer Resume
-- v55 Advanced Resume Guard v4 + `advanced_integrity_audit.py`
+- v55 Advanced Resume Guard v4
 - v56 Quick Replacement Guard v1 + Quick Loader v7
 - v57 promptfreier Quick-Family-Timer-Store + Restzeit-Resume
-- v58 BFCache `pageshow.persisted` Restore-Schutz
-- **v59 `party-session-controls.js` Version 4**
-- **BG59: `document.hidden` pausiert laufende Quick-Family-Timer; `visible` startet nicht automatisch weiter**
-- **Hintergrundzeit durch App-/Tabwechsel oder Screen-Lock wird nicht als Spielzeit abgezogen**
+- v58 BFCache-Restore-Schutz
+- v59 Hidden Auto-Pause ohne Auto-Resume
+- **v60 `party-session-controls.js` Version 5**
+- **HS60: Hidden persistiert Restzeit sofort; Cold Resume funktioniert auch ohne vorausgesetztes `pagehide`**
+- **nur Pagehide setzt Preserve-on-next-stop; normaler Same-Page-Stop entfernt Visibility-Snapshot**
 - `tests/party-session-controls.test.js` in `npm test`
-- `tests/e2e/quick-timer-resume.spec.js` + `tests/e2e/quick-background-pause.spec.js` im Browservertrag
-- `scripts/quick_timer_resume_audit.py`, `scripts/quick_bfcache_resume_audit.py`, `scripts/quick_background_pause_audit.py` in `npm run validate`
-- Complete Backup verwaltet 17 exakte aktuelle Storage-Keys einschließlich Timer-Store
-- `scripts/backup_contract_audit.py` und `scripts/architecture_audit.py` erzwingen die aktuellen Timerverträge ebenfalls
+- Quick Timer/BFCache/Background/Hidden-Snapshot-Browserverträge im Playwright-Gate
+- `scripts/quick_timer_resume_audit.py`, `scripts/quick_bfcache_resume_audit.py`, `scripts/quick_background_pause_audit.py`, `scripts/quick_hidden_snapshot_audit.py` in `npm run validate`
+- Complete Backup verwaltet weiterhin 17 exakte aktuelle Storage-Keys einschließlich Timer-Store
+- `scripts/backup_contract_audit.py` und `scripts/architecture_audit.py` erzwingen die aktuellen Verträge ebenfalls
 - `package-lock.json` v3
 - Playwright 1.54.2 exakt
 - CI/Cross-Browser verwenden `npm ci`
-- Backup-/A11y-/Architecture-/Operator-/Release-Audits bleiben aktiv
 
 Ein echter Online-`npm ci`-PASS bleibt offen, weil Actions Step 1 nicht erreicht.
 
@@ -77,8 +77,8 @@ Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere reposit
 2. Online-`npm ci` / Integrity-Download
 3. `npm run check`
 4. `npm test`
-5. `npm run validate` inklusive PT54 / AD55 / QR56 / QT57 / BF58 / **BG59** / Backup / A11y / Architecture / Operator / Release-Audits
-6. Chromium E2E inklusive Quick-Timer-/BFCache-/Background-Pause-Verträge
+5. `npm run validate` inklusive Spezialgates bis **HS60** / Backup / A11y / Architecture / Operator / Release-Audits
+6. Chromium E2E inklusive Timer-Lifecycle-Verträge
 7. vollständiges `npm run ci`
 8. Cross-Browser auf demselben RC-Commit
 9. unveränderten Commit vollständig retesten
