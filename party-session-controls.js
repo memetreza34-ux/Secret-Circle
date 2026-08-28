@@ -280,22 +280,7 @@
       return countdownMilliseconds(safeSeconds * 1000, node, onEnd);
     }
 
-    function persistRunningTimerSnapshot(options = {}) {
-      if (!timerFamily || !timerEnd || timerDurationMs <= 0 || remainingMs <= 0) return false;
-      const context = activeContext(storage, timerFamily, options.gameId || options.expectedGameId || null) || activeContext(storage, timerFamily, createController.gameId);
-      const active = context || activeContext(storage, timerFamily, createController.expectedGameId);
-      const resolvedContext = active || activeContext(storage, timerFamily, arguments.callee?.gameId);
-      if (!resolvedContext) return false;
-      const saved = setFamilyTimerSnapshot(storage, timerFamily, {
-        ...resolvedContext,
-        durationMs: timerDurationMs,
-        remainingMs: Math.max(1, Math.min(timerDurationMs, Math.ceil(remainingMs)))
-      });
-      if (saved && options.preserveOnNextStop === true) preservePersistedOnNextStop = true;
-      return saved;
-    }
-
-    function saveCurrentTimer(preserveOnNextStop) {
+    function persistRunningTimerSnapshot(preserveOnNextStop = true) {
       if (!timerFamily || !timerEnd || timerDurationMs <= 0 || remainingMs <= 0) return false;
       const context = activeContext(storage, timerFamily, options.gameId);
       if (!context) return false;
@@ -309,7 +294,7 @@
     }
 
     function handlePageHide() {
-      return saveCurrentTimer(true);
+      return persistRunningTimerSnapshot(true);
     }
 
     function handlePageShow(event) {
@@ -341,7 +326,7 @@
       if (!documentRef?.hidden) return false;
       if (!sessionActive || !timerNode || !timerEnd || timerFinished || timerDurationMs <= 0) return false;
       setPaused(true);
-      saveCurrentTimer(false);
+      persistRunningTimerSnapshot(false);
       return true;
     }
 
@@ -400,7 +385,7 @@
       countdown,
       countdownMilliseconds,
       stopTimer,
-      persistRunningTimerSnapshot: () => saveCurrentTimer(true),
+      persistRunningTimerSnapshot,
       handlePageHide,
       handlePageShow,
       handleVisibilityChange,
