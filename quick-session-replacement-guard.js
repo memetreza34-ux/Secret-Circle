@@ -157,6 +157,12 @@
     return true;
   }
 
+  function sameGameResumeValid(catalog, gameId, value) {
+    if (!plausibleSnapshot(value) || value.gameId !== gameId) return false;
+    if (value.completedRecorded === true) return false;
+    return privacySensitiveResumeValid(catalog, gameId, value);
+  }
+
   function readSnapshot(storage, key) {
     if (!storage || !key) return null;
     let raw;
@@ -199,12 +205,14 @@
     let value;
     try { value = JSON.parse(raw); } catch { return false; }
     if (!value || value.gameId !== gameId) return false;
-    if (privacySensitiveResumeValid(catalog, gameId, value)) return false;
+    if (sameGameResumeValid(catalog, gameId, value)) return false;
     try { root.localStorage.removeItem(key); } catch { return false; }
     clearFamilyTimer(root.localStorage, family);
     const status = documentRef?.querySelector?.('#quick-status');
     if (status) {
-      status.textContent = 'Die gespeicherte Session war inkonsistent und wurde vor dem Fortsetzen sicher verworfen.';
+      status.textContent = value.completedRecorded === true
+        ? 'Die bereits abgeschlossene gespeicherte Session wurde sicher bereinigt.'
+        : 'Die gespeicherte Session war inkonsistent und wurde vor dem Fortsetzen sicher verworfen.';
       status.classList.add('error');
     }
     return true;
@@ -311,6 +319,7 @@
     storageKeyForGame,
     plausibleSnapshot,
     privacySensitiveResumeValid,
+    sameGameResumeValid,
     clearFamilyTimer,
     quarantineInvalidSameGame,
     readSnapshot,
