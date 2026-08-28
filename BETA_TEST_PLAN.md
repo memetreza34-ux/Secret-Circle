@@ -2,13 +2,13 @@
 
 Stand: 28. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v59` / `secret-circle-v59-staging`**
+Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**
 
 ## 1. Eintrittskriterium
 
 Finale RC-Beta erst auf demselben unveränderten Commit mit sichtbaren GitHub-Actions-Steps, Online-`npm ci`, `npm run ci` und Chromium/Firefox/WebKit.
 
-Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v59 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Repositorycode wurde ausgeführt. **v50–v60 sind nicht runnerverifiziert.**
 
 ## 2. Mindest-Testmatrix
 
@@ -25,51 +25,53 @@ Letzter vollständig untersuchter App-Actions-Lauf: **#2787 auf v49**, Run ID `3
 | QR56 | Quick-/Mega-/Viral-/Creator-Session-Ersatz |
 | QT57 | Quick-Family Timer-Restzeit über normalen Reload |
 | BF58 | mobile BFCache-Rückkehr laufender Quick-Family-Timer |
-| **BG59** | App-Wechsel/Screen-Lock pausiert Timer fair und ohne Auto-Resume |
+| BG59 | App-Wechsel/Screen-Lock pausiert Timer fair und ohne Auto-Resume |
+| **HS60** | Hidden persistiert Timer sofort; Cold Resume auch ohne zuverlässiges `pagehide` |
 | PN1–PN3 | Smart Party Night |
 
-## 3. QT57 / BF58
+## 3. QT57 / BF58 / BG59
 
 - [ ] normaler Reload übernimmt Restzeit statt voller Dauer
 - [ ] stale Timer-Snapshots werden verworfen
 - [ ] Timer-Store bleibt promptfrei und im 17-Key-Backupvertrag
 - [ ] BFCache Matching führt kontrolliert in den QT57-Resume-Pfad
 - [ ] BFCache Stale löscht Snapshot ohne unnötigen Reload
+- [ ] App-/Tabwechsel/Screen-Lock pausiert automatisch; visible allein startet nicht weiter
 
-## 4. BG59 – Background Timer Fairness
+## 4. HS60 – Hidden Snapshot Durability
 
-### App-/Tabwechsel
+### Hidden-only Persistenz
 
 - [ ] Quick-Family-Timer starten und Restzeit notieren.
-- [ ] App oder Tab wechseln, sodass `document.hidden` eintritt.
-- [ ] mindestens 10 Sekunden im Hintergrund bleiben.
-- [ ] zurückkehren: Timer ist **weiterhin pausiert** und Restzeit wurde nicht um die Hintergrunddauer reduziert.
-- [ ] Pause-Overlay ist sichtbar und `Fortsetzen` wird angeboten.
-- [ ] erst bewusster Klick auf `Fortsetzen` lässt die Zeit wieder ablaufen.
+- [ ] App/Tab verlassen, sodass `document.hidden` eintritt.
+- [ ] noch **vor** einem angenommenen `pagehide` prüfen: `secret-circle-party-quick-timers-v1` enthält einen passenden Snapshot mit derselben Restzeit.
+- [ ] Snapshot enthält weiterhin nur technische Metadaten.
 
-### Screen-Lock
+### Prozess-Kill / Cold Resume
 
-- [ ] laufenden Timer starten.
-- [ ] Gerät sperren, mindestens 10 Sekunden warten und entsperren.
-- [ ] Timer darf weder heimlich abgelaufen sein noch automatisch weiterlaufen.
-- [ ] bewusster Resume-Klick startet wieder exakt vom pausierten Stand.
+- [ ] Timer hidden pausieren.
+- [ ] Browser-/PWA-Prozess beenden oder Betriebssystem die Seite verwerfen lassen.
+- [ ] Test darf nicht voraussetzen, dass `pagehide` noch ausgeführt wurde.
+- [ ] App/Seite neu öffnen und gespeicherte Session fortsetzen.
+- [ ] Timer übernimmt die hidden gespeicherte Restzeit statt der vollen Dauer.
+- [ ] Snapshot wird genau einmal konsumiert.
 
-### Idle / Regression
+### Normaler Cleanup
 
-- [ ] Visibility-Wechsel ohne laufenden Timer verändert keine Runde.
-- [ ] bereits manuell pausierter Timer bleibt pausiert.
-- [ ] Skip/Abort bleiben während Pause gesperrt bzw. gemäß bestehendem Controls-Vertrag korrekt.
-- [ ] QT57-Reload und BF58-BFCache funktionieren nach BG59 unverändert.
+- [ ] Hidden → zurück sichtbar → bewusst `Fortsetzen`.
+- [ ] Runde normal abschließen oder Timer bewusst stoppen.
+- [ ] Timer-Store enthält danach keinen stale Visibility-Snapshot derselben Runde.
+- [ ] anschließende neue Runde startet nicht mit alter Restzeit.
 
 ### Geräte / PWA
 
 - [ ] iPhone Safari
 - [ ] iPad Safari
 - [ ] Android Chrome
-- [ ] installierte v59-PWA
+- [ ] installierte v60-PWA
 - [ ] mindestens ein Mega-/Viral-/Creator-Timer repräsentativ, soweit vorhanden
 
-Source-Verträge: `party-session-controls.js` v4, `tests/party-session-controls.test.js`, `tests/e2e/quick-background-pause.spec.js`, `scripts/quick_background_pause_audit.py`, QT57/BF58-Audits und `scripts/architecture_audit.py`.
+Source-Verträge: `party-session-controls.js` v5, `tests/party-session-controls.test.js`, `tests/e2e/quick-background-pause.spec.js`, `scripts/quick_hidden_snapshot_audit.py`, QT57/BF58/BG59-Audits und `scripts/architecture_audit.py`.
 
 ## 5. QR56 – Quick Session Replacement
 
@@ -92,13 +94,13 @@ Source-Verträge: `party-session-controls.js` v4, `tests/party-session-controls.
 
 ## 7. PWA Update / Rollback
 
-- [ ] mindestens zwei ältere installierte Versionen auf v59/RC aktualisieren
+- [ ] mindestens zwei ältere installierte Versionen auf v60/RC aktualisieren
 - [ ] aktive Sessions und lokale Daten erhalten
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / BG59 offline soweit anwendbar prüfen
+- [ ] Spezialgates bis HS60 offline soweit anwendbar prüfen
 - [ ] Rollback/Hotfix mit neuer Cachegeneration
 
 ## 8. Beta-Freigabe
 
-Vor `REAL USER / DEVICE PASS` müssen G1–G5, DWI, HR2, BK51, HR52, PR53, PT54, AD55, QR56, QT57, BF58, **BG59**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
+Vor `REAL USER / DEVICE PASS` müssen G1–G5, alle Spezialgates bis **HS60**, PN1–PN3, reale Geräte/Accessibility, zwei PWA-Upgrades und Rollback abgeschlossen sein. Keine offenen Critical/High Bugs.
 
 Bis dahin bleibt die reale Durchführung offen und der öffentliche Release **NO_GO**.
