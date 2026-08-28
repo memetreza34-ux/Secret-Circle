@@ -4,10 +4,10 @@ Stand: 28. August 2026
 
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme.
 
-Aktueller Offline-Core: **`secret-circle-v59` / `secret-circle-v59-staging`**.  
+Aktueller Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**.  
 Core Source Review/Hardening: **15/15 PREPARED**.  
 Accessibility: **PREPARED**.  
-DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / BG59: **quellsseitig PREPARED, real offen**.  
+Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**.  
 Öffentliche Freigabe: **NO_GO**.
 
 ## 1. Repository / CI / Build
@@ -17,8 +17,8 @@ Quellsseitig vorbereitet:
 - [x] `package-lock.json` v3
 - [x] CI/Cross-Browser verwenden `npm ci`
 - [x] Release-/Foundation-/Backup-/Architecture-Audits
-- [x] Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-Audits
-- [x] QT57/BF58/BG59 Unit-/Browser-/Architecture-Verträge im Buildpfad
+- [x] Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-/Hidden-Snapshot-Audits
+- [x] QT57/BF58/BG59/HS60 Unit-/Browser-/Architecture-Verträge im Buildpfad
 - [x] 1000-Zeilen-Modulgrenze aktiv
 - [x] Runner-Problem als Pre-Step-Problem isoliert
 
@@ -31,7 +31,7 @@ Für den RC offen:
 - [ ] Chromium / Firefox / WebKit auf demselben Commit
 - [ ] Required Check + Branch Protection real aktiv
 
-Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`; kein Repositorycode wurde ausgeführt. **v50–v59 sind nicht runnerverifiziert.**
+Letzter vollständig untersuchter Lauf: **#2787 auf v49**, `steps: null` / `steps: []`; kein Repositorycode wurde ausgeführt. **v50–v60 sind nicht runnerverifiziert.**
 
 ## 2. Engine / Sessions / Daten
 
@@ -47,39 +47,39 @@ Quellsseitig vorbereitet:
 - [x] v56 Quick Replacement Guard / Same-/Cross-Game-Ersatz
 - [x] v57 Quick-Family Timer-Restzeit über Reload + promptfreier 17-Key-Timer-Store
 - [x] v58 BFCache-Restore-Schutz
-- [x] **v59 `party-session-controls.js` v4**
-- [x] **v59 hidden → Auto-Pause; visible → kein Auto-Resume**
-- [x] **v59 Hintergrundzeit zählt nicht gegen laufende Quick-Family-Timer**
+- [x] v59 Background Auto-Pause ohne Auto-Resume
+- [x] **v60 `party-session-controls.js` v5**
+- [x] **v60 Hidden schreibt Restzeit sofort, ohne `pagehide` vorauszusetzen**
+- [x] **v60 Same-Page-Stop räumt Visibility-Snapshot wieder auf**
 
 Real zu bestätigen:
 
 - [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56
 - [ ] QT57 Reload-Restzeit / Stale / Families / Privacy / Backup
 - [ ] BF58 Matching/Stale auf realen mobilen Browsern
-- [ ] **BG59 App-Wechsel:** laufender Timer → andere App/Tab → zurück → Restzeit unverändert, weiterhin pausiert
-- [ ] **BG59 Screen-Lock:** laufender Timer → Display sperren → entsperren → kein Zeitverlust, kein Auto-Resume
-- [ ] **BG59 Explicit Resume:** erst bewusster `Fortsetzen`-Klick lässt Zeit wieder laufen
-- [ ] **BG59 Idle:** Visibility-Wechsel ohne laufenden Timer verändert keinen Spielzustand
+- [ ] BG59 App-Wechsel/Screen-Lock: Auto-Pause, kein Zeitverlust, kein Auto-Resume
+- [ ] **HS60 Hidden-only:** Restzeit steht bereits nach Hidden im Timer-Store
+- [ ] **HS60 Kill:** App/Browserprozess nach Hidden beenden, ohne auf `pagehide` zu vertrauen
+- [ ] **HS60 Cold Resume:** Neustart übernimmt dieselbe Restzeit genau einmal
+- [ ] **HS60 Cleanup:** normal fortgesetzte/abgeschlossene Runde entfernt den Visibility-Snapshot
 - [ ] Abschluss/Verlauf/Statistik exact-once
 
 ## 3. Core / UX / Content
 
 Für jedes Core-Spiel real: Start/Lobby/Regeln, Freiwilligkeit/Skip, Pause/Abbruch/Resume, Score/Winner, History/Stats, Tastatur/Fokus/Zoom/Reduced Motion sowie mindestens eine reale Gruppe ohne Entwicklerhilfe.
 
-Spezialfälle: Word Imposter Mehrfach-Imposter/Voting; Truth/Dare HR52; Paranoia PR53; Scharade/Tabu Privacy+Timer; Hot Potato 10–25 s + PT54; Wortkette PT54; Advanced AD55; Wrong Answers scorelos; QR56; QT57; BF58; **BG59**.
+## 4. PWA / Offline – v60
 
-## 4. PWA / Offline – v59
-
-- [ ] finaler Cache `secret-circle-v59` oder bewusst neuerer RC
+- [ ] finaler Cache `secret-circle-v60` oder bewusst neuerer RC
 - [ ] Staging-Cache gleiche Generation
 - [ ] SW/Test/Architektur/Deployment/Privacy/Environment/Hosting synchron
 - [ ] Kernseiten/Query-Routen offline
 - [ ] Resume-/Privacy-/A11y-/Backup-Schichten offline
-- [ ] `party-session-controls.js` v4 offline
+- [ ] `party-session-controls.js` v5 offline
 - [ ] `quick-session-replacement-guard.js` v1 offline
 - [ ] `quick-loader.js` v7 offline
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / BG59 offline soweit anwendbar
-- [ ] Update von mindestens zwei älteren Installationen auf v59/RC
+- [ ] Spezialgates bis HS60 offline soweit anwendbar
+- [ ] Update von mindestens zwei älteren Installationen auf v60/RC
 - [ ] aktive Session und lokale Daten bleiben erhalten
 - [ ] Rollback mit neuer Cachegeneration
 
@@ -88,17 +88,17 @@ Spezialfälle: Word Imposter Mehrfach-Imposter/Voting; Truth/Dare HR52; Paranoia
 - [ ] Provider/Produkt final
 - [ ] getrennte HTTPS-Staging-/Production-Origin
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v59` grün
-- [ ] manueller PWA-Staging-Smoke einschließlich QT57/BF58/**BG59**
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v60` grün
+- [ ] manueller PWA-Staging-Smoke einschließlich QT57/BF58/BG59/**HS60**
 - [ ] Production nutzt denselben RC
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v59 --production` grün
+- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v60 --production` grün
 
 ## 6. Accessibility / Geräte
 
 - [ ] Android + Chrome
 - [ ] iPhone + Safari
 - [ ] Tablet/iPad
-- [ ] App-Wechsel / Screen-Lock / Rückkehr mit laufendem Timer
+- [ ] App-Wechsel / Screen-Lock / Prozess-Kill / Cold Resume mit laufendem Timer
 - [ ] 320 CSS px / 200-%-Zoom / Hoch-/Querformat
 - [ ] vollständige Tastatur
 - [ ] VoiceOver / TalkBack
@@ -108,7 +108,7 @@ Spezialfälle: Word Imposter Mehrfach-Imposter/Voting; Truth/Dare HR52; Paranoia
 ## 7. Beta / Gruppen
 
 - [ ] G1–G5
-- [ ] DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / **BG59**
+- [ ] Spezialgates bis **HS60**
 - [ ] PN1–PN3
 - [ ] mindestens ein realer Nachweis pro Core-Spiel
 - [ ] keine offenen Critical/High Bugs
