@@ -1,6 +1,6 @@
 # Secret Circle – CI Troubleshooting
 
-Stand: 27. August 2026
+Stand: 28. August 2026
 
 ## Aktueller Befund
 
@@ -15,7 +15,7 @@ Letzter vollständig untersuchter App-CI-Befund bleibt der historische **v49 Run
 - separate Step-Abfrage `steps: []`
 - kein Checkout / Node-/Python-Setup / npm / Test / Playwright / Repositorycode ausgeführt
 
-Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v58**. **v50–v58 besitzen keinen echten Runner-PASS.**
+Dieser historische Bezug bleibt absichtlich v49. Der aktuelle Source-/Offline-Core ist inzwischen **v59**. **v50–v59 besitzen keinen echten Runner-PASS.**
 
 ## Isolierter Hosted-Runner-Probe
 
@@ -25,24 +25,26 @@ Run #7: Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`, Run-ID `32650097848`, J
 
 Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-Code als **unmittelbare Ursache dieses Pre-Step-Fehlers** ausgeschlossen. Die exakte externe Ursache ist nicht bewiesen. Prüfflächen bleiben Hosted-Runner-Zuteilung, Account/Billing/Budget, Repo-/Org-/Enterprise-Policy und GitHub-seitige Runner-Störung.
 
-## Aktueller Buildvertrag – v58
+## Aktueller Buildvertrag – v59
 
-- Offline-Core `secret-circle-v58` / `secret-circle-v58-staging`
+- Offline-Core `secret-circle-v59` / `secret-circle-v59-staging`
 - v50 Hub Resume Loader fail-closed
 - v51 Complete Backup Registry v2 + PartyDataTools v6
 - v52 Safe Hub Current
 - v53 Paranoia Resume/Privacy
-- v54 PT54 Pre-Timer Resume + `hub_prestart_resume_audit.py`
+- v54 PT54 Pre-Timer Resume
 - v55 Advanced Resume Guard v4 + `advanced_integrity_audit.py`
-- v56 Quick Replacement Guard v1 + Quick Loader v7 + `quick_session_replacement_audit.py`
-- v57 promptfreier Quick-Family-Timer-Store + Restzeit-Resume + `quick_timer_resume_audit.py`
-- **v58 `party-session-controls.js` Version 3**
-- **BFCache `pageshow.persisted`: passender Snapshot → kontrollierter Reload in QT57; stale Snapshot → löschen ohne Reload**
-- **`scripts/quick_bfcache_resume_audit.py` in `npm run validate`**
-- Complete Backup verwaltet 17 exakte aktuelle Storage-Keys einschließlich Timer-Store
+- v56 Quick Replacement Guard v1 + Quick Loader v7
+- v57 promptfreier Quick-Family-Timer-Store + Restzeit-Resume
+- v58 BFCache `pageshow.persisted` Restore-Schutz
+- **v59 `party-session-controls.js` Version 4**
+- **BG59: `document.hidden` pausiert laufende Quick-Family-Timer; `visible` startet nicht automatisch weiter**
+- **Hintergrundzeit durch App-/Tabwechsel oder Screen-Lock wird nicht als Spielzeit abgezogen**
 - `tests/party-session-controls.test.js` in `npm test`
-- `tests/e2e/quick-timer-resume.spec.js` im Syntax-Preflight
-- `scripts/backup_contract_audit.py` und `scripts/architecture_audit.py` erzwingen Timer-/BFCache-Verträge ebenfalls
+- `tests/e2e/quick-timer-resume.spec.js` + `tests/e2e/quick-background-pause.spec.js` im Browservertrag
+- `scripts/quick_timer_resume_audit.py`, `scripts/quick_bfcache_resume_audit.py`, `scripts/quick_background_pause_audit.py` in `npm run validate`
+- Complete Backup verwaltet 17 exakte aktuelle Storage-Keys einschließlich Timer-Store
+- `scripts/backup_contract_audit.py` und `scripts/architecture_audit.py` erzwingen die aktuellen Timerverträge ebenfalls
 - `package-lock.json` v3
 - Playwright 1.54.2 exakt
 - CI/Cross-Browser verwenden `npm ci`
@@ -75,8 +77,8 @@ Erst wenn ein Minimaljob einen echten Step ausführt, lohnt sich weitere reposit
 2. Online-`npm ci` / Integrity-Download
 3. `npm run check`
 4. `npm test`
-5. `npm run validate` inklusive PT54 / AD55 / QR56 / QT57 / **BF58** / Backup / A11y / Architecture / Operator / Release-Audits
-6. Chromium E2E inklusive DWI/HR2/BK51/HR52/PR53/PT54/AD55/QR56/QT57 und BF58-Verträge
+5. `npm run validate` inklusive PT54 / AD55 / QR56 / QT57 / BF58 / **BG59** / Backup / A11y / Architecture / Operator / Release-Audits
+6. Chromium E2E inklusive Quick-Timer-/BFCache-/Background-Pause-Verträge
 7. vollständiges `npm run ci`
 8. Cross-Browser auf demselben RC-Commit
 9. unveränderten Commit vollständig retesten
