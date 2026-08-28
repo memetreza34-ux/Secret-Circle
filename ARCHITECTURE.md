@@ -1,6 +1,6 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Stand: 27. August 2026
+Stand: 28. August 2026
 
 Secret Circle bleibt für den Januar-2027-Release eine statische **offline-first PWA** für gemeinsame Spiele auf einem Gerät.
 
@@ -50,33 +50,38 @@ Ein Snapshot wird nur bei exakt passender Game-ID, Session-ID, Runde, Phase und 
 
 ## 9. Quick-Family BFCache Resume – v58
 
-Bei `pageshow.persisted === true` prüft die gemeinsame Sessionsteuerung den gespeicherten Timer-Snapshot. Ein exakt passender Snapshot führt kontrolliert in den normalen QT57-Resume-Pfad; der Snapshot bleibt bis dahin erhalten. Ein stale/fremder Snapshot wird gelöscht, ohne unnötigen Reload. BFCache darf keinen eingefrorenen „running“-Timer als interaktiven Zustand zurücklassen.
-
-`tests/party-session-controls.test.js`, `tests/e2e/quick-timer-resume.spec.js` und `scripts/quick_bfcache_resume_audit.py` schützen diese Grenze.
+Bei `pageshow.persisted === true` prüft die gemeinsame Sessionsteuerung den gespeicherten Timer-Snapshot. Ein exakt passender Snapshot führt kontrolliert in den normalen QT57-Resume-Pfad; der Snapshot bleibt bis dahin erhalten. Ein stale/fremder Snapshot wird gelöscht, ohne unnötigen Reload. BFCache darf keinen eingefrorenen `running`-Timer als interaktiven Zustand zurücklassen.
 
 ## 10. Quick-Family Background Pause – v59
 
-`party-session-controls.js` steht seit **v59 auf Version 4**.
-
 Für Quick/Trending, Mega, Viral und Creator gilt bei einem tatsächlich laufenden Timer:
 
-- `document.hidden === true` löst über `visibilitychange` automatisch `setPaused(true)` aus;
+- `document.hidden === true` löst über `visibilitychange` automatisch Pause aus;
 - Hintergrundzeit durch App-Wechsel, Tabwechsel oder Screen-Lock wird nicht vom Timer abgezogen;
 - beim erneuten Sichtbarwerden erfolgt **kein Auto-Resume**;
-- die Oberfläche bleibt im Pausenstatus mit „Fortsetzen“ und gesperrten Rundenaktionen;
-- erst eine bewusste Nutzeraktion setzt den Timer fort und setzt den Zeitanker neu;
-- bereits manuell pausierte Runden bleiben ebenfalls pausiert;
+- erst eine bewusste Nutzeraktion setzt den Timer fort;
 - ohne aktive laufende Timer-Runde verändert `visibilitychange` keinen Spielzustand.
 
-Damit ist die Fairnessregel: **Hidden pausiert, Visible fordert explizites Resume.**
+## 11. Quick-Family Hidden Snapshot – v60
 
-`tests/party-session-controls.test.js`, `tests/e2e/quick-background-pause.spec.js` und `scripts/quick_background_pause_audit.py` schützen BG59. Reale App-Wechsel-/Screen-Lock-Tests auf iOS/Android bleiben Geräte-Evidence.
+`party-session-controls.js` steht seit **v60 auf Version 5**.
 
-## 11. Lokale Transaktionen und Exact-once
+Mobile Browser/OS können eine Seite nach `visibilitychange(hidden)` beenden, ohne zuverlässig noch `pagehide` auszuliefern. Deshalb gilt zusätzlich:
+
+- sobald eine aktive Quick-Family-Timerrunde `hidden` wird, wird die aktuelle Restzeit **sofort** in `secret-circle-party-quick-timers-v1` persistiert;
+- diese Visibility-Persistenz setzt **nicht** `preservePersistedOnNextStop`, damit ein normal fortgesetzter/abgeschlossener Round-Flow den Snapshot wieder löschen kann;
+- nur der `pagehide`-Pfad ruft `persistRunningTimerSnapshot(true)` auf, weil dort die Engine direkt danach ihren In-Memory-Timer stoppen kann;
+- ein Cold-Start nach OS-Kill ohne `pagehide` kann dadurch dieselbe Restzeit über den bestehenden QT57-Vertrag einmalig wieder aufnehmen;
+- ein normaler Same-Page-Stop entfernt den Visibility-Snapshot wieder;
+- der Store bleibt promptfrei und das Backup-Dateiformat bleibt unverändert.
+
+`tests/party-session-controls.test.js`, `tests/e2e/quick-background-pause.spec.js` und `scripts/quick_hidden_snapshot_audit.py` schützen HS60. Reale Prozess-Kill-/App-Wechsel-Abnahme bleibt Geräte-Evidence.
+
+## 12. Lokale Transaktionen und Exact-once
 
 Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreiben vollständig und rollen bei Fehlern zurück. Fertige Sessions besitzen stabile Completion-/History-IDs. Reload, Retry oder Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
-## 12. Datenschutz und Security durch Architektur
+## 13. Datenschutz und Security durch Architektur
 
 - keine Analytics-/Ads-Skripte oder externen Runtime-CDNs
 - restriktive CSP
@@ -85,44 +90,45 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreib
 - geheime Zustände nach Reload nie automatisch sichtbar öffnen
 - Timer-Resume speichert nur technische Restzeit-Metadaten
 - Hintergrundwechsel pausieren laufende Quick-Family-Timer statt Zeit unsichtbar abzuziehen
+- Hidden persistiert technische Restzeit sofort für einen möglichen OS-Kill
 - Sichtbarwerden startet einen pausierten Timer nicht automatisch
 - manipulierte Resume-Zustände werden fail-closed verworfen
 - Session-Ersatz erfolgt nicht still
 
-## 13. Offline- und Updatevertrag
+## 14. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v59` / `secret-circle-v59-staging`**.
+Aktueller Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**.
 
-Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Quick Timer Resume → v58 BFCache Timer Restore → **v59 Background Timer Pause**.
+Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Quick Timer Resume → v58 BFCache Restore → v59 Background Pause → **v60 Hidden Snapshot Durability**.
 
 Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Alt→Neu/Rollback real testen.
 
-## 14. PWA-Installationsmetadaten
+## 15. PWA-Installationsmetadaten
 
 `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
 
-## 15. Accessibility als Definition of Done
+## 16. Accessibility als Definition of Done
 
 Kernoberflächen benötigen semantische Struktur, Labels, sichtbaren Fokus, Tastaturbedienung, modale Fokusgrenzen, Touchziele, Reduced Motion und Reflow. VoiceOver/TalkBack/Touch/Zoom bleiben reale Gates.
 
-## 16. Inhalts- und Rechtevertrag
+## 17. Inhalts- und Rechtevertrag
 
 Keine kopierten proprietären Karten, fremden Medien/Logos ohne Rechte oder unnötigen konkreten Marken-/Franchisebezug. Ein `unresolved` Releaseasset blockiert `assetsThirdParty = PASS`.
 
-## 17. Testpyramide
+## 18. Testpyramide
 
-Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
+Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Hidden-Snapshot-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
 
-QT57: `scripts/quick_timer_resume_audit.py`. BF58: `scripts/quick_bfcache_resume_audit.py`. BG59: `scripts/quick_background_pause_audit.py`. Release Candidate zusätzlich: Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/Gruppentests.
+QT57: `scripts/quick_timer_resume_audit.py`. BF58: `scripts/quick_bfcache_resume_audit.py`. BG59: `scripts/quick_background_pause_audit.py`. HS60: `scripts/quick_hidden_snapshot_audit.py`. Release Candidate zusätzlich: Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/Gruppentests.
 
-## 18. Performance und Assets
+## 19. Performance und Assets
 
 Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB. PWA-Assets: `icon.svg`, `icon-192.png`, `icon-512.png`, Provenienzmanifest. Rechtebasis wird separat menschlich freigegeben.
 
-## 19. Betrieb, Deprecation und Rollback
+## 20. Betrieb, Deprecation und Rollback
 
 Kein Force-Push auf stabile Release-Basen. Rollback/Hotfix erhält nach Offline-Core-Änderungen eine neue Cachegeneration. Persistierte Daten müssen kompatibel bleiben oder explizit migriert werden.
 
-## 20. Releaseentscheidung
+## 21. Releaseentscheidung
 
 Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und reale Gates tatsächlich ausgeführt wurden**. `release-evidence.json` ist die finale Quelle; `GO` erst bei belegten PASS-Gates auf demselben unveränderten RC.
