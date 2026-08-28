@@ -1,8 +1,8 @@
 # Secret Circle – Sicherungsformate
 
-Stand: 27. August 2026  
+Stand: 28. August 2026  
 Vertragsregister: `backup-schema-registry.js` Version 2  
-Aktueller Offline-Core: **`secret-circle-v59` / `secret-circle-v59-staging`**
+Aktueller Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**
 
 ## Gemeinsame Regeln
 
@@ -66,7 +66,7 @@ Wildcard-Verträge wie `secret-circle-party-<name>-v<version>` sind absichtlich 
 
 Der Store enthält **keinen Prompt, keine Antwort, keine Mission, keine Identität und keinen geheimen Karteninhalt**. Ein Timer-Snapshot darf nur wiederverwendet werden, wenn Game-ID, Session-ID, Runde, Phase und ursprüngliche Dauer exakt zur aktiven Session passen. Stale Snapshots werden verworfen.
 
-v58 ändert nur den BFCache-Lifecycle. v59 pausiert laufende Timer bei `document.hidden` und verlangt nach Rückkehr eine bewusste Fortsetzung. **Beide Generationen ändern weder den Timer-Store noch das Backup-Dateiformat.**
+v58 ändert nur den BFCache-Lifecycle. v59 pausiert laufende Timer bei `document.hidden` und verlangt nach Rückkehr eine bewusste Fortsetzung. v60 persistiert dieselbe bereits definierte Restzeitstruktur bereits bei `visibilitychange(hidden)`, damit ein Cold Resume auch ohne zuverlässiges nachfolgendes `pagehide` möglich ist. **v58–v60 ändern weder die 17-Key-Allowlist noch das Backup-Dateiformat.**
 
 ### Restore-Vertrag seit Offline-Core v51
 
@@ -111,21 +111,22 @@ v58 ändert nur den BFCache-Lifecycle. v59 pausiert laufende Timer bei `document
 
 ## Migration
 
-Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiformats**, nicht bei jeder Appversion. v51 verschärfte Restore-Sicherheit; v57 ergänzte den Timer-Store; v58/v59 ändern ausschließlich Browser-/Timer-Lifecycle. Das Backup-Dateiformat bleibt Version 1.
+Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiformats**, nicht bei jeder Appversion. v51 verschärfte Restore-Sicherheit; v57 ergänzte den Timer-Store; v58–v60 ändern ausschließlich Browser-/Timer-Lifecycle. Das Backup-Dateiformat bleibt Version 1.
 
 ## Automatische Verträge
 
 - `tests/backup-schema-registry.test.js`: Registry Version 2, exakte 17-Key-Allowlist und Timer-Store-Schema
 - `tests/e2e/party-data.spec.js`: Export/Import, Future-Key-Erhalt, Validierung, Write-Rollback, vollständige Löschung
 - `tests/e2e/backup-forward-compat.spec.js`: zukünftige Namespaces/Versionen bleiben erhalten
-- `tests/party-session-controls.test.js`: Timer-Snapshot, BFCache und Background-Pause
+- `tests/party-session-controls.test.js`: Timer-Snapshot, BFCache, Background-Pause und hidden-only Cold Resume
 - `tests/e2e/quick-timer-resume.spec.js`: QT57/BF58
-- `tests/e2e/quick-background-pause.spec.js`: BG59
+- `tests/e2e/quick-background-pause.spec.js`: BG59/HS60
 - `scripts/backup_contract_audit.py`: Registry/Runtime/Test/Offline-/Dokumentationsgrenze
 - `scripts/quick_timer_resume_audit.py`: QT57
 - `scripts/quick_bfcache_resume_audit.py`: BF58
 - `scripts/quick_background_pause_audit.py`: BG59
-- `tests/service-worker.test.js`: aktuelle Runtime im v59-Offline-Core
+- `scripts/quick_hidden_snapshot_audit.py`: HS60
+- `tests/service-worker.test.js`: aktuelle Runtime im v60-Offline-Core
 
 ## Release-Gates
 
@@ -138,7 +139,9 @@ Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiforma
 - [ ] Quick-Timer-Store enthält nur technische Metadaten
 - [ ] Timer-Snapshot nur bei passender Session/Runde/Phase/Dauer
 - [ ] BFCache-Rückkehr gemäß BF58
-- [ ] Background-Pause gemäß BG59 verändert das Backup-Schema nicht
+- [ ] Background-Pause gemäß BG59
+- [ ] HS60 hidden-only Snapshot kann Cold Resume ermöglichen und wird bei normalem Same-Page-Stop wieder entfernt
+- [ ] v60 verändert weder Key-Allowlist noch Backup-Dateiformat
 - [ ] Validierung vollständig vor Schreiben
 - [ ] Write-Rollback simuliert
 - [ ] vollständige Löschung entfernt alle `secret-circle-*`-Keys
