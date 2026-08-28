@@ -1,8 +1,8 @@
 # Secret Circle – Hosting-Entscheidungsvertrag
 
-Stand: 27. August 2026  
+Stand: 28. August 2026  
 Status: **PREPARED – Provider und Domains offen**  
-Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v59`**
+Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v60`**
 
 Secret Circle ist eine statische offline-first PWA ohne eigenes Backend. Der Hostinganbieter verarbeitet dennoch HTTP-Verbindungen und kann technische Access-/Securitylogs erzeugen. Hosting bleibt deshalb ein eigenes Release-Gate.
 
@@ -40,7 +40,7 @@ Vor Production Request-/IP-/User-Agent-/Securitydaten, Zwecke, Retention/Löschu
 ## 4. Staging-Vertrag
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v59
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v60
 ```
 
 Danach folgen Browser-/PWA-Smoke, Installation, Offline-Neustart, Updatepfade, Daten-/Resume-/Privacy-Checks und Accessibility-/Gerätetests.
@@ -54,24 +54,25 @@ Zusätzlich real prüfen:
 - **AD55:** Advanced-Guard v4 verwirft unmögliche Location-/Mafia-Zustände; bestehende Advanced-Session nur nach expliziter Bestätigung ersetzen.
 - **QR56:** Quick-Family-Session-Ersatz verlangt Bestätigung; Cancel erhält den Alt-Snapshot; Write-Fail bleibt fail-closed.
 - **QT57:** laufender Quick-Family-Timer behält Restzeit über Reload; stale Snapshot wird verworfen; Timer-Store bleibt promptfrei.
-- **BF58:** mobile BFCache-Rückkehr mit passendem Timer-Snapshot führt kontrolliert in den normalen Resume-Pfad; stale Snapshot wird ohne Reload entfernt.
-- **BG59:** App-/Tabwechsel oder Screen-Lock pausiert einen laufenden Quick-Family-Timer automatisch; nach Rückkehr bleibt er pausiert, bis „Fortsetzen“ bewusst gewählt wird.
+- **BF58:** BFCache-Rückkehr mit passendem Timer-Snapshot führt kontrolliert in den normalen Resume-Pfad; stale Snapshot wird ohne Reload entfernt.
+- **BG59:** App-/Tabwechsel oder Screen-Lock pausiert einen laufenden Quick-Family-Timer automatisch; nach Rückkehr bleibt er pausiert, bis `Fortsetzen` bewusst gewählt wird.
+- **HS60:** `visibilitychange(hidden)` schreibt die Restzeit sofort in den bestehenden Timer-Store; Cold Resume ohne vorausgesetztes `pagehide` nimmt diese Restzeit einmalig wieder auf; normaler Same-Page-Stop entfernt den Zwischenstand.
 
 ## 5. Production-Vertrag
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v59 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v60 --production
 ```
 
 ## 6. Cache-/Rollback-Regel
 
-- aktuell: `secret-circle-v59`
-- Staging: `secret-circle-v59-staging`
+- aktuell: `secret-circle-v60`
+- Staging: `secret-circle-v60-staging`
 - Cachegeneration nach Offline-Core-Änderung nicht wiederverwenden
 - Rollback/Hotfix erhält eine neue Generation
 - lokale Daten und aktive Sessions soweit vorgesehen erhalten
 
-Historie: v49 Hub Resume Guard → v50 fail-closed Resume-UI → v51 Complete Backup → v52 sichere Hub Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → v57 Quick Timer Resume → v58 BFCache Timer Resume → **v59 Background Timer Pause**.
+Historie: v49 Hub Resume Guard → v50 fail-closed Resume-UI → v51 Complete Backup → v52 sichere Hub Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → v57 Quick Timer Resume → v58 BFCache Timer Resume → v59 Background Timer Pause → **v60 Hidden Snapshot Durability**.
 
 ## 7. Release-Gate
 
@@ -81,8 +82,8 @@ Vor `HOSTING PASS`:
 - [ ] Region/Datenroute, Logs, Retention, Processor-/AVV- und Drittlandrolle dokumentiert
 - [ ] Abuse-/Security-Kontakt geprüft
 - [ ] getrennte HTTPS-Staging-/Production-Origin
-- [ ] v59/RC Staging-Smoke grün
-- [ ] HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / **BG59** real bestätigt
+- [ ] v60/RC Staging-Smoke grün
+- [ ] HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / BG59 / **HS60** real bestätigt
 - [ ] manueller PWA-Smoke grün
 - [ ] Rollback real getestet
 - [ ] Privacy-Text auf reales Hosting angepasst
