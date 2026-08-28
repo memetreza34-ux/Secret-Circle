@@ -5,7 +5,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createSessionControlsModule() {
   'use strict';
 
-  const VERSION = 4;
+  const VERSION = 5;
   const TICK_MS = 250;
   const TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1';
   const TIMER_STORE_VERSION = 1;
@@ -280,7 +280,22 @@
       return countdownMilliseconds(safeSeconds * 1000, node, onEnd);
     }
 
-    function persistRunningTimerSnapshot() {
+    function persistRunningTimerSnapshot(options = {}) {
+      if (!timerFamily || !timerEnd || timerDurationMs <= 0 || remainingMs <= 0) return false;
+      const context = activeContext(storage, timerFamily, options.gameId || options.expectedGameId || null) || activeContext(storage, timerFamily, createController.gameId);
+      const active = context || activeContext(storage, timerFamily, createController.expectedGameId);
+      const resolvedContext = active || activeContext(storage, timerFamily, arguments.callee?.gameId);
+      if (!resolvedContext) return false;
+      const saved = setFamilyTimerSnapshot(storage, timerFamily, {
+        ...resolvedContext,
+        durationMs: timerDurationMs,
+        remainingMs: Math.max(1, Math.min(timerDurationMs, Math.ceil(remainingMs)))
+      });
+      if (saved && options.preserveOnNextStop === true) preservePersistedOnNextStop = true;
+      return saved;
+    }
+
+    function saveCurrentTimer(preserveOnNextStop) {
       if (!timerFamily || !timerEnd || timerDurationMs <= 0 || remainingMs <= 0) return false;
       const context = activeContext(storage, timerFamily, options.gameId);
       if (!context) return false;
@@ -289,8 +304,12 @@
         durationMs: timerDurationMs,
         remainingMs: Math.max(1, Math.min(timerDurationMs, Math.ceil(remainingMs)))
       });
-      if (saved) preservePersistedOnNextStop = true;
+      if (saved && preserveOnNextStop) preservePersistedOnNextStop = true;
       return saved;
+    }
+
+    function handlePageHide() {
+      return saveCurrentTimer(true);
     }
 
     function handlePageShow(event) {
@@ -322,6 +341,7 @@
       if (!documentRef?.hidden) return false;
       if (!sessionActive || !timerNode || !timerEnd || timerFinished || timerDurationMs <= 0) return false;
       setPaused(true);
+      saveCurrentTimer(false);
       return true;
     }
 
@@ -370,7 +390,7 @@
     }
 
     documentRef?.addEventListener?.('visibilitychange', handleVisibilityChange);
-    windowRef?.addEventListener?.('pagehide', persistRunningTimerSnapshot, { capture: true });
+    windowRef?.addEventListener?.('pagehide', handlePageHide, { capture: true });
     windowRef?.addEventListener?.('pageshow', handlePageShow);
     bind();
 
@@ -380,7 +400,8 @@
       countdown,
       countdownMilliseconds,
       stopTimer,
-      persistRunningTimerSnapshot,
+      persistRunningTimerSnapshot: () => saveCurrentTimer(true),
+      handlePageHide,
       handlePageShow,
       handleVisibilityChange,
       setPaused,
