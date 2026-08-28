@@ -10,8 +10,8 @@ Stand: 28. August 2026
 
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / BG59: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v59` / `secret-circle-v59-staging`**
+- Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**
+- Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 
@@ -45,49 +45,45 @@ Quick Replacement Guard v1 + Quick Loader v7 schützen Same-/Cross-Game-Ersatz i
 
 ### v57 – Quick Timer Resume
 
-- `party-session-controls.js` Version 2.
-- promptfreier Store `secret-circle-party-quick-timers-v1` für Restzeit-Metadaten.
-- Resume nur bei exakt passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer.
-- Complete Backup verwaltet 17 exakte aktuelle Storage-Keys.
-- QT57 als eigener Realtest.
+Promptfreier Store `secret-circle-party-quick-timers-v1` für Restzeit-Metadaten; Resume nur bei exakt passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer; Complete Backup verwaltet 17 exakte aktuelle Storage-Keys.
 
 ### v58 – BFCache Timer Resume
 
-- `party-session-controls.js` Version 3.
-- `pageshow.persisted` mit passendem Snapshot führt kontrolliert in den normalen QT57-Resume-Pfad.
-- stale Snapshot wird gelöscht, ohne unnötigen Reload.
-- Browserfälle in `tests/e2e/quick-timer-resume.spec.js` und eigener BF58-Audit.
+`pageshow.persisted` mit passendem Snapshot führt kontrolliert in den normalen QT57-Resume-Pfad; stale Snapshot wird gelöscht, ohne unnötigen Reload.
 
 ### v59 – Background Timer Fairness
 
-- `party-session-controls.js` auf **Version 4** erhöht.
-- laufende Quick-/Trending-/Mega-/Viral-/Creator-Timer beobachten `visibilitychange`.
-- `document.hidden` pausiert eine aktive Timer-Runde automatisch.
-- Hintergrundzeit durch App-/Tabwechsel oder Screen-Lock wird nicht als Spielzeit abgezogen.
-- Rückkehr auf `visible` startet **nicht automatisch** weiter; der Nutzer muss bewusst `Fortsetzen` wählen.
-- Visibility-Wechsel ohne laufenden Timer verändert keinen Rundenzustand.
-- `tests/party-session-controls.test.js` um 60-Sekunden-Hintergrund-Fairnessvertrag erweitert.
-- neues `tests/e2e/quick-background-pause.spec.js` prüft Pause-Overlay, stehende Restzeit und expliziten Resume.
-- neues `scripts/quick_background_pause_audit.py` in `npm run validate`.
-- QT57-/BF58-Audits auf SessionControls v4 kompatibel gemacht.
-- `scripts/architecture_audit.py` erzwingt BG59 und den Browservertrag.
-- BG59 als eigener realer App-Wechsel-/Screen-Lock-Abnahmetest definiert.
+`document.hidden` pausiert laufende Quick-/Trending-/Mega-/Viral-/Creator-Timer; Hintergrundzeit wird nicht abgezogen; sichtbare Rückkehr verlangt explizites `Fortsetzen`.
 
-### PWA / Offline – v59
+### v60 – Hidden Snapshot Durability
 
-- Offline-Core auf **`secret-circle-v59` / `secret-circle-v59-staging`** erhöht.
-- SessionControls v4, QT57, BF58, BG59, Quick Replacement Guard v1 und Quick Loader v7 werden offline ausgeliefert.
-- Backup-Dateiformat bleibt Version 1 mit 17 managed Keys; BG59 erzeugt keine neuen Storage-Daten.
+- `party-session-controls.js` auf **Version 5** erhöht.
+- `visibilitychange(hidden)` persistiert die technische Restzeit sofort in den bestehenden promptfreien Timer-Store.
+- Hidden-Persistenz setzt **nicht** `preservePersistedOnNextStop`; ein normaler Same-Page-Stop räumt den Snapshot wieder auf.
+- nur der `pagehide`-Pfad setzt Preserve-on-next-stop, damit der unmittelbar folgende Engine-Stop den Snapshot nicht löscht.
+- Cold Resume nach mobilem OS-/Browserprozess-Kill funktioniert dadurch auch dann, wenn `pagehide` nicht mehr zuverlässig ausgeführt wurde.
+- der Hidden-Snapshot wird beim Cold Resume genau einmal über QT57 konsumiert.
+- `tests/party-session-controls.test.js` um Hidden-only Persistenz, Cold Resume und Same-Page-Cleanup erweitert.
+- `tests/e2e/quick-background-pause.spec.js` prüft sofortige Hidden-Persistenz und Cleanup nach normalem Rundenende.
+- neues `scripts/quick_hidden_snapshot_audit.py` in `npm run validate`.
+- QT57-/BF58-/BG59-Audits auf SessionControls v5 aktualisiert.
+- `scripts/architecture_audit.py` erzwingt HS60.
+- Backup-Dateiformat Version 1 und 17-Key-Allowlist bleiben unverändert.
+- HS60 als eigener realer Mobile-/PWA-Abnahmetest definiert.
+
+### PWA / Offline – v60
+
+- Offline-Core auf **`secret-circle-v60` / `secret-circle-v60-staging`** erhöht.
+- SessionControls v5, QT57, BF58, BG59, HS60, Quick Replacement Guard v1 und Quick Loader v7 werden offline ausgeliefert.
 - alle früheren Advanced-/A11y-/Resume-/Privacy-/Backup-Verträge bleiben enthalten.
 
 ### Build / CI
 
 - `package-lock.json` v3; Playwright exakt 1.54.2; keine npm-Runtime-Dependencies.
 - CI/Cross-Browser verwenden `npm ci`.
-- PT54-, AD55-, QR56-, QT57-, BF58- und BG59-Audits im Validate-Gate.
-- Quick-Timer-/BFCache-/Background-Pause-Browserverträge im normalen Playwright-Gate; relevante Specs im Syntax-Preflight.
+- Timer-Lifecycle-Audits QT57/BF58/BG59/HS60 im Validate-Gate.
 - letzter vollständig untersuchter Actions-Lauf bleibt historisch **Run #2787 auf v49**, `steps: null` / `steps: []`, ohne ausgeführten Repositorycode.
-- **v50–v59 haben keinen Runner-PASS.**
+- **v50–v60 haben keinen Runner-PASS.**
 
 ### Operator / Assets
 
@@ -97,6 +93,6 @@ Quick Replacement Guard v1 + Quick Loader v7 schützen Same-/Cross-Game-Ersatz i
 
 ### Releaseentscheidung
 
-Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y + Spezialgates bis BG59**, **#14 Operator/Hosting/Legal/Support**.
+Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y + Spezialgates bis HS60**, **#14 Operator/Hosting/Legal/Support**.
 
 Öffentlicher Release: **NO_GO**.
