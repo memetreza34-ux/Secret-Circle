@@ -43,7 +43,8 @@
     "reconciliation": {
       "pullRequest": 15,
       "branch": "integration/v64-main-sync",
-      "head": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+      "mainMergeCommit": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+      "currentReviewedHead": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
       "draft": true,
       "mergeable": true,
       "behindMain": 0,
@@ -63,10 +64,10 @@
   },
   "ci": {
     "status": "BLOCKED_BEFORE_STEP_1",
-    "latestInvestigatedRunNumber": 3652,
-    "latestInvestigatedRunId": 33255174732,
-    "latestInvestigatedJobId": 99107510570,
-    "latestInvestigatedHead": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+    "latestInvestigatedRunNumber": 3660,
+    "latestInvestigatedRunId": 33255333073,
+    "latestInvestigatedJobId": 99107918414,
+    "latestInvestigatedHead": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
     "latestInvestigatedBranch": "integration/v64-main-sync",
     "runnerAssigned": false,
     "repositoryCodeExecuted": false
