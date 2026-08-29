@@ -10,7 +10,7 @@
   if (!base) throw new Error('Classic-Content-Katalog für Expansion Wave 1 fehlt.');
 
   const quickHref = id => `quick-play.html?game=${encodeURIComponent(id)}`;
-  const gamesAdded = [
+  const quizGames = [
     Object.freeze({
       id: 'party-quiz', title: 'Party Quiz', icon: '🧠', group: 'Quiz & Wissen', status: 'playable', mode: 'link',
       href: quickHref('party-quiz'), minPlayers: 2, maxPlayers: 20, duration: 15,
@@ -28,8 +28,27 @@
       packs: ['Natur', 'Film & Serie', 'Technik']
     })
   ];
+  const imposterGames = [
+    Object.freeze({
+      id: 'undercover-similar-word', title: 'Undercover – ähnliches Wort', icon: '🕶️', group: 'Täuschung', status: 'playable', mode: 'link',
+      href: quickHref('undercover-similar-word'), minPlayers: 3, maxPlayers: 20, duration: 12,
+      moods: ['clever', 'competitive', 'funny'], age: 'all', featured: false,
+      description: 'Fast alle bekommen denselben Begriff. Eine Person erhält ein ähnliches Wort und muss unauffällig bleiben.',
+      instructions: ['Pack und Rundenzahl wählen.', 'Karten nacheinander privat ansehen und sofort wieder verdecken.', 'Reihum kurze Hinweise geben.', 'Geheim abstimmen und die Wörter auflösen.'],
+      packs: ['Alltag', 'Essen', 'Gaming']
+    }),
+    Object.freeze({
+      id: 'no-word-imposter', title: 'Imposter ohne Wort', icon: '🫥', group: 'Täuschung', status: 'playable', mode: 'link',
+      href: quickHref('no-word-imposter'), minPlayers: 3, maxPlayers: 20, duration: 12,
+      moods: ['clever', 'competitive', 'funny'], age: 'all', featured: false,
+      description: 'Alle außer dem Imposter kennen den Begriff. Wird der Imposter gewählt, bekommt er einen letzten Versuch, das Wort zu erraten.',
+      instructions: ['Pack und Rundenzahl wählen.', 'Karten nacheinander privat ansehen und sofort wieder verdecken.', 'Hinweise geben und geheim abstimmen.', 'Enttarnter Imposter darf das Wort einmal erraten.'],
+      packs: ['Alltag', 'Essen', 'Orte']
+    })
+  ];
+  const gamesAdded = Object.freeze([...quizGames, ...imposterGames]);
 
-  const contentAdded = Object.freeze({
+  const quizContent = {
     'party-quiz': Object.freeze({
       Allgemeinwissen: Object.freeze([
         Object.freeze({ question: 'Wie viele Kontinente werden im in Deutschland üblichen Schulmodell meistens gezählt?', options: ['5', '6', '7', '8'], answer: 2, explanation: 'Im verbreiteten Sieben-Kontinente-Modell sind es sieben.' }),
@@ -94,11 +113,42 @@
         Object.freeze({ statement: 'Offline-fähige PWAs benötigen für jede einzelne Aktion zwingend eine aktive Internetverbindung.', fact: false, explanation: 'Geeignet gebaute PWAs können vorgesehene Inhalte und Funktionen lokal verfügbar halten.' })
       ])
     })
-  });
+  };
 
+  const imposterContent = {
+    'undercover-similar-word': Object.freeze({
+      Alltag: Object.freeze([
+        { civilian: 'Bus', undercover: 'Zug' }, { civilian: 'Sofa', undercover: 'Sessel' },
+        { civilian: 'Handy', undercover: 'Tablet' }, { civilian: 'Regen', undercover: 'Schnee' },
+        { civilian: 'Schule', undercover: 'Arbeit' }, { civilian: 'Kaffee', undercover: 'Tee' },
+        { civilian: 'Fahrrad', undercover: 'Roller' }, { civilian: 'Rucksack', undercover: 'Koffer' }
+      ].map(Object.freeze)),
+      Essen: Object.freeze([
+        { civilian: 'Pizza', undercover: 'Flammkuchen' }, { civilian: 'Apfel', undercover: 'Birne' },
+        { civilian: 'Reis', undercover: 'Nudeln' }, { civilian: 'Burger', undercover: 'Sandwich' },
+        { civilian: 'Kuchen', undercover: 'Muffin' }, { civilian: 'Pommes', undercover: 'Kartoffelecken' },
+        { civilian: 'Saft', undercover: 'Smoothie' }, { civilian: 'Suppe', undercover: 'Eintopf' }
+      ].map(Object.freeze)),
+      Gaming: Object.freeze([
+        { civilian: 'Controller', undercover: 'Tastatur' }, { civilian: 'Level', undercover: 'Mission' },
+        { civilian: 'Boss', undercover: 'Rivale' }, { civilian: 'Inventar', undercover: 'Rucksack' },
+        { civilian: 'Strategie', undercover: 'Taktik' }, { civilian: 'Team', undercover: 'Squad' },
+        { civilian: 'Checkpoint', undercover: 'Speicherpunkt' }, { civilian: 'Rennspiel', undercover: 'Sportsimulation' }
+      ].map(Object.freeze))
+    }),
+    'no-word-imposter': Object.freeze({
+      Alltag: Object.freeze(['Schlüssel', 'Regenschirm', 'Fahrrad', 'Kopfhörer', 'Aufzug', 'Kalender', 'Kissen', 'Rucksack']),
+      Essen: Object.freeze(['Pizza', 'Banane', 'Pasta', 'Schokolade', 'Salat', 'Toast', 'Pommes', 'Eis']),
+      Orte: Object.freeze(['Bahnhof', 'Bibliothek', 'Supermarkt', 'Schule', 'Park', 'Museum', 'Flughafen', 'Schwimmbad'])
+    })
+  };
+
+  const contentAdded = Object.freeze({ ...quizContent, ...imposterContent });
   const games = Object.freeze([...base.games, ...gamesAdded]);
   const content = Object.freeze({ ...base.content, ...contentAdded });
-  const waveOneGameIds = Object.freeze(gamesAdded.map(game => game.id));
+  const waveOneQuizGameIds = Object.freeze(quizGames.map(game => game.id));
+  const waveOneImposterGameIds = Object.freeze(imposterGames.map(game => game.id));
+  const waveOneGameIds = Object.freeze([...waveOneQuizGameIds, ...waveOneImposterGameIds]);
   const quickGameIds = Object.freeze([...(base.quickGameIds || []), ...waveOneGameIds]);
 
   function getGame(id) { return games.find(game => game.id === id) || null; }
@@ -113,13 +163,15 @@
 
   return Object.freeze({
     ...base,
-    version: 2,
+    version: 3,
     games,
     content,
     getGame,
     getPackNames,
     getItems,
     itemCount,
+    waveOneQuizGameIds,
+    waveOneImposterGameIds,
     waveOneGameIds,
     quickGameIds
   });
