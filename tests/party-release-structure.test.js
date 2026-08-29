@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const catalog = require('../party-viral-catalog.js');
+const catalog = require('../party-wave-one-catalog.js');
 const release = require('../party-release-structure.js');
 
 function read(file) {
@@ -12,14 +12,14 @@ function read(file) {
 
 assert.equal(release.version, 2);
 assert.equal(release.coreIds.length, 15);
-assert.equal(release.labIds.length, 17);
+assert.equal(release.labIds.length, 19);
 assert.equal(new Set(release.coreIds).size, release.coreIds.length);
 assert.equal(new Set(release.labIds).size, release.labIds.length);
 assert.equal(release.coreIds.some(id => release.labIds.includes(id)), false);
 
 const summary = release.counts(catalog.games);
-assert.equal(catalog.games.length, 45);
-assert.deepEqual(summary, { core: 15, extended: 13, labs: 17 });
+assert.equal(catalog.games.length, 47);
+assert.deepEqual(summary, { core: 15, extended: 13, labs: 19 });
 
 for (const id of release.coreIds) {
   const game = catalog.getGame(id);
@@ -33,6 +33,8 @@ for (const id of release.labIds) {
   assert.equal(release.tierFor(game), 'labs');
 }
 
+assert.equal(release.tierFor(catalog.getGame('party-quiz')), 'labs');
+assert.equal(release.tierFor(catalog.getGame('fact-or-fake')), 'labs');
 assert.equal(release.tierFor(catalog.getGame('hot-takes')), 'extended');
 assert.equal(release.tierFor(catalog.getGame('wavelength')), 'extended');
 assert.equal(release.tierFor({ id: 'custom-game-demo', custom: true, status: 'playable' }), 'extended');
@@ -76,6 +78,7 @@ console.log(JSON.stringify({
   coreGames: summary.core,
   extendedGames: summary.extended,
   labsGames: summary.labs,
+  waveOneLabs: ['party-quiz', 'fact-or-fake'],
   customGamesClassifiedAsExtended: true,
   plannedGamesClassifiedAsLabs: true,
   ageAndReleaseTierCombined: true,
