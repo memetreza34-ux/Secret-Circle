@@ -99,6 +99,7 @@
   const games = Object.freeze([...base.games, ...gamesAdded]);
   const content = Object.freeze({ ...base.content, ...contentAdded });
   const waveOneGameIds = Object.freeze(gamesAdded.map(game => game.id));
+  const quickGameIds = Object.freeze([...(base.quickGameIds || []), ...waveOneGameIds]);
 
   function getGame(id) { return games.find(game => game.id === id) || null; }
   function getPackNames(id) { return content[id] && typeof content[id] === 'object' ? Object.keys(content[id]) : []; }
@@ -112,13 +113,14 @@
 
   return Object.freeze({
     ...base,
-    version: 1,
+    version: 2,
     games,
     content,
     getGame,
     getPackNames,
     getItems,
     itemCount,
-    waveOneGameIds
+    waveOneGameIds,
+    quickGameIds
   });
 });
