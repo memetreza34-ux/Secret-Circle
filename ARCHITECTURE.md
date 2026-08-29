@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026
 
-Secret Circle bleibt für den Januar-2027-Release eine statische **offline-first PWA** für gemeinsame Spiele auf einem Gerät. Der aktuelle Katalog besitzt **51 Built-ins: 15 Core / 13 Extended / 23 Labs**. Die sechs Wave-1-Spiele bleiben Labs und erweitern den Januar-Core nicht automatisch.
+Secret Circle bleibt für den Januar-2027-Release eine statische **offline-first PWA** für gemeinsame Spiele auf einem Gerät. Der aktuelle Katalog besitzt **55 Built-ins: 15 Core / 13 Extended / 27 Labs**. **Expansion Wave 1 ist mit 10/10 geplanten Modi quellsseitig implementiert**, bleibt aber Labs und erweitert den Januar-Core nicht automatisch.
 
 ## 1. Produktgrenzen
 
@@ -20,9 +20,9 @@ Persistierte Spiel-/Pack-/Creator-/Session-/Completion-IDs, Storage-Keys, Backup
 
 Browserkette auf Hub und Quick-Play:
 
-`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-core-classic-content.js → party-routing.js → party-wave-one-catalog.js → party-wave-one-imposter-catalog.js → party-wave-one-writing-catalog.js`
+`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-core-classic-content.js → party-routing.js → party-wave-one-catalog.js → party-wave-one-imposter-catalog.js → party-wave-one-writing-catalog.js → party-wave-one-voting-catalog.js → party-wave-one-bluff-catalog.js → party-wave-one-clue-catalog.js`
 
-`party-wave-one-catalog.js` v3 liefert Quiz + Imposter. `party-wave-one-imposter-catalog.js` bleibt ein Kompatibilitäts-Adapter. `party-wave-one-writing-catalog.js` v4 ergänzt Satzduell und Wer hat das geschrieben?. Themen bleiben Content-Layer; gemeinsame Engines werden vor Einzellösungen bevorzugt.
+Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare Enginefamilien**: Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. Themen bleiben Content-Layer; neue sichtbare Varianten sollen bevorzugt auf vorhandenen Engines entstehen.
 
 ## 5. Hub- und Timergrenzen
 
@@ -58,7 +58,7 @@ Gemeinsame Quiz-Engine: `party-quiz` und `fact-or-fake` über `party-wave-one-mo
 
 ## 13. Expansion Wave 1 Imposter – v62
 
-Gemeinsame Imposter-Engine: `undercover-similar-word` und `no-word-imposter` über `party-wave-one-imposter-modes.js`. Private Handoffs, geheime Votes, Blur/Hidden-Concealment, letzter Guess und exact-once-Scoring sind Source-Verträge. `quick-loader.js` routet die Imposter-IDs vor dem allgemeinen Wave-Fallback.
+Gemeinsame Imposter-Engine: `undercover-similar-word` und `no-word-imposter` über `party-wave-one-imposter-modes.js`. Private Handoffs, geheime Votes, Blur/Hidden-Concealment, letzter Guess und exact-once-Scoring sind Source-Verträge.
 
 ## 14. Expansion Wave 1 Writing – v63
 
@@ -67,69 +67,84 @@ Gemeinsame Schreib-Engine:
 - `fill-blank-battle` – private Antworten, danach anonyme Gruppenwahl;
 - `who-wrote-it` – private Antworten, danach anonyme Autorenraten.
 
-Verträge:
+Private Eingaben werden bei Blur/Hidden verdeckt. Antworten bleiben während Vote/Guess anonym; Ergebnis-Resume darf Score nicht doppelt vergeben.
 
-- `party-wave-one-writing-catalog.js` v4 liefert je 24 jugendfreundliche Built-in-Prompts;
-- `party-wave-one-writing-modes.js` sammelt Antworten nacheinander privat und begrenzt Eingaben auf 140 Zeichen;
-- Blur, `pagehide` und Hidden schließen eine offene private Eingabe wieder;
-- während Vote/Guess erscheinen Antworten ohne Autorennamen; Autoren werden erst im Ergebnis aufgedeckt;
-- Resume validiert Prompt, Antwort-Autoren, anonyme Reihenfolge, Guess-Reihenfolge und Score-Phase fail-closed;
-- `current.scored` und stabile `wave1-writing`-Completion-IDs schützen vor Doppelwertung;
-- `quick-loader.js` v10 routet `waveOneWritingGameIds` vor Imposter-/Quiz-/Quick-Fallbacks;
-- alle sechs Wave-1-Spiele bleiben Labs.
+## 15. Expansion Wave 1 Complete – v64
 
-`GAME_LIBRARY_BACKLOG.json` bleibt die maschinenlesbare Expansionsplanung.
+Die ursprünglich geplanten 10 Wave-1-Modi sind jetzt quellsseitig vorhanden:
 
-## 15. Lokale Transaktionen und Exact-once
+1. `bluff-trivia`
+2. `party-quiz`
+3. `fact-or-fake`
+4. `percent-guess`
+5. `fill-blank-battle`
+6. `who-wrote-it`
+7. `party-bracket`
+8. `undercover-similar-word`
+9. `no-word-imposter`
+10. `password-one-word`
+
+Neue v64-Verträge:
+
+- `percent-guess`: speichert Kartenindex + Schätzung; Punkte werden aus dem Built-in-Zielwert deterministisch abgeleitet.
+- `party-bracket`: speichert Kartenindex + sieben 0/1-Entscheidungen; aktuelles Duell und Sieger werden deterministisch rekonstruiert.
+- `bluff-trivia`: private Fake-Antworten, anonyme Kandidaten, keine Stimme auf eigene Fake-Antwort, richtige Antwort erst im Ergebnis, Wissens- und Täuschungspunkte exact-once.
+- `password-one-word`: Zielwort nur über Kartenindex persistiert, explizites Secret-Reveal, genau ein anderes Hinweiswort, Blur/Hidden verdeckt das Ziel wieder.
+- `quick-loader.js` v11 routet alle sechs Wave-1-Enginefamilien explizit vor dem normalen Quick-Fallback.
+- `party-release-structure.js` v5 klassifiziert alle 10 Wave-1-Modi als Labs.
+- `GAME_LIBRARY_BACKLOG.json` bleibt die maschinenlesbare Produktplanung.
+- Built-in-18+-Content bleibt ausgeschlossen.
+
+## 16. Lokale Transaktionen und Exact-once
 
 Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und rollen bei Fehlern zurück. Fertige Sessions besitzen stabile Completion-/History-IDs. Reload, Retry oder Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
-## 16. Datenschutz und Security durch Architektur
+## 17. Datenschutz und Security durch Architektur
 
 - keine Analytics-/Ads-Skripte oder externen Runtime-CDNs
 - restriktive CSP
 - Geheimkarten und private Eingaben bei Fokusverlust verdecken
 - Session-Ersatz erfolgt nicht still
-- Writing-Antworten werden bei Sammlung nur der aktiven Person gezeigt
 - anonyme Vote-/Guess-Phasen zeigen keine Autorennamen
+- Bluff-Antworten und Secret-Clue-Zielwörter bleiben pass-and-play geschützt
 - Timer-Resume speichert nur technische Metadaten
 - manipulierte Resume-Zustände werden fail-closed verworfen
 - Wave-1-Content ist textbasiert und benötigt keine fremden Bilder, Audioassets oder Zitate
 
-## 17. Offline- und Updatevertrag
+## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v63` / `secret-circle-v63-staging`**.
+Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**.
 
-Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → **v63 Writing**.
+Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
 Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Upgrade/Rollback real testen.
 
-## 18. PWA-Installationsmetadaten
+## 19. PWA-Installationsmetadaten
 
 `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
 
-## 19. Accessibility als Definition of Done
+## 20. Accessibility als Definition of Done
 
 Kernoberflächen und Labs benötigen semantische Struktur, Labels, sichtbaren Fokus, Tastaturbedienung, Touchziele, Reduced Motion und Reflow. Private Übergaben brauchen verständliche Handoff-Texte. VoiceOver/TalkBack/Touch/Zoom bleiben reale Gates.
 
-## 20. Inhalts- und Rechtevertrag
+## 21. Inhalts- und Rechtevertrag
 
 Keine kopierten proprietären Karten, fremden Medien/Logos ohne Rechte oder unnötigen konkreten Marken-/Franchisebezug. Film/Serie/Anime/Gaming dürfen als Themenwelten vorkommen; konkrete moderne Franchises benötigen vor Built-in-Veröffentlichung einen eigenen Referenz-/Rechteentscheid.
 
-## 21. Testpyramide
+## 22. Testpyramide
 
-Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Wave-1-Quiz-/Wave-1-Imposter-/Wave-1-Writing-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Hidden-Snapshot-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
+Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Wave-1-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Hidden-Snapshot-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
 
-Wave 1 aktuell: `tests/party-wave-one-catalog.test.js`, `tests/party-wave-one-imposter-catalog.test.js`, `tests/party-wave-one-writing-catalog.test.js`, `tests/e2e/wave-one-quiz.spec.js`, `tests/e2e/wave-one-imposter.spec.js`, `tests/e2e/wave-one-writing.spec.js`, `scripts/wave_one_quiz_audit.py`, `scripts/wave_one_imposter_audit.py`, `scripts/wave_one_writing_audit.py`.
+Wave 1 besitzt eigene Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie den finalen Prozent-/Bracket-/Bluff-/Clue-Block. `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10, v64, Loader v11 und kein 18+-Built-in-Content.
 
-## 22. Performance und Assets
+## 23. Performance und Assets
 
 Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB. Neue sichtbare Varianten sollen bevorzugt Content auf gemeinsamen Engines wiederverwenden.
 
-## 23. Betrieb, Deprecation und Rollback
+## 24. Betrieb, Deprecation und Rollback
 
 Kein Force-Push auf stabile Release-Basen. Rollback/Hotfix erhält nach Offline-Core-Änderungen eine neue Cachegeneration. Persistierte Daten müssen kompatibel bleiben oder explizit migriert werden.
 
-## 24. Releaseentscheidung
+## 25. Releaseentscheidung
 
 Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und reale Gates tatsächlich ausgeführt wurden**. `release-evidence.json` ist die finale Quelle; `GO` erst bei belegten PASS-Gates auf demselben unveränderten RC.
