@@ -13,8 +13,9 @@ for path in (TEST, REVIEW):
 
 review = REVIEW.read_text(encoding='utf-8')
 for marker in (
-    '13 Extended', '17 Labs', '30 Nicht-Core-Spiele',
-    'MANUAL SIGN-OFF OPEN', 'extended-labs-content-quality.test.js'
+    '13 Extended', '27 Labs', '40 Nicht-Core-Spiele',
+    'Wave 1', '10/10', 'MANUAL SIGN-OFF OPEN',
+    'extended-labs-content-quality.test.js'
 ):
     if marker not in review:
         raise SystemExit(f'Extended/Labs review marker missing: {marker}')
@@ -40,9 +41,13 @@ except json.JSONDecodeError as exc:
 
 if node_payload.get('extendedLabsContentQuality') != 'PASS':
     raise SystemExit('Extended/Labs Node contract did not report PASS.')
-if node_payload.get('releaseTiers') != {'core': 15, 'extended': 13, 'labs': 17}:
+if node_payload.get('releaseTiers') != {'core': 15, 'extended': 13, 'labs': 27}:
     raise SystemExit('Extended/Labs release tier counts drifted.')
-if node_payload.get('contentDrivenGames') != 28:
+if node_payload.get('totalBuiltIns') != 55 or node_payload.get('nonCoreGames') != 40:
+    raise SystemExit('Extended/Labs total catalog coverage drifted from v64.')
+if node_payload.get('waveOneCovered') != 10 or len(node_payload.get('waveOneLabs', [])) != 10:
+    raise SystemExit('Wave 1 content coverage is incomplete.')
+if node_payload.get('contentDrivenGames') != 38:
     raise SystemExit('Unexpected number of content-driven non-core games.')
 if sorted(node_payload.get('contentlessUtilityGames', [])) != ['dice-coin', 'spin-bottle']:
     raise SystemExit('Unexpected contentless utility game set.')
@@ -50,8 +55,12 @@ if sorted(node_payload.get('contentlessUtilityGames', [])) != ['dice-coin', 'spi
 print(json.dumps({
     'extended_labs_content_audit': 'PASS',
     'release_tiers': node_payload['releaseTiers'],
+    'total_built_ins': node_payload['totalBuiltIns'],
+    'non_core_games': node_payload['nonCoreGames'],
     'extended_games': len(node_payload.get('extendedIds', [])),
     'lab_games': len(node_payload.get('labIds', [])),
+    'wave_one_labs': node_payload.get('waveOneLabs', []),
+    'wave_one_covered': node_payload['waveOneCovered'],
     'content_driven_games': node_payload['contentDrivenGames'],
     'contentless_utility_games': node_payload['contentlessUtilityGames'],
     'packs_checked': node_payload.get('packsChecked'),
