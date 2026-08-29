@@ -27,6 +27,21 @@
     "pullRequest": 13,
     "pullRequestState": "DRAFT"
   },
+  "branchStack": {
+    "status": "DIVERGED_FROM_MAIN",
+    "mainHead": "d347c7138bae18325c288632222917ad618e6547",
+    "stackMergeBase": "a16a612c8e5f919eaca2dcf0a905e7e8824ec472",
+    "layers": [
+      {"pullRequest": 3, "branch": "codex/improve-gameplay-v3"},
+      {"pullRequest": 11, "branch": "codex/party-hub-foundation"},
+      {"pullRequest": 13, "branch": "agent/release-foundation-2027"}
+    ],
+    "mainCommitsOutsideStackAncestry": [
+      "6b6bddd0ae619d160b4468b61ae49cb30e2ea834",
+      "d347c7138bae18325c288632222917ad618e6547"
+    ],
+    "reconciliationRequiredBeforeReleaseMerge": true
+  },
   "ci": {
     "status": "BLOCKED_BEFORE_STEP_1",
     "latestInvestigatedRunNumber": 3608,
