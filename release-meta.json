@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-29",
+  "sourceGeneration": "v64",
+  "packageVersion": "1.0.0-beta.3",
+  "offlineCache": {
+    "production": "secret-circle-v64",
+    "staging": "secret-circle-v64-staging"
+  },
+  "builtIns": {
+    "total": 55,
+    "core": 15,
+    "extended": 13,
+    "labs": 27
+  },
+  "waveOne": {
+    "planned": 10,
+    "sourceImplemented": 10,
+    "releaseTier": "labs",
+    "realEvidenceStatus": "OPEN"
+  },
+  "release": {
+    "target": "2027-01",
+    "publicWindow": "2027-01-04/2027-01-15",
+    "decision": "NO_GO",
+    "workingBranch": "agent/release-foundation-2027",
+    "pullRequest": 13,
+    "pullRequestState": "DRAFT"
+  },
+  "ci": {
+    "status": "BLOCKED_BEFORE_STEP_1",
+    "latestInvestigatedRunNumber": 3608,
+    "latestInvestigatedRunId": 33253663445,
+    "latestInvestigatedJobId": 99103557030,
+    "latestInvestigatedHead": "2297868e1f65b45753294151a3b1f401a55f6288",
+    "runnerAssigned": false,
+    "repositoryCodeExecuted": false
+  },
+  "scopePolicy": {
+    "coreFrozen": true,
+    "newCoreGamesBeforeReleaseGates": false,
+    "largeArchitectureMigrationBeforeRc": false
+  }
+}
