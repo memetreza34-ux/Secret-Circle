@@ -6,13 +6,15 @@ Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffe
 
 ## Aktueller Releaseumfang
 
-- **51 Built-ins · 15 Core / 13 Extended / 23 Labs**
-- Wave 1 besitzt aktuell sechs spielbare Labs: `Party Quiz`, `Fake oder Fakt`, `Undercover – ähnliches Wort`, `Imposter ohne Wort`, `Satzduell`, `Wer hat das geschrieben?`
-- diese Labs erweitern den Januar-Core nicht automatisch
+- **55 Built-ins · 15 Core / 13 Extended / 27 Labs**
+- **Wave 1 = 10/10 geplante Labs quellsseitig implementiert**
 - Word Imposter + Smart Party Night + lokaler Creator
-- aktueller Offline-Core: **`secret-circle-v63` / `secret-circle-v63-staging`**
+- aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**
+- Quick Loader v11
 - Draft-PR #13 auf `agent/release-foundation-2027`
 - öffentliche Freigabe: **NO_GO**
+
+Wave 1: Party Quiz, Fake oder Fakt, Undercover – ähnliches Wort, Imposter ohne Wort, Satzduell, Wer hat das geschrieben?, Prozent schätzen, Party Bracket, Bluff Trivia und Ein-Wort-Hinweis. Alle bleiben Labs.
 
 ## Deployment-Reihenfolge
 
@@ -32,41 +34,41 @@ Production erhält denselben unveränderten RC, der auf Staging freigegeben wurd
 
 Ein Job mit `steps: []` ist kein Code-/Testnachweis.
 
-## PWA / Offline – v63
+## PWA / Offline – v64
 
-Offline enthalten sind `party-session-controls.js` Version 5, Quick Replacement Guard v2, Quick Loader v10, Backup Registry v2 sowie Quiz-, Imposter- und Writing-Katalog-/Runnerdateien.
+Offline enthalten sind alle Wave-1-Kataloge und Runner, `party-session-controls.js` Version 5, Quick Replacement Guard v2, Quick Loader v11 und Backup Registry v2.
 
 - **QT57:** Restzeit über normalen Reload.
-- **BF58:** BFCache-Rückkehr führt sicher in QT57 oder verwirft stale Zustand.
-- **BG59:** Hidden pausiert; Visible benötigt explizites Resume.
-- **HS60:** Hidden persistiert Restzeit sofort für möglichen OS-Kill.
-- **Wave 1 / v61:** Party Quiz und Fake oder Fakt über gemeinsamen Quiz-Runner.
-- **Wave 1 Imposter / v62:** Undercover und No-Word über gemeinsamen Secret-Reveal-/Vote-Runner.
-- **Wave 1 Writing / v63:** Satzduell und Wer hat das geschrieben? über gemeinsamen privaten Schreib-/Anonymisierungs-Runner.
+- **BF58:** BFCache-Rückkehr sicher.
+- **BG59:** Hidden pausiert.
+- **HS60:** Hidden persistiert Restzeit.
+- **v61:** Quiz.
+- **v62:** Imposter.
+- **v63:** Writing.
+- **v64:** Prozent/Bracket/Bluff/Clue und Wave 1 vollständig 10/10.
 
 ## HTTPS-Staging
 
-Der Netzwerk-Smoke wird durch **`scripts/staging_smoke.py`** ausgeführt. Die PWA-Head-Metadaten werden zusätzlich durch **`tests/pwa-head-metadata.test.js`** geschützt.
-
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v63
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v64
 ```
 
-Manuell zusätzlich: Installation, Offline-Neustart, Update/Rollback, bestehende Spezialgates sowie alle sechs Wave-1-Labs online und offline.
+Manuell zusätzlich: Installation, Offline-Neustart, Update/Rollback, bestehende Spezialgates und alle zehn Wave-1-Labs online/offline.
 
-Für v63 besonders prüfen:
+Für v64 besonders prüfen:
 
-- private Schreib-Eingabe wird bei Blur/App-Wechsel wieder verdeckt;
-- Satzduell zeigt Antworten vor dem Vote ohne Autorennamen;
-- Wer hat das geschrieben? zeigt Autoren erst im Ergebnis;
-- Reload/Resume verändert Sieger, Guess-Fortschritt oder Punkte nicht erneut;
-- Cross-Game-Wechsel schützt den vorhandenen Quick-Family-Snapshot.
+- Prozent schätzen: Ergebnis/Score nach Reload identisch;
+- Party Bracket: sieben Picks ergeben nach Reload denselben Sieger;
+- Bluff Trivia: Fake-Eingaben und Votes bleiben privat, richtige Antwort erst im Ergebnis, Scoring exact-once;
+- Ein-Wort-Hinweis: Zielwort nach Blur/Reload nicht automatisch sichtbar, Ergebnis stabil;
+- Cross-Game-Wechsel nutzt Quick-Family-Replacement-Schutz;
+- Labs bleiben vom 15-Core-Release getrennt.
 
 ## Update-Regel
 
 Bei Offline-Core-Änderung: CORE prüfen → Cachegeneration erhöhen → SW-Test → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Upgrade/Rollback real testen.
 
-Historie: v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → **v63 Writing**.
+Historie: v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
 ## Rollback
 
@@ -75,10 +77,8 @@ Promotion stoppen → Commit/Cache dokumentieren → Revert/Hotfix → neue Cach
 ## Production-Smoke-Test
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v63 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v64 --production
 ```
-
-Production muss exakt dem freigegebenen RC entsprechen.
 
 ## Release Evidence
 
