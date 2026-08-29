@@ -1,12 +1,12 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Stand: 28. August 2026
+Stand: 29. August 2026
 
-Secret Circle bleibt für den Januar-2027-Release eine statische **offline-first PWA** für gemeinsame Spiele auf einem Gerät.
+Secret Circle bleibt für den Januar-2027-Release eine statische **offline-first PWA** für gemeinsame Spiele auf einem Gerät. Der aktuelle Katalog besitzt **47 Built-ins: 15 Core / 13 Extended / 19 Labs**. Die beiden neuen Wave-1-Spiele sind Labs und erweitern den Januar-Core nicht automatisch.
 
 ## 1. Produktgrenzen
 
-V1 besitzt kein Pflichtkonto, Backend, eigene Server-API, Werbung, Tracking oder externe Runtime-CDNs. Neue Online-/Cloud-/Kamera-/Mikrofonfunktionen benötigen einen neuen Architektur-, Privacy- und Securityentscheid.
+V1 besitzt kein Pflichtkonto, Backend, eigene Server-API, Werbung, Tracking oder externe Runtime-CDNs. Neue Online-/Cloud-/Kamera-/Mikrofonfunktionen benötigen einen neuen Architektur-, Privacy- und Securityentscheid. Built-in-Content bleibt ohne 18+-Bereich, explizite Sexualinhalte, Trinkzwang oder gefährliche Challenges.
 
 ## 2. Stabile Identitäten
 
@@ -14,17 +14,17 @@ Persistierte Spiel-/Pack-/Creator-/Session-/Completion-IDs, Storage-Keys, Backup
 
 ## 3. Versionierte Daten und Backups
 
-`backup-schema-registry.js` Version 2 ist die zentrale Quelle für Complete-Backup-Format, Größenlimits und aktuell **17 explizit verwaltete Storage-Keys**. `party-data-tools.js` Version 6 konsumiert diesen Vertrag.
+`backup-schema-registry.js` Version 2 ist die zentrale Quelle für Complete-Backup-Format, Größenlimits und aktuell 17 explizit verwaltete Storage-Keys. `party-data-tools.js` Version 6 konsumiert diesen Vertrag.
 
 Seit v51 verändert Restore nur registrierte aktuelle Keys; Future-/Unknown-Namespaces bleiben erhalten. Seit v57 gehört der promptfreie Timer-Store `secret-circle-party-quick-timers-v1` zum Complete Backup.
 
 ## 4. Katalog- und Contentarchitektur
 
-Kette:
+Kette auf Hub und Quick-Play:
 
-`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-core-classic-content.js → party-routing.js`
+`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-core-classic-content.js → party-routing.js → party-wave-one-catalog.js`
 
-`party-core-classic-content.js` steht auf v4. Privacy-/Reference-Safe-Entscheidungen werden durch eigene Audits geschützt.
+`party-core-classic-content.js` steht auf v4. `party-wave-one-catalog.js` v2 ergänzt die ersten zwei Expansion-Labs, ohne bestehende IDs oder Core-Reifestufen umzudefinieren. Themen sind Content-Layer und sollen möglichst mehrere gemeinsame Enginefamilien nutzen.
 
 ## 5. Hub- und Timergrenzen
 
@@ -40,7 +40,7 @@ Advanced trennt `party-advanced.js`, `advanced-resume-guard.js`, `party-advanced
 
 ## 7. Quick-/Mega-/Viral-/Creator-Session-Ersatz – v56
 
-`quick-session-replacement-guard.js` v1 + `quick-loader.js` v7 schützen Same-/Cross-Game-Ersatz in Quick/Trending, Mega, Viral und Creator. Ein vorhandener Family-Snapshot wird nur nach Bestätigung ersetzt; Write-Fail bleibt fail-closed.
+`quick-session-replacement-guard.js` v2 und der gemeinsame Quick-Family-Active-Key schützen Same-/Cross-Game-Ersatz. Ein vorhandener Family-Snapshot wird nur nach Bestätigung ersetzt; Write-Fail bleibt fail-closed. Wave-1-Spiele werden technisch in dieser Quick-Familie registriert, damit derselbe Schutz wiederverwendet wird.
 
 ## 8. Quick-Family Timer Resume – v57
 
@@ -50,38 +50,41 @@ Ein Snapshot wird nur bei exakt passender Game-ID, Session-ID, Runde, Phase und 
 
 ## 9. Quick-Family BFCache Resume – v58
 
-Bei `pageshow.persisted === true` prüft die gemeinsame Sessionsteuerung den gespeicherten Timer-Snapshot. Ein exakt passender Snapshot führt kontrolliert in den normalen QT57-Resume-Pfad; der Snapshot bleibt bis dahin erhalten. Ein stale/fremder Snapshot wird gelöscht, ohne unnötigen Reload. BFCache darf keinen eingefrorenen `running`-Timer als interaktiven Zustand zurücklassen.
+Bei `pageshow.persisted === true` prüft die gemeinsame Sessionsteuerung den gespeicherten Timer-Snapshot. Ein exakt passender Snapshot führt kontrolliert in den normalen QT57-Resume-Pfad. Ein stale/fremder Snapshot wird gelöscht, ohne unnötigen Reload.
 
 ## 10. Quick-Family Background Pause – v59
 
-Für Quick/Trending, Mega, Viral und Creator gilt bei einem tatsächlich laufenden Timer:
-
-- `document.hidden === true` löst über `visibilitychange` automatisch Pause aus;
-- Hintergrundzeit durch App-Wechsel, Tabwechsel oder Screen-Lock wird nicht vom Timer abgezogen;
-- beim erneuten Sichtbarwerden erfolgt **kein Auto-Resume**;
-- erst eine bewusste Nutzeraktion setzt den Timer fort;
-- ohne aktive laufende Timer-Runde verändert `visibilitychange` keinen Spielzustand.
+Für Quick/Trending, Mega, Viral und Creator gilt bei laufendem Timer: `document.hidden === true` pausiert automatisch; Hintergrundzeit wird nicht unsichtbar abgezogen; beim Sichtbarwerden erfolgt kein Auto-Resume.
 
 ## 11. Quick-Family Hidden Snapshot – v60
 
-`party-session-controls.js` steht seit **v60 auf Version 5**.
+`party-session-controls.js` steht seit v60 auf Version 5. Hidden persistiert die technische Restzeit sofort, damit ein OS-Kill ohne zuverlässiges `pagehide` nicht wieder bei voller Dauer startet. Same-Page-Stop entfernt diesen Snapshot wieder.
 
-Mobile Browser/OS können eine Seite nach `visibilitychange(hidden)` beenden, ohne zuverlässig noch `pagehide` auszuliefern. Deshalb gilt zusätzlich:
+## 12. Expansion Wave 1 – v61
 
-- sobald eine aktive Quick-Family-Timerrunde `hidden` wird, wird die aktuelle Restzeit **sofort** in `secret-circle-party-quick-timers-v1` persistiert;
-- diese Visibility-Persistenz setzt **nicht** `preservePersistedOnNextStop`, damit ein normal fortgesetzter/abgeschlossener Round-Flow den Snapshot wieder löschen kann;
-- nur der `pagehide`-Pfad ruft `persistRunningTimerSnapshot(true)` auf, weil dort die Engine direkt danach ihren In-Memory-Timer stoppen kann;
-- ein Cold-Start nach OS-Kill ohne `pagehide` kann dadurch dieselbe Restzeit über den bestehenden QT57-Vertrag einmalig wieder aufnehmen;
-- ein normaler Same-Page-Stop entfernt den Visibility-Snapshot wieder;
-- der Store bleibt promptfrei und das Backup-Dateiformat bleibt unverändert.
+Wave 1 folgt dem Prinzip **wenige gemeinsame Engines + viele Themenpacks**, nicht „eine neue Engine pro sichtbarem Spiel“.
 
-`tests/party-session-controls.test.js`, `tests/e2e/quick-background-pause.spec.js` und `scripts/quick_hidden_snapshot_audit.py` schützen HS60. Reale Prozess-Kill-/App-Wechsel-Abnahme bleibt Geräte-Evidence.
+Erste implementierte Labs:
 
-## 12. Lokale Transaktionen und Exact-once
+- `party-quiz` – Multiple Choice über den gemeinsamen `party-wave-one-modes.js`-Runner;
+- `fact-or-fake` – Fakt/Fake über denselben Runner.
+
+Verträge:
+
+- `party-wave-one-catalog.js` v2 liefert aktuell je 24 textbasierte, reference-safe Karten;
+- `quick-loader.js` v8 routet `waveOneGameIds` explizit zu `party-wave-one-modes.js`, bevor die normale Quick-Fallback-Engine greift;
+- Wave-1-IDs werden zusätzlich in `quickGameIds` registriert, damit bestehender Session-Replacement-/Resume-Schutz wiederverwendet wird;
+- `party-release-structure.js` klassifiziert beide ausdrücklich als Labs;
+- Abschluss nutzt stabile Session-/Completion-IDs und exact-once-Ledger;
+- Ergebnis-Resume darf Punkte nicht ein zweites Mal vergeben;
+- `GAME_LIBRARY_BACKLOG.json` bleibt die maschinenlesbare Expansionsplanung;
+- kein Wave-1-Lab wird ohne Content-, Resume-, Privacy-, Offline-, Accessibility-, E2E- und Gruppentest automatisch zum Core.
+
+## 13. Lokale Transaktionen und Exact-once
 
 Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreiben vollständig und rollen bei Fehlern zurück. Fertige Sessions besitzen stabile Completion-/History-IDs. Reload, Retry oder Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
-## 13. Datenschutz und Security durch Architektur
+## 14. Datenschutz und Security durch Architektur
 
 - keine Analytics-/Ads-Skripte oder externen Runtime-CDNs
 - restriktive CSP
@@ -89,46 +92,47 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand, schreib
 - Geheimkarten/Rollen/Fragen bei Fokusverlust verdecken
 - geheime Zustände nach Reload nie automatisch sichtbar öffnen
 - Timer-Resume speichert nur technische Restzeit-Metadaten
-- Hintergrundwechsel pausieren laufende Quick-Family-Timer statt Zeit unsichtbar abzuziehen
-- Hidden persistiert technische Restzeit sofort für einen möglichen OS-Kill
+- Hintergrundwechsel pausieren laufende Quick-Family-Timer
+- Hidden persistiert technische Restzeit für möglichen OS-Kill
 - Sichtbarwerden startet einen pausierten Timer nicht automatisch
 - manipulierte Resume-Zustände werden fail-closed verworfen
 - Session-Ersatz erfolgt nicht still
+- Wave-1-Quizcontent ist textbasiert und benötigt keine fremden Bilder, Audioassets oder Zitate
 
-## 14. Offline- und Updatevertrag
+## 15. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**.
+Aktueller Offline-Core: **`secret-circle-v61` / `secret-circle-v61-staging`**.
 
-Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Quick Timer Resume → v58 BFCache Restore → v59 Background Pause → **v60 Hidden Snapshot Durability**.
+Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Quick Timer Resume → v58 BFCache Restore → v59 Background Pause → v60 Hidden Snapshot → **v61 Expansion Wave 1**.
 
 Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Alt→Neu/Rollback real testen.
 
-## 15. PWA-Installationsmetadaten
+## 16. PWA-Installationsmetadaten
 
 `party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
 
-## 16. Accessibility als Definition of Done
+## 17. Accessibility als Definition of Done
 
-Kernoberflächen benötigen semantische Struktur, Labels, sichtbaren Fokus, Tastaturbedienung, modale Fokusgrenzen, Touchziele, Reduced Motion und Reflow. VoiceOver/TalkBack/Touch/Zoom bleiben reale Gates.
+Kernoberflächen und Labs benötigen semantische Struktur, Labels, sichtbaren Fokus, Tastaturbedienung, modale Fokusgrenzen, Touchziele, Reduced Motion und Reflow. VoiceOver/TalkBack/Touch/Zoom bleiben reale Gates.
 
-## 17. Inhalts- und Rechtevertrag
+## 18. Inhalts- und Rechtevertrag
 
-Keine kopierten proprietären Karten, fremden Medien/Logos ohne Rechte oder unnötigen konkreten Marken-/Franchisebezug. Ein `unresolved` Releaseasset blockiert `assetsThirdParty = PASS`.
+Keine kopierten proprietären Karten, fremden Medien/Logos ohne Rechte oder unnötigen konkreten Marken-/Franchisebezug. Film/Serie/Anime/Gaming dürfen als Themenwelten vorkommen; konkrete moderne Franchises benötigen vor Built-in-Veröffentlichung einen eigenen Referenz-/Rechteentscheid. Ein `unresolved` Releaseasset blockiert `assetsThirdParty = PASS`.
 
-## 18. Testpyramide
+## 19. Testpyramide
 
-Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Hidden-Snapshot-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
+Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Wave-1-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Hidden-Snapshot-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
 
-QT57: `scripts/quick_timer_resume_audit.py`. BF58: `scripts/quick_bfcache_resume_audit.py`. BG59: `scripts/quick_background_pause_audit.py`. HS60: `scripts/quick_hidden_snapshot_audit.py`. Release Candidate zusätzlich: Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/Gruppentests.
+Wave 1: `tests/party-wave-one-catalog.test.js`, `tests/e2e/wave-one-quiz.spec.js`, `scripts/wave_one_quiz_audit.py`. QT57/BF58/BG59/HS60 bleiben eigene Verträge. Release Candidate zusätzlich: Online-`npm ci`, vollständiges CI, Chromium/Firefox/WebKit, HTTPS-Staging, reale PWA-/Geräte-/Accessibility-/Gruppentests.
 
-## 19. Performance und Assets
+## 20. Performance und Assets
 
-Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB. PWA-Assets: `icon.svg`, `icon-192.png`, `icon-512.png`, Provenienzmanifest. Rechtebasis wird separat menschlich freigegeben.
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB. Neue sichtbare Varianten sollen bevorzugt Content auf gemeinsamen Engines wiederverwenden. PWA-Assets: `icon.svg`, `icon-192.png`, `icon-512.png`; Provenienz wird separat geprüft.
 
-## 20. Betrieb, Deprecation und Rollback
+## 21. Betrieb, Deprecation und Rollback
 
 Kein Force-Push auf stabile Release-Basen. Rollback/Hotfix erhält nach Offline-Core-Änderungen eine neue Cachegeneration. Persistierte Daten müssen kompatibel bleiben oder explizit migriert werden.
 
-## 21. Releaseentscheidung
+## 22. Releaseentscheidung
 
 Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und reale Gates tatsächlich ausgeführt wurden**. `release-evidence.json` ist die finale Quelle; `GO` erst bei belegten PASS-Gates auf demselben unveränderten RC.
