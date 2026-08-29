@@ -1,8 +1,8 @@
 # Secret Circle – Umgebungen und Staging-Vertrag
 
-Stand: 28. August 2026  
+Stand: 29. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**
+Offline-Core: **`secret-circle-v61` / `secret-circle-v61-staging`**
 
 ## 1. Ziel
 
@@ -20,10 +20,10 @@ Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum und muss 
 
 ## 4. Aktueller Cachevertrag
 
-- aktiv: `secret-circle-v60`
-- staging: `secret-circle-v60-staging`
+- aktiv: `secret-circle-v61`
+- staging: `secret-circle-v61-staging`
 
-Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia Resume/Privacy → v54 Pre-Timer Resume → v55 Advanced Integrity → v56 Quick Session Replacement → v57 Timer-Restzeit → v58 BFCache Resume → v59 Background Pause → **v60 Hidden Snapshot Durability**.
+Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → **v61 Expansion Wave 1**.
 
 ## 5. Automatisierter HTTPS-Smoke
 
@@ -32,13 +32,13 @@ Der HTTPS-Netzwerkvertrag wird mit **`scripts/staging_smoke.py`** geprüft; PWA-
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v60
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v61
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v60 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v61 --production
 ```
 
 ## 6. Manueller Staging-Smoke
@@ -47,24 +47,23 @@ Mindestens:
 
 - Service Worker / Installation / Offline-Neustart
 - Hub/Word Imposter/Advanced/Quick/Creator/Privacy + Query-Routen offline
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56
-- QT57 Reload-Restzeit
-- BF58 BFCache Matching/Stale
-- BG59 App-/Tabwechsel und Screen-Lock: Auto-Pause, kein Auto-Resume
-- **HS60 Hidden-only:** laufender Timer → `hidden` → Timer-Store enthält sofort Restzeit, noch bevor `pagehide` angenommen wird
-- **HS60 Cold Resume:** Prozess-/Seitenneustart aus hidden-only Snapshot → gleiche Restzeit einmalig fortsetzen
-- **HS60 Cleanup:** normale Same-Page-Fortsetzung/Abschluss entfernt den Visibility-Snapshot wieder
-- Timer-Store bleibt promptfrei und Teil des 17-Key-Backupvertrags
+- bestehende Spezialgates DWI bis HS60
+- **Wave 1 / v61:** Party Quiz und Fake oder Fakt sind im Hub sichtbar als Labs
+- beide Wave-1-Spiele starten in höchstens 2–3 Entscheidungen und funktionieren ohne Zusatzkonto/Netzwerk
+- Party Quiz: Antwort → Ergebnis → Reload/Resume behält Score/Ergebnis ohne Doppelpunkt
+- Fake oder Fakt: Fakt/Fake → Erklärung → nächste Runde
+- Cross-Game-Wechsel zwischen beiden nutzt den bestehenden Quick-Family-Replacement-Schutz
+- beide neuen Runtime-Dateien sind offline vorhanden
 - Updatebanner + aktive Session
 - Accessibility-/Fokuspfade
 
 ## 7. Release Candidate / Production
 
-Ein RC wird durch unveränderten Commit, Tag, App-Version, Cachegeneration, Staging-Origin und Freeze-Zeitpunkt definiert. Production darf nicht der erste echte Service-Worker-, Resume-, Privacy- oder Restore-Test sein.
+Ein RC wird durch unveränderten Commit, Tag, App-Version, Cachegeneration, Staging-Origin und Freeze-Zeitpunkt definiert. Labs erweitern den Core nicht automatisch.
 
 ## 8. Datenisolation
 
-Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt und alle Spezialgates bis HS60 werden getrennt geprüft.
+Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt, Spezialgates und neue Labs werden getrennt geprüft.
 
 ## 9. Rollbackprobe
 
@@ -79,7 +78,8 @@ Staging smoke result:
 RC commit/cache:
 Production URL/commit/cache:
 Production smoke result:
-DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / BG59 / HS60 evidence:
+DWI ... HS60 evidence:
+Wave-1 Party Quiz / Fake oder Fakt evidence:
 Rollback tested from/to:
 Evidence reference:
 ```
@@ -92,7 +92,8 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Provider-/Log-/Datenschutzentscheidung dokumentiert
 - [ ] Staging-Smoke grün
 - [ ] manueller PWA-Smoke
-- [ ] Spezialgates bis **HS60** real bestätigt
+- [ ] bestehende Spezialgates real bestätigt
+- [ ] zwei Wave-1-Labs nur dann als releasefähig markieren, wenn deren eigene Evidence grün ist
 - [ ] Upgrade aus mindestens zwei real installierten Altständen
 - [ ] Rollbackprobe
 - [ ] derselbe freigegebene RC für Production
