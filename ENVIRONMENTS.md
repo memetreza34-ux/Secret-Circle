@@ -16,7 +16,10 @@ Local ist kein Releasebeweis. CI benötigt sichtbare Runner-Steps, Checkout, Onl
 
 Aktuell ist CI durch fehlende Hosted-Runner-Zuteilung vor Step 1 **BLOCKED**.
 
-Lokaler Quellvertrag für die PWA-Head-Metadaten: `tests/pwa-head-metadata.test.js`. Der echte HTTPS-Smoke ergänzt diesen Source-Test um die tatsächlich ausgelieferten Response-/Security-Header.
+Lokaler Quellvertrag für die PWA-Head-Metadaten: `tests/pwa-head-metadata.test.js`.  
+Netzwerk-Smoke-Implementierung: `scripts/staging_smoke.py`.
+
+Der echte HTTPS-Smoke ergänzt die Source-Tests um die tatsächlich ausgelieferten Response-/Security-/Cache-Header.
 
 ## 3. HTTPS-Staging
 
@@ -120,6 +123,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] getrennte HTTPS-Staging-/Production-Origin
 - [ ] Provider-/Log-/Datenschutzentscheidung dokumentiert
 - [ ] `tests/pwa-head-metadata.test.js` auf unverändertem Kandidaten grün
+- [ ] `scripts/staging_smoke.py` gegen reale HTTPS-Origin grün
 - [ ] Response-Security-Header auf Staging grün
 - [ ] `sw.js` Cache-Control auf Staging grün
 - [ ] Staging-Smoke grün
