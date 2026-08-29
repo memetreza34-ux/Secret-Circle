@@ -47,10 +47,9 @@
         "requiredStatusCheckEnforcement": "off",
         "requiredStatusCheckContexts": [],
         "reconciliationCandidatePullRequest": 15,
-        "reconciliationMainMergeCommit": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
-        "reconciliationCurrentReviewedHead": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
-        "reconciliationCandidateBehindMain": 0,
-        "reconciliationCandidateBehindReleaseBranchAtReview": 0,
+        "reconciliationCandidateHeadAtLastFullSync": "5a496a911937fd352d2660eda98afe940c87a8ed",
+        "reconciliationCandidateChangedFiles": 9,
+        "reconciliationCandidateNeedsResyncAfterAssetHardening": true,
         "reconciliationMergedIntoReleaseBranch": false
       }
     },
@@ -72,7 +71,23 @@
     "accessibility": {"status": "OPEN", "commit": null, "evidence": null},
     "groups": {"status": "OPEN", "commit": null, "evidence": null},
     "contentPrivacyReference": {"status": "OPEN", "commit": null, "evidence": null},
-    "assetsThirdParty": {"status": "BLOCKED", "commit": null, "evidence": null},
+    "assetsThirdParty": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "iconRightsBlockerResolvedInSource": true,
+        "iconProvenanceStatus": "verified-own",
+        "unresolvedReleaseMedia": [],
+        "iconSvgSha256": "ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c",
+        "icon192Sha256": "75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e",
+        "icon512Sha256": "1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce",
+        "remainingBlockers": [
+          "asset/media audits have not executed on a functioning hosted runner/verified checkout",
+          "online npm ci and dependency integrity evidence is still blocked by CI runner allocation",
+          "final manual visual/trademark/third-party plausibility review must be completed on the immutable RC"
+        ]
+      }
+    },
     "legalPrivacy": {
       "status": "BLOCKED",
       "commit": null,
@@ -117,11 +132,11 @@
     "GitHub Actions jobs currently end before repository steps and receive no Hosted Runner",
     "Cross-browser release evidence is blocked by the same Hosted Runner allocation failure",
     "main branch protection is currently disabled and has no required status checks",
-    "Draft PR #15 contains the controlled main/release reconciliation candidate but has not been merged into the active release branch",
-    "Root icon.svg rights basis is unresolved",
+    "Draft PR #15 contains the controlled main/release reconciliation candidate and requires resynchronization after the latest release-hardening commits before it can be reviewed again",
+    "The old icon rights blocker is resolved, but final asset/third-party PASS still requires functioning-runner audits, online dependency integrity evidence and final manual visual/trademark review",
     "No real hosting provider or distinct HTTPS staging/production origins have been selected yet",
     "operator-release.json remains PREPARED/BLOCKED with no final operator identity, support/security contacts or completed incident drills",
     "real-device, accessibility and group evidence is not final"
   ],
-  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. BLOCKED means a known prerequisite is currently absent; OPEN means the gate can in principle be executed but has not yet received acceptable final RC evidence. No gate may become PASS until it is bound to one immutable release candidate commit. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached. PR #15 reconciles current main history on an isolated candidate branch; merging it into the release path creates a new candidate that requires fresh CI, browser, PWA and regression evidence."
+  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. BLOCKED means a known prerequisite is currently absent; OPEN means the gate can in principle be executed but has not yet received acceptable final RC evidence. No gate may become PASS until it is bound to one immutable release candidate commit. The replacement icon set now has documented verified-own provenance, but that source-level fact does not by itself complete the overall assetsThirdParty gate. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached."
 }
