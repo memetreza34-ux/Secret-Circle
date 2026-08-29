@@ -1,1 +1,0 @@
-Binary PNG replacement is performed through GitHub Git-data blobs/tree so binary bytes are not passed through the UTF-8 contents updater.

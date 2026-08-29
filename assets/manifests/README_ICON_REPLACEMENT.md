@@ -1,1 +1,0 @@
-This directory now contains the source/provenance records for the replacement icon. The release gate is intentionally still blocked until root PNG replacement completes.

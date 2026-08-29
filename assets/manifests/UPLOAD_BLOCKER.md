@@ -1,1 +1,0 @@
-TEMPORARY: root PNG bytes are still old. Asset provenance must remain unresolved until the binary replacement succeeds. Remove this file when the replacement is complete.
