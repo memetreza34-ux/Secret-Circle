@@ -1,93 +1,93 @@
 # Secret Circle – Asset Rights Sign-off
 
-Stand: 23. August 2026  
-Status: **OPEN – menschliche Rechtebestätigung erforderlich**
+Stand: 29. August 2026  
+Status: **SOURCE SIGN-OFF COMPLETE – finaler RC-Visual-/Trademark-Review offen**
 
 ## Zweck
 
-Dieses Dokument schließt die Lücke zwischen technischer Git-Herkunft und einer belastbaren Rechtebasis für die gebündelten Release-Assets.
+Dieses Dokument hält die belastbare Provenienz des aktuellen Release-Iconsets fest. Das frühere Icon mit ungeklärter Rechtebasis wurde vollständig aus den drei Release-Medien ersetzt.
 
-Aktuell betroffen:
+Aktuelles Release-Iconset:
 
 - `icon.svg`
 - `icon-192.png`
 - `icon-512.png`
 
-Die PNG-Dateien sind technisch dokumentierte Ableitungen von `icon.svg`. Solange die Rechtebasis des SVG ungeklärt ist, bleiben deshalb alle drei Assets in `assets/manifests/asset-provenance.json` auf `unresolved`.
+Alle drei Dateien stehen in `assets/manifests/asset-provenance.json` auf `verified-own`.
 
-## Aktueller technischer Nachweis
+## Aktuelle Originalquelle
 
 ### `icon.svg`
 
-- im Repository am 2. August 2026 neu angelegt
-- Git-Commit: `c183d439882bf3f25a5577e3867b76b4f930e84c`
-- aktueller Provenienzstatus: `unresolved`
-- Git-Herkunft allein beweist nicht, dass keine externe Vorlage, Stock-Datei oder fremde Grafik verwendet wurde
+- neu für Secret Circle am **29. August 2026** erstellt
+- rein geometrischer SVG-Aufbau mit `rect`, `circle` und `path`
+- keine fremde Logo-/Icon-Datei kopiert oder verändert
+- keine Stock-Datei
+- kein Icon-Pack
+- keine externe Bildreferenz
+- keine externe Fontdatei
+- keine fremde geschützte Grafik als Vorlage eingebunden
+- Workflow: nutzergesteuerte OpenAI/ChatGPT-Unterstützung bei der SVG-Konstruktion
+- detaillierter Herkunftsnachweis: `assets/manifests/ORIGINAL_ICON_SOURCE.md`
+- SHA-256: `ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c`
 
-### Rasterableitungen
+Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig. Für den Erstellungsworkflow ist keine Drittanbieter-Attribution erforderlich.
 
-- `icon-192.png`: 192×192, aus `icon.svg` erzeugt
-- `icon-512.png`: 512×512, aus `icon.svg` erzeugt
-- ihre Rechtebasis folgt dem SVG
+**Wichtig:** Dieser Provenienz-Sign-off ist keine Markenregistrierung, keine Markenrecherche und keine Garantie, dass weltweit kein unabhängig entwickeltes ähnliches Zeichen existiert.
 
-## Menschliche Bestätigung
+## Rasterableitungen
 
-Vor Umstellung auf `verified-own` muss die verantwortliche Person die folgenden Aussagen prüfen und dokumentiert bestätigen:
+### `icon-192.png`
 
-- [ ] Ich weiß, wer das aktuelle `icon.svg` gestaltet hat.
-- [ ] Das Design wurde selbst erstellt oder ich besitze nachweislich sämtliche erforderlichen Rechte.
-- [ ] Es wurde **keine** fremde Logo-/Icon-Datei ohne passende Lizenz kopiert oder verändert.
-- [ ] Falls eine Vorlage, Stock-Datei, ein Icon-Pack oder ein Design-Tool-Asset verwendet wurde, ist Quelle und Lizenz vollständig dokumentiert.
-- [ ] Falls KI bei der Erstellung verwendet wurde, ist der verwendete Dienst/Workflow dokumentiert und es wurden keine fremden geschützten Assets als unzulässige Vorlage eingebunden.
-- [ ] Kommerzielle Nutzung für Secret Circle ist erlaubt.
-- [ ] Erforderliche Attribution ist bekannt und dokumentiert oder es ist keine Attribution erforderlich.
+- 192×192
+- deterministische Ableitung aus dem aktuellen `icon.svg`
+- CairoSVG 2.8.2, anschließend Palette-Optimierung mit Pillow
+- SHA-256: `75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e`
+- keine zusätzliche Drittanbieter-Grafik enthalten
 
-## Sign-off-Felder
+### `icon-512.png`
 
-```text
-Asset: icon.svg
-Ersteller / Rechteinhaber:
-Erstellungsweg:
-Externe Vorlage verwendet: ja / nein
-Wenn ja – Quelle:
-Lizenz / Rechtebasis:
-Kommerzielle Nutzung erlaubt: ja / nein
-Attribution erforderlich: ja / nein
-Attributionstext, falls nötig:
-Bestätigt von:
-Datum:
-Nachweis / Link / interne Referenz:
-```
+- 512×512
+- deterministische Ableitung aus dem aktuellen `icon.svg`
+- CairoSVG 2.8.2, anschließend Palette-Optimierung mit Pillow
+- SHA-256: `1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce`
+- keine zusätzliche Drittanbieter-Grafik enthalten
 
-## Danach im Repository ändern
+## Maschinenlesbare Kontrolle
 
-Nur nach echter Bestätigung:
+`scripts/asset_provenance_audit.py` prüft:
 
-1. `assets/manifests/asset-provenance.json`
-   - `icon.svg.status` → `verified-own` oder `verified-third-party`
-   - `creator` konkret setzen
-   - `source` konkret setzen
-   - `license` / Rechtebasis konkret setzen
-   - `commercialUse` → `true`
-   - Attribution korrekt setzen
-2. dieselbe belegte Rechtebasis auf `icon-192.png` und `icon-512.png` übertragen
-3. `scripts/asset_provenance_audit.py` ausführen
-4. `scripts/media_inventory_audit.py` ausführen
-5. `THIRD_PARTY_NOTICES.md` aktualisieren
-6. finalen Visual-/Asset-Sign-off auf dem unveränderten RC dokumentieren
+- Existenz der drei Release-Assets
+- SHA-256-Drift
+- erlaubte Provenienzstatus
+- Creator/Source/Rechtebasis bei verifizierten Assets
+- `commercialUse = true`
+- PNG-Dimensionen
+- PWA-Manifest-Verknüpfung
 
-## Alternative bei unklarer Herkunft
+`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository weiterhin exakt die drei inventarisierten Medien vorhanden sind. Eine zusätzliche Bild-/SVG-/Audio-/Videodatei muss bewusst in den Vertrag aufgenommen werden.
 
-Wenn die Fragen oben nicht sicher beantwortet werden können, **nicht** auf `verified-own` setzen.
+## Was damit geschlossen ist
 
-Stattdessen:
+- [x] ungeklärtes altes `icon.svg` als Releaseasset ersetzt
+- [x] neues Original-`icon.svg` mit dokumentiertem Erstellungsweg
+- [x] keine externe visuelle Vorlage im dokumentierten Workflow
+- [x] kommerzielle Nutzungsbasis dokumentiert
+- [x] Attribution für diesen Workflow nicht erforderlich
+- [x] 192×192-Ableitung neu erzeugt
+- [x] 512×512-Ableitung neu erzeugt
+- [x] neue SHA-256-Werte im Provenienzmanifest
+- [x] alle drei Release-Assets `verified-own`
+- [x] zusätzliche temporäre SVG-Kopie wieder entfernt, damit der Media-Inventory-Vertrag exakt drei Medien behält
 
-1. neues eigenständiges App-Icon aus nachweisbar eigener Produktion erstellen,
-2. Quelle/Erstellungsweg bereits bei Erstellung dokumentieren,
-3. 192×192- und 512×512-Ableitungen neu erzeugen,
-4. Manifest/Hashes aktualisieren,
-5. das alte ungeklärte Asset vollständig aus dem Release-Core entfernen.
+## Was für den finalen Release noch offen bleibt
+
+- [ ] `scripts/asset_provenance_audit.py` auf funktionierendem Runner/Checkout tatsächlich grün
+- [ ] `scripts/media_inventory_audit.py` auf demselben Stand tatsächlich grün
+- [ ] kompletter `npm run validate` auf funktionierendem Runner grün
+- [ ] finaler manueller Visual-/Marken-/Third-Party-Plausibilitätsreview auf dem unveränderten RC
+- [ ] falls vor Release irgendein neues Mediaasset hinzukommt: neue Provenienzprüfung
 
 ## Release-Regel
 
-Solange dieser Sign-off offen ist und das Provenienzmanifest `unresolved` enthält, bleibt `THIRD-PARTY / ASSET PASS` offen und der öffentliche Release **NO_GO**.
+Der frühere **Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete `assetsThirdParty`-Gate bleibt trotzdem `BLOCKED`, bis die realen Runner-/Installationsnachweise und der finale manuelle Review auf dem unveränderten Release Candidate abgeschlossen sind.
