@@ -1,61 +1,42 @@
 # Bekannte Einschränkungen
 
-Stand: 29. August 2026 – `1.0.0-beta.3`, **55 eingebaute Spiele · 15 Core / 13 Extended / 27 Labs**, Expansion Wave 1 **10/10 quellsseitig implementiert** und Offline-Core **`secret-circle-v64` / `secret-circle-v64-staging`**.
+Stand: 29. August 2026 – `1.0.0-beta.3`, **55 Built-ins · 15 Core / 13 Extended / 27 Labs**, Wave 1 **10/10 quellsseitig implementiert**, Offline-Core **`secret-circle-v64` / `secret-circle-v64-staging`**.
 
-Öffentliche Freigabe: **NO_GO**. Quellsseitige Implementierung oder vorhandene Tests sind kein Ersatz für reale Release-Evidence.
+Öffentliche Freigabe: **NO_GO**. Quellsseitige Implementierung oder vorhandene Tests ersetzen keine reale Release-Evidence.
 
 ## Gemeinsames Gerät
 
-Secret Circle ist derzeit lokales Pass-and-Play. Es gibt keine Raumcodes, Konten, privaten Rollen auf persönlichen Handys oder geräteübergreifende Synchronisierung. Geheime Karten müssen physisch abgeschirmt werden. Die App reduziert unbeabsichtigtes Mitlesen, kann absichtliches Schulterblicken oder DevTools-Zugriff des Gerätebesitzers nicht verhindern.
+Secret Circle ist derzeit lokales Pass-and-Play. Es gibt keine Raumcodes, Pflichtkonten, privaten Rollen auf persönlichen Handys oder geräteübergreifende Synchronisierung. Geheime Karten müssen physisch abgeschirmt werden. Die App reduziert unbeabsichtigtes Mitlesen, kann absichtliches Schulterblicken oder DevTools-Zugriff des Gerätebesitzers aber nicht verhindern.
 
 ## Automatisierter Teststatus
 
-Unit-, E2E-, Offline-, Sicherheits-, Accessibility- und Cross-Browser-Prüfungen sind umfangreich vorbereitet. Ein vollständiger aktueller Gesamtlauf ist **nicht grün dokumentiert**.
+Unit-, E2E-, Offline-, Security-, Accessibility- und Cross-Browser-Prüfungen sind umfangreich vorbereitet. Ein vollständiger aktueller Hosted-Runner-Gesamtlauf ist **nicht grün dokumentiert**.
 
-Frisch untersuchter v64-Actions-Lauf:
+GitHub Actions reproduziert weiterhin:
 
-- Run #3608
-- Run ID `33253663445`
-- Job `99103557030`
-- Head `2297868e1f65b45753294151a3b1f401a55f6288`
-- `failure`
 - `steps: []`
 - `runner_id: 0`
 - leerer Runner-Name
-- kein Repositorycode ausgeführt
+- angefordert `ubuntu-latest`
+- kein Checkout / npm / Playwright / Python-Audit / Repositorycode
 
-Damit bleibt der Fehler vor Checkout/Step 1. **v50–v64 besitzen keinen Hosted-Runner-PASS.** App-Code und Tests dürfen nicht abgeschwächt werden, um einen Job zu „reparieren“, der keinen Runner erhält.
+Damit liegt der aktuelle Blocker vor Step 1. App-Code und Testgates werden nicht abgeschwächt, um einen Job zu „reparieren“, der keinen Runner erhält.
 
 ## 55 eingebaute Spiele
 
-Der aktuelle zusammengesetzte Katalog enthält technisch **55 Built-ins**. Die Release-Struktur teilt sie in:
+Der zusammengesetzte Katalog enthält technisch 55 Built-ins:
 
 - 15 Core
 - 13 Extended
 - 27 Labs
 
-Die 15 Core-Spiele sind für Januar 2027 priorisiert. Auch sie sind noch nicht vollständig mit realen Gruppen auf Verständlichkeit, Balance, Wartezeit, Wiederholungswert, sozialen Druck und Alterseignung abgenommen.
+Die 15 Core-Spiele sind für Januar 2027 priorisiert, aber noch nicht vollständig mit realen Gruppen auf Verständlichkeit, Balance, Wartezeit, Wiederholungswert, sozialen Druck und Alterseignung abgenommen.
 
-Die zehn Wave-1-Modi sind source-seitig vorhanden, bleiben aber **Labs**:
-
-- `bluff-trivia`
-- `party-quiz`
-- `fact-or-fake`
-- `percent-guess`
-- `fill-blank-battle`
-- `who-wrote-it`
-- `party-bracket`
-- `undercover-similar-word`
-- `no-word-imposter`
-- `password-one-word`
-
-Für ihre Promotion fehlen reale Browser-, PWA-, Accessibility- und Gruppentests. Sie erweitern den Januar-Core nicht automatisch.
-
-Zeichnen-&-Raten-/Audio-/Melodieideen ohne fertige spezialisierte Engine bleiben Zukunftsarbeit; geschützte Aufnahmen, Liedtexte oder fremde Medien sind nicht Teil des V1-Core.
+Die zehn Wave-1-Modi bleiben Labs, bis reale Browser-, PWA-, Accessibility- und Gruppenevidence vorliegt.
 
 ## Game-Creator
 
-Der Creator unterstützt lokale No-Code-Spielerstellung für die vorgesehenen einfachen Text-/Promptmechaniken. Strukturierte Rollen-, Preis-, Zahlen-, Buzzer-, Tabu-, Spektrum- und komplexe Abstimmungsspiele benötigen weiterhin spezialisierte Editoren oder Engineverträge.
+Der Creator unterstützt lokale No-Code-Spielerstellung für einfache Text-/Promptmechaniken. Komplexere strukturierte Rollen-, Preis-, Zahlen-, Buzzer-, Tabu-, Spektrum- und Abstimmungsspiele benötigen spezialisierte Engine-/Editorverträge.
 
 Grenzen:
 
@@ -67,67 +48,66 @@ Grenzen:
 - keine Bild-, Audio- oder Videouploads
 - Ersteller sind für Rechte, Eignung und Altersstufe ihrer Texte verantwortlich
 
-## Eigene Packs
-
-Der bestehende Pack-Editor unterstützt kompatible einfache Textmodi. Strukturierte Karten bleiben bewusst blockiert. Pro Gerät sind bis zu 30 Packs mit jeweils bis zu 150 Karten vorgesehen.
-
 ## Timer, Hintergrund und Wiederaufnahme
 
-Direkte Hub-Sessions besitzen versionierte lokale Active-States. Relevante Hub-Timer werden nach vollständigem Reload bewusst pausiert wiederhergestellt und laufen erst nach „Fortsetzen“ weiter. Private direkte Hub-Inhalte werden nach Reload nicht automatisch geöffnet.
+Direkte Hub-Sessions besitzen versionierte lokale Active-States. Relevante Timer werden nach Reload kontrolliert wiederhergestellt; private Inhalte werden nicht automatisch aufgedeckt.
 
-Für Quick-Family-Timer gelten zusätzlich die source-seitig implementierten Verträge:
+Quick-Family-Verträge:
 
 - QT57 – Restzeit über normalen Reload
 - BF58 – kontrollierter BFCache-Resume-Pfad
 - BG59 – Hidden/Appwechsel pausiert ohne Auto-Resume
-- HS60 – Hidden-Snapshot wird sofort persistiert, damit Cold Resume auch ohne zuverlässiges späteres `pagehide` möglich bleibt
+- HS60 – Hidden-Snapshot wird sofort persistiert für Cold Resume
 
-Diese Verträge sind **noch nicht auf allen realen Zielgeräten als Release-Evidence bestätigt**. Screen-Lock, OS-Prozess-Kill, Safari/PWA-Lifecycle und Android-Hintergrundverhalten bleiben reale Geräte-Gates.
-
-## Smart Party Night
-
-Der Planer arbeitet lokal und heuristisch mit Spielerzahl, Dauer, Stimmung, Altersstufe, Favoriten und Verlauf. Empfehlungen sind keine Garantie für den Geschmack der Gruppe. Zeitangaben sind Näherungen. PN1–PN3 bleiben reale Beta-Gates.
+Diese Verträge sind noch nicht auf allen realen Zielgeräten Release-Evidence. Screen-Lock, OS-Prozess-Kill, Safari/PWA-Lifecycle und Android-Hintergrundverhalten bleiben reale Geräte-Gates.
 
 ## Referenz-, Fan- und Markencontent
 
-Konkrete unnötige Fan-/Markenreferenzen wurden quellsseitig stark reduziert und Wave-1-Kataloge werden in den Reference-Audits mitgescannt. Das ersetzt keine finale manuelle/rechtliche Abnahme von sichtbaren Inhalten, Assets und Marketing.
+Unnötige konkrete Fan-/Markenreferenzen wurden quellsseitig stark reduziert; ausgelieferte Contentquellen werden automatisiert gescannt. Das ersetzt keine finale manuelle/rechtliche Abnahme sichtbarer Inhalte, Assets und Marketingtexte.
 
 Fremde Logos, Bilder, Videos, Audios und längere geschützte Texte sind für den V1-Core nicht vorgesehen.
 
-## Geld und Preise
-
-Geld-Challenges sind hypothetisch. Preis-/Schätzmechaniken verwenden feste Spielwerte oder interne Zielwerte und keine aktuellen Händler- oder Marktdaten. Sie eignen sich nicht für Kauf- oder Finanzentscheidungen.
-
 ## Persönliche Fragen
 
-Finger runter, Hot Seat, Wer kennt mich am besten?, Pass das Handy und ähnliche Modi können persönliche Situationen berühren. Überspringen bzw. sichere Alternativen sind vorgesehen. Komfort, Gruppendruck und Alterseignung müssen real getestet werden.
+Einige Social-Modi können persönliche Situationen berühren. Überspringen und sichere Alternativen sind vorgesehen. Komfort, Gruppendruck und Alterseignung müssen real getestet werden.
 
 ## Bilder, Icons und Animationen
 
-Das technische Icon- und Akzentsystem ist vorbereitet. Die endgültigen eigenständigen Illustrationen, SVG-Icons, Kartenhintergründe und Motion-Übergänge sind noch nicht vollständig produziert bzw. final abgenommen.
+Der **frühere Root-Icon-Rechteblocker ist geschlossen**. Das alte ungeklärte Iconset wurde vollständig ersetzt:
 
-Die Rechtebasis des Root-`icon.svg` bleibt **`unresolved`**. Dadurch bleibt `assetsThirdParty` blockiert, bis Herkunft/Rechte belegt oder das Asset vollständig durch ein nachweislich eigenes Asset ersetzt wurde.
+- `icon.svg` = `verified-own`
+- `icon-192.png` = `verified-own`
+- `icon-512.png` = `verified-own`
+
+Der Erstellungsweg und die SHA-256-Werte sind in `ASSET_RIGHTS_SIGNOFF.md` und `assets/manifests/asset-provenance.json` dokumentiert.
+
+Weiter offen bleiben:
+
+- tatsächliche Asset-/Media-Audits auf funktionierendem Runner/Checkout
+- Online-Dependency-/Integrity-Evidence
+- finaler manueller Visual-/Marken-/Third-Party-Plausibilitätsreview auf dem unveränderten RC
+- zusätzliche zukünftige Illustrationen/Icons/Motion müssen jeweils neu inventarisiert und geprüft werden
+
+`assetsThirdParty` bleibt deshalb insgesamt BLOCKED, obwohl die konkrete alte Icon-Rechtefrage quellsseitig gelöst ist.
 
 ## Offline und PWA – v64
 
 Die App muss einmal vollständig online geladen werden. Service Worker und Installation benötigen HTTPS oder `localhost`.
 
-Der aktuelle Service Worker verwendet:
+Aktueller Service Worker:
 
 - Production: `secret-circle-v64`
 - Staging: `secret-circle-v64-staging`
 
-Er enthält die sechs Wave-1-Katalog-/Runnerfamilien sowie die bestehenden Resume-, Backup-, Privacy- und Sessionmodule im Offline-Core.
-
-Der kontrollierte Updatepfad ist source-seitig vorbereitet, aber noch nicht als reale **Altversion → v64/RC → Rollback**-Evidence auf Android, iPhone und iPad dokumentiert. Rollback/Hotfix muss eine neue Cachegeneration verwenden und darf nicht einfach einen alten Cache-Namen wiederverwenden.
+Der kontrollierte Updatepfad ist vorbereitet, aber noch nicht als reale **Altversion → v64/RC → Rollback**-Evidence auf Android, iPhone und iPad dokumentiert. Ein Rollback/Hotfix muss eine neue Cachegeneration verwenden.
 
 Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck entfernen. Wichtige eigene Spiele und Packs sollten exportiert werden.
 
 ## Backup / Restore
 
-Gesamtsicherungen und Creator-Exporte sind **unverschlüsselte JSON-Dateien**. Wer die Datei erhält, kann darin gespeicherte Namen, eigene Inhalte, Einstellungen und Sessions lesen. Es gibt keine automatische Cloud-Sicherung.
+Gesamtsicherungen und Creator-Exporte sind unverschlüsselte JSON-Dateien. Wer die Datei erhält, kann darin enthaltene Namen, eigene Inhalte, Einstellungen und Sessions lesen. Es gibt keine automatische Cloud-Sicherung.
 
-Der aktuelle Complete-Backup-Vertrag verwendet Registry-Version 2 und **17 verwaltete Storage-Keys**, einschließlich des promptfreien Quick-Timer-Stores. Unbekannte zukünftige Namespaces werden absichtlich nicht blind als aktuelle Daten interpretiert. Managed Werte werden vor Mutation validiert; Schreibfehler sollen den vorherigen verwalteten Zustand wiederherstellen.
+Der aktuelle Complete-Backup-Vertrag verwendet Registry-Version 2 und **17 verwaltete Storage-Keys**. Unbekannte zukünftige Namespaces werden nicht blind als aktuelle Daten interpretiert; managed Werte werden vor Mutation validiert und Schreibfehler sollen den vorherigen verwalteten Zustand wiederherstellen.
 
 Einschränkungen:
 
@@ -135,12 +115,11 @@ Einschränkungen:
 - kein Schutz vor dem Gerätebesitzer
 - zukünftige Daten werden nicht automatisch von einer älteren Runtime verstanden
 - reale Quota-/Restore-/Forward-Compatibility-/Rollback-Evidence bleibt offen
-- ein Browser kann `localStorage` unabhängig von der App löschen
-- ausdrücklich bestätigtes „Alle lokalen Daten löschen“ entfernt bewusst die vorgesehenen lokalen Secret-Circle-Daten
+- Browser können `localStorage` unabhängig von der App löschen
 
 ## Accessibility
 
-Hub sowie Advanced/Quick/Creator besitzen quellsseitige Fokus-, Modal-, Tastatur- und Reflow-Schutzschichten. **Noch kein realer Accessibility-PASS:**
+Hub sowie Advanced/Quick/Creator besitzen quellsseitige Fokus-, Modal-, Tastatur- und Reflow-Schutzschichten. Noch kein realer Accessibility-PASS für:
 
 - VoiceOver
 - TalkBack
@@ -153,34 +132,35 @@ Hub sowie Advanced/Quick/Creator besitzen quellsseitige Fokus-, Modal-, Tastatur
 - Reduced Motion
 - private Reveal-/Resume-Flows mit Screenreader
 
-müssen auf realen Zielgeräten abgenommen werden.
-
 ## PR-/Branch-Stack
 
-Der aktuelle Entwicklungsstand ist gestapelt:
+Der historische Stack lautet:
 
 `main` → PR #3 → PR #11 → PR #13.
 
-PR #11 liegt vollständig auf #3 und PR #13 vollständig auf #11. Die erste Stack-Basis ist gegenüber aktuellem `main` jedoch **diverged** und enthält zwei spätere Main-Commits nicht in ihrer Abstammung:
+Die späteren Main-Änderungen werden über den isolierten Draft-PR #15 (`integration/v64-main-sync`) kontrolliert reconciled. PR #15 soll gegenüber dem aktiven Releasebranch nur neun definierte Archiv-/Safety-Pfade unterscheiden.
 
-- `6b6bddd0ae619d160b4468b61ae49cb30e2ea834`
-- `d347c7138bae18325c288632222917ad618e6547`
+Nach jedem neuen Release-Hardening-Batch muss vor Review/Merge ein aktueller GitHub-Compare bestätigen:
 
-Vor einer Release-Mergefolge muss diese Basis kontrolliert reconciled werden. Die beiden Main-Änderungen dürfen nicht versehentlich verloren gehen. Nach einer echten Merge-/Rebase-Integration ist wegen des neuen Kandidaten erneut Release-Evidence nötig.
+- `behind_by = 0`
+- weiterhin exakt 9 Reconciliation-Pfade
+- keine Spielengine/Katalog/Service-Worker-Runtime im Diff
 
-## Hosting / Betrieb / Rechtliche Veröffentlichung
+Ohne funktionierende CI bleibt PR #15 Draft.
 
-Vor öffentlicher oder kommerzieller Veröffentlichung fehlen reale bzw. finale Nachweise für:
+## Hosting / Betrieb / rechtliche Veröffentlichung
 
-- Hostingprovider
+Source-seitig vorbereitet sind Cloudflare-Pages-Research, `_headers`, HTTPS-Smoke und Operatorverträge. Real fehlen weiterhin:
+
+- final ausgewählter Hostingprovider/Produkt
 - getrennte HTTPS-Staging-/Production-Origin
+- reale DPA-/Processor-/Transferprüfung
 - konkrete Betreiber-/Kontaktangaben
-- Hosting-/Log-/Privacy-Abnahme
 - Support-/Securitykontakt
 - Incident-/Rollback-Drill
-- finale Asset-/Rechtefreigabe
 - finale Inhalts-/Alters-/Referenz-Abnahme
 - reale Branch-Protection-/Required-Check-Abnahme
+- Gesamt-Asset-/Third-Party-Finalreview
 
 Die verbindlichen Freigabekriterien stehen in `release-meta.json`, `RELEASE_CHECKLIST.md`, `RELEASE_STATUS.md` und `release-evidence.json`.
 
