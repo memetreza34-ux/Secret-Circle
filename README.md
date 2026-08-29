@@ -84,11 +84,35 @@ Nicht 100 separate Engines bauen. Ziel:
 
 Standardspiele sollen in maximal **2–3 Entscheidungen** bis zur ersten echten Aktion starten. Built-in-Content bleibt ohne 18+-Bereich.
 
+## Historisches Archiv / Hub-Trennung
+
+Das frühere Projekt-Hub-Repository enthält einen historischen `secret-circle.zip`-Blob als mögliche Backfill-Quelle. Dieser Blob gehört **nicht** in das aktive Secret-Circle-Repository und darf nicht auf Verdacht gelöscht werden.
+
+Verbindliche Grenzen:
+
+- aktives Zielrepository: `memetreza34-ux/Secret-Circle`
+- historischer ZIP-Git-Blob: `0bda8a341c6167d83f3a10c2f62fb4efacbd42d7`
+- Löschstatus des historischen Archivs: **`DO_NOT_DELETE`**
+- tatsächliche Archivinventur bleibt blockiert, solange die exakte Binärdatei nicht sicher lokal verfügbar ist
+- das Zielrepository enthält **keine aktive ZIP-Kopie**
+- `tools/inventory_legacy_archive.py` inventarisiert ein lokal bereitgestelltes ZIP ohne Extraktion oder Ausführung und prüft unter anderem Git-Blob, Pfade, Symlinks, Verschlüsselung, Größen und Kompressionsraten
+
+Dokumentation und Sicherheitsvertrag:
+
+- `docs/HUB_SEPARATION_ARCHIVE.md`
+- `docs/LEGACY_ARCHIVE_INVENTORY.md`
+- `docs/ARCHIVE_TOOL_VALIDATION.md`
+- `docs/legacy-archive-source.json`
+- `scripts/validate_archive_tool.py`
+- `tests/archive-inventory.test.py`
+
+Die synthetische Sicherheitssuite und der Source-/Deletion-Vertrag sind Bestandteil des modernen v64-CI-Vertrags. Die **echte** Inventur des historischen ZIPs darf erst als bestanden markiert werden, wenn genau der erwartete Binärblob tatsächlich geprüft wurde.
+
 ## CI – extern blockiert
 
 Aktuellster direkt untersuchter App-Actions-Lauf: **Run #3608**, Run ID `33253663445`, Job `99103557030`, Head `2297868e1f65b45753294151a3b1f401a55f6288` auf `agent/release-foundation-2027`. Ergebnis: `failure`, `steps: []`, `runner_id: 0`, `runner_name: ""`; angefordert war `ubuntu-latest`. Kein Checkout, npm, Playwright, Python-Audit oder sonstiger Repositorycode wurde ausgeführt.
 
-Der v64-Lauf bestätigt damit das bereits bekannte Muster auf aktuellem Code: der unmittelbare Blocker liegt weiterhin **vor Repository-Ausführung**, sehr wahrscheinlich im Bereich Hosted-Runner-Zuteilung bzw. Actions-Account-/Billing-/Policy-Gate. Details und Chronologie: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Ein späterer v64-Lauf #3644 reproduzierte dasselbe Muster. Der unmittelbare Blocker liegt damit weiterhin **vor Repository-Ausführung**, im Bereich Hosted-Runner-Zuteilung bzw. Actions-Account-/Billing-/Policy-Gate. Details und Chronologie: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 **v50–v64 besitzen deshalb weiterhin keinen Hosted-Runner-PASS.**
 
@@ -103,7 +127,7 @@ Zusätzlich bleibt die Rechtebasis des Root-`icon.svg` `unresolved`.
 ## Höchste Priorität
 
 1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
-2. Branch Protection
+2. Main-/Release-Stack-Synchronisierung kontrolliert abschließen und danach Branch Protection
 3. Provider + getrennte HTTPS-Staging-/Production-Origin
 4. v64 PWA-Smoke / Upgrade / Rollback
 5. bestehende Spezialgates bis HS60 real prüfen
