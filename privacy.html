@@ -54,7 +54,12 @@
       <h2>Wave 1 Writing – v63</h2>
       <p>Satzduell und Wer hat das geschrieben? speichern die kurzen Texteingaben ausschließlich im lokalen aktiven Session-Snapshot. Eine offene Eingabe wird beim Pass-and-Play nur für die aktuell genannte Person angezeigt und bei Blur, <code>pagehide</code> oder Hidden wieder verdeckt.</p>
       <p>In Satzduell werden gespeicherte Antworten vor der Abstimmung ohne Autorennamen angezeigt. In Wer hat das geschrieben? bleiben Autorenzuordnungen während der Ratephase verborgen und werden erst im Ergebnis sichtbar. Eingaben sind auf 140 Zeichen begrenzt.</p>
-      <p>Resume validiert Prompt, Autoren, anonyme Reihenfolge, Guess-Fortschritt und Ergebnisphase lokal. Reload/Resume darf Score oder Ergebnis nicht erneut vergeben.</p>
+
+      <h2>Wave 1 Complete – v64</h2>
+      <p>Prozent schätzen und Party Bracket speichern im aktiven Session-Snapshot nur Kartenindex und die für Resume nötigen Entscheidungen; Zielwert, aktuelles Duell und Bracket-Sieger werden aus dem lokalen Built-in-Katalog rekonstruiert.</p>
+      <p>Bluff Trivia sammelt Fake-Antworten und Votes nacheinander privat auf dem gemeinsamen Gerät. Eine offene Fake-Eingabe oder Abstimmung wird bei Blur, Hidden oder Appwechsel wieder verdeckt. Autorennamen und die richtige Antwort werden erst in der Auflösung angezeigt.</p>
+      <p>Ein-Wort-Hinweis persistiert das geheime Zielwort nicht als freien Text, sondern nur über den Kartenindex. Das Zielwort erscheint ausschließlich nach einer bewussten Reveal-Aktion und wird bei Fokusverlust wieder verdeckt. Der eingegebene Hinweis ist auf ein einzelnes anderes Wort begrenzt.</p>
+      <p>Wave 1 umfasst damit 10 Labs. Die neuen v64-Modi verwenden weiterhin den bestehenden Quick-Family-Active-Key; v64 führt keinen neuen lokalen Storage-Key und keine externe Datenübertragung ein.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
@@ -62,15 +67,15 @@
       <h2>Sicherung und Import</h2>
       <p>JSON-Sicherungen können lokale Spielernamen, Presets, Favoriten, Verlauf, Statistiken, eigene Inhalte, Einstellungen und aktive Sessions enthalten. Exportierte Sicherungen sind nicht automatisch verschlüsselt und sollten nur an vertrauenswürdigen Orten gespeichert werden.</p>
       <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Keys. Unbekannte oder neuere Secret-Circle-Namespaces und Storage-Versionen werden durch einen älteren Restore nicht still gelöscht.</p>
-      <p>Seit v57 umfasst der Complete-Backup-Vertrag 17 exakte aktuelle Keys einschließlich des promptfreien Quick-Timer-Stores. v63 ändert dieses Dateiformat nicht.</p>
+      <p>Seit v57 umfasst der Complete-Backup-Vertrag 17 exakte aktuelle Keys einschließlich des promptfreien Quick-Timer-Stores. v64 ändert dieses Dateiformat nicht.</p>
 
       <h2>Hosting und technische Verbindungsdaten</h2>
       <p>Beim Laden oder Aktualisieren ruft der Browser statische App-Dateien vom später final festgelegten Hostinganbieter ab. Dabei können technisch notwendige Verbindungs- oder Serverlogdaten anfallen. Anbieter, Verantwortlicher, Kontakt, Logverarbeitung, Aufbewahrung und gegebenenfalls Drittlandbezug werden vor Veröffentlichung ergänzt.</p>
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v63</code>.</p>
-      <p>v63 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 5, <code>quick-session-replacement-guard.js</code> Version 2, <code>quick-loader.js</code> Version 10 und getrennte Quiz-, Imposter- und Writing-Runner. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v64</code>.</p>
+      <p>v64 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 5, <code>quick-session-replacement-guard.js</code> Version 2, <code>quick-loader.js</code> Version 11 und alle sechs Wave-1-Runnerfamilien. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem entfernt werden.</p>
