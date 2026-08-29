@@ -4,14 +4,14 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 
 ## Aktueller Stand
 
-- **47 technisch spielbare Built-ins · 15 Core / 13 Extended / 19 Labs**
+- **55 technisch spielbare Built-ins · 15 Core / 13 Extended / 27 Labs**
 - bestehende Quick-/Trend-/Viral-Modi + 4 Advanced-Kernspiele
-- neu in Labs: **Party Quiz** und **Fake oder Fakt** über einen gemeinsamen Wave-1-Runner
+- **Expansion Wave 1: 10/10 geplante Labs quellsseitig implementiert**
 - Word Imposter + Smart Party Night + lokaler No-Code-Game-Creator
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 - kein Wave-1-Lab erweitert automatisch den Januar-Core
 
-Aktueller Offline-Core: **`secret-circle-v61` / `secret-circle-v61-staging`**  
+Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**  
 Classic Content: **v4**  
 Core Source Review/Hardening: **15/15 PREPARED**  
 Accessibility: **PREPARED**  
@@ -43,39 +43,36 @@ Freigabe: **NO_GO**
 - **v58:** BFCache-Rückkehr führt sicher zurück in den Timer-Resume-Pfad
 - **v59:** Hidden pausiert laufende Quick-Family-Timer; kein Auto-Resume
 - **v60:** Hidden persistiert Restzeit sofort für Cold Resume
-- **v61:** erste Expansion-Wave-1-Labs auf gemeinsamer Quiz-Infrastruktur
+- **v61:** gemeinsame Quiz-Infrastruktur für Party Quiz + Fake oder Fakt
+- **v62:** gemeinsame Imposter-Infrastruktur für Undercover Similar Word + No-Word Imposter
+- **v63:** gemeinsame Writing-Infrastruktur für Fill-the-Blank Battle + Who Wrote It
+- **v64:** Expansion Wave 1 mit 10/10 geplanten Labs quellsseitig komplett
 
-## v61 – Expansion Wave 1
+## v64 – Expansion Wave 1 Complete
 
-Erste implementierte Labs:
+Die zehn geplanten Wave-1-Labs sind quellsseitig implementiert:
 
-### Party Quiz
+1. `bluff-trivia`
+2. `party-quiz`
+3. `fact-or-fake`
+4. `percent-guess`
+5. `fill-blank-battle`
+6. `who-wrote-it`
+7. `party-bracket`
+8. `undercover-similar-word`
+9. `no-word-imposter`
+10. `password-one-word`
 
-- Packs: Allgemeinwissen, Film & Serie, Technik
-- 24 Built-in-Karten
-- vier Antwortmöglichkeiten + kurze Erklärung
-- lokaler Score
-- Result-Resume ohne erneute Punktevergabe
-
-### Fake oder Fakt
-
-- Packs: Natur, Film & Serie, Technik
-- 24 Built-in-Karten
-- Fakt/Fake + kurze Erklärung
-- lokaler Score
-- derselbe gemeinsame Wave-1-Runner
+Wave 1 verwendet wiederverwendbare Enginefamilien für Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. Die neuen Modi bleiben **Labs**, bis reale Browser-, PWA-, Accessibility- und Gruppentests bestanden sind.
 
 Gemeinsame Verträge:
 
-- `party-wave-one-catalog.js` v2
-- `party-wave-one-modes.js`
-- `quick-loader.js` v8 routet Wave-1 vor dem normalen Quick-Fallback
-- beide IDs bleiben in **Labs**
-- bestehender Quick-Family-Session-Replacement-Schutz wird wiederverwendet
-- `tests/party-wave-one-catalog.test.js`
-- `tests/e2e/wave-one-quiz.spec.js`
-- `scripts/wave_one_quiz_audit.py`
-- offline in `secret-circle-v61`
+- mehrere kleine Wave-1-Katalog-Layer statt separater Voll-Engines pro sichtbarem Spiel
+- `quick-loader.js` v11 routet alle sechs Wave-1-Enginefamilien explizit vor dem normalen Quick-Fallback
+- `party-release-structure.js` v5 klassifiziert alle zehn Wave-1-Modi als Labs
+- Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie Prozent/Bracket/Bluff/Clue
+- `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10 und v64
+- offline in `secret-circle-v64`
 
 Langfristige Planung: `APP_SPIELMODI_UND_THEMEN_ANLEITUNG.md` + `GAME_LIBRARY_BACKLOG.json`.
 
@@ -91,12 +88,12 @@ Standardspiele sollen in maximal **2–3 Entscheidungen** bis zur ersten echten 
 
 Letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Checkout, npm, Test oder Repositorycode wurde ausgeführt. Der Minimal-Runner-Probe zeigte dasselbe Muster.
 
-**v50–v61 sind deshalb nicht runnerverifiziert.** Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+**v50–v64 sind deshalb nicht runnerverifiziert.** Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
 ## Zentrale offene Issues
 
 1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
-2. **#8** – reale Geräte, v61 Offline-PWA, Accessibility, Spezialgates, Wave-1-Labs und Partytests
+2. **#8** – reale Geräte, v64 Offline-PWA, Accessibility, Spezialgates, Wave-1-Labs und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
 Zusätzlich bleibt die Rechtebasis des Root-`icon.svg` `unresolved`.
@@ -106,12 +103,14 @@ Zusätzlich bleibt die Rechtebasis des Root-`icon.svg` `unresolved`.
 1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
 2. Branch Protection
 3. Provider + getrennte HTTPS-Staging-/Production-Origin
-4. v61 PWA-Smoke / Upgrade / Rollback
-5. bestehende Spezialgates real prüfen
-6. Party Quiz + Fake oder Fakt real auf Browser/PWA/Accessibility/Gruppe prüfen
+4. v64 PWA-Smoke / Upgrade / Rollback
+5. bestehende Spezialgates bis HS60 real prüfen
+6. Wave-1-Labs real auf Browser/PWA/Accessibility/Gruppe prüfen
 7. Android/iPhone/iPad inklusive App-Wechsel/Screen-Lock/Prozess-Kill
 8. reale Gruppentests für alle 15 Core-Games
 9. Asset-/Operator-/Legal-/Support-/Incident-Sign-off
 10. unveränderlicher RC + `release-evidence.json = FINAL / GO`
+
+**Feature-Scope für den Januar-Core nicht weiter aufblasen. Jetzt liegt der Schwerpunkt auf realer Verifikation und Release-Evidence.**
 
 **Aktuell: NO_GO. PR #13 bleibt Draft und wird nicht gemergt.**
