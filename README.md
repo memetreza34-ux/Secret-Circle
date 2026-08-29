@@ -86,9 +86,11 @@ Standardspiele sollen in maximal **2–3 Entscheidungen** bis zur ersten echten 
 
 ## CI – extern blockiert
 
-Letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, Run ID `32871536761`, Job `97879489858`, Head `a9ad91389ff9e966af432b0a77103ddc0960709d`, `steps: null` / `steps: []`. Kein Checkout, npm, Test oder Repositorycode wurde ausgeführt. Der Minimal-Runner-Probe zeigte dasselbe Muster.
+Aktuellster direkt untersuchter App-Actions-Lauf: **Run #3608**, Run ID `33253663445`, Job `99103557030`, Head `2297868e1f65b45753294151a3b1f401a55f6288` auf `agent/release-foundation-2027`. Ergebnis: `failure`, `steps: []`, `runner_id: 0`, `runner_name: ""`; angefordert war `ubuntu-latest`. Kein Checkout, npm, Playwright, Python-Audit oder sonstiger Repositorycode wurde ausgeführt.
 
-**v50–v64 sind deshalb nicht runnerverifiziert.** Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Der v64-Lauf bestätigt damit das bereits bekannte Muster auf aktuellem Code: der unmittelbare Blocker liegt weiterhin **vor Repository-Ausführung**, sehr wahrscheinlich im Bereich Hosted-Runner-Zuteilung bzw. Actions-Account-/Billing-/Policy-Gate. Details und Chronologie: Issue #7 / `CI_TROUBLESHOOTING.md`.
+
+**v50–v64 besitzen deshalb weiterhin keinen Hosted-Runner-PASS.**
 
 ## Zentrale offene Issues
 
