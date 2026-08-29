@@ -1,220 +1,147 @@
 # Secret Circle – Fan-, Marken- und Referenzcontent-Review
 
-Stand: 19. August 2026  
-Status: **IN PROGRESS – technischer Source-/Media-Pass stark gehärtet; manuelle visuelle/rechtliche Restabnahme offen**
+Stand: 29. August 2026  
+Status: **SOURCE COVERAGE HARDENED / MANUAL FINAL SIGN-OFF OPEN**
 
 ## 1. Zweck
 
-Dieses Dokument trennt generischen Partycontent von konkreten fremden Namen, Marken und Fanreferenzen. Es ist ein redaktionelles/releasebezogenes Inventar und keine juristische Freigabe.
+Dieses Dokument trennt generischen Partycontent von konkreten fremden Namen, Marken und Fanreferenzen. Es ist ein redaktioneller Releasevertrag und **keine juristische Freigabe**.
 
 Grundregel: Wenn eine konkrete Fremdreferenz keinen zwingenden Produktnutzen hat, wird sie vor Production generisch formuliert oder aus finalem Runtime-Pfad **und ausgelieferter Source-Datei** entfernt.
 
-## 2. Word Imposter – v36
+## 2. Bereits bereinigte Referenzen
 
-| vorher | jetzt | Grund |
-|---|---|---|
-| `Bluetooth` | `Funkverbindung` | konkreter Markenname unnötig |
-| `Oscar` | `Filmpreis` | konkreter Awardname unnötig |
-| `Formel 1` | `Motorsport` | konkrete Wettbewerbsbezeichnung unnötig |
+Quellsseitig umgesetzt und durch Tests/Audits geschützt:
 
-Die 14 Kategorien mit je 12 Einträgen bleiben erhalten. Regressionstests schützen die Ersetzungen.
+- `Bluetooth` → `Funkverbindung`
+- `Oscar` → `Filmpreis`
+- `Formel 1` → `Motorsport`
+- sichtbarer Modusname `Wellenlänge` → **Spektrum-Tipp**; stabile interne ID `wavelength` bleibt aus Persistenz-/Routinggründen
+- Tabu-Begriff `Chrome` → `Tab`
+- `🦁👑 → Löwenkönig` → `🦁🌾 → Löwe`
+- konkrete frühere Anime-Figuren im Modus `anime-guess` wurden durch 40 generische Archetypen ersetzt und physisch aus dem ausgelieferten Mega-Katalog entfernt
+- unnötig konkrete Sport-/Eventformulierungen im Higher/Lower-Content wurden generisch ersetzt
 
-## 3. `who-am-i`
+Die bewusste Source-Bereinigung soll verhindern, dass ein alter konkreter Referenzblock zwar nicht sichtbar, aber weiterhin im ausgelieferten JavaScript enthalten ist.
 
-Das Pack `Anime-Archetypen` verwendet generische Rollenbeschreibungen statt konkreter Figuren. Andere Packs enthalten generische Berufe/Tiere sowie historische, mythologische oder allgemein bekannte Namen.
+## 3. Anime-/Fancontent
 
-Historische Personen werden nicht automatisch wie aktuelle Marken-/Franchisereferenzen behandelt. Keine bekannten Charakterbilder, Logos, Screenshots oder Zitate sind für diesen Modus vorgesehen.
+`anime-guess` behält die technische ID, liefert aber **Anime-Archetypen erraten** mit vier generischen Packs und insgesamt 40 eigenständigen Archetypen.
 
-## 4. `anime-guess` – v37/v40/v41
+Verbindlich:
 
-Der Labs-Modus enthielt ursprünglich 40 konkrete bekannte Figuren-/Franchisereferenzen. Für den Januar-2027-Pfad wurde **Option B: komplett generisch** gewählt.
+- keine konkreten bekannten Figuren als Spielantworten
+- keine bekannten Charakterbilder oder Panels
+- keine Markenlogos
+- keine fremden Screenshots
+- keine Zitate/Liedtexte als Ersatzcontent
+- spätere visuelle Anime-Begleitung nur als eigenständige generische Figuren ohne gezielte Ähnlichkeit zu konkreten bekannten Charakteren
 
-Stabile ID: `anime-guess`  
-Finaler Titel: **Anime-Archetypen erraten**  
-Gruppe: **Anime-Quiz**
+## 4. Zentraler Reference-Source-Gate – v64
 
-Finale Packs:
-
-1. Action & Abenteuer
-2. Magie & Mystery
-3. Fantasy & Alltag
-4. Sport & Games
-
-Jedes Pack enthält 10 eigenständige Archetypen, insgesamt 40.
-
-Entwicklung:
-
-- **v37:** finale Runtime-Schicht auf generische Archetypen umgestellt
-- **v40:** die 40 historischen konkreten Figuren physisch aus `party-mega-catalog.js` entfernt
-- **v41:** Mega-Test prüft die ausgelieferte Source selbst; `scripts/reference_content_audit.py` blockiert die bekannten Altbegriffe zentral
-
-`party-core-classic-content.js` v4 hält denselben generischen Zustand zusätzlich als finale Invariante.
-
-Status: **PHYSICAL SOURCE CLEANUP IMPLEMENTED / RUNNER VERIFICATION OPEN**.
-
-Der frühere Source-Distribution-Hinweis ist damit technisch geschlossen: Der konkrete historische Anime-Basisblock liegt nicht mehr in der aktuell ausgelieferten Mega-Katalogdatei.
-
-## 5. Viral `higher-lower` – v38
-
-Im Sportpack wurden drei unnötig konkrete Event-/Award-nahe Formulierungen ersetzt, ohne die Zahlenlogik zu verändern:
-
-| vorher | jetzt | Wert |
-|---|---|---:|
-| Ringe im olympischen Symbol | Ecken eines Fünfecks | 5 |
-| Bahnen eines olympischen 400-Meter-Stadions häufig | Bahnen einer typischen 400-Meter-Leichtathletikanlage | 8 |
-| Sätze zum Sieg im Herren-Grand-Slam-Tennis | Gewinnsätze in einem Best-of-five-Tennismatch | 3 |
-
-`tests/party-viral-catalog.test.js` verlangt die neuen Einträge und blockiert die alten Formulierungen.
-
-Status: **CLOSED IN CODE / RUNNER VERIFICATION OPEN**.
-
-## 6. Weitere physische Source-Bereinigung – v41
-
-### Spektrum-Modus
-
-Stabile technische ID: `wavelength`.
-
-Die ID bleibt aus Routing-/Persistenzgründen erhalten. Der alte sichtbare Name wird nicht mehr ausgeliefert:
-
-- vorher: `Wellenlänge`
-- jetzt upstream in `party-expansion.js`: **Spektrum-Tipp**
-
-### Tabu Browser
-
-- vorher upstream: `Chrome`
-- jetzt upstream: `Tab`
-
-Classic Content benötigt dafür seit v4 keinen nachträglichen `Chrome → Tab`-Fallback mehr.
-
-### Emoji-Quiz
-
-- vorher: `🦁👑 → Löwenkönig`
-- jetzt: `🦁🌾 → Löwe`
-
-Damit wird eine unnötig franchise-nahe Antwort durch einen rein generischen Tierhinweis ersetzt.
-
-## 7. Zentraler Source-Gate
-
-Neu verbindlich:
-
-`scripts/reference_content_audit.py`
-
-Der Audit scannt die tatsächlich ausgelieferten Contentquellen:
+`scripts/reference_content_audit.py` scannt aktuell **14 ausgelieferte Contentquellen**:
 
 - `word-packs.js`
-- `party-catalog.js`
-- `party-expansion.js`
-- `party-trending-catalog.js`
-- `party-mega-catalog.js`
-- `party-viral-catalog.js`
-- `party-core-release-catalog.js`
-- `party-core-classic-content.js`
+- acht bestehende Katalog-/Classic-Layer
+- alle sechs Wave-1-Katalogschichten
 
-Er blockiert die bereits bewusst entfernten konkreten Referenzen und markiert zusätzlich eine definierte Gruppe hochprofiliger Plattform-/Franchise-Namen als erneute Review-Pflicht.
+Wave 1 ist damit 10/10 im Reference-Source-Gate enthalten:
 
-Der Audit ist Teil von `npm run validate`. Wegen des aktuellen GitHub-Actions-Runnerproblems ist er **IMPLEMENTED, aber noch nicht runner-verifiziert**.
+- Quiz/Fake-Fakt
+- Imposter Similar Word/No Word
+- Writing Battle/Who Wrote It
+- Percent/Bracket
+- Bluff Trivia
+- Ein-Wort-Hinweis
 
-## 8. Ergänzender Repository-Suchpass – 19. August 2026
+Der Audit blockiert die bewusst entfernten konkreten Referenzen und eine definierte Liste hochprofiliger Plattform-/Franchise-Namen, falls sie erneut in ausgelieferten Contentquellen auftauchen.
 
-Zusätzlich zum Working-Branch-Source-Vertrag wurde eine repositoryweite GitHub-Code-Suche für typische hochprofilige Plattform-, Game-, Film- und Konsummarken durchgeführt.
+Der Audit ist Teil von `npm run validate`. Wegen des Hosted-Runner-Problems ist er **source-seitig implementiert, aber noch nicht final runner-verifiziert**.
 
-Keine Suchtreffer wurden für folgende Begriffe zurückgegeben:
+## 5. Privacy-Source-Gate – jetzt ebenfalls Wave-1-vollständig
 
-- TikTok
-- Instagram
-- YouTube
-- Netflix
-- Spotify
-- Disney
-- Marvel
-- Minecraft
-- Fortnite
-- PlayStation
-- Nintendo
-- Harry Potter
-- Star Wars
-- Pokémon
-- Coca-Cola
-- McDonald's
+`scripts/privacy_content_audit.py` scannt jetzt dieselben bestehenden Contentfamilien **plus alle sechs Wave-1-Kataloge**.
 
-Dieser Befund ist **nur ein ergänzendes Signal**. GitHub-Code-Suche kann wegen Branch-/Index-/Suchgrenzen niemals allein einen Rechtepass freigeben. Maßgeblich bleiben direkte Working-Branch-Dateien, Source-Audits, finale Runtime-/Deployment-Artefakte, visueller Review, Marketing-/Namensreview und die finale rechtliche/geschäftliche Entscheidung.
+Blockiert werden konkrete Aufforderungen, private Geräte-/Kontodaten als Spielmaterial offenzulegen, z. B.:
 
-## 9. Gebündelter Visual-/Media-Pass – 19. August 2026
+- letzte private Nachricht vorlesen
+- Kamerarolle/private Fotos zeigen
+- private Chats öffnen/vorlesen
+- Passwort/Adresse/Telefonnummer/Kontodaten preisgeben
+- Standort teilen
 
-Der aktuelle Working-Branch-Tree wurde zusätzlich nach tatsächlichen gebündelten Bild-, Audio- und Videodateien geprüft.
+Wave-1-Kataloge müssen außerdem ihre erwarteten zehn Spiel-IDs als sichere Source-Marker enthalten. Damit kann ein neues Wave-1-Lab nicht mehr außerhalb des zentralen Privacy-Source-Gates liegen.
 
-Aktueller Medienbestand:
+## 6. Gebündeltes Visual-/Media-Inventar
+
+Der aktuelle Release-Medienbestand ist bewusst auf genau drei Dateien begrenzt:
 
 1. `icon.svg`
 2. `icon-192.png`
 3. `icon-512.png`
 
-Im geprüften Branch wurden keine weiteren tatsächlichen JPG/JPEG/WebP/GIF/AVIF/ICO-, MP3/WAV/OGG/M4A/FLAC- oder MP4/WebM/MOV-Dateien identifiziert.
+Der frühere ungeklärte Icon-Rechtepfad wurde am 29. August 2026 vollständig ersetzt. Alle drei aktuellen Dateien stehen in `assets/manifests/asset-provenance.json` auf **`verified-own`** und besitzen neue dokumentierte SHA-256-Werte.
 
-Das bedeutet für den **aktuellen App-Build**:
+Damit gilt für den aktuellen App-Build:
 
 - keine gebündelten Anime-/Franchise-Charakterbilder
-- keine fremden Screenshots oder Panels
-- keine gebündelten Markenlogos außerhalb der noch rechtlich zu bestätigenden eigenen App-Iconquelle
+- keine fremden Screenshots/Panels
+- keine fremden Markenlogos als Release-Medien
 - keine gebündelten Audio-/Videodateien
+- aktuelles App-Iconset source-seitig mit eigener Provenienz dokumentiert
 
 Technische Absicherung:
 
-- `scripts/media_inventory_audit.py` scannt tatsächliche Mediendateien und verlangt vollständige Provenienz
-- der aktuelle Releasevertrag erlaubt genau die drei Icondateien
-- `tests/manifest-icons.test.js` prüft Manifest, Existenz, PNG-IHDR, SVG-ViewBox und Offline-Core
-- beide Gates sind in `package.json` integriert
+- `scripts/media_inventory_audit.py` verlangt exakt die drei inventarisierten Medien
+- `scripts/asset_provenance_audit.py` prüft Hashes, Dimensionen, Rechtefelder und Ableitungen
+- `tests/manifest-icons.test.js` prüft Manifest-/Iconvertrag
 
-**Grenze:** Das schließt zukünftige Store-Screenshots, Social-Media-Material, Marketingvideos oder später hinzukommende Illustrationen ausdrücklich nicht ein. Diese benötigen vor Veröffentlichung einen eigenen finalen Rechte-/Visual-Pass.
+**Grenze:** Store-Screenshots, Social-Media-Material, Marketingvideos und später hinzukommende Illustrationen sind nicht automatisch mitfreigegeben und benötigen eigene Provenienz-/Visualprüfung.
 
-## 10. Visuelle Fancontent-Regeln
+## 7. Restlicher manueller Semantik-/Namensreview
 
-Weiterhin verbindlich:
+Vor finalem `FAN / REFERENCE CONTENT PASS` bleiben bewusst manuell offen:
 
-- keine bekannten Charaktere nachzeichnen
-- keine Markenlogos
-- keine Szenen/Panels/Screenshots
-- keine fremden Audio-/Videodateien
-- visuelle Anime-Begleitung nur über eigenständige generische Archetypen
-- ein generiertes Bild darf nicht gezielt wie eine konkrete bekannte Figur aussehen
+- alle 13 Extended und 27 Labs im finalen Katalog semantisch lesen
+- öffentliche Spielnamen auf mögliche Verwechslungs-/Markenwirkung prüfen
+- Marketingtexte dürfen keine offizielle Partnerschaft suggerieren
+- keine fremden Slogans/Zitate
+- neue Store-/Marketingassets separat prüfen
+- finale Alters-/Safety-Plausibilisierung
+- finale geschäftliche/rechtliche Entscheidung für den tatsächlichen RC
 
-## 11. Restlicher Extended-/Labs-Pass
+Ein generischer Begriff oder Mechanikname wird nicht allein deshalb als rechtlich „frei“ bezeichnet, weil kein automatischer Treffer existiert.
 
-Der direkte technische Quellpass, der ergänzende Repository-Suchpass und das aktuelle gebündelte Media-Inventar wurden stark erweitert. Vor finalem Sign-off bleiben dennoch bewusst offen:
+## 8. Wave-1-Manuellfokus
 
-- vollständige manuelle Semantikprüfung aller Extended-/Labs-Modi im finalen Build
-- zukünftige Store-/Marketingassets, Screenshots und Videos
-- mögliche Verwechslungswirkung von Spiel-/Kampagnennamen
-- fremde Slogans/Zitate
-- finale juristische/geschäftliche Bewertung des tatsächlichen Releasebuilds
+Besonders prüfen:
 
-Besonders wichtig: Ein generischer Begriff oder Spielmechanikname wird nicht allein deshalb als „frei“ behandelt, weil die Contentsuche keinen bekannten Franchise-Treffer findet. Vor Production wird die finale öffentliche Namensliste separat bewertet.
+- `party-quiz` / `fact-or-fake`: Faktenstabilität; keine unnötigen Marken-/aktuellen Behauptungen
+- `undercover-similar-word` / `no-word-imposter`: Wortpaare generisch und fair
+- `fill-blank-battle` / `who-wrote-it`: keine erzwungene intime/beleidigende Richtung
+- `percent-guess`: Zielwerte verständlich und nicht irreführend aktuell
+- `party-bracket`: keine entwürdigenden Personenkategorien
+- `bluff-trivia`: Trivia generisch; private Fake-Eingaben nicht mit realen privaten Daten verwechseln
+- `password-one-word`: Zielwörter generisch; kein Franchise-Quiz durch Contentwahl
 
-## 12. Release-Gates
+## 9. Release-Gate
 
 Vor `FAN / REFERENCE CONTENT PASS`:
 
-- [x] Word-Imposter-Core auf unnötige konkrete Referenzen geprüft
-- [x] drei Core-Begriffe generisch ersetzt
-- [x] konkrete frühere `anime-guess`-Figuren inventarisiert
-- [x] Option B für `anime-guess` umgesetzt
-- [x] 40 konkrete Figuren aus dem finalen Runtime-Katalog entfernt
-- [x] 40 konkrete Figuren physisch aus `party-mega-catalog.js` entfernt
-- [x] Mega-Test blockiert ihre Rückkehr in die ausgelieferte Quelle
-- [x] Viral-Sportreferenzen aus v38 generisch ersetzt
-- [x] `Wellenlänge` upstream durch **Spektrum-Tipp** ersetzt
-- [x] `Chrome` upstream durch `Tab` ersetzt
-- [x] `Löwenkönig` durch generischen Löwenhinweis ersetzt
-- [x] zentraler `reference_content_audit.py` in `npm run validate`
-- [x] ergänzender Repository-Suchpass über 16 hochprofilige Namen durchgeführt
-- [x] aktueller Working-Branch-Medienbestand auf die drei App-Icondateien eingegrenzt
-- [x] `media_inventory_audit.py` und `manifest-icons.test.js` als technische Gates ergänzt
-- [ ] Source-/Media-/Icon-Gates auf funktionierendem Runner tatsächlich grün
-- [ ] Restlicher Extended-/Labs-Pass manuell/semantisch final abgenommen
-- [ ] zukünftige Store-/Marketingbilder, Screenshots und Videos separat geprüft
-- [ ] Marketingtexte auf keine offizielle Partnerschaft/Irreführung geprüft
-- [ ] finale öffentliche Spielnamen separat auf Verwechslungs-/Markenrisiken geprüft
-- [ ] `THIRD_PARTY_NOTICES.md` und `LEGAL_CHECKLIST.md` final synchronisiert
-- [ ] Tests auf funktionierendem Runner tatsächlich ausgeführt
+- [x] zentrale historische konkrete Referenzen generisch ersetzt
+- [x] konkrete Anime-Figuren physisch aus aktueller ausgelieferter Source entfernt
+- [x] `reference_content_audit.py` scannt bestehende + alle sechs Wave-1-Katalogschichten
+- [x] `privacy_content_audit.py` scannt jetzt ebenfalls alle sechs Wave-1-Kataloge
+- [x] aktueller Media-Bestand auf exakt drei App-Icondateien begrenzt
+- [x] aktuelles Iconset `verified-own`
+- [x] Asset-/Media-/Manifest-Gates vorhanden
+- [ ] Reference-/Privacy-/Asset-/Media-Gates auf funktionierendem Runner tatsächlich grün
+- [ ] alle 13 Extended manuell semantisch final abgenommen
+- [ ] alle 27 Labs einschließlich Wave 1 manuell semantisch final abgenommen
+- [ ] öffentliche Spielnamen auf Verwechslungs-/Markenrisiken final geprüft
+- [ ] Marketingtexte auf keine Partnerschafts-/Official-Irreführung geprüft
+- [ ] Store-/Marketingbilder, Screenshots und Videos separat geprüft
+- [ ] `THIRD_PARTY_NOTICES.md` und `LEGAL_CHECKLIST.md` auf finalem RC synchronisiert
+- [ ] finale rechtliche/geschäftliche Plausibilisierung abgeschlossen
 
-Bis diese Restpunkte geschlossen sind, bleibt R-011 **OFFEN** und der öffentliche Release **NO_GO**.
+Bis diese Restpunkte geschlossen sind, bleibt R-011 **OPEN / IN PROGRESS** und der öffentliche Release **NO_GO**.
