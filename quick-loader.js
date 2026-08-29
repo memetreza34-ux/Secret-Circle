@@ -14,12 +14,18 @@
   const WAVE_ONE_SOURCE = 'party-wave-one-modes.js';
   const WAVE_ONE_IMPOSTER_SOURCE = 'party-wave-one-imposter-modes.js';
   const WAVE_ONE_WRITING_SOURCE = 'party-wave-one-writing-modes.js';
+  const WAVE_ONE_VOTING_SOURCE = 'party-wave-one-voting-modes.js';
+  const WAVE_ONE_BLUFF_SOURCE = 'party-wave-one-bluff-modes.js';
+  const WAVE_ONE_CLUE_SOURCE = 'party-wave-one-clue-modes.js';
 
   function selectSource(catalog, gameId) {
     if (!catalog || !gameId) return null;
     if (catalog.createdGameIds?.includes(gameId)) return 'party-created-modes.js';
     if (catalog.viralGameIds?.includes(gameId)) return 'party-viral-modes.js';
     if (catalog.megaGameIds?.includes(gameId)) return 'party-mega-modes.js';
+    if (catalog.waveOneClueGameIds?.includes(gameId)) return WAVE_ONE_CLUE_SOURCE;
+    if (catalog.waveOneBluffGameIds?.includes(gameId)) return WAVE_ONE_BLUFF_SOURCE;
+    if (catalog.waveOneVotingGameIds?.includes(gameId)) return WAVE_ONE_VOTING_SOURCE;
     if (catalog.waveOneWritingGameIds?.includes(gameId)) return WAVE_ONE_WRITING_SOURCE;
     if (catalog.waveOneImposterGameIds?.includes(gameId)) return WAVE_ONE_IMPOSTER_SOURCE;
     if (catalog.waveOneQuizGameIds?.includes(gameId) || catalog.waveOneGameIds?.includes(gameId)) return WAVE_ONE_SOURCE;
@@ -126,13 +132,16 @@
   }
 
   return Object.freeze({
-    version: 10,
+    version: 11,
     ledgerSource: LEDGER_SOURCE,
     controlsSource: CONTROLS_SOURCE,
     replacementGuardSource: REPLACEMENT_GUARD_SOURCE,
     waveOneSource: WAVE_ONE_SOURCE,
     waveOneImposterSource: WAVE_ONE_IMPOSTER_SOURCE,
     waveOneWritingSource: WAVE_ONE_WRITING_SOURCE,
+    waveOneVotingSource: WAVE_ONE_VOTING_SOURCE,
+    waveOneBluffSource: WAVE_ONE_BLUFF_SOURCE,
+    waveOneClueSource: WAVE_ONE_CLUE_SOURCE,
     selectSource,
     scriptPlan,
     showFailure,
