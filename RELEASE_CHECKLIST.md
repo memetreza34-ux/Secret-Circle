@@ -2,16 +2,15 @@
 
 Stand: 29. August 2026
 
-Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme.
+Diese Checkliste gilt nur für **einen unveränderten Release-Candidate-Commit**. Source-Code, Tests oder Dokumentation allein sind kein realer PASS.
 
-Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**.  
-Package: **`1.0.0-beta.3`**.  
-Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**.  
-Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**.  
-Core Source Review/Hardening: **15/15 PREPARED**.  
-Accessibility: **PREPARED**.  
-Bestehende Spezialgates bis HS60: **quellsseitig PREPARED, real offen**.  
-Öffentliche Freigabe: **NO_GO**.
+Aktueller Arbeitsstand:
+
+- Package `1.0.0-beta.3`
+- Offline-Core `secret-circle-v64` / `secret-circle-v64-staging`
+- 55 Built-ins · 15 Core / 13 Extended / 27 Labs
+- Wave 1: 10/10 source-implemented
+- öffentliche Freigabe: **NO_GO**
 
 ## 1. Repository / CI / Build
 
@@ -20,59 +19,47 @@ Quellsseitig vorbereitet:
 - [x] `package-lock.json` v3
 - [x] CI/Cross-Browser verwenden `npm ci`
 - [x] Release-/Foundation-/Backup-/Architecture-Audits
-- [x] bestehende Advanced-/Quick-/Timer-/BFCache-/Background-/Hidden-Snapshot-Audits
-- [x] Wave-1-Audits für Quiz, Imposter, Writing, Voting/Estimation, Bluff und Clue
-- [x] Wave-1-Unit-/E2E-/Syntaxverträge im Buildpfad
-- [x] 1000-Zeilen-Modulgrenze aktiv
+- [x] Wave-1-Unit-/E2E-/Audit-Verträge
 - [x] Runner-Problem als Pre-Step-/Hosted-Runner-Problem isoliert
-- [x] Operator-Release-Kontext an v64/App-Version/Cache gebunden
 
-Für den RC offen:
+Real offen:
 
-- [ ] exakter Release-Commit und Tag
+- [ ] exakter RC-Commit und Tag
 - [ ] Actions erreicht Step 1 / Checkout
 - [ ] Online-`npm ci --ignore-scripts --no-audit --no-fund`
-- [ ] `npm run check` / `npm test` / `npm run validate` / `npm run ci`
-- [ ] Chromium / Firefox / WebKit auf demselben Commit
-- [ ] **Required Check aktiv und grün** sowie Branch Protection real verifiziert
+- [ ] `npm run ci` grün
+- [ ] Chromium / Firefox / WebKit auf demselben Commit grün
+- [ ] **Required Check aktiv und grün**
+- [ ] Branch Protection real aktiv
 
-Aktuellster direkt untersuchter reconciled Kandidat:
+Solange `steps: []` / `runner_id: 0` reproduziert wird, darf kein App-Code als vermeintlicher CI-Fix abgeschwächt werden.
 
-- Run **#3660**
-- Run ID `33255333073`
-- Job `99107918414`
-- Head `c3b1f423c48d623ac22c6a0c38c5fdf927773ab3`
-- Branch `integration/v64-main-sync`
-- Ergebnis `failure`
-- `steps: []`
-- `runner_id: 0`
-- `runner_name: ""`
-- requested label `ubuntu-latest`
-- **kein Repositorycode ausgeführt**
+## 2. PR-/Branch-Hygiene
 
-Solange der Job keinen Runner erhält, dürfen App-Code, Workflow-Gates oder Tests nicht als vermeintlicher Fix abgeschwächt werden. CI und Cross-Browser bleiben **BLOCKED**.
+- [ ] Draft-PR #15 gegen aktuellen Releasebranch synchronisiert
+- [ ] GitHub-Compare: `behind_by = 0`
+- [ ] PR #15 weiterhin exakt 9 Reconciliation-Pfade
+- [ ] kein Engine-/Katalog-/Service-Worker-Runtime-Code im PR-#15-Diff
+- [ ] ältere Foundation-/Draft-PRs eindeutig historisch oder weiterhin erforderlich dokumentiert
+- [ ] kein Release direkt aus ungeschütztem Zwischenstand
 
-## 2. Bestehende Engine-/Session-/Daten-Gates
+PR #13 und PR #15 bleiben bis zu realer Evidence Draft.
 
-Quellsseitig vorbereitet:
+## 3. Core / Session / Spezialgates
 
-- [x] Word-Imposter Voting-/Resume-/Datengrenzen
-- [x] Hub Resume Guard + Ladequarantäne
-- [x] Complete Backup / Forward Compatibility
-- [x] sichere Hub-Current-/Paranoia-/Pre-Timer-Zustände
-- [x] Advanced Integrity
-- [x] Quick Session Replacement Guard
-- [x] Quick Loader **v11**
-- [x] `party-release-structure.js` **v5**
-- [x] Quick-Family Timer-/BFCache-/Background-/Hidden-Snapshot-Verträge über `party-session-controls.js` v5
+Für die bestehenden Core-/Quick-/Advanced-Pfade real bestätigen:
 
-Real zu bestätigen:
+- [ ] DWI bis HS60
+- [ ] Abschluss / History / Statistik exact-once
+- [ ] Same-/Cross-Game-Session-Replacement
+- [ ] Reload / Resume in kritischen Phasen
+- [ ] QT57 Restzeit nach Reload
+- [ ] BF58 BFCache-Rückkehr
+- [ ] BG59 Background-Pause
+- [ ] HS60 Hidden-Snapshot / Cold Resume
+- [ ] keine stale Restzeit im Folgeround
 
-- [ ] bestehende Spezialgates DWI bis HS60
-- [ ] Abschluss/Verlauf/Statistik exact-once
-- [ ] Same-/Cross-Game-Session-Replacement im echten Browser/PWA
-
-## 3. Expansion Wave 1 / v64 – 10 Labs
+## 4. Wave 1 – 10 Labs
 
 Quellsseitig implementiert:
 
@@ -87,171 +74,127 @@ Quellsseitig implementiert:
 - [x] `no-word-imposter`
 - [x] `password-one-word`
 
-Gemeinsame Architektur:
+Real je relevante Enginefamilie:
 
-- [x] sechs wiederverwendbare Enginefamilien: Quiz, Imposter, Writing, Estimation/Voting, Bluff, Clue
-- [x] `quick-loader.js` v11 routet die Wave-1-Familien explizit
-- [x] `party-release-structure.js` v5 hält alle zehn Modi in Labs
-- [x] Session-Replacement-Schutz wird wiederverwendet
-- [x] exact-once Completion/History über bestehende Sessionverträge
-- [x] Offline-Core enthält die Wave-1-Kataloge und Runner
-- [x] automatisierte Wave-1-Source-/Architecture-/Reference-Audits vorhanden
-
-Real offen – je relevante Enginefamilie:
-
-- [ ] Chromium / Firefox / WebKit
-- [ ] installierte PWA offline
 - [ ] Start → aktive Runde → Resultat → Replay
-- [ ] Reload/Resume an kritischen Phasen
-- [ ] Same-/Cross-Game-Replacement
+- [ ] Reload/Resume
 - [ ] exact-once Score/History
-- [ ] Tastatur / Touch / 200-%-Zoom / Reflow
-- [ ] Screenreader-/Private-Reveal-Verhalten, soweit zutreffend
-- [ ] mindestens ein echter Gruppentest vor Promotion aus Labs
+- [ ] installierte PWA offline
+- [ ] Tastatur / Touch / Zoom / Reflow
+- [ ] private Reveal-/Input-Pfade sicher
+- [ ] mindestens eine echte Gruppe vor möglicher Promotion
 
-**Core bleibt 15.** Source-Implementierung von Wave 1 ist kein Grund für automatische Core-Promotion.
+**Core bleibt 15.** Labs werden nicht automatisch Core.
 
-## 4. Core / UX / Content
+## 5. PWA / Offline / Upgrade
 
-Für jedes der **15 Core-Spiele** real prüfen und dokumentieren:
-
-- [ ] Start/Lobby/Regeln verständlich
-- [ ] gültige Spielerzahlen und Randfälle
-- [ ] höchstens 2–3 Entscheidungen bis zur ersten echten Standard-Spielaktion, soweit mechanisch sinnvoll
-- [ ] Freiwilligkeit / Skip / sichere Alternative bei persönlichem Content
-- [ ] Pause / Abbruch / Resume
-- [ ] Score / Winner / History / Stats korrekt und exact-once
-- [ ] Tastatur / sichtbarer Fokus / Zoom / Reduced Motion
-- [ ] mobile Hoch-/Querformat-Darstellung
-- [ ] mindestens eine reale Gruppe ohne Entwicklerhilfe
-
-Keine offenen Critical-/High-Defects in Core oder gemeinsam genutzter Plattformlogik.
-
-## 5. PWA / Offline – v64
-
-- [ ] finaler Cache `secret-circle-v64` oder bewusst neuerer unveränderter RC
-- [ ] Staging-Cache gleiche Generation (`secret-circle-v64-staging`)
-- [ ] SW/Test/Architektur/Deployment/Privacy/Environment/Hosting synchron
-- [ ] Kernseiten und Query-Routen offline
+- [ ] finaler RC-Cache bewusst festgelegt
+- [ ] Production-/Staging-Cache gleiche Generation
+- [ ] Kernseiten + Query-Routen offline
 - [ ] Hub / Word Imposter / Advanced / Quick / Creator / Privacy offline
-- [ ] Resume-/Privacy-/A11y-/Backup-Schichten offline
-- [ ] `party-session-controls.js` v5 offline
-- [ ] Quick Session Replacement Guard offline
-- [ ] `quick-loader.js` v11 offline
 - [ ] alle benötigten Wave-1-Kataloge/Runner offline
-- [ ] Update von mindestens zwei älteren Installationen auf v64/RC
+- [ ] Update aus mindestens zwei älteren real installierten Ständen
 - [ ] aktive Session und kompatible lokale Daten bleiben erhalten
-- [ ] Rollback mit neuer Cachegeneration statt Wiederverwendung eines alten Cache-Namens
-- [ ] Offline-Neustart nach vollständigem Browser-/PWA-Prozessende
+- [ ] Rollback/Hotfix nutzt neue Cachegeneration
+- [ ] Offline-Neustart nach vollständigem Prozessende
 
-## 6. Timer-/Lifecycle-Spezialgates
+## 6. HTTPS-Staging / Production
 
-- [ ] QT57 – normaler Reload behält passende Restzeit
-- [ ] BF58 – BFCache-Rückkehr friert Timer nicht ein und nutzt korrekten Resume-Pfad
-- [ ] BG59 – Hintergrund pausiert fair; kein ungewollter Zeitverlust
-- [ ] HS60 – Hidden-Snapshot wird vor möglichem Prozess-Kill persistiert
-- [ ] Cold Resume funktioniert ohne zuverlässiges späteres `pagehide`
-- [ ] Snapshot wird genau einmal konsumiert
-- [ ] normaler Same-Page-Abschluss räumt Snapshot auf
-- [ ] nächster Round kann keine stale Restzeit erben
+Source vorbereitet:
 
-## 7. HTTPS-Staging-Smoke / Production / Security Header
+- [x] `/_headers`
+- [x] `scripts/staging_smoke.py`
+- [x] Response-CSP-Vertrag
+- [x] Clickjacking-Schutz
+- [x] `nosniff`
+- [x] Referrer-Policy
+- [x] Production-HSTS-Vertrag
+- [x] sichere `sw.js`-Cache-Policy
+- [x] Cloudflare Pages als Preferred Candidate dokumentiert
 
-Aktuell wegen fehlendem realen Provider und Origins **BLOCKED**.
+Real offen:
 
-Grundlage:
-
-- [x] `scripts/staging_smoke.py` prüft HTTPS und Same-Origin-Redirects
-- [x] Netzwerkdownloads sind größenbegrenzt
-- [x] Manifest-/Icon-/PWA-Head-Verträge im Smoke
-- [x] Response-Security-Header-Vertrag im Smoke
-- [x] Service-Worker Cache-Control-Vertrag im Smoke
-- [x] `HOSTING_DECISION.md`, `ENVIRONMENTS.md` und `DEPLOYMENT.md` dokumentieren denselben Vertrag
-
-Real vor `STAGING PASS`:
-
-- [ ] Hostingprovider und Produkt final
+- [ ] Hostingprovider/Produkt final
+- [ ] DPA-/Processor-/Transferposition final geprüft
 - [ ] getrennte HTTPS-Staging-/Production-Origin
-- [ ] Log-/Retention-/Processor-/Drittlandprüfung
-- [ ] Response-CSP enthält mindestens `default-src 'self'`
-- [ ] Response-CSP enthält `script-src 'self'`
-- [ ] Response-CSP enthält `object-src 'none'`
-- [ ] Response-CSP enthält `base-uri 'none'`
-- [ ] Response-CSP enthält **`frame-ancestors 'none'`**
-- [ ] `X-Content-Type-Options: nosniff`
-- [ ] `Referrer-Policy: no-referrer`
-- [ ] `X-Frame-Options: DENY`
-- [ ] `sw.js` wird **nicht** mit `Cache-Control: immutable` ausgeliefert
-- [ ] `sw.js` hat bei gesetztem `max-age` höchstens **3600 Sekunden**
 - [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v64` grün
-- [ ] manueller PWA-Staging-Smoke einschließlich Spezialgates + Wave-1-Labs
+- [ ] manueller PWA-Staging-Smoke
+- [ ] **Production-Smoke** auf exakt demselben freigegebenen RC grün
+- [ ] HTTPS-Rollback-Drill dokumentiert
 
-Zusätzlich vor `PRODUCTION PASS`:
+## 7. Accessibility / reale Geräte
 
-- [ ] Production nutzt exakt denselben freigegebenen RC
-- [ ] `Strict-Transport-Security` mit `max-age >= 31536000`
-- [ ] **Production-Smoke**: `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v64 --production` grün
-- [ ] Rollback-Drill auf HTTPS-Origin dokumentiert
-
-Eine Meta-CSP im HTML ersetzt die Response-CSP nicht. `frame-ancestors` muss als HTTP-Response-CSP geprüft werden.
-
-## 8. Accessibility / reale Geräte
-
-- [ ] Android + Chrome Browser/PWA
-- [ ] iPhone + Safari / Add to Home Screen
+- [ ] Android Chrome Browser/PWA
+- [ ] iPhone Safari / Add to Home Screen
 - [ ] iPad/Tablet
-- [ ] App-Wechsel
-- [ ] Screen-Lock
-- [ ] Prozess-Kill / Cold Resume
+- [ ] App-Wechsel / Screen-Lock / Prozess-Kill / Cold Resume
 - [ ] 320 CSS px
 - [ ] 200-%-Zoom
 - [ ] Hoch-/Querformat
 - [ ] vollständige Tastatur
-- [ ] VoiceOver
+- [ ] **VoiceOver**
 - [ ] TalkBack
-- [ ] private Reveals / Resume mit Screenreader
-- [ ] Wave-1-Eingaben und Resultate zugänglich
-- [ ] Safe Areas / große Systemschrift / Reduced Motion / Touchziele
+- [ ] große Systemschrift / Reduced Motion / Touchziele
 
-## 9. Beta / Gruppen
+## 8. Reale Gruppen / Beta
 
-- [ ] G1–G5
-- [ ] bestehende Spezialgates
-- [ ] PN1–PN3
-- [ ] mindestens ein realer Nachweis pro **15 Core-Spiel**
-- [ ] Advanced-Gruppentests einschließlich Mafia
+Für jedes der 15 Core-Spiele:
+
+- [ ] Start/Lobby/Regeln ohne Entwicklerhilfe verständlich
+- [ ] Randfälle / Spielerzahlen
+- [ ] Skip/Freiwilligkeit bei persönlichem Content
+- [ ] Pause / Abbruch / Resume
+- [ ] Score / Winner / History korrekt
+- [ ] mindestens **eine reale Gruppe** dokumentiert
+
+Zusätzlich:
+
+- [ ] Advanced/Mafia
 - [ ] Creator mit unerfahrenem Host
-- [ ] Wave-1-Labs separat dokumentieren; keine stillschweigende Core-Promotion
-- [ ] keine offenen Critical/High Bugs
+- [ ] Wave-1-Labs separat dokumentiert
+- [ ] keine offenen Critical-/High-Defects
 
-Jeder Nachweis dokumentiert mindestens Version/Commit, Cachegeneration, Gerät, Browser/PWA, Gruppengröße, Testfall und Ergebnis. Mindestens eine **reale Gruppe** muss die dokumentierten Core-Flows ohne Entwicklerhilfe spielen.
+## 9. Assets / Third Party
 
-## 10. Assets / Third Party / Legal / Betrieb
+Quellsseitig jetzt erledigt:
 
-- [ ] kein Releaseasset `unresolved`
-- [ ] Root-`icon.svg` Rechtebasis belegt **oder vollständig ersetzt**
-- [ ] Betreiberidentität / ladungsfähige Angaben / öffentlicher Kontakt final
-- [ ] Hostingprovider / Region / Datenverarbeitung final bewertet
-- [ ] Privacy-/Legal-Flächen final
-- [ ] Supportweg real getestet
-- [ ] Security-Kontakt real getestet
-- [ ] Probe-Supportfall dokumentiert
-- [ ] Probe-SEV-1 dokumentiert
-- [ ] HTTPS-Rollback-Drill dokumentiert
-- [ ] reale Evidence im Operator-Log
+- [x] maschinenlesbares Asset-Provenienzmanifest
+- [x] altes ungeklärtes `icon.svg` vollständig ersetzt
+- [x] aktuelles `icon.svg = verified-own`
+- [x] `icon-192.png = verified-own`
+- [x] `icon-512.png = verified-own`
+- [x] neue SHA-256-Werte dokumentiert
+- [x] Media-Vertrag bleibt exakt drei Release-Medien
+- [x] `ASSET_RIGHTS_SIGNOFF.md` auf Ersatzicon synchronisiert
+- [x] `THIRD_PARTY_NOTICES.md` auf Ersatzicon synchronisiert
 
-## 11. Repository-/Branch-Releasehygiene
+Real/final offen:
 
-- [ ] finaler RC stammt aus klar dokumentierter Branch-/PR-Kette
-- [ ] PR #15 / Main-Reconciliation kontrolliert abgeschlossen
-- [ ] Branch Protection / Required Checks real verifiziert
-- [ ] keine ungeklärte Änderung nach Freeze
-- [ ] ältere Draft-/Foundation-Branches sind eindeutig als historisch/superseded oder weiterhin notwendig dokumentiert
-- [ ] kein Release direkt aus einem ungeschützten, nicht evidenzgeprüften Zwischenstand
+- [ ] echter Online-`npm ci`-/Integrity-Nachweis
+- [ ] `scripts/asset_provenance_audit.py` tatsächlich grün
+- [ ] `scripts/media_inventory_audit.py` tatsächlich grün
+- [ ] kompletter `npm run validate` auf demselben Kandidaten grün
+- [ ] finaler manueller Visual-/Marken-/Third-Party-Plausibilitätsreview
+- [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls öffentliche Quellcodeverteilung geplant ist
 
-PR #13 bleibt bis zum realen PASS aller Pflichtgates **Draft**.
+Der frühere Icon-Rechteblocker ist geschlossen; `assetsThirdParty` bleibt bis zu diesen realen Finalnachweisen BLOCKED.
 
-## 12. Release Evidence / Freigabe
+## 10. Operator / Legal / Support / Incident
+
+- [ ] Betreiberidentität / Rechtsform / ladungsfähige Anschrift final
+- [ ] öffentlicher Betreiber-/Supportkontakt final
+- [ ] Security-/Privacy-Meldeweg final
+- [ ] Privacy-/Legal-Flächen mit realen Angaben
+- [ ] DDG/GDPR/TDDDG/VSBG-Position final geprüft
+- [ ] Supportkontakt real getestet
+- [ ] Securityroute real getestet
+- [ ] Probe-Supportfall abgeschlossen
+- [ ] Incident Lead / Engineering / Support / Legal-Privacy Owner final
+- [ ] Probe-SEV-1 abgeschlossen
+- [ ] Rollback-Drill abgeschlossen
+- [ ] `operator-release.json = FINAL / READY`
+
+## 11. Release Evidence / GO
 
 - [ ] `release-evidence.json = FINAL`
 - [ ] 40-stelliger RC-Commit
@@ -260,11 +203,9 @@ PR #13 bleibt bis zum realen PASS aller Pflichtgates **Draft**.
 - [ ] Production-/Staging-Cache
 - [ ] Staging-/Production-URLs
 - [ ] Freeze-Zeitpunkt
-- [ ] alle Pflichtgates `PASS` auf demselben RC
+- [ ] alle Pflichtgates auf demselben RC PASS
 - [ ] `knownBlockers` leer
-- [ ] `operator-release.json = FINAL / READY`
-- [ ] Asset-/Legal-/Support-/Incident-Sign-off vollständig
-- [ ] alle Release-Audits grün
-- [ ] `releaseDecision = GO` erst danach
+- [ ] finaler Operator-/Asset-/Legal-/Support-/Incident-Sign-off
+- [ ] `releaseDecision = GO`
 
-**Aktuell: NO_GO. PR #13 und PR #15 bleiben Draft und werden nicht gemergt.**
+**Aktuell: NO_GO.**
