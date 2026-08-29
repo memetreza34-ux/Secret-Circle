@@ -29,7 +29,7 @@
       <p>Rollen, Fragen, Orte, Begriffe und andere geheime Informationen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Verdeckungs-, Übergabe- und Resume-Schutz verringern versehentliches Mitlesen, können absichtliches Schulterblicken aber nicht vollständig verhindern.</p>
 
       <h2>Built-in-Privacy-Schutz</h2>
-      <p>Die eingebauten Spiele verlangen keine privaten Nachrichten, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial. Persönliche Inhalte bleiben freiwillig und überspringbar.</p>
+      <p>Die eingebauten Spiele verlangen keine privaten Nachrichten, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial. Persönliche Inhalte bleiben freiwillig und überspringbar. Secret Circle besitzt keinen Built-in-18+-Bereich.</p>
 
       <h2>Word Imposter und Hub Resume</h2>
       <p>Geheime Rollen und Begriffe werden beim Gerätewechsel verdeckt. Gespeicherte Abstimmungs- und Resume-Zustände werden auf Konsistenz geprüft. Eigene Kategorien und Backups werden lokal validiert, bevor bestehende Daten ersetzt werden.</p>
@@ -37,11 +37,10 @@
 
       <h2>Advanced-Spiele – v55</h2>
       <p>Advanced-Rollen, Ortskarten, private Fragen und Moderatorinformationen werden bei unterstützten Flows bei Fokus- oder App-Wechsel verdeckt. Geöffnete Secret-Reveals werden nach Reload wieder geschlossen; eine Mafia-Moderatorübersicht verlangt erneut eine bewusste Bestätigung.</p>
-      <p>Seit v55 verwirft der Advanced-Resume-Schutz gespeicherte Zustände, die fachlich nicht möglich sind, zum Beispiel einen Location-Spy-Result-State mit gleichzeitigem Gruppenwahl- und Ortsguess-Pfad oder eine Mafia-Nachtphase, obwohl die lebenden Rollen bereits eindeutig einen Sieger ergeben.</p>
-      <p>Eine vorhandene gespeicherte Advanced-Session wird durch „Neue Session beginnen“ nicht mehr still ersetzt. Vor dem Verwerfen ist eine ausdrückliche Bestätigung nötig. Kann der alte Session-Marker nicht sicher entfernt werden, startet keine neue Session.</p>
+      <p>Seit v55 verwirft der Advanced-Resume-Schutz gespeicherte Zustände, die fachlich nicht möglich sind. Eine vorhandene gespeicherte Advanced-Session wird durch „Neue Session beginnen“ nicht still ersetzt.</p>
 
       <h2>Quick-, Mega-, Viral-, Creator- und Wave-1-Sessions</h2>
-      <p>Diese Schnellspiel-Familien speichern aktive Sessions lokal je Enginefamilie. Ein normaler Spielstart darf einen plausiblen vorhandenen Session-Snapshot nicht still überschreiben. Das gilt auch für die v61-Labs Party Quiz und Fake oder Fakt, die denselben Quick-Family-Session-Schutz wiederverwenden.</p>
+      <p>Diese Schnellspiel-Familien speichern aktive Sessions lokal je Enginefamilie. Ein normaler Spielstart darf einen plausiblen vorhandenen Session-Snapshot nicht still überschreiben. Das gilt auch für alle aktuellen Wave-1-Labs.</p>
       <p>Vor dem Ersatz wird ausdrücklich gefragt, ob die gespeicherte Session verworfen werden soll. Bei Abbruch bleibt der bisherige Snapshot unverändert. Der alte Snapshot wird nicht vorsorglich gelöscht; erst ein erfolgreicher lokaler Schreibvorgang der neuen Session ersetzt ihn.</p>
 
       <h2>Quick-Family Timer Resume – v57 bis v60</h2>
@@ -49,8 +48,13 @@
       <p>Der Store <code>secret-circle-party-quick-timers-v1</code> enthält ausschließlich technische Metadaten und keine eigentlichen Spielkarten oder Antworten.</p>
       <p>Seit v58 wird zusätzlich die Wiederkehr aus dem Browser-Back-Forward-Cache geschützt. Seit v59 pausiert ein tatsächlich laufender Schnellspiel-Timer automatisch, wenn die Seite verborgen wird. Seit v60 wird bei <code>document.hidden</code> die technische Restzeit sofort lokal gesichert.</p>
 
-      <h2>Wave 1 – v61</h2>
-      <p>Party Quiz und Fake oder Fakt verwenden textbasierte Built-in-Karten und den bestehenden lokalen Quick-Session-Speicher. Wave 1 führt keinen zusätzlichen lokalen Storage-Key und keine externe Datenübertragung ein.</p>
+      <h2>Wave 1 Quiz – v61</h2>
+      <p>Party Quiz und Fake oder Fakt verwenden textbasierte Built-in-Karten und den bestehenden lokalen Quick-Session-Speicher. Sie führen keinen zusätzlichen lokalen Storage-Key und keine externe Datenübertragung ein.</p>
+
+      <h2>Wave 1 Imposter – v62</h2>
+      <p>Undercover – ähnliches Wort und Imposter ohne Wort verwenden ebenfalls den bestehenden Quick-Family-Session-Speicher. Rollen, Wörter, Reveal-Fortschritt und private Abstimmungen bleiben lokale Spielzustände auf dem gemeinsam genutzten Gerät.</p>
+      <p>Eine geheime Karte wird nur nach bewusster Aktion für die aktuell genannte Person angezeigt. Blur, App-/Tabwechsel, <code>pagehide</code> oder Hidden verdecken eine offene Reveal-/Vote-Oberfläche wieder. Nach Reload wird der gespeicherte Spielstand nicht automatisch als offene Geheimkarte dargestellt.</p>
+      <p>Beim No-Word-Modus darf der enttarnte Imposter genau einen letzten Wort-Guess abgeben. Der Ergebniszustand wird gespeichert, damit Reload/Resume Score oder Gewinner nicht ein zweites Mal verändert.</p>
 
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
@@ -58,15 +62,15 @@
       <h2>Sicherung und Import</h2>
       <p>JSON-Sicherungen können lokale Spielernamen, Presets, Favoriten, Verlauf, Statistiken, eigene Inhalte, Einstellungen und aktive Sessions enthalten. Exportierte Sicherungen sind nicht automatisch verschlüsselt und sollten nur an vertrauenswürdigen Orten gespeichert werden.</p>
       <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Keys. Unbekannte oder neuere Secret-Circle-Namespaces und Storage-Versionen werden durch einen älteren Restore nicht still gelöscht. Schreibfehler rollen verwaltete Werte soweit möglich zurück. „Alle lokalen Daten löschen“ bleibt davon getrennt und entfernt bewusst sämtliche Secret-Circle-Namespaces.</p>
-      <p>Seit v57 umfasst der Complete-Backup-Vertrag 17 exakte aktuelle Keys einschließlich des promptfreien Quick-Timer-Stores. v61 ändert dieses Dateiformat nicht.</p>
+      <p>Seit v57 umfasst der Complete-Backup-Vertrag 17 exakte aktuelle Keys einschließlich des promptfreien Quick-Timer-Stores. v62 ändert dieses Dateiformat nicht.</p>
 
       <h2>Hosting und technische Verbindungsdaten</h2>
       <p>Beim Laden oder Aktualisieren ruft der Browser statische App-Dateien vom später final festgelegten Hostinganbieter ab. Dabei können technisch notwendige Verbindungs- oder Serverlogdaten anfallen. Anbieter, Verantwortlicher, Kontakt, Logverarbeitung, Aufbewahrung und gegebenenfalls Drittlandbezug werden vor Veröffentlichung anhand des realen Hostings ergänzt.</p>
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v61</code>.</p>
-      <p>v61 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 5, <code>quick-session-replacement-guard.js</code> Version 2, <code>quick-loader.js</code> Version 8, <code>party-wave-one-catalog.js</code> und <code>party-wave-one-modes.js</code>. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v62</code>.</p>
+      <p>v62 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 5, <code>quick-session-replacement-guard.js</code> Version 2, <code>quick-loader.js</code> Version 9, den konsolidierten Wave-1-Katalog und getrennte Quiz-/Imposter-Runner. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
       <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem entfernt werden.</p>
