@@ -8,7 +8,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createPartyReleaseStructure() {
   'use strict';
 
-  const VERSION = 2;
+  const VERSION = 3;
   const CORE_IDS = Object.freeze([
     'imposter', 'truth-dare', 'never-have', 'most-likely', 'would-rather',
     'paranoia', 'charades', 'taboo', 'hot-potato', 'word-chain',
@@ -19,14 +19,14 @@
     'pass-the-phone', 'red-green-flag', 'secret-mission', 'tier-list',
     'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best',
     'hear-me-out', 'hot-seat', 'story-chain', 'finish-the-sentence',
-    'party-quiz', 'fact-or-fake'
+    'party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter'
   ]);
   const CORE = new Set(CORE_IDS);
   const LABS = new Set(LAB_IDS);
   const TIERS = Object.freeze({
     core: Object.freeze({ id: 'core', label: 'Kernspiel', plural: 'Kernspiele', description: 'Für Januar 2027 vollständig priorisiert und nach den strengsten Release-Gates geprüft.' }),
     extended: Object.freeze({ id: 'extended', label: 'Erweiterung', plural: 'Erweiterungen', description: 'Spielbar und nützlich, aber nach den Kernspielen priorisiert.' }),
-    labs: Object.freeze({ id: 'labs', label: 'Labs', plural: 'Labs', description: 'Experimentelle Modi in Prüfung. Nicht automatisch Teil des Kernrelease.' })
+    labs: Object.freeze({ id: 'labs', label: 'Lab', plural: 'Labs', description: 'Experimentelle Modi in Prüfung. Nicht automatisch Teil des Kernrelease.' })
   });
 
   function tierFor(game) {
