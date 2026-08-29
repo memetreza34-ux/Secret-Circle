@@ -1,51 +1,51 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-19",
+  "updatedAt": "2026-08-29",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
       "path": "icon.svg",
       "kind": "app-icon-source",
-      "status": "unresolved",
-      "creator": "Repository commit authored by memetreza34-ux; actual design-rights authorship still requires human confirmation",
-      "source": "Git commit c183d439882bf3f25a5577e3867b76b4f930e84c, added from an empty path with commit sub-message 'design: add Secret Circle app icon'",
-      "createdAt": "2026-08-02",
-      "sha256": "6adc88ba8f0cdf5906dca387efcd53b7da9cdb9cfa68679419745b1d83162011",
-      "license": null,
-      "commercialUse": null,
+      "status": "verified-own",
+      "creator": "Secret Circle project – user-directed original geometric SVG created with OpenAI/ChatGPT assistance",
+      "source": "assets/manifests/ORIGINAL_ICON_SOURCE.md and assets/manifests/icon-replacement-source.svg; created 2026-08-29 without external visual/template/font/stock input",
+      "createdAt": "2026-08-29",
+      "sha256": "ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c",
+      "license": "Project-owned output rights under applicable OpenAI Terms of Use; no third-party visual asset license required",
+      "commercialUse": true,
       "attribution": null,
       "derivedFrom": null,
-      "notes": "Git history now proves when and where the current SVG entered this repository. That evidence does not by itself prove copyright ownership, external-template absence, or commercial-use rights, so final sign-off remains blocked until a human confirms the rights basis."
+      "notes": "Replacement for the previous unresolved icon. Built only from SVG geometric primitives. Provenance does not constitute trademark registration/clearance or a uniqueness guarantee."
     },
     {
       "path": "icon-192.png",
       "kind": "pwa-icon-raster",
-      "status": "unresolved",
-      "creator": "Deterministic derivative generated from icon.svg during release hardening",
-      "source": "icon.svg rendered with CairoSVG 2.8.2 on 2026-08-19",
-      "createdAt": "2026-08-19",
-      "sha256": "fbf17eb36a6dc9af8c73df1feede3cfbbf04ff1b66048aad7d81e0dd9c77590f",
-      "license": null,
-      "commercialUse": null,
+      "status": "verified-own",
+      "creator": "Deterministic derivative of the verified-own replacement icon.svg",
+      "source": "icon.svg rendered with CairoSVG 2.8.2 and palette-optimized with Pillow on 2026-08-29",
+      "createdAt": "2026-08-29",
+      "sha256": "75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e",
+      "license": "Same project-owned rights basis as icon.svg",
+      "commercialUse": true,
       "attribution": null,
       "derivedFrom": "icon.svg",
       "dimensions": "192x192",
-      "notes": "Raster derivation and dimensions are now evidenced. Final rights status follows the unresolved rights basis of icon.svg."
+      "notes": "Raster derivative only; no additional third-party material."
     },
     {
       "path": "icon-512.png",
       "kind": "pwa-icon-raster",
-      "status": "unresolved",
-      "creator": "Deterministic derivative generated from icon.svg during release hardening",
-      "source": "icon.svg rendered with CairoSVG 2.8.2 and palette-optimized with Pillow 12.3.0 on 2026-08-19",
-      "createdAt": "2026-08-19",
-      "sha256": "deea4ccb390c71b46f9a53f328682789c1bd56eef872bda692dcfae01230306c",
-      "license": null,
-      "commercialUse": null,
+      "status": "verified-own",
+      "creator": "Deterministic derivative of the verified-own replacement icon.svg",
+      "source": "icon.svg rendered with CairoSVG 2.8.2 and palette-optimized with Pillow on 2026-08-29",
+      "createdAt": "2026-08-29",
+      "sha256": "1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce",
+      "license": "Same project-owned rights basis as icon.svg",
+      "commercialUse": true,
       "attribution": null,
       "derivedFrom": "icon.svg",
       "dimensions": "512x512",
-      "notes": "The previous file named icon-512.png was only 192x192. It was replaced with a real 512x512 derivative. Final rights status follows the unresolved rights basis of icon.svg."
+      "notes": "Raster derivative only; no additional third-party material."
     }
   ]
 }
