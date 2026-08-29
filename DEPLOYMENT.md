@@ -1,15 +1,15 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Stand: 28. August 2026
+Stand: 29. August 2026
 
 Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffentlicht. Production darf nicht der erste echte HTTPS-/Service-Worker-Test eines Release Candidates sein.
 
 ## Aktueller Releaseumfang
 
-- 45 Built-ins · 15 Core / 13 Extended / 17 Labs
-- 27 Quick-/Trend-/Viral-Modi · 4 Advanced-Core-Games
+- **47 Built-ins · 15 Core / 13 Extended / 19 Labs**
+- die neuen Wave-1-Spiele `Party Quiz` und `Fake oder Fakt` bleiben Labs und erweitern den Januar-Core nicht automatisch
 - Word Imposter + Smart Party Night + lokaler Creator
-- aktueller Offline-Core: **`secret-circle-v60` / `secret-circle-v60-staging`**
+- aktueller Offline-Core: **`secret-circle-v61` / `secret-circle-v61-staging`**
 - Draft-PR #13 auf `agent/release-foundation-2027`
 - öffentliche Freigabe: **NO_GO**
 
@@ -25,35 +25,37 @@ Production erhält denselben unveränderten RC, der auf Staging freigegeben wurd
 - Online-`npm ci` und `npm run ci` grün
 - Chromium/Firefox/WebKit auf demselben Commit grün
 - Required Check + Branch Protection real aktiv
-- DWI / HR2 / BK51 / HR52 / PR53 / PT54 / AD55 / QR56 / QT57 / BF58 / BG59 / **HS60** real bestätigt
+- bestehende Spezialgates bis HS60 real bestätigt
+- Wave-1-Labs nur bei eigener Browser-/Offline-/Accessibility-/Gruppen-Evidence als releasefähig behandeln
 - keine offenen Critical/High Bugs
 
 Ein Job mit `steps: []` ist kein Code-/Testnachweis.
 
-## PWA / Offline – v60
+## PWA / Offline – v61
 
-Offline enthalten sind `party-session-controls.js` Version 5, Quick Replacement Guard v1, Quick Loader v7, Backup Registry v2 und alle bisherigen Resume-/Privacy-/A11y-/Advanced-Schutzmodule.
+Offline enthalten sind `party-session-controls.js` Version 5, Quick Replacement Guard v2, Quick Loader v8, Backup Registry v2 sowie die neuen Dateien `party-wave-one-catalog.js` und `party-wave-one-modes.js`.
 
 - **QT57:** Restzeit über normalen Reload.
 - **BF58:** BFCache-Rückkehr führt sicher in QT57 oder verwirft stale Zustand.
 - **BG59:** Hidden pausiert; Visible benötigt explizites Resume.
-- **HS60:** `visibilitychange(hidden)` persistiert die Restzeit sofort, auch wenn danach kein `pagehide` mehr folgt. Nur `pagehide` setzt den Preserve-on-next-stop-Pfad; normaler Same-Page-Round-Stop löscht den Visibility-Snapshot wieder.
+- **HS60:** Hidden persistiert Restzeit sofort für möglichen OS-Kill.
+- **Wave 1 / v61:** Party Quiz und Fake oder Fakt nutzen einen gemeinsamen Runner, denselben Quick-Family-Session-Schutz und bleiben Labs.
 
 ## HTTPS-Staging
 
 Der Netzwerk-Smoke wird durch **`scripts/staging_smoke.py`** ausgeführt. Die PWA-Head-Metadaten werden zusätzlich durch **`tests/pwa-head-metadata.test.js`** geschützt.
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v60
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v61
 ```
 
-Manuell zusätzlich: Installation, Offline-Neustart, Update/Rollback, QT57, BF58, BG59 und **HS60 auf Safari/Chrome mobil**.
+Manuell zusätzlich: Installation, Offline-Neustart, Update/Rollback, bestehende Spezialgates sowie Party Quiz/Fake oder Fakt online und offline.
 
 ## Update-Regel
 
 Bei Offline-Core-Änderung: CORE prüfen → Cachegeneration erhöhen → SW-Test → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Upgrade/Rollback real testen.
 
-Historie: v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache Restore → v59 Background Pause → **v60 Hidden Snapshot Durability**.
+Historie: v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache Restore → v59 Background Pause → v60 Hidden Snapshot → **v61 Expansion Wave 1**.
 
 ## Rollback
 
@@ -62,7 +64,7 @@ Promotion stoppen → Commit/Cache dokumentieren → Revert/Hotfix → neue Cach
 ## Production-Smoke-Test
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v60 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v61 --production
 ```
 
 Production muss exakt dem freigegebenen RC entsprechen.
