@@ -1,16 +1,18 @@
 # Secret Circle – Spielmodi- und Themen-Anleitung
 
-Stand: 28. August 2026
+Stand: 29. August 2026  
 Status: **verbindliche Produkt-/Content-Roadmap, kein Scope-Zwang für Januar 2027**
 
-Diese Anleitung ergänzt `APP_ENTWICKLUNG_VON_A_BIS_Z.md` um die langfristige Spielbibliothek von Secret Circle.
+Diese Anleitung ergänzt `APP_ENTWICKLUNG_VON_A_BIS_Z.md`. Die maschinenlesbare Planung liegt zusätzlich in `GAME_LIBRARY_BACKLOG.json`.
 
 ## 1. Produktziel
 
-Secret Circle soll langfristig zwei Dinge gleichzeitig schaffen:
+Secret Circle soll langfristig gleichzeitig:
 
-1. **extrem einfach zu bedienen** – neue Gruppen sollen ohne Erklärung oder komplizierte Einstellungen in wenigen Sekunden starten können;
-2. **extrem viele Spielmöglichkeiten** – nicht nur Klassiker, sondern Täuschung, Quiz, Schreiben, Zeichnen, Raten, Teamwork, Musik, Bewegung, Kreativität, Puzzle, Serien-/Film-/Anime-/Gaming-/Sportthemen und eigene Packs.
+1. **extrem einfach zu bedienen** sein – Standardspiele in höchstens 2–3 Entscheidungen bis zur ersten echten Aktion;
+2. **extrem viele Spielmöglichkeiten** bieten – über gemeinsame Enginefamilien + viele Themenpacks statt 100 fragile Einzelengines.
+
+Aktueller technischer Katalog: **47 Built-ins · 15 Core / 13 Extended / 19 Labs**.
 
 ### Harte Content-Grenze
 
@@ -18,74 +20,32 @@ Secret Circle bekommt **keinen 18+-Bereich**.
 
 Nicht als Built-in-Content:
 
-- sexuelle/explizite Inhalte
+- sexuelle oder explizite Inhalte
 - pornografische Inhalte
 - Trinkzwang/Alkohol als Kernmechanik
 - gefährliche Challenges
-- Erniedrigung, Zwang oder körperlich riskante Aufgaben
-- Inhalte, die private Daten, Passwörter, Adresse, Telefonnummer, intime Fotos oder ähnliche Informationen verlangen
+- Erniedrigung oder Zwang
+- Aufgaben, die Passwörter, Adressen, Telefonnummern, intime Fotos oder vergleichbar private Daten verlangen
 
-Party, Dating-light, Freundschaft, Cringe, Memes, Serien, Filme, Anime, Gaming, Sport und Chaos dürfen trotzdem lustig und direkt sein, solange sie familien-/jugendfreundlich bleiben.
+Party, Dating-light, Freundschaft, Cringe, Memes, Film/Serie, Anime, Gaming, Sport und Chaos dürfen trotzdem direkt und lustig sein, solange sie jugend-/familienfreundlich bleiben.
 
 ---
 
-## 2. Konkurrenz-Benchmark 2026 – was gute Party-Apps richtig machen
+## 2. Konkurrenz-Lektion 2026
 
-### Heads Up!
+### Heads Up!-Prinzip
 
-Stärke:
+Eine sehr einfache Mechanik kann durch viele Decks/Themen wie sehr viele Spiele wirken.
 
-- extrem einfache Kernmechanik
-- 100+ thematische Decks
-- eigene Kategorien/Decks
-- Filme, Prominente und weitere Themen als Content-Layer statt neue Engine
+**Secret-Circle-Lektion:** Content-Layer wiederverwenden, nicht für Film, Anime, Sport usw. jeweils neue Engines bauen.
 
-Lektion für Secret Circle:
+### Undercover-/Spy-Prinzip
 
-> Eine starke Mechanik kann durch sehr viele Packs wie viele verschiedene Spiele wirken.
+Eine Social-Deduction-Engine kann viele Rollenvarianten, Wortpaare und Themen tragen.
 
-### Undercover / Spy / Mr-White-Apps
+**Secret-Circle-Lektion:** Imposter wird eine eigene große Spielfamilie.
 
-Stärken:
-
-- ein Gerät reicht
-- schneller Rollen-Reveal
-- viele Kategorien/Wortpaare
-- mehrere Rollenvarianten wie Civilian, Undercover und Mr. White
-- teilweise Sonderrollen, Custom Categories, Score und Resume
-
-Lektion:
-
-> Imposter darf in Secret Circle eine eigene große Spielfamilie werden, nicht nur ein einzelnes Spiel.
-
-### Out of the Loop
-
-Stärken:
-
-- kein Setup
-- 3–9 Spieler
-- kurze 5–10-Minuten-Runden
-- geheimes Wort + eine Person ohne Kontext
-- alle beantworten lustige Fragen zum geheimen Begriff
-
-Lektion:
-
-> Regeln während des Spiels lernen lassen; keine lange Regelwand vor Start.
-
-### Wavelength
-
-Stärken:
-
-- sehr leicht verständliche Spektrum-Mechanik
-- viele Spektren
-- schnelle Runden
-- klare visuelle Interaktion
-
-Lektion:
-
-> Eine einzelne Mechanik braucht Contenttiefe und eine starke visuelle Identität.
-
-### Jackbox
+### Jackbox-Prinzip
 
 Besonders relevante Mechanikfamilien:
 
@@ -100,39 +60,19 @@ Besonders relevante Mechanikfamilien:
 - Teamwork / Co-op
 - Roleplay
 
-Lektion:
+**Secret-Circle-Lücke:** vor allem Bluff-Antworten, große Quizbibliothek, Schreiben/Voting, Umfragen, Speaking und echte Kooperation.
 
-> Secret Circle ist bei Social/Imposter/Challenges schon breit, hat aber noch deutliche Lücken bei Trivia, Bluff-Antworten, Schreiben/Voting, Umfragen, Speaking und kooperativer Echtzeitkommunikation.
+### One-Phone-Party-Hubs
 
-### Spaceteam
+Offline + ein Gerät + viele Klassiker sind inzwischen Baseline.
 
-Stärke:
-
-- kooperative Echtzeitkommunikation unter Zeitdruck
-- alle müssen zusammenarbeiten statt gegeneinander zu spielen
-
-Lektion:
-
-> Secret Circle braucht später mehr echte **Co-op-Modi**, nicht nur Punkte gegeneinander.
-
-### piparo.party
-
-Stärken:
-
-- 25 Spiele in sechs Spielarten
-- ein Gerät, schnelle Einrichtung, offline
-- eigene Spielprofile/Achievements
-- Bluff/Rollen, Wortspiele, Quiz/Wissen, Klassiker, Action/Speed
-
-Lektion:
-
-> „Viele Spiele + offline + ein Gerät“ ist Baseline. Secret Circle muss bei Bedienung, Contenttiefe, Resume/Privacy, Creator und Vielfalt der Mechanikfamilien besser werden.
+**Secret-Circle-Differenzierung:** extrem einfache Bedienung, große Mechanikbreite, starke Imposter-Welt, Resume/Privacy, lokale Datenkontrolle, Creator und klare Core/Extended/Labs-Reife.
 
 ---
 
-## 3. Was Secret Circle bereits stark abdeckt
+## 3. Was bereits vorhanden ist
 
-Bereits vorhanden oder technisch angelegt sind unter anderem:
+Secret Circle deckt bereits stark ab:
 
 - Word Imposter
 - Question Imposter
@@ -170,418 +110,186 @@ Bereits vorhanden oder technisch angelegt sind unter anderem:
 - Story Chain
 - Satz beenden
 - Spektrum-Tipp
+- Creator / eigene lokale Spiele
 
-Deshalb sollen neue Modi **keine bloßen Namensduplikate** dieser Mechaniken sein.
+Neue Modi sollen deshalb **keine bloßen Namensduplikate** dieser Mechaniken sein.
 
 ---
 
-# 4. Wichtigste fehlende Mechanikfamilien
+# 4. Expansion Wave 1 – verbindliche Reihenfolge
 
-## Priorität A – höchste Lücke gegenüber Konkurrenz
+`GAME_LIBRARY_BACKLOG.json` ist die maschinenlesbare Quelle. Wave 1 bleibt **Labs**, bis die jeweiligen Qualitätsgates bestanden sind.
 
-### A1. Bluff Trivia / Fake Answer
+| # | Modus | Enginefamilie | Status |
+|---|---|---|---|
+| 1 | Bluff Trivia | Bluff | BACKLOG |
+| 2 | **Party Quiz** | Quiz | **IMPLEMENTED LAB – v61** |
+| 3 | **Fake oder Fakt** | Quiz | **IMPLEMENTED LAB – v61** |
+| 4 | Prozent schätzen | Schätzen/Voting | BACKLOG |
+| 5 | Satzduell / Fill-in-the-Blank | Anonymes Schreiben | BACKLOG |
+| 6 | Wer hat das geschrieben? | Anonymes Schreiben | BACKLOG |
+| 7 | Party Bracket | Voting | BACKLOG |
+| 8 | Undercover – ähnliches Wort | Imposter | BACKLOG |
+| 9 | Imposter ohne Wort | Imposter | BACKLOG |
+| 10 | Ein-Wort-Hinweis | Raten/Clue | BACKLOG |
 
-Mechanik:
+## Wave-1-Umsetzungsstand v61
+
+### Party Quiz – implementiert als Labs
+
+- gemeinsame Engine: `party-wave-one-modes.js`
+- Katalog: `party-wave-one-catalog.js` v2
+- Packs: Allgemeinwissen, Film & Serie, Technik
+- aktuell 24 Built-in-Karten
+- Multiple Choice mit vier Antworten
+- kurze Auflösung/Erklärung
+- lokaler Score
+- Resume am bereits aufgelösten Ergebnis ohne erneute Punktevergabe
+- Quick-Family Session-Replacement-Schutz
+- offline in `secret-circle-v61`
+
+### Fake oder Fakt – implementiert als Labs
+
+- dieselbe gemeinsame Wave-1-Engine
+- Packs: Natur, Film & Serie, Technik
+- aktuell 24 Built-in-Karten
+- Fakt/Fake-Entscheidung
+- kurze Erklärung
+- lokaler Score
+- Resume-/Replacement-Infrastruktur gemeinsam mit Party Quiz
+- offline in `secret-circle-v61`
+
+### Wave-1-Qualitätsvertrag
+
+Automatisch vorbereitet:
+
+- `tests/party-wave-one-catalog.test.js`
+- `tests/e2e/wave-one-quiz.spec.js`
+- `scripts/wave_one_quiz_audit.py`
+- `quick-loader.js` v8 routet Wave-1 vor dem normalen Quick-Fallback
+- `party-release-structure.js` hält beide Spiele ausdrücklich in Labs
+
+**Noch kein Release-PASS:** reale Browser-/PWA-/Accessibility-/Gruppenevidence bleibt nötig.
+
+---
+
+# 5. Fehlende Mechanikfamilien nach Wave 1
+
+## Höchste Priorität
+
+### Bluff Trivia
 
 - echte Triviafrage
-- alle erfinden glaubwürdige falsche Antworten
-- echte und erfundene Antworten werden gemischt
-- Punkte für richtige Wahl und dafür, andere mit der eigenen Fake-Antwort zu täuschen
-
-Varianten:
-
-- Film Bluff
-- Serien Bluff
-- Gaming Bluff
-- Geschichte Bluff
-- Wissenschaft Bluff
-- „Über uns“-Bluff mit freiwilligen Gruppenfragen
-
-Referenzmechanik: Fibbage / Psych Movie Bluff.
-
-### A2. Klassisches Party-Quiz / Quiz Show
-
-Fehlt als eigenständige große Mechanik.
-
-Packs:
-
-- Allgemeinwissen
-- Filme & Serien
-- Anime
-- Gaming
-- Fußball
-- Sport
-- Musik
-- Deutschland
-- Europa
-- Welt
-- Geschichte
-- Wissenschaft
-- Technik
-- Natur
-- Essen
-- 2000er / 2010er / Gen-Z-Nostalgie
-
-Varianten:
-
-- Multiple Choice
-- Buzzer ohne echten Hardware-Buzzer
-- Teams
-- Risiko-Punkte
-- Blitzrunde
-- Finalfrage
-
-### A3. Fake oder Fakt / Wahr oder Falsch
-
-Sehr einfache 10-Sekunden-Mechanik.
-
-- Aussage anzeigen
-- alle stimmen gleichzeitig ab
-- Fakt/Fake auflösen
-- kurze Erklärung
-
-Kann nahezu jedes Thema tragen.
-
-### A4. Umfrage / Prozent schätzen
-
-Mechanik:
-
-- „Wie viel Prozent würden ...?“
-- Gruppe schätzt Prozentwert oder Rangfolge
-- Punkte nach Nähe
-
-Varianten:
-
-- allgemeine Umfragen
-- gruppeninterne anonyme Abstimmung
-- Deutschland/Europa
-- Popkultur
-- Gaming
-- Sport
-
-### A5. Beliebteste Antwort / Survey Battle
-
-Familienfreundliche „Top-Antworten“-Mechanik:
-
-- Frage wie „Was nimmt man mit an den Strand?“
-- Teams nennen vermutete häufige Antworten
-- Punkte nach vordefinierter Liste
-
-Keine fremde TV-Marke kopieren; generische eigene Mechanik bauen.
-
-### A6. Fill-in-the-Blank Comedy
-
-Mechanik:
-
-- offener Satz/Prompt
-- alle schreiben kurze Antworten
+- Spieler erfinden glaubwürdige Fake-Antworten
 - Antworten anonym mischen
-- Gruppe stimmt über lustigste/kreativste Antwort ab
+- Punkte für richtige Antwort und erfolgreiche Täuschung
 
-Wichtig: komplett jugendfreundliche Promptbibliothek.
+Themen: Allgemeinwissen, Film & Serie, Gaming, Geschichte, Wissenschaft, Sport.
 
-### A7. Wer hat das geschrieben?
+### Prozent schätzen / Poll Guess
 
-- alle beantworten dieselbe harmlose Frage anonym
-- Antworten werden gemischt
-- Gruppe errät, von wem welche Antwort stammt
+- Prozent-/Verteilungsfrage
+- Schätzung abgeben
+- Punkte nach Nähe
+- später optional gruppeninterne anonyme Abstimmung
 
-Stark für Freunde, Familie, Schule/Team und Icebreaker.
+### Satzduell / Fill-in-the-Blank
 
-### A8. Party Bracket / K.-o.-Abstimmung
+- jugendfreundlicher Prompt
+- kurze Antworten
+- anonym mischen
+- Gruppe stimmt ab
 
-- 8 oder 16 Dinge treten paarweise gegeneinander an
-- Gruppe stimmt
-- Sieger kommt eine Runde weiter
+### Wer hat das geschrieben?
 
-Packs:
+- alle beantworten dieselbe harmlose Frage
+- Antworten anonym mischen
+- Zuordnung zu Personen erraten
 
-- Snacks
-- Filme als generische Genre-/Themenlisten
-- Superkräfte
-- Reiseziele
-- Tiere
-- Sportarten
-- Games-Genres
-- Freizeit
+### Party Bracket
 
-### A9. Präsentations-Chaos / Impro-Speech
+- 8 oder 16 Einträge
+- K.-o.-Abstimmungen
+- Sieger kommt weiter
 
-- Person bekommt ein Thema oder zufällige „Slides“/Stichworte
-- 30–60 Sekunden improvisieren
-- Gruppe bewertet Kreativität/Überzeugung
-
-Ohne fremde Bilder kann Secret Circle mit Textkarten, Emojis, Formen und generischen Symbolen arbeiten.
-
-### A10. Kooperations-Panik
-
-Co-op statt gegeneinander:
-
-- eine Person sieht Auftrag A
-- andere Person sieht Lösung/Bedienelement B
-- Gruppe muss unter Zeitdruck kommunizieren
-
-Ein-Gerät-Variante über Pass-the-phone/verschiedene Reveal-Schritte.
-
-Keine Spaceteam-Oberfläche kopieren; nur das Grundprinzip „asymmetrische Information + Zeitdruck + Teamkommunikation“ übernehmen.
-
----
-
-## Priorität B – starke Erweiterung nach den A-Modi
-
-### B1. Password / Ein-Wort-Hinweis
+### Ein-Wort-Hinweis
 
 - geheimes Zielwort
-- Erklärer darf exakt ein Hinweiswort geben
-- Team rät
-- wenige Versuche
+- exakt ein Hinweiswort
+- Team rät mit begrenzten Versuchen
 
-### B2. Code-Verbindung / Wörter verbinden
+## Danach
 
-- mehrere sichtbare Begriffe
-- Team-Captain kennt Zielbegriffe
-- ein Hinweiswort + Zahl verbindet mehrere Ziele
-
-Eigene generische Umsetzung; keine fremde Marke/Board-Optik kopieren.
-
-### B3. 20 Fragen
-
-- geheime Person/Tier/Gegenstand/Ort
-- nur Ja/Nein/Teilweise
-- maximal 20 Fragen
-
-### B4. Geheime Regel / Pattern Detective
-
-- mehrere Beispiele erfüllen eine unbekannte Regel
-- Gruppe testet neue Beispiele
-- wer die Regel zuerst erkennt, punktet
-
-### B5. Reihenfolge / Timeline Battle
-
-- Ereignisse, Erfindungen, Filmepochen, Technik, Geschichte usw.
-- richtige chronologische Reihenfolge bilden
-
-### B6. Puzzle / Rätsel-Duell
-
-- Logikrätsel
-- Laterales Denken
-- Mini-Codes
-- Muster
-- Wortpuzzles
-
-### B7. Mini Escape / Cooperative Mystery
-
-- 3–5 kurze Hinweise
-- Gruppe kombiniert Informationen
-- gemeinsames Ziel statt Einzelpunkte
-
-### B8. Drawing Telephone
-
-- Person A schreibt Begriff
-- Person B zeichnet
-- Person C beschreibt Zeichnung
-- weiter bis zum absurden Endergebnis
-
-Auf einem Gerät nacheinander, private Übergaben.
-
-### B9. Flüsterpost / Text Telephone
-
-- Startsituation oder Satz
-- jede Person liest nur den unmittelbar vorherigen Stand
-- beschreibt/ändert ihn
-- Anfang und Ende vergleichen
-
-### B10. Reverse Charades
-
-- gesamtes Team stellt gemeinsam dar
-- nur eine Person rät
-
-Kann dieselben Packs wie Scharade wiederverwenden.
-
-### B11. Sound Battle
-
-- zwei oder mehr harmlose Sound-/Geräuschideen kombinieren
-- Prompt erfüllen
-- Judge/Gruppe stimmt ab
-
-Wenn keine Audioassets verwendet werden sollen: Spieler erzeugen die Sounds selbst.
-
-### B12. Rhythmus / Beat Challenge
-
-- klatschen, tippen, Rhythmus nachmachen oder erweitern
-- keine geschützten Songs notwendig
-
-### B13. Memory Chain
-
-- Reihenfolge von Wörtern/Bewegungen merken
-- jede Person ergänzt einen Eintrag
-- Fehler beendet Runde
-
-### B14. Auction / Bidding Guess
-
-- Schätzfrage
-- Spieler bieten darauf, wie nah sie kommen können oder wie viele Beispiele sie schaffen
-- höheres Risiko = mehr Punkte
-
-### B15. Hidden Character Roleplay
-
-- alle bekommen geheime Charakter-/Archetypenrollen
-- beantworten dieselben Fragen aus ihrer Rolle
-- Gruppe erkennt Teams/Identitäten
-
-Gut für Fantasy, Filmgenre, Anime-Archetypen, Berufe, Historie.
-
----
-
-## Priorität C – spätere Vielfalt
-
-- Detective Case / Mini-Mystery
-- Gericht / Pro & Contra Battle
-- „Erfinde ein Produkt“ + Pitch + Voting
-- Team-Story mit geheimen Pflichtwörtern
+- Survey Battle / häufigste Antworten
+- Präsentations-Chaos / Impro-Speech
+- kooperative Kommunikations-Challenge
+- Code-Verbindung / Wörter verbinden
+- 20 Fragen
+- Geheime Regel / Pattern Detective
+- Timeline Battle
+- Puzzle-/Rätsel-Duell
+- Mini Escape / Cooperative Mystery
+- Drawing Telephone
+- Text-/Flüsterpost
+- Reverse Charades
+- Sound Battle
+- Rhythmus-/Beat-Challenge
+- Memory Chain
+- Auction/Bidding Guess
+- Hidden Character Roleplay
+- Detective Case
+- Produkt-Pitch + Voting
 - One-Word-Story
-- Kategorien-Duell Team gegen Team
+- Kategorien-Duell
 - Alphabet-Challenge
 - Definitions-Bluff
-- Schätzleiter / Closest Wins
-- „Was passiert als Nächstes?“
-- Ursache-Wirkung-Ranking
-- Karten-/Symbol-Memory
-- Beobachtungs-Challenge
-- Reaktions-/Reflexspiele ohne riskante Bewegung
-- Freeze-Pose-Challenge
-- Lip-Reading ohne Audioaufnahme
+- Closest Wins
+- Beobachtungs-/Memory-Challenges
+- Lip-Reading ohne Aufnahme
 - Pantomime-Staffel
-- Team-Puzzle mit Rolleninformation
+- Team-Puzzle mit asymmetrischer Information
 
 ---
 
-# 5. Imposter soll eine eigene große Spielfamilie werden
+# 6. Imposter als eigene große Spielfamilie
 
-Secret Circle besitzt bereits Word Imposter, Question Imposter und Location Spy. Langfristig sollen daraus viele Varianten entstehen, ohne jedes Mal eine komplett neue Engine zu bauen.
+Bereits vorhanden:
 
-## Fehlende Imposter-Varianten
+- Word Imposter
+- Question Imposter
+- Location Spy
 
-### I1. Undercover – ähnliches Wort
+Fehlende Varianten:
 
-- Mehrheit bekommt Wort A
-- Undercover bekommt ähnliches Wort B
-- Undercover weiß optional nicht sicher, dass er Undercover ist
+1. **Undercover – ähnliches Wort:** Mehrheit Wort A, Undercover ähnliches Wort B.
+2. **Imposter ohne Wort:** Imposter erhält kein Wort und bekommt bei Enttarnung einen letzten Guess.
+3. **Kategorie-bekannter Imposter:** nur Kategorie statt konkretem Wort.
+4. **Character Imposter:** ähnliche/abweichende Rollen-Archetypen.
+5. **Movie/Series Imposter:** Filmgenres, Seriengenres, Plot-/Figuren-Archetypen, Settings.
+6. **Anime Imposter:** Archetypen, Kräfte, Settings, Genres.
+7. **Gaming Imposter:** Genres, Rollen, Items, Settings, Mechaniken.
+8. **Sport Imposter:** Sportarten, Positionen, Ausrüstung, Spielsituationen.
+9. **Emoji Imposter:** ähnliche/unvollständige Emoji-Kombinationen.
+10. **Fact Imposter:** eine Person erhält einen abweichenden Fakt/Hinweis.
+11. Doppelagent / mehrere Undercover-Typen.
+12. Jester/Decoy – Ziel ist, gewählt zu werden.
+13. Judge/Tie-Breaker als optionale Sonderrolle.
+14. Team Imposter.
+15. Speed Imposter mit extrem kurzen Hinweisrunden.
 
-Beispiel:
+### Regel
 
-- Katze / Tiger
-- Zug / Straßenbahn
-- Pizza / Flammkuchen
-
-### I2. Mr White / No-Word Imposter
-
-- normale Spieler kennen Wort
-- Mr White erhält kein Wort
-- wird Mr White gewählt, bekommt er einen letzten Guess auf das echte Wort
-
-Eigene Bezeichnung verwenden, falls der Name marken-/produktseitig problematisch ist.
-
-### I3. Kategorie-bekannter Imposter
-
-- Imposter kennt nur Kategorie, nicht das Wort
-- leichter als kompletter No-Word-Modus
-
-### I4. Character Imposter
-
-- alle kennen denselben Charakter-Archetyp / eine Rollenbeschreibung
-- Imposter bekommt ähnliche oder keine Rolle
-
-### I5. Movie/Series Imposter
-
-Mechanik gleich, Content-Pack anders:
-
-- Filmgenres
-- Seriengenres
-- Plot-Archetypen
-- Figuren-Archetypen
-- Settings
-- Gegenstände
-
-Konkrete geschützte Franchises nur nach Rechte-/Referenzprüfung; Built-ins bevorzugt generisch/reference-safe.
-
-### I6. Anime Imposter
-
-- Anime-Archetypen
-- Kräfte
-- Settings
-- Rollen
-- Genres
-
-Keine fremden Logos/Bilder/Zitate erforderlich.
-
-### I7. Gaming Imposter
-
-- Genres
-- Rollen
-- Items als generische Klassen
-- Maps/Settings als generische Typen
-- Mechaniken
-
-### I8. Sport Imposter
-
-- Sportarten
-- Positionen
-- Stadion-/Ausrüstungsbegriffe
-- Fußball/Basketball/Tennis/Motorsport usw.
-
-### I9. Emoji Imposter
-
-- Mehrheit sieht dieselbe Emoji-Kombination
-- Imposter sieht ähnliche oder unvollständige Kombination
-- Diskussion/Abstimmung
-
-### I10. Fact Imposter
-
-- Gruppe erhält denselben Fakt/Hinweis
-- Imposter bekommt veränderte Version
-- Antworten zeigen, wer anderen Kontext hatte
-
-### I11. Doppelagent / mehrere Undercover-Typen
-
-- normale Spieler
-- ähnliches-Wort-Agent
-- No-Word-Agent
-- optional Jester/Decoy
-
-Nur als Advanced-Variante; Standardmodus bleibt sehr einfach.
-
-### I12. Jester / Decoy
-
-- Ziel ist, von der Gruppe gewählt zu werden
-- kein 18+-Inhalt nötig
-
-### I13. Judge / Tie Breaker
-
-- optionale Sonderrolle für Gleichstand
-
-### I14. Team Imposter
-
-- zwei Teams
-- jeweils verdeckte Agenten
-- kooperative Teamdiskussion
-
-### I15. Speed Imposter
-
-- extrem kurze Hinweisphase
-- z. B. 5 Sekunden pro Hinweis
-- kurze 3–5-Minuten-Runden
+Standard-Imposter bleibt sehr einfach. Sonderrollen liegen in Advanced/Labs und werden nicht im Default-Setup aufgezwungen.
 
 ---
 
-# 6. Themen- und Genre-Bibliothek
+# 7. Themen- und Genre-Bibliothek
 
-Themen sind **kein eigener Enginezwang**. Dasselbe Themenpaket soll möglichst in mehreren Mechaniken funktionieren.
+Themen sind **Content-Layer**, keine automatische neue Engine.
 
 ## Entertainment
 
-- Filme
-- Serien
+- Film & Serie
 - Filmgenres
 - Seriengenres
 - Kino
@@ -593,8 +301,7 @@ Themen sind **kein eigener Enginezwang**. Dasselbe Themenpaket soll möglichst i
 - Mystery
 - Horror-light ohne Gore
 - Superhelden-Archetypen
-- Märchen
-- Mythen
+- Märchen / Mythen
 
 ## Anime / Manga
 
@@ -608,8 +315,6 @@ Themen sind **kein eigener Enginezwang**. Dasselbe Themenpaket soll möglichst i
 - School-Life
 - Mystery
 
-Built-ins reference-safe; konkrete Franchise-Packs nur nach Rechteprüfung bzw. als lokale Nutzerpacks.
-
 ## Gaming / Internet
 
 - Gaming-Genres
@@ -619,9 +324,8 @@ Built-ins reference-safe; konkrete Franchise-Packs nur nach Rechteprüfung bzw. 
 - Creator-Typen
 - Internetkultur
 - Memes
-- Apps
-- Social Media
-- Tech
+- Apps / Social Media
+- Technik
 - KI
 - Coding
 
@@ -633,7 +337,7 @@ Built-ins reference-safe; konkrete Franchise-Packs nur nach Rechteprüfung bzw. 
 - Motorsport
 - Leichtathletik
 - Schwimmen
-- Boxen/Kampfsport als Wissens-/Rateinhalt, nicht als körperliche Challenge
+- Kampfsport als Wissens-/Rateinhalt
 - Wintersport
 - Olympia
 - Sportregeln
@@ -657,46 +361,35 @@ Built-ins reference-safe; konkrete Franchise-Packs nur nach Rechteprüfung bzw. 
 - Deutschland
 - Europa
 - Welt
-- Länder
-- Städte
-- Geografie
-- Flaggen
+- Länder / Städte / Geografie / Flaggen
 - Geschichte
 - Wissenschaft
 - Weltraum
-- Natur
-- Tiere
-- Technik
-- Erfindungen
-- Schule
-- Berufe
+- Natur / Tiere
+- Technik / Erfindungen
+- Schule / Berufe
 
 ## Alltag / Lifestyle
 
-- Essen
-- Snacks
-- Reisen
-- Verkehr
+- Essen / Snacks
+- Reisen / Verkehr
 - Zuhause
-- Schule
-- Ausbildung
-- Arbeit
-- Freundschaft
-- Familie
+- Schule / Ausbildung / Arbeit
+- Freundschaft / Familie
 - Hobbys
 - Mode allgemein
 - Zukunft
-- Geld hypothetisch
+- hypothetische Geldfragen
 
-## Zielgruppen-/Vibe-Packs
+## Vibes
 
 - Familie
 - Kinderfreundlich
 - Teen
 - Freunde
-- neue Gruppe / Icebreaker
+- Icebreaker
 - beste Freunde
-- Team / Kollegen
+- Team/Kollegen
 - Roadtrip
 - kurze Pause
 - großer Spieleabend
@@ -706,19 +399,17 @@ Built-ins reference-safe; konkrete Franchise-Packs nur nach Rechteprüfung bzw. 
 - kreativ
 - kompetitiv
 
-**Kein „18+ / Dirty / Drinking“-Vibe.**
-
 ---
 
-# 7. Content-Multiplikator statt 100 separater Engines
+# 8. Content-Multiplikator
 
-Beispiel: Das Thema **Film & Serie** soll nicht nur ein einzelnes „Filmspiel“ werden.
+Beispiel **Film & Serie**:
 
-Dasselbe Pack kann in verschiedenen Mechaniken verwendet werden:
+Ein einziges Themenuniversum kann genutzt werden für:
 
-- Film/Series Imposter
-- Quiz
-- Fake/Fakt
+- Imposter
+- Party Quiz
+- Fake oder Fakt
 - Bluff Trivia
 - Stirn-Raten
 - Wer bin ich?
@@ -728,36 +419,29 @@ Dasselbe Pack kann in verschiedenen Mechaniken verwendet werden:
 - Zeichnen & Raten
 - Blind Ranking
 - Tier List
-- Höher/Tiefer mit stabilen Wissenswerten
 - Buchstaben-Kategorien
 - Spektrum-Tipp
 - Party Bracket
 
-Dasselbe gilt für Anime, Gaming, Sport, Musik, Länder usw.
+Dasselbe Prinzip gilt für Anime, Gaming, Sport, Musik, Länder usw.
 
-Ziel:
-
-> **20–30 belastbare Mechanikfamilien × viele Themen-/Content-Packs = 100+ user-visible Spielvarianten, ohne 100 fragile Engines zu bauen.**
+> **Ziel: 20–30 belastbare Mechanikfamilien × viele Themenpacks = 100+ sichtbare Spielvarianten, ohne 100 fragile Engines.**
 
 ---
 
-# 8. Bedienungsregel – trotz riesigem Katalog maximal einfach
+# 9. Bedienungsregel – riesiger Katalog, einfache Oberfläche
 
 Ein neuer Nutzer darf nicht mit 100 gleichwertigen Kacheln überfordert werden.
 
 ## Startseite
 
-Maximal wenige Hauptentscheidungen:
+- Schnell spielen
+- Spiel auswählen
+- Imposter
+- Für deine Gruppe
+- Eigene Spiele
 
-- **Schnell spielen**
-- **Spiel auswählen**
-- **Imposter**
-- **Für deine Gruppe**
-- **Eigene Spiele**
-
-## Spiele entdecken
-
-Filter/Collections:
+## Collections/Filter
 
 - Imposter & Täuschung
 - Quiz & Wissen
@@ -774,77 +458,43 @@ Filter/Collections:
 - Familie
 - Alle Spiele
 
-## UX-Ziel
-
-Für Standardspiele:
+## Standardflow
 
 1. Spiel/Empfehlung wählen
-2. Spieler oder Pack bestätigen
+2. Pack/Gruppe bestätigen
 3. Start
 
-**Maximal 2–3 Entscheidungen bis zur ersten echten Spielaktion.**
-
-Regeln sollen möglichst während des Flows gelernt werden. Kein langer Pflicht-Onboarding-Text.
+**Maximal 2–3 Entscheidungen bis zur ersten echten Spielaktion.** Regeln möglichst im Spielflow erklären statt in einer langen Pflicht-Regelwand.
 
 ---
 
-# 9. Priorisierungsregel
+# 10. Engine-Strategie
 
-Neue Modi werden **nicht** blind vor den Januar-2027-Release geschoben.
+Implementierungsreihenfolge gemeinsamer Engines:
 
-### Januar 2027
+1. Shared Quiz Engine – gestartet mit Party Quiz + Fake oder Fakt
+2. Shared Imposter Engine – Undercover/No-Word auf bestehendem Imposterwissen aufbauen
+3. Shared Anonymous Writing Engine
+4. Shared Voting Engine
+5. Shared Clue Engine
+6. Shared Bluff Engine
+7. Shared Estimation Engine
 
-- 15 Core wirklich stark
-- bestehende Extended/Labs stabilisieren
-- echte Geräte/Gruppen/CI/Release-Gates schließen
-
-### Danach – Expansion Wave 1
-
-Empfohlene erste neue Mechaniken:
-
-1. Bluff Trivia
-2. klassisches Quiz
-3. Fake oder Fakt
-4. Umfrage / Prozent schätzen
-5. Fill-in-the-Blank Comedy
-6. Wer hat das geschrieben?
-7. Party Bracket
-8. Undercover ähnliches Wort
-9. No-Word Imposter
-10. Password / Ein-Wort-Hinweis
-
-### Expansion Wave 2
-
-11. Survey Battle
-12. Präsentations-Chaos
-13. kooperative Kommunikations-Challenge
-14. Code-Verbindung
-15. 20 Fragen
-16. Geheime Regel
-17. Timeline Battle
-18. Drawing Telephone
-19. Mini Escape / Mystery
-20. Hidden Character Roleplay
-
-### Expansion Wave 3
-
-Restliche B-/C-Modi nach echten Nutzerdaten und Gruppenfeedback.
+Neue sichtbare Varianten sollen zuerst prüfen, ob sie als Content/Regelsatz auf einer vorhandenen Engine möglich sind.
 
 ---
 
-# 10. Acceptance Criteria für jeden neuen Modus
+# 11. Acceptance Criteria je Modus
 
-Ein neuer Modus zählt erst als wirklich vorhanden, wenn:
+Ein Modus zählt erst als wirklich vorhanden, wenn:
 
-- Erklärung in höchstens ca. 30 Sekunden verständlich
+- Erklärung in ca. 30 Sekunden verständlich
 - erste echte Aktion nach höchstens 2–3 Setup-Entscheidungen
 - Skip/Abbruch vorhanden, wo sinnvoll
-- keine 18+-Pflichtinhalte
-- keine gefährlichen Challenges
-- Alters-/Privacy-Policy erfüllt
-- Contentmenge ausreichend gegen schnelle Wiederholungen
+- Content-Policy erfüllt
+- ausreichende Contentmenge gegen schnelle Wiederholung
 - Reload/Resume fachlich definiert
-- Timer fachlich definiert
+- Timer fachlich definiert, falls vorhanden
 - Score/Winner exact-once definiert
 - Tastatur/Fokus/Touch/Zoom berücksichtigt
 - Offlineverhalten definiert
@@ -852,11 +502,13 @@ Ein neuer Modus zählt erst als wirklich vorhanden, wenn:
 - mindestens ein echter Gruppentest erfolgt
 - Marken-/Franchise-/Assetrechte geprüft
 
+**Code vorhanden = Source PREPARED, nicht automatisch Release PASS.**
+
 ---
 
-# 11. Franchise-/Film-/Serienregel
+# 12. Franchise-/Film-/Serienregel
 
-Secret Circle darf viele Film-/Serien-/Anime-/Gaming-Themen anbieten, aber **Contentbreite darf nicht durch unnötiges Rechte-Risiko erkauft werden**.
+Breite Themen sind erwünscht; unnötiges Rechte-Risiko nicht.
 
 Built-in bevorzugt:
 
@@ -866,55 +518,49 @@ Built-in bevorzugt:
 - allgemeine Plottypen
 - historische/public-domain Inhalte
 - eigene Formulierungen
-- eigene generische Begriffe
+- generische Begriffe
 
 Konkrete moderne Franchises, Logos, Charakterbilder, geschützte Artwork-/Audio-/Videoassets oder längere Zitate benötigen vor Veröffentlichung einen eigenen Rechteentscheid.
 
-Der lokale Creator darf Nutzer eigene private Packs erstellen lassen; diese Nutzerinhalte werden nicht automatisch zu kuratiertem Secret-Circle-Built-in-Content.
+Der lokale Creator kann private Nutzerpacks ermöglichen; diese werden nicht automatisch zu kuratiertem Built-in-Content.
 
 ---
 
-# 12. Konkurrenzregel für zukünftige Research-Runden
+# 13. Konkurrenzregel für weitere Research-Runden
 
-Mindestens halbjährlich bzw. vor großen Content-Waves prüfen:
+Mindestens halbjährlich bzw. vor größeren Waves prüfen:
 
-- piparo.party
-- Heads Up!
-- Undercover-/Spy-Apps
-- Out of the Loop
-- Wavelength
-- Jackbox Party Packs
-- weitere schnell wachsende One-Phone-/Party-Hubs
+- direkte One-Phone-Party-Hubs
+- Heads Up!-artige Deckprodukte
+- Undercover-/Spy-Produkte
+- Jackbox-/Party-Pack-Mechaniken
+- kooperative Partyspiele
+- neue schnell wachsende Social-/Partyformate
 
-Dabei nicht Spiele 1:1 kopieren. Zu erfassen sind:
+Erfasst werden:
 
 - Mechanikfamilie
 - Setup-Reibung
 - Spielerzahl
 - Rundendauer
-- Deck-/Packtiefe
+- Packtiefe
 - Custom Content
 - Resume
 - Offline
-- Multiplayermodell
 - Alters-/Family-Optionen
 - Monetarisierung
-- Bewertungen/typische Kritik
+- Bewertungen/Kritik
 
-Danach immer prüfen:
+Leitfrage:
 
-> **Welche Nutzeraufgabe oder Mechanikfamilie fehlt Secret Circle noch wirklich?**
+> **Welche Nutzeraufgabe oder Mechanikfamilie fehlt Secret Circle wirklich?**
 
 Nicht:
 
-> „Welche Konkurrenz-Karte können wir kopieren?“
+> „Welche konkrete Konkurrenz-Karte können wir kopieren?“
 
 ---
 
-# 13. Zielbild
+# 14. Zielbild
 
-Secret Circle soll langfristig nicht nur „eine App mit vielen Partyspielen“ sein.
-
-Zielbild:
-
-> **Der einfachste große Partyspiel-Hub für Freunde und Familie: in Sekunden startklar, riesige Auswahl an Mechaniken und Themen, starke Imposter-Welt, komplett ohne 18+-Bereich, mit lokalen eigenen Packs und ohne dass die Oberfläche trotz der Menge kompliziert wird.**
+> **Secret Circle soll der einfachste große Partyspiel-Hub für Freunde und Familie werden: in Sekunden startklar, riesige Auswahl an Mechaniken und Themen, starke Imposter-Welt, ohne 18+-Bereich, mit lokalen eigenen Packs und ohne dass die Oberfläche trotz der Menge kompliziert wird.**
