@@ -14,14 +14,14 @@ production_js = [
     'session-ledger.js', 'party-session-controls.js', 'party-catalog.js',
     'party-expansion.js', 'party-trending-catalog.js', 'party-mega-catalog.js',
     'party-viral-catalog.js', 'party-core-release-catalog.js', 'party-core-classic-content.js',
-    'party-routing.js', 'party-release-structure.js', 'party-filter-state.js',
+    'party-routing.js', 'party-wave-one-catalog.js', 'party-release-structure.js', 'party-filter-state.js',
     'party-search-assist.js', 'game-creator.js', 'creator-page.js', 'party-custom-packs.js',
     'party-hub-timers.js', 'party-hub-resume-guard.js', 'party-hub-round-state.js',
     'party-hub.js', 'party-hub-plus.js', 'party-hub-polish.js', 'party-hub-a11y.js',
     'secondary-surface-a11y.js', 'party-guide.js', 'party-night.js', 'party-data-tools.js',
     'party-advanced.js', 'advanced-resume-guard.js', 'party-advanced-runner.js',
     'advanced-privacy-guard.js', 'party-advanced-preferences.js', 'party-quick-modes.js',
-    'party-mega-modes.js', 'party-viral-modes.js', 'party-created-modes.js',
+    'party-mega-modes.js', 'party-viral-modes.js', 'party-created-modes.js', 'party-wave-one-modes.js',
     'quick-session-replacement-guard.js', 'quick-loader.js', 'sw.js'
 ]
 html_pages = ['index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html', 'privacy.html']
@@ -31,10 +31,11 @@ required_contract_files = [
     'tests/accessibility-contract.test.js', 'scripts/asset_provenance_audit.py',
     'scripts/media_inventory_audit.py', 'scripts/hub_a11y_contract_audit.py',
     'scripts/secondary_surface_a11y_contract_audit.py', 'scripts/advanced_integrity_audit.py',
-    'scripts/quick_session_replacement_audit.py', 'scripts/quick_timer_resume_audit.py',
-    'scripts/quick_bfcache_resume_audit.py', 'scripts/quick_background_pause_audit.py',
-    'scripts/quick_hidden_snapshot_audit.py', 'scripts/backup_contract_audit.py',
-    'tests/e2e/quick-background-pause.spec.js'
+    'scripts/wave_one_quiz_audit.py', 'scripts/quick_session_replacement_audit.py',
+    'scripts/quick_timer_resume_audit.py', 'scripts/quick_bfcache_resume_audit.py',
+    'scripts/quick_background_pause_audit.py', 'scripts/quick_hidden_snapshot_audit.py',
+    'scripts/backup_contract_audit.py', 'tests/e2e/quick-background-pause.spec.js',
+    'tests/e2e/wave-one-quiz.spec.js'
 ]
 for relative in production_js + html_pages + required_contract_files:
     if not (ROOT / relative).is_file(): violations.append(f'Missing architecture file: {relative}')
@@ -49,7 +50,7 @@ for marker in (
     'Performance und Assets', 'Betrieb, Deprecation und Rollback',
     'Quick-/Mega-/Viral-/Creator-Session-Ersatz – v56', 'Quick-Family Timer Resume – v57',
     'Quick-Family BFCache Resume – v58', 'Quick-Family Background Pause – v59',
-    'Quick-Family Hidden Snapshot – v60'
+    'Quick-Family Hidden Snapshot – v60', 'Expansion Wave 1 – v61'
 ):
     if marker not in architecture: violations.append(f'Architecture contract marker missing: {marker}')
 
@@ -73,7 +74,7 @@ for relative in html_pages:
     if "script-src 'self'" not in source or "object-src 'none'" not in source: violations.append(f'Strict CSP contract missing in {relative}.')
 
 party_page = read('party.html'); quick_play = read('quick-play.html'); advanced_page = read('advanced.html'); creator_page = read('creator.html')
-catalog_chain = ['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js']
+catalog_chain = ['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js']
 
 def check_order(source, names, context):
     positions=[]
@@ -114,7 +115,9 @@ contracts = {
     'party-advanced-runner.js': ["const pendingMafiaRound = session.advanced?.stage === 'finished' ? 1 : 0;","window.confirm('Gespeicherte Session verwerfen und eine neue beginnen?')",'if (!clearActive()) return;'],
     'advanced-privacy-guard.js': ['SecretCircleAdvancedPrivacyGuard','sensitiveContext','conceal'],
     'quick-session-replacement-guard.js': ['SecretCircleQuickSessionReplacementGuard','FAMILY_KEYS','plausibleSnapshot','authorizeStart','blockPagehideRetry = true','root.location?.reload?.()'],
-    'quick-loader.js': ["REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js'",'replacementGuardReady = false','plan.push(REPLACEMENT_GUARD_SOURCE)','version: 7'],
+    'quick-loader.js': ["REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js'","WAVE_ONE_SOURCE = 'party-wave-one-modes.js'",'catalog.waveOneGameIds?.includes(gameId)','replacementGuardReady = false','plan.push(REPLACEMENT_GUARD_SOURCE)','version: 8'],
+    'party-wave-one-catalog.js': ["id: 'party-quiz'","id: 'fact-or-fake'",'waveOneGameIds','quickGameIds','version: 2'],
+    'party-wave-one-modes.js': ["ACTIVE_KEY = 'secret-circle-party-quick-active-v1'","L.completionId('wave1', game.id, active.sessionId)","gameId === 'party-quiz'","gameId === 'fact-or-fake'"],
     'party-hub-a11y.js': ['SecretCirclePartyHubA11y','syncBackgroundInert','trapOverlayFocus','focusVisibleViewHeading'],
     'secondary-surface-a11y.js': ['SecretCircleSecondarySurfaceA11y','syncBackgroundInert','trapTab','ensureHeadingFocusable','syncTemplateRoving','handleTemplateKeys'],
     'party-expansion.js': ["id: 'wavelength', title: 'Spektrum-Tipp'", "banned: ['Webseite', 'Internet', 'Tab']"],
@@ -134,6 +137,7 @@ contracts = {
     'scripts/hub_a11y_contract_audit.py': ['hub_a11y_contract_audit','modalFocusTrapContract'],
     'scripts/secondary_surface_a11y_contract_audit.py': ['secondary_surface_a11y_contract_audit','creator_radiogroup_arrow_navigation'],
     'scripts/advanced_integrity_audit.py': ['advanced_integrity_audit','resume_guard_version','confirmed_new_session_replacement'],
+    'scripts/wave_one_quiz_audit.py': ['wave_one_quiz_audit','implemented_labs','shared_runner'],
     'scripts/quick_session_replacement_audit.py': ['quick_session_replacement_audit','families_guarded','failed_write_preserves_previous_snapshot'],
     'scripts/quick_timer_resume_audit.py': ['quick_timer_resume_audit','prompt_free_timer_snapshot','stale_timer_snapshots_rejected'],
     'scripts/quick_bfcache_resume_audit.py': ['quick_bfcache_resume_audit','matching_bfcache_snapshot_reload','browser_lifecycle_contract'],
@@ -159,13 +163,13 @@ for relative in ('party-hub.js','party-hub-timers.js'):
         if forbidden in source: violations.append(f'Hub still contains a private non-pausable timer in {relative}: {forbidden}')
 
 syntax_gate=package.get('scripts',{}).get('check',''); unit_gate=package.get('scripts',{}).get('test',''); validate_gate=package.get('scripts',{}).get('validate','')
-for module in ('party-expansion.js','party-mega-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-session-controls.js','party-hub-timers.js','party-hub-resume-guard.js','party-hub-round-state.js','party-hub-a11y.js','secondary-surface-a11y.js','word-imposter-resume-guard.js','advanced-resume-guard.js','party-advanced-runner.js','advanced-privacy-guard.js','quick-session-replacement-guard.js','quick-loader.js'):
+for module in ('party-expansion.js','party-mega-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-wave-one-catalog.js','party-wave-one-modes.js','party-session-controls.js','party-hub-timers.js','party-hub-resume-guard.js','party-hub-round-state.js','party-hub-a11y.js','secondary-surface-a11y.js','word-imposter-resume-guard.js','advanced-resume-guard.js','party-advanced-runner.js','advanced-privacy-guard.js','quick-session-replacement-guard.js','quick-loader.js'):
     if f'node --check {module}' not in syntax_gate: violations.append(f'Production module missing from syntax gate: {module}')
-for test in ('tests/party-mega-catalog.test.js','tests/core-content-quality.test.js','tests/hub-resume-contract.test.js','tests/hub-control-contract.test.js','tests/party-session-controls.test.js','tests/advanced-resume-guard.test.js','tests/advanced-resume-contract.test.js','tests/quick-loader.test.js','tests/quick-session-replacement-guard.test.js','tests/accessibility-contract.test.js','tests/manifest-icons.test.js'):
+for test in ('tests/party-mega-catalog.test.js','tests/party-wave-one-catalog.test.js','tests/core-content-quality.test.js','tests/hub-resume-contract.test.js','tests/hub-control-contract.test.js','tests/party-session-controls.test.js','tests/advanced-resume-guard.test.js','tests/advanced-resume-contract.test.js','tests/quick-loader.test.js','tests/quick-session-replacement-guard.test.js','tests/accessibility-contract.test.js','tests/manifest-icons.test.js'):
     if test not in unit_gate: violations.append(f'Critical architecture test missing from npm test: {test}')
-for e2e in ('tests/e2e/quick-timer-resume.spec.js','tests/e2e/quick-background-pause.spec.js'):
-    if f'node --check {e2e}' not in syntax_gate: violations.append(f'Critical timer E2E missing from syntax gate: {e2e}')
-for audit in ('scripts/advanced_integrity_audit.py','scripts/quick_session_replacement_audit.py','scripts/quick_timer_resume_audit.py','scripts/quick_bfcache_resume_audit.py','scripts/quick_background_pause_audit.py','scripts/quick_hidden_snapshot_audit.py','scripts/backup_contract_audit.py','scripts/core_content_audit.py','scripts/reference_content_audit.py','scripts/asset_provenance_audit.py','scripts/media_inventory_audit.py','scripts/public_release_placeholder_audit.py','scripts/hub_a11y_contract_audit.py','scripts/secondary_surface_a11y_contract_audit.py','scripts/operator_release_contract_audit.py','scripts/release_audit.py','scripts/performance_budget.py'):
+for e2e in ('tests/e2e/quick-timer-resume.spec.js','tests/e2e/quick-background-pause.spec.js','tests/e2e/wave-one-quiz.spec.js'):
+    if f'node --check {e2e}' not in syntax_gate: violations.append(f'Critical E2E missing from syntax gate: {e2e}')
+for audit in ('scripts/wave_one_quiz_audit.py','scripts/advanced_integrity_audit.py','scripts/quick_session_replacement_audit.py','scripts/quick_timer_resume_audit.py','scripts/quick_bfcache_resume_audit.py','scripts/quick_background_pause_audit.py','scripts/quick_hidden_snapshot_audit.py','scripts/backup_contract_audit.py','scripts/core_content_audit.py','scripts/reference_content_audit.py','scripts/asset_provenance_audit.py','scripts/media_inventory_audit.py','scripts/public_release_placeholder_audit.py','scripts/hub_a11y_contract_audit.py','scripts/secondary_surface_a11y_contract_audit.py','scripts/operator_release_contract_audit.py','scripts/release_audit.py','scripts/performance_budget.py'):
     if audit not in validate_gate: violations.append(f'Critical audit missing from npm validate: {audit}')
 
 sw=read('sw.js'); cache=re.search(r"const CACHE='(secret-circle-v(\d+))'",sw); staging=re.search(r"const STAGING_CACHE='(secret-circle-v(\d+)-staging)'",sw)
@@ -176,7 +180,7 @@ else:
     for relative in ('ARCHITECTURE.md','DEPLOYMENT.md','privacy.html','ENVIRONMENTS.md','tests/service-worker.test.js'):
         if cache_name not in read(relative): violations.append(f'Current cache {cache_name} not synchronized in {relative}.')
 
-for asset in ('./backup-schema-registry.js','./word-imposter-resume-guard.js','./party-expansion.js','./party-mega-catalog.js','./party-core-release-catalog.js','./party-core-classic-content.js','./party-hub-timers.js','./party-hub-resume-guard.js','./party-hub-round-state.js','./party-hub-a11y.js','./secondary-surface-a11y.js','./advanced-resume-guard.js','./party-advanced-runner.js','./advanced-privacy-guard.js','./quick-session-replacement-guard.js','./quick-loader.js','./session-ledger.js','./party-session-controls.js','./icon.svg','./icon-192.png','./icon-512.png'):
+for asset in ('./backup-schema-registry.js','./word-imposter-resume-guard.js','./party-expansion.js','./party-mega-catalog.js','./party-core-release-catalog.js','./party-core-classic-content.js','./party-wave-one-catalog.js','./party-wave-one-modes.js','./party-hub-timers.js','./party-hub-resume-guard.js','./party-hub-round-state.js','./party-hub-a11y.js','./secondary-surface-a11y.js','./advanced-resume-guard.js','./party-advanced-runner.js','./advanced-privacy-guard.js','./quick-session-replacement-guard.js','./quick-loader.js','./session-ledger.js','./party-session-controls.js','./icon.svg','./icon-192.png','./icon-512.png'):
     if asset not in sw: violations.append(f'Offline core missing architecture-critical asset: {asset}')
 
 if 'await caches.delete(CACHE)' in sw: violations.append('Service-worker must not destroy the active cache before promotion.')
@@ -190,13 +194,15 @@ print(json.dumps({
     'runtime_dependencies':0,'module_line_limit':1000,'module_size_limit_bytes':100000,
     'pwa_cache':cache.group(1) if cache else None,'catalog_chain':catalog_chain,'core_classic_content_version':4,
     'resume_privacy_guards_audited':True,'advanced_resume_guard_version':4,'advanced_integrity_audit_required':True,
-    'quick_replacement_guard_version':1,'quick_loader_version':7,'quick_session_replacement_audit_required':True,
+    'quick_replacement_guard_version':2,'quick_loader_version':8,'quick_session_replacement_audit_required':True,
     'session_controls_version':5,'quick_timer_resume_audit_required':True,'quick_timer_prompt_free_store':True,
     'quick_timer_stale_snapshot_rejection':True,'quick_bfcache_resume_audit_required':True,
     'matching_bfcache_snapshot_reload':True,'stale_bfcache_snapshot_no_reload':True,
     'quick_background_pause_audit_required':True,'hidden_timer_auto_pause':True,
     'visible_timer_requires_explicit_resume':True,'quick_hidden_snapshot_audit_required':True,
     'hidden_snapshot_without_pagehide':True,'same_page_stop_clears_visibility_snapshot':True,
+    'wave_one_quiz_audit_required':True,'wave_one_playable_labs':['party-quiz','fact-or-fake'],
+    'wave_one_shared_runner':True,'wave_one_reference_safe_text_content':True,
     'hub_safe_round_state_audited':True,'hub_accessibility_layer_audited':True,
     'secondary_surface_accessibility_layer_audited':True,'reference_content_audit_required':True,
     'manifest_icon_test_required':True,'media_inventory_audit_required':True,'backup_registry_version':2,
