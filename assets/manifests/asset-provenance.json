@@ -8,7 +8,7 @@
       "kind": "app-icon-source",
       "status": "verified-own",
       "creator": "Secret Circle project – user-directed original geometric SVG created with OpenAI/ChatGPT assistance",
-      "source": "assets/manifests/ORIGINAL_ICON_SOURCE.md and assets/manifests/icon-replacement-source.svg; created 2026-08-29 without external visual/template/font/stock input",
+      "source": "Root icon.svg plus assets/manifests/ORIGINAL_ICON_SOURCE.md; created 2026-08-29 without external visual/template/font/stock input",
       "createdAt": "2026-08-29",
       "sha256": "ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c",
       "license": "Project-owned output rights under applicable OpenAI Terms of Use; no third-party visual asset license required",
