@@ -34,7 +34,7 @@ Für den RC offen:
 - [ ] Online-`npm ci --ignore-scripts --no-audit --no-fund`
 - [ ] `npm run check` / `npm test` / `npm run validate` / `npm run ci`
 - [ ] Chromium / Firefox / WebKit auf demselben Commit
-- [ ] Required Check + Branch Protection real aktiv
+- [ ] **Required Check aktiv und grün** sowie Branch Protection real verifiziert
 
 Aktuellster direkt untersuchter reconciled Kandidat:
 
@@ -190,7 +190,7 @@ Zusätzlich vor `PRODUCTION PASS`:
 
 - [ ] Production nutzt exakt denselben freigegebenen RC
 - [ ] `Strict-Transport-Security` mit `max-age >= 31536000`
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v64 --production` grün
+- [ ] **Production-Smoke**: `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v64 --production` grün
 - [ ] Rollback-Drill auf HTTPS-Origin dokumentiert
 
 Eine Meta-CSP im HTML ersetzt die Response-CSP nicht. `frame-ancestors` muss als HTTP-Response-CSP geprüft werden.
@@ -224,7 +224,7 @@ Eine Meta-CSP im HTML ersetzt die Response-CSP nicht. `frame-ancestors` muss als
 - [ ] Wave-1-Labs separat dokumentieren; keine stillschweigende Core-Promotion
 - [ ] keine offenen Critical/High Bugs
 
-Jeder Nachweis dokumentiert mindestens Version/Commit, Cachegeneration, Gerät, Browser/PWA, Gruppengröße, Testfall und Ergebnis.
+Jeder Nachweis dokumentiert mindestens Version/Commit, Cachegeneration, Gerät, Browser/PWA, Gruppengröße, Testfall und Ergebnis. Mindestens eine **reale Gruppe** muss die dokumentierten Core-Flows ohne Entwicklerhilfe spielen.
 
 ## 10. Assets / Third Party / Legal / Betrieb
 
