@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 required = [
     'scripts/staging_smoke.py',
+    '_headers',
     'HOSTING_DECISION.md',
     'ENVIRONMENTS.md',
     'DEPLOYMENT.md',
@@ -18,6 +19,7 @@ for relative in required:
         raise SystemExit(f'Staging smoke contract missing file: {relative}')
 
 smoke = (ROOT / 'scripts/staging_smoke.py').read_text(encoding='utf-8')
+headers_source = (ROOT / '_headers').read_text(encoding='utf-8')
 hosting = (ROOT / 'HOSTING_DECISION.md').read_text(encoding='utf-8')
 environments = (ROOT / 'ENVIRONMENTS.md').read_text(encoding='utf-8')
 deployment = (ROOT / 'DEPLOYMENT.md').read_text(encoding='utf-8')
@@ -62,6 +64,27 @@ markers = (
     'Browser-only Service-Worker install/offline/update and real-device gates remain separate.',
 )
 
+header_policy_markers = (
+    '/*',
+    "Content-Security-Policy: default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    "img-src 'self' data:",
+    "connect-src 'self'",
+    "worker-src 'self'",
+    "manifest-src 'self'",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    'X-Content-Type-Options: nosniff',
+    'Referrer-Policy: no-referrer',
+    'X-Frame-Options: DENY',
+    'Strict-Transport-Security: max-age=31536000',
+    '/sw.js',
+    'Cache-Control: no-cache',
+)
+
 hosting_security_markers = (
     "frame-ancestors 'none'",
     'X-Content-Type-Options: nosniff',
@@ -76,6 +99,10 @@ hosting_security_markers = (
 
 checks = {
     'smoke_script_contract': all(marker in smoke for marker in markers),
+    'portable_header_policy_present': all(marker in headers_source for marker in header_policy_markers),
+    'portable_header_policy_no_unsafe_inline': "'unsafe-inline'" not in headers_source,
+    'portable_header_policy_no_unsafe_eval': "'unsafe-eval'" not in headers_source,
+    'portable_header_policy_sw_revalidates': '/sw.js' in headers_source and 'Cache-Control: no-cache' in headers_source and 'immutable' not in headers_source,
     'https_required': "parsed.scheme.lower() != 'https'" in smoke,
     'same_origin_redirect_guard': 'Cross-Origin-Redirect blockiert' in smoke,
     'bounded_downloads': 'read_limited' in smoke and 'limit + 1' in smoke,
@@ -89,8 +116,8 @@ checks = {
         "base-uri 'none'", "frame-ancestors 'none'"
     )),
     'clickjacking_defense_in_depth': "frame-ancestors 'none'" in smoke and "x_frame != 'DENY'" in smoke,
-    'nosniff_required': "X-Content-Type-Options" in smoke and "nosniff" in smoke,
-    'referrer_policy_required': "Referrer-Policy" in smoke and "no-referrer" in smoke,
+    'nosniff_required': 'X-Content-Type-Options' in smoke and 'nosniff' in smoke,
+    'referrer_policy_required': 'Referrer-Policy' in smoke and 'no-referrer' in smoke,
     'production_hsts_required': 'Strict-Transport-Security' in smoke and '31_536_000' in smoke,
     'service_worker_cache_safety': all(marker in smoke for marker in (
         'assert_service_worker_cache_headers', "'immutable' in cache_control", 'max-age=(\\d+)', '> 3600'
@@ -115,6 +142,7 @@ print(json.dumps({
     'staging_smoke_contract_audit': 'PASS',
     'network_smoke_execution': 'NOT_RUN_BY_THIS_AUDIT',
     'pwa_head_metadata': 'DEPLOYED_SOURCE_CONTRACT_REQUIRED',
+    'static_host_header_source': 'PRESENT_AND_PINNED',
     'security_response_headers': 'DEPLOYED_HEADER_CONTRACT_REQUIRED',
     'production_hsts': 'REQUIRED_IN_PRODUCTION_MODE',
     'service_worker_cache_policy': 'DEPLOYED_HEADER_CONTRACT_REQUIRED',
