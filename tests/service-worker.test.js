@@ -3,10 +3,12 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const releaseMeta = require('../release-meta.json');
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v64'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v64-staging'/);
+assert.equal(releaseMeta.sourceGeneration, 'v64');
+assert.match(source, new RegExp(`const CACHE='${releaseMeta.offlineCache.production}'`));
+assert.match(source, new RegExp(`const STAGING_CACHE='${releaseMeta.offlineCache.staging}'`));
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -35,13 +37,15 @@ assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);
 assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
-  ok: true, cacheContract: 64, stagedUpdateCache: true, nonDestructivePromotion: true,
+  ok: true, sourceGeneration: releaseMeta.sourceGeneration,
+  productionCache: releaseMeta.offlineCache.production, stagingCache: releaseMeta.offlineCache.staging,
+  cacheMetadataSynchronized: true, stagedUpdateCache: true, nonDestructivePromotion: true,
   userControlledActivation: true, queryNavigationOffline: true, canonicalNavigationCaching: true,
   wordImposterResumeGuardOffline: true, hubResumeGuardOffline: true, hubRoundStateOffline: true,
   advancedResumeGuardOffline: true, advancedPrivacyGuardOffline: true, quickSessionReplacementGuardOffline: true,
   quickLoaderV11Offline: true, waveOneQuizOffline: true, waveOneImposterOffline: true,
   waveOneWritingOffline: true, waveOneVotingOffline: true, waveOneBluffOffline: true, waveOneClueOffline: true,
-  waveOneComplete: 10, quickTimerResumeOffline: true, quickBfcacheResumeOffline: true,
+  waveOneComplete: releaseMeta.waveOne.sourceImplemented, quickTimerResumeOffline: true, quickBfcacheResumeOffline: true,
   quickBackgroundPauseOffline: true, quickHiddenSnapshotOffline: true, sharedSessionControlsV5Offline: true,
   backupSchemaRegistryOffline: true, completeBackupHardeningOffline: true, exactOnceLedgerOffline: true,
   rasterPwaIconsOffline: true, legacyGuardRemoved: true
