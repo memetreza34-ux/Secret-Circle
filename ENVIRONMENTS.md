@@ -1,7 +1,7 @@
 # Secret Circle – Umgebungen und Staging-Vertrag
 
 Stand: 29. August 2026  
-Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
+Status: **BLOCKED – Provider und konkrete HTTPS-Staging-/Production-Origins offen**  
 Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**
 
 ## 1. Ziel
@@ -14,9 +14,15 @@ Secret Circle besitzt kein klassisches Backend, benötigt aber getrennte Umgebun
 
 Local ist kein Releasebeweis. CI benötigt sichtbare Runner-Steps, Checkout, Online-`npm ci`, `npm run ci` und Cross-Browser auf demselben RC. `steps: []` bleibt kein Code-Test.
 
+Aktuell ist CI durch fehlende Hosted-Runner-Zuteilung vor Step 1 **BLOCKED**.
+
 ## 3. HTTPS-Staging
 
-Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum und muss eine getrennte Origin besitzen.
+Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum und muss eine getrennte HTTPS-Origin besitzen.
+
+Aktuell fehlen realer Provider und reale Origin; deshalb ist `stagingHttpSmoke` in `release-evidence.json` korrekt **BLOCKED**, nicht PASS und nicht ausführbar.
+
+Der gewählte Host muss Response-Security- und Cache-Header kontrollierbar ausliefern können. Details: `HOSTING_DECISION.md`.
 
 ## 4. Aktueller Cachevertrag
 
@@ -38,6 +44,17 @@ Production:
 ```bash
 npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v64 --production
 ```
+
+Der echte Netzwerk-Smoke verlangt auf öffentlichen HTML-Antworten mindestens:
+
+- Response-CSP mit `default-src 'self'`, `script-src 'self'`, `object-src 'none'`, `base-uri 'none'` und `frame-ancestors 'none'`
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: no-referrer`
+- `X-Frame-Options: DENY`
+- in Production zusätzlich `Strict-Transport-Security` mit `max-age >= 31536000`
+- für `sw.js`: kein `immutable`; falls `max-age` gesetzt ist, höchstens 3600 Sekunden
+
+Eine Meta-CSP im HTML ersetzt diesen Response-Header-Vertrag nicht.
 
 ## 6. Manueller Staging-Smoke
 
@@ -63,6 +80,8 @@ Mindestens:
 
 Ein RC wird durch unveränderten Commit, Tag, App-Version, Cachegeneration, Staging-Origin und Freeze-Zeitpunkt definiert. Labs erweitern den Core nicht automatisch.
 
+Production erhält exakt denselben freigegebenen RC. Änderung an Code, Asset, Service Worker oder Hosting-Headern nach Staging erzeugt neue Evidence-Anforderungen.
+
 ## 8. Datenisolation
 
 Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt, Spezialgates und neue Labs werden getrennt geprüft.
@@ -71,15 +90,19 @@ Local/Staging verwenden neutrale Testdaten. Future-Daten-Erhalt, Spezialgates un
 
 Version A installieren → neutrale Daten/aktive Session → RC B aktivieren → Rollback/Hotfix C mit neuer Cachegeneration → Daten erhalten → Offline-Neustart + HTTP-Smoke → Evidence dokumentieren.
 
+Der Rollback-/Hotfix-Stand muss erneut die Security-/Cache-Header-Prüfung bestehen.
+
 ## 10. Environment-Nachweis
 
 ```text
 CI run URL/id:
 Staging URL/commit/cache:
-Staging smoke result:
+Staging response-header smoke result:
+Staging PWA smoke result:
 RC commit/cache:
 Production URL/commit/cache:
-Production smoke result:
+Production response-header/HSTS smoke result:
+Production PWA smoke result:
 Wave 1 10/10 evidence:
 Rollback tested from/to:
 Evidence reference:
@@ -89,8 +112,11 @@ Evidence reference:
 
 Vor `ENVIRONMENT / STAGING PASS`:
 
+- [ ] realer Hostingprovider/Produkt ausgewählt
 - [ ] getrennte HTTPS-Staging-/Production-Origin
 - [ ] Provider-/Log-/Datenschutzentscheidung dokumentiert
+- [ ] Response-Security-Header auf Staging grün
+- [ ] `sw.js` Cache-Control auf Staging grün
 - [ ] Staging-Smoke grün
 - [ ] manueller PWA-Smoke
 - [ ] bestehende Spezialgates real bestätigt
@@ -98,5 +124,6 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Upgrade aus mindestens zwei real installierten Altständen
 - [ ] Rollbackprobe
 - [ ] derselbe freigegebene RC für Production
+- [ ] Production-Smoke inklusive HSTS grün
 
-Bis zu realer Evidence bleibt Staging **OPEN / NO_GO**.
+Bis zu realer Provider-/Origin-Evidence bleibt Staging **BLOCKED / NO_GO**.
