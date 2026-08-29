@@ -16,6 +16,8 @@ Local ist kein Releasebeweis. CI benötigt sichtbare Runner-Steps, Checkout, Onl
 
 Aktuell ist CI durch fehlende Hosted-Runner-Zuteilung vor Step 1 **BLOCKED**.
 
+Lokaler Quellvertrag für die PWA-Head-Metadaten: `tests/pwa-head-metadata.test.js`. Der echte HTTPS-Smoke ergänzt diesen Source-Test um die tatsächlich ausgelieferten Response-/Security-Header.
+
 ## 3. HTTPS-Staging
 
 Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum und muss eine getrennte HTTPS-Origin besitzen.
@@ -97,10 +99,12 @@ Der Rollback-/Hotfix-Stand muss erneut die Security-/Cache-Header-Prüfung beste
 ```text
 CI run URL/id:
 Staging URL/commit/cache:
+Staging smoke result:
 Staging response-header smoke result:
 Staging PWA smoke result:
 RC commit/cache:
 Production URL/commit/cache:
+Production smoke result:
 Production response-header/HSTS smoke result:
 Production PWA smoke result:
 Wave 1 10/10 evidence:
@@ -115,6 +119,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] realer Hostingprovider/Produkt ausgewählt
 - [ ] getrennte HTTPS-Staging-/Production-Origin
 - [ ] Provider-/Log-/Datenschutzentscheidung dokumentiert
+- [ ] `tests/pwa-head-metadata.test.js` auf unverändertem Kandidaten grün
 - [ ] Response-Security-Header auf Staging grün
 - [ ] `sw.js` Cache-Control auf Staging grün
 - [ ] Staging-Smoke grün
