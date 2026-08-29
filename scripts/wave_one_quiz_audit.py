@@ -35,9 +35,8 @@ for game_id in ('party-quiz', 'fact-or-fake'):
     if game_id not in wave_ids: violations.append(f'Wave 1 backlog missing implemented game: {game_id}')
 
 for marker in (
-    'version: 2', "id: 'party-quiz'", "id: 'fact-or-fake'",
-    "const waveOneGameIds = Object.freeze(gamesAdded.map(game => game.id));",
-    "const quickGameIds = Object.freeze([...(base.quickGameIds || []), ...waveOneGameIds]);",
+    'version: 3', "id: 'party-quiz'", "id: 'fact-or-fake'",
+    'waveOneQuizGameIds', 'waveOneImposterGameIds', 'waveOneGameIds', 'quickGameIds',
     "packs: ['Allgemeinwissen', 'Film & Serie', 'Technik']",
     "packs: ['Natur', 'Film & Serie', 'Technik']"
 ):
@@ -53,8 +52,8 @@ for marker in (
     if marker not in runner: violations.append(f'Wave 1 runner marker missing: {marker}')
 
 for marker in (
-    "WAVE_ONE_SOURCE = 'party-wave-one-modes.js'", 'catalog.waveOneGameIds?.includes(gameId)',
-    'version: 8', 'waveOneSource: WAVE_ONE_SOURCE'
+    "WAVE_ONE_SOURCE = 'party-wave-one-modes.js'", 'catalog.waveOneQuizGameIds?.includes(gameId)',
+    'version: 9', 'waveOneSource: WAVE_ONE_SOURCE'
 ):
     if marker not in loader: violations.append(f'Wave 1 loader marker missing: {marker}')
 
