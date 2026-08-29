@@ -1,156 +1,122 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
-Stand: 23. August 2026  
-Status: **IN PROGRESS – npm-Snapshot vorhanden; Root-SVG-Rechte und reale Verifikation offen**
+Stand: 29. August 2026  
+Status: **IN PROGRESS – Icon-Provenienz gelöst; reale Install-/Audit-/Finalreview-Evidence offen**
 
 ## 1. Zweck
 
-Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcontent und eigene Projektbestandteile, die vor dem Januar-2027-Release auf Herkunft und Nutzungsrechte geprüft werden müssen.
-
-Ein Eintrag ohne belegte Rechtebasis wird **nicht** automatisch als eigenes Werk behandelt.
-
-Für die aktuelle App-Icon-Rechtefrage existiert jetzt zusätzlich `ASSET_RIGHTS_SIGNOFF.md`. Dieses Dokument definiert die erforderliche menschliche Bestätigung, bevor `unresolved` auf einen verifizierten Status geändert werden darf.
+Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcontent und die verbleibenden Rechte-/Releaseprüfungen. Ein technischer Source-Vertrag ist kein Ersatz für die reale Ausführung auf dem finalen Release Candidate.
 
 ## 2. Runtime-Abhängigkeiten
 
-`package.json` enthält weiterhin **keine npm-Runtime-Dependencies**. Die Production-PWA lädt außerdem keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets.
+`package.json` enthält **keine npm-Runtime-Dependencies**. Die Production-PWA lädt keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets.
 
 ## 3. Reproduzierbarer npm-Snapshot
 
-`package-lock.json` liegt im Lockfile-Format **v3** vor. Der Snapshot umfasst nur die Entwicklungs-Testkette:
+`package-lock.json` liegt im Lockfile-Format v3 vor. Die Entwicklungs-Testkette umfasst:
 
-| Paket | Version | Rolle | Lizenz | Runtime der Production-PWA? |
+| Paket | Version | Rolle | Lizenz | Production-Runtime? |
 |---|---:|---|---|---|
-| `@playwright/test` | `1.54.2` | direkte Dev-Dependency / Test Runner | Apache-2.0 | Nein |
-| `playwright` | `1.54.2` | Dependency von `@playwright/test` | Apache-2.0 | Nein |
-| `playwright-core` | `1.54.2` | Dependency von `playwright` | Apache-2.0 | Nein |
-| `fsevents` | `2.3.2` | optionale macOS-Dependency von `playwright` | MIT | Nein |
+| `@playwright/test` | `1.54.2` | direkter Test Runner | Apache-2.0 | Nein |
+| `playwright` | `1.54.2` | Testdependency | Apache-2.0 | Nein |
+| `playwright-core` | `1.54.2` | Browserautomation | Apache-2.0 | Nein |
+| `fsevents` | `2.3.2` | optionale macOS-Dependency | MIT | Nein |
 
-Der dokumentierte Dependency-Snapshot wird durch `scripts/lockfile_contract_audit.py` gegen `package.json`/`package-lock.json` geschützt. CI und Cross-Browser verwenden `npm ci`.
+`scripts/lockfile_contract_audit.py` schützt diesen Snapshot gegen Drift. CI und Cross-Browser verwenden `npm ci`.
 
-Noch offen:
-
-- `npm ci` mit erreichbarer Registry auf echtem Runner
-- tatsächlicher Installations-/Integrity-Nachweis auf unverändertem Commit
-- danach vollständiges CI und Cross-Browser auf demselben Commit
+Noch offen bleibt ein **echter Online-`npm ci`-PASS** auf einem **unverändertem Commit** mit anschließendem CI-/Cross-Browser-/Integrity-Nachweis. Der aktuelle GitHub-Hosted-Runner-Blocker verhindert diese reale Evidence weiterhin vor Step 1.
 
 ## 4. Maschinenlesbare Asset-Provenienz
 
-Verbindlich: `assets/manifests/asset-provenance.json`, Schema-Version **1**.
+Verbindlich ist `assets/manifests/asset-provenance.json`, Schema-Version 1.
 
-`scripts/asset_provenance_audit.py` prüft unter anderem:
+`scripts/asset_provenance_audit.py` prüft:
 
 - Datei-Existenz
 - erlaubte Provenienzstatus
 - SHA-256
 - PNG-IHDR/Dimensionen
-- Manifestgrößen
+- PWA-Manifestgrößen
 - `derivedFrom`-Beziehungen
-- erforderliche Rechtefelder für verifizierte Assets
+- Creator/Source/Rechtebasis bei verifizierten Assets
+- `commercialUse = true`
 
-Erlaubte Statuswerte:
+Erlaubte Statuswerte bleiben `unresolved`, `verified-own` und `verified-third-party`.
 
-- `unresolved`
-- `verified-own`
-- `verified-third-party`
+## 5. Aktuelles App-Iconset – Rechtebasis gelöst
 
-`unresolved` ist während der Entwicklung zulässig, blockiert aber den finalen Asset-Sign-off.
+Das frühere ungeklärte App-Icon wurde vollständig durch ein neues Original ersetzt.
 
-## 5. Aktuelle App-Assets
-
-| Datei | Technischer Nachweis | Rechte-Status |
+| Datei | Status | Nachweis |
 |---|---|---|
-| `icon.svg` | Git-Historie: am 2. August 2026 in Commit `c183d439882bf3f25a5577e3867b76b4f930e84c` neu angelegt | `unresolved` |
-| `icon-192.png` | echtes 192×192-PNG, aus `icon.svg`; Hash/Dimension dokumentiert | `unresolved`, Ableitung technisch belegt |
-| `icon-512.png` | echtes 512×512-PNG, aus `icon.svg`; Hash/Dimension dokumentiert | `unresolved`, Ableitung technisch belegt |
+| `icon.svg` | `verified-own` | Originale geometrische SVG-Konstruktion vom 29.08.2026; keine externe Bild-/Logo-/Stock-/Fontvorlage |
+| `icon-192.png` | `verified-own` | 192×192-Ableitung aus dem aktuellen `icon.svg` |
+| `icon-512.png` | `verified-own` | 512×512-Ableitung aus dem aktuellen `icon.svg` |
 
-Repository-Herkunft beweist **nicht automatisch** Urheberrecht oder kommerzielle Nutzungsrechte. Offen bleiben insbesondere Ersteller/Rechteinhaber, möglicher externer Vorlagen-/Stock-/KI-Workflow, kommerzielle Rechtebasis und eventuelle Attribution.
+Dokumente:
 
-### Neuer Sign-off-Pfad
+- `ASSET_RIGHTS_SIGNOFF.md`
+- `assets/manifests/ORIGINAL_ICON_SOURCE.md`
+- `assets/manifests/ICON_RASTER_HASHES.md`
+- `assets/manifests/asset-provenance.json`
 
-`ASSET_RIGHTS_SIGNOFF.md` verlangt vor `verified-own` bzw. `verified-third-party` eine konkrete Dokumentation zu:
+Aktuelle Hashes:
 
-- Ersteller/Rechteinhaber
-- Erstellungsweg
-- externer Vorlage ja/nein
-- Quelle/Lizenz bei externer Vorlage
-- KI-/Tool-Workflow, falls relevant
-- kommerzieller Nutzung
-- Attribution
-- bestätigender Person und Datum
+- `icon.svg`: `ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c`
+- `icon-192.png`: `75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e`
+- `icon-512.png`: `1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce`
 
-Ohne diese Bestätigung bleibt das Manifest unverändert `unresolved`.
+Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle Nutzungsbasis. Sie ist **keine Markenregistrierung oder Garantie weltweiter Einzigartigkeit**.
 
-## 6. Gebündeltes Media-Inventar
+## 6. Media-Inventar
 
-Aktuell als Release-Mediendateien inventarisiert:
+`scripts/media_inventory_audit.py` erwartet weiterhin exakt drei gebündelte Release-Mediendateien:
 
 1. `icon.svg`
 2. `icon-192.png`
 3. `icon-512.png`
 
-`scripts/media_inventory_audit.py` verlangt, dass neue Bild-/Audio-/Videodateien im Provenienzmanifest auftauchen und blockiert verwaiste Einträge.
+Eine während des Ersatzes kurz vorhandene zusätzliche SVG-Quellkopie wurde wieder entfernt, damit der bestehende Releasevertrag nicht still erweitert wird.
 
 ## 7. Emoji und Systemglyphen
 
-Im UI stehen Unicode-Emoji-Zeichen. Secret Circle bündelt keine eigene Emoji-Fontdatei. Ein späterer Export von Emoji-Glyphen als eigene Bildassets würde eine neue Rechteprüfung auslösen.
+Unicode-Emoji werden nur als Zeichen verwendet. Secret Circle bündelt keine Emoji-Fontdatei und keine exportierten Emoji-Bildassets.
 
 ## 8. Built-in- und Referenzcontent
 
-### Core
+Core-, Extended-/Labs-, Privacy- und Reference-Audits bleiben Bestandteil des Releasepfads. Generische Ersatzbegriffe werden weiter bevorzugt, wo konkrete Marken-/Franchise-Referenzen für die Spielmechanik nicht erforderlich sind.
 
-`CORE_CONTENT_REVIEW.md` dokumentiert den 15/15-Core-Quellpass. `CORE_GAME_ACCEPTANCE.md` dokumentiert zusätzlich den 15/15-Core-Hardening-Pass. Frühere Private-Device-Prompts wurden physisch aus dem Runtime-Content entfernt; Privacy-Audits schützen die ausgelieferten Contentquellen.
+Ein finaler manueller Fan-/Marken-/Franchise-/Marketing-/Visualreview bleibt vor GO erforderlich.
 
-### Fan-/Referenzcontent
+## 9. Hosting / ausgelieferte Dateien
 
-- Word Imposter verwendet generische Ersatzbegriffe für frühere unnötige konkrete Referenzen.
-- `anime-guess` liefert **Anime-Archetypen erraten** mit generischen Archetypen.
-- `Wellenlänge` ist sichtbar **Spektrum-Tipp**.
-- Browser-Tabu verwendet `Tab` statt konkreter Browsermarke.
-- frühere konkrete Unterhaltungs-/Eventformulierungen wurden generisch ersetzt.
-- `scripts/reference_content_audit.py` schützt ausgelieferte Contentquellen.
-
-Der restliche manuelle Extended-/Labs-/Marketing-/Visualpass bleibt offen.
-
-## 9. HTTPS-Staging / ausgelieferte Dateien
-
-`scripts/staging_smoke.py` prüft später die tatsächlich ausgelieferten HTTPS-Ressourcen, Manifest-/PNG-Verträge, Cachegeneration sowie Privacy-/Reference-Source-Verträge. Das ergänzt lokale Audits, ersetzt aber keine reale PWA-/Geräteprüfung.
+`scripts/staging_smoke.py` prüft später die tatsächlich ausgelieferten HTTPS-Ressourcen, Manifest-/PNG-Verträge, Cachegeneration, Privacy-/Reference-Source-Verträge und Security-Header. Das ergänzt lokale Audits, ersetzt aber keine reale PWA-/Geräteprüfung.
 
 ## 10. Projektlizenz / Quellcodefreigabe
 
-Es existiert weiterhin keine Root-Datei `LICENSE`.
+Es existiert weiterhin keine Root-Datei `LICENSE`. Vor einer bewussten öffentlichen Quellcodeverteilung muss entschieden werden, ob der Code proprietär bleibt oder unter eine konkrete Open-Source-Lizenz gestellt wird.
 
-Vor öffentlicher Quellcodeverteilung muss bewusst entschieden werden, ob der Code proprietär/nicht zur Weiterverwendung lizenziert bleibt oder unter eine konkrete Open-Source-Lizenz gestellt wird.
-
-## 11. Hosting- und Plattformkomponenten
-
-Nach Auswahl der Production-Plattform prüfen:
-
-- Hosting-AGB
-- Datenschutz-/Logverarbeitung
-- Build-/Deploy-Actions
-- erforderliche License-/NOTICE-/Attribution-Pflichten
-
-## 12. Release-Gates
+## 11. Release-Gates
 
 Vor `THIRD-PARTY / ASSET PASS`:
 
 - [x] `package-lock.json` vorhanden
 - [x] npm-Entwicklungsabhängigkeiten inventarisiert
-- [x] reproduzierbarer Lockfile-/Dependency-Vertrag vorhanden
-- [x] normaler CI- und Cross-Browser-Workflow verwenden `npm ci`
-- [ ] echtes Online-`npm ci` auf unverändertem Commit grün
-- [ ] Integrity-/Installationsnachweis auf funktionierendem Runner
+- [x] `scripts/lockfile_contract_audit.py` vorhanden
+- [x] CI-/Cross-Browser-Workflows verwenden `npm ci`
 - [x] maschinenlesbares Asset-Provenienzmanifest vorhanden
-- [x] Asset-/Media-/Reference-/Privacy-Audits integriert
-- [x] PNG-IHDR-/Hash-/Manifestgrößenprüfung implementiert
-- [x] explizites `ASSET_RIGHTS_SIGNOFF.md` vorhanden
-- [ ] relevante Audits auf funktionierendem Runner tatsächlich grün
-- [ ] menschlicher Icon-Rechte-Sign-off vollständig
-- [ ] `icon.svg` von `unresolved` auf belegten Rechte-Status gesetzt oder ersetzt
-- [ ] PNG-Ableitungen entsprechend verifiziert/neu erzeugt
-- [ ] restlicher manueller Fan-/Marken-/Franchise-/Marketing-/Visualpass abgeschlossen
-- [ ] erforderliche Attributionen/Notices final
+- [x] altes ungeklärtes Iconset vollständig ersetzt
+- [x] `icon.svg` auf `verified-own`
+- [x] beide PNG-Ableitungen auf `verified-own`
+- [x] neue SHA-256-/Dimensionsdaten dokumentiert
+- [x] Media-Vertrag bleibt exakt drei Release-Medien
+- [ ] echter Online-`npm ci` auf unverändertem Commit grün
+- [ ] Integrity-/Installationsnachweis auf funktionierendem Runner
+- [ ] `scripts/asset_provenance_audit.py` tatsächlich grün
+- [ ] `scripts/media_inventory_audit.py` tatsächlich grün
+- [ ] kompletter `npm run validate` auf demselben Kandidaten grün
+- [ ] finaler manueller Fan-/Marken-/Franchise-/Marketing-/Visualreview
+- [ ] erforderliche Attributionen/Notices final geprüft
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
 
-Bis dahin bleibt der öffentliche Release **NO_GO**.
+Der frühere **Icon-Rechteblocker ist geschlossen**, das übergeordnete Asset-/Third-Party-Gate bleibt bis zu den realen Ausführungs- und Finalreview-Nachweisen **BLOCKED**. Der öffentliche Release bleibt **NO_GO**.
