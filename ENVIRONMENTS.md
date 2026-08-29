@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **PREPARED – konkrete HTTPS-Staging-URL offen**  
-Offline-Core: **`secret-circle-v61` / `secret-circle-v61-staging`**
+Offline-Core: **`secret-circle-v62` / `secret-circle-v62-staging`**
 
 ## 1. Ziel
 
@@ -20,10 +20,10 @@ Staging ist der erste echte Hosting-/Service-Worker-/Installationsraum und muss 
 
 ## 4. Aktueller Cachevertrag
 
-- aktiv: `secret-circle-v61`
-- staging: `secret-circle-v61-staging`
+- aktiv: `secret-circle-v62`
+- staging: `secret-circle-v62-staging`
 
-Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → **v61 Expansion Wave 1**.
+Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Wave-1-Quiz → **v62 Wave-1-Imposter**.
 
 ## 5. Automatisierter HTTPS-Smoke
 
@@ -32,13 +32,13 @@ Der HTTPS-Netzwerkvertrag wird mit **`scripts/staging_smoke.py`** geprüft; PWA-
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v61
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v62
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v61 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v62 --production
 ```
 
 ## 6. Manueller Staging-Smoke
@@ -48,12 +48,15 @@ Mindestens:
 - Service Worker / Installation / Offline-Neustart
 - Hub/Word Imposter/Advanced/Quick/Creator/Privacy + Query-Routen offline
 - bestehende Spezialgates DWI bis HS60
-- **Wave 1 / v61:** Party Quiz und Fake oder Fakt sind im Hub sichtbar als Labs
-- beide Wave-1-Spiele starten in höchstens 2–3 Entscheidungen und funktionieren ohne Zusatzkonto/Netzwerk
-- Party Quiz: Antwort → Ergebnis → Reload/Resume behält Score/Ergebnis ohne Doppelpunkt
-- Fake oder Fakt: Fakt/Fake → Erklärung → nächste Runde
-- Cross-Game-Wechsel zwischen beiden nutzt den bestehenden Quick-Family-Replacement-Schutz
-- beide neuen Runtime-Dateien sind offline vorhanden
+- **Wave 1 / v61:** Party Quiz und Fake oder Fakt sichtbar als Labs; Result-Resume exact-once
+- **Wave 1 Imposter / v62:** Undercover – ähnliches Wort und Imposter ohne Wort sichtbar als Labs
+- beide neuen Imposter-Modi starten in höchstens 2–3 Entscheidungen
+- private Handoff-Karte nach Blur/App-Wechsel wieder verdeckt
+- geheime Abstimmung pro Spieler ohne Auto-Reveal
+- No-Word: korrekte Enttarnung → genau ein letzter Wort-Guess
+- Reload/Resume verändert Gewinner/Score nicht erneut
+- Cross-Game-Wechsel nutzt bestehenden Quick-Family-Replacement-Schutz
+- Quiz- und Imposter-Runner funktionieren online und offline
 - Updatebanner + aktive Session
 - Accessibility-/Fokuspfade
 
@@ -79,7 +82,8 @@ RC commit/cache:
 Production URL/commit/cache:
 Production smoke result:
 DWI ... HS60 evidence:
-Wave-1 Party Quiz / Fake oder Fakt evidence:
+Wave-1 Quiz evidence:
+Wave-1 Imposter v62 evidence:
 Rollback tested from/to:
 Evidence reference:
 ```
@@ -93,7 +97,7 @@ Vor `ENVIRONMENT / STAGING PASS`:
 - [ ] Staging-Smoke grün
 - [ ] manueller PWA-Smoke
 - [ ] bestehende Spezialgates real bestätigt
-- [ ] zwei Wave-1-Labs nur dann als releasefähig markieren, wenn deren eigene Evidence grün ist
+- [ ] Wave-1-Labs nur dann als releasefähig markieren, wenn deren eigene Evidence grün ist
 - [ ] Upgrade aus mindestens zwei real installierten Altständen
 - [ ] Rollbackprobe
 - [ ] derselbe freigegebene RC für Production
