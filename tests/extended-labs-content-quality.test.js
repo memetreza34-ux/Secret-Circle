@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const catalog = require('../party-routing.js');
+const catalog = require('../party-wave-one-clue-catalog.js');
 const release = require('../party-release-structure.js');
 
 const allowedAges = new Set(['all', 'teen', 'adult']);
@@ -13,6 +13,11 @@ const disclosurePrompts = [
   /zeig(?:e)?\s+(?:dein\s+)?passwort/i,
   /nenne\s+(?:deine\s+)?(?:private\s+)?adresse/i,
   /öffne\s+(?:deine\s+)?fotos/i
+];
+const waveOneLabs = [
+  'bluff-trivia', 'party-quiz', 'fact-or-fake', 'percent-guess',
+  'fill-blank-battle', 'who-wrote-it', 'party-bracket',
+  'undercover-similar-word', 'no-word-imposter', 'password-one-word'
 ];
 
 function normalizeText(value) {
@@ -53,16 +58,22 @@ function flattenItems(value) {
 }
 
 const tierCounts = release.counts(catalog.games);
-assert.deepEqual(tierCounts, { core: 15, extended: 13, labs: 17 });
-assert.equal(catalog.games.length, 45);
-assert.equal(new Set(catalog.games.map(game => game.id)).size, 45);
+assert.deepEqual(tierCounts, { core: 15, extended: 13, labs: 27 });
+assert.equal(catalog.games.length, 55);
+assert.equal(new Set(catalog.games.map(game => game.id)).size, 55);
+assert.equal(catalog.waveOneGameIds.length, 10);
+assert.deepEqual(new Set(catalog.waveOneGameIds), new Set(waveOneLabs));
 
 const nonCoreGames = catalog.games.filter(game => release.tierFor(game) !== 'core');
 const extendedGames = nonCoreGames.filter(game => release.tierFor(game) === 'extended');
 const labGames = nonCoreGames.filter(game => release.tierFor(game) === 'labs');
+assert.equal(nonCoreGames.length, 40);
 assert.equal(extendedGames.length, 13);
-assert.equal(labGames.length, 17);
+assert.equal(labGames.length, 27);
 assert.deepEqual(new Set(labGames.map(game => game.id)), new Set(release.labIds));
+for (const id of waveOneLabs) {
+  assert.equal(release.tierFor(catalog.getGame(id)), 'labs', `${id} must remain Labs before real promotion evidence.`);
+}
 
 const contentDriven = [];
 const contentless = [];
@@ -122,15 +133,19 @@ for (const game of nonCoreGames) {
 }
 
 assert.deepEqual(new Set(contentless), new Set(['spin-bottle', 'dice-coin']));
-assert.equal(contentDriven.length, 28);
+assert.equal(contentDriven.length, 38);
 assert.ok(packsChecked >= 90, `Expected broad non-core pack coverage, got ${packsChecked}.`);
 assert.ok(itemsChecked >= 600, `Expected broad non-core item coverage, got ${itemsChecked}.`);
 
 console.log(JSON.stringify({
   extendedLabsContentQuality: 'PASS',
   releaseTiers: tierCounts,
+  totalBuiltIns: catalog.games.length,
+  nonCoreGames: nonCoreGames.length,
   extendedIds: extendedGames.map(game => game.id),
   labIds: labGames.map(game => game.id),
+  waveOneLabs,
+  waveOneCovered: catalog.waveOneGameIds.length,
   contentDrivenGames: contentDriven.length,
   contentlessUtilityGames: contentless,
   packsChecked,
