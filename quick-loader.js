@@ -11,12 +11,14 @@
   const LEDGER_SOURCE = 'session-ledger.js';
   const CONTROLS_SOURCE = 'party-session-controls.js';
   const REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js';
+  const WAVE_ONE_SOURCE = 'party-wave-one-modes.js';
 
   function selectSource(catalog, gameId) {
     if (!catalog || !gameId) return null;
     if (catalog.createdGameIds?.includes(gameId)) return 'party-created-modes.js';
     if (catalog.viralGameIds?.includes(gameId)) return 'party-viral-modes.js';
     if (catalog.megaGameIds?.includes(gameId)) return 'party-mega-modes.js';
+    if (catalog.waveOneGameIds?.includes(gameId)) return WAVE_ONE_SOURCE;
     if (catalog.quickGameIds?.includes(gameId) || catalog.trendingGameIds?.includes(gameId)) return 'party-quick-modes.js';
     return null;
   }
@@ -120,10 +122,11 @@
   }
 
   return Object.freeze({
-    version: 7,
+    version: 8,
     ledgerSource: LEDGER_SOURCE,
     controlsSource: CONTROLS_SOURCE,
     replacementGuardSource: REPLACEMENT_GUARD_SOURCE,
+    waveOneSource: WAVE_ONE_SOURCE,
     selectSource,
     scriptPlan,
     showFailure,
