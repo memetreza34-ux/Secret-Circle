@@ -19,7 +19,8 @@ for relative in required:
 if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 
 backlog = json.loads(read('GAME_LIBRARY_BACKLOG.json'))
-catalog = read('party-wave-one-imposter-catalog.js')
+catalog = read('party-wave-one-catalog.js')
+adapter = read('party-wave-one-imposter-catalog.js')
 runner = read('party-wave-one-imposter-modes.js')
 loader = read('quick-loader.js')
 release = read('party-release-structure.js')
@@ -39,7 +40,11 @@ for marker in (
     'waveOneImposterGameIds', 'waveOneQuizGameIds', 'waveOneGameIds', 'quickGameIds',
     "packs: ['Alltag', 'Essen', 'Gaming']", "packs: ['Alltag', 'Essen', 'Orte']"
 ):
-    if marker not in catalog: violations.append(f'Wave 1 Imposter catalog marker missing: {marker}')
+    if marker not in catalog: violations.append(f'Consolidated Wave 1 catalog marker missing: {marker}')
+for marker in ('Konsolidierter Wave-1-Katalog fehlt.', 'waveOneImposterGameIds', 'return base;'):
+    if marker not in adapter: violations.append(f'Wave 1 Imposter compatibility adapter marker missing: {marker}')
+if "gamesAdded" in adapter or "contentAdded" in adapter:
+    violations.append('Wave 1 Imposter adapter must not append a second copy of games/content')
 
 for marker in (
     "ACTIVE_KEY = 'secret-circle-party-quick-active-v1'", "const ALLOWED = new Set(C.waveOneImposterGameIds || []);",
@@ -60,12 +65,14 @@ for game_id in ('undercover-similar-word', 'no-word-imposter'):
     if f"'{game_id}'" not in release: violations.append(f'Wave 1 Imposter game not classified as Labs: {game_id}')
 
 for page_name, source in (('party.html', party), ('quick-play.html', quick)):
-    quiz_pos = source.find('party-wave-one-catalog.js')
-    imposter_pos = source.find('party-wave-one-imposter-catalog.js')
-    if imposter_pos < 0: violations.append(f'{page_name} missing Wave 1 Imposter catalog')
-    if quiz_pos < 0 or imposter_pos < quiz_pos: violations.append(f'{page_name} Imposter catalog must load after Wave 1 quiz catalog')
+    catalog_pos = source.find('party-wave-one-catalog.js')
+    adapter_pos = source.find('party-wave-one-imposter-catalog.js')
+    if catalog_pos < 0: violations.append(f'{page_name} missing consolidated Wave 1 catalog')
+    if adapter_pos < 0: violations.append(f'{page_name} missing Wave 1 compatibility adapter')
+    if catalog_pos >= 0 and adapter_pos >= 0 and adapter_pos < catalog_pos:
+        violations.append(f'{page_name} compatibility adapter must load after consolidated Wave 1 catalog')
 
-for asset in ('./party-wave-one-imposter-catalog.js', './party-wave-one-imposter-modes.js'):
+for asset in ('./party-wave-one-catalog.js', './party-wave-one-imposter-catalog.js', './party-wave-one-imposter-modes.js'):
     if asset not in sw: violations.append(f'Wave 1 Imposter offline core missing: {asset}')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or int(cache.group(1)) < 62: violations.append('Wave 1 Imposter integration requires offline cache generation v62 or newer')
@@ -91,6 +98,8 @@ if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({
     'wave_one_imposter_audit': 'PASS',
     'implemented_labs': ['undercover-similar-word', 'no-word-imposter'],
+    'consolidated_catalog': True,
+    'compatibility_adapter_only': True,
     'shared_imposter_runner': True,
     'private_handoff_concealment': True,
     'secret_vote_flow': True,
