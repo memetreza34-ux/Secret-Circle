@@ -5,6 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const catalog = require('../party-wave-one-clue-catalog.js');
 const release = require('../party-release-structure.js');
+const releaseMeta = require('../release-meta.json');
+const packageMeta = require('../package.json');
 
 function read(file) { return fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8'); }
 
@@ -35,11 +37,33 @@ assert.equal(release.tierFor({ id: 'unknown-planned', status: 'planned' }), 'lab
 assert.equal(release.ageAllows({ age: 'all' }, 'family'), true);
 assert.equal(release.ageAllows({ age: 'teen' }, 'family'), false);
 
+// Central release metadata must describe the actual runtime catalog, not a stale documentation snapshot.
+assert.equal(releaseMeta.sourceGeneration, 'v64');
+assert.equal(releaseMeta.packageVersion, packageMeta.version);
+assert.deepEqual(releaseMeta.builtIns, {
+  total: catalog.games.length,
+  core: summary.core,
+  extended: summary.extended,
+  labs: summary.labs
+});
+assert.equal(releaseMeta.waveOne.planned, waveOneLabs.length);
+assert.equal(releaseMeta.waveOne.sourceImplemented, catalog.waveOneGameIds.length);
+assert.equal(releaseMeta.waveOne.releaseTier, 'labs');
+assert.equal(releaseMeta.waveOne.realEvidenceStatus, 'OPEN');
+assert.equal(releaseMeta.release.decision, 'NO_GO');
+assert.equal(releaseMeta.release.pullRequest, 13);
+assert.equal(releaseMeta.release.pullRequestState, 'DRAFT');
+assert.equal(releaseMeta.scopePolicy.coreFrozen, true);
+assert.equal(releaseMeta.scopePolicy.newCoreGamesBeforeReleaseGates, false);
+assert.equal(releaseMeta.scopePolicy.largeArchitectureMigrationBeforeRc, false);
+
 const runtime = read('runtime-guard.js'); const worker = read('sw.js'); const tierStyles = read('party-release.css'); const searchStyles = read('party-search.css');
 assert.match(runtime, /party-release-structure\.js/); assert.match(runtime, /party-filter-state\.js/); assert.match(runtime, /party-search-assist\.js/);
 assert.ok(runtime.indexOf('loadPartyReleaseStructure') < runtime.lastIndexOf('loadPartyFilterState'));
 assert.ok(runtime.indexOf('loadPartyFilterState') < runtime.lastIndexOf('loadPartySearchAssist'));
 assert.match(worker, /\.\/party-release-structure\.js/); assert.match(worker, /\.\/party-filter-state\.js/); assert.match(worker, /\.\/party-search-assist\.js/);
+assert.match(worker, new RegExp(`const CACHE='${releaseMeta.offlineCache.production}'`));
+assert.match(worker, new RegExp(`const STAGING_CACHE='${releaseMeta.offlineCache.staging}'`));
 assert.match(tierStyles, /\.release-tier-overview/); assert.match(tierStyles, /\.release-tier-pill/); assert.match(tierStyles, /prefers-reduced-motion/);
 assert.match(searchStyles, /\.party-search-suggestions/); assert.match(searchStyles, /focus-visible/); assert.match(searchStyles, /prefers-reduced-motion/);
 
@@ -47,5 +71,6 @@ console.log(JSON.stringify({
   ok: true, totalBuiltInGames: catalog.games.length, coreGames: summary.core, extendedGames: summary.extended, labsGames: summary.labs,
   waveOneLabs, waveOneComplete: catalog.waveOneGameIds.length, customGamesClassifiedAsExtended: true,
   plannedGamesClassifiedAsLabs: true, ageAndReleaseTierCombined: true, offlineAssetsIntegrated: true,
+  releaseMetadataSynchronized: true, packageVersionSynchronized: true, cacheMetadataSynchronized: true,
   responsiveTierStyles: true, accessibleSearchStyles: true
 }, null, 2));
