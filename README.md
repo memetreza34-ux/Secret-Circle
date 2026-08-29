@@ -1,24 +1,25 @@
 # Secret Circle Party Hub
 
-Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere Übergaben, belastbare Wiederaufnahme, lokale Datenkontrolle, Accessibility und nachvollziehbare Release-Gates. Die langfristige Produktstrategie kombiniert **sehr einfache Bedienung mit einer sehr großen Mechanik-/Themenbibliothek**.
+Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere Übergaben, belastbare Wiederaufnahme, lokale Datenkontrolle, Accessibility und nachvollziehbare Release-Gates.
 
 ## Aktueller Stand
 
 - **55 technisch spielbare Built-ins · 15 Core / 13 Extended / 27 Labs**
-- bestehende Quick-/Trend-/Viral-Modi + 4 Advanced-Kernspiele
 - **Expansion Wave 1: 10/10 geplante Labs quellsseitig implementiert**
 - Word Imposter + Smart Party Night + lokaler No-Code-Game-Creator
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 - kein Wave-1-Lab erweitert automatisch den Januar-Core
 
 Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**  
+Package: **`1.0.0-beta.3`**  
 Classic Content: **v4**  
 Core Source Review/Hardening: **15/15 PREPARED**  
 Accessibility: **PREPARED**  
-Bestehende Spezialgates bis HS60: **source PREPARED, real evidence OPEN**  
+Spezialgates bis HS60: **source PREPARED, real evidence OPEN**  
 Wave-1-Labs: **source PREPARED, real Browser/PWA/Group evidence OPEN**  
-Operator / Hosting / Legal: **PREPARED / BLOCKED**  
-Freigabe: **NO_GO**
+Operator / Hosting / Legal / Support: **PREPARED / BLOCKED**  
+Icon-Provenienz: **SOURCE RESOLVED – drei Release-Icons `verified-own`**  
+Gesamtfreigabe: **NO_GO**
 
 **Quellsseitig gehärtet ist nicht automatisch releasefertig.**
 
@@ -68,7 +69,7 @@ Wave 1 verwendet wiederverwendbare Enginefamilien für Quiz, Imposter, Writing, 
 Gemeinsame Verträge:
 
 - mehrere kleine Wave-1-Katalog-Layer statt separater Voll-Engines pro sichtbarem Spiel
-- `quick-loader.js` v11 routet alle sechs Wave-1-Enginefamilien explizit vor dem normalen Quick-Fallback
+- `quick-loader.js` v11 routet alle sechs Wave-1-Enginefamilien explizit
 - `party-release-structure.js` v5 klassifiziert alle zehn Wave-1-Modi als Labs
 - Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie Prozent/Bracket/Bluff/Clue
 - `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10 und v64
@@ -82,15 +83,41 @@ Nicht 100 separate Engines bauen. Ziel:
 
 > **20–30 belastbare Mechanikfamilien × viele Themen-/Content-Packs = 100+ sichtbare Spielvarianten bei weiterhin einfacher Bedienung.**
 
-Standardspiele sollen in maximal **2–3 Entscheidungen** bis zur ersten echten Aktion starten. Built-in-Content bleibt ohne 18+-Bereich.
+Der Januar-Core bleibt bei 15 Spielen. Standardspiele sollen in maximal 2–3 Entscheidungen bis zur ersten echten Aktion starten. Built-in-Content bleibt ohne 18+-Bereich.
 
 ## CI – extern blockiert
 
-Aktuellster direkt untersuchter App-Actions-Lauf: **Run #3608**, Run ID `33253663445`, Job `99103557030`, Head `2297868e1f65b45753294151a3b1f401a55f6288` auf `agent/release-foundation-2027`. Ergebnis: `failure`, `steps: []`, `runner_id: 0`, `runner_name: ""`; angefordert war `ubuntu-latest`. Kein Checkout, npm, Playwright, Python-Audit oder sonstiger Repositorycode wurde ausgeführt.
+GitHub Actions endet weiterhin vor Repository-Ausführung mit `steps: []`, `runner_id: 0` und leerem Runner-Namen bei angefordertem `ubuntu-latest`. Dadurch laufen weder Checkout noch `npm ci`, Playwright oder Python-Audits.
 
-Der v64-Lauf bestätigt damit das bereits bekannte Muster auf aktuellem Code: der unmittelbare Blocker liegt weiterhin **vor Repository-Ausführung**, sehr wahrscheinlich im Bereich Hosted-Runner-Zuteilung bzw. Actions-Account-/Billing-/Policy-Gate. Details und Chronologie: Issue #7 / `CI_TROUBLESHOOTING.md`.
+Der Befund wurde auf mehreren v64-/PR-#15-Ständen reproduziert. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
 
-**v50–v64 besitzen deshalb weiterhin keinen Hosted-Runner-PASS.**
+**Es gibt deshalb weiterhin keinen aktuellen Hosted-Runner-PASS.** App-Code wird nicht auf Verdacht als Workaround für einen Job geändert, der keinen Runner erhält.
+
+## Hosting-Hardening
+
+Technischer Preferred Candidate: **Cloudflare Pages**, noch nicht final ausgewählt.
+
+Vorbereitet sind:
+
+- `HOSTING_PROVIDER_RESEARCH.md`
+- `CLOUDFLARE_PAGES_STAGING.md`
+- `HOSTING_DECISION.md`
+- `/_headers`
+- `scripts/staging_smoke.py`
+
+Der echte Provider-/DPA-/Origin-/PWA-/Rollback-Nachweis bleibt offen.
+
+## Asset-Hardening
+
+Das frühere ungeklärte App-Icon wurde am 29. August 2026 vollständig ersetzt.
+
+- `icon.svg` → `verified-own`
+- `icon-192.png` → `verified-own`
+- `icon-512.png` → `verified-own`
+
+Provenienz und Hashes stehen in `ASSET_RIGHTS_SIGNOFF.md` und `assets/manifests/asset-provenance.json`.
+
+Der **alte Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete Asset-/Third-Party-Gate bleibt jedoch BLOCKED, bis Online-Install-/Audit-Evidence und der finale manuelle Visual-/Marken-/Third-Party-Review auf dem unveränderten RC vorliegen.
 
 ## Zentrale offene Issues
 
@@ -98,21 +125,22 @@ Der v64-Lauf bestätigt damit das bereits bekannte Muster auf aktuellem Code: de
 2. **#8** – reale Geräte, v64 Offline-PWA, Accessibility, Spezialgates, Wave-1-Labs und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
-Zusätzlich bleibt die Rechtebasis des Root-`icon.svg` `unresolved`.
+Zusätzlich bleibt Draft-PR #15 als kontrollierter Main/Reconciliation-Kandidat vor Release zu synchronisieren und mit funktionierender CI zu prüfen.
 
 ## Höchste Priorität
 
 1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
-2. Branch Protection
-3. Provider + getrennte HTTPS-Staging-/Production-Origin
-4. v64 PWA-Smoke / Upgrade / Rollback
-5. bestehende Spezialgates bis HS60 real prüfen
-6. Wave-1-Labs real auf Browser/PWA/Accessibility/Gruppe prüfen
-7. Android/iPhone/iPad inklusive App-Wechsel/Screen-Lock/Prozess-Kill
+2. PR #15 live synchronisieren + 9-Pfade-Scope bestätigen
+3. Branch Protection + Required Check
+4. realen Hostingprovider + getrennte HTTPS-Staging-/Production-Origin
+5. v64 PWA-Smoke / Upgrade / Rollback
+6. Spezialgates bis HS60 real prüfen
+7. Android/iPhone/iPad + Accessibility
 8. reale Gruppentests für alle 15 Core-Games
-9. Asset-/Operator-/Legal-/Support-/Incident-Sign-off
-10. unveränderlicher RC + `release-evidence.json = FINAL / GO`
+9. Operator-/Legal-/Support-/Incident-Sign-off
+10. Asset-/Third-Party-Finalreview auf dem RC
+11. unveränderlicher RC + `release-evidence.json = FINAL / GO`
 
-**Feature-Scope für den Januar-Core nicht weiter aufblasen. Jetzt liegt der Schwerpunkt auf realer Verifikation und Release-Evidence.**
+**Feature-Scope für den Januar-Core nicht weiter aufblasen. Schwerpunkt ist jetzt reale Verifikation und Release-Evidence.**
 
-**Aktuell: NO_GO. PR #13 bleibt Draft und wird nicht gemergt.**
+**Aktuell: NO_GO. PR #13 und PR #15 bleiben Draft.**
