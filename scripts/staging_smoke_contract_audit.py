@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 required = [
     'scripts/staging_smoke.py',
+    'HOSTING_DECISION.md',
     'ENVIRONMENTS.md',
     'DEPLOYMENT.md',
     'RELEASE_CHECKLIST.md',
@@ -17,6 +18,7 @@ for relative in required:
         raise SystemExit(f'Staging smoke contract missing file: {relative}')
 
 smoke = (ROOT / 'scripts/staging_smoke.py').read_text(encoding='utf-8')
+hosting = (ROOT / 'HOSTING_DECISION.md').read_text(encoding='utf-8')
 environments = (ROOT / 'ENVIRONMENTS.md').read_text(encoding='utf-8')
 deployment = (ROOT / 'DEPLOYMENT.md').read_text(encoding='utf-8')
 checklist = (ROOT / 'RELEASE_CHECKLIST.md').read_text(encoding='utf-8')
@@ -47,7 +49,29 @@ markers = (
     'party-expansion.js',
     'party-mega-catalog.js',
     'party-viral-catalog.js',
+    'REQUIRED_CSP_DIRECTIVES',
+    'assert_security_headers',
+    "frame-ancestors 'none'",
+    'X-Content-Type-Options',
+    'Referrer-Policy',
+    'X-Frame-Options',
+    'Strict-Transport-Security',
+    'assert_service_worker_cache_headers',
+    'security_response_headers_required',
+    'service_worker_cache_policy_checked',
     'Browser-only Service-Worker install/offline/update and real-device gates remain separate.',
+)
+
+hosting_security_markers = (
+    "frame-ancestors 'none'",
+    'X-Content-Type-Options: nosniff',
+    'Referrer-Policy: no-referrer',
+    'X-Frame-Options: DENY',
+    'Strict-Transport-Security',
+    '31536000',
+    'sw.js',
+    'immutable',
+    '3600',
 )
 
 checks = {
@@ -60,6 +84,18 @@ checks = {
         'party.html', 'creator.html', 'advanced.html?game=question-imposter',
         'quick-play.html?game=guess-the-price', 'index.html', 'pwa_head_metadata_contract'
     )),
+    'response_csp_contract': all(marker in smoke for marker in (
+        "default-src 'self'", "script-src 'self'", "object-src 'none'",
+        "base-uri 'none'", "frame-ancestors 'none'"
+    )),
+    'clickjacking_defense_in_depth': "frame-ancestors 'none'" in smoke and "x_frame != 'DENY'" in smoke,
+    'nosniff_required': "X-Content-Type-Options" in smoke and "nosniff" in smoke,
+    'referrer_policy_required': "Referrer-Policy" in smoke and "no-referrer" in smoke,
+    'production_hsts_required': 'Strict-Transport-Security' in smoke and '31_536_000' in smoke,
+    'service_worker_cache_safety': all(marker in smoke for marker in (
+        'assert_service_worker_cache_headers', "'immutable' in cache_control", 'max-age=(\\d+)', '> 3600'
+    )),
+    'hosting_documents_security_headers': all(marker in hosting for marker in hosting_security_markers),
     'local_pwa_head_test_matches_scope': all(marker in pwa_head_test for marker in (
         'party.html', 'creator.html', 'advanced.html', 'quick-play.html', 'index.html'
     )),
@@ -79,5 +115,8 @@ print(json.dumps({
     'staging_smoke_contract_audit': 'PASS',
     'network_smoke_execution': 'NOT_RUN_BY_THIS_AUDIT',
     'pwa_head_metadata': 'DEPLOYED_SOURCE_CONTRACT_REQUIRED',
+    'security_response_headers': 'DEPLOYED_HEADER_CONTRACT_REQUIRED',
+    'production_hsts': 'REQUIRED_IN_PRODUCTION_MODE',
+    'service_worker_cache_policy': 'DEPLOYED_HEADER_CONTRACT_REQUIRED',
     'checks': checks,
 }, ensure_ascii=False, indent=2))
