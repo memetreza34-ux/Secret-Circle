@@ -31,6 +31,7 @@ Production erhält denselben unveränderten RC, der auf Staging freigegeben wurd
 - Chromium/Firefox/WebKit auf demselben Commit grün
 - Required Check + Branch Protection real aktiv
 - realer Hostingprovider und getrennte HTTPS-Staging-/Production-Origins
+- `tests/pwa-head-metadata.test.js` auf demselben Kandidaten grün
 - Staging Response-Security-/Cache-Header grün
 - bestehende Spezialgates real bestätigt
 - Wave-1-Labs nur bei eigener Browser-/Offline-/Accessibility-/Gruppen-Evidence als releasefähig behandeln
@@ -50,6 +51,8 @@ Offline enthalten sind alle Wave-1-Kataloge und Runner, `party-session-controls.
 - **v62:** Imposter.
 - **v63:** Writing.
 - **v64:** Prozent/Bracket/Bluff/Clue und Wave 1 vollständig 10/10.
+
+`tests/pwa-head-metadata.test.js` bleibt der lokale Source-Vertrag für PWA-Head-/Icon-/Manifest-Metadaten. Der HTTPS-Smoke prüft zusätzlich die tatsächlich ausgelieferten Response-Header.
 
 ## HTTPS-Staging
 
