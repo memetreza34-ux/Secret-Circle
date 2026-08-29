@@ -7,7 +7,7 @@ Draft-PR: #13
 
 ## Gesamtstatus
 
-**Phase:** Release-Härtung + kontrollierte Labs-Expansion  
+**Phase:** Release-Härtung / Verifikation  
 **Öffentliche Freigabe:** **NO_GO**  
 **Offline-Core:** **`secret-circle-v64` / `secret-circle-v64-staging`**  
 **Built-ins:** **55 · 15 Core / 13 Extended / 27 Labs**  
@@ -16,7 +16,8 @@ Draft-PR: #13
 **Core Source Review/Hardening:** **15/15 PREPARED**  
 **Accessibility:** **PREPARED**  
 **Bestehende Spezialgates bis HS60:** **source PREPARED, real evidence OPEN**  
-**Operator / Hosting / Legal:** **PREPARED / BLOCKED**
+**Operator / Hosting / Legal:** **PREPARED / BLOCKED**  
+**PR-Stack:** **DIVERGED_FROM_MAIN – Reconciliation vor Release-Merge erforderlich**
 
 ## Versionslinie
 
@@ -45,7 +46,22 @@ Gemeinsame Architektur:
 - Session-Replacement-, Resume-, exact-once- und Offline-Verträge werden wiederverwendet
 - Wave-1-Unit-/E2E-/Audit-Verträge sind in `npm run test`, `npm run check` und `npm run validate` eingebunden
 
-**Wichtig:** Wave-1-Labs erweitern den Januar-Core nicht automatisch. Vor einer Release-Einstufung bleiben reale Browser-/PWA-/Accessibility-/Gruppentests Pflicht.
+**Wichtig:** Wave-1-Labs erweitern den Januar-Core nicht automatisch. Vor einer Promotion bleiben reale Browser-/PWA-/Accessibility-/Gruppentests Pflicht.
+
+## Runtime-/Metadaten-Synchronität
+
+`release-meta.json` ist die zentrale Arbeitsmetadatenquelle für:
+
+- v64
+- Package `1.0.0-beta.3`
+- `secret-circle-v64` / `secret-circle-v64-staging`
+- 55 / 15 / 13 / 27
+- Wave 1 10/10
+- NO_GO / PR #13 Draft
+- CI-Referenzbefund
+- aktuellen PR-Stack-Drift
+
+`tests/party-release-structure.test.js` vergleicht diese Metadaten mit dem real zusammengesetzten Runtime-Katalog. `tests/service-worker.test.js` vergleicht die Cachegeneration mit denselben Metadaten. Damit soll Versions-/Spielzahl-/Cache-Drift künftig automatisch auffallen.
 
 ## PWA v64
 
@@ -57,22 +73,48 @@ Gemeinsame Architektur:
 
 ## CI – P0
 
-Aktuellster direkt untersuchter App-Actions-Lauf:
+Referenzierter vollständig untersuchter v64-Actions-Lauf:
 
 - Run **#3608**
 - Run ID `33253663445`
 - Job `99103557030`
 - Head `2297868e1f65b45753294151a3b1f401a55f6288`
-- Branch `agent/release-foundation-2027`
 - Ergebnis `failure`
 - `steps: []`
 - `runner_id: 0`
 - `runner_name: ""`
 - requested label `ubuntu-latest`
 
-Kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde ausgeführt. Der aktuelle v64-Stand reproduziert damit den historischen Vor-Step-Blocker.
+Ein späterer Lauf **#3644** auf Commit `6c518161b30fb34bba60d6924b32836b89477d24` reproduzierte dasselbe Muster: Job `99106788535`, `steps: []`, `runner_id: 0`, leerer Runner-Name.
+
+Kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde in diesen Jobs ausgeführt.
 
 **v50–v64 besitzen keinen echten Hosted-Runner-PASS.** Der nächste Schritt ist kein App-Code-Workaround, sondern Actions-/Hosted-Runner-/Account-/Billing-/Policy-Diagnose gemäß Issue #7.
+
+## PR-/Branch-Stack – P0/P1
+
+Aktuelle Kette:
+
+```text
+main
+  └─ PR #3  codex/improve-gameplay-v3
+       └─ PR #11 codex/party-hub-foundation
+            └─ PR #13 agent/release-foundation-2027
+```
+
+Intern ist der Stack sauber:
+
+- PR #11 liegt vollständig auf PR #3
+- PR #13 liegt vollständig auf PR #11
+
+Die erste Stack-Basis ist gegenüber aktuellem `main` jedoch **diverged**. Zwei spätere `main`-Commits liegen nicht in der Stack-Abstammung:
+
+- `6b6bddd0ae619d160b4468b61ae49cb30e2ea834` – Legacy-ZIP-Inventar-/Safety-Tooling
+- `d347c7138bae18325c288632222917ad618e6547` – finale Hub-Separation
+
+Vor einer Release-Mergefolge muss die Basis kontrolliert mit `main` reconciled werden. Diese zwei Änderungen dürfen nicht versehentlich verloren gehen. Nach echter Merge-/Rebase-Integration ist der resultierende Commit ein neuer Kandidat und muss erneut durch die Release-Gates.
+
+PR #3 wurde sichtbar als **DO NOT MERGE** gekennzeichnet; der Versuch, ihn über die Connector-Schnittstelle zurück in Draft zu versetzen, scheiterte an einem GitHub-GraphQL-Connectorfehler. PR #11 und PR #13 bleiben Draft.
 
 ## Release Evidence / Assets
 
@@ -83,17 +125,18 @@ Kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde ausgefüh
 
 ## Zentrale offene Blocker
 
-1. **#7** Hosted Runner vor Step 1; v64 bestätigt in Run #3608
-2. **#8** reale Geräte, v64 Offline-PWA, Spezialgates, Accessibility, Core-Partytests und Wave-1-Labs
-3. **#14** Operator, Hosting, Legal, Support und Incident Evidence
-4. Root-`icon.svg` Rechtebasis
+1. **#7** Hosted Runner endet vor Step 1
+2. **PR-Stack/Main-Reconciliation** vor einer Release-Mergefolge
+3. **#8** reale Geräte, v64 Offline-PWA, Spezialgates, Accessibility, Core-Partytests und Wave-1-Labs
+4. **#14** Operator, Hosting, Legal, Support und Incident Evidence
+5. Root-`icon.svg` Rechtebasis
 
 ## Real offene Releasegates
 
 1. Actions-Runner / Online-`npm ci` / CI / Cross-Browser
-2. Branch Protection
+2. Stack-Reconciliation + Branch Protection
 3. Hostingprovider + getrennte HTTPS-Origins
-4. v64 Staging-/Production-/PWA-Smokes + Upgrade/Rollback
+4. v64/RC Staging-/Production-/PWA-Smokes + Upgrade/Rollback
 5. bestehende Spezialgates bis HS60
 6. Android / iPhone / Tablet
 7. VoiceOver / TalkBack / Tastatur / 200-%-Zoom
@@ -105,7 +148,7 @@ Kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde ausgefüh
 
 ## Entwicklungsregel ab v64
 
-- keine neuen Core-Spielmodi bis die P0/P1-Releasegates geschlossen sind
+- **Feature-Freeze für neue Core-Spielmodi**, bis P0/P1-Releasegates geschlossen sind
 - keine große Architekturmigration vor dem RC
 - reale Fehler aus CI, Browser-, Geräte-, Accessibility- und Gruppentests zuerst beheben
 - Labs nicht still in Core übernehmen
