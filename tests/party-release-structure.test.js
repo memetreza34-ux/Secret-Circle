@@ -3,23 +3,23 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const catalog = require('../party-wave-one-imposter-catalog.js');
+const catalog = require('../party-wave-one-writing-catalog.js');
 const release = require('../party-release-structure.js');
 
 function read(file) {
   return fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
 }
 
-assert.equal(release.version, 3);
+assert.equal(release.version, 4);
 assert.equal(release.coreIds.length, 15);
-assert.equal(release.labIds.length, 21);
+assert.equal(release.labIds.length, 23);
 assert.equal(new Set(release.coreIds).size, release.coreIds.length);
 assert.equal(new Set(release.labIds).size, release.labIds.length);
 assert.equal(release.coreIds.some(id => release.labIds.includes(id)), false);
 
 const summary = release.counts(catalog.games);
-assert.equal(catalog.games.length, 49);
-assert.deepEqual(summary, { core: 15, extended: 13, labs: 21 });
+assert.equal(catalog.games.length, 51);
+assert.deepEqual(summary, { core: 15, extended: 13, labs: 23 });
 
 for (const id of release.coreIds) {
   const game = catalog.getGame(id);
@@ -33,9 +33,11 @@ for (const id of release.labIds) {
   assert.equal(release.tierFor(game), 'labs');
 }
 
-for (const id of ['party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter']) {
-  assert.equal(release.tierFor(catalog.getGame(id)), 'labs');
-}
+for (const id of [
+  'party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter',
+  'fill-blank-battle', 'who-wrote-it'
+]) assert.equal(release.tierFor(catalog.getGame(id)), 'labs');
+
 assert.equal(release.tierFor(catalog.getGame('hot-takes')), 'extended');
 assert.equal(release.tierFor(catalog.getGame('wavelength')), 'extended');
 assert.equal(release.tierFor({ id: 'custom-game-demo', custom: true, status: 'playable' }), 'extended');
@@ -79,7 +81,7 @@ console.log(JSON.stringify({
   coreGames: summary.core,
   extendedGames: summary.extended,
   labsGames: summary.labs,
-  waveOneLabs: ['party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter'],
+  waveOneLabs: ['party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter', 'fill-blank-battle', 'who-wrote-it'],
   customGamesClassifiedAsExtended: true,
   plannedGamesClassifiedAsLabs: true,
   ageAndReleaseTierCombined: true,
