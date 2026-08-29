@@ -3,21 +3,25 @@
 Stand: 29. August 2026  
 Zielrelease: 4.–15. Januar 2027  
 Arbeitsbranch: `agent/release-foundation-2027`  
-Draft-PR: #13
+Draft-PR: #13  
+Main-Reconciliation-Kandidat: Draft-PR #15
 
 ## Gesamtstatus
 
 **Phase:** Release-Härtung / Verifikation  
 **Öffentliche Freigabe:** **NO_GO**  
 **Offline-Core:** **`secret-circle-v64` / `secret-circle-v64-staging`**  
+**Package:** **`1.0.0-beta.3`**  
 **Built-ins:** **55 · 15 Core / 13 Extended / 27 Labs**  
 **Expansion Wave 1:** **10/10 source implemented, real evidence OPEN**  
 **Classic Content:** **v4**  
 **Core Source Review/Hardening:** **15/15 PREPARED**  
 **Accessibility:** **PREPARED**  
 **Bestehende Spezialgates bis HS60:** **source PREPARED, real evidence OPEN**  
-**Operator / Hosting / Legal:** **PREPARED / BLOCKED**  
-**PR-Stack:** **DIVERGED_FROM_MAIN – Reconciliation vor Release-Merge erforderlich**
+**Operator / Hosting / Legal / Support:** **PREPARED / BLOCKED**  
+**Branch Protection:** **BLOCKED – `main` aktuell ungeschützt**  
+**CI / Cross-Browser:** **BLOCKED – Hosted Runner erreicht Step 1 nicht**  
+**PR-Stack:** **Reconciliation-Kandidat PR #15 vorhanden, noch nicht in Releasebranch integriert**
 
 ## Versionslinie
 
@@ -46,9 +50,9 @@ Gemeinsame Architektur:
 - Session-Replacement-, Resume-, exact-once- und Offline-Verträge werden wiederverwendet
 - Wave-1-Unit-/E2E-/Audit-Verträge sind in `npm run test`, `npm run check` und `npm run validate` eingebunden
 
-**Wichtig:** Wave-1-Labs erweitern den Januar-Core nicht automatisch. Vor einer Promotion bleiben reale Browser-/PWA-/Accessibility-/Gruppentests Pflicht.
+**Kein Wave-1-Modus erweitert automatisch den Januar-Core.**
 
-## Runtime-/Metadaten-Synchronität
+## Runtime-/Release-Metadaten-Synchronität
 
 `release-meta.json` ist die zentrale Arbeitsmetadatenquelle für:
 
@@ -58,10 +62,10 @@ Gemeinsame Architektur:
 - 55 / 15 / 13 / 27
 - Wave 1 10/10
 - NO_GO / PR #13 Draft
-- CI-Referenzbefund
-- aktuellen PR-Stack-Drift
+- CI-/Branch-Protection-Befunde
+- PR-Stack-/PR-15-Reconciliation
 
-`tests/party-release-structure.test.js` vergleicht diese Metadaten mit dem real zusammengesetzten Runtime-Katalog. `tests/service-worker.test.js` vergleicht die Cachegeneration mit denselben Metadaten. Damit soll Versions-/Spielzahl-/Cache-Drift künftig automatisch auffallen.
+`tests/party-release-structure.test.js` vergleicht die Metadaten mit dem real zusammengesetzten Runtime-Katalog, dem Package und jetzt auch mit `operator-release.json.releaseContext`. Dadurch dürfen Operator-/Hosting-Evidence, App-Version und Cachegeneration nicht still auseinanderlaufen.
 
 ## PWA v64
 
@@ -73,27 +77,32 @@ Gemeinsame Architektur:
 
 ## CI – P0
 
-Referenzierter vollständig untersuchter v64-Actions-Lauf:
+Aktuellster direkt untersuchter Reconciliation-Kandidat:
 
-- Run **#3608**
-- Run ID `33253663445`
-- Job `99103557030`
-- Head `2297868e1f65b45753294151a3b1f401a55f6288`
+- Workflow: `Secret Circle CI`
+- Run **#3660**
+- Run ID `33255333073`
+- Job `99107918414`
+- Head `c3b1f423c48d623ac22c6a0c38c5fdf927773ab3`
+- Branch `integration/v64-main-sync`
 - Ergebnis `failure`
 - `steps: []`
 - `runner_id: 0`
 - `runner_name: ""`
 - requested label `ubuntu-latest`
 
-Ein späterer Lauf **#3644** auf Commit `6c518161b30fb34bba60d6924b32836b89477d24` reproduzierte dasselbe Muster: Job `99106788535`, `steps: []`, `runner_id: 0`, leerer Runner-Name.
+Kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde ausgeführt. Damit bleibt der Fehler **vor Repository-Ausführung**.
 
-Kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde in diesen Jobs ausgeführt.
+**Folge:**
 
-**v50–v64 besitzen keinen echten Hosted-Runner-PASS.** Der nächste Schritt ist kein App-Code-Workaround, sondern Actions-/Hosted-Runner-/Account-/Billing-/Policy-Diagnose gemäß Issue #7.
+- CI = **BLOCKED**
+- Cross-Browser = **BLOCKED**
+- kein App-Code-Workaround
+- Issue #7 bleibt P0
 
 ## PR-/Branch-Stack – P0/P1
 
-Aktuelle Kette:
+Historische Kette:
 
 ```text
 main
@@ -102,60 +111,115 @@ main
             └─ PR #13 agent/release-foundation-2027
 ```
 
-Intern ist der Stack sauber:
-
-- PR #11 liegt vollständig auf PR #3
-- PR #13 liegt vollständig auf PR #11
-
-Die erste Stack-Basis ist gegenüber aktuellem `main` jedoch **diverged**. Zwei spätere `main`-Commits liegen nicht in der Stack-Abstammung:
+Die zwei späteren `main`-Commits außerhalb der ursprünglichen Stack-Abstammung sind:
 
 - `6b6bddd0ae619d160b4468b61ae49cb30e2ea834` – Legacy-ZIP-Inventar-/Safety-Tooling
 - `d347c7138bae18325c288632222917ad618e6547` – finale Hub-Separation
 
-Vor einer Release-Mergefolge muss die Basis kontrolliert mit `main` reconciled werden. Diese zwei Änderungen dürfen nicht versehentlich verloren gehen. Nach echter Merge-/Rebase-Integration ist der resultierende Commit ein neuer Kandidat und muss erneut durch die Release-Gates.
+Dafür existiert jetzt der isolierte Draft-PR **#15** auf `integration/v64-main-sync`.
 
-PR #3 wurde sichtbar als **DO NOT MERGE** gekennzeichnet; der Versuch, ihn über die Connector-Schnittstelle zurück in Draft zu versetzen, scheiterte an einem GitHub-GraphQL-Connectorfehler. PR #11 und PR #13 bleiben Draft.
+Der Kandidat:
 
-## Release Evidence / Assets
+- enthält die aktuelle `main`-Historie
+- lag bei letzter Synchronisierung `behind_by = 0` gegenüber Releasebranch und `main`
+- ändert gegenüber dem v64-Releasebranch nur 9 Pfade
+- verändert keine Spielengine, keinen Katalog und keinen Service-Worker-Runtime-Code
+- integriert die historischen Archiv-/Safety-Dateien und moderne v64-CI-Verkabelung
+- bleibt ungemergt, bis reale Tests wieder laufen
 
-- `release-evidence.json`: **PREPARED / NO_GO**
-- `operator-release.json`: **PREPARED / BLOCKED**
-- Root-`icon.svg`: Rechtebasis `unresolved`
-- finaler RC-Commit/Tag/Cache/Staging-/Production-URL: noch nicht gesetzt
+PR #3 ist sichtbar als **DO NOT MERGE** gekennzeichnet. PR #11, #13 und #15 bleiben Draft.
 
-## Zentrale offene Blocker
+## Branch Protection – bestätigt BLOCKED
 
-1. **#7** Hosted Runner endet vor Step 1
-2. **PR-Stack/Main-Reconciliation** vor einer Release-Mergefolge
-3. **#8** reale Geräte, v64 Offline-PWA, Spezialgates, Accessibility, Core-Partytests und Wave-1-Labs
-4. **#14** Operator, Hosting, Legal, Support und Incident Evidence
-5. Root-`icon.svg` Rechtebasis
+GitHub meldet für `main` aktuell:
 
-## Real offene Releasegates
+- `protected: false`
+- `protection.enabled: false`
+- Required-Check-Enforcement: `off`
+- keine Required-Check-Kontexte
 
-1. Actions-Runner / Online-`npm ci` / CI / Cross-Browser
-2. Stack-Reconciliation + Branch Protection
-3. Hostingprovider + getrennte HTTPS-Origins
-4. v64/RC Staging-/Production-/PWA-Smokes + Upgrade/Rollback
-5. bestehende Spezialgates bis HS60
-6. Android / iPhone / Tablet
-7. VoiceOver / TalkBack / Tastatur / 200-%-Zoom
-8. reale Gruppen/Beta für alle 15 Core-Spiele
-9. Wave-1-Labs nur bei eigener realer Evidence über Labs hinaus einstufen
-10. Asset-/Operator-/Privacy-/Support-/Legal-Sign-off
-11. Incident-/Rollback-Drill
-12. unveränderter RC + Release Evidence FINAL/GO
+Branch Protection darf erst als PASS gelten, wenn eine reale Regel aktiviert und mit einem funktionierenden `Secret Circle CI / validate` geprüft wurde.
+
+## Operator / Hosting / Legal / Support
+
+`operator-release.json` ist weiterhin korrekt **PREPARED / BLOCKED**.
+
+Neu ist ein maschinenlesbarer `releaseContext` mit:
+
+- Source Generation `v64`
+- App `1.0.0-beta.3`
+- Production Cache `secret-circle-v64`
+- Staging Cache `secret-circle-v64-staging`
+- Release Target `2027-01`
+- Release Decision `NO_GO`
+
+Real weiterhin nicht vorhanden:
+
+- finaler Betreiber / Rechtsform / ladungsfähige Anschrift
+- öffentlicher Betreiber-/Supportkontakt
+- Security-/Privacy-Meldeweg
+- Hostingprovider / Produkt / Region
+- getrennte HTTPS-Staging-/Production-Origin
+- finale Hosting-/Log-/Privacy-Prüfung
+- Legal-/Anbieterkennzeichnungsseite mit realen Angaben
+- Incident-Verantwortliche
+- Probe-Supportfall
+- Probe-SEV-1
+- Rollback-Drill
+
+Deshalb sind jetzt korrekt als **BLOCKED** klassifiziert:
+
+- `stagingHttpSmoke`
+- `legalPrivacy`
+- `supportIncident`
+- `productionSmoke`
+
+## Assets
+
+- Root-`icon.svg`: Provenienz `unresolved`
+- `icon-192.png` / `icon-512.png`: Ableitungen des ungeklärten SVG
+- Git-Historie beweist die Repository-Herkunft, aber nicht die tatsächliche Rechtebasis
+
+Daher bleibt `assetsThirdParty = BLOCKED`, bis Rechte real bestätigt oder das Icon durch ein eindeutig eigenes Asset ersetzt wurde.
+
+## Noch offene, aber nicht extern blockierte reale Gates
+
+- Android
+- iPhone/iOS
+- Tablet/iPad
+- Accessibility real: VoiceOver / TalkBack / Tastatur / 200-%-Zoom / Touch / Rotation
+- reale Gruppen für alle 15 Core-Spiele
+- bestehende Spezialgates bis HS60 auf echten Browsern/Geräten
+- Wave-1-Labs reale Browser-/PWA-/Gruppenevidence
+- Content-/Privacy-/Reference-Finalreview
+- PWA Upgrade/Rollback nach verfügbarer Testumgebung
+
+## Priorität ab jetzt
+
+1. **Issue #7:** Hosted Runner / Actions / Billing / Policy lösen
+2. **PR #15:** nach funktionierendem CI vollständig testen und erst dann in Releasepfad übernehmen
+3. **Branch Protection:** `Secret Circle CI / validate` real als Required Check aktivieren/prüfen
+4. Hostingprovider + getrennte HTTPS-Origins festlegen
+5. Operator-/Support-/Security-Kontakte real festlegen
+6. v64/RC Staging-/PWA-/Upgrade-/Rollback-Smokes
+7. Android / iPhone / Tablet + Accessibility
+8. reale Gruppentests für alle 15 Core-Games
+9. Assetrechte / Icon lösen
+10. Legal-/Support-/Incident-Sign-off
+11. unveränderlichen RC einfrieren
+12. `release-evidence.json = FINAL / GO` erst nach vollständiger realer Evidence
 
 ## Entwicklungsregel ab v64
 
-- **Feature-Freeze für neue Core-Spielmodi**, bis P0/P1-Releasegates geschlossen sind
+- **Feature-Freeze für neue Core-Spielmodi**
 - keine große Architekturmigration vor dem RC
-- reale Fehler aus CI, Browser-, Geräte-, Accessibility- und Gruppentests zuerst beheben
+- reale Releasefehler vor neuen Features
 - Labs nicht still in Core übernehmen
-- offene Evidence-Gates niemals nur aufgrund vorhandenen Codes als PASS markieren
+- PREPARED/OPEN/BLOCKED niemals als PASS interpretieren
 
 ## Releaseentscheidung
 
 - öffentlicher Release: **NO_GO**
 - PR #13 mergen: **Nein**
-- PR #13 bleibt Draft: **Ja**
+- PR #15 mergen: **Noch nicht**
+- neue Core-Features bauen: **Nein**
