@@ -1,8 +1,10 @@
 # Secret Circle – Releaseumfang Januar 2027
 
-Stand: 18. August 2026
+Stand: 29. August 2026
 
-Der öffentliche Januar-Release wird nach Qualität statt nach maximaler Spielanzahl freigegeben. Die 45 eingebauten Spiele bleiben sichtbar, werden aber in drei Reifestufen getrennt.
+Der öffentliche Januar-Release wird nach Qualität statt nach maximaler Spielanzahl freigegeben. Aktuell sind **55 technisch spielbare Built-ins** vorhanden. Sie bleiben in drei Reifestufen getrennt: **15 Core / 13 Extended / 27 Labs**.
+
+Der Januar-Core bleibt bewusst bei 15 Spielen eingefroren. Neue Labs oder langfristige Modusideen erweitern den Release-Core nicht automatisch.
 
 ## Stufe A – 15 Kernspiele
 
@@ -47,13 +49,15 @@ Mechaniken, die über die schnelle Quick-Seite laufen, verwenden zusätzlich den
 
 Diese Spiele bleiben spielbar und sichtbar, werden aber nach den Kernspielen priorisiert. Eigene Creator-Spiele werden ebenfalls als Erweiterungen eingeordnet.
 
-Die aktuelle eingebaute Erweiterungsmenge wird automatisch aus dem 45-Spiele-Katalog minus Kernspiele minus Labs berechnet und muss exakt 13 ergeben.
+Die aktuelle eingebaute Erweiterungsmenge wird aus dem Release-Katalog minus Core minus Labs abgeleitet und muss für v64 **exakt 13** ergeben.
 
 Erweiterungen dürfen den Januar-Release nicht blockieren, solange sie klar gekennzeichnet sind, keine kritischen oder hohen Fehler in gemeinsamen Plattformfunktionen verursachen und keine sicherheits-, datenschutz- oder rechtskritischen Probleme enthalten.
 
-## Stufe C – 17 Labs
+## Stufe C – 27 Labs
 
-Labs sind experimentelle Modi. Sie bleiben bewusst vom Kernrelease getrennt:
+Labs sind experimentelle Modi. Sie bleiben bewusst vom Kernrelease getrennt.
+
+Bestehende Labs:
 
 - `who-am-i`
 - `anime-guess`
@@ -73,9 +77,32 @@ Labs sind experimentelle Modi. Sie bleiben bewusst vom Kernrelease getrennt:
 - `story-chain`
 - `finish-the-sentence`
 
+Expansion Wave 1 – quellsseitig 10/10 implementiert:
+
+- `bluff-trivia`
+- `party-quiz`
+- `fact-or-fake`
+- `percent-guess`
+- `fill-blank-battle`
+- `who-wrote-it`
+- `party-bracket`
+- `undercover-similar-word`
+- `no-word-imposter`
+- `password-one-word`
+
+Damit ergibt sich für v64: **27 Labs**.
+
+Wave 1 verwendet gemeinsame Enginefamilien für Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. `quick-loader.js` v11 routet diese Familien; `party-release-structure.js` v5 hält alle zehn Wave-1-Modi ausdrücklich in Labs.
+
 Labs dürfen nicht als vollständig releaseabgenommen dargestellt werden. Gemeinsame Plattformfunktionen, die Labs benutzen, müssen trotzdem dieselben Stabilitätsverträge erfüllen. Dazu gehören insbesondere Session-Ledger, gemeinsame Sessionsteuerung, Offline-Core, Datenschutz und PWA-Updatefluss.
 
-Der technische Referenz-/Source-Pass ist mit Offline-Core **v41** deutlich gehärtet: konkrete frühere Anime-Namen wurden aus der ausgelieferten Mega-Quelle entfernt, `wavelength` erscheint upstream als **Spektrum-Tipp**, Browser-Tabu nutzt `Tab` statt `Chrome`, der Emoji-Löwenhinweis ist generisch und `scripts/reference_content_audit.py` prüft ausgelieferte Contentquellen. Dies ersetzt **nicht** die noch offene manuelle Visual-/Marketing-/Legal-Abnahme.
+**Source-Implementierung ist kein Release-PASS.** Für Wave 1 bleiben reale Browser-, PWA-, Accessibility- und Gruppentests offen. Ein Lab darf erst nach eigener Evidence in eine höhere Reifestufe verschoben werden; der Januar-Core bleibt unabhängig davon bei 15.
+
+## Referenz-/Content-Sicherheit
+
+Der aktuelle v64-Stand enthält automatisierte Referenz-/Source-Audits über ausgelieferte Contentquellen einschließlich der Wave-1-Kataloge. Diese Audits reduzieren offensichtliche Marken-/Franchise-/Referenzrisiken, ersetzen aber **keine manuelle Visual-, Marketing-, Asset- oder Rechtsabnahme**.
+
+Root-`icon.svg` bleibt bis belegter Herkunft oder Ersatz ein Release-Blocker.
 
 ## Creator-Spiele
 
@@ -90,6 +117,20 @@ Selbst erstellte Spiele sind keine eigenen Kernspiele. Sie werden im Hub als Erw
 - Offlinebetrieb
 - sichere Textdarstellung ohne ungeprüftes HTML
 
+## Aktueller technischer Release-Stand
+
+- Source-Generation: **v64**
+- Offline-Cache: **`secret-circle-v64`**
+- Staging-Cache: **`secret-circle-v64-staging`**
+- Built-ins: **55**
+- Core: **15**
+- Extended: **13**
+- Labs: **27**
+- Wave 1: **10/10 source-implemented, real evidence OPEN**
+- öffentliche Freigabe: **NO_GO**
+
+GitHub Actions bleibt extern blockiert. Der frische v64-Lauf **#3608** erhielt keinen Hosted Runner: `steps: []`, `runner_id: 0`, leerer Runner-Name; Repositorycode wurde nicht ausgeführt. Dieser Blocker darf nicht durch Abschwächen von Tests oder App-Code umgangen werden.
+
 ## Release-Grenzen
 
 Der Januar-Release bleibt `NO_GO`, wenn mindestens einer dieser Punkte zutrifft:
@@ -99,10 +140,16 @@ Der Januar-Release bleibt `NO_GO`, wenn mindestens einer dieser Punkte zutrifft:
 - GitHub Actions führt keine belastbaren Repository-Schritte aus
 - `npm run ci`, Cross-Browser oder Reference-Source-Audit sind nicht tatsächlich grün dokumentiert
 - `package-lock.json`/`npm ci` oder Required Checks fehlen
+- Branch Protection ist nicht real aktiviert/verifiziert
 - Offline-Start oder PWA-Update scheitert auf einem Zielgerät
 - Import oder Löschung kann Daten ohne funktionierenden Rollback zerstören
 - notwendige Datenschutz-, Betreiber-, Asset-, Lizenz- oder Supportangaben fehlen
 - manuelle Content-/Rechte-/Visual-Abnahme ist nicht abgeschlossen
 - Kernspiele wurden nicht mit realen Gruppen getestet
+- ein Release-Candidate wurde nach der Evidence erneut verändert
 
-Langfristige zusätzliche Modi aus `MODE_UNIVERSE.md` bleiben nach Januar 2027 möglich, werden aber nur mit eigener Mechanik, hochwertigen Inhalten, Tests und klarer Nutzerwirkung ergänzt.
+## Langfristige Produktgrenze
+
+Die **122-Modi-Vision** aus `MODE_UNIVERSE.md` bleibt ein langfristiger Produkt-Horizont und ist **keine Voraussetzung für Januar 2027**.
+
+Vor einer weiteren großen Expansion haben reale Release-Gates Vorrang. Ziel bleibt eine kleine Zahl belastbarer Mechanikfamilien, aus denen viele hochwertige, originale Themen-/Content-Varianten entstehen – nicht 122 voneinander unabhängige Engines.
