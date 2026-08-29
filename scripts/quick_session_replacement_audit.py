@@ -17,7 +17,6 @@ required = [
 for relative in required:
     if not (ROOT / relative).is_file():
         violations.append(f'Missing Quick replacement contract file: {relative}')
-
 if violations:
     raise SystemExit('\n'.join(sorted(set(violations))))
 
@@ -46,10 +45,12 @@ for marker in (
 
 for marker in (
     "const REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js';",
+    "const WAVE_ONE_SOURCE = 'party-wave-one-modes.js';",
+    'catalog.waveOneGameIds?.includes(gameId)',
     'replacementGuardReady = false',
     'plan.push(REPLACEMENT_GUARD_SOURCE)',
     'Boolean(windowRef.SecretCircleQuickSessionReplacementGuard)',
-    'version: 7'
+    'version: 8'
 ):
     if marker not in loader:
         violations.append(f'Quick loader replacement marker missing: {marker}')
@@ -107,8 +108,9 @@ if violations:
 
 print(json.dumps({
     'quick_session_replacement_audit': 'PASS',
-    'guard_version': 1,
-    'loader_version': 7,
+    'guard_version': 2,
+    'loader_version': 8,
+    'wave_one_uses_quick_family': True,
     'families_guarded': ['quick', 'mega', 'viral', 'created'],
     'same_game_confirmation': True,
     'cross_game_family_confirmation': True,
