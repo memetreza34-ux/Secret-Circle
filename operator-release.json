@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "evidenceStatus": "PREPARED",
   "operatorGate": "BLOCKED",
+  "releaseContext": {
+    "sourceGeneration": "v64",
+    "appVersion": "1.0.0-beta.3",
+    "expectedCache": "secret-circle-v64",
+    "expectedStagingCache": "secret-circle-v64-staging",
+    "releaseTarget": "2027-01",
+    "releaseDecision": "NO_GO"
+  },
   "operator": {
     "legalName": null,
     "legalForm": null,
@@ -61,5 +69,5 @@
     "finalPlausibilityReviewCompleted": false,
     "reviewedAt": null
   },
-  "notes": "Template only. Do not invent operator, contact, hosting or legal facts. READY requires real values, tested contacts, final hosting/privacy review and completed drills."
+  "notes": "Template only. releaseContext is synchronized with release-meta.json and must not be treated as final RC evidence. Do not invent operator, contact, hosting or legal facts. READY requires real values, tested contacts, final hosting/privacy review and completed drills on the same immutable release candidate."
 }
