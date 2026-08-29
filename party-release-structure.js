@@ -8,7 +8,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createPartyReleaseStructure() {
   'use strict';
 
-  const VERSION = 4;
+  const VERSION = 5;
   const CORE_IDS = Object.freeze([
     'imposter', 'truth-dare', 'never-have', 'most-likely', 'would-rather',
     'paranoia', 'charades', 'taboo', 'hot-potato', 'word-chain',
@@ -20,7 +20,8 @@
     'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best',
     'hear-me-out', 'hot-seat', 'story-chain', 'finish-the-sentence',
     'party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter',
-    'fill-blank-battle', 'who-wrote-it'
+    'fill-blank-battle', 'who-wrote-it', 'percent-guess', 'party-bracket',
+    'bluff-trivia', 'password-one-word'
   ]);
   const CORE = new Set(CORE_IDS);
   const LABS = new Set(LAB_IDS);
@@ -79,15 +80,12 @@
     const filter = documentRef.createElement('select');
     filter.id = 'release-tier-filter';
     const options = [
-      ['Alle Stufen', 'all'],
-      [`Kernspiele (${summary.core})`, 'core'],
-      [`Erweiterungen (${summary.extended})`, 'extended'],
-      [`Labs (${summary.labs})`, 'labs']
+      ['Alle Stufen', 'all'], [`Kernspiele (${summary.core})`, 'core'],
+      [`Erweiterungen (${summary.extended})`, 'extended'], [`Labs (${summary.labs})`, 'labs']
     ];
     for (const [label, value] of options) {
       const option = OptionConstructor ? new OptionConstructor(label, value) : element(documentRef, 'option', '', label);
-      option.value = value;
-      filter.add(option);
+      option.value = value; filter.add(option);
     }
     filterLabel.append(filter);
     const statusLabel = documentRef.querySelector('label[for="status-filter"]');
@@ -96,111 +94,54 @@
     const overview = element(documentRef, 'section', 'release-tier-overview');
     overview.setAttribute('aria-label', 'Release-Stufen');
     for (const tier of ['core', 'extended', 'labs']) {
-      const info = TIERS[tier];
-      const button = element(documentRef, 'button', `release-tier-card tier-${tier}`);
-      button.type = 'button';
-      button.dataset.releaseTierTarget = tier;
-      button.append(
-        element(documentRef, 'strong', '', `${summary[tier]} ${info.plural}`),
-        element(documentRef, 'span', '', info.description)
-      );
+      const info = TIERS[tier]; const button = element(documentRef, 'button', `release-tier-card tier-${tier}`);
+      button.type = 'button'; button.dataset.releaseTierTarget = tier;
+      button.append(element(documentRef, 'strong', '', `${summary[tier]} ${info.plural}`), element(documentRef, 'span', '', info.description));
       overview.append(button);
     }
     if (heading) heading.insertAdjacentElement('afterend', overview);
 
-    const title = documentRef.querySelector('#games-title');
-    const description = title?.nextElementSibling;
+    const title = documentRef.querySelector('#games-title'); const description = title?.nextElementSibling;
     if (title) title.textContent = 'Kernspiele, Erweiterungen & Labs';
-    if (description?.tagName === 'P') {
-      description.textContent = 'Wähle nach Qualität, Spielart, Stimmung, Gruppe und Altersstufe. Labs bleiben klar von den priorisierten Kernspielen getrennt.';
-    }
+    if (description?.tagName === 'P') description.textContent = 'Wähle nach Qualität, Spielart, Stimmung, Gruppe und Altersstufe. Labs bleiben klar von den priorisierten Kernspielen getrennt.';
 
-    let scheduled = false;
-    let applying = false;
-
+    let scheduled = false; let applying = false;
     function decorateCard(card) {
-      const game = catalog.getGame?.(card.dataset.gameId);
-      if (!game) return null;
-      const tier = tierFor(game);
-      card.dataset.releaseTier = tier;
+      const game = catalog.getGame?.(card.dataset.gameId); if (!game) return null;
+      const tier = tierFor(game); card.dataset.releaseTier = tier;
       let pill = card.querySelector('.release-tier-pill');
       if (!pill) {
         pill = element(documentRef, 'span', `release-tier-pill tier-${tier}`, TIERS[tier].label);
         const statusPill = card.querySelector('.status-pill');
-        if (statusPill) statusPill.insertAdjacentElement('beforebegin', pill);
-        else card.append(pill);
-      } else {
-        pill.className = `release-tier-pill tier-${tier}`;
-        pill.textContent = TIERS[tier].label;
-      }
+        if (statusPill) statusPill.insertAdjacentElement('beforebegin', pill); else card.append(pill);
+      } else { pill.className = `release-tier-pill tier-${tier}`; pill.textContent = TIERS[tier].label; }
       return { game, tier };
     }
-
     function apply() {
-      scheduled = false;
-      if (applying) return;
-      applying = true;
-      const selectedTier = filter.value;
-      const selectedAge = ageFilter?.value || 'all';
-      let visible = 0;
-
+      scheduled = false; if (applying) return; applying = true;
+      const selectedTier = filter.value; const selectedAge = ageFilter?.value || 'all'; let visible = 0;
       for (const card of documentRef.querySelectorAll('.game-card[data-game-id]')) {
-        const decorated = decorateCard(card);
-        if (!decorated || !card.closest('#game-grid')) continue;
-        const tierMatches = selectedTier === 'all' || selectedTier === decorated.tier;
-        const ageMatches = ageAllows(decorated.game, selectedAge);
-        const show = tierMatches && ageMatches;
-        card.hidden = !show;
-        if (show) visible += 1;
+        const decorated = decorateCard(card); if (!decorated || !card.closest('#game-grid')) continue;
+        const show = (selectedTier === 'all' || selectedTier === decorated.tier) && ageAllows(decorated.game, selectedAge);
+        card.hidden = !show; if (show) visible += 1;
       }
-
-      grid.querySelector('.release-tier-empty')?.remove();
-      grid.querySelector('.age-empty-state')?.remove();
-      if (!visible && grid.querySelector('.game-card')) {
-        const empty = element(documentRef, 'p', 'release-tier-empty empty-state', 'Keine Spiele passen zu diesen Filtern. Passe Reifestufe, Alter oder die übrigen Katalogfilter an.');
-        grid.append(empty);
-      }
-      if (resultCount) resultCount.textContent = String(visible);
-      applying = false;
+      grid.querySelector('.release-tier-empty')?.remove(); grid.querySelector('.age-empty-state')?.remove();
+      if (!visible && grid.querySelector('.game-card')) grid.append(element(documentRef, 'p', 'release-tier-empty empty-state', 'Keine Spiele passen zu diesen Filtern. Passe Reifestufe, Alter oder die übrigen Katalogfilter an.'));
+      if (resultCount) resultCount.textContent = String(visible); applying = false;
     }
-
-    function schedule() {
-      if (scheduled || applying) return;
-      scheduled = true;
-      (root.queueMicrotask || (callback => Promise.resolve().then(callback)))(apply);
-    }
-
-    filter.addEventListener('change', schedule);
-    ageFilter?.addEventListener('change', schedule);
+    function schedule() { if (scheduled || applying) return; scheduled = true; (root.queueMicrotask || (callback => Promise.resolve().then(callback)))(apply); }
+    filter.addEventListener('change', schedule); ageFilter?.addEventListener('change', schedule);
     overview.addEventListener('click', event => {
-      const button = event.target.closest('[data-release-tier-target]');
-      if (!button) return;
-      filter.value = button.dataset.releaseTierTarget;
-      documentRef.querySelector('[data-view-target="games"]')?.click();
-      schedule();
-      filter.focus();
+      const button = event.target.closest('[data-release-tier-target]'); if (!button) return;
+      filter.value = button.dataset.releaseTierTarget; documentRef.querySelector('[data-view-target="games"]')?.click(); schedule(); filter.focus();
     });
-
     const Observer = root.MutationObserver;
     if (Observer) {
       const observer = new Observer(schedule);
-      for (const target of [grid, documentRef.querySelector('#featured-grid'), documentRef.querySelector('#favorites-grid')].filter(Boolean)) {
-        observer.observe(target, { childList: true, subtree: true });
-      }
+      for (const target of [grid, documentRef.querySelector('#featured-grid'), documentRef.querySelector('#favorites-grid')].filter(Boolean)) observer.observe(target, { childList: true, subtree: true });
     }
-
-    schedule();
-    return true;
+    schedule(); return true;
   }
 
-  return Object.freeze({
-    version: VERSION,
-    tiers: TIERS,
-    coreIds: CORE_IDS,
-    labIds: LAB_IDS,
-    tierFor,
-    ageAllows,
-    counts,
-    install
-  });
+  return Object.freeze({ version: VERSION, tiers: TIERS, coreIds: CORE_IDS, labIds: LAB_IDS, tierFor, ageAllows, counts, install });
 });
