@@ -5,8 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v63'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v63-staging'/);
+assert.match(source, /const CACHE='secret-circle-v64'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v64-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -25,6 +25,9 @@ for (const marker of [
   /party-wave-one-catalog\.js/, /party-wave-one-modes\.js/,
   /party-wave-one-imposter-catalog\.js/, /party-wave-one-imposter-modes\.js/,
   /party-wave-one-writing-catalog\.js/, /party-wave-one-writing-modes\.js/,
+  /party-wave-one-voting-catalog\.js/, /party-wave-one-voting-modes\.js/,
+  /party-wave-one-bluff-catalog\.js/, /party-wave-one-bluff-modes\.js/,
+  /party-wave-one-clue-catalog\.js/, /party-wave-one-clue-modes\.js/,
   /icon\.svg/, /icon-192\.png/, /icon-512\.png/
 ]) assert.match(source, marker);
 assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
@@ -32,34 +35,14 @@ assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);
 assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
-  ok: true,
-  cacheContract: 63,
-  stagedUpdateCache: true,
-  nonDestructivePromotion: true,
-  userControlledActivation: true,
-  queryNavigationOffline: true,
-  canonicalNavigationCaching: true,
-  wordImposterResumeGuardOffline: true,
-  hubResumeGuardOffline: true,
-  hubRoundStateOffline: true,
-  advancedResumeGuardOffline: true,
-  advancedPrivacyGuardOffline: true,
-  quickSessionReplacementGuardOffline: true,
-  quickLoaderV10Offline: true,
-  waveOneQuizCatalogOffline: true,
-  waveOneQuizRunnerOffline: true,
-  waveOneImposterCatalogOffline: true,
-  waveOneImposterRunnerOffline: true,
-  waveOneWritingCatalogOffline: true,
-  waveOneWritingRunnerOffline: true,
-  quickTimerResumeOffline: true,
-  quickBfcacheResumeOffline: true,
-  quickBackgroundPauseOffline: true,
-  quickHiddenSnapshotOffline: true,
-  sharedSessionControlsV5Offline: true,
-  backupSchemaRegistryOffline: true,
-  completeBackupHardeningOffline: true,
-  exactOnceLedgerOffline: true,
-  rasterPwaIconsOffline: true,
-  legacyGuardRemoved: true
+  ok: true, cacheContract: 64, stagedUpdateCache: true, nonDestructivePromotion: true,
+  userControlledActivation: true, queryNavigationOffline: true, canonicalNavigationCaching: true,
+  wordImposterResumeGuardOffline: true, hubResumeGuardOffline: true, hubRoundStateOffline: true,
+  advancedResumeGuardOffline: true, advancedPrivacyGuardOffline: true, quickSessionReplacementGuardOffline: true,
+  quickLoaderV11Offline: true, waveOneQuizOffline: true, waveOneImposterOffline: true,
+  waveOneWritingOffline: true, waveOneVotingOffline: true, waveOneBluffOffline: true, waveOneClueOffline: true,
+  waveOneComplete: 10, quickTimerResumeOffline: true, quickBfcacheResumeOffline: true,
+  quickBackgroundPauseOffline: true, quickHiddenSnapshotOffline: true, sharedSessionControlsV5Offline: true,
+  backupSchemaRegistryOffline: true, completeBackupHardeningOffline: true, exactOnceLedgerOffline: true,
+  rasterPwaIconsOffline: true, legacyGuardRemoved: true
 }, null, 2));
