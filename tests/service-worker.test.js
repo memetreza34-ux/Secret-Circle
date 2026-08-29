@@ -5,8 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.match(source, /const CACHE='secret-circle-v61'/);
-assert.match(source, /const STAGING_CACHE='secret-circle-v61-staging'/);
+assert.match(source, /const CACHE='secret-circle-v62'/);
+assert.match(source, /const STAGING_CACHE='secret-circle-v62-staging'/);
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
 assert.match(source, /async function promoteStagedCore/);
@@ -23,6 +23,7 @@ for (const marker of [
   /quick-session-replacement-guard\.js/, /quick-loader\.js/, /backup-schema-registry\.js/,
   /party-data-tools\.js/, /session-ledger\.js/, /party-session-controls\.js/,
   /party-wave-one-catalog\.js/, /party-wave-one-modes\.js/,
+  /party-wave-one-imposter-catalog\.js/, /party-wave-one-imposter-modes\.js/,
   /icon\.svg/, /icon-192\.png/, /icon-512\.png/
 ]) assert.match(source, marker);
 assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
@@ -31,7 +32,7 @@ assert.doesNotMatch(source, /\.then\(\(\) => self\.skipWaiting\(\)\)/);
 
 console.log(JSON.stringify({
   ok: true,
-  cacheContract: 61,
+  cacheContract: 62,
   stagedUpdateCache: true,
   nonDestructivePromotion: true,
   userControlledActivation: true,
@@ -43,9 +44,11 @@ console.log(JSON.stringify({
   advancedResumeGuardOffline: true,
   advancedPrivacyGuardOffline: true,
   quickSessionReplacementGuardOffline: true,
-  quickLoaderV8Offline: true,
+  quickLoaderV9Offline: true,
   waveOneQuizCatalogOffline: true,
   waveOneQuizRunnerOffline: true,
+  waveOneImposterCatalogOffline: true,
+  waveOneImposterRunnerOffline: true,
   quickTimerResumeOffline: true,
   quickBfcacheResumeOffline: true,
   quickBackgroundPauseOffline: true,
