@@ -19,6 +19,8 @@ Main-Reconciliation-Kandidat: Draft-PR #15
 **Accessibility:** **PREPARED**  
 **Bestehende Spezialgates bis HS60:** **source PREPARED, real evidence OPEN**  
 **Operator / Hosting / Legal / Support:** **PREPARED / BLOCKED**  
+**Hosting Preferred Candidate:** **Cloudflare Pages – researched, noch nicht selected**  
+**Static Hosting Header Policy:** **PREPARED über `/_headers`**  
 **Branch Protection:** **BLOCKED – `main` aktuell ungeschützt**  
 **CI / Cross-Browser:** **BLOCKED – Hosted Runner erreicht Step 1 nicht**  
 **PR-Stack:** **Reconciliation-Kandidat PR #15 vorhanden, noch nicht in Releasebranch integriert**
@@ -65,7 +67,9 @@ Gemeinsame Architektur:
 - CI-/Branch-Protection-Befunde
 - PR-Stack-/PR-15-Reconciliation
 
-`tests/party-release-structure.test.js` vergleicht die Metadaten mit dem real zusammengesetzten Runtime-Katalog, dem Package und jetzt auch mit `operator-release.json.releaseContext`. Dadurch dürfen Operator-/Hosting-Evidence, App-Version und Cachegeneration nicht still auseinanderlaufen.
+Live-Head-/Behind-Werte von PR #15 werden bewusst **nicht** mehr als dauerhafte Wahrheit in `release-meta.json` gespeichert. Vor Review/Merge ist der GitHub-Compare der aktuelle Nachweis.
+
+`tests/party-release-structure.test.js` vergleicht die Metadaten mit dem real zusammengesetzten Runtime-Katalog, dem Package und mit `operator-release.json.releaseContext`. Dadurch dürfen Operator-/Hosting-Evidence, App-Version und Cachegeneration nicht still auseinanderlaufen.
 
 ## PWA v64
 
@@ -77,21 +81,16 @@ Gemeinsame Architektur:
 
 ## CI – P0
 
-Aktuellster direkt untersuchter Reconciliation-Kandidat:
+Der wiederholt tief untersuchte Fehler bleibt unverändert:
 
 - Workflow: `Secret Circle CI`
-- Run **#3660**
-- Run ID `33255333073`
-- Job `99107918414`
-- Head `c3b1f423c48d623ac22c6a0c38c5fdf927773ab3`
-- Branch `integration/v64-main-sync`
-- Ergebnis `failure`
-- `steps: []`
+- Jobs enden mit `steps: []`
 - `runner_id: 0`
 - `runner_name: ""`
-- requested label `ubuntu-latest`
+- angefordert: `ubuntu-latest`
+- kein Checkout / npm / Playwright / Python-Audit / Repositorycode
 
-Kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde ausgeführt. Damit bleibt der Fehler **vor Repository-Ausführung**.
+Auch der vollständig synchronisierte PR-#15-Hardening-Kandidat reproduziert das Muster weiterhin. Der Fehler liegt damit **vor Repository-Ausführung**.
 
 **Folge:**
 
@@ -116,16 +115,16 @@ Die zwei späteren `main`-Commits außerhalb der ursprünglichen Stack-Abstammun
 - `6b6bddd0ae619d160b4468b61ae49cb30e2ea834` – Legacy-ZIP-Inventar-/Safety-Tooling
 - `d347c7138bae18325c288632222917ad618e6547` – finale Hub-Separation
 
-Dafür existiert jetzt der isolierte Draft-PR **#15** auf `integration/v64-main-sync`.
+Dafür existiert der isolierte Draft-PR **#15** auf `integration/v64-main-sync`.
 
-Der Kandidat:
+Der Kandidat ist auf einen festen 9-Pfade-Scope begrenzt:
 
-- enthält die aktuelle `main`-Historie
-- lag bei letzter Synchronisierung `behind_by = 0` gegenüber Releasebranch und `main`
-- ändert gegenüber dem v64-Releasebranch nur 9 Pfade
-- verändert keine Spielengine, keinen Katalog und keinen Service-Worker-Runtime-Code
-- integriert die historischen Archiv-/Safety-Dateien und moderne v64-CI-Verkabelung
-- bleibt ungemergt, bis reale Tests wieder laufen
+- moderne CI-Verkabelung für das Archive-Safety-Tooling
+- README-Historiengrenze
+- drei Archiv-/Hub-Dokumente + Source-Metadaten
+- Archive-Validator/Test/Tool
+
+Keine Spielengine, kein Katalog, keine Release-Tier-Logik und kein Service-Worker-Runtime-Code gehören zu diesem Reconciliation-Diff.
 
 PR #3 ist sichtbar als **DO NOT MERGE** gekennzeichnet. PR #11, #13 und #15 bleiben Draft.
 
@@ -140,11 +139,53 @@ GitHub meldet für `main` aktuell:
 
 Branch Protection darf erst als PASS gelten, wenn eine reale Regel aktiviert und mit einem funktionierenden `Secret Circle CI / validate` geprüft wurde.
 
-## Operator / Hosting / Legal / Support
+## Hosting – Source-Hardening PREPARED, reale Umgebung BLOCKED
+
+Aktuelle Dateien:
+
+- `HOSTING_PROVIDER_RESEARCH.md`
+- `CLOUDFLARE_PAGES_STAGING.md`
+- `HOSTING_DECISION.md`
+- `ENVIRONMENTS.md`
+- `DEPLOYMENT.md`
+- `/_headers`
+- `scripts/staging_smoke.py`
+- `scripts/staging_smoke_contract_audit.py`
+
+Technischer Favorit nach aktueller offizieller Providerrecherche: **Cloudflare Pages**.
+
+Warum nur Preferred Candidate:
+
+- noch kein realer Cloudflare-Pages-Account/Projekt für Secret Circle verbunden
+- DPA/Processor-/Transferposition nicht auf einen realen Account festgeschrieben
+- keine reale Staging-Origin
+- keine reale Production-Origin
+- keine reale Custom Domain
+- kein echter Header-/PWA-/Rollback-Smoke
+
+`operator-release.json.hosting.provider` bleibt daher bewusst `null`.
+
+### Vorbereiteter Response-Vertrag
+
+`/_headers` enthält als statische Hostpolicy:
+
+- Response-CSP ohne `unsafe-inline`/`unsafe-eval`
+- `frame-ancestors 'none'`
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: no-referrer`
+- `X-Frame-Options: DENY`
+- `Strict-Transport-Security: max-age=31536000`
+- `sw.js → Cache-Control: no-cache`
+
+`scripts/staging_smoke.py` verlässt sich nicht auf die Source-Datei, sondern prüft die tatsächlich ausgelieferten Response-Header und die Service-Worker-Cache-Policy.
+
+Empfohlen sind zwei getrennte Pages-Projekte/Origins für Staging und Production; Details in `CLOUDFLARE_PAGES_STAGING.md`.
+
+## Operator / Legal / Support
 
 `operator-release.json` ist weiterhin korrekt **PREPARED / BLOCKED**.
 
-Neu ist ein maschinenlesbarer `releaseContext` mit:
+Maschinenlesbarer `releaseContext`:
 
 - Source Generation `v64`
 - App `1.0.0-beta.3`
@@ -158,16 +199,16 @@ Real weiterhin nicht vorhanden:
 - finaler Betreiber / Rechtsform / ladungsfähige Anschrift
 - öffentlicher Betreiber-/Supportkontakt
 - Security-/Privacy-Meldeweg
-- Hostingprovider / Produkt / Region
+- final ausgewählter Hostingprovider / Produkt / Region
 - getrennte HTTPS-Staging-/Production-Origin
-- finale Hosting-/Log-/Privacy-Prüfung
+- finale Hosting-/Log-/Privacy-/DPA-/Transferprüfung
 - Legal-/Anbieterkennzeichnungsseite mit realen Angaben
 - Incident-Verantwortliche
 - Probe-Supportfall
 - Probe-SEV-1
 - Rollback-Drill
 
-Deshalb sind jetzt korrekt als **BLOCKED** klassifiziert:
+Deshalb bleiben korrekt **BLOCKED**:
 
 - `stagingHttpSmoke`
 - `legalPrivacy`
@@ -199,15 +240,16 @@ Daher bleibt `assetsThirdParty = BLOCKED`, bis Rechte real bestätigt oder das I
 1. **Issue #7:** Hosted Runner / Actions / Billing / Policy lösen
 2. **PR #15:** nach funktionierendem CI vollständig testen und erst dann in Releasepfad übernehmen
 3. **Branch Protection:** `Secret Circle CI / validate` real als Required Check aktivieren/prüfen
-4. Hostingprovider + getrennte HTTPS-Origins festlegen
-5. Operator-/Support-/Security-Kontakte real festlegen
-6. v64/RC Staging-/PWA-/Upgrade-/Rollback-Smokes
-7. Android / iPhone / Tablet + Accessibility
-8. reale Gruppentests für alle 15 Core-Games
-9. Assetrechte / Icon lösen
-10. Legal-/Support-/Incident-Sign-off
-11. unveränderlichen RC einfrieren
-12. `release-evidence.json = FINAL / GO` erst nach vollständiger realer Evidence
+4. **Cloudflare Pages real verbinden / Staging-Origin erzeugen / DPA- und Transferposition prüfen**
+5. `scripts/staging_smoke.py` gegen die echte Staging-Origin ausführen
+6. Operator-/Support-/Security-Kontakte real festlegen
+7. v64/RC PWA-/Upgrade-/Rollback-Smokes
+8. Android / iPhone / Tablet + Accessibility
+9. reale Gruppentests für alle 15 Core-Games
+10. Assetrechte / Icon lösen
+11. Legal-/Support-/Incident-Sign-off
+12. unveränderlichen RC einfrieren
+13. `release-evidence.json = FINAL / GO` erst nach vollständiger realer Evidence
 
 ## Entwicklungsregel ab v64
 
@@ -222,4 +264,5 @@ Daher bleibt `assetsThirdParty = BLOCKED`, bis Rechte real bestätigt oder das I
 - öffentlicher Release: **NO_GO**
 - PR #13 mergen: **Nein**
 - PR #15 mergen: **Noch nicht**
+- Cloudflare Pages als final ausgewählt markieren: **Noch nicht**
 - neue Core-Features bauen: **Nein**

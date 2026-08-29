@@ -1,12 +1,18 @@
 # Secret Circle – Hosting-Entscheidungsvertrag
 
 Stand: 29. August 2026  
-Status: **PREPARED – Provider und Domains offen**  
+Status: **PREPARED – Cloudflare Pages technisch bevorzugt, Provider/Account/Domains noch nicht final ausgewählt**  
 Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v64` / `secret-circle-v64-staging`**
 
 Secret Circle ist eine statische offline-first PWA ohne eigenes Backend. Der Hostinganbieter verarbeitet dennoch HTTP-Verbindungen und kann technische Access-/Securitylogs erzeugen. Hosting bleibt deshalb ein eigenes Release-Gate.
 
 Aktueller Produktstand laut `release-meta.json`: **v64 · 55 Built-ins · 15 Core / 13 Extended / 27 Labs · Wave 1 10/10 source-implemented · NO_GO**.
+
+Aktuelle technische Providerrecherche: `HOSTING_PROVIDER_RESEARCH.md`.  
+Vorbereitetes Staging-Runbook für den bevorzugten Kandidaten: `CLOUDFLARE_PAGES_STAGING.md`.  
+Portable statische Headerquelle: `_headers`.
+
+**Cloudflare Pages ist derzeit nur `PREFERRED CANDIDATE`, nicht `SELECTED`.** `operator-release.json.hosting.provider` bleibt bis zur realen Account-/DPA-/Origin-Prüfung bewusst `null`.
 
 ## 1. Mindestanforderungen
 
@@ -54,6 +60,8 @@ Vor Production Request-/IP-/User-Agent-/Securitydaten, Zwecke, Retention/Löschu
 
 Providerwahl oder Hostingkomfort dürfen die V1-Datenschutzposition nicht still verändern: kein Pflichtkonto, kein Tracking, keine Werbung und kein Cloudzwang für den lokalen Spielbetrieb.
 
+Für den aktuell bevorzugten technischen Kandidaten Cloudflare Pages gilt ausdrücklich: vorhandene DPA-/Data-Localization-Dokumentation ist nur Forschungsgrundlage. Ohne reale Account-/Tarif-/Transferprüfung wird **keine EU-only-Datenhaltung** behauptet.
+
 ## 4. Verbindlicher Response-Security-Header-Vertrag
 
 Die HTML-Meta-CSP bleibt als lokale/fallback-nahe Quellschutzschicht bestehen. Für echtes HTTPS-Staging und Production ist zusätzlich eine **HTTP-Response-CSP** Pflicht, weil insbesondere `frame-ancestors` nur als Response-Header wirksam ist.
@@ -98,7 +106,7 @@ Verbindlich:
 - kürzer, `no-cache` oder äquivalente revalidierende Strategie ist zulässig
 - statische versionierte Assets dürfen separat sinnvoll stärker gecacht werden
 
-Der Smoke prüft diese Regeln gegen die tatsächlich ausgelieferten Response-Header; eine reine Hosting-Dokumentation zählt nicht als PASS.
+Die Repositorydatei `_headers` bildet diese Policy portabel für passende Static Hosts vor. Der Smoke prüft die Regeln trotzdem gegen die **tatsächlich ausgelieferten** Response-Header; die Source-Datei allein zählt nicht als PASS.
 
 ## 5. Staging-Vertrag – v64
 
@@ -122,6 +130,8 @@ Der Netzwerk-Smoke prüft unter anderem:
 - definierte Privacy-/Reference-Content-Verträge
 
 Danach folgen Browser-/PWA-Smoke, Installation, Offline-Neustart, Updatepfade, Daten-/Resume-/Privacy-Checks und Accessibility-/Gerätetests.
+
+Für Cloudflare Pages als bevorzugten Kandidaten beschreibt `CLOUDFLARE_PAGES_STAGING.md` bewusst **zwei getrennte Projekte** für Staging und Production. Diese Struktur ist vorbereitet, aber noch nicht real angelegt.
 
 Zusätzlich real prüfen:
 
@@ -172,9 +182,11 @@ Der aktuelle Hosted-Runner-Fehler endet vor Step 1 mit `steps: []` / `runner_id:
 Vor `HOSTING PASS`:
 
 - [ ] Provider/Produkt real ausgewählt
+- [ ] reale Account-/Tarif-/DPA-Prüfung abgeschlossen
 - [ ] Region/Datenroute, Logs, Retention, Processor-/AVV- und Drittlandrolle dokumentiert
 - [ ] Abuse-/Security-Kontakt geprüft
 - [ ] getrennte HTTPS-Staging-/Production-Origin
+- [ ] `_headers` oder äquivalente reale Hostkonfiguration wirksam
 - [ ] Response-Security-Header auf realem Staging grün
 - [ ] `sw.js` Cache-Control auf realem Staging grün
 - [ ] v64/RC Staging-Smoke grün
@@ -188,4 +200,4 @@ Vor `HOSTING PASS`:
 - [ ] Production-Smoke auf exakt demselben freigegebenen RC grün
 - [ ] Production-HSTS mit `max-age >= 31536000` bestätigt
 
-Bis dahin bleibt Hosting **PREPARED / NO_GO**.
+Bis dahin bleibt Hosting **PREPARED / BLOCKED / NO_GO**.
