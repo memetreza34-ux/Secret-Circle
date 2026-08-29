@@ -13,7 +13,7 @@ from urllib.request import Request, urlopen
 
 MAX_TEXT_BYTES = 2_000_000
 MAX_BINARY_BYTES = 3_000_000
-USER_AGENT = 'Secret-Circle-Staging-Smoke/1.0'
+USER_AGENT = 'Secret-Circle-Staging-Smoke/1.1'
 
 CORE_TEXT_PATHS = (
     'party.html',
@@ -69,6 +69,14 @@ PWA_HEAD_MARKERS = (
     '<link rel="apple-touch-icon" href="icon-192.png">',
 )
 
+REQUIRED_CSP_DIRECTIVES = (
+    "default-src 'self'",
+    "script-src 'self'",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "frame-ancestors 'none'",
+)
+
 
 @dataclass
 class FetchResult:
@@ -76,6 +84,7 @@ class FetchResult:
     final_url: str
     status: int
     content_type: str
+    headers: dict[str, str]
     body: bytes
 
 
@@ -119,11 +128,13 @@ def fetch(base_url: str, relative: str, *, binary: bool = False) -> FetchResult:
             status = int(getattr(response, 'status', response.getcode()))
             if status != 200:
                 raise RuntimeError(f'{relative}: HTTP {status}')
+            headers = {str(key).lower(): str(value).strip() for key, value in response.headers.items()}
             return FetchResult(
                 requested_url=url,
                 final_url=final_url,
                 status=status,
                 content_type=response.headers.get_content_type(),
+                headers=headers,
                 body=read_limited(response, limit),
             )
     except HTTPError as exc:
@@ -137,6 +148,45 @@ def decode_utf8(result: FetchResult, relative: str) -> str:
         return result.body.decode('utf-8')
     except UnicodeDecodeError as exc:
         raise RuntimeError(f'{relative}: kein gültiges UTF-8') from exc
+
+
+def header(result: FetchResult, name: str) -> str:
+    return result.headers.get(name.lower(), '').strip()
+
+
+def assert_security_headers(result: FetchResult, relative: str, *, production: bool = False) -> None:
+    if result.content_type != 'text/html':
+        raise RuntimeError(f'{relative}: Content-Type muss text/html sein, erhalten: {result.content_type}')
+
+    csp = header(result, 'Content-Security-Policy')
+    missing_csp = [directive for directive in REQUIRED_CSP_DIRECTIVES if directive not in csp]
+    if missing_csp:
+        raise RuntimeError(f'{relative}: Response-CSP fehlt/ist unvollständig: {missing_csp}')
+
+    if header(result, 'X-Content-Type-Options').lower() != 'nosniff':
+        raise RuntimeError(f'{relative}: X-Content-Type-Options: nosniff fehlt')
+
+    if header(result, 'Referrer-Policy').lower() != 'no-referrer':
+        raise RuntimeError(f'{relative}: Referrer-Policy: no-referrer fehlt')
+
+    x_frame = header(result, 'X-Frame-Options').upper()
+    if x_frame != 'DENY':
+        raise RuntimeError(f'{relative}: X-Frame-Options: DENY fehlt')
+
+    if production:
+        hsts = header(result, 'Strict-Transport-Security')
+        match = re.search(r'(?:^|;)\s*max-age=(\d+)', hsts, flags=re.IGNORECASE)
+        if not match or int(match.group(1)) < 31_536_000:
+            raise RuntimeError(f'{relative}: Production benötigt HSTS mit max-age >= 31536000')
+
+
+def assert_service_worker_cache_headers(result: FetchResult) -> None:
+    cache_control = header(result, 'Cache-Control').lower()
+    if 'immutable' in cache_control:
+        raise RuntimeError('sw.js: Cache-Control darf nicht immutable sein')
+    match = re.search(r'max-age=(\d+)', cache_control)
+    if match and int(match.group(1)) > 3600:
+        raise RuntimeError('sw.js: Cache-Control max-age ist für Service-Worker-Updates zu lang')
 
 
 def png_dimensions(data: bytes) -> tuple[int, int]:
@@ -164,7 +214,7 @@ def assert_pwa_head_metadata(source: str, label: str) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Secret Circle HTTPS staging/production smoke test')
     parser.add_argument('base_url', help='Basis-URL, z. B. https://staging.example.com/')
-    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v44')
+    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v64')
     parser.add_argument('--production', action='store_true', help='Strengere Production-Prüfungen aktivieren')
     return parser.parse_args()
 
@@ -185,6 +235,11 @@ def main() -> int:
         results[relative] = fetch(base_url, relative, binary=relative.endswith('.png'))
 
     texts = {relative: decode_utf8(result, relative) for relative, result in results.items() if not relative.endswith('.png')}
+
+    for relative in INTERACTIVE_HTML_PATHS:
+        assert_security_headers(results[relative], relative, production=args.production)
+    assert_security_headers(results['privacy.html'], 'privacy.html', production=args.production)
+    assert_service_worker_cache_headers(results['sw.js'])
 
     manifest = json.loads(texts['manifest.webmanifest'])
     if manifest.get('name') != 'Secret Circle – Party Hub':
@@ -264,6 +319,13 @@ def main() -> int:
         'resources_checked': len(results),
         'same_origin_redirects_enforced': True,
         'https_required': True,
+        'security_response_headers_required': True,
+        'response_csp_requires_frame_ancestors_none': True,
+        'x_content_type_options_nosniff_required': True,
+        'referrer_policy_no_referrer_required': True,
+        'x_frame_options_deny_required': True,
+        'production_hsts_required': args.production,
+        'service_worker_cache_policy_checked': True,
         'manifest_and_png_dimensions': True,
         'pwa_head_metadata_contract': True,
         'pwa_head_pages_checked': list(INTERACTIVE_HTML_PATHS),
