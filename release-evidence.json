@@ -18,10 +18,11 @@
       "status": "BLOCKED",
       "commit": null,
       "evidence": {
-        "latestReproducedRun": 3652,
-        "runId": 33255174732,
-        "jobId": 99107510570,
-        "head": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+        "latestInvestigatedRun": 3660,
+        "runId": 33255333073,
+        "jobId": 99107918414,
+        "head": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
+        "branch": "integration/v64-main-sync",
         "steps": 0,
         "runnerId": 0,
         "repositoryCodeExecuted": false
@@ -39,8 +40,10 @@
         "requiredStatusCheckEnforcement": "off",
         "requiredStatusCheckContexts": [],
         "reconciliationCandidatePullRequest": 15,
-        "reconciliationCandidateHead": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+        "reconciliationMainMergeCommit": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+        "reconciliationCurrentReviewedHead": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
         "reconciliationCandidateBehindMain": 0,
+        "reconciliationCandidateBehindReleaseBranchAtReview": 0,
         "reconciliationMergedIntoReleaseBranch": false
       }
     },
