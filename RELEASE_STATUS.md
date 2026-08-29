@@ -3,35 +3,27 @@
 Stand: 29. August 2026  
 Zielrelease: 4.–15. Januar 2027  
 Arbeitsbranch: `agent/release-foundation-2027`  
-Draft-PR: #13  
-Main-Reconciliation-Kandidat: Draft-PR #15
+Release-PR: Draft #13  
+Main-Reconciliation: Draft #15
 
 ## Gesamtstatus
 
 **Phase:** Release-Härtung / Verifikation  
 **Öffentliche Freigabe:** **NO_GO**  
-**Offline-Core:** **`secret-circle-v64` / `secret-circle-v64-staging`**  
-**Package:** **`1.0.0-beta.3`**  
-**Built-ins:** **55 · 15 Core / 13 Extended / 27 Labs**  
-**Expansion Wave 1:** **10/10 source implemented, real evidence OPEN**  
-**Classic Content:** **v4**  
-**Core Source Review/Hardening:** **15/15 PREPARED**  
-**Accessibility:** **PREPARED**  
-**Bestehende Spezialgates bis HS60:** **source PREPARED, real evidence OPEN**  
-**Operator / Hosting / Legal / Support:** **PREPARED / BLOCKED**  
-**Hosting Preferred Candidate:** **Cloudflare Pages – researched, noch nicht selected**  
-**Static Hosting Header Policy:** **PREPARED über `/_headers`**  
-**Branch Protection:** **BLOCKED – `main` aktuell ungeschützt**  
-**CI / Cross-Browser:** **BLOCKED – Hosted Runner erreicht Step 1 nicht**  
-**PR-Stack:** **Reconciliation-Kandidat PR #15 vorhanden, noch nicht in Releasebranch integriert**
+**Package:** `1.0.0-beta.3`  
+**Offline-Core:** `secret-circle-v64` / `secret-circle-v64-staging`  
+**Built-ins:** 55 · 15 Core / 13 Extended / 27 Labs  
+**Wave 1:** 10/10 source-implemented; reale Evidence offen  
+**Core Source Review/Hardening:** 15/15 PREPARED  
+**CI / Cross-Browser:** BLOCKED  
+**Branch Protection:** BLOCKED  
+**Hosting / Operator / Legal / Support:** PREPARED / BLOCKED  
+**Asset-Icon-Provenienz:** SOURCE RESOLVED  
+**Gesamt-Asset-/Third-Party-Gate:** weiterhin BLOCKED
 
-## Versionslinie
+## v64 – Scope Freeze
 
-v45 Core → v46 Hub A11y → v47 Secondary A11y → v48 Word-Imposter → v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 Safe Hub Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Quick Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
-
-## v64 – Expansion Wave 1 Complete
-
-Die zehn geplanten Wave-1-Labs sind quellsseitig implementiert:
+Die zehn Wave-1-Labs sind quellsseitig implementiert:
 
 1. `bluff-trivia`
 2. `party-quiz`
@@ -44,104 +36,62 @@ Die zehn geplanten Wave-1-Labs sind quellsseitig implementiert:
 9. `no-word-imposter`
 10. `password-one-word`
 
-Gemeinsame Architektur:
+Der Januar-Core bleibt bei **15 Spielen**. Keine neuen Core-Modi und keine große Architekturmigration vor den offenen Release-Gates.
 
-- sechs wiederverwendbare Enginefamilien: Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue
-- `quick-loader.js` v11 routet alle Wave-1-Familien explizit
-- `party-release-structure.js` v5 hält alle zehn Modi in Labs
-- Session-Replacement-, Resume-, exact-once- und Offline-Verträge werden wiederverwendet
-- Wave-1-Unit-/E2E-/Audit-Verträge sind in `npm run test`, `npm run check` und `npm run validate` eingebunden
+## CI – P0 BLOCKED
 
-**Kein Wave-1-Modus erweitert automatisch den Januar-Core.**
+GitHub Actions reproduziert weiterhin denselben Fehler vor Repository-Ausführung:
 
-## Runtime-/Release-Metadaten-Synchronität
-
-`release-meta.json` ist die zentrale Arbeitsmetadatenquelle für:
-
-- v64
-- Package `1.0.0-beta.3`
-- `secret-circle-v64` / `secret-circle-v64-staging`
-- 55 / 15 / 13 / 27
-- Wave 1 10/10
-- NO_GO / PR #13 Draft
-- CI-/Branch-Protection-Befunde
-- PR-Stack-/PR-15-Reconciliation
-
-Live-Head-/Behind-Werte von PR #15 werden bewusst **nicht** mehr als dauerhafte Wahrheit in `release-meta.json` gespeichert. Vor Review/Merge ist der GitHub-Compare der aktuelle Nachweis.
-
-`tests/party-release-structure.test.js` vergleicht die Metadaten mit dem real zusammengesetzten Runtime-Katalog, dem Package und mit `operator-release.json.releaseContext`. Dadurch dürfen Operator-/Hosting-Evidence, App-Version und Cachegeneration nicht still auseinanderlaufen.
-
-## PWA v64
-
-- `secret-circle-v64`
-- `secret-circle-v64-staging`
-- alle zehn Wave-1-Labs offline enthalten
-- SessionControls v5 und alle bisherigen Resume-/Privacy-/A11y-/Backup-/Advanced-Verträge bleiben enthalten
-- reale Installation, Update, Rollback, Cold Resume und Offline-Smokes bleiben Evidence-Gates
-
-## CI – P0
-
-Der wiederholt tief untersuchte Fehler bleibt unverändert:
-
-- Workflow: `Secret Circle CI`
-- Jobs enden mit `steps: []`
+- Job endet mit `steps: []`
 - `runner_id: 0`
-- `runner_name: ""`
+- leerer Runner-Name
 - angefordert: `ubuntu-latest`
-- kein Checkout / npm / Playwright / Python-Audit / Repositorycode
+- kein Checkout
+- kein `npm ci`
+- kein Node-/Python-Test
+- kein Playwright
+- kein Repositorycode
 
-Auch der vollständig synchronisierte PR-#15-Hardening-Kandidat reproduziert das Muster weiterhin. Der Fehler liegt damit **vor Repository-Ausführung**.
+Das ist kein App-Code-Fehlernachweis. Issue #7 bleibt der externe P0-Blocker.
 
-**Folge:**
+Sobald Actions wieder einen Hosted Runner erhält, ist die Reihenfolge:
 
-- CI = **BLOCKED**
-- Cross-Browser = **BLOCKED**
-- kein App-Code-Workaround
-- Issue #7 bleibt P0
+1. Online-`npm ci --ignore-scripts --no-audit --no-fund`
+2. `npm run ci`
+3. Chromium / Firefox / WebKit auf exakt demselben Commit
+4. erst danach reale Code-/Testfehler beheben
 
-## PR-/Branch-Stack – P0/P1
+## PR #15 – Main/Reconciliation
 
-Historische Kette:
+Draft-PR #15 bleibt auf einen kontrollierten 9-Pfade-Scope beschränkt und integriert die `main`-seitigen Archiv-/Safety-Dateien in die v64-Releasebasis.
 
-```text
-main
-  └─ PR #3  codex/improve-gameplay-v3
-       └─ PR #11 codex/party-hub-foundation
-            └─ PR #13 agent/release-foundation-2027
-```
+Nach neuen Release-Hardening-Commits muss PR #15 erneut gegen den aktuellen Releasebranch synchronisiert und per GitHub-Compare auf folgende Eigenschaften geprüft werden:
 
-Die zwei späteren `main`-Commits außerhalb der ursprünglichen Stack-Abstammung sind:
+- `behind_by = 0`
+- weiterhin exakt 9 Reconciliation-Pfade
+- keine Spielengine
+- kein Katalog
+- keine Release-Tier-Logik
+- kein Service-Worker-Runtime-Code
 
-- `6b6bddd0ae619d160b4468b61ae49cb30e2ea834` – Legacy-ZIP-Inventar-/Safety-Tooling
-- `d347c7138bae18325c288632222917ad618e6547` – finale Hub-Separation
+PR #15 bleibt Draft und wird ohne funktionierende CI nicht gemergt.
 
-Dafür existiert der isolierte Draft-PR **#15** auf `integration/v64-main-sync`.
+## Branch Protection – BLOCKED
 
-Der Kandidat ist auf einen festen 9-Pfade-Scope begrenzt:
-
-- moderne CI-Verkabelung für das Archive-Safety-Tooling
-- README-Historiengrenze
-- drei Archiv-/Hub-Dokumente + Source-Metadaten
-- Archive-Validator/Test/Tool
-
-Keine Spielengine, kein Katalog, keine Release-Tier-Logik und kein Service-Worker-Runtime-Code gehören zu diesem Reconciliation-Diff.
-
-PR #3 ist sichtbar als **DO NOT MERGE** gekennzeichnet. PR #11, #13 und #15 bleiben Draft.
-
-## Branch Protection – bestätigt BLOCKED
-
-GitHub meldet für `main` aktuell:
+Für `main` wurde zuletzt real bestätigt:
 
 - `protected: false`
-- `protection.enabled: false`
-- Required-Check-Enforcement: `off`
+- Protection nicht aktiv
+- Required-Check-Enforcement `off`
 - keine Required-Check-Kontexte
 
-Branch Protection darf erst als PASS gelten, wenn eine reale Regel aktiviert und mit einem funktionierenden `Secret Circle CI / validate` geprüft wurde.
+Branch Protection soll erst mit einem tatsächlich funktionierenden `Secret Circle CI / validate` Required Check aktiviert und als PASS gewertet werden.
 
-## Hosting – Source-Hardening PREPARED, reale Umgebung BLOCKED
+## Hosting – PREPARED / real BLOCKED
 
-Aktuelle Dateien:
+Technischer Preferred Candidate: **Cloudflare Pages**, noch nicht final ausgewählt.
+
+Vorbereitet:
 
 - `HOSTING_PROVIDER_RESEARCH.md`
 - `CLOUDFLARE_PAGES_STAGING.md`
@@ -152,117 +102,103 @@ Aktuelle Dateien:
 - `scripts/staging_smoke.py`
 - `scripts/staging_smoke_contract_audit.py`
 
-Technischer Favorit nach aktueller offizieller Providerrecherche: **Cloudflare Pages**.
+Der vorbereitete HTTP-Header-Vertrag verlangt unter anderem:
 
-Warum nur Preferred Candidate:
-
-- noch kein realer Cloudflare-Pages-Account/Projekt für Secret Circle verbunden
-- DPA/Processor-/Transferposition nicht auf einen realen Account festgeschrieben
-- keine reale Staging-Origin
-- keine reale Production-Origin
-- keine reale Custom Domain
-- kein echter Header-/PWA-/Rollback-Smoke
-
-`operator-release.json.hosting.provider` bleibt daher bewusst `null`.
-
-### Vorbereiteter Response-Vertrag
-
-`/_headers` enthält als statische Hostpolicy:
-
-- Response-CSP ohne `unsafe-inline`/`unsafe-eval`
+- Response-CSP
 - `frame-ancestors 'none'`
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: no-referrer`
 - `X-Frame-Options: DENY`
-- `Strict-Transport-Security: max-age=31536000`
-- `sw.js → Cache-Control: no-cache`
+- Production-HSTS
+- `sw.js` ohne `immutable`, mit revalidierender/kurzer Cache-Policy
 
-`scripts/staging_smoke.py` verlässt sich nicht auf die Source-Datei, sondern prüft die tatsächlich ausgelieferten Response-Header und die Service-Worker-Cache-Policy.
+Real fehlen weiterhin Provideraccount/-projekt, DPA-/Transferprüfung, getrennte HTTPS-Staging-/Production-Origins und echte Netzwerk-/PWA-/Rollback-Smokes.
 
-Empfohlen sind zwei getrennte Pages-Projekte/Origins für Staging und Production; Details in `CLOUDFLARE_PAGES_STAGING.md`.
+## Operator / Legal / Support – BLOCKED
 
-## Operator / Legal / Support
+`operator-release.json` bleibt korrekt `PREPARED / BLOCKED` und ist an v64 / `1.0.0-beta.3` / die v64-Cachegeneration gebunden.
 
-`operator-release.json` ist weiterhin korrekt **PREPARED / BLOCKED**.
+Real fehlen noch:
 
-Maschinenlesbarer `releaseContext`:
-
-- Source Generation `v64`
-- App `1.0.0-beta.3`
-- Production Cache `secret-circle-v64`
-- Staging Cache `secret-circle-v64-staging`
-- Release Target `2027-01`
-- Release Decision `NO_GO`
-
-Real weiterhin nicht vorhanden:
-
-- finaler Betreiber / Rechtsform / ladungsfähige Anschrift
+- finale Betreiberidentität / Rechtsform / ladungsfähige Anschrift
 - öffentlicher Betreiber-/Supportkontakt
 - Security-/Privacy-Meldeweg
-- final ausgewählter Hostingprovider / Produkt / Region
-- getrennte HTTPS-Staging-/Production-Origin
+- final ausgewähltes Hostingprodukt und reale Origins
 - finale Hosting-/Log-/Privacy-/DPA-/Transferprüfung
-- Legal-/Anbieterkennzeichnungsseite mit realen Angaben
+- reale Legal-/Anbieterkennzeichnungsseite
 - Incident-Verantwortliche
 - Probe-Supportfall
 - Probe-SEV-1
-- Rollback-Drill
+- HTTPS-Rollback-Drill
 
-Deshalb bleiben korrekt **BLOCKED**:
+Daher bleiben `stagingHttpSmoke`, `legalPrivacy`, `supportIncident` und `productionSmoke` BLOCKED.
 
-- `stagingHttpSmoke`
-- `legalPrivacy`
-- `supportIncident`
-- `productionSmoke`
+## Assets – Icon-Rechteblocker geschlossen
 
-## Assets
+Das frühere ungeklärte App-Icon wurde vollständig ersetzt.
 
-- Root-`icon.svg`: Provenienz `unresolved`
-- `icon-192.png` / `icon-512.png`: Ableitungen des ungeklärten SVG
-- Git-Historie beweist die Repository-Herkunft, aber nicht die tatsächliche Rechtebasis
+Aktuelles Release-Iconset:
 
-Daher bleibt `assetsThirdParty = BLOCKED`, bis Rechte real bestätigt oder das Icon durch ein eindeutig eigenes Asset ersetzt wurde.
+- `icon.svg` → `verified-own`
+- `icon-192.png` → `verified-own`
+- `icon-512.png` → `verified-own`
 
-## Noch offene, aber nicht extern blockierte reale Gates
+Nachweise:
 
-- Android
-- iPhone/iOS
-- Tablet/iPad
-- Accessibility real: VoiceOver / TalkBack / Tastatur / 200-%-Zoom / Touch / Rotation
-- reale Gruppen für alle 15 Core-Spiele
-- bestehende Spezialgates bis HS60 auf echten Browsern/Geräten
-- Wave-1-Labs reale Browser-/PWA-/Gruppenevidence
-- Content-/Privacy-/Reference-Finalreview
-- PWA Upgrade/Rollback nach verfügbarer Testumgebung
+- `ASSET_RIGHTS_SIGNOFF.md`
+- `assets/manifests/ORIGINAL_ICON_SOURCE.md`
+- `assets/manifests/ICON_RASTER_HASHES.md`
+- `assets/manifests/asset-provenance.json`
 
-## Priorität ab jetzt
+Der Media-Vertrag bleibt bewusst bei exakt drei Release-Medien. Das neue SVG wurde ohne externe Bild-/Logo-/Stock-/Fontvorlage als geometrische Komposition erstellt; die PNGs sind deterministische Ableitungen.
 
-1. **Issue #7:** Hosted Runner / Actions / Billing / Policy lösen
-2. **PR #15:** nach funktionierendem CI vollständig testen und erst dann in Releasepfad übernehmen
-3. **Branch Protection:** `Secret Circle CI / validate` real als Required Check aktivieren/prüfen
-4. **Cloudflare Pages real verbinden / Staging-Origin erzeugen / DPA- und Transferposition prüfen**
-5. `scripts/staging_smoke.py` gegen die echte Staging-Origin ausführen
-6. Operator-/Support-/Security-Kontakte real festlegen
-7. v64/RC PWA-/Upgrade-/Rollback-Smokes
+**Der alte `icon.svg`-Rechteblocker ist damit quellsseitig geschlossen.**
+
+`assetsThirdParty` bleibt trotzdem BLOCKED, bis auf einem unveränderten RC real vorliegen:
+
+- funktionierender Online-`npm ci`-/Integrity-Nachweis
+- `scripts/asset_provenance_audit.py` grün
+- `scripts/media_inventory_audit.py` grün
+- kompletter `npm run validate` grün
+- finaler manueller Visual-/Marken-/Third-Party-Plausibilitätsreview
+
+## Reale Geräte / Accessibility / Gruppen – OPEN
+
+Weiter offen:
+
+- Android Browser/PWA
+- iPhone Safari / Add to Home Screen
+- iPad/Tablet
+- App-Wechsel / Screen-Lock / Prozess-Kill / Cold Resume
+- 320 CSS px / 200-%-Zoom / Rotation / große Systemschrift
+- vollständige Tastatur
+- VoiceOver
+- TalkBack
+- alle bestehenden Spezialgates bis HS60
+- mindestens ein realer Gruppennachweis für jedes der 15 Core-Spiele
+- Wave-1-Labs separat in echten Browser-/PWA-/Gruppentests
+
+## Nächste Reihenfolge
+
+1. GitHub Actions / Hosted Runner / Billing-/Policy-Blocker lösen
+2. PR #15 erneut mit aktuellem Releasebranch synchronisieren und 9-Pfade-Scope bestätigen
+3. CI + Cross-Browser auf demselben Commit real ausführen
+4. Branch Protection + Required Check aktivieren
+5. Cloudflare-Pages-Staging real verbinden und HTTPS-Origin erzeugen
+6. echten Staging-Smoke + PWA Upgrade/Rollback ausführen
+7. Betreiber-/Support-/Security-/Legal-Angaben finalisieren
 8. Android / iPhone / Tablet + Accessibility
-9. reale Gruppentests für alle 15 Core-Games
-10. Assetrechte / Icon lösen
-11. Legal-/Support-/Incident-Sign-off
+9. reale Gruppen für alle 15 Core-Games
+10. Asset-/Third-Party-Finalreview auf dem RC
+11. Incident-/Rollback-Drill
 12. unveränderlichen RC einfrieren
-13. `release-evidence.json = FINAL / GO` erst nach vollständiger realer Evidence
-
-## Entwicklungsregel ab v64
-
-- **Feature-Freeze für neue Core-Spielmodi**
-- keine große Architekturmigration vor dem RC
-- reale Releasefehler vor neuen Features
-- Labs nicht still in Core übernehmen
-- PREPARED/OPEN/BLOCKED niemals als PASS interpretieren
+13. `release-evidence.json = FINAL / GO` erst nach vollständiger Evidence
 
 ## Releaseentscheidung
 
 - öffentlicher Release: **NO_GO**
 - PR #13 mergen: **Nein**
 - PR #15 mergen: **Noch nicht**
-- Cloudflare Pages als final ausgewählt markieren: **Noch nicht**
-- neue Core-Features bauen: **Nein**
+- neue Core-Features: **Nein**
+- alter Icon-Rechteblocker: **geschlossen**
+- Gesamt-Asset-/Third-Party-Gate: **noch BLOCKED**
