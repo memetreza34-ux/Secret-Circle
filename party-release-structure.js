@@ -18,7 +18,8 @@
     'who-am-i', 'anime-guess', 'money-challenge', 'blind-ranking', 'emoji-quiz',
     'pass-the-phone', 'red-green-flag', 'secret-mission', 'tier-list',
     'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best',
-    'hear-me-out', 'hot-seat', 'story-chain', 'finish-the-sentence'
+    'hear-me-out', 'hot-seat', 'story-chain', 'finish-the-sentence',
+    'party-quiz', 'fact-or-fake'
   ]);
   const CORE = new Set(CORE_IDS);
   const LABS = new Set(LAB_IDS);
