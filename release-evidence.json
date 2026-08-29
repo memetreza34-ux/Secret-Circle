@@ -47,9 +47,8 @@
         "requiredStatusCheckEnforcement": "off",
         "requiredStatusCheckContexts": [],
         "reconciliationCandidatePullRequest": 15,
-        "reconciliationCandidateHeadAtLastFullSync": "5a496a911937fd352d2660eda98afe940c87a8ed",
-        "reconciliationCandidateChangedFiles": 9,
-        "reconciliationCandidateNeedsResyncAfterAssetHardening": true,
+        "reconciliationCandidateExpectedChangedFiles": 9,
+        "reconciliationCandidateRequiresLiveCompareBeforeMerge": true,
         "reconciliationMergedIntoReleaseBranch": false
       }
     },
@@ -132,11 +131,11 @@
     "GitHub Actions jobs currently end before repository steps and receive no Hosted Runner",
     "Cross-browser release evidence is blocked by the same Hosted Runner allocation failure",
     "main branch protection is currently disabled and has no required status checks",
-    "Draft PR #15 contains the controlled main/release reconciliation candidate and requires resynchronization after the latest release-hardening commits before it can be reviewed again",
+    "Draft PR #15 is the controlled main/release reconciliation candidate and must show behind_by=0 plus exactly the expected 9 changed paths in a fresh GitHub compare immediately before review/merge",
     "The old icon rights blocker is resolved, but final asset/third-party PASS still requires functioning-runner audits, online dependency integrity evidence and final manual visual/trademark review",
     "No real hosting provider or distinct HTTPS staging/production origins have been selected yet",
     "operator-release.json remains PREPARED/BLOCKED with no final operator identity, support/security contacts or completed incident drills",
     "real-device, accessibility and group evidence is not final"
   ],
-  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. BLOCKED means a known prerequisite is currently absent; OPEN means the gate can in principle be executed but has not yet received acceptable final RC evidence. No gate may become PASS until it is bound to one immutable release candidate commit. The replacement icon set now has documented verified-own provenance, but that source-level fact does not by itself complete the overall assetsThirdParty gate. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached."
+  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. BLOCKED means a known prerequisite is currently absent; OPEN means the gate can in principle be executed but has not yet received acceptable final RC evidence. No gate may become PASS until it is bound to one immutable release candidate commit. Mutable PR #15 head/behind values are intentionally not stored as durable truth; GitHub compare is the live source immediately before review/merge. The replacement icon set has documented verified-own provenance, but that source-level fact does not by itself complete the overall assetsThirdParty gate. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached."
 }
