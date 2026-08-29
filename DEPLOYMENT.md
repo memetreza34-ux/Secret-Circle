@@ -1,101 +1,135 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Secret Circle besteht aus statischen Dateien. Eine installierbare PWA benötigt HTTPS; `localhost` ist nur für lokale Entwicklung eine Ausnahme.
+Stand: 29. August 2026
 
-## Aktueller Umfang
+Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffentlicht. Production darf nicht der erste echte HTTPS-/Service-Worker-/Security-Header-Test eines Release Candidates sein.
 
-- 45 eingebaute technisch spielbare Spiele
-- 27 Quick-, Trend- und Viral-Modi
-- 4 Advanced-Spiele
-- Word Imposter
-- Smart Party Night
-- eigener No-Code-Game-Creator mit sechs Vorlagen
-- bis zu 40 selbst erstellte Spiele
-- kontextabhängige Schnellhilfe
-- Offline-Core `secret-circle-v29`
+## Aktueller Releaseumfang
 
-## Voraussetzungen vor öffentlichem Deployment
+- **55 Built-ins · 15 Core / 13 Extended / 27 Labs**
+- **Wave 1 = 10/10 geplante Labs quellsseitig implementiert**
+- Word Imposter + Smart Party Night + lokaler Creator
+- aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**
+- Package: **`1.0.0-beta.3`**
+- Quick Loader v11
+- Draft-PR #13 auf `agent/release-foundation-2027`
+- Main-Reconciliation-Kandidat: Draft-PR #15
+- öffentliche Freigabe: **NO_GO**
 
-- `npm run ci` vollständig erfolgreich
-- `npm run test:cross-browser` vollständig erfolgreich
-- GitHub Actions auf dem endgültigen Commit grün
-- Android- und iOS-Installation geprüft
-- Offline-Start und Update auf v29 geprüft
-- alle 45 eingebauten Spiele real getestet
-- Creator auf Android und iOS getestet
-- eigenes Fragen-, Auswahl- und Erratenspiel erstellt und gespielt
-- kleine und große Partygruppe dokumentiert
-- Inhalts-, Alters-, Fan-Content- und Rechtsprüfung abgeschlossen
-- Betreiber-, Kontakt-, Hosting- und gegebenenfalls Impressumsangaben vorhanden
+Wave 1: Party Quiz, Fake oder Fakt, Undercover – ähnliches Wort, Imposter ohne Wort, Satzduell, Wer hat das geschrieben?, Prozent schätzen, Party Bracket, Bluff Trivia und Ein-Wort-Hinweis. Alle bleiben Labs.
 
-## GitHub Pages
+## Deployment-Reihenfolge
 
-1. Draft-PR #11 erst nach erfolgreicher Prüfung zusammenführen.
-2. `Settings → Pages` öffnen.
-3. `Deploy from a branch` wählen.
-4. Branch `main` und Ordner `/ (root)` auswählen.
-5. HTTPS-Adresse abwarten.
-6. vollständigen Deployment-Smoke-Test durchführen.
+**Local → CI/Test → HTTPS-Staging → Release Candidate → Production**
 
-## Prüfung nach dem Deployment
+Production erhält denselben unveränderten RC, der auf Staging freigegeben wurde.
 
-### Seiten und Installation
+## Voraussetzungen vor Production
 
-- `party.html`, `creator.html`, `advanced.html`, `quick-play.html`, `index.html` und `privacy.html` liefern Status 200.
-- Manifest installiert „Secret Circle – Party Hub“ mit `party.html` als Startpunkt.
-- 192- und 512-Pixel-Icons werden erkannt.
-- Browserkonsole und Netzwerkansicht zeigen keine Fehler.
-- Content Security Policy blockiert keine benötigten lokalen Dateien.
+- finaler RC-Commit + Tag
+- Online-`npm ci` und `npm run ci` grün
+- Chromium/Firefox/WebKit auf demselben Commit grün
+- Required Check + Branch Protection real aktiv
+- realer Hostingprovider und getrennte HTTPS-Staging-/Production-Origins
+- `tests/pwa-head-metadata.test.js` auf demselben Kandidaten grün
+- `scripts/staging_smoke.py` gegen reale HTTPS-Origins grün
+- Staging Response-Security-/Cache-Header grün
+- bestehende Spezialgates real bestätigt
+- Wave-1-Labs nur bei eigener Browser-/Offline-/Accessibility-/Gruppen-Evidence als releasefähig behandeln
+- keine offenen Critical/High Bugs
 
-### Hub und Bedienbarkeit
+Ein Job mit `steps: []` ist kein Code-/Testnachweis.
 
-- ohne eigene Spiele werden 45 spielbare und 0 geplante Spiele angezeigt.
-- Drei-Schritte-Einstieg, Onboarding und kontextabhängige Hilfen funktionieren.
-- Suche, Filter, Favoriten, Spieler, Presets, Verlauf und Smart Party Night funktionieren.
-- Spielkarten und Spieldetails benennen die nächste Aktion klar.
+## PWA / Offline – v64
 
-### Creator
+Offline enthalten sind alle Wave-1-Kataloge und Runner, `party-session-controls.js` Version 5, Quick Replacement Guard v2, Quick Loader v11 und Backup Registry v2.
 
-- alle sechs Vorlagen lassen sich öffnen.
-- Fragen-, Auswahl- und Erraten-Spiel speichern strukturierte Karten korrekt.
-- mehrere Kategorien, Icon, Akzent, Spielerzahl und Dauer bleiben erhalten.
-- Bearbeiten, Kopieren, Löschen, Export und Import funktionieren.
-- eigene Spiele erscheinen im Hub und sind direkt spielbar.
-- ungültige oder beschädigte Creator-Daten werden verworfen.
-- Speicherfehler stellt den alten Zustand wieder her.
+- **QT57:** Restzeit über normalen Reload.
+- **BF58:** BFCache-Rückkehr sicher.
+- **BG59:** Hidden pausiert.
+- **HS60:** Hidden persistiert Restzeit.
+- **v61:** Quiz.
+- **v62:** Imposter.
+- **v63:** Writing.
+- **v64:** Prozent/Bracket/Bluff/Clue und Wave 1 vollständig 10/10.
 
-### Engines und Daten
+`tests/pwa-head-metadata.test.js` bleibt der lokale Source-Vertrag für PWA-Head-/Icon-/Manifest-Metadaten. `scripts/staging_smoke.py` prüft zusätzlich die tatsächlich ausgelieferte HTTPS-Origin und deren Response-Header.
 
-- Quick-, Trend-, Viral-, Advanced- und Word-Imposter-Abläufe funktionieren.
-- aktive Sessions lassen sich fortsetzen.
-- Verlauf und Statistik zählen Abschlüsse genau einmal.
-- Gesamtexport enthält selbst erstellte Spiele und alle Sessionarten.
-- vollständige Löschung entfernt alle `secret-circle-*`-Datensätze.
-
-### Offline
-
-- nur Cache `secret-circle-v29` bleibt aktiv.
-- Hub, Creator, Schnellhilfe, alle Engine-Familien, Word Imposter und Datenschutz starten offline.
-- Update von einer älteren Version erhält lokale Spieler, Packs, eigene Spiele und Sessions.
-
-## Lokale Befehle
+## HTTPS-Staging
 
 ```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npx playwright install --with-deps chromium
-npm run ci
-npx playwright install --with-deps chromium firefox webkit
-npm run test:cross-browser
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v64
 ```
 
-## Update-Regeln
+Der automatisierte Netzwerk-Smoke prüft die ausgelieferte Origin, nicht nur Repositorydateien. Er verlangt für HTML mindestens:
 
-Bei Änderungen an offline benötigten Dateien Cache-Version erhöhen und Service Worker, Offline-Test, Runtime-Test, Validator, Release-Audit und Dokumentation synchronisieren. Danach Update von einer installierten älteren Version praktisch testen.
+- Response-CSP inklusive `frame-ancestors 'none'`
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: no-referrer`
+- `X-Frame-Options: DENY`
+
+Für `sw.js` gilt:
+
+- kein `Cache-Control: immutable`
+- bei vorhandenem `max-age`: höchstens 3600 Sekunden
+
+Manuell zusätzlich: Installation, Offline-Neustart, Update/Rollback, bestehende Spezialgates und alle zehn Wave-1-Labs online/offline.
+
+Für v64 besonders prüfen:
+
+- Prozent schätzen: Ergebnis/Score nach Reload identisch;
+- Party Bracket: sieben Picks ergeben nach Reload denselben Sieger;
+- Bluff Trivia: Fake-Eingaben und Votes bleiben privat, richtige Antwort erst im Ergebnis, Scoring exact-once;
+- Ein-Wort-Hinweis: Zielwort nach Blur/Reload nicht automatisch sichtbar, Ergebnis stabil;
+- Cross-Game-Wechsel nutzt Quick-Family-Replacement-Schutz;
+- Labs bleiben vom 15-Core-Release getrennt.
+
+## Update-Regel
+
+Bei Offline-Core-Änderung: CORE prüfen → Cachegeneration erhöhen → SW-Test → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Upgrade/Rollback real testen.
+
+Bei Hosting-/Header-Änderung: Staging neu deployen → kompletten Netzwerk-Smoke erneut ausführen → PWA-/Updatewirkung prüfen → Evidence an denselben Kandidaten binden.
+
+Historie: v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
 ## Rollback
 
-Bei kritischem Fehler Veröffentlichung stoppen, gezielten Revert erstellen, Cache erneut erhöhen, Datenschemata kompatibel halten, Hub, Creator und sämtliche Engines smoke-testen und den Rollback dokumentieren. Kein Force-Push auf `main`.
+Promotion stoppen → Commit/Cache dokumentieren → Revert/Hotfix → neue Cachegeneration → Datenkompatibilität prüfen → HTTPS-Staging + Security-/Cache-Header + PWA-Rollback erneut testen.
 
-## Produktionsfreigabe
+Ein alter Cache-Name darf nicht für einen veränderten Offline-Core wiederverwendet werden.
 
-Ein öffentlicher Release bleibt blockiert, bis CI, Creator, alle 45 Spiele, Android/iOS, Offline-Update, reale Gruppen, Inhalte und rechtliche Angaben bestätigt sind.
+## Production-Smoke-Test
+
+```bash
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v64 --production
+```
+
+Production muss zusätzlich liefern:
+
+- `Strict-Transport-Security` mit `max-age >= 31536000`
+- dieselben CSP-/Clickjacking-/MIME-/Referrer-Verträge wie Staging
+- dieselbe sichere `sw.js`-Cache-Policy
+
+`includeSubDomains`/`preload` werden nicht automatisch erzwungen, da sie eine bewusste reale Domainentscheidung benötigen.
+
+## Deployment Evidence
+
+Für jeden freigegebenen RC festhalten:
+
+```text
+RC commit:
+App version:
+Cache generation:
+Staging origin:
+Staging response-header smoke:
+Staging PWA smoke:
+Production origin:
+Production response-header/HSTS smoke:
+Production PWA smoke:
+Rollback drill:
+Evidence reference:
+```
+
+## Release Evidence
+
+`release-evidence.json` bleibt finale Quelle. Aktuell sind Staging-/Production-Smokes wegen fehlendem realen Provider/Origins **BLOCKED** und der Gesamtstatus bleibt **NO_GO**.

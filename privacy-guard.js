@@ -17,6 +17,13 @@
     root.requestAnimationFrame(() => document.querySelector('#show-card')?.focus());
   }
 
+  function clearSecretText() {
+    document.querySelector('#role')?.replaceChildren();
+    document.querySelector('#word')?.replaceChildren();
+    document.querySelector('#hint-text')?.replaceChildren();
+    try { root.getSelection?.()?.removeAllRanges(); } catch {}
+  }
+
   function concealSecret() {
     if (!revealScreenIsActive() || !secretIsVisible()) return false;
     const secret = document.querySelector('#secret');
@@ -25,6 +32,7 @@
     const note = document.querySelector('#handoff-note');
 
     secret.hidden = true;
+    clearSecretText();
     if (showButton) showButton.hidden = false;
     if (nextButton) nextButton.hidden = true;
     if (note) note.textContent = 'Die Karte wurde automatisch verdeckt. Nur die aktuelle Person darf sie erneut öffnen.';
@@ -47,17 +55,28 @@
   root.addEventListener('blur', concealSecret);
   root.addEventListener('focus', restoreFocusAfterReturn);
   root.addEventListener('pagehide', concealSecret);
+  document.addEventListener('freeze', concealSecret);
 
   document.querySelector('#next-player')?.addEventListener('click', event => {
     if (!secretIsVisible()) {
       event.preventDefault();
       event.stopImmediatePropagation();
       focusShowButton();
+      return;
     }
+    clearSecretText();
   }, true);
+
+  const revealScreen = document.querySelector('#reveal-screen');
+  if (revealScreen && typeof MutationObserver === 'function') {
+    new MutationObserver(() => {
+      if (revealScreen.hidden) clearSecretText();
+    }).observe(revealScreen, { attributes: true, attributeFilter: ['hidden'] });
+  }
 
   root.SecretCirclePrivacyGuard = Object.freeze({
     concealSecret,
-    version: 2
+    clearSecretText,
+    version: 4
   });
 })(window);

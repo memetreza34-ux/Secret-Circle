@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-29",
+  "sourceGeneration": "v64",
+  "packageVersion": "1.0.0-beta.3",
+  "offlineCache": {
+    "production": "secret-circle-v64",
+    "staging": "secret-circle-v64-staging"
+  },
+  "builtIns": {
+    "total": 55,
+    "core": 15,
+    "extended": 13,
+    "labs": 27
+  },
+  "waveOne": {
+    "planned": 10,
+    "sourceImplemented": 10,
+    "releaseTier": "labs",
+    "realEvidenceStatus": "OPEN"
+  },
+  "release": {
+    "target": "2027-01",
+    "publicWindow": "2027-01-04/2027-01-15",
+    "decision": "NO_GO",
+    "workingBranch": "agent/release-foundation-2027",
+    "pullRequest": 13,
+    "pullRequestState": "DRAFT"
+  },
+  "branchStack": {
+    "status": "ACTIVE_STACK_DIVERGED_FROM_MAIN_RECONCILIATION_PR_OPEN",
+    "mainHeadAtDiscovery": "d347c7138bae18325c288632222917ad618e6547",
+    "stackMergeBaseAtDiscovery": "a16a612c8e5f919eaca2dcf0a905e7e8824ec472",
+    "layers": [
+      {"pullRequest": 3, "branch": "codex/improve-gameplay-v3"},
+      {"pullRequest": 11, "branch": "codex/party-hub-foundation"},
+      {"pullRequest": 13, "branch": "agent/release-foundation-2027"}
+    ],
+    "mainCommitsMissingAtDiscovery": [
+      "6b6bddd0ae619d160b4468b61ae49cb30e2ea834",
+      "d347c7138bae18325c288632222917ad618e6547"
+    ],
+    "reconciliation": {
+      "pullRequest": 15,
+      "branch": "integration/v64-main-sync",
+      "mainHistoryMergeCommit": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+      "draft": true,
+      "expectedChangedFiles": 9,
+      "expectedPaths": [
+        ".github/workflows/ci.yml",
+        "README.md",
+        "docs/ARCHIVE_TOOL_VALIDATION.md",
+        "docs/HUB_SEPARATION_ARCHIVE.md",
+        "docs/LEGACY_ARCHIVE_INVENTORY.md",
+        "docs/legacy-archive-source.json",
+        "scripts/validate_archive_tool.py",
+        "tests/archive-inventory.test.py",
+        "tools/inventory_legacy_archive.py"
+      ],
+      "liveHeadAndBehindStatus": "VERIFY_WITH_GITHUB_COMPARE_BEFORE_REVIEW_OR_MERGE",
+      "mergedIntoReleaseBranch": false
+    },
+    "reconciliationRequiredBeforeReleaseMerge": true
+  },
+  "branchProtection": {
+    "status": "BLOCKED",
+    "branch": "main",
+    "checkedAt": "2026-08-29",
+    "protected": false,
+    "protectionEnabled": false,
+    "requiredStatusCheckEnforcement": "off",
+    "requiredStatusCheckContexts": []
+  },
+  "ci": {
+    "status": "BLOCKED_BEFORE_STEP_1",
+    "lastDeeplyInvestigated": {
+      "runNumber": 3660,
+      "runId": 33255333073,
+      "jobId": 99107918414,
+      "head": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
+      "branch": "integration/v64-main-sync",
+      "steps": 0,
+      "runnerId": 0,
+      "runnerName": "",
+      "requestedLabel": "ubuntu-latest",
+      "repositoryCodeExecuted": false
+    },
+    "interpretation": "EXTERNAL_HOSTED_RUNNER_OR_ACCOUNT_POLICY_BLOCKER_NOT_APP_CODE"
+  },
+  "scopePolicy": {
+    "coreFrozen": true,
+    "newCoreGamesBeforeReleaseGates": false,
+    "largeArchitectureMigrationBeforeRc": false
+  }
+}

@@ -1,21 +1,150 @@
-'use strict';
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else {
+    root.SecretCircleQuickLoader = api;
+    api.load(root, root.document);
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function createQuickLoader() {
+  'use strict';
 
-(() => {
-  const catalog = window.SecretCirclePartyCatalog;
-  const gameId = new URLSearchParams(location.search).get('game') || '';
-  let source = 'party-quick-modes.js';
-  if (catalog?.createdGameIds?.includes(gameId)) source = 'party-created-modes.js';
-  else if (catalog?.viralGameIds?.includes(gameId)) source = 'party-viral-modes.js';
-  else if (catalog?.megaGameIds?.includes(gameId)) source = 'party-mega-modes.js';
+  const LEDGER_SOURCE = 'session-ledger.js';
+  const CONTROLS_SOURCE = 'party-session-controls.js';
+  const REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js';
+  const WAVE_ONE_SOURCE = 'party-wave-one-modes.js';
+  const WAVE_ONE_IMPOSTER_SOURCE = 'party-wave-one-imposter-modes.js';
+  const WAVE_ONE_WRITING_SOURCE = 'party-wave-one-writing-modes.js';
+  const WAVE_ONE_VOTING_SOURCE = 'party-wave-one-voting-modes.js';
+  const WAVE_ONE_BLUFF_SOURCE = 'party-wave-one-bluff-modes.js';
+  const WAVE_ONE_CLUE_SOURCE = 'party-wave-one-clue-modes.js';
 
-  const script = document.createElement('script');
-  script.src = source;
-  script.addEventListener('error', () => {
-    const status = document.querySelector('#quick-status');
-    if (status) {
-      status.textContent = 'Die Spiel-Engine konnte nicht geladen werden. Bitte Seite neu laden.';
-      status.classList.add('error');
+  function selectSource(catalog, gameId) {
+    if (!catalog || !gameId) return null;
+    if (catalog.createdGameIds?.includes(gameId)) return 'party-created-modes.js';
+    if (catalog.viralGameIds?.includes(gameId)) return 'party-viral-modes.js';
+    if (catalog.megaGameIds?.includes(gameId)) return 'party-mega-modes.js';
+    if (catalog.waveOneClueGameIds?.includes(gameId)) return WAVE_ONE_CLUE_SOURCE;
+    if (catalog.waveOneBluffGameIds?.includes(gameId)) return WAVE_ONE_BLUFF_SOURCE;
+    if (catalog.waveOneVotingGameIds?.includes(gameId)) return WAVE_ONE_VOTING_SOURCE;
+    if (catalog.waveOneWritingGameIds?.includes(gameId)) return WAVE_ONE_WRITING_SOURCE;
+    if (catalog.waveOneImposterGameIds?.includes(gameId)) return WAVE_ONE_IMPOSTER_SOURCE;
+    if (catalog.waveOneQuizGameIds?.includes(gameId) || catalog.waveOneGameIds?.includes(gameId)) return WAVE_ONE_SOURCE;
+    if (catalog.quickGameIds?.includes(gameId) || catalog.trendingGameIds?.includes(gameId)) return 'party-quick-modes.js';
+    return null;
+  }
+
+  function scriptPlan(catalog, gameId, ledgerReady = false, controlsReady = false, replacementGuardReady = false) {
+    const source = selectSource(catalog, gameId);
+    if (!source) return [];
+    const plan = [];
+    if (!ledgerReady) plan.push(LEDGER_SOURCE);
+    if (!controlsReady) plan.push(CONTROLS_SOURCE);
+    if (!replacementGuardReady) plan.push(REPLACEMENT_GUARD_SOURCE);
+    plan.push(source);
+    return plan;
+  }
+
+  function showFailure(documentRef, message) {
+    const status = documentRef?.querySelector?.('#quick-status');
+    if (!status) return;
+    status.textContent = message;
+    status.classList.add('error');
+  }
+
+  function appendScript(documentRef, source, attributes = {}, onLoad, onError) {
+    const script = documentRef.createElement('script');
+    script.src = source;
+    for (const [key, value] of Object.entries(attributes)) script.dataset[key] = value;
+    if (onLoad) script.addEventListener('load', onLoad);
+    if (onError) script.addEventListener('error', onError);
+    documentRef.body.append(script);
+    return script;
+  }
+
+  function load(windowRef, documentRef) {
+    const catalog = windowRef?.SecretCirclePartyCatalog;
+    if (!catalog) {
+      showFailure(documentRef, 'Der Spielekatalog konnte nicht geladen werden. Bitte Seite neu laden.');
+      return null;
     }
+
+    const gameId = new windowRef.URLSearchParams(windowRef.location.search).get('game') || '';
+    if (!gameId) {
+      showFailure(documentRef, 'Es wurde kein Spiel ausgewählt. Öffne das Spiel erneut über den Party Hub.');
+      return null;
+    }
+
+    const game = catalog.getGame?.(gameId);
+    const source = selectSource(catalog, gameId);
+    if (!game || game.status !== 'playable' || !source) {
+      showFailure(documentRef, 'Dieses Spiel ist nicht verfügbar oder noch nicht für den Schnellspiel-Modus freigegeben.');
+      return null;
+    }
+
+    const plan = scriptPlan(
+      catalog,
+      gameId,
+      Boolean(windowRef.SecretCircleSessionLedger),
+      Boolean(windowRef.SecretCircleSessionControls),
+      Boolean(windowRef.SecretCircleQuickSessionReplacementGuard)
+    );
+
+    const loadNext = index => {
+      if (index >= plan.length) return;
+      const nextSource = plan[index];
+      const isEngine = nextSource === source;
+      const attributes = isEngine
+        ? { gameEngine: gameId }
+        : { sharedRuntime: nextSource === LEDGER_SOURCE
+          ? 'session-ledger'
+          : nextSource === CONTROLS_SOURCE
+            ? 'session-controls'
+            : 'session-replacement-guard' };
+
+      appendScript(documentRef, nextSource, attributes, () => {
+        if (nextSource === LEDGER_SOURCE && !windowRef.SecretCircleSessionLedger) {
+          showFailure(documentRef, 'Die gemeinsame Sitzungsverwaltung konnte nicht initialisiert werden.');
+          return;
+        }
+        if (nextSource === CONTROLS_SOURCE && !windowRef.SecretCircleSessionControls) {
+          showFailure(documentRef, 'Die gemeinsame Spielsteuerung konnte nicht initialisiert werden.');
+          return;
+        }
+        if (nextSource === REPLACEMENT_GUARD_SOURCE && !windowRef.SecretCircleQuickSessionReplacementGuard) {
+          showFailure(documentRef, 'Der Schutz für gespeicherte Sessions konnte nicht initialisiert werden.');
+          return;
+        }
+        loadNext(index + 1);
+      }, () => {
+        const message = isEngine
+          ? 'Die Spiel-Engine konnte nicht geladen werden. Bitte Seite neu laden.'
+          : nextSource === CONTROLS_SOURCE
+            ? 'Die gemeinsame Spielsteuerung konnte nicht geladen werden. Bitte Seite neu laden.'
+            : nextSource === REPLACEMENT_GUARD_SOURCE
+              ? 'Der Schutz für gespeicherte Sessions konnte nicht geladen werden. Bitte Seite neu laden.'
+              : 'Die gemeinsame Sitzungsverwaltung konnte nicht geladen werden. Bitte Seite neu laden.';
+        showFailure(documentRef, message);
+      });
+    };
+
+    loadNext(0);
+    return source;
+  }
+
+  return Object.freeze({
+    version: 11,
+    ledgerSource: LEDGER_SOURCE,
+    controlsSource: CONTROLS_SOURCE,
+    replacementGuardSource: REPLACEMENT_GUARD_SOURCE,
+    waveOneSource: WAVE_ONE_SOURCE,
+    waveOneImposterSource: WAVE_ONE_IMPOSTER_SOURCE,
+    waveOneWritingSource: WAVE_ONE_WRITING_SOURCE,
+    waveOneVotingSource: WAVE_ONE_VOTING_SOURCE,
+    waveOneBluffSource: WAVE_ONE_BLUFF_SOURCE,
+    waveOneClueSource: WAVE_ONE_CLUE_SOURCE,
+    selectSource,
+    scriptPlan,
+    showFailure,
+    load
   });
-  document.body.append(script);
-})();
+});

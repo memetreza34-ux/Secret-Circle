@@ -9,6 +9,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Secret Circle">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Secret Circle – Quick Mode</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -63,7 +64,15 @@
       <div id="quick-content" class="quick-content" aria-live="polite"></div>
       <div id="quick-controls" class="quick-controls"></div>
       <div id="quick-actions" class="quick-actions"></div>
-      <button id="quick-exit" class="ghost-button" type="button">Session beenden</button>
+      <div id="quick-pause-overlay" class="session-pause-overlay" hidden role="status" aria-live="polite">
+        <strong>Spiel pausiert</strong>
+        <span id="quick-pause-state">Spiel pausiert. Der Timer steht.</span>
+      </div>
+      <div id="quick-session-controls" class="session-control-bar" aria-label="Spielsteuerung">
+        <button id="quick-pause" class="secondary" type="button" aria-pressed="false">Pause</button>
+        <button id="quick-skip" class="secondary" type="button">Runde überspringen</button>
+        <button id="quick-exit" class="ghost-button" type="button">Session beenden</button>
+      </div>
     </section>
 
     <section id="quick-result" class="quick-panel" hidden aria-labelledby="quick-result-title">
@@ -71,7 +80,11 @@
       <h2 id="quick-result-title">Ergebnis</h2>
       <div class="quick-result-score"><strong id="quick-final-score">0</strong><span>Punkte</span></div>
       <p id="quick-result-text"></p>
-      <div class="inline-actions"><button id="quick-replay" type="button">Nochmal spielen</button><a class="ghost-button" href="party.html?view=stats">Zum Verlauf</a></div>
+      <div class="inline-actions">
+        <button id="quick-replay" type="button">Wiederholen</button>
+        <a id="quick-next-game" class="ghost-button" href="party.html?view=games">Nächstes Spiel</a>
+        <a class="ghost-button" href="party.html?view=stats">Zum Verlauf</a>
+      </div>
     </section>
   </main>
 
@@ -81,8 +94,17 @@
   <script src="party-trending-catalog.js"></script>
   <script src="party-mega-catalog.js"></script>
   <script src="party-viral-catalog.js"></script>
+  <script src="party-core-release-catalog.js"></script>
+  <script src="party-core-classic-content.js"></script>
   <script src="party-routing.js"></script>
+  <script src="party-wave-one-catalog.js"></script>
+  <script src="party-wave-one-imposter-catalog.js"></script>
+  <script src="party-wave-one-writing-catalog.js"></script>
+  <script src="party-wave-one-voting-catalog.js"></script>
+  <script src="party-wave-one-bluff-catalog.js"></script>
+  <script src="party-wave-one-clue-catalog.js"></script>
   <script src="party-custom-packs.js"></script>
+  <script src="secondary-surface-a11y.js"></script>
   <script src="quick-loader.js"></script>
 </body>
 </html>

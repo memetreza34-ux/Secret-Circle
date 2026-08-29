@@ -282,10 +282,27 @@
     }));
   }
 
-  function assignMafiaRoles(players, randomInt) {
-    const roles = ['Mafia', 'Detektiv'];
-    if (players.length >= 7) roles.push('Arzt');
-    while (roles.length < players.length) roles.push('Dorfbewohner');
+  function mafiaCountForPlayers(playerCount) {
+    const count = Math.max(0, Number(playerCount) || 0);
+    if (count >= 16) return 4;
+    if (count >= 12) return 3;
+    if (count >= 8) return 2;
+    return count >= 1 ? 1 : 0;
+  }
+
+  function mafiaRoleList(playerCount, pack = 'Klassisch') {
+    const count = Math.max(0, Math.floor(Number(playerCount) || 0));
+    if (!count) return [];
+    const roles = Array.from({ length: mafiaCountForPlayers(count) }, () => 'Mafia');
+    if (roles.length < count) roles.push('Detektiv');
+    if (pack !== 'Schnell' && count >= 7 && roles.length < count) roles.push('Arzt');
+    if (pack === 'Erweitert' && count >= 8 && roles.length < count) roles.push('Beschützer');
+    while (roles.length < count) roles.push('Dorfbewohner');
+    return roles.slice(0, count);
+  }
+
+  function assignMafiaRoles(players, randomInt, pack = 'Klassisch') {
+    const roles = mafiaRoleList(players.length, pack);
     return shuffle(roles, randomInt).reduce((result, role, index) => {
       result[players[index]] = role;
       return result;
@@ -307,10 +324,12 @@
       revealIndex: 0,
       revealed: false,
       day: 1,
-      roles: assignMafiaRoles(ctx.state.players, ctx.randomInt),
+      roles: assignMafiaRoles(ctx.state.players, ctx.randomInt, ctx.session.pack),
       alive: [...ctx.state.players],
       nightTarget: null,
       saved: null,
+      protected: null,
+      lastProtected: null,
       inspected: null,
       nightResult: ''
     };
@@ -380,12 +399,24 @@
       const targets = data.alive.filter(player => !mafiaPlayers.includes(player));
       const mafia = selectField(ctx, 'Mafia-Ziel', targets, data.nightTarget);
       form.append(mafia.label);
+
       const doctorAlive = data.alive.find(player => data.roles[player] === 'Arzt');
       const doctor = doctorAlive ? selectField(ctx, 'Arzt schützt', data.alive, data.saved) : null;
       if (doctor) form.append(doctor.label);
+
+      const protectorAlive = data.alive.find(player => data.roles[player] === 'Beschützer');
+      let protector = null;
+      if (protectorAlive) {
+        const allowed = data.alive.filter(player => player !== data.lastProtected);
+        protector = selectField(ctx, 'Beschützer schützt', allowed.length ? allowed : data.alive, data.protected);
+        if (data.lastProtected) protector.label.append(ctx.makeElement('small', 'muted', `Nicht erneut: ${data.lastProtected}`));
+        form.append(protector.label);
+      }
+
       const detectiveAlive = data.alive.find(player => data.roles[player] === 'Detektiv');
       const detective = detectiveAlive ? selectField(ctx, 'Detektiv untersucht', data.alive.filter(player => player !== detectiveAlive), data.inspected) : null;
       if (detective) form.append(detective.label);
+
       const submit = button(ctx, 'Nacht auswerten', () => {});
       submit.type = 'submit';
       form.append(submit);
@@ -393,13 +424,16 @@
         event.preventDefault();
         data.nightTarget = mafia.select.value;
         data.saved = doctor?.select.value || null;
+        data.protected = protector?.select.value || null;
         data.inspected = detective?.select.value || null;
-        if (data.nightTarget && data.nightTarget !== data.saved) {
+        const prevented = data.nightTarget && (data.nightTarget === data.saved || data.nightTarget === data.protected);
+        if (data.nightTarget && !prevented) {
           data.alive = data.alive.filter(player => player !== data.nightTarget);
           data.nightResult = `${data.nightTarget} wurde in der Nacht eliminiert.`;
         } else {
           data.nightResult = 'In dieser Nacht wurde niemand eliminiert.';
         }
+        data.lastProtected = data.protected || data.lastProtected || null;
         data.stage = 'day';
         ctx.render();
       });
@@ -430,6 +464,7 @@
         data.day += 1;
         data.nightTarget = null;
         data.saved = null;
+        data.protected = null;
         data.inspected = null;
         data.stage = mafiaWinner(data) ? 'finished' : 'overview';
         data.winner = mafiaWinner(data);
@@ -457,5 +492,14 @@
     return true;
   }
 
-  return Object.freeze({ version: 1, modes: Object.freeze([...MODES]), canHandle, render });
+  return Object.freeze({
+    version: 1,
+    modes: Object.freeze([...MODES]),
+    canHandle,
+    render,
+    mafiaCountForPlayers,
+    mafiaRoleList,
+    assignMafiaRoles,
+    mafiaWinner
+  });
 });

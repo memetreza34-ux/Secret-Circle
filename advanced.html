@@ -14,6 +14,7 @@
   <title>Secret Circle – Spiel</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="party.css">
   <link rel="stylesheet" href="party-extra.css">
@@ -33,6 +34,7 @@
         <h1 id="advanced-title">Spiel wird geladen</h1>
         <p id="advanced-description"></p>
         <div id="advanced-meta" class="advanced-meta"></div>
+        <p class="advanced-hint">Persönliche Aussagen und Antworten sind freiwillig. Sensible Details können ausgelassen werden; niemand muss einen Skip oder eine Zurückhaltung begründen.</p>
         <h2>So funktioniert es</h2>
         <ol id="advanced-rules" class="rule-list"></ol>
         <h2>Aktive Gruppe</h2>
@@ -50,7 +52,7 @@
     </section>
   </main>
 
-  <section id="advanced-play-layer" class="play-layer" hidden aria-labelledby="play-title">
+  <section id="advanced-play-layer" class="play-layer" hidden aria-labelledby="play-title" role="dialog" aria-modal="true">
     <div class="play-topbar">
       <button id="advanced-exit" class="ghost-button" type="button">Session beenden</button>
       <div><span id="play-progress"></span><strong id="play-score"></strong></div>
@@ -70,7 +72,10 @@
   <script src="party-expansion.js"></script>
   <script src="party-routing.js"></script>
   <script src="party-advanced.js"></script>
+  <script src="advanced-resume-guard.js"></script>
+  <script src="secondary-surface-a11y.js"></script>
   <script src="party-advanced-runner.js"></script>
+  <script src="advanced-privacy-guard.js"></script>
   <script src="party-advanced-preferences.js"></script>
 </body>
 </html>

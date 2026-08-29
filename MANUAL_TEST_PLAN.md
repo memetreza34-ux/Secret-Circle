@@ -1,213 +1,201 @@
-# Secret Circle Party Hub – Manueller Testplan
+# Secret Circle Party Hub – Manueller Testplan Januar 2027
 
-Dieser Plan ergänzt die automatisierten Prüfungen. Für jeden Durchlauf dokumentieren: Version, Commit, Datum, Testperson, Gerät, Betriebssystem, Browser, Installationsmodus, Gruppengröße und Online-/Offline-Zustand.
+Stand: 29. August 2026  
+Status: **PREPARED – reale Durchführung offen**  
+Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**  
+Produktstand: **55 Built-ins · 15 Core · 13 Extended · 27 Labs · Wave 1 10/10 source-implemented · lokaler Game Creator**
 
-Bewertung je Test: `BESTANDEN`, `FEHLER` oder `BLOCKIERT`.
+Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
 
-Zielstand: 28 spielbare Spiele, Smart Party Night und Offline-Core `secret-circle-v26`.
+## 1. Automatisierter Preflight
 
-## 1. Grundlegender Smoke-Test
+Vor finaler RC-Abnahme auf demselben unveränderten Commit:
 
-- Party Hub öffnet ohne Konsolenfehler.
-- Startseite zeigt 28 spielbare und 0 geplante Spiele.
-- Suche und alle sechs Filter funktionieren.
-- Quick-, Advanced- und Imposter-Schaltflächen öffnen den korrekten Bereich.
-- Spieler, Presets, Favoriten und Einstellungen überstehen ein Neuladen.
-- Datenschutzseite ist erreichbar.
+- [ ] PR-Stack-Basis mit aktuellem `main` kontrolliert reconciled
+- [ ] beide späteren Main-Commits nachweislich erhalten
+- [ ] Actions erreicht sichtbare Steps / Checkout
+- [ ] Online-`npm ci --ignore-scripts --no-audit --no-fund` grün
+- [ ] `npm run check` / `npm test` / `npm run validate` / `npm run ci` grün
+- [ ] Chromium E2E inklusive Spezialgates bis **HS60** + Wave-1-Verträge grün
+- [ ] Chromium / Firefox / WebKit auf demselben Commit grün
 
-## 2. Word Imposter
+Frisch untersuchter v64-Lauf: **Run #3608**, Run ID `33253663445`, Job `99103557030`, Head `2297868e1f65b45753294151a3b1f401a55f6288`, `steps: []`, `runner_id: 0`, leerer Runner-Name. Kein Repositorycode ausgeführt. **v50–v64 sind nicht Hosted-Runner-verifiziert.**
 
-- 3, 8 und 20 Personen testen.
-- 1, mehrere und maximal 6 Imposter testen.
-- Rollen sind nicht an die Aufdeckreihenfolge gekoppelt.
-- Kartensichtschutz bei App-Wechsel prüfen.
-- Timer im Vordergrund, Hintergrund und nach Neuladen prüfen.
-- Abstimmung, Stichwahl, Ratechance, Punkte und nächste Runde prüfen.
-- aktiven Spielstand fortsetzen.
+## 2. Hub / Word Imposter / Core
 
-## 3. Standard-Hub-Spiele
+- [ ] exakt 55 Built-ins / 15 Core / 13 Extended / 27 Labs sichtbar und korrekt klassifiziert
+- [ ] Suche / Filter / Deep Links / Spieler / Presets / Favoriten
+- [ ] Word Imposter 3/8/20 Personen, 1–6 Imposter, Fairness, Handoff, Timer, Voting, Tie-Break, Exact-once
+- [ ] alle 15 Core-Spiele vollständig: Regeln, Skip, Finish/Abort, Reload/Resume, Verlauf exact-once, Tastatur/Modal
+- [ ] maximal 2–3 Entscheidungen bis zur ersten echten Standard-Spielaktion, soweit die Mechanik das zulässt
+- [ ] persönliche Inhalte besitzen Skip/sichere Alternative
 
-Mindestens eine vollständige Session pro Spiel:
+## 3. Advanced / Quick Replacement
 
-- Wahrheit oder Pflicht
-- Ich habe noch nie
-- Wer würde eher?
-- Entweder oder
-- Hot Takes
-- Nur falsche Antworten
-- Paranoia
-- Scharade
-- Nicht sagen! / Tabu
-- Heiße Kartoffel
-- Wortkette
-- Flaschendrehen
-- Würfel & Münze
+- [ ] AD55 Advanced-Integrität vollständig
+- [ ] QR56 Same-/Cross-Game Replacement, Cancel und Write-Fail
+- [ ] Wechsel zwischen bestehenden Quick-Familien und Wave-1-Labs überschreibt keine aktive Session still
 
-Prüfen: Packauswahl, Kartenwechsel, aktive Person, Punkte oder Ergebnis, sicherer Ausstieg, Verlauf und Statistik.
+## 4. QT57 / BF58 / BG59
 
-## 4. Advanced-Spiele
+- [ ] normaler Reload übernimmt Quick-Family-Restzeit statt voller Dauer
+- [ ] stale Snapshot nach Session/Runde/Phase/Dauer wird verworfen
+- [ ] Timer-Store bleibt promptfrei und im 17-Key-Backupvertrag
+- [ ] BFCache Matching → kontrollierter Reload in normalen Resume-Pfad
+- [ ] BFCache Stale → löschen ohne unnötigen Reload
+- [ ] App-/Tabwechsel/Screen-Lock → Auto-Pause
+- [ ] Rückkehr sichtbar → kein Auto-Resume; bewusster `Fortsetzen`-Klick notwendig
 
-### Zwei Wahrheiten, eine Lüge
+## 5. HS60 – Hidden Snapshot Durability
 
-- private Eingabe
-- zufällige Mischung
-- Abstimmung und Auflösung
-- Fortsetzung nach Neuladen
+### Hidden-only
 
-### Question Imposter
+- [ ] laufenden Quick-Family-Timer starten und Restzeit notieren
+- [ ] App/Tab verlassen und unmittelbar den Timer-Store prüfen
+- [ ] Snapshot ist bereits nach `visibilitychange(hidden)` vorhanden
+- [ ] keine Prompt-/Antwort-/Mission-/Karteninhalte im Snapshot
 
-- geheime ähnliche Fragen
-- genau ein Imposter
-- Diskussion und Wahl
-- Spieler-Snapshot nach Lobbyänderung
+### Cold Resume ohne vorausgesetztes `pagehide`
 
-### Location Spy
+- [ ] nach Hidden Browser-/PWA-Prozess beenden
+- [ ] nicht voraussetzen, dass `pagehide` noch lief
+- [ ] App neu öffnen und Session fortsetzen
+- [ ] Timer startet mit hidden gespeicherter Restzeit
+- [ ] Snapshot wird genau einmal konsumiert
 
-- Ort und Spion geheim verteilen
-- Verdächtigenwahl
-- Ortsraten und Auflösung
+### Same-Page Cleanup
 
-### Mafia
+- [ ] Hidden → sichtbar → bewusst fortsetzen
+- [ ] Runde normal mit Erfolg/Misserfolg oder regulärem Stop beenden
+- [ ] Timer-Store ist danach für diese Runde leer
+- [ ] nächste Runde bekommt keine stale Restzeit
 
-- mindestens 6 Personen
-- private Rollen
-- geschützte Moderatoransicht
-- Nachtaktionen, Tageswahl und Siegbedingung
+## 6. BK51 – Complete Backup
 
-## 5. Zehn Quick Modes
+- [ ] managed Export → Restore
+- [ ] Registry v2 / 17 verwaltete Keys korrekt
+- [ ] Future-Namespace/-Version bleibt entsprechend Vertrag unverändert
+- [ ] Future-Key im Backup abgelehnt, wenn nicht registriert
+- [ ] falsche Storage-Version / Klartext / Primitive abgelehnt
+- [ ] >1,5 MB UTF-8 abgelehnt
+- [ ] Write-/Quota-Fehler rollt managed Zustand zurück
+- [ ] ausdrücklich bestätigte Komplettlöschung entfernt die vorgesehenen lokalen Secret-Circle-Daten
 
-Jeden Modus mit 3 und 5 Runden testen; mindestens Wellenlänge und Schnellfeuer zusätzlich mit 10 und 20 Runden.
+## 7. Expansion Wave 1 – v61 bis v64
 
-### Wellenlänge
+Alle zehn Modi sind quellsseitig implementiert und bleiben Labs:
 
-- geheimes Ziel sichtbar nur für Hinweisgeber
-- Ziel wird vor Gruppenwahl verborgen
-- Regler von 0 bis 100
-- 0–4 Punkte abhängig vom Abstand
-- nächste Runde und Wiederaufnahme
+- [ ] `bluff-trivia`
+- [ ] `party-quiz`
+- [ ] `fact-or-fake`
+- [ ] `percent-guess`
+- [ ] `fill-blank-battle`
+- [ ] `who-wrote-it`
+- [ ] `party-bracket`
+- [ ] `undercover-similar-word`
+- [ ] `no-word-imposter`
+- [ ] `password-one-word`
 
-### Zeichnen & Raten
+### Quiz
 
-- private Karte
-- Treffer und Überspringen
-- keine unmittelbare Wiederholung
+- [ ] Start → Frage → Antwort → Erklärung/Resultat → nächste Runde
+- [ ] Reload/Result-Resume vergibt Score nicht doppelt
+- [ ] offline + Tastatur + Touch + 200-%-Zoom
 
-### Schnellfeuer
+### Imposter
 
-- 5-, 10-, 12- und 15-Sekunden-Karten
-- Erfolg vor Timerende
-- automatisches Zeitende
-- Punkte und nächste Person
+- [ ] private Übergaben bleiben verdeckt
+- [ ] Fokusverlust/Appwechsel zeigt Geheimnisse nicht erneut
+- [ ] Vote/Guess/Resultat nach Resume konsistent
 
-### Geräusche erraten
+### Writing
 
-- Zielkarte nur für aktive Person
-- Treffer und Überspringen
+- [ ] private Eingabephase verdeckt
+- [ ] anonyme Phase leakt keine Autorennamen
+- [ ] Reload/Resume erhält richtige Phase
+- [ ] Completion/History exact-once
 
-### Stirn-Raten
+### Voting / Bluff / Clue
 
-- ratende Person sieht das Ziel nicht
-- Gerät zeigt zur Gruppe
-- Spielerwechsel
+- [ ] Prozent-Score deterministisch
+- [ ] Bracket mit identischen Picks nach Reload identisch
+- [ ] Bluff-Eingaben/Votes privat; richtige Antwort erst im Resultat
+- [ ] Ein-Wort-Zielwort nur nach bewusstem Reveal; kein Auto-Reveal nach Blur/Reload
 
-### Buchstaben-Kategorien
+Mindestens ein realer Gruppentest je relevanter Wave-1-Enginefamilie vor einer Promotion aus Labs.
 
-- zufälliger erlaubter Buchstabe
-- fünf Kategorien
-- 60-Sekunden-Timer
-- Punkteingabe begrenzt auf Kategorienanzahl
+## 8. Quick / Creator allgemein
 
-### Nicht lachen!
+- [ ] übrige Quick-Mechanikfamilien komplett smoken
+- [ ] gemeinsame Pause / Skip / Abort / Replay-Steuerung
+- [ ] Session-Abschluss / History / Stats exact-once
+- [ ] Creator CRUD / Export / Import / unerfahrene Person
 
-- sichere Aufgaben
-- 30-Sekunden-Timer
-- Erfolg und Misserfolg
+## 9. PWA / Offline – v64
 
-### Melodie summen
+- [ ] Android Chrome / Installation
+- [ ] iPhone Safari / Add to Home Screen
+- [ ] iPad/Tablet
+- [ ] Offline-Neustart / Kernseiten / Query-Routen
+- [ ] Resume-/Privacy-/A11y-/Backup-Schichten offline
+- [ ] SessionControls v5 + QT57 + BF58 + BG59 + HS60 offline
+- [ ] Quick Replacement Guard + Quick Loader v11 offline
+- [ ] alle benötigten Wave-1-Kataloge/Runner offline
+- [ ] Update von mindestens zwei älteren Installationen auf v64/RC
+- [ ] aktive Session und kompatible lokale Daten erhalten
+- [ ] Rollback mit neuer Cachegeneration
+- [ ] Offline-Neustart nach vollständigem Prozess-Kill
 
-- keine bereitgestellten geschützten Aufnahmen oder Liedtexte
-- private Aufgabe
-- Treffer und Überspringen
+## 10. Accessibility / reale Gruppen
 
-### Gegenstandsjagd
+- [ ] Tastatur ohne Maus / sichtbarer Fokus / Skip-Link
+- [ ] VoiceOver
+- [ ] TalkBack
+- [ ] 200-%-Zoom / 320 CSS px / große Schrift / Safe Areas / Touch / Reduced Motion
+- [ ] Hoch-/Querformat
+- [ ] private Reveal-/Resume-Flows mit Screenreader
+- [ ] G1 3–4, G2 5–8, G3 9–12, G4 Mafia, G5 Creator
+- [ ] PN1–PN3 Smart Party Night
+- [ ] mindestens ein realer Nachweis pro **15 Core-Spiel**
+- [ ] keine offenen Critical-/High-Defects
 
-- sicheren Spielbereich festlegen
-- 60-Sekunden-Timer
-- keine gefährlichen, zerbrechlichen oder privaten Gegenstände verlangen
+## 11. Hosting / Assets / Betrieb / Recht
 
-### Caption Battle
+- [ ] Hostingprovider final
+- [ ] getrennte HTTPS-Staging-/Production-Origin
+- [ ] v64/RC Staging-Smoke grün
+- [ ] Production nutzt exakt denselben freigegebenen RC
+- [ ] Root-`icon.svg` Herkunft/Rechte belegt oder Asset ersetzt
+- [ ] Betreiber-/Kontakt-/Privacy-/Legal-Angaben final
+- [ ] Supportweg getestet
+- [ ] Securitykontakt getestet
+- [ ] Probe-Supportfall dokumentiert
+- [ ] SEV-1-/Incident-Drill dokumentiert
+- [ ] Rollback-Drill dokumentiert
+- [ ] `operator-release.json = FINAL / READY`
 
-- Situation anzeigen
-- Gewinner nur aus aktueller Spielergruppe wählen
-- Rangliste korrekt
+## 12. PR-Stack / Branch Protection
 
-## 6. Smart Party Night
+- [ ] `main` → #3 → #11 → #13 Stack kontrolliert reconciled
+- [ ] Main-Commits `6b6bddd...` und `d347c7...` erhalten
+- [ ] finaler stabiler Zielbranch festgelegt
+- [ ] PR-Pflicht aktiv
+- [ ] `Secret Circle CI / validate` Required Check real aktiv und grün
+- [ ] Force-Push/Löschung entsprechend Releasevertrag geschützt
+- [ ] keine ungeklärte Änderung nach RC-Freeze
 
-- 15, 30, 45, 60 und 90 Minuten testen.
-- alle Stimmungen testen.
-- Alters- und Gruppengrößenfilter prüfen.
-- Favoritenbonus und zuletzt gespielt prüfen.
-- Hub-, Quick-, Advanced- und Word-Imposter-Abschluss synchronisieren.
-- erledigte und übersprungene Schritte prüfen.
-- Plan nach App-Neustart fortsetzen.
+## 13. Release-Freigabe
 
-## 7. Eigene Hub-Kategorien
+- [ ] CI/Cross-Browser auf unverändertem RC
+- [ ] Branch Protection + Stack-Reconciliation
+- [ ] HTTPS-Staging/Production
+- [ ] Android/iPhone/iPad + Accessibility
+- [ ] alle Spezialgates bis **HS60**
+- [ ] alle 15 Core-Spiele real getestet
+- [ ] Wave-1-Evidence dokumentiert, ohne automatische Core-Promotion
+- [ ] keine offenen Critical/High-Funde
+- [ ] Content/Rechte/Legal/Support/Hosting/Incident-Sign-off
+- [ ] zwei PWA-Upgrades + Rollback
+- [ ] `release-evidence.json = FINAL / GO`
 
-- gültiges Pack erstellen.
-- weniger als 3 Karten ablehnen.
-- doppelte Karten entfernen.
-- doppelten Packnamen ablehnen.
-- Sonderzeichen und HTML-artige Texte sicher anzeigen.
-- Pack verwenden, löschen, exportieren und importieren.
-- maximal 20 Packs und 100 Karten prüfen.
-
-## 8. Backup und Datenschutz
-
-- vollständigen Export erzeugen.
-- Hub-, Party-Night-, Quick-, Advanced-, Pack- und Imposter-Schlüssel kontrollieren.
-- gültigen Import durchführen.
-- ungültiges JSON und Datei über 1,5 MB ablehnen.
-- simulierten Schreibfehler und Rollback prüfen.
-- vollständige Löschung aller `secret-circle-*`-Schlüssel prüfen.
-
-## 9. PWA und Offline
-
-- Online-Erststart vollständig laden.
-- Installation auf Android und iOS.
-- Flugmodus aktivieren.
-- Party Hub, Quick Mode, Advanced-Spiel, Word Imposter und Datenschutz öffnen.
-- aktive Quick-, Advanced- und Imposter-Session offline fortsetzen.
-- Update von älterem Cache auf `secret-circle-v26` prüfen.
-- nur v26 darf danach bestehen bleiben.
-
-## 10. Accessibility und Mobile
-
-- Tastaturbedienung ohne Maus.
-- sichtbare Fokusmarkierungen.
-- Screenreader-Grundprüfung.
-- 200-%-Zoom.
-- Hoch- und Querformat.
-- iPhone-Safe-Areas.
-- mindestens 44 × 44 Pixel große Touchziele.
-- kein horizontaler Überlauf.
-- Reduced Motion und große Systemschrift.
-
-## 11. Reale Partytests
-
-### Kleine Gruppe
-
-- 3–4 Personen
-- mindestens 60 Minuten
-- Word Imposter, Standardspiel, Quick Mode und Advanced-Spiel
-
-### Große Gruppe
-
-- mindestens 8 Personen
-- mindestens 90 Minuten
-- Mafia, Schnellfeuer, Wellenlänge, Scharade und Party Night
-
-Dokumentieren: unklare Regeln, Wartezeiten, Kartenqualität, ungeeignete Inhalte, technische Unterbrechungen, gewünschte Wiederholungen und bevorzugte Spiele.
-
-## Freigabekriterium
-
-Der reale Betatest beginnt erst nach grünem `npm run ci` und grünem Cross-Browser-Lauf. Ein öffentlicher Release benötigt zusätzlich erfolgreiche Android-/iOS-, Offline-Update-, Inhalts-, Gruppen- und rechtliche Prüfungen.
+Bis dahin bleibt der öffentliche Release **NO_GO** und PR #13 **Draft / ungemergt**.

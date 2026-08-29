@@ -1,155 +1,150 @@
 # Secret Circle – Architekturvertrag für langfristige Wartbarkeit
 
-Dieses Dokument definiert die Regeln, die Secret Circle auch nach vielen Jahren verständlich, migrierbar, offline nutzbar und testbar halten sollen.
+Stand: 29. August 2026
+
+Secret Circle bleibt für den Januar-2027-Release eine statische **offline-first PWA** für gemeinsame Spiele auf einem Gerät. Der aktuelle Katalog besitzt **55 Built-ins: 15 Core / 13 Extended / 27 Labs**. **Expansion Wave 1 ist mit 10/10 geplanten Modi quellsseitig implementiert**, bleibt aber Labs und erweitert den Januar-Core nicht automatisch.
 
 ## 1. Produktgrenzen
 
-Secret Circle bleibt offline-first, ohne verpflichtendes Konto, ohne externe Laufzeitabhängigkeiten, als statische PWA auslieferbar und auf einem gemeinsam genutzten Gerät vollständig spielbar. Spätere Online-, KI-, Kamera- oder Mehrgerätefunktionen bleiben optionale getrennte Module.
+V1 besitzt kein Pflichtkonto, Backend, eigene Server-API, Werbung, Tracking oder externe Runtime-CDNs. Built-in-Content bleibt ohne 18+-Bereich, explizite Sexualinhalte, Trinkzwang oder gefährliche Challenges.
 
 ## 2. Stabile Identitäten
 
-Spiel-IDs, Pack-IDs, Creator-Spiel-IDs, Speicherpräfix `secret-circle-`, Backupformat, Manifest-ID und PWA-Scope sind interne Verträge. Anzeigenamen dürfen sich ändern; persistierte IDs benötigen bei Änderungen eine Migration.
+Persistierte Spiel-/Pack-/Creator-/Session-/Completion-IDs, Storage-Keys, Backupformate, Manifest-ID und PWA-Scope sind Verträge. Ein Abschluss darf Verlauf und Statistik genau einmal verändern.
 
-## 3. Versionierte Daten
+## 3. Versionierte Daten und Backups
 
-Aktuelle Bereiche:
+`backup-schema-registry.js` Version 2 ist die zentrale Quelle für Complete-Backup-Format, Größenlimits und 17 explizit verwaltete Storage-Keys. `party-data-tools.js` Version 6 konsumiert diesen Vertrag. Seit v57 gehört der promptfreie Timer-Store `secret-circle-party-quick-timers-v1` zum Complete Backup.
 
-- Word-Imposter-Schema Version 7
-- Advanced-Session Version 2
-- Party Hub Version 1
-- Party Night Version 1
-- klassische Quick-Session Version 1
-- Mega-Trend-Session Version 1
-- Viral-Session Version 1
-- Creator-Session Version 1
-- eigene Hub-Packs Speicherschema Version 1, Manager Version 4
-- selbst erstellte Spiele Version 1
-- Gesamtsicherung Version 1
+## 4. Katalog- und Contentarchitektur
 
-Neue Felder erhalten sichere Standardwerte. Beschädigte Daten werden isoliert verworfen oder auf begrenzte sichere Werte normalisiert. Unbekannte neuere Versionen werden nicht blind überschrieben. Migrationen benötigen realistische alte Snapshots.
+Browserkette auf Hub und Quick-Play:
 
-## 4. Modulgrenzen
+`party-catalog.js → party-expansion.js → party-trending-catalog.js → party-mega-catalog.js → party-viral-catalog.js → party-core-release-catalog.js → party-core-classic-content.js → party-routing.js → party-wave-one-catalog.js → party-wave-one-imposter-catalog.js → party-wave-one-writing-catalog.js → party-wave-one-voting-catalog.js → party-wave-one-bluff-catalog.js → party-wave-one-clue-catalog.js`
 
-### Word Imposter
+Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare Enginefamilien**: Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. Themen bleiben Content-Layer; neue sichtbare Varianten sollen bevorzugt auf vorhandenen Engines entstehen.
 
-- `game-engine.js`: Regeln und Zustandsübergänge
-- `role-assignment.js`: unabhängige Rollenverteilung
-- `data-store.js`: Migration, Validierung und Sicherung
-- `app.js`: Browseroberfläche
+## 5. Hub- und Timergrenzen
 
-### Katalog und Hub
+`party-hub.js`, `party-hub-round-state.js`, `party-hub-timers.js`, `party-session-controls.js`, `party-hub-resume-guard.js`, `party-hub-polish.js` und `party-hub-a11y.js` besitzen getrennte Verantwortlichkeiten. Runtime-Reihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub-round-state.js → party-hub.js`.
 
-- `party-catalog.js`: Basisspiele
-- `party-expansion.js`: Advanced-Erweiterung
-- `party-trending-catalog.js`: klassische Quick Modes
-- `party-mega-catalog.js`: Anime-, Geld-, Ranking- und Social-Trends
-- `party-viral-catalog.js`: Viral-, Preis-, Wissens- und Storyformate
-- `party-routing.js`: Routingfassade plus Integration selbst erstellter Spiele
-- `party-hub.js`: Katalog und einfache Spiele
-- `party-hub-plus.js`: Einstellungen, Statistik, Erfolge und Installation
-- `party-hub-polish.js`: kontextabhängige Aktionen und Hilfelader
-- `party-guide.js`: Onboarding, kurze Erklärungen und Creator-Einstiege
-- `party-custom-packs.js`: eigene Packs mit Transaktionsschutz
-- `party-night.js`: Planung und Fortschritt
-- `party-data-tools.js`: Gesamtsicherung und Löschung
+## 6. Advanced-Core-Grenzen – v55
 
-### Game-Creator
+Advanced trennt `party-advanced.js`, `advanced-resume-guard.js`, `party-advanced-runner.js` und `advanced-privacy-guard.js`. Guard v4 schützt Location-Result-Pfade, Mafia-Rollen-/Winnerzustände, exact-once-Abschluss und bestätigten Session-Ersatz.
 
-- `game-creator.js`: reine Validierung, Speicherung, Export, Import und Katalogabbildung
-- `creator-page.js`: vierstufiger Wizard und lokale Bibliothek
-- `creator.html`: semantische Creator-Oberfläche
-- `creator.css`: responsive Vorschau und Bedienung
-- `party-created-modes.js`: eigene wiederaufnehmbare Spielengine für alle sechs Vorlagen
+## 7. Quick-/Mega-/Viral-/Creator-Session-Ersatz – v56
 
-Der Creator unterstützt Fragen, Auswahl, Erraten, Challenges, Story und Debatte. Neue Creator-Vorlagen werden nur ergänzt, wenn sie auf einer klaren Engine basieren und migrationsfähig bleiben.
+`quick-session-replacement-guard.js` v2 schützt Same-/Cross-Game-Ersatz. Ein vorhandener Family-Snapshot wird nur nach Bestätigung ersetzt; Write-Fail bleibt fail-closed. Wave-1-Spiele verwenden dieselbe Quick-Familie.
 
-### Spielengines
+## 8. Quick-Family Timer Resume – v57
 
-- `party-advanced.js` und `party-advanced-runner.js`: komplexe Rollen- und Täuschungsspiele
-- `party-quick-modes.js`: zehn klassische Quick Modes
-- `party-mega-modes.js`: neun Trend-Modi
-- `party-viral-modes.js`: acht Viral-Modi
-- `party-created-modes.js`: selbst erstellte Fragen-, Auswahl-, Erraten-, Challenge-, Story- und Debattenspiele
-- `quick-loader.js`: lädt pro Quick-Seite genau eine passende Engine
+`secret-circle-party-quick-timers-v1` speichert ausschließlich technische Timer-Metadaten. Snapshots werden nur bei passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer konsumiert.
 
-Neue Mechanikfamilien erhalten eigene Module. Produktionsmodule bleiben unter 1000 Zeilen und 100 KB.
+## 9. Quick-Family BFCache Resume – v58
 
-## 5. Reine Logik vor DOM-Logik
+Bei `pageshow.persisted` führt ein passender Snapshot kontrolliert in den normalen Resume-Pfad; stale/fremde Snapshots werden gelöscht.
 
-Planung, Validierung, Migration und Zustandsübergänge sollen ohne Browser testbar sein. DOM-Code erstellt Elemente, verbindet Ereignisse und zeigt Status; er dupliziert keine abweichenden Regeln.
+## 10. Quick-Family Background Pause – v59
 
-## 6. Lokale Transaktionen
+Hidden pausiert einen laufenden Quick-Family-Timer. Sichtbarwerden startet nicht automatisch weiter.
 
-Kritische Vorgänge validieren zuerst, erfassen den alten Zustand, schreiben vollständig und stellen bei Fehlern den vorherigen Stand wieder her. Das gilt für Import, Löschung, Sessionabschluss, eigene Packs, eigene Spiele und Inhaltsmigrationen.
+## 11. Quick-Family Hidden Snapshot – v60
 
-Sessionabschlüsse schreiben Verlauf und Statistik genau einmal. Wiederholte Creator-Sessions erhöhen den Zähler jeweils um eins; ein Neuladen darf keinen zweiten Abschluss erzeugen.
+`party-session-controls.js` Version 5 persistiert bei Hidden technische Restzeit sofort; Same-Page-Stop entfernt den Snapshot.
 
-## 7. Bedienbarkeitsvertrag
+## 12. Expansion Wave 1 – v61
 
-- Hauptaufgaben sind in höchstens drei bis vier klaren Schritten erreichbar
-- jede Seite erklärt kurz ihren Zweck
-- Fachbegriffe erhalten direkte Hilfen
-- Buttons benennen die konkrete nächste Aktion
-- leere Zustände erklären, wie Inhalte entstehen
-- wichtige Regeln stehen vor dem Start in Kurzform
-- progressive Offenlegung statt langer Formulare auf einmal
-- Nutzer können jederzeit zurück, abbrechen oder Daten sichern
+Gemeinsame Quiz-Engine: `party-quiz` und `fact-or-fake` über `party-wave-one-modes.js`.
 
-## 8. Datenschutz durch Architektur
+## 13. Expansion Wave 1 Imposter – v62
 
-- keine Analyse- oder Werbeskripte
-- keine externen Schriftarten oder Laufzeit-CDNs
-- keine versteckten Netzwerkaufrufe
-- dynamische Nutzerdaten über `textContent`
-- restriktive Content Security Policy
-- alle App-Daten über `secret-circle-` auffindbar und löschbar
-- Creator lädt keine Bilder automatisch hoch
-- Fan-Quiz enthält keine fremden Bilder, Logos, Zitate oder Mediendateien
-- Geld-Challenges bleiben hypothetisch
-- Preisfragen verwenden feste Spielwerte
+Gemeinsame Imposter-Engine: `undercover-similar-word` und `no-word-imposter` über `party-wave-one-imposter-modes.js`. Private Handoffs, geheime Votes, Blur/Hidden-Concealment, letzter Guess und exact-once-Scoring sind Source-Verträge.
 
-## 9. Offline- und Updatevertrag
+## 14. Expansion Wave 1 Writing – v63
 
-Jede Version besitzt einen eindeutigen Cache, listet alle Kernressourcen auf, entfernt alte Caches, erhält lokale Daten und ermöglicht Rollback über eine erneut erhöhte Cache-Version. Aktueller Offline-Core: `secret-circle-v30`.
+Gemeinsame Schreib-Engine:
 
-Creator, Hilfesystem, Creator-Spielengine, alle weiteren Spielengines, Datenschutz und Kernseiten gehören zum Offline-Core.
+- `fill-blank-battle` – private Antworten, danach anonyme Gruppenwahl;
+- `who-wrote-it` – private Antworten, danach anonyme Autorenraten.
 
-## 10. Accessibility als Definition of Done
+Private Eingaben werden bei Blur/Hidden verdeckt. Antworten bleiben während Vote/Guess anonym; Ergebnis-Resume darf Score nicht doppelt vergeben.
 
-Jede Oberfläche benötigt semantische Überschriften, beschriftete Felder, Tastaturbedienung, sichtbaren Fokus, mindestens 44 × 44 Pixel große Touchziele, Reduced Motion, 200-Prozent-Zoom, verständliche Statusmeldungen sowie Smartphone- und Desktopprüfung. Farbe allein darf keinen Status erklären.
+## 15. Expansion Wave 1 Complete – v64
 
-## 11. Inhaltsvertrag
+Die ursprünglich geplanten 10 Wave-1-Modi sind jetzt quellsseitig vorhanden:
 
-- keine proprietären Karten, Texte, Bilder, Logos, Zitate oder Audios anderer Apps kopieren
-- allgemein bekannte Namen nur in klar inoffiziellem textbasiertem Fan-Kontext
-- jede Karte besitzt ein eigenes redaktionelles Ziel
-- Altersstufe und sensible Themen werden dokumentiert
-- strukturierte Modi verwenden strukturierte Daten
-- Nutzerpacks und selbst erstellte Spiele bleiben von eingebauten Inhalten getrennt
-- öffentliche oder kommerzielle Fan-Inhalte benötigen eigene Rechtsprüfung
+1. `bluff-trivia`
+2. `party-quiz`
+3. `fact-or-fake`
+4. `percent-guess`
+5. `fill-blank-battle`
+6. `who-wrote-it`
+7. `party-bracket`
+8. `undercover-similar-word`
+9. `no-word-imposter`
+10. `password-one-word`
 
-## 12. Asset- und Animationsvertrag
+Neue v64-Verträge:
 
-`ASSET_PLAN.md` definiert Icons, Illustrationen, Motion, Budgets und Dateistruktur. Kernfunktionen bleiben ohne Bilder und Animationen verständlich. Animationen blockieren keine Eingabe und beachten Reduced Motion.
+- `percent-guess`: speichert Kartenindex + Schätzung; Punkte werden aus dem Built-in-Zielwert deterministisch abgeleitet.
+- `party-bracket`: speichert Kartenindex + sieben 0/1-Entscheidungen; aktuelles Duell und Sieger werden deterministisch rekonstruiert.
+- `bluff-trivia`: private Fake-Antworten, anonyme Kandidaten, keine Stimme auf eigene Fake-Antwort, richtige Antwort erst im Ergebnis, Wissens- und Täuschungspunkte exact-once.
+- `password-one-word`: Zielwort nur über Kartenindex persistiert, explizites Secret-Reveal, genau ein anderes Hinweiswort, Blur/Hidden verdeckt das Ziel wieder.
+- `quick-loader.js` v11 routet alle sechs Wave-1-Enginefamilien explizit vor dem normalen Quick-Fallback.
+- `party-release-structure.js` v5 klassifiziert alle 10 Wave-1-Modi als Labs.
+- `GAME_LIBRARY_BACKLOG.json` bleibt die maschinenlesbare Produktplanung.
+- Built-in-18+-Content bleibt ausgeschlossen.
 
-## 13. Testpyramide
+## 16. Lokale Transaktionen und Exact-once
 
-Bei jedem Commit: Syntax, Unit-Tests, Strukturvalidator, Release-Audit und Performancebudget. Bei Release Candidates zusätzlich Chromium, Firefox, WebKit, Android-/iPhone-Simulation, echte Geräte, Offline-Update sowie kleine und große Partytests. Datenänderungen benötigen Korruptions-, Quota-, Rollback- und Größenprüfungen.
+Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und rollen bei Fehlern zurück. Fertige Sessions besitzen stabile Completion-/History-IDs. Reload, Retry oder Doppelklick dürfen keinen zweiten Verlaufseintrag erzeugen.
 
-Creator-spezifische E2E-Prüfungen decken Wizard, strukturierte Karten, Offline-Start, Wiederaufnahme, Sanitizing, exakte Verlaufseinträge und wiederholte Statistik ab.
+## 17. Datenschutz und Security durch Architektur
 
-## 14. Performancebudget
+- keine Analytics-/Ads-Skripte oder externen Runtime-CDNs
+- restriktive CSP
+- Geheimkarten und private Eingaben bei Fokusverlust verdecken
+- Session-Ersatz erfolgt nicht still
+- anonyme Vote-/Guess-Phasen zeigen keine Autorennamen
+- Bluff-Antworten und Secret-Clue-Zielwörter bleiben pass-and-play geschützt
+- Timer-Resume speichert nur technische Metadaten
+- manipulierte Resume-Zustände werden fail-closed verworfen
+- Wave-1-Content ist textbasiert und benötigt keine fremden Bilder, Audioassets oder Zitate
 
-Neue Module und Assets erhalten eigene Budgets. Keine großen Frameworks, Videos oder Mediendateien ohne messbaren Nutzen, Kompression und Audit. Wachstum des Offline-Cores bleibt sichtbar.
+## 18. Offline- und Updatevertrag
 
-## 15. Erweiterungspunkte
+Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**.
 
-Lokalisierte Inhalte, optionale Sounds, strukturierte Editoren, Teams, Turniere, Tageschallenges, Raumcodes, moderierte Inhaltsupdates und lokale Kartenbewertungen dürfen den vollständig lokalen Modus nicht ersetzen.
+Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
-## 16. Deprecation und Rollback
+Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Upgrade/Rollback real testen.
 
-Veraltete Funktionen werden markiert, migriert, mindestens einen Beta-Zyklus beobachtet, dokumentiert entfernt und mit Rollback geprüft. Keine Force-Pushes auf Release-Branches und keine stillen nicht migrierbaren Datenlöschungen.
+## 19. PWA-Installationsmetadaten
 
-## 17. Releaseentscheidung
+`party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
 
-Eine Funktion ist erst fertig, wenn Verhalten und Fehlerzustände implementiert, Datenmigration geklärt, Offline-Betrieb und Accessibility geprüft, relevante Tests vorhanden, Dokumentation und Datenschutz angepasst und reale Nutzung beobachtet wurden.
+## 20. Accessibility als Definition of Done
+
+Kernoberflächen und Labs benötigen semantische Struktur, Labels, sichtbaren Fokus, Tastaturbedienung, Touchziele, Reduced Motion und Reflow. Private Übergaben brauchen verständliche Handoff-Texte. VoiceOver/TalkBack/Touch/Zoom bleiben reale Gates.
+
+## 21. Inhalts- und Rechtevertrag
+
+Keine kopierten proprietären Karten, fremden Medien/Logos ohne Rechte oder unnötigen konkreten Marken-/Franchisebezug. Film/Serie/Anime/Gaming dürfen als Themenwelten vorkommen; konkrete moderne Franchises benötigen vor Built-in-Veröffentlichung einen eigenen Referenz-/Rechteentscheid.
+
+## 22. Testpyramide
+
+Normale Änderungen: Syntaxchecks, Unit-/Contracttests und Architektur-/Wave-1-/Advanced-/Quick-Replacement-/Quick-Timer-/BFCache-/Background-Pause-/Hidden-Snapshot-/Backup-/Content-/Privacy-/Reference-/Asset-/Accessibility-/Operator-/Release-Audits.
+
+Wave 1 besitzt eigene Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie den finalen Prozent-/Bracket-/Bluff-/Clue-Block. `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10, v64, Loader v11 und kein 18+-Built-in-Content.
+
+## 23. Performance und Assets
+
+Produktionsmodule bleiben grundsätzlich unter 1000 Zeilen und 100 KB. Neue sichtbare Varianten sollen bevorzugt Content auf gemeinsamen Engines wiederverwenden.
+
+## 24. Betrieb, Deprecation und Rollback
+
+Kein Force-Push auf stabile Release-Basen. Rollback/Hotfix erhält nach Offline-Core-Änderungen eine neue Cachegeneration. Persistierte Daten müssen kompatibel bleiben oder explizit migriert werden.
+
+## 25. Releaseentscheidung
+
+Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und reale Gates tatsächlich ausgeführt wurden**. `release-evidence.json` ist die finale Quelle; `GO` erst bei belegten PASS-Gates auf demselben unveränderten RC.

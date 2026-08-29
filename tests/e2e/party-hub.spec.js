@@ -4,6 +4,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/party.html');
   await page.evaluate(() => {
     localStorage.removeItem('secret-circle-party-hub-v1');
+    localStorage.removeItem('secret-circle-party-hub-active-v1');
     localStorage.removeItem('secret-circle-party-preferences-v1');
     localStorage.removeItem('secret-circle-party-quick-active-v1');
     localStorage.removeItem('secret-circle-party-mega-active-v1');
@@ -67,7 +68,7 @@ test('truth or dare can be configured and played from the hub', async ({ page })
   await expect(page.locator('#play-content')).not.toHaveText('Wähle Wahrheit oder Pflicht.');
   await page.getByRole('button', { name: 'Erledigt · nächste Person' }).click();
   await expect(page.locator('#play-player')).toContainText('Sam');
-  await page.getByRole('button', { name: 'Spiel verlassen' }).click();
+  await page.getByRole('button', { name: 'Beenden & speichern' }).click();
 
   await page.getByRole('button', { name: 'Verlauf' }).click();
   await expect(page.locator('#hub-history')).toContainText('Wahrheit oder Pflicht');

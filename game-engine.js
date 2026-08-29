@@ -8,6 +8,7 @@
   const VERSION = 7;
   const MIN_PLAYERS = 3;
   const MAX_PLAYERS = 20;
+  const MAX_IMPOSTERS = 6;
   const MIN_SECONDS = 60;
   const MAX_SECONDS = 600;
   const MAX_TIE_BREAKS = 1;
@@ -95,20 +96,31 @@
     return copy;
   }
 
+  function validateImposterCount(value, playerCount) {
+    const count = Number(value);
+    const maximum = Math.min(MAX_IMPOSTERS, Math.max(0, Number(playerCount) - 1));
+    if (!Number.isInteger(count) || count < 1 || count > maximum) {
+      throw Error(`Die Imposter-Zahl muss zwischen 1 und ${maximum} liegen.`);
+    }
+    return count;
+  }
+
+  function assignIndependentRoles(players, count, seed) {
+    return shuffle(players, createRng(`${seed}|independent-roles-v1`)).slice(0, count);
+  }
+
   function createGame(options) {
     const players = normalizePlayers(options?.players);
     const entries = normalizeEntries(options?.entries);
-    const imposterCount = Number(options?.imposterCount ?? 1);
+    const imposterCount = validateImposterCount(options?.imposterCount ?? 1, players.length);
     const roundSeconds = Number(options?.roundSeconds ?? 180);
     const matchRounds = Number(options?.matchRounds ?? 5);
-    if (!Number.isInteger(imposterCount) || imposterCount < 1 || imposterCount >= players.length) throw Error('Die Imposter-Zahl muss mindestens 1 und kleiner als die Spielerzahl sein.');
     if (!Number.isInteger(roundSeconds) || roundSeconds < MIN_SECONDS || roundSeconds > MAX_SECONDS) throw Error('Die Rundenzeit muss zwischen 1 und 10 Minuten liegen.');
     if (!Number.isInteger(matchRounds) || matchRounds < 1 || matchRounds > 20) throw Error('Ein Match muss zwischen 1 und 20 Runden haben.');
 
     const seed = text(options?.seed, 100) || `${Date.now()}-${Math.random()}`;
-    const random = createRng(seed);
-    const revealOrder = shuffle(players, random);
-    const imposters = revealOrder.slice(0, imposterCount);
+    const revealOrder = shuffle(players, createRng(`${seed}|reveal-order-v2`));
+    const imposters = assignIndependentRoles(players, imposterCount, seed);
     let usedWords = normalizeUsedWords(options?.usedWords);
     const usedKeys = new Set(usedWords.map(lower));
     let availableEntries = entries.filter(entry => !usedKeys.has(lower(entry.word)));
@@ -116,10 +128,10 @@
       usedWords = [];
       availableEntries = entries;
     }
-    const selected = availableEntries[Math.floor(random() * availableEntries.length)];
+    const wordRandom = createRng(`${seed}|word-choice-v2`);
+    const selected = availableEntries[Math.floor(wordRandom() * availableEntries.length)];
     usedWords = [...usedWords, selected.word];
     const createdAt = new Date().toISOString();
-    const scores = Object.fromEntries(players.map(name => [name, 0]));
 
     return {
       version: VERSION,
@@ -143,7 +155,7 @@
       completedAt: null,
       matchRounds,
       currentRound: 1,
-      scores,
+      scores: Object.fromEntries(players.map(name => [name, 0])),
       votes: {},
       voteLeaders: [],
       tieBreakCount: 0,
@@ -157,7 +169,8 @@
     if (!game || typeof game !== 'object' || game.version !== VERSION) throw Error('Ungültiger oder veralteter Spielstand.');
     const players = normalizePlayers(game.players);
     if (!Array.isArray(game.revealOrder) || game.revealOrder.length !== players.length || new Set(game.revealOrder).size !== players.length || game.revealOrder.some(name => !players.includes(name))) throw Error('Ungültige Kartenreihenfolge.');
-    if (!Array.isArray(game.imposters) || game.imposters.length < 1 || game.imposters.length >= players.length || new Set(game.imposters).size !== game.imposters.length || game.imposters.some(name => !players.includes(name))) throw Error('Ungültige Imposter-Verteilung.');
+    validateImposterCount(game?.imposters?.length, players.length);
+    if (!Array.isArray(game.imposters) || new Set(game.imposters).size !== game.imposters.length || game.imposters.some(name => !players.includes(name))) throw Error('Ungültige Imposter-Verteilung.');
     if (!['reveal', 'discussion', 'voting', 'tie_break', 'guess', 'completed'].includes(game.phase)) throw Error('Ungültige Spielphase.');
     if (!Number.isInteger(game.revealIndex) || game.revealIndex < 0 || game.revealIndex > players.length) throw Error('Ungültiger Kartenfortschritt.');
     if (game.phase === 'reveal' && game.revealIndex >= players.length) throw Error('Ungültiger Kartenfortschritt.');
@@ -167,12 +180,10 @@
     if (typeof game.timerRunning !== 'boolean') throw Error('Ungültiger Timerstatus.');
     if (game.timerRunning) {
       if (game.phase !== 'discussion' || game.remainingSeconds <= 0 || !Number.isFinite(game.timerDeadline) || !Number.isInteger(game.timerDeadline) || game.timerDeadline <= 0) throw Error('Ungültiger laufender Timer.');
-    } else if (game.timerDeadline !== null) {
-      throw Error('Ungültige Timerfrist.');
-    }
+    } else if (game.timerDeadline !== null) throw Error('Ungültige Timerfrist.');
     if (!Number.isInteger(game.matchRounds) || game.matchRounds < 1 || game.matchRounds > 20) throw Error('Ungültige Matchlänge.');
     if (!Number.isInteger(game.currentRound) || game.currentRound < 1 || game.currentRound > game.matchRounds) throw Error('Ungültige Rundennummer.');
-    if (!game.scores || typeof game.scores !== 'object' || Object.keys(game.scores).length !== players.length || players.some(name => !Number.isInteger(game.scores[name]) || game.scores[name] < 0)) throw Error('Ungültiger Punktestand.');
+    if (!game.scores || typeof game.scores !== 'object' || Array.isArray(game.scores) || Object.keys(game.scores).length !== players.length || players.some(name => !Number.isInteger(game.scores[name]) || game.scores[name] < 0)) throw Error('Ungültiger Punktestand.');
     if (!game.word || !game.hint || !game.category || !game.createdAt || Number.isNaN(Date.parse(game.createdAt))) throw Error('Unvollständiger Spielstand.');
     if (typeof game.useHint !== 'boolean') throw Error('Ungültige Hilfswort-Einstellung.');
     const usedWords = normalizeUsedWords(game.usedWords);
@@ -188,9 +199,7 @@
     if (game.winner !== null && !['innocents', 'imposters'].includes(game.winner)) throw Error('Ungültiger Rundensieger.');
     if (game.phase === 'completed') {
       if (!game.completedAt || Number.isNaN(Date.parse(game.completedAt)) || !game.winner || game.timerRunning || game.timerDeadline !== null) throw Error('Unvollständiges Rundenergebnis.');
-    } else if (game.completedAt !== null || game.winner !== null) {
-      throw Error('Ungültiger Abschlusszustand.');
-    }
+    } else if (game.completedAt !== null || game.winner !== null) throw Error('Ungültiger Abschlusszustand.');
     return true;
   }
 
@@ -332,8 +341,8 @@
     }
     next.voteLeaders = [];
     next.eliminatedPlayer = leaders[0];
-    next.phase = next.imposters.includes(next.eliminatedPlayer) ? 'guess' : 'completed';
-    if (next.phase === 'completed') finalizeRound(next, false);
+    if (next.imposters.includes(next.eliminatedPlayer)) next.phase = 'guess';
+    else finalizeRound(next, false);
     return next;
   }
 
@@ -342,16 +351,24 @@
     if (next.phase !== 'guess') throw Error('Der Imposter darf jetzt nicht raten.');
     next.imposterGuess = text(guess, 60);
     if (!next.imposterGuess) throw Error('Bitte einen Begriff eingeben.');
-    const correct = lower(next.imposterGuess) === lower(next.word);
-    finalizeRound(next, correct);
+    finalizeRound(next, lower(next.imposterGuess) === lower(next.word));
     return next;
   }
 
-  function nextRound(game, options) {
+  function nextRound(game, options = {}) {
     const previous = restoreGame(game);
     if (previous.phase !== 'completed') throw Error('Die Runde ist noch nicht beendet.');
     if (previous.currentRound >= previous.matchRounds) throw Error('Das Match ist bereits beendet.');
-    const next = createGame({ ...options, players: previous.players, matchRounds: previous.matchRounds, usedWords: previous.usedWords });
+    const next = createGame({
+      ...options,
+      players: previous.players,
+      category: options.category ?? previous.category,
+      imposterCount: options.imposterCount ?? previous.imposters.length,
+      useHint: options.useHint ?? previous.useHint,
+      roundSeconds: options.roundSeconds ?? previous.roundSeconds,
+      matchRounds: previous.matchRounds,
+      usedWords: previous.usedWords
+    });
     next.currentRound = previous.currentRound + 1;
     next.scores = clone(previous.scores);
     return next;
@@ -364,13 +381,25 @@
 
   function leaderboard(game) {
     assertGame(game);
-    return Object.entries(game.scores).map(([name, score]) => ({ name, score })).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'de-DE'));
+    return Object.entries(game.scores)
+      .map(([name, score]) => ({ name, score }))
+      .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'de-DE'));
   }
 
   function historyEntry(game) {
     assertGame(game);
     if (game.phase !== 'completed') throw Error('Nur abgeschlossene Runden können gespeichert werden.');
-    return { id: game.id, completedAt: game.completedAt, category: game.category, playerCount: game.players.length, imposterCount: game.imposters.length, word: game.word, imposters: [...game.imposters], winner: game.winner, round: game.currentRound };
+    return {
+      id: game.id,
+      completedAt: game.completedAt,
+      category: game.category,
+      playerCount: game.players.length,
+      imposterCount: game.imposters.length,
+      word: game.word,
+      imposters: [...game.imposters],
+      winner: game.winner,
+      round: game.currentRound
+    };
   }
 
   function parseCustomEntries(input) {
@@ -380,5 +409,36 @@
     }));
   }
 
-  return { VERSION, MIN_PLAYERS, MAX_PLAYERS, MAX_TIE_BREAKS, normalizePlayers, normalizeEntries, normalizeUsedWords, parseCustomEntries, createRng, shuffle, createGame, roleFor, assertGame, restoreGame, advanceReveal, syncTimer, startTimer, pauseTimer, setRemaining, startVoting, castVote, resolveVote, submitImposterGuess, nextRound, isMatchComplete, leaderboard, historyEntry };
+  return {
+    VERSION,
+    MIN_PLAYERS,
+    MAX_PLAYERS,
+    MAX_IMPOSTERS,
+    MAX_TIE_BREAKS,
+    normalizePlayers,
+    normalizeEntries,
+    normalizeUsedWords,
+    parseCustomEntries,
+    createRng,
+    shuffle,
+    validateImposterCount,
+    assignIndependentRoles,
+    createGame,
+    roleFor,
+    assertGame,
+    restoreGame,
+    advanceReveal,
+    syncTimer,
+    startTimer,
+    pauseTimer,
+    setRemaining,
+    startVoting,
+    castVote,
+    resolveVote,
+    submitImposterGuess,
+    nextRound,
+    isMatchComplete,
+    leaderboard,
+    historyEntry
+  };
 });

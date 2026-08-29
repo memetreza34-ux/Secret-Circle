@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0f172a">
-  <meta name="description" content="Secret Circle Party Hub – viele lokale Partyspiele auf einem Gerät.">
+  <meta name="description" content="Secret Circle Party Hub – Kernspiele, sichere Übergaben, lokale Daten und eigene Spiele auf einem Gerät.">
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -51,9 +51,9 @@
       <section id="view-home" class="hub-view" data-view="home" aria-labelledby="home-title">
         <div class="hero-card">
           <div>
-            <p class="eyebrow">Ein Handy · viele Spiele · komplett offline</p>
-            <h1 id="home-title">Der ganze Spieleabend in einer App</h1>
-            <p>Wähle schnell nach Stimmung, Gruppengröße und Dauer. Spieler, Favoriten und Verlauf bleiben lokal auf deinem Gerät.</p>
+            <p class="eyebrow">Euer Party-Hub · privat · lokal</p>
+            <h1 id="home-title">Von der ersten Runde bis zum nächsten Spiel</h1>
+            <p>Startet mit 15 priorisierten Kernspielen, sicheren geheimen Übergaben und Wiederaufnahme nach Unterbrechungen. Spieler, Favoriten, Verlauf und eigene Spiele bleiben lokal auf eurem Gerät – ohne Konto und ohne Cloudzwang.</p>
             <div class="hero-actions">
               <button id="browse-games" type="button">Alle Spiele ansehen</button>
               <button id="quick-start" class="secondary" type="button">Schnellstart</button>
@@ -166,7 +166,7 @@
           </section>
           <section class="data-panel" aria-labelledby="privacy-settings-title">
             <h2 id="privacy-settings-title">Datenschutz</h2>
-            <p class="muted">Secret Circle benötigt kein Konto. Die App verwendet keine Analyse-, Werbe- oder Tracking-Dienste und sendet Spieldaten nicht an einen eigenen Server.</p>
+            <p class="muted">Secret Circle benötigt kein Konto. Die App verwendet keine Analyse-, Werbe- oder Tracking-Dienste und sendet Spieldaten nicht an einen Server.</p>
             <a class="ghost-button" href="privacy.html">Datenschutz vollständig ansehen</a>
           </section>
         </div>
@@ -186,16 +186,26 @@
       <div id="detail-badges" class="badge-row"></div>
       <section aria-labelledby="detail-packs-title"><h3 id="detail-packs-title">Kategorien & Inhalte</h3><div id="detail-packs" class="pack-grid"></div></section>
       <section aria-labelledby="detail-rules-title"><h3 id="detail-rules-title">So funktioniert es</h3><ol id="detail-rules" class="rule-list"></ol></section>
+      <p class="muted">Persönliche Inhalte sind freiwillig. Überspringen ist jederzeit erlaubt und muss nicht begründet werden.</p>
       <label id="pack-select-label" for="pack-select">Pack<select id="pack-select"></select></label>
       <div class="modal-actions"><button id="start-selected-game" type="button">Spiel starten</button><button id="favorite-selected" class="secondary" type="button">Als Favorit speichern</button></div>
     </div>
   </section>
 
-  <section id="play-layer" class="play-layer" hidden aria-labelledby="play-title">
-    <div class="play-topbar"><button id="exit-game" class="ghost-button" type="button">Spiel verlassen</button><div><span id="play-progress"></span><strong id="play-score"></strong></div></div>
+  <section id="play-layer" class="play-layer" hidden aria-labelledby="play-title" aria-modal="true" role="dialog">
+    <div class="play-topbar">
+      <div class="hub-session-controls" role="group" aria-label="Spielsteuerung">
+        <button id="finish-hub-game" class="ghost-button" type="button" disabled>Beenden &amp; speichern</button>
+        <button id="skip-hub-round" class="ghost-button" type="button" disabled>Runde überspringen</button>
+        <button id="pause-hub-game" class="ghost-button" type="button" aria-pressed="false" disabled>Pause</button>
+        <button id="abort-hub-game" class="ghost-button hub-abort-button" type="button" disabled>Abbrechen &amp; verwerfen</button>
+      </div>
+      <div><span id="play-progress"></span><strong id="play-score"></strong></div>
+    </div>
     <div class="play-card">
+      <p id="play-pause-status" class="muted" role="status" aria-live="polite"></p>
       <p id="play-eyebrow" class="eyebrow"></p>
-      <h1 id="play-title"></h1>
+      <h1 id="play-title" tabindex="-1"></h1>
       <p id="play-player" class="active-player"></p>
       <div id="play-content" class="play-content" aria-live="polite"></div>
       <div id="play-options" class="play-options"></div>
@@ -209,12 +219,25 @@
   <script src="party-trending-catalog.js"></script>
   <script src="party-mega-catalog.js"></script>
   <script src="party-viral-catalog.js"></script>
+  <script src="party-core-release-catalog.js"></script>
+  <script src="party-core-classic-content.js"></script>
   <script src="party-routing.js"></script>
+  <script src="party-wave-one-catalog.js"></script>
+  <script src="party-wave-one-imposter-catalog.js"></script>
+  <script src="party-wave-one-writing-catalog.js"></script>
+  <script src="party-wave-one-voting-catalog.js"></script>
+  <script src="party-wave-one-bluff-catalog.js"></script>
+  <script src="party-wave-one-clue-catalog.js"></script>
   <script src="party-custom-packs.js"></script>
+  <script src="session-ledger.js"></script>
+  <script src="party-session-controls.js"></script>
+  <script src="party-hub-timers.js"></script>
+  <script src="party-hub-round-state.js"></script>
   <script src="party-hub.js"></script>
   <script src="party-hub-plus.js"></script>
   <script src="party-hub-polish.js"></script>
   <script src="party-night.js"></script>
+  <script src="backup-schema-registry.js"></script>
   <script src="party-data-tools.js"></script>
 </body>
 </html>

@@ -1,99 +1,134 @@
-# GitHub Actions – Fehler vor dem ersten Schritt
+# Secret Circle – CI Troubleshooting
 
-## Beobachtung
+Stand: 29. August 2026
 
-GitHub-Actions-Läufe können als Fehler enden, bevor `actions/checkout` oder ein anderer Workflow-Schritt sichtbar wird. Eine leere Schrittliste und fehlende normale Job-Logs sind kein konkreter Beweis für einen JavaScript-, Unit-, Validator- oder Playwright-Fehler.
+## Aktueller Befund
 
-Der aktuelle Stand erwartet:
+Die geprüften GitHub-Actions-Jobs erreichen weiterhin **keinen Workflow-Schritt**. Der aktuelle v64-Nachweis bestätigt das Problem erneut auf dem aktiven Release-Foundation-Branch.
 
-- 45 eingebaute technisch spielbare Spiele
-- 27 Quick-, Trend- und Viral-Modi
-- 4 Advanced-Spiele
-- lokaler Game-Creator mit 6 Vorlagen und bis zu 40 eigenen Spielen
-- Smart Party Night
-- Offline-Core `secret-circle-v29`
-- mindestens 13 Unit-Testdateien
-- mindestens 27 E2E-Suiten
-- fünf Browser-/Geräteprojekte
+### Frisch bestätigter v64-Lauf
 
-## Externe Ursachen prüfen
+**Secret Circle CI – Run #3608**
 
-`Settings → Actions → General`:
+- Run-ID `33253663445`
+- Job-ID `99103557030`
+- Head `2297868e1f65b45753294151a3b1f401a55f6288`
+- Branch `agent/release-foundation-2027`
+- `completed / failure`
+- `steps: []`
+- `runner_id: 0`
+- `runner_name: ""`
+- requested label `ubuntu-latest`
+- kein Checkout / Node-/Python-Setup / npm / Test / Playwright / Repositorycode ausgeführt
 
-- Actions ist erlaubt.
-- offizielle Actions sind zugelassen.
-- Workflow besitzt Lesezugriff auf Repository-Inhalte.
-- Repository ist nicht archiviert.
+Damit ist der frühere v49-Befund nicht mehr nur historisch: **derselbe Pre-Step-/Runner-Ausfall ist auf v64 erneut reproduziert.**
 
-`Settings → Billing and licensing`:
+**v50–v64 besitzen weiterhin keinen echten Hosted-Runner-PASS.**
 
-- kein erreichtes Actions-Limit
-- keine blockierte Zahlungsmethode
-- private Repository-Nutzung zulässig
-- kein Organisationsbudget blockiert Runner
+## Historischer Vergleich
 
-Zusätzlich GitHub-Status, Konto- und Organisationsbenachrichtigungen prüfen.
+Der frühere vollständig untersuchte App-CI-Lauf war **v49 Run #2787** auf Head `a9ad91389ff9e966af432b0a77103ddc0960709d`:
 
-## Erneut auslösen
+- Run-ID `32871536761`
+- Job-ID `97879489858`
+- `completed / failure`
+- `steps: null` / `steps: []`
+- kein Repositorycode ausgeführt
 
-1. Draft-PR #11 öffnen.
-2. `Checks` oder `Actions` öffnen.
-3. fehlgeschlagenen Lauf erneut starten.
-4. kontrollieren, dass `Check out repository` erscheint.
-5. anschließend den ersten roten Schritt auswerten.
+Der aktuelle v64-Lauf #3608 zeigt dasselbe Grundmuster und stärkt damit die Einordnung als Problem **vor** Repository-Schritten.
 
-## Lokale Ersatzprüfung
+## Isolierter Hosted-Runner-Probe
 
-```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npx playwright install --with-deps chromium
-npm run ci
-```
+Der temporäre `Secret Circle Runner Probe` enthielt keinen Checkout, keine Setup-Action und keine Dependencyinstallation, sondern nur lokalen Bash-Code (`echo`, `uname -a`).
 
-Cross-Browser:
+Run #7: Head `a9f2591a5280ec67b9042df8ff636019c7c6149a`, Run-ID `32650097848`, Job-ID `97220210640`, `steps: []`. Selbst dieser lokale Bash-Schritt startete nicht.
 
-```bash
-npx playwright install --with-deps chromium firefox webkit
-npm run test:cross-browser
-```
+Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-Code als **unmittelbare Ursache dieses Pre-Step-Fehlers** ausgeschlossen. Die exakte externe Ursache ist nicht bewiesen. Prüfflächen bleiben Hosted-Runner-Zuteilung, Account/Billing/Budget, Repo-/Org-/Enterprise-Policy und GitHub-seitige Runner-Störung.
 
-## Erwartete lokale Prüfpunkte
+## Aktueller Buildvertrag – v64
 
-- Syntax aller Produktionsmodule
-- Engine und Speicher Version 7
-- Katalogschichten mit 45 eingebauten Spielen
-- Routing Version 7
-- Creator-Speicher Version 1
-- sechs Creator-Vorlagen
-- strukturierte Auswahlkarten bleiben nach Export und Import erhalten
-- Creator-Rollback bei Speicherfehler
-- kurze Hilfen und Creator-Einstiege im Hub
-- Quick-, Trend-, Viral- und Advanced-Sessions
-- Backup und vollständige Löschung einschließlich eigener Spiele
-- Manifest, CSP, Icons und Accessibility
-- Cache `secret-circle-v29` vollständig und exklusiv
-- Hub, Creator, Hilfesystem, alle Engines, Word Imposter und Datenschutz offline
+Zentrale Release-Metadaten: `release-meta.json`.
 
-## Typische Repository-Fehler
+- Source-Generation `v64`
+- Offline-Core `secret-circle-v64` / `secret-circle-v64-staging`
+- 55 Built-ins · 15 Core / 13 Extended / 27 Labs
+- Expansion Wave 1: 10/10 quellsseitig implementiert
+- v50 Hub Resume Loader fail-closed
+- v51 Complete Backup Registry v2
+- v52 Safe Hub Current
+- v53 Paranoia Resume/Privacy
+- v54 PT54 Pre-Timer Resume
+- v55 Advanced Integrity
+- v56 Quick Session Replacement
+- v57 promptfreier Quick-Family-Timer-Store + Restzeit-Resume
+- v58 BFCache-Restore-Schutz
+- v59 Hidden Auto-Pause ohne Auto-Resume
+- v60 `party-session-controls.js` Version 5 / HS60 Hidden Snapshot Durability
+- v61 Quiz-Familie
+- v62 Imposter-Familie
+- v63 Writing-Familie
+- v64 Wave 1 komplett
+- `quick-loader.js` v11
+- `party-release-structure.js` v5
+- Unit-/E2E-/Audit-Verträge für Wave-1-Familien vorhanden
+- `package-lock.json` v3
+- Playwright 1.54.2 exakt
+- CI/Cross-Browser verwenden `npm ci`
 
-- Syntax: `npm run check`
-- Unit-Tests: `npm test`
-- Struktur, Cache oder Dokumentation: `npm run validate`
-- Chromium: `npm run test:e2e`
-- Firefox/WebKit: `npm run test:cross-browser`
-- veralteter Cache: Ziel `secret-circle-v29`
-- veraltete Routingversion: Ziel 7
-- veralteter Custom-Pack-Manager: Ziel 4
-- fehlende Creator-Dateien: `creator.html`, `game-creator.js`, `creator-page.js`, `creator.css`
-- fehlende Guidance-Dateien: `party-guide.js`, `party-guide.css`
+Ein echter Online-`npm ci`-PASS bleibt offen, weil Actions Step 1 nicht erreicht.
 
-## Tracking
+## Workflow-Befund
 
-- Issue #7: externer GitHub-Actions-Runner-Blocker
-- Issue #8: reale Geräte-, Rollen- und Partytests
-- Issue #10: Party-Hub-Expansion
-- Draft-PR #11: aktueller Expansions-, UX- und Creator-Stand
+Die Repository-Workflowdefinition selbst fordert einen normalen GitHub-hosted Runner (`ubuntu-latest`) an und enthält die erwartete Kette aus Checkout, Node/Python-Setup, `npm ci`, Playwright-Installation und Projektgates.
 
-## Freigabe
+Da Run #3608 bereits **vor einem einzigen Step** mit `runner_id: 0` endet, gibt es aktuell keinen Beleg dafür, dass eine Änderung an App-Code, Testcode oder Dependencyinstallation diesen Fehler beheben würde.
 
-Ein grüner lokaler Lauf ist ein starkes technisches Signal, ersetzt aber nicht den grünen GitHub-Actions-Nachweis auf dem endgültigen Commit. Merge, realer Betatest und öffentlicher Release bleiben bis zu den jeweiligen Gates blockiert.
+## Was nicht auf Verdacht geändert wird
+
+- keine Tests/Audits deaktivieren
+- kein `continue-on-error` für Pflichtgates
+- Checkout nicht umgehen
+- Required Checks nicht künstlich grün markieren
+- nicht auf ungesperrtes `npm install` zurückgehen
+- keine Featureänderungen als vermeintliche Runner-Reparatur
+- keine Self-hosted-Runner-Scheinlösung nur zur Umgehung eines ungeklärten Account-/Policy-Problems
+
+## Externe Prüfflächen – Priorität
+
+1. persönliche `Settings → Billing and licensing` → Actions-Nutzung/Budget/Spending
+2. Repository `Settings → Actions → General`
+3. Actions-Erlaubnis für private Repositories
+4. GitHub-hosted-Runner-Erlaubnis
+5. Account-/Org-/Enterprise-Regeln
+6. Zahlungs-/Budgetstatus
+7. GitHub Status für Actions-/Runner-Störungen
+
+### Erfolgskriterium der externen Reparatur
+
+Der nächste Testlauf muss mindestens:
+
+- einen Runner zugewiesen bekommen (`runner_id != 0`)
+- einen nicht-leeren Runner-Namen zeigen
+- `Check out repository` als sichtbaren Step enthalten
+
+Erst **danach** beginnt repositoryseitige CI-Diagnostik.
+
+## Wenn der Runner wieder echte Steps zeigt
+
+1. exakten Commit notieren
+2. Checkout bestätigen
+3. Online-`npm ci --ignore-scripts --no-audit --no-fund`
+4. `npm run check`
+5. `npm test`
+6. `npm run validate` inklusive Spezialgates bis HS60, Wave-1-, Backup-, A11y-, Architecture-, Operator- und Release-Audits
+7. Chromium E2E einschließlich Timer-/Lifecycle- und Wave-1-Verträge
+8. vollständiges `npm run ci`
+9. Chromium + Firefox + WebKit auf demselben Commit
+10. unveränderten RC vollständig retesten
+11. erst danach Branch Protection und Release Evidence real auf PASS setzen
+
+## Release-Regel
+
+Ein Workflow mit `steps: []` und `runner_id: 0` zählt weder als PASS noch als negativer Code-Test.
+
+**Öffentlicher Release und Merge von PR #13 bleiben NO_GO**, bis ein echter Hosted Runner den unveränderten RC vollständig ausgeführt hat.

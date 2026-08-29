@@ -1,7 +1,16 @@
 'use strict';
 const assert = require('node:assert/strict');
 const E = require('../game-engine.js');
-const { createStore, KEY_VERSION, ENGINE_VERSION, BACKUP_FORMAT } = require('../data-store.js');
+const {
+  createStore,
+  KEY_VERSION,
+  ENGINE_VERSION,
+  BACKUP_FORMAT,
+  MAX_BACKUP_BYTES,
+  MAX_CUSTOM_CATEGORIES,
+  MAX_CUSTOM_ENTRIES,
+  byteLength
+} = require('../data-store.js');
 
 class MemoryStorage {
   constructor(initial = {}) {
@@ -56,6 +65,25 @@ const legacyHistory = [{
   winner: 'innocents'
 }];
 
+function customCategory(index, entryCount = 2) {
+  return {
+    id: `custom-${index}`,
+    name: `Kategorie ${index}`,
+    entries: Array.from({ length: entryCount }, (_, itemIndex) => ({
+      word: `Begriff ${index}-${itemIndex}`,
+      hint: `Hinweis ${itemIndex}`
+    }))
+  };
+}
+
+function backupWithCustom(custom) {
+  return {
+    format: BACKUP_FORMAT,
+    version: 1,
+    data: { active: null, custom, history: [], settings: null }
+  };
+}
+
 const storage = new MemoryStorage({
   'secret-circle-active-v4': JSON.stringify(legacyGame),
   'secret-circle-custom-v4': JSON.stringify(legacyCustom),
@@ -68,6 +96,14 @@ assert.equal(store.keyVersion, KEY_VERSION);
 assert.equal(store.engineVersion, ENGINE_VERSION);
 assert.equal(KEY_VERSION, 7);
 assert.equal(ENGINE_VERSION, 7);
+assert.equal(MAX_BACKUP_BYTES, 1_500_000);
+assert.equal(MAX_CUSTOM_CATEGORIES, 50);
+assert.equal(MAX_CUSTOM_ENTRIES, 200);
+assert.equal(store.maximumBackupBytes, MAX_BACKUP_BYTES);
+assert.equal(store.maximumCustomCategories, MAX_CUSTOM_CATEGORIES);
+assert.equal(store.maximumCustomEntries, MAX_CUSTOM_ENTRIES);
+assert.equal(byteLength('€'), 3);
+assert.equal(store.byteLength('🎉'), 4);
 assert.equal(migrated.active.id, game.id);
 assert.equal(migrated.active.version, 7);
 assert.equal(migrated.active.timerRunning, false);
@@ -120,9 +156,55 @@ assert.equal(importedLegacyBackup.data.active.timerRunning, false);
 const invalidBackup = store.importBackup('{"format":"unknown"}', E);
 assert.equal(invalidBackup.ok, false);
 assert.match(invalidBackup.error, /keine unterstützte/);
-const oversizedBackup = store.importBackup('x'.repeat(2_000_001), E);
+const invalidDataShape = store.importBackup({ format: BACKUP_FORMAT, version: 1, data: [] }, E);
+assert.equal(invalidDataShape.ok, false);
+assert.match(invalidDataShape.error, /keine unterstützte/);
+const oversizedBackup = store.importBackup('x'.repeat(MAX_BACKUP_BYTES + 1), E);
 assert.equal(oversizedBackup.ok, false);
-assert.match(oversizedBackup.error, /zu groß/);
+assert.match(oversizedBackup.error, /1,5 MB/);
+
+const multibyteBackup = JSON.stringify({
+  format: BACKUP_FORMAT,
+  version: 1,
+  data: { active: null, custom: [], history: [], settings: null },
+  padding: '€'.repeat(500_000)
+});
+assert.ok(multibyteBackup.length < MAX_BACKUP_BYTES, 'Character count alone would incorrectly accept this file.');
+assert.ok(byteLength(multibyteBackup) > MAX_BACKUP_BYTES);
+const oversizedMultibyteBackup = store.importBackup(multibyteBackup, E);
+assert.equal(oversizedMultibyteBackup.ok, false);
+assert.match(oversizedMultibyteBackup.error, /1,5 MB/);
+
+const boundaryStorage = new MemoryStorage();
+const boundaryStore = createStore(boundaryStorage);
+const fiftyCategories = Array.from({ length: MAX_CUSTOM_CATEGORIES }, (_, index) => customCategory(index));
+const fiftyResult = boundaryStore.importBackup(backupWithCustom(fiftyCategories), E);
+assert.equal(fiftyResult.ok, true);
+assert.equal(fiftyResult.data.custom.length, MAX_CUSTOM_CATEGORIES);
+
+const previousCustom = boundaryStorage.getItem(boundaryStore.keys.custom);
+const fiftyOneCategories = [...fiftyCategories, customCategory(MAX_CUSTOM_CATEGORIES)];
+const fiftyOneResult = boundaryStore.importBackup(backupWithCustom(fiftyOneCategories), E);
+assert.equal(fiftyOneResult.ok, false);
+assert.match(fiftyOneResult.error, /ungültige lokale Daten/);
+assert.equal(boundaryStorage.getItem(boundaryStore.keys.custom), previousCustom, 'Rejected category overflow must not mutate saved custom data.');
+
+const twoHundredEntries = boundaryStore.importBackup(backupWithCustom([customCategory('max', MAX_CUSTOM_ENTRIES)]), E);
+assert.equal(twoHundredEntries.ok, true);
+assert.equal(twoHundredEntries.data.custom[0].entries.length, MAX_CUSTOM_ENTRIES);
+
+const twoHundredOneEntries = boundaryStore.importBackup(backupWithCustom([customCategory('overflow', MAX_CUSTOM_ENTRIES + 1)]), E);
+assert.equal(twoHundredOneEntries.ok, false);
+assert.match(twoHundredOneEntries.error, /ungültige lokale Daten/);
+
+const corruptedOverflowStorage = new MemoryStorage({
+  'secret-circle-custom-v7': JSON.stringify(fiftyOneCategories)
+});
+const corruptedOverflowStore = createStore(corruptedOverflowStorage);
+const recoveredOverflow = corruptedOverflowStore.loadAll(E);
+assert.deepEqual(recoveredOverflow.custom, []);
+assert.ok(recoveredOverflow.warnings.some(message => message.includes('beschädigte')));
+assert.equal(corruptedOverflowStorage.getItem('secret-circle-custom-v7'), null);
 
 storage.setItem('secret-circle-custom-v7', '{broken json');
 const recovered = store.loadAll(E);
@@ -153,7 +235,11 @@ console.log(JSON.stringify({
   corruptedDataRecovery: true,
   backupExportImport: true,
   legacyBackupImport: true,
+  utf8ByteLimit: true,
   oversizedBackupProtection: true,
+  customCategoryLimit: MAX_CUSTOM_CATEGORIES,
+  customEntryLimit: MAX_CUSTOM_ENTRIES,
+  overflowRejectedWithoutTruncation: true,
   unavailableStorageFallback: true,
   atomicImportRollback: true
 }, null, 2));

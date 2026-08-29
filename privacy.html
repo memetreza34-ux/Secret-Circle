@@ -16,53 +16,78 @@
   <main class="shell legal-shell">
     <article class="card legal-card">
       <p class="eyebrow">Datenschutz</p>
-      <h1>Deine Daten bleiben auf deinem Gerät</h1>
-      <p>Secret Circle funktioniert ohne Benutzerkonto, ohne Tracking und ohne eigenen Spielserver.</p>
+      <h1>Deine Spieldaten bleiben auf deinem Gerät</h1>
+      <p>Secret Circle funktioniert ohne Benutzerkonto, ohne Analyse- oder Werbetracking und ohne eigenen Spielserver.</p>
 
-      <h2>Welche Daten werden lokal gespeichert?</h2>
-      <p>Je nach Nutzung speichert die App Spielernamen, Presets, Favoriten, Alters- und Sessioneinstellungen, Party-Night-Pläne, eigene Kategorien, selbst erstellte Spiele, aktive Word-Imposter-, Advanced-, Quick-, Trend-, Viral- und Creator-Sessions, Verlauf, Punkte und lokale Statistiken im Browser-Speicher.</p>
+      <h2>Lokale Daten</h2>
+      <p>Je nach Nutzung speichert die App Spielernamen, Presets, Favoriten, Einstellungen, Party-Night-Pläne, eigene Kategorien und Spiele, aktive Sessions, Verlauf, Punkte und lokale Statistiken im Browser-Speicher des verwendeten Geräts.</p>
 
       <h2>Eigene Spiele und Kategorien</h2>
-      <p>Der lokale Game-Creator speichert Spielname, Erklärung, Vorlage, Icon, Akzent, Spielerzahl, Dauer und eigene Textkarten. Es werden keine Bilder oder Dateien automatisch hochgeladen. Eigene Spiele können separat oder über die Gesamtsicherung als JSON exportiert werden.</p>
-      <p>Die App prüft Länge, Anzahl, Format und doppelte Karten. Die inhaltliche und rechtliche Verantwortung für selbst eingetragene Texte bleibt bei der Person, die das Spiel erstellt.</p>
-      <p>Aktive Creator-Sessions speichern lokal Spiel-ID, Kategorie, Rundenzahl, Spieler-Snapshot, aktuelle Karte, Fortschritt und Punkte. Nach dem Abschluss werden Verlauf und Statistik lokal ergänzt.</p>
-
-      <h2>Smart Party Night</h2>
-      <p>Der Planer verarbeitet Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel ausschließlich lokal. Es werden keine Daten an einen Analyse-, Werbe- oder Empfehlungsserver übertragen.</p>
+      <p>Eigene Texte werden lokal gespeichert. Der Creator lädt keine Bilder oder Dateien automatisch hoch. Für selbst eingetragene Inhalte bleibt die erstellende Person verantwortlich.</p>
 
       <h2>Geheime Spielinhalte</h2>
-      <p>Rollen, Fragen, Orte, Figuren, Identitäten, persönliche Antworten, eigene Erratbegriffe und geheime Missionen werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Übergabe- und Verdeckungsstufen verringern Schulterblick, können absichtliches Mitlesen jedoch nicht vollständig verhindern.</p>
+      <p>Rollen, Fragen, Orte, Begriffe und private Eingaben werden beim Pass-and-Play auf dem gemeinsam genutzten Gerät angezeigt. Verdeckungs-, Übergabe- und Resume-Schutz verringern versehentliches Mitlesen, können absichtliches Schulterblicken aber nicht vollständig verhindern.</p>
 
-      <h2>Anime-Fan-Quiz</h2>
-      <p>Das inoffizielle Anime-Figuren-Quiz verwendet ausschließlich Textnamen und eigene Spielanweisungen. Es lädt keine fremden Bilder, Logos, Videos, Audios oder Zitate. Die Funktion steht in keiner Verbindung zu Rechteinhabern. Vor öffentlicher oder kommerzieller Veröffentlichung ist eine gesonderte rechtliche und redaktionelle Prüfung erforderlich.</p>
+      <h2>Built-in-Privacy-Schutz</h2>
+      <p>Die eingebauten Spiele verlangen keine privaten Nachrichten, Fotos, Passwörter, Adressen, Telefonnummern, Standorte oder Kontodaten als verpflichtendes Spielmaterial. Persönliche Inhalte bleiben freiwillig und überspringbar. Secret Circle besitzt keinen Built-in-18+-Bereich.</p>
 
-      <h2>Geld-, Preis- und Schätzspiele</h2>
-      <p>Alle Geld-Challenges sind hypothetische Partyfragen. Die App verarbeitet keine Zahlung, fordert keine Zahlungsdaten an und verpflichtet niemanden zu einer Ausgabe. „Preis schätzen“ verwendet feste Spielwerte und keine aktuellen Händler-, Börsen- oder Marktdaten.</p>
+      <h2>Word Imposter und Hub Resume</h2>
+      <p>Geheime Rollen und Begriffe werden beim Gerätewechsel verdeckt. Gespeicherte Abstimmungs- und Resume-Zustände werden auf Konsistenz geprüft. Eigene Kategorien und Backups werden lokal validiert, bevor bestehende Daten ersetzt werden.</p>
+      <p>Seit v52 bleiben sichere sichtbare Hub-Karten über Reload stabil; v53 schützt Paranoia-Frage und Ergebnis ohne Auto-Reveal; v54 erhält sichtbare Hot-Potato-/Wortketten-Pre-Timer-Werte.</p>
 
-      <h2>Persönliche Social-Spiele</h2>
-      <p>Bei Wer kennt mich am besten?, Finger runter, Hot Seat, Pass das Handy und ähnlichen Modi können persönliche Antworten entstehen. Überspringen ist erlaubt. Die Antworten werden nicht an einen Server gesendet; je nach Modus wird nur der lokale Sessionzustand oder die Punktzahl gespeichert.</p>
+      <h2>Advanced-Spiele – v55</h2>
+      <p>Advanced-Rollen, Ortskarten, private Fragen und Moderatorinformationen werden bei unterstützten Flows bei Fokus- oder App-Wechsel verdeckt. Geöffnete Secret-Reveals werden nach Reload wieder geschlossen. Unmögliche Resume-Zustände werden verworfen und gespeicherte Sessions nicht still ersetzt.</p>
+
+      <h2>Quick-, Mega-, Viral-, Creator- und Wave-1-Sessions</h2>
+      <p>Diese Schnellspiel-Familien speichern aktive Sessions lokal je Enginefamilie. Ein normaler Spielstart darf einen plausiblen vorhandenen Session-Snapshot nicht still überschreiben. Vor dem Ersatz wird ausdrücklich gefragt, ob die gespeicherte Session verworfen werden soll.</p>
+
+      <h2>Quick-Family Timer Resume – v57 bis v60</h2>
+      <p>Seit v57 speichert die gemeinsame Sessionsteuerung bei laufenden Timern die verbleibende Zeit lokal. Der Store <code>secret-circle-party-quick-timers-v1</code> enthält ausschließlich technische Metadaten und keine eigentlichen Spielkarten oder Antworten.</p>
+      <p>Seit v58 wird BFCache-Rückkehr geschützt, seit v59 pausiert ein laufender Schnellspiel-Timer bei Hidden, seit v60 wird die technische Restzeit bei Hidden sofort lokal gesichert.</p>
+
+      <h2>Wave 1 Quiz – v61</h2>
+      <p>Party Quiz und Fake oder Fakt verwenden textbasierte Built-in-Karten und den bestehenden lokalen Quick-Session-Speicher. Sie führen keinen zusätzlichen lokalen Storage-Key und keine externe Datenübertragung ein.</p>
+
+      <h2>Wave 1 Imposter – v62</h2>
+      <p>Undercover – ähnliches Wort und Imposter ohne Wort verwenden ebenfalls den bestehenden Quick-Family-Speicher. Geheime Karten und Votes werden nur nach bewusster Aktion geöffnet und bei Blur, Hidden oder Appwechsel wieder verdeckt.</p>
+
+      <h2>Wave 1 Writing – v63</h2>
+      <p>Satzduell und Wer hat das geschrieben? speichern die kurzen Texteingaben ausschließlich im lokalen aktiven Session-Snapshot. Eine offene Eingabe wird beim Pass-and-Play nur für die aktuell genannte Person angezeigt und bei Blur, <code>pagehide</code> oder Hidden wieder verdeckt.</p>
+      <p>In Satzduell werden gespeicherte Antworten vor der Abstimmung ohne Autorennamen angezeigt. In Wer hat das geschrieben? bleiben Autorenzuordnungen während der Ratephase verborgen und werden erst im Ergebnis sichtbar. Eingaben sind auf 140 Zeichen begrenzt.</p>
+
+      <h2>Wave 1 Complete – v64</h2>
+      <p>Prozent schätzen und Party Bracket speichern im aktiven Session-Snapshot nur Kartenindex und die für Resume nötigen Entscheidungen; Zielwert, aktuelles Duell und Bracket-Sieger werden aus dem lokalen Built-in-Katalog rekonstruiert.</p>
+      <p>Bluff Trivia sammelt Fake-Antworten und Votes nacheinander privat auf dem gemeinsamen Gerät. Eine offene Fake-Eingabe oder Abstimmung wird bei Blur, Hidden oder Appwechsel wieder verdeckt. Autorennamen und die richtige Antwort werden erst in der Auflösung angezeigt.</p>
+      <p>Ein-Wort-Hinweis persistiert das geheime Zielwort nicht als freien Text, sondern nur über den Kartenindex. Das Zielwort erscheint ausschließlich nach einer bewussten Reveal-Aktion und wird bei Fokusverlust wieder verdeckt. Der eingegebene Hinweis ist auf ein einzelnes anderes Wort begrenzt.</p>
+      <p>Wave 1 umfasst damit 10 Labs. Die neuen v64-Modi verwenden weiterhin den bestehenden Quick-Family-Active-Key; v64 führt keinen neuen lokalen Storage-Key und keine externe Datenübertragung ein.</p>
+
+      <h2>Smart Party Night</h2>
+      <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
 
       <h2>Sicherung und Import</h2>
-      <p>Eine vollständige JSON-Sicherung kann Spielernamen, Presets, Favoriten, Party-Night-Pläne, Verlauf, Statistiken, eigene Kategorien, selbst erstellte Spiele, Einstellungen und aktive Sessions enthalten. Sie wird lokal erstellt, ist nicht verschlüsselt und sollte nur an einem vertrauenswürdigen Ort gespeichert werden.</p>
-      <p>Importe werden auf Format, Schlüssel, Anzahl, UTF-8-Byte-Größe und JSON-Struktur geprüft. Bei einem Schreibfehler versucht die App, den vorherigen Zustand wiederherzustellen.</p>
+      <p>JSON-Sicherungen können lokale Spielernamen, Presets, Favoriten, Verlauf, Statistiken, eigene Inhalte, Einstellungen und aktive Sessions enthalten. Exportierte Sicherungen sind nicht automatisch verschlüsselt und sollten nur an vertrauenswürdigen Orten gespeichert werden.</p>
+      <p>Seit v51 ersetzt ein Complete-Backup-Restore nur die vom aktuellen Backup-Schema verwalteten Keys. Unbekannte oder neuere Secret-Circle-Namespaces und Storage-Versionen werden durch einen älteren Restore nicht still gelöscht.</p>
+      <p>Seit v57 umfasst der Complete-Backup-Vertrag 17 exakte aktuelle Keys einschließlich des promptfreien Quick-Timer-Stores. v64 ändert dieses Dateiformat nicht.</p>
 
-      <h2>Werden Spieldaten übertragen?</h2>
-      <p>Nein. Beim Laden oder Aktualisieren ruft der Browser lediglich statische App-Dateien vom Hosting-Anbieter ab. Spieldaten werden nicht an einen eigenen Secret-Circle-Server gesendet.</p>
+      <h2>Hosting und technische Verbindungsdaten</h2>
+      <p>Beim Laden oder Aktualisieren ruft der Browser statische App-Dateien vom später final festgelegten Hostinganbieter ab. Dabei können technisch notwendige Verbindungs- oder Serverlogdaten anfallen. Anbieter, Verantwortlicher, Kontakt, Logverarbeitung, Aufbewahrung und gegebenenfalls Drittlandbezug werden vor Veröffentlichung ergänzt.</p>
+      <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert Party Hub, Creator, Schnellhilfe, Creator-Spielengine, Smart Party Night, Quick-, Trend- und Viral-Modi, Advanced-Spiele, Word Imposter und diese Seite lokal. Der aktuelle Offline-Core ist <code>secret-circle-v30</code>.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v64</code>.</p>
+      <p>v64 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 5, <code>quick-session-replacement-guard.js</code> Version 2, <code>quick-loader.js</code> Version 11 und alle sechs Wave-1-Runnerfamilien. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
-      <p>„Alle lokalen Daten löschen“ entfernt sämtliche Browser-Schlüssel mit dem Präfix <code>secret-circle-</code>, einschließlich eigener Spiele und aktiver Sessions. Exportierte Dateien müssen separat im Dateisystem gelöscht werden.</p>
+      <p>Die Datenfunktionen der App können lokale Secret-Circle-Daten löschen. Eine ausdrücklich bestätigte vollständige Löschung entfernt auch unbekannte Secret-Circle-Namespaces. Exportierte Sicherungsdateien müssen separat im Dateisystem entfernt werden.</p>
 
       <h2>Browsergrenzen</h2>
-      <p>Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck, manuellem Löschen oder einer Neuinstallation entfernen. Für wichtige eigene Spiele und Packs sollte regelmäßig eine Sicherung exportiert werden.</p>
+      <p>Browser oder Betriebssystem können lokalen Speicher bei Speicherdruck, manueller Löschung oder Neuinstallation entfernen. Für wichtige eigene Spiele und Packs empfiehlt sich eine lokale Sicherung.</p>
 
       <h2>Analyse, Werbung und externe Inhalte</h2>
-      <p>Secret Circle verwendet keine Analyse-, Werbe- oder Tracking-Dienste und lädt keine externen Spielskripte, Schriftarten oder Werbeinhalte.</p>
+      <p>Secret Circle verwendet im aktuellen V1-Scope keine Analyse-, Werbe- oder Tracking-SDKs und lädt keine externen Spielskripte oder Webfonts zur Laufzeit.</p>
 
       <h2>Vor öffentlicher Veröffentlichung</h2>
-      <p>Verantwortliche Person, Kontaktmöglichkeit, Hosting-Anbieter, gegebenenfalls Impressum und endgültige rechtliche Angaben müssen ergänzt werden.</p>
+      <p>Diese Seite ist noch keine finale Production-Datenschutzerklärung. Betreiber, öffentliche Kontaktmöglichkeit, Hostinganbieter und die konkrete Hosting-/Logverarbeitung werden erst nach ihrer realen Festlegung veröffentlicht.</p>
 
       <div class="actions">
         <a class="button-link" href="party.html">Zurück zum Party Hub</a>

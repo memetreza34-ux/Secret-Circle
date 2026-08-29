@@ -1,47 +1,74 @@
 'use strict';
-const CACHE='secret-circle-v30';
-const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-routing.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-guide.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./party-advanced-runner.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
-self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
-});
+const CACHE='secret-circle-v64';
+const STAGING_CACHE='secret-circle-v64-staging';
+const CORE=['./','./index.html','./party.html','./advanced.html','./quick-play.html','./creator.html','./privacy.html','./styles.css','./pwa.css','./pwa-update.css','./party.css','./party-extra.css','./party-night.css','./party-quick.css','./party-guide.css','./party-release.css','./party-search.css','./creator.css','./runtime-guard.js','./setup-ux.js','./privacy-guard.js','./wake-lock.js','./app.js','./game-engine.js','./role-assignment.js','./word-packs.js','./data-store.js','./word-imposter-resume-guard.js','./backup-schema-registry.js','./party-catalog.js','./party-expansion.js','./party-trending-catalog.js','./party-mega-catalog.js','./party-viral-catalog.js','./party-core-release-catalog.js','./party-core-classic-content.js','./party-routing.js','./party-wave-one-catalog.js','./party-wave-one-imposter-catalog.js','./party-wave-one-writing-catalog.js','./party-wave-one-voting-catalog.js','./party-wave-one-bluff-catalog.js','./party-wave-one-clue-catalog.js','./game-creator.js','./creator-page.js','./party-custom-packs.js','./party-hub-timers.js','./party-hub-resume-guard.js','./party-hub-round-state.js','./party-hub.js','./party-hub-plus.js','./party-hub-polish.js','./party-hub-a11y.js','./secondary-surface-a11y.js','./party-guide.js','./party-release-structure.js','./party-filter-state.js','./party-search-assist.js','./party-night.js','./party-data-tools.js','./party-advanced.js','./advanced-resume-guard.js','./party-advanced-runner.js','./advanced-privacy-guard.js','./party-advanced-preferences.js','./party-quick-modes.js','./party-mega-modes.js','./party-viral-modes.js','./party-created-modes.js','./party-wave-one-modes.js','./party-wave-one-imposter-modes.js','./party-wave-one-writing-modes.js','./party-wave-one-voting-modes.js','./party-wave-one-bluff-modes.js','./party-wave-one-clue-modes.js','./session-ledger.js','./party-session-controls.js','./quick-session-replacement-guard.js','./quick-loader.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 
-self.addEventListener('activate',event=>{
-  event.waitUntil(caches.keys()
-    .then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))))
-    .then(()=>self.clients.claim()));
-});
+function stripSearch(value) {
+  const url = new URL(typeof value === 'string' ? value : value.url);
+  url.search = '';
+  url.hash = '';
+  return url.href;
+}
 
-async function fetchAndCache(request){
-  const response=await fetch(request);
-  if(response.ok){
-    const cache=await caches.open(CACHE);
-    await cache.put(request,response.clone());
+async function stageCore() {
+  await caches.delete(STAGING_CACHE);
+  const staging = await caches.open(STAGING_CACHE);
+  await staging.addAll(CORE);
+}
+
+async function promoteStagedCore() {
+  const staging = await caches.open(STAGING_CACHE);
+  const requests = await staging.keys();
+  if (!requests.length) throw new Error('Der vorbereitete Offline-Core ist leer.');
+  const active = await caches.open(CACHE);
+  const stagedUrls = new Set(requests.map(request => request.url));
+  await Promise.all(requests.map(async request => {
+    const response = await staging.match(request);
+    if (!response) throw new Error(`Vorbereitete Ressource fehlt: ${request.url}`);
+    await active.put(request, response.clone());
+  }));
+  const activeRequests = await active.keys();
+  await Promise.all(activeRequests.filter(request => !stagedUrls.has(request.url)).map(request => active.delete(request)));
+  await caches.delete(STAGING_CACHE);
+  const keys = await caches.keys();
+  await Promise.all(keys.filter(key => key.startsWith('secret-circle-') && key !== CACHE).map(key => caches.delete(key)));
+}
+
+self.addEventListener('install', event => { event.waitUntil(stageCore()); });
+self.addEventListener('message', event => { if (event.data?.type === 'SKIP_WAITING') self.skipWaiting(); });
+self.addEventListener('activate', event => { event.waitUntil(promoteStagedCore().then(() => self.clients.claim())); });
+
+async function fetchAndCache(request, canonicalNavigation = false) {
+  const response = await fetch(request);
+  if (response.ok) {
+    const cache = await caches.open(CACHE);
+    const cacheKey = canonicalNavigation ? stripSearch(request) : request;
+    await cache.put(cacheKey, response.clone());
   }
   return response;
 }
 
-async function handleNavigation(request){
-  try{
-    return await fetchAndCache(request);
-  }catch{
-    return await caches.match(request)||await caches.match('./party.html')||await caches.match('./index.html')||new Response('Offline',{status:503,statusText:'Offline'});
+async function handleNavigation(request) {
+  try { return await fetchAndCache(request, true); }
+  catch {
+    return await caches.match(stripSearch(request), { cacheName: CACHE })
+      || await caches.match('./party.html', { cacheName: CACHE })
+      || await caches.match('./index.html', { cacheName: CACHE })
+      || new Response('Offline', { status: 503, statusText: 'Offline' });
   }
 }
 
-async function handleAsset(request){
-  const cached=await caches.match(request);
-  if(cached)return cached;
-  try{
-    return await fetchAndCache(request);
-  }catch{
-    return new Response('Offline',{status:503,statusText:'Offline'});
-  }
+async function handleAsset(request) {
+  const cached = await caches.match(request, { cacheName: CACHE });
+  if (cached) return cached;
+  try { return await fetchAndCache(request); }
+  catch { return new Response('Offline', { status: 503, statusText: 'Offline' }); }
 }
 
-self.addEventListener('fetch',event=>{
-  if(event.request.method!=='GET')return;
-  const requestUrl=new URL(event.request.url);
-  if(requestUrl.origin!==self.location.origin)return;
-  event.respondWith(event.request.mode==='navigate'?handleNavigation(event.request):handleAsset(event.request));
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) return;
+  event.respondWith(event.request.mode === 'navigate' ? handleNavigation(event.request) : handleAsset(event.request));
 });

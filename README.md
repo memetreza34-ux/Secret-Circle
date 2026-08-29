@@ -1,81 +1,146 @@
 # Secret Circle Party Hub
 
-Secret Circle ist eine offline nutzbare Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät.
+Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere Übergaben, belastbare Wiederaufnahme, lokale Datenkontrolle, Accessibility und nachvollziehbare Release-Gates.
 
-## Aktueller Umfang
+## Aktueller Stand
 
-- **45 eingebaute, technisch spielbare Spiele**
-- **27 Quick-, Trend- und Viral-Modi**
-- **4 Advanced-Spiele**
-- Word Imposter
-- Smart Party Night für 15–90 Minuten
-- eigene Text-Packs
-- lokaler No-Code-Game-Creator
-- bis zu **40 selbst erstellte Spiele**
-- eigene wiederaufnehmbare Creator-Spielengine
-- Offline-Core `secret-circle-v30`
+- **55 technisch spielbare Built-ins · 15 Core / 13 Extended / 27 Labs**
+- **Expansion Wave 1: 10/10 geplante Labs quellsseitig implementiert**
+- Word Imposter + Smart Party Night + lokaler No-Code-Game-Creator
+- Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
+- kein Wave-1-Lab erweitert automatisch den Januar-Core
 
-## Einfacher Einstieg
+Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**  
+Package: **`1.0.0-beta.3`**  
+Classic Content: **v4**  
+Core Source Review/Hardening: **15/15 PREPARED**  
+Accessibility: **PREPARED**  
+Spezialgates bis HS60: **source PREPARED, real evidence OPEN**  
+Wave-1-Labs: **source PREPARED, real Browser/PWA/Group evidence OPEN**  
+Operator / Hosting / Legal / Support: **PREPARED / BLOCKED**  
+Icon-Provenienz: **SOURCE RESOLVED – drei Release-Icons `verified-own`**  
+Gesamtfreigabe: **NO_GO**
 
-Der Party Hub erklärt den Ablauf in drei Schritten:
+**Quellsseitig gehärtet ist nicht automatisch releasefertig.**
 
-1. Spieler festlegen
-2. Spiel auswählen
-3. kurze Regeln lesen und starten
+## Releaseziel
 
-Jeder Hauptbereich besitzt kurze kontextabhängige Hilfen. Spielkarten zeigen Name, Kurzbeschreibung, Spielerzahl, Dauer, Inhaltsmenge und eine klare Aktion.
+- funktionsfertig: 30. November 2026
+- Code Freeze: 5. Dezember 2026
+- RC: 15. Dezember 2026
+- öffentlicher Release: 4.–15. Januar 2027
 
-## Eigenes Spiel erstellen
+## Hardening-/Expansion-Linie
 
-`creator.html` führt ohne Programmieren durch vier Schritte:
+- **v48:** Word-Imposter Voting-/Resume-/Datengrenzen
+- **v49/v50:** zentraler Hub-Resume-Guard + fail-closed Loader
+- **v51:** Complete Backup / Forward Compatibility
+- **v52:** sichere Hub-Current-Runden + getrennte Truth/Dare-Pools
+- **v53:** Paranoia same-question/same-result ohne Auto-Reveal
+- **v54:** Hot-Potato-/Word-Chain-Pre-Timer-Resume
+- **v55:** Advanced Result-/Winner-/Resume-Integrität
+- **v56:** bestätigter/fail-closed Quick-Family-Session-Ersatz
+- **v57:** Quick-Family-Timer behalten Restzeit über normalen Reload
+- **v58:** BFCache-Rückkehr führt sicher zurück in den Timer-Resume-Pfad
+- **v59:** Hidden pausiert laufende Quick-Family-Timer; kein Auto-Resume
+- **v60:** Hidden persistiert Restzeit sofort für Cold Resume
+- **v61:** gemeinsame Quiz-Infrastruktur für Party Quiz + Fake oder Fakt
+- **v62:** gemeinsame Imposter-Infrastruktur für Undercover Similar Word + No-Word Imposter
+- **v63:** gemeinsame Writing-Infrastruktur für Fill-the-Blank Battle + Who Wrote It
+- **v64:** Expansion Wave 1 mit 10/10 geplanten Labs quellsseitig komplett
 
-1. Vorlage wählen
-2. Name, Icon, Akzent und Gruppe festlegen
-3. Kategorien und Karten eintragen
-4. prüfen, speichern und direkt testen
+## v64 – Expansion Wave 1 Complete
 
-Vorlagen:
+Die zehn geplanten Wave-1-Labs sind quellsseitig implementiert:
 
-- Fragen & Aussagen
-- Entweder oder
-- Erraten & Darstellen
-- Challenges
-- Story & Kreativität
-- Meinung & Debatte
+1. `bluff-trivia`
+2. `party-quiz`
+3. `fact-or-fake`
+4. `percent-guess`
+5. `fill-blank-battle`
+6. `who-wrote-it`
+7. `party-bracket`
+8. `undercover-similar-word`
+9. `no-word-imposter`
+10. `password-one-word`
 
-Eigene Spiele lassen sich bearbeiten, kopieren, löschen, exportieren, importieren und direkt im Party Hub spielen. Pro Spiel sind bis zu acht Kategorien und bis zu 200 Karten je Kategorie vorgesehen.
+Wave 1 verwendet wiederverwendbare Enginefamilien für Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. Die neuen Modi bleiben **Labs**, bis reale Browser-, PWA-, Accessibility- und Gruppentests bestanden sind.
 
-Die dedizierte Creator-Spielengine unterstützt 3, 5, 10 oder 20 Runden, lokale Wiederaufnahme, Spieler-Snapshots, Punkte, Verlauf und Statistik. Erratenspiele besitzen eine geschützte Begriffsansicht vor der gemeinsamen Runde.
+Gemeinsame Verträge:
 
-## Start
+- mehrere kleine Wave-1-Katalog-Layer statt separater Voll-Engines pro sichtbarem Spiel
+- `quick-loader.js` v11 routet alle sechs Wave-1-Enginefamilien explizit
+- `party-release-structure.js` v5 klassifiziert alle zehn Wave-1-Modi als Labs
+- Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie Prozent/Bracket/Bluff/Clue
+- `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10 und v64
+- offline in `secret-circle-v64`
 
-```bash
-python -m http.server 8080
-```
+Langfristige Planung: `APP_SPIELMODI_UND_THEMEN_ANLEITUNG.md` + `GAME_LIBRARY_BACKLOG.json`.
 
-- Hub: `/party.html`
-- Creator: `/creator.html`
-- Word Imposter: `/index.html`
-- Advanced: `/advanced.html?game=question-imposter`
-- Trend: `/quick-play.html?game=anime-guess`
-- Viral: `/quick-play.html?game=guess-the-price`
-- eigenes Spiel: `/quick-play.html?game=<custom-game-id>`
+## Produktregel für die große Spielebibliothek
 
-## Produkt- und Designpläne
+Nicht 100 separate Engines bauen. Ziel:
 
-- `MODE_UNIVERSE.md`: 122-Modi-Universum
-- `TREND_FORMATS.md`: frühere, aktuelle und zukünftige Trendformate
-- `ASSET_PLAN.md`: Icons, Illustrationen, Animationen und Produktionsbudgets
-- `ARCHITECTURE.md`: Speicher-, Offline-, Datenschutz- und Qualitätsverträge
+> **20–30 belastbare Mechanikfamilien × viele Themen-/Content-Packs = 100+ sichtbare Spielvarianten bei weiterhin einfacher Bedienung.**
 
-## Tests
+Der Januar-Core bleibt bei 15 Spielen. Standardspiele sollen in maximal 2–3 Entscheidungen bis zur ersten echten Aktion starten. Built-in-Content bleibt ohne 18+-Bereich.
 
-```bash
-npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-npx playwright install --with-deps chromium
-npm run ci
-npx playwright install --with-deps chromium firefox webkit
-npm run test:cross-browser
-```
+## CI – extern blockiert
 
-Der Stand ist für den vollständigen automatisierten Testlauf vorbereitet. Ein grüner endgültiger Lauf ist noch nicht dokumentiert. Realer Geräte-/Party-Betatest, Merge und öffentlicher Release bleiben deshalb `NO_GO`.
+GitHub Actions endet weiterhin vor Repository-Ausführung mit `steps: []`, `runner_id: 0` und leerem Runner-Namen bei angefordertem `ubuntu-latest`. Dadurch laufen weder Checkout noch `npm ci`, Playwright oder Python-Audits.
+
+Der Befund wurde auf mehreren v64-/PR-#15-Ständen reproduziert. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
+
+**Es gibt deshalb weiterhin keinen aktuellen Hosted-Runner-PASS.** App-Code wird nicht auf Verdacht als Workaround für einen Job geändert, der keinen Runner erhält.
+
+## Hosting-Hardening
+
+Technischer Preferred Candidate: **Cloudflare Pages**, noch nicht final ausgewählt.
+
+Vorbereitet sind:
+
+- `HOSTING_PROVIDER_RESEARCH.md`
+- `CLOUDFLARE_PAGES_STAGING.md`
+- `HOSTING_DECISION.md`
+- `/_headers`
+- `scripts/staging_smoke.py`
+
+Der echte Provider-/DPA-/Origin-/PWA-/Rollback-Nachweis bleibt offen.
+
+## Asset-Hardening
+
+Das frühere ungeklärte App-Icon wurde am 29. August 2026 vollständig ersetzt.
+
+- `icon.svg` → `verified-own`
+- `icon-192.png` → `verified-own`
+- `icon-512.png` → `verified-own`
+
+Provenienz und Hashes stehen in `ASSET_RIGHTS_SIGNOFF.md` und `assets/manifests/asset-provenance.json`.
+
+Der **alte Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete Asset-/Third-Party-Gate bleibt jedoch BLOCKED, bis Online-Install-/Audit-Evidence und der finale manuelle Visual-/Marken-/Third-Party-Review auf dem unveränderten RC vorliegen.
+
+## Zentrale offene Issues
+
+1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
+2. **#8** – reale Geräte, v64 Offline-PWA, Accessibility, Spezialgates, Wave-1-Labs und Partytests
+3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
+
+Zusätzlich bleibt Draft-PR #15 als kontrollierter Main/Reconciliation-Kandidat vor Release zu synchronisieren und mit funktionierender CI zu prüfen.
+
+## Höchste Priorität
+
+1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
+2. PR #15 live synchronisieren + 9-Pfade-Scope bestätigen
+3. Branch Protection + Required Check
+4. realen Hostingprovider + getrennte HTTPS-Staging-/Production-Origin
+5. v64 PWA-Smoke / Upgrade / Rollback
+6. Spezialgates bis HS60 real prüfen
+7. Android/iPhone/iPad + Accessibility
+8. reale Gruppentests für alle 15 Core-Games
+9. Operator-/Legal-/Support-/Incident-Sign-off
+10. Asset-/Third-Party-Finalreview auf dem RC
+11. unveränderlicher RC + `release-evidence.json = FINAL / GO`
+
+**Feature-Scope für den Januar-Core nicht weiter aufblasen. Schwerpunkt ist jetzt reale Verifikation und Release-Evidence.**
+
+**Aktuell: NO_GO. PR #13 und PR #15 bleiben Draft.**

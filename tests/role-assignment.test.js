@@ -7,13 +7,25 @@ const entries = Array.from({ length: 12 }, (_, index) => [`Begriff ${index + 1}`
 const players = ['Alex', 'Sam', 'Mika', 'Lina', 'Noah', 'Kim'];
 
 assert.equal(Roles.MAX_IMPOSTERS, 6);
-assert.equal(Roles.version, 2);
+assert.equal(Roles.version, 3);
 assert.equal(Object.isFrozen(Roles), true);
-assert.equal(Roles.install(E), E);
-assert.equal(Roles.install(E), E, 'Installation must be idempotent.');
 assert.equal(E.MAX_IMPOSTERS, 6);
+assert.equal(E.validateImposterCount(6, 20), 6);
 assert.equal(Roles.validateCount(6, 20), 6);
 assert.throws(() => Roles.validateCount(7, 20), /zwischen 1 und 6/);
+
+const originalMethods = {
+  createGame: E.createGame,
+  nextRound: E.nextRound,
+  restoreGame: E.restoreGame,
+  assertGame: E.assertGame
+};
+assert.equal(Roles.install(E), E);
+assert.equal(Roles.install(E), E, 'Installation must be idempotent.');
+assert.equal(E.createGame, originalMethods.createGame, 'Compatibility install must not patch createGame.');
+assert.equal(E.nextRound, originalMethods.nextRound, 'Compatibility install must not patch nextRound.');
+assert.equal(E.restoreGame, originalMethods.restoreGame, 'Compatibility install must not patch restoreGame.');
+assert.equal(E.assertGame, originalMethods.assertGame, 'Compatibility install must not patch assertGame.');
 
 const firstRevealWasImposter = new Set();
 let revealPrefixMatches = 0;
@@ -67,6 +79,11 @@ forgedSeven.imposters = forgedSeven.players.slice(0, 7);
 assert.throws(() => E.assertGame(forgedSeven), /zwischen 1 und 6/);
 assert.throws(() => E.restoreGame(forgedSeven), /zwischen 1 und 6/);
 
+const reassigned = Roles.assignIndependentRoles(validSix, E);
+assert.notEqual(reassigned, validSix);
+assert.deepEqual(reassigned.imposters, E.assignIndependentRoles(validSix.players, validSix.imposters.length, validSix.seed));
+assert.deepEqual(validSix.imposters, E.assignIndependentRoles(validSix.players, validSix.imposters.length, validSix.seed));
+
 let completed = E.createGame({
   players,
   entries,
@@ -104,6 +121,7 @@ console.log(JSON.stringify({
   revealPrefixMatches,
   firstRevealRoleVaries: true,
   deterministic: true,
+  runtimeMonkeyPatchRemoved: true,
   restoredSevenImpostersRejected: true,
   nextRoundCovered: true
 }, null, 2));

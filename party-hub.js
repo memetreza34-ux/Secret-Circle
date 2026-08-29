@@ -1,40 +1,44 @@
 'use strict';
-
 (() => {
   const C = window.SecretCirclePartyCatalog;
+  const L = window.SecretCircleSessionLedger;
+  const S = window.SecretCircleSessionControls;
+  const T = window.SecretCirclePartyHubTimers;
+  const R = window.SecretCirclePartyHubRoundState;
   if (!C) throw new Error('Party-Katalog konnte nicht geladen werden.');
-
+  if (!L) throw new Error('Gemeinsames Session-Register für den Party Hub fehlt.');
+  if (!S) throw new Error('Gemeinsame Sessionsteuerung für den Party Hub fehlt.');
+  if (!T) throw new Error('Timer-Modul für den Party Hub fehlt.');
+  if (!R) throw new Error('Rundenstatus-Modul für den Party Hub fehlt.');
   const STORAGE_KEY = 'secret-circle-party-hub-v1';
-  const MAX_HISTORY = 50;
+  const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
+  const ACTIVE_VERSION = 1;
+  const MAX_HISTORY = L.maximumHistory;
+  const MAX_ACTIVE_USED = 500;
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
-
+  const hubTimer = S.createController({ windowRef: window });
   const defaults = {
     version: 1,
     players: ['Alex', 'Sam', 'Mika', 'Lina'],
-    favorites: [],
-    recent: [],
-    presets: [],
-    history: [],
-    stats: {}
+    favorites: [], recent: [], presets: [], history: [], stats: {}
   };
-
   let state = loadState();
   let selectedGameId = null;
   let currentView = 'home';
   let session = null;
-  let activeTimer = null;
-
-  function clone(value) {
-    return JSON.parse(JSON.stringify(value));
+  function clone(value) { return JSON.parse(JSON.stringify(value)); }
+  function cleanText(value, maximum = 200) { return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum); }
+  function safeInteger(value, maximum = 1_000_000) {
+    const number = Number(value);
+    return Number.isInteger(number) && number >= 0 ? Math.min(number, maximum) : 0;
   }
-
   function normalizePlayers(input) {
     const values = Array.isArray(input) ? input : String(input ?? '').split(/\n|,/);
     const players = [];
     const seen = new Set();
     for (const raw of values) {
-      const name = String(raw ?? '').trim().replace(/\s+/g, ' ').slice(0, 32);
+      const name = cleanText(raw, 32);
       if (!name) continue;
       const key = name.toLocaleLowerCase('de-DE');
       if (seen.has(key)) continue;
@@ -44,7 +48,6 @@
     }
     return players;
   }
-
   function normalizeState(value) {
     if (!value || typeof value !== 'object' || value.version !== 1) return clone(defaults);
     return {
@@ -53,46 +56,84 @@
       favorites: Array.isArray(value.favorites) ? [...new Set(value.favorites.filter(id => C.getGame(id)))].slice(0, 40) : [],
       recent: Array.isArray(value.recent) ? value.recent.filter(id => C.getGame(id)).slice(0, 8) : [],
       presets: Array.isArray(value.presets) ? value.presets.slice(0, 20).map(item => ({
-        id: String(item?.id ?? '').slice(0, 80),
-        name: String(item?.name ?? '').trim().slice(0, 40),
-        players: normalizePlayers(item?.players)
+        id: String(item?.id ?? '').slice(0, 80), name: cleanText(item?.name, 40), players: normalizePlayers(item?.players)
       })).filter(item => item.id && item.name && item.players.length) : [],
       history: Array.isArray(value.history) ? value.history.slice(0, MAX_HISTORY).filter(item => C.getGame(item?.gameId)).map(item => ({
-        id: String(item.id ?? ''),
-        gameId: item.gameId,
-        title: String(item.title ?? C.getGame(item.gameId)?.title ?? '').slice(0, 80),
-        endedAt: String(item.endedAt ?? ''),
-        rounds: Number.isInteger(item.rounds) ? Math.max(0, item.rounds) : 0,
-        score: Number.isInteger(item.score) ? Math.max(0, item.score) : 0
+        id: String(item.id ?? ''), gameId: item.gameId, title: cleanText(item.title ?? C.getGame(item.gameId)?.title, 80),
+        endedAt: String(item.endedAt ?? ''), rounds: safeInteger(item.rounds, 10_000), score: safeInteger(item.score)
       })) : [],
       stats: value.stats && typeof value.stats === 'object' && !Array.isArray(value.stats) ? value.stats : {}
     };
   }
-
   function loadState() {
-    try {
-      return normalizeState(JSON.parse(localStorage.getItem(STORAGE_KEY)));
-    } catch {
-      return clone(defaults);
-    }
+    try { return normalizeState(JSON.parse(localStorage.getItem(STORAGE_KEY))); }
+    catch { return clone(defaults); }
   }
-
   function saveState() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      return true;
-    } catch {
-      setStatus('Lokale Hub-Daten konnten nicht gespeichert werden.', true);
-      return false;
-    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }
+    catch { setStatus('Lokale Hub-Daten konnten nicht gespeichert werden.', true); return false; }
   }
-
   function setStatus(message, error = false) {
     const node = $('#hub-status');
+    if (!node) return;
     node.textContent = message || '';
     node.classList.toggle('error', error);
   }
-
+  function normalizeTimerState(value) { return T.normalizeTimerState(value, { safeInteger, cleanText }); }
+  function normalizeActiveSession(value) {
+    if (!value || typeof value !== 'object' || value.version !== ACTIVE_VERSION || !value.session) return null;
+    const source = value.session;
+    if (!source || typeof source !== 'object' || Array.isArray(source)) return null;
+    const game = C.getGame(source.gameId);
+    if (!game || game.status !== 'playable' || game.mode === 'link') return null;
+    const players = normalizePlayers(source.players);
+    if (players.length < game.minPlayers || players.length > game.maxPlayers) return null;
+    const packs = C.getPackNames(game.id);
+    const pack = source.pack === null || source.pack === undefined ? null : cleanText(source.pack, 80);
+    if (packs.length && !packs.includes(pack)) return null;
+    const sessionId = L.normalizeSessionId(source.sessionId);
+    if (!sessionId) return null;
+    const startedAt = Number.isNaN(Date.parse(source.startedAt)) ? new Date().toISOString() : new Date(source.startedAt).toISOString();
+    const roundState = R.normalizeResume(game, pack, source, C, MAX_ACTIVE_USED);
+    return {
+      gameId: game.id, sessionId, players, pack: packs.length ? pack : null,
+      rounds: safeInteger(source.rounds, 10_000), score: safeInteger(source.score),
+      playerIndex: safeInteger(source.playerIndex, 10_000) % players.length,
+      used: roundState.used, usedByPool: roundState.usedByPool, current: roundState.current,
+      startedAt, running: Boolean(source.running), timer: normalizeTimerState(source.timer)
+    };
+  }
+  function clearActiveSession() {
+    try { localStorage.removeItem(ACTIVE_KEY); return true; }
+    catch { setStatus('Der aktive Hub-Spielstand konnte nicht entfernt werden.', true); return false; }
+  }
+  function persistActiveSession() {
+    if (!session) return clearActiveSession();
+    if (session.timer?.phase === 'running') {
+      const remaining = hubTimer.remainingMilliseconds();
+      if (remaining > 0) session.timer.remainingMs = Math.ceil(remaining);
+    }
+    try {
+      localStorage.setItem(ACTIVE_KEY, JSON.stringify({ version: ACTIVE_VERSION, savedAt: new Date().toISOString(), session }));
+      syncHubPauseUi();
+      return true;
+    } catch {
+      setStatus('Die laufende Hub-Session konnte nicht lokal gesichert werden.', true);
+      return false;
+    }
+  }
+  function loadActiveSession() {
+    let raw;
+    try {
+      raw = localStorage.getItem(ACTIVE_KEY);
+      if (!raw) return null;
+      const active = normalizeActiveSession(JSON.parse(raw));
+      if (active) return active;
+    } catch {}
+    try { localStorage.removeItem(ACTIVE_KEY); } catch {}
+    setStatus('Ein beschädigter aktiver Hub-Spielstand wurde verworfen.', true);
+    return null;
+  }
   function randomInt(maximum) {
     if (!Number.isInteger(maximum) || maximum <= 0) return 0;
     if (window.crypto?.getRandomValues) {
@@ -102,37 +143,67 @@
     }
     return Math.floor(Math.random() * maximum);
   }
-
-  function randomItem(items) {
-    return items[randomInt(items.length)];
-  }
-
+  function randomItem(items) { return Array.isArray(items) && items.length ? items[randomInt(items.length)] : null; }
   function formatDate(value) {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return 'Unbekannt';
     return new Intl.DateTimeFormat('de-DE', { dateStyle: 'short', timeStyle: 'short' }).format(date);
   }
-
   function contentItems(gameId, pack) {
     const value = C.content[gameId]?.[pack];
     return Array.isArray(value) ? value : [];
   }
-
-  function clearNode(node) {
-    while (node.firstChild) node.firstChild.remove();
-  }
-
+  function clearNode(node) { while (node?.firstChild) node.firstChild.remove(); }
   function makeElement(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
     if (text !== undefined) node.textContent = text;
     return node;
   }
-
+  function syncHubPauseUi() {
+    const pause = $('#pause-hub-game');
+    const skip = $('#skip-hub-round');
+    const finish = $('#finish-hub-game');
+    const abort = $('#abort-hub-game');
+    const paused = hubTimer.isPaused();
+    if (pause) {
+      pause.textContent = paused ? 'Fortsetzen' : 'Pause';
+      pause.setAttribute('aria-pressed', paused ? 'true' : 'false');
+      pause.disabled = !session || hubTimer.remainingMilliseconds() <= 0;
+    }
+    if (skip) skip.disabled = !session || paused;
+    if (finish) finish.disabled = !session;
+    if (abort) abort.disabled = !session;
+    const status = $('#play-pause-status');
+    if (status) status.textContent = paused ? 'Spiel pausiert. Der Timer steht und Rundenaktionen sind gesperrt.' : '';
+    for (const selector of ['#play-options', '#play-actions']) {
+      const node = $(selector);
+      if (!node) continue;
+      node.inert = paused;
+      if (paused) node.setAttribute('aria-disabled', 'true');
+      else node.removeAttribute('aria-disabled');
+    }
+  }
+  function focusPlayPrimary() {
+    window.requestAnimationFrame?.(() => {
+      const primary = [...document.querySelectorAll('#play-options button, #play-actions button')]
+        .find(button => !button.disabled && !button.closest('[inert]'));
+      (primary || $('#play-title'))?.focus?.();
+    });
+  }
+  function setHubPaused(value) {
+    if (!session) return false;
+    hubTimer.setSessionActive(true);
+    const result = hubTimer.setPaused(value);
+    syncHubPauseUi();
+    persistActiveSession();
+    return result;
+  }
+  function setHubSessionActive(value) { hubTimer.setSessionActive(value); syncHubPauseUi(); }
+  function stopHubTimer() { hubTimer.stopTimer(); syncHubPauseUi(); }
   function gameCard(game, compact = false) {
     const article = makeElement('article', `game-card ${game.status}${compact ? ' compact-card' : ''}`);
     article.dataset.gameId = game.id;
-
     const top = makeElement('div', 'game-card-top');
     top.append(makeElement('span', 'game-icon', game.icon));
     const favorite = makeElement('button', `favorite-button${state.favorites.includes(game.id) ? ' active' : ''}`, state.favorites.includes(game.id) ? '★' : '☆');
@@ -140,28 +211,20 @@
     favorite.dataset.favoriteGame = game.id;
     favorite.setAttribute('aria-label', `${game.title} ${state.favorites.includes(game.id) ? 'aus Favoriten entfernen' : 'als Favorit speichern'}`);
     top.append(favorite);
-    article.append(top);
-
-    article.append(makeElement('h3', '', game.title));
-    article.append(makeElement('p', '', game.description));
-
+    article.append(top, makeElement('h3', '', game.title), makeElement('p', '', game.description));
     const meta = makeElement('div', 'game-meta');
     meta.append(makeElement('span', '', `${game.minPlayers}–${game.maxPlayers} Personen`));
     meta.append(makeElement('span', '', `ca. ${game.duration} Min.`));
     if (C.itemCount(game.id)) meta.append(makeElement('span', '', `${C.itemCount(game.id)} Karten`));
     article.append(meta);
-
     const actions = makeElement('div', 'game-card-actions');
     const open = makeElement('button', 'open-game', game.status === 'playable' ? 'Öffnen' : 'Details');
     open.type = 'button';
     open.dataset.openGame = game.id;
     actions.append(open);
-    article.append(actions);
-
-    article.append(makeElement('span', `status-pill ${game.status}`, game.status === 'playable' ? 'Spielbar' : 'In Arbeit'));
+    article.append(actions, makeElement('span', `status-pill ${game.status}`, game.status === 'playable' ? 'Spielbar' : 'In Arbeit'));
     return article;
   }
-
   function showView(name) {
     currentView = name;
     $$('[data-view]').forEach(view => { view.hidden = view.dataset.view !== name; });
@@ -176,17 +239,14 @@
     heading?.focus?.();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
   function renderHome() {
     const playable = C.games.filter(game => game.status === 'playable');
     $('#playable-count').textContent = String(playable.length);
     $('#planned-count').textContent = String(C.games.length - playable.length);
     $('#content-count').textContent = String(C.games.reduce((sum, game) => sum + C.itemCount(game.id), 0));
-
     const featured = $('#featured-grid');
     clearNode(featured);
     C.games.filter(game => game.featured).slice(0, 3).forEach(game => featured.append(gameCard(game)));
-
     const recent = $('#recent-list');
     clearNode(recent);
     const games = state.recent.map(id => C.getGame(id)).filter(Boolean).slice(0, 4);
@@ -208,19 +268,14 @@
       }
     }
   }
-
   function populateGroupFilter() {
     const select = $('#group-filter');
     const current = select.value;
     const groups = [...new Set(C.games.map(game => game.group))].sort((a, b) => a.localeCompare(b, 'de-DE'));
     while (select.options.length > 1) select.remove(1);
-    for (const group of groups) {
-      const option = new Option(group, group);
-      select.add(option);
-    }
+    for (const group of groups) select.add(new Option(group, group));
     select.value = groups.includes(current) ? current : 'all';
   }
-
   function filteredGames() {
     const query = $('#game-search').value.trim().toLocaleLowerCase('de-DE');
     const group = $('#group-filter').value;
@@ -239,42 +294,29 @@
       return true;
     });
   }
-
   function renderCatalog() {
     const games = filteredGames();
     $('#result-count').textContent = String(games.length);
     const grid = $('#game-grid');
     clearNode(grid);
     games.forEach(game => grid.append(gameCard(game)));
-    if (!games.length) {
-      grid.className = 'game-grid empty-state';
-      grid.textContent = 'Keine Spiele passen zu diesen Filtern.';
-    } else grid.className = 'game-grid';
+    if (!games.length) { grid.className = 'game-grid empty-state'; grid.textContent = 'Keine Spiele passen zu diesen Filtern.'; }
+    else grid.className = 'game-grid';
   }
-
   function renderFavorites() {
     const grid = $('#favorites-grid');
     clearNode(grid);
     const games = state.favorites.map(id => C.getGame(id)).filter(Boolean);
-    if (!games.length) {
-      grid.className = 'game-grid empty-state';
-      grid.textContent = 'Noch keine Favoriten gespeichert.';
-      return;
-    }
+    if (!games.length) { grid.className = 'game-grid empty-state'; grid.textContent = 'Noch keine Favoriten gespeichert.'; return; }
     grid.className = 'game-grid';
     games.forEach(game => grid.append(gameCard(game)));
   }
-
   function renderPlayers() {
     $('#hub-players').value = state.players.join('\n');
     updatePlayerHelp();
     const list = $('#preset-list');
     clearNode(list);
-    if (!state.presets.length) {
-      list.className = 'preset-list empty-state';
-      list.textContent = 'Noch kein Preset gespeichert.';
-      return;
-    }
+    if (!state.presets.length) { list.className = 'preset-list empty-state'; list.textContent = 'Noch kein Preset gespeichert.'; return; }
     list.className = 'preset-list';
     for (const preset of state.presets) {
       const item = makeElement('div', 'preset-item');
@@ -283,22 +325,18 @@
       text.append(makeElement('small', '', preset.players.join(', ')));
       const actions = makeElement('div', 'inline-actions');
       const use = makeElement('button', 'secondary', 'Laden');
-      use.type = 'button';
-      use.dataset.loadPreset = preset.id;
+      use.type = 'button'; use.dataset.loadPreset = preset.id;
       const remove = makeElement('button', 'secondary', 'Löschen');
-      remove.type = 'button';
-      remove.dataset.deletePreset = preset.id;
+      remove.type = 'button'; remove.dataset.deletePreset = preset.id;
       actions.append(use, remove);
       item.append(text, actions);
       list.append(item);
     }
   }
-
   function updatePlayerHelp() {
     const players = normalizePlayers($('#hub-players').value);
     $('#hub-players-help').textContent = `${players.length} eindeutige Personen erkannt. Die meisten Spiele funktionieren mit 2–20 Personen.`;
   }
-
   function renderStats() {
     const totalSessions = state.history.length;
     const totalRounds = state.history.reduce((sum, item) => sum + item.rounds, 0);
@@ -312,14 +350,9 @@
       card.append(makeElement('strong', '', String(value)), makeElement('span', '', label));
       cards.append(card);
     });
-
     const history = $('#hub-history');
     clearNode(history);
-    if (!state.history.length) {
-      history.className = 'compact-list empty-state';
-      history.textContent = 'Noch kein Hub-Spiel beendet.';
-      return;
-    }
+    if (!state.history.length) { history.className = 'compact-list empty-state'; history.textContent = 'Noch kein Hub-Spiel beendet.'; return; }
     history.className = 'compact-list';
     state.history.slice(0, 20).forEach(item => {
       const row = makeElement('div', 'compact-row');
@@ -327,24 +360,18 @@
       text.append(makeElement('strong', '', item.title));
       text.append(makeElement('small', '', `${formatDate(item.endedAt)} · ${item.rounds} Runden${item.score ? ` · ${item.score} Punkte` : ''}`));
       const open = makeElement('button', 'secondary', 'Erneut');
-      open.type = 'button';
-      open.dataset.openGame = item.gameId;
-      row.append(text, open);
-      history.append(row);
+      open.type = 'button'; open.dataset.openGame = item.gameId;
+      row.append(text, open); history.append(row);
     });
   }
-
   function toggleFavorite(gameId) {
     const index = state.favorites.indexOf(gameId);
-    if (index >= 0) state.favorites.splice(index, 1);
-    else state.favorites.unshift(gameId);
-    saveState();
-    renderHome();
+    if (index >= 0) state.favorites.splice(index, 1); else state.favorites.unshift(gameId);
+    saveState(); renderHome();
     if (currentView === 'games') renderCatalog();
     if (currentView === 'favorites') renderFavorites();
     if (selectedGameId === gameId) updateDetailFavorite();
   }
-
   function openDetail(gameId) {
     const game = C.getGame(gameId);
     if (!game) return;
@@ -353,25 +380,18 @@
     $('#detail-group').textContent = game.group;
     $('#detail-title').textContent = game.title;
     $('#detail-description').textContent = game.description;
-
     const badges = $('#detail-badges');
     clearNode(badges);
     [`${game.minPlayers}–${game.maxPlayers} Personen`, `ca. ${game.duration} Minuten`, game.age === 'all' ? 'Familienfreundlich' : 'Ab 12 empfohlen', game.status === 'playable' ? 'Jetzt spielbar' : 'In Entwicklung'].forEach(text => badges.append(makeElement('span', 'badge', text)));
-
     const packs = $('#detail-packs');
-    clearNode(packs);
-    game.packs.forEach(pack => packs.append(makeElement('span', 'pack-chip', pack)));
-
+    clearNode(packs); game.packs.forEach(pack => packs.append(makeElement('span', 'pack-chip', pack)));
     const rules = $('#detail-rules');
-    clearNode(rules);
-    game.instructions.forEach(rule => rules.append(makeElement('li', '', rule)));
-
+    clearNode(rules); game.instructions.forEach(rule => rules.append(makeElement('li', '', rule)));
     const select = $('#pack-select');
     clearNode(select);
     const names = C.getPackNames(game.id);
     names.forEach(name => select.add(new Option(`${name} (${packCount(game.id, name)})`, name)));
     $('#pack-select-label').hidden = names.length === 0 || game.mode === 'link';
-
     const start = $('#start-selected-game');
     start.textContent = game.status === 'planned' ? 'Noch nicht spielbar' : game.mode === 'link' ? 'Word Imposter öffnen' : 'Spiel starten';
     start.disabled = game.status !== 'playable';
@@ -379,330 +399,210 @@
     $('#game-detail').hidden = false;
     $('#close-detail').focus();
   }
-
   function packCount(gameId, pack) {
     const value = C.content[gameId]?.[pack];
     if (Array.isArray(value)) return value.length;
     if (value && typeof value === 'object') return Object.values(value).reduce((sum, list) => sum + list.length, 0);
     return 0;
   }
-
   function updateDetailFavorite() {
     const game = C.getGame(selectedGameId);
-    if (!game) return;
-    const favorite = state.favorites.includes(game.id);
-    $('#favorite-selected').textContent = favorite ? 'Aus Favoriten entfernen' : 'Als Favorit speichern';
+    if (game) $('#favorite-selected').textContent = state.favorites.includes(game.id) ? 'Aus Favoriten entfernen' : 'Als Favorit speichern';
   }
-
-  function closeDetail() {
-    $('#game-detail').hidden = true;
-    const trigger = document.querySelector(`[data-open-game="${selectedGameId}"]`);
-    trigger?.focus();
-  }
-
+  function closeDetail() { $('#game-detail').hidden = true; document.querySelector(`[data-open-game="${selectedGameId}"]`)?.focus(); }
   function rememberRecent(gameId) {
-    state.recent = [gameId, ...state.recent.filter(id => id !== gameId)].slice(0, 8);
-    const stats = state.stats[gameId] || { plays: 0, rounds: 0, best: 0 };
-    stats.plays += 1;
-    state.stats[gameId] = stats;
-    saveState();
-    renderHome();
+    state.recent = [gameId, ...state.recent.filter(id => id !== gameId)].slice(0, L.maximumRecent);
+    const saved = saveState();
+    if (saved) renderHome();
+    return saved;
   }
-
   function startSelectedGame() {
     const game = C.getGame(selectedGameId);
     if (!game || game.status !== 'playable') return;
-    rememberRecent(game.id);
-    if (game.mode === 'link') {
-      window.location.href = game.href;
-      return;
-    }
+    if (game.mode === 'link') { rememberRecent(game.id); window.location.href = game.href; return; }
     if (state.players.length < game.minPlayers || state.players.length > game.maxPlayers) {
-      closeDetail();
-      showView('players');
+      closeDetail(); showView('players');
       setStatus(`${game.title} benötigt ${game.minPlayers}–${game.maxPlayers} Personen. Bitte passe die aktive Gruppe an.`, true);
       return;
     }
-    clearActiveTimer();
+    rememberRecent(game.id);
+    stopHubTimer();
     session = {
-      gameId: game.id,
+      gameId: game.id, sessionId: L.createSessionId(game.id), players: [...state.players],
       pack: $('#pack-select').value || C.getPackNames(game.id)[0] || null,
-      rounds: 0,
-      score: 0,
-      playerIndex: 0,
-      used: [],
-      current: null,
-      startedAt: new Date().toISOString(),
-      running: false
+      rounds: 0, score: 0, playerIndex: 0,
+      used: [], usedByPool: { truth: [], dare: [] }, current: null,
+      startedAt: new Date().toISOString(), running: false, timer: null
     };
+    setHubSessionActive(true);
     closeDetail();
     $('#play-layer').hidden = false;
+    persistActiveSession();
     renderPlayRound();
-    $('#exit-game').focus();
+    focusPlayPrimary();
   }
-
-  function clearActiveTimer() {
-    if (activeTimer !== null) window.clearInterval(activeTimer);
-    activeTimer = null;
-  }
-
   function finishSession() {
     if (!session) return;
-    clearActiveTimer();
+    stopHubTimer(); hubTimer.setPaused(false); syncHubPauseUi();
     const game = C.getGame(session.gameId);
-    if (session.rounds > 0) {
-      state.history.unshift({
-        id: `${Date.now()}-${randomInt(1_000_000)}`,
-        gameId: game.id,
-        title: game.title,
-        endedAt: new Date().toISOString(),
-        rounds: session.rounds,
-        score: session.score
+    const activeTimedRound = Boolean(session.timer && (session.running || session.timer.phase === 'ended'));
+    const completedRounds = session.rounds + (activeTimedRound ? 1 : 0);
+    if (completedRounds > 0) {
+      const result = L.recordCompletion(state, {
+        id: L.completionId('hub', game.id, session.sessionId), gameId: game.id, title: game.title,
+        endedAt: new Date().toISOString(), rounds: completedRounds, score: session.score
       });
-      state.history = state.history.slice(0, MAX_HISTORY);
-      const stats = state.stats[game.id] || { plays: 1, rounds: 0, best: 0 };
-      stats.rounds += session.rounds;
-      stats.best = Math.max(stats.best || 0, session.score || 0);
-      state.stats[game.id] = stats;
-      saveState();
+      if (result.recorded) {
+        const previous = state;
+        state = result.hub;
+        if (!saveState()) { state = previous; persistActiveSession(); return; }
+      }
     }
-    session = null;
-    $('#play-layer').hidden = true;
-    renderHome();
+    if (!clearActiveSession()) return;
+    session = null; setHubSessionActive(false); $('#play-layer').hidden = true; renderHome();
     if (currentView === 'stats') renderStats();
-    setStatus('Session lokal im Verlauf gespeichert.');
+    setStatus(completedRounds > 0 ? 'Session lokal im Verlauf gespeichert.' : 'Session beendet. Es war noch keine Runde abgeschlossen.');
+    $('#quick-start')?.focus?.();
   }
-
+  function abortSession() {
+    if (!session) return false;
+    if (!window.confirm('Session wirklich abbrechen? Bisheriger Fortschritt wird verworfen und nicht als abgeschlossen gezählt.')) return false;
+    if (!clearActiveSession()) return false;
+    stopHubTimer(); hubTimer.setPaused(false); session = null; setHubSessionActive(false); $('#play-layer').hidden = true; renderHome();
+    if (currentView === 'stats') renderStats();
+    setStatus('Session abgebrochen. Fortschritt wurde nicht gespeichert.');
+    $('#quick-start')?.focus?.();
+    return true;
+  }
   function pickUnused(items) {
-    if (!items.length) return null;
-    if (session.used.length >= items.length) session.used = [];
-    const available = items.map((_, index) => index).filter(index => !session.used.includes(index));
-    const index = available[randomInt(available.length)];
-    session.used.push(index);
-    return items[index];
+    const selected = R.select(items, session.used, randomInt);
+    if (selected) persistActiveSession();
+    return selected?.value ?? null;
   }
-
-  function currentPlayer() {
-    if (!state.players.length) return '';
-    return state.players[session.playerIndex % state.players.length];
+  function sessionPlayers() {
+    const players = normalizePlayers(session?.players);
+    return players.length ? players : state.players;
   }
-
-  function advancePlayer() {
-    session.playerIndex = (session.playerIndex + 1) % Math.max(1, state.players.length);
-  }
-
+  function currentPlayer() { const players = sessionPlayers(); return players.length ? players[session.playerIndex % players.length] : ''; }
+  function advancePlayer() { const players = sessionPlayers(); session.playerIndex = (session.playerIndex + 1) % Math.max(1, players.length); }
   function resetPlayCard() {
-    clearActiveTimer();
-    $('#play-eyebrow').textContent = '';
-    $('#play-title').textContent = '';
-    $('#play-player').textContent = '';
-    clearNode($('#play-content'));
-    clearNode($('#play-options'));
-    clearNode($('#play-actions'));
-    $('#play-progress').textContent = `${session.rounds} Karten`;
+    stopHubTimer(); hubTimer.setPaused(false); syncHubPauseUi();
+    $('#play-eyebrow').textContent = ''; $('#play-title').textContent = ''; $('#play-player').textContent = '';
+    $('#play-content').className = 'play-content';
+    clearNode($('#play-content')); clearNode($('#play-options')); clearNode($('#play-actions'));
+    $('#play-progress').textContent = `${session.rounds} Runden`;
     $('#play-score').textContent = session.score ? `${session.score} Punkte` : '';
   }
-
-  function actionButton(text, handler, className = '') {
-    const button = makeElement('button', className, text);
-    button.type = 'button';
-    button.addEventListener('click', handler);
-    return button;
-  }
-
-  function nextSimpleRound() {
-    session.rounds += 1;
-    advancePlayer();
-    renderPlayRound();
-  }
-
-  function renderPlayRound() {
-    if (!session) return;
+  function preparePlayCard() {
     resetPlayCard();
     const game = C.getGame(session.gameId);
     $('#play-title').textContent = game.title;
     $('#play-eyebrow').textContent = session.pack || game.group;
-
-    if (game.mode === 'truth-dare') return renderTruthDare();
-    if (game.mode === 'prompt') return renderPromptGame();
-    if (game.mode === 'choice') return renderChoiceGame();
-    if (game.mode === 'paranoia') return renderParanoia();
-    if (game.mode === 'charades') return renderCharadesStart();
-    if (game.mode === 'taboo') return renderTaboo();
-    if (game.mode === 'hot-potato') return renderHotPotatoStart();
-    if (game.mode === 'word-chain') return renderWordChainStart();
-    if (game.mode === 'random-player') return renderRandomPlayer();
-    if (game.mode === 'utility') return renderUtility();
+    return game;
   }
-
+  function actionButton(text, handler, className = '') {
+    const button = makeElement('button', className, text);
+    button.type = 'button'; button.addEventListener('click', handler); return button;
+  }
+  function nextSimpleRound() {
+    session.timer = null; session.running = false; R.clearCurrent(session); session.rounds += 1; advancePlayer();
+    persistActiveSession(); renderPlayRound();
+  }
+  const timerGames = T.createTimerGames({
+    controls: S, hubTimer, $, makeElement, clearNode, cleanText, safeInteger, contentItems, pickUnused,
+    persistActiveSession, currentPlayer, actionButton, nextSimpleRound, syncHubPauseUi, focusPlayPrimary,
+    setHubPaused, setStatus, preparePlayCard, randomInt, randomItem, getSession: () => session, renderPlayRound
+  });
+  function skipHubRound() {
+    if (!session || hubTimer.isPaused()) return false;
+    stopHubTimer(); session.timer = null; session.running = false; R.clearCurrent(session); session.rounds += 1; advancePlayer();
+    persistActiveSession(); renderPlayRound(); setStatus('Runde übersprungen. Dafür wurde kein Punkt vergeben.');
+    return true;
+  }
+  function renderPlayRound() {
+    if (!session) return;
+    const game = preparePlayCard();
+    if (game.mode === 'truth-dare') renderTruthDare();
+    else if (game.mode === 'prompt') renderPromptGame();
+    else if (game.mode === 'choice') renderChoiceGame();
+    else if (game.mode === 'paranoia') renderParanoia();
+    else if (game.mode === 'charades') timerGames.renderCharadesStart();
+    else if (game.mode === 'taboo') timerGames.renderTabooStart();
+    else if (game.mode === 'hot-potato') timerGames.renderHotPotatoStart();
+    else if (game.mode === 'word-chain') timerGames.renderWordChainStart();
+    else if (game.mode === 'random-player') renderRandomPlayer();
+    else if (game.mode === 'utility') renderUtility();
+    focusPlayPrimary();
+  }
   function renderTruthDare() {
     $('#play-player').textContent = `${currentPlayer()} ist dran`;
+    if (session.current?.kind === 'truth-dare') return revealTruthDare(session.current.pool);
     $('#play-content').textContent = 'Wähle Wahrheit oder Pflicht.';
-    $('#play-options').append(
-      actionButton('Wahrheit', () => revealTruthDare('truth')),
-      actionButton('Pflicht', () => revealTruthDare('dare'), 'secondary')
-    );
+    $('#play-options').append(actionButton('Wahrheit', () => revealTruthDare('truth')), actionButton('Pflicht', () => revealTruthDare('dare'), 'secondary'));
+    persistActiveSession();
   }
-
   function revealTruthDare(type) {
     const items = C.content['truth-dare'][session.pack]?.[type] || [];
-    const value = pickUnused(items);
+    const selected = R.ensureCurrent(session, 'truth-dare', items, randomInt, type);
     clearNode($('#play-options'));
     $('#play-eyebrow').textContent = type === 'truth' ? `${session.pack} · Wahrheit` : `${session.pack} · Pflicht`;
-    $('#play-content').textContent = value || 'Keine Karte verfügbar.';
+    $('#play-content').textContent = selected?.value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Erledigt · nächste Person', nextSimpleRound));
+    persistActiveSession(); focusPlayPrimary();
   }
-
   function renderPromptGame() {
-    const items = contentItems(session.gameId, session.pack);
-    const value = pickUnused(items);
+    const selected = R.ensureCurrent(session, 'prompt', contentItems(session.gameId, session.pack), randomInt);
     if (session.gameId === 'wrong-answers') $('#play-player').textContent = `${currentPlayer()} beginnt`;
-    $('#play-content').textContent = value || 'Keine Karte verfügbar.';
+    $('#play-content').textContent = selected?.value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Nächste Karte', nextSimpleRound));
+    persistActiveSession();
   }
-
   function renderChoiceGame() {
-    const pair = pickUnused(contentItems(session.gameId, session.pack));
+    const selected = R.ensureCurrent(session, 'choice', contentItems(session.gameId, session.pack), randomInt);
+    const pair = selected?.value;
     const grid = makeElement('div', 'choice-grid');
     grid.append(makeElement('div', 'choice-card', pair?.[0] || 'Option A'), makeElement('div', 'choice-card', pair?.[1] || 'Option B'));
     $('#play-content').append(grid);
     $('#play-actions').append(actionButton('Nächste Entscheidung', nextSimpleRound));
+    persistActiveSession();
   }
-
   function renderParanoia() {
     $('#play-player').textContent = `${currentPlayer()} liest allein`;
     $('#play-content').textContent = 'Gerät so halten, dass niemand mitlesen kann.';
-    $('#play-options').append(actionButton('Geheime Frage anzeigen', () => {
-      const question = pickUnused(contentItems('paranoia', session.pack));
-      $('#play-content').textContent = question || 'Keine Frage verfügbar.';
+    const resolved = session.current?.kind === 'paranoia' && session.current.phase === 'resolved';
+    $('#play-options').append(actionButton(resolved ? 'Rundenergebnis anzeigen' : 'Geheime Frage anzeigen', () => {
+      const selected = R.ensureCurrent(session, 'paranoia', contentItems('paranoia', session.pack), randomInt);
+      const question = selected?.value || 'Keine Frage verfügbar.';
       clearNode($('#play-options'));
+      if (session.current?.kind === 'paranoia' && session.current.phase === 'resolved') {
+        $('#play-content').textContent = session.current.reveal ? `Frage wird aufgedeckt: ${question}` : 'Die Frage bleibt geheim.';
+        $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
+        persistActiveSession(); focusPlayPrimary(); return;
+      }
+      R.markParanoiaQuestion(session);
+      $('#play-content').textContent = question;
       $('#play-actions').append(actionButton('Name wurde genannt · Münze werfen', () => {
         const reveal = randomInt(2) === 1;
+        R.resolveParanoia(session, reveal);
         $('#play-content').textContent = reveal ? `Frage wird aufgedeckt: ${question}` : 'Die Frage bleibt geheim.';
         clearNode($('#play-actions'));
         $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
+        persistActiveSession();
       }));
+      persistActiveSession(); focusPlayPrimary();
     }));
+    persistActiveSession();
   }
-
-  function renderCharadesStart() {
-    $('#play-player').textContent = `${currentPlayer()} stellt dar`;
-    $('#play-content').textContent = '60 Sekunden. Begriffe dürfen nicht gesprochen oder buchstabiert werden.';
-    $('#play-options').append(actionButton('Runde starten', startCharades));
-  }
-
-  function startCharades() {
-    session.running = true;
-    session.used = [];
-    let seconds = 60;
-    let roundScore = 0;
-    const content = $('#play-content');
-    const options = $('#play-options');
-    const showCard = () => {
-      const item = pickUnused(contentItems('charades', session.pack));
-      content.textContent = item || 'Keine Karte verfügbar.';
-    };
-    const timer = makeElement('div', 'timer-display', '01:00');
-    $('#play-player').textContent = `${currentPlayer()} · ${roundScore} Treffer`;
-    clearNode(options);
-    options.append(
-      actionButton('Treffer', () => { roundScore += 1; session.score += 1; $('#play-player').textContent = `${currentPlayer()} · ${roundScore} Treffer`; showCard(); }),
-      actionButton('Überspringen', showCard, 'secondary')
-    );
-    $('#play-actions').append(timer);
-    showCard();
-    activeTimer = window.setInterval(() => {
-      seconds -= 1;
-      timer.textContent = `00:${String(seconds).padStart(2, '0')}`;
-      if (seconds <= 0) {
-        clearActiveTimer();
-        navigator.vibrate?.([120, 80, 120]);
-        content.textContent = `Zeit vorbei · ${roundScore} Treffer`;
-        clearNode(options);
-        clearNode($('#play-actions'));
-        $('#play-actions').append(actionButton('Nächste Person', nextSimpleRound));
-      }
-    }, 1000);
-  }
-
-  function renderTaboo() {
-    const card = pickUnused(contentItems('taboo', session.pack));
-    $('#play-player').textContent = `${currentPlayer()} erklärt`;
-    const word = makeElement('strong', 'taboo-word', card?.word || 'Keine Karte');
-    const banned = makeElement('div', 'banned-list');
-    (card?.banned || []).forEach(item => banned.append(makeElement('span', '', item)));
-    $('#play-content').append(word, banned);
-    $('#play-options').append(
-      actionButton('Treffer', () => { session.score += 1; nextSimpleRound(); }),
-      actionButton('Überspringen', nextSimpleRound, 'secondary')
-    );
-  }
-
-  function renderHotPotatoStart() {
-    const prompt = pickUnused(contentItems('hot-potato', session.pack));
-    $('#play-content').textContent = prompt || 'Keine Aufgabe verfügbar.';
-    $('#play-player').textContent = `${currentPlayer()} beginnt mit dem Gerät`;
-    $('#play-options').append(actionButton('Zufallstimer starten', () => startHotPotato(prompt)));
-  }
-
-  function startHotPotato(prompt) {
-    let milliseconds = 10000 + randomInt(16000);
-    const startedAt = performance.now();
-    $('#play-content').textContent = prompt;
-    clearNode($('#play-options'));
-    const timer = makeElement('div', 'timer-display', '●');
-    $('#play-actions').append(timer);
-    activeTimer = window.setInterval(() => {
-      const elapsed = performance.now() - startedAt;
-      timer.textContent = elapsed % 800 < 400 ? '●' : '○';
-      if (elapsed >= milliseconds) {
-        clearActiveTimer();
-        navigator.vibrate?.([180, 80, 180, 80, 240]);
-        timer.textContent = 'STOPP';
-        $('#play-content').textContent = 'Wer das Gerät jetzt hält, verliert diese Runde.';
-        $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-      }
-    }, 100);
-  }
-
-  function renderWordChainStart() {
-    const letters = contentItems('word-chain', session.pack);
-    const letter = randomItem(letters) || 'A';
-    $('#play-content').textContent = `Kategorie: ${session.pack} · Startbuchstabe: ${letter}`;
-    $('#play-player').textContent = `${currentPlayer()} beginnt`;
-    $('#play-options').append(actionButton('30-Sekunden-Runde starten', () => startWordChain(letter)));
-  }
-
-  function startWordChain(letter) {
-    let seconds = 30;
-    const timer = makeElement('div', 'timer-display', '00:30');
-    clearNode($('#play-options'));
-    $('#play-content').textContent = `${session.pack} · Start mit ${letter}`;
-    $('#play-actions').append(timer, actionButton('Runde geschafft', () => { session.score += 1; nextSimpleRound(); }, 'secondary'));
-    activeTimer = window.setInterval(() => {
-      seconds -= 1;
-      timer.textContent = `00:${String(seconds).padStart(2, '0')}`;
-      if (seconds <= 0) {
-        clearActiveTimer();
-        navigator.vibrate?.(250);
-        $('#play-content').textContent = 'Zeit vorbei.';
-        clearNode($('#play-actions'));
-        $('#play-actions').append(actionButton('Neue Runde', nextSimpleRound));
-      }
-    }, 1000);
-  }
-
   function renderRandomPlayer() {
     $('#play-content').textContent = 'Drücke auf Drehen, um eine Person zufällig auszuwählen.';
     $('#play-options').append(actionButton('Drehen', () => {
-      const player = randomItem(state.players);
+      const player = randomItem(sessionPlayers());
       $('#play-content').textContent = player || 'Keine Person gespeichert.';
       $('#play-content').classList.add('random-result');
-      session.rounds += 1;
-      navigator.vibrate?.(80);
+      session.rounds += 1; persistActiveSession(); navigator.vibrate?.(80);
     }), actionButton('Neu wählen', renderPlayRound, 'secondary'));
+    persistActiveSession();
   }
-
   function renderUtility() {
     $('#play-content').textContent = 'Wähle ein Zufallswerkzeug.';
     $('#play-options').append(
@@ -711,34 +611,53 @@
       actionButton('W20', () => showUtilityResult(String(1 + randomInt(20))), 'secondary'),
       actionButton('1–100', () => showUtilityResult(String(1 + randomInt(100))), 'secondary')
     );
+    persistActiveSession();
   }
-
   function showUtilityResult(value) {
     $('#play-content').textContent = value;
     $('#play-content').classList.add('random-result');
-    session.rounds += 1;
-    navigator.vibrate?.(60);
+    session.rounds += 1; persistActiveSession(); navigator.vibrate?.(60);
   }
-
+  function offerHubResume(active) {
+    $('#hub-resume-session')?.remove();
+    const game = C.getGame(active.gameId);
+    if (!game) return;
+    const card = makeElement('section', 'panel hub-resume-session');
+    card.id = 'hub-resume-session';
+    card.setAttribute('role', 'region');
+    card.setAttribute('aria-label', 'Gespeicherte Hub-Session');
+    const title = makeElement('strong', '', `${game.icon} ${game.title} fortsetzen?`);
+    const detail = active.timer?.phase === 'running'
+      ? 'Eine laufende Timer-Runde wurde gespeichert. Sie startet nach dem Fortsetzen zunächst pausiert.'
+      : `${active.rounds} abgeschlossene Runden sind lokal gespeichert. Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet.`;
+    const copy = makeElement('p', 'muted', detail);
+    const actions = makeElement('div', 'inline-actions');
+    const resume = actionButton('Session fortsetzen', () => {
+      session = active; card.remove(); setHubSessionActive(true); $('#play-layer').hidden = false;
+      if (session.timer) timerGames.renderStoredTimerSession(); else renderPlayRound();
+      persistActiveSession(); focusPlayPrimary();
+    });
+    const discard = actionButton('Gespeicherten Stand verwerfen', () => {
+      if (!window.confirm('Gespeicherten Hub-Spielstand wirklich verwerfen? Er wird nicht als abgeschlossene Session gezählt.')) return;
+      if (!clearActiveSession()) return;
+      card.remove(); setStatus('Gespeicherter Hub-Spielstand wurde verworfen.');
+    }, 'secondary');
+    actions.append(resume, discard);
+    card.append(title, copy, actions);
+    $('#hub-status')?.insertAdjacentElement('afterend', card);
+  }
   function quickStart() {
     const playable = C.games.filter(game => game.status === 'playable' && game.mode !== 'utility' && state.players.length >= game.minPlayers && state.players.length <= game.maxPlayers);
     const game = randomItem(playable);
     if (game) openDetail(game.id);
-    else {
-      showView('players');
-      setStatus('Speichere zuerst eine passende Gruppe.', true);
-    }
+    else { showView('players'); setStatus('Speichere zuerst eine passende Gruppe.', true); }
   }
-
   function savePlayers() {
     state.players = normalizePlayers($('#hub-players').value);
-    saveState();
-    updatePlayerHelp();
-    setStatus(`${state.players.length} Personen gespeichert.`);
+    saveState(); updatePlayerHelp(); setStatus(`${state.players.length} Personen gespeichert.`);
   }
-
   function savePreset() {
-    const name = $('#preset-name').value.trim().replace(/\s+/g, ' ').slice(0, 40);
+    const name = cleanText($('#preset-name').value, 40);
     const players = normalizePlayers($('#hub-players').value);
     if (!name) return setStatus('Bitte einen Preset-Namen eingeben.', true);
     if (!players.length) return setStatus('Das Preset benötigt mindestens eine Person.', true);
@@ -746,17 +665,13 @@
     state.presets = state.presets.slice(0, 20);
     state.players = players;
     $('#preset-name').value = '';
-    saveState();
-    renderPlayers();
-    setStatus(`Preset „${name}“ gespeichert.`);
+    saveState(); renderPlayers(); setStatus(`Preset „${name}“ gespeichert.`);
   }
-
   function updateConnection() {
     const online = navigator.onLine;
     $('#hub-connection').textContent = online ? 'Online · offline bereit' : 'Offline-Modus';
     $('#hub-connection').classList.toggle('offline', !online);
   }
-
   function bindEvents() {
     document.addEventListener('click', event => {
       const view = event.target.closest('[data-view-target]')?.dataset.viewTarget;
@@ -766,29 +681,15 @@
       const favoriteId = event.target.closest('[data-favorite-game]')?.dataset.favoriteGame;
       if (favoriteId) toggleFavorite(favoriteId);
       const quick = event.target.closest('[data-quick-filter]')?.dataset.quickFilter;
-      if (quick) {
-        showView('games');
-        $('#mood-filter').value = quick;
-        renderCatalog();
-      }
+      if (quick) { showView('games'); $('#mood-filter').value = quick; renderCatalog(); }
       const presetId = event.target.closest('[data-load-preset]')?.dataset.loadPreset;
       if (presetId) {
         const preset = state.presets.find(item => item.id === presetId);
-        if (preset) {
-          state.players = [...preset.players];
-          saveState();
-          renderPlayers();
-          setStatus(`Preset „${preset.name}“ geladen.`);
-        }
+        if (preset) { state.players = [...preset.players]; saveState(); renderPlayers(); setStatus(`Preset „${preset.name}“ geladen.`); }
       }
       const deletePresetId = event.target.closest('[data-delete-preset]')?.dataset.deletePreset;
-      if (deletePresetId) {
-        state.presets = state.presets.filter(item => item.id !== deletePresetId);
-        saveState();
-        renderPlayers();
-      }
+      if (deletePresetId) { state.presets = state.presets.filter(item => item.id !== deletePresetId); saveState(); renderPlayers(); }
     });
-
     $('#browse-games').addEventListener('click', () => showView('games'));
     $('#quick-start').addEventListener('click', quickStart);
     ['game-search', 'group-filter', 'mood-filter', 'player-filter', 'status-filter'].forEach(id => {
@@ -802,30 +703,40 @@
     $('#game-detail').addEventListener('click', event => { if (event.target === $('#game-detail')) closeDetail(); });
     $('#favorite-selected').addEventListener('click', () => toggleFavorite(selectedGameId));
     $('#start-selected-game').addEventListener('click', startSelectedGame);
-    $('#exit-game').addEventListener('click', finishSession);
+    $('#finish-hub-game').addEventListener('click', finishSession);
+    $('#skip-hub-round').addEventListener('click', skipHubRound);
+    $('#pause-hub-game').addEventListener('click', () => setHubPaused(!hubTimer.isPaused()));
+    $('#abort-hub-game').addEventListener('click', abortSession);
     $('#clear-hub-history').addEventListener('click', () => {
       if (!window.confirm('Hub-Verlauf und Hub-Statistik löschen?')) return;
-      state.history = [];
-      state.stats = {};
-      saveState();
-      renderStats();
-      setStatus('Hub-Verlauf wurde gelöscht.');
+      state.history = []; state.stats = {}; saveState(); renderStats(); setStatus('Hub-Verlauf wurde gelöscht.');
     });
     window.addEventListener('online', updateConnection);
     window.addEventListener('offline', updateConnection);
-    window.addEventListener('pagehide', () => clearActiveTimer());
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden || !session) return;
+      if (hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+      persistActiveSession();
+    });
+    window.addEventListener('pagehide', () => {
+      if (!session) return;
+      if (hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
+      persistActiveSession();
+    });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !$('#game-detail').hidden) closeDetail();
-      else if (event.key === 'Escape' && !$('#play-layer').hidden) finishSession();
+      else if (event.key === 'Escape' && !$('#play-layer').hidden) abortSession();
     });
   }
-
   populateGroupFilter();
   bindEvents();
   updateConnection();
+  setHubSessionActive(false);
   renderHome();
   renderPlayers();
   renderFavorites();
   renderStats();
   showView('home');
+  const active = loadActiveSession();
+  if (active) offerHubResume(active);
 })();

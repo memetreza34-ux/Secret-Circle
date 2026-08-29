@@ -31,6 +31,14 @@
     return cleanText(value, 240).toLocaleLowerCase('de-DE');
   }
 
+  function normalizeTimestamp(value, fallback = '') {
+    const candidate = cleanText(value, 40);
+    if (candidate && !Number.isNaN(Date.parse(candidate))) return new Date(candidate).toISOString();
+    const safeFallback = cleanText(fallback, 40);
+    if (safeFallback && !Number.isNaN(Date.parse(safeFallback))) return new Date(safeFallback).toISOString();
+    return '';
+  }
+
   function createId() {
     if (root.crypto?.randomUUID) return `custom-game-${root.crypto.randomUUID()}`;
     return `custom-game-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
@@ -82,6 +90,9 @@
     const packs = (Array.isArray(value.packs) ? value.packs : []).map(pack => normalizePack(pack, templateId)).filter(Boolean).slice(0, MAX_PACKS);
     if (title.length < 2 || description.length < 10 || !packs.length) return null;
     const requestedId = cleanText(value.id, 100);
+    const now = new Date().toISOString();
+    const createdAt = normalizeTimestamp(value.createdAt, now) || now;
+    const updatedAt = normalizeTimestamp(value.updatedAt, createdAt) || createdAt;
     return {
       id: requestedId.startsWith('custom-game-') ? requestedId : createId(),
       title,
@@ -95,8 +106,8 @@
       duration: Math.max(3, Math.min(90, Number.parseInt(value.duration, 10) || 15)),
       age: ALLOWED_AGES.has(value.age) ? value.age : 'all',
       packs,
-      createdAt: cleanText(value.createdAt, 40) || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt,
+      updatedAt
     };
   }
 
@@ -146,7 +157,14 @@
     }
 
     function save(value) {
-      const game = normalizeGame(value);
+      const requestedId = cleanText(value?.id, 100);
+      const existing = state.games.find(item => item.id === requestedId) || null;
+      const now = new Date().toISOString();
+      const game = normalizeGame({
+        ...value,
+        createdAt: existing?.createdAt || value?.createdAt || now,
+        updatedAt: now
+      });
       if (!game) throw new Error('Name, kurze Erklärung und mindestens drei gültige Karten sind erforderlich.');
       const index = state.games.findIndex(item => item.id === game.id);
       if (state.games.some(item => item.id !== game.id && keyText(item.title) === keyText(game.title))) throw new Error('Ein eigenes Spiel mit diesem Namen existiert bereits.');
@@ -177,7 +195,8 @@
       let number = 1;
       let title = copyTitle(source.title, number);
       while (state.games.some(game => keyText(game.title) === keyText(title))) title = copyTitle(source.title, ++number);
-      return save({ ...source, id: createId(), title, createdAt: new Date().toISOString() });
+      const now = new Date().toISOString();
+      return save({ ...source, id: createId(), title, createdAt: now, updatedAt: now });
     }
 
     function exportData() {
@@ -223,6 +242,6 @@
   return Object.freeze({
     version: VERSION, storageKey: STORAGE_KEY, maxGames: MAX_GAMES, maxCards: MAX_CARDS, maxPacks: MAX_PACKS,
     templates: TEMPLATES, icons: Object.freeze(ALLOWED_ICONS), accents: Object.freeze([...ALLOWED_ACCENTS]),
-    cleanText, parseCards, normalizeGame, normalizeState, createStore, toCatalogGame, toCatalogContent
+    cleanText, normalizeTimestamp, parseCards, normalizeGame, normalizeState, createStore, toCatalogGame, toCatalogContent
   });
 });

@@ -2,19 +2,33 @@
 
 (() => {
   const C = window.SecretCirclePartyCatalog;
+  const L = window.SecretCircleSessionLedger;
+  const S = window.SecretCircleSessionControls;
+  if (!C) throw new Error('Party-Katalog für Viral Modes fehlt.');
+  if (!L) throw new Error('Gemeinsames Session-Register für Viral Modes fehlt.');
+  if (!S) throw new Error('Gemeinsame Spielsteuerung für Viral Modes fehlt.');
+
   const gameId = new URLSearchParams(location.search).get('game') || '';
-  const viralIds = new Set(C?.viralGameIds || []);
-  if (!C || !viralIds.has(gameId)) return;
+  const viralIds = new Set(C.viralGameIds || []);
+  if (!viralIds.has(gameId)) return;
 
   const game = C.getGame(gameId);
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const ACTIVE_KEY = 'secret-circle-party-viral-active-v1';
   const VERSION = 1;
-  const MAX_HISTORY = 50;
+  const MAX_HISTORY = L.maximumHistory;
   const $ = selector => document.querySelector(selector);
   let hub = loadHub();
   let active = loadActive();
-  let timerId = null;
+  const sessionControls = S.createController({
+    documentRef: document,
+    windowRef: window,
+    catalog: C,
+    gameId,
+    onSkip: () => { if (active) nextRound(); },
+    onAbort: abortSession,
+    onReplay: replaySession
+  });
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -59,9 +73,11 @@
     const pack = String(value.pack ?? '');
     if (!Array.isArray(value.players) || players.length !== value.players.length || !players.length) return null;
     if (!C.getPackNames(gameId).includes(pack)) return null;
+    const startedAt = String(value.startedAt ?? new Date().toISOString());
     return {
       version: VERSION,
       gameId,
+      sessionId: L.normalizeSessionId(value.sessionId) || L.legacySessionId(gameId, startedAt, value.targetRounds),
       pack,
       targetRounds: value.targetRounds,
       round: value.round,
@@ -72,7 +88,7 @@
       current: value.current && typeof value.current === 'object' && !Array.isArray(value.current) ? value.current : null,
       phase: String(value.phase ?? 'ready').slice(0, 40),
       players,
-      startedAt: String(value.startedAt ?? new Date().toISOString()),
+      startedAt,
       completedRecorded: Boolean(value.completedRecorded)
     };
   }
@@ -181,24 +197,11 @@
   }
 
   function stopTimer() {
-    if (timerId !== null) clearInterval(timerId);
-    timerId = null;
+    sessionControls.stopTimer();
   }
 
   function countdown(seconds, display, onEnd) {
-    stopTimer();
-    const deadline = Date.now() + seconds * 1000;
-    const tick = () => {
-      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-      display.textContent = `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')}`;
-      if (remaining <= 0) {
-        stopTimer();
-        navigator.vibrate?.([120, 80, 120]);
-        onEnd();
-      }
-    };
-    tick();
-    timerId = setInterval(tick, 250);
+    return sessionControls.countdown(seconds, display, onEnd);
   }
 
   function ensureCurrent(factory) {
@@ -235,6 +238,7 @@
   }
 
   function renderRound() {
+    if (!active) return;
     resetRoundUi();
     const renderers = {
       'put-a-finger-down': renderFingerDown,
@@ -483,11 +487,18 @@
       setStatus(`${game.title} benötigt ${game.minPlayers}–${game.maxPlayers} Personen. Passe die Gruppe im Party Hub an.`, true);
       return;
     }
+    const pack = $('#quick-pack').value || C.getPackNames(gameId)[0];
+    const targetRounds = Number($('#quick-rounds').value);
+    if (!C.getPackNames(gameId).includes(pack) || ![3, 5, 10, 20].includes(targetRounds)) {
+      setStatus('Kategorie oder Rundenzahl ist ungültig.', true);
+      return;
+    }
     active = {
       version: VERSION,
       gameId,
-      pack: $('#quick-pack').value || C.getPackNames(gameId)[0],
-      targetRounds: Number($('#quick-rounds').value),
+      sessionId: L.createSessionId(gameId),
+      pack,
+      targetRounds,
       round: 1,
       totalScore: 0,
       scores: {},
@@ -500,42 +511,38 @@
       completedRecorded: false
     };
     if (!saveActive()) return;
+    sessionControls.setSessionActive(true);
     $('#quick-setup').hidden = true;
     $('#quick-result').hidden = true;
     $('#quick-play').hidden = false;
     renderRound();
-    $('#quick-exit').focus();
+    $('#quick-pause').focus();
   }
 
   function finishSession() {
     stopTimer();
     if (!active) return;
     if (!active.completedRecorded) {
-      const entry = {
-        id: `viral-${Date.now()}-${randomInt(1_000_000)}`,
+      const result = L.recordCompletion(loadHub(), {
+        id: L.completionId('viral', gameId, active.sessionId),
         gameId,
         title: game.title,
         endedAt: new Date().toISOString(),
         rounds: active.targetRounds,
         score: active.totalScore
-      };
-      const nextHub = clone(loadHub());
-      nextHub.history = [entry, ...(Array.isArray(nextHub.history) ? nextHub.history : [])].slice(0, MAX_HISTORY);
-      nextHub.recent = [gameId, ...(Array.isArray(nextHub.recent) ? nextHub.recent.filter(id => id !== gameId) : [])].slice(0, 8);
-      nextHub.stats = nextHub.stats || {};
-      const stats = nextHub.stats[gameId] || { plays: 0, rounds: 0, best: 0 };
-      nextHub.stats[gameId] = {
-        plays: Math.max(1, Number(stats.plays) || 0),
-        rounds: Math.max(0, Number(stats.rounds) || 0) + active.targetRounds,
-        best: Math.max(Number(stats.best) || 0, active.totalScore)
-      };
-      if (!saveHub(nextHub)) return;
+      });
+      if (result.recorded && !saveHub(result.hub)) return;
       active.completedRecorded = true;
-      saveActive();
+      if (!saveActive()) return;
     }
     const final = clone(active);
     active = null;
-    saveActive();
+    if (!saveActive()) {
+      active = final;
+      return;
+    }
+    sessionControls.setSessionActive(false);
+    sessionControls.updateNextGame(C, gameId);
     $('#quick-play').hidden = true;
     $('#quick-result').hidden = false;
     $('#quick-final-score').textContent = String(final.totalScore);
@@ -548,10 +555,37 @@
   }
 
   function discardActive() {
+    stopTimer();
+    if (!active) {
+      sessionControls.setSessionActive(false);
+      updateResume();
+      return true;
+    }
+    const previous = clone(active);
     active = null;
-    saveActive();
+    if (!saveActive()) {
+      active = previous;
+      return false;
+    }
+    sessionControls.setSessionActive(false);
     updateResume();
     setStatus('Gespeicherte Viral-Session wurde verworfen.');
+    return true;
+  }
+
+  function abortSession() {
+    if (!active || !discardActive()) return false;
+    $('#quick-play').hidden = true;
+    $('#quick-result').hidden = true;
+    $('#quick-setup').hidden = false;
+    $('#quick-start').focus();
+    return true;
+  }
+
+  function replaySession() {
+    $('#quick-result').hidden = true;
+    $('#quick-setup').hidden = false;
+    startSession();
   }
 
   function updateResume() {
@@ -561,11 +595,12 @@
 
   function resumeSession() {
     if (!active) return;
+    sessionControls.setSessionActive(true);
     $('#quick-setup').hidden = true;
     $('#quick-result').hidden = true;
     $('#quick-play').hidden = false;
     renderRound();
-    $('#quick-exit').focus();
+    $('#quick-pause').focus();
   }
 
   function initialize() {
@@ -580,21 +615,11 @@
     C.getPackNames(gameId).forEach(name => $('#quick-pack').add(new Option(`${name} (${C.getItems(gameId, name).length})`, name)));
     game.instructions.forEach(rule => $('#quick-rules').append(element('li', '', rule)));
     updateResume();
+    sessionControls.updateNextGame(C, gameId);
 
     $('#quick-start').addEventListener('click', startSession);
     $('#quick-resume').addEventListener('click', resumeSession);
     $('#quick-discard').addEventListener('click', discardActive);
-    $('#quick-exit').addEventListener('click', () => {
-      if (!confirm('Session beenden und bisherigen Fortschritt verwerfen?')) return;
-      discardActive();
-      $('#quick-play').hidden = true;
-      $('#quick-setup').hidden = false;
-    });
-    $('#quick-replay').addEventListener('click', () => {
-      $('#quick-result').hidden = true;
-      $('#quick-setup').hidden = false;
-      startSession();
-    });
 
     const updateConnection = () => { $('#quick-connection').textContent = navigator.onLine ? 'Online' : 'Offline-Modus'; };
     addEventListener('online', updateConnection);

@@ -2,12 +2,16 @@
 
 (() => {
   const C = window.SecretCirclePartyCatalog;
+  const L = window.SecretCircleSessionLedger;
+  const S = window.SecretCircleSessionControls;
   if (!C) throw new Error('Party-Katalog für Quick Modes fehlt.');
+  if (!L) throw new Error('Gemeinsames Session-Register für Quick Modes fehlt.');
+  if (!S) throw new Error('Gemeinsame Spielsteuerung für Quick Modes fehlt.');
 
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const ACTIVE_KEY = 'secret-circle-party-quick-active-v1';
   const VERSION = 1;
-  const MAX_HISTORY = 50;
+  const MAX_HISTORY = L.maximumHistory;
   const ALLOWED = new Set(C.trendingGameIds || []);
   const $ = selector => document.querySelector(selector);
 
@@ -15,7 +19,15 @@
   const game = C.getGame(gameId);
   let hub = loadHub();
   let active = loadActive();
-  let timerId = null;
+  const sessionControls = S.createController({
+    documentRef: document,
+    windowRef: window,
+    catalog: C,
+    gameId,
+    onSkip: () => { if (active) nextRound(); },
+    onAbort: abortSession,
+    onReplay: replaySession
+  });
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -57,9 +69,11 @@
     if (!Number.isInteger(value.targetRounds) || ![3, 5, 10, 20].includes(value.targetRounds)) return null;
     if (!Number.isInteger(value.round) || value.round < 1 || value.round > value.targetRounds) return null;
     if (!Array.isArray(value.players) || cleanPlayers(value.players).length !== value.players.length) return null;
+    const startedAt = String(value.startedAt ?? new Date().toISOString());
     return {
       version: VERSION,
       gameId,
+      sessionId: L.normalizeSessionId(value.sessionId) || L.legacySessionId(gameId, startedAt, value.targetRounds),
       pack: String(value.pack ?? ''),
       targetRounds: value.targetRounds,
       round: value.round,
@@ -70,7 +84,7 @@
       current: value.current && typeof value.current === 'object' ? value.current : null,
       phase: String(value.phase ?? 'ready'),
       players: cleanPlayers(value.players),
-      startedAt: String(value.startedAt ?? new Date().toISOString()),
+      startedAt,
       completedRecorded: Boolean(value.completedRecorded)
     };
   }
@@ -175,24 +189,11 @@
   }
 
   function stopTimer() {
-    if (timerId !== null) clearInterval(timerId);
-    timerId = null;
+    sessionControls.stopTimer();
   }
 
   function countdown(seconds, display, onEnd) {
-    stopTimer();
-    const deadline = Date.now() + seconds * 1000;
-    const tick = () => {
-      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-      display.textContent = `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')}`;
-      if (remaining <= 0) {
-        stopTimer();
-        navigator.vibrate?.([120, 80, 120]);
-        onEnd();
-      }
-    };
-    tick();
-    timerId = setInterval(tick, 250);
+    return sessionControls.countdown(seconds, display, onEnd);
   }
 
   function sessionItems() {
@@ -323,7 +324,7 @@
       const timer = element('div', 'quick-timer', '1:00');
       $('#quick-controls').append(timer);
       countdown(60, timer, () => { active.phase = 'score'; saveActive(); renderRound(); });
-      $('#quick-actions').append(button('Vorzeitig auswerten', () => { active.phase = 'score'; saveActive(); renderRound(); }, 'secondary'));
+      $('#quick-actions').append(button('Vorzeitig auswerten', () => { stopTimer(); active.phase = 'score'; saveActive(); renderRound(); }, 'secondary'));
       return;
     }
     const max = (current.categories || []).length;
@@ -432,9 +433,14 @@
     }
     const pack = $('#quick-pack').value || C.getPackNames(game.id)[0];
     const targetRounds = Number($('#quick-rounds').value);
+    if (!C.getPackNames(game.id).includes(pack) || ![3, 5, 10, 20].includes(targetRounds)) {
+      setStatus('Kategorie oder Rundenzahl ist ungültig.', true);
+      return;
+    }
     active = {
       version: VERSION,
       gameId: game.id,
+      sessionId: L.createSessionId(game.id),
       pack,
       targetRounds,
       round: 1,
@@ -449,42 +455,38 @@
       completedRecorded: false
     };
     if (!saveActive()) return;
+    sessionControls.setSessionActive(true);
     $('#quick-setup').hidden = true;
     $('#quick-result').hidden = true;
     $('#quick-play').hidden = false;
     renderRound();
-    $('#quick-exit').focus();
+    $('#quick-pause').focus();
   }
 
   function finishSession() {
     stopTimer();
     if (!active) return;
     if (!active.completedRecorded) {
-      const entry = {
-        id: `quick-${Date.now()}-${randomInt(1_000_000)}`,
+      const result = L.recordCompletion(loadHub(), {
+        id: L.completionId('quick', game.id, active.sessionId),
         gameId: game.id,
         title: game.title,
         endedAt: new Date().toISOString(),
         rounds: active.targetRounds,
         score: active.totalScore
-      };
-      const nextHub = clone(loadHub());
-      nextHub.history = [entry, ...(Array.isArray(nextHub.history) ? nextHub.history : [])].slice(0, MAX_HISTORY);
-      nextHub.recent = [game.id, ...(Array.isArray(nextHub.recent) ? nextHub.recent.filter(id => id !== game.id) : [])].slice(0, 8);
-      const stats = nextHub.stats?.[game.id] || { plays: 0, rounds: 0, best: 0 };
-      nextHub.stats = nextHub.stats || {};
-      nextHub.stats[game.id] = {
-        plays: Math.max(1, Number(stats.plays) || 0),
-        rounds: Math.max(0, Number(stats.rounds) || 0) + active.targetRounds,
-        best: Math.max(Number(stats.best) || 0, active.totalScore)
-      };
-      if (!saveHub(nextHub)) return;
+      });
+      if (result.recorded && !saveHub(result.hub)) return;
       active.completedRecorded = true;
-      saveActive();
+      if (!saveActive()) return;
     }
     const final = clone(active);
     active = null;
-    saveActive();
+    if (!saveActive()) {
+      active = final;
+      return;
+    }
+    sessionControls.setSessionActive(false);
+    sessionControls.updateNextGame(C, game.id);
     $('#quick-play').hidden = true;
     $('#quick-result').hidden = false;
     $('#quick-final-score').textContent = String(final.totalScore);
@@ -497,10 +499,37 @@
   }
 
   function discardActive() {
+    stopTimer();
+    if (!active) {
+      sessionControls.setSessionActive(false);
+      updateResume();
+      return true;
+    }
+    const previous = clone(active);
     active = null;
-    saveActive();
+    if (!saveActive()) {
+      active = previous;
+      return false;
+    }
+    sessionControls.setSessionActive(false);
     updateResume();
     setStatus('Gespeicherte Quick-Session wurde verworfen.');
+    return true;
+  }
+
+  function abortSession() {
+    if (!active || !discardActive()) return false;
+    $('#quick-play').hidden = true;
+    $('#quick-result').hidden = true;
+    $('#quick-setup').hidden = false;
+    $('#quick-start').focus();
+    return true;
+  }
+
+  function replaySession() {
+    $('#quick-result').hidden = true;
+    $('#quick-setup').hidden = false;
+    startSession();
   }
 
   function updateResume() {
@@ -511,11 +540,12 @@
 
   function resumeSession() {
     if (!active) return;
+    sessionControls.setSessionActive(true);
     $('#quick-setup').hidden = true;
     $('#quick-result').hidden = true;
     $('#quick-play').hidden = false;
     renderRound();
-    $('#quick-exit').focus();
+    $('#quick-pause').focus();
   }
 
   function initialize() {
@@ -536,21 +566,11 @@
     const rules = $('#quick-rules');
     game.instructions.forEach(rule => rules.append(element('li', '', rule)));
     updateResume();
+    sessionControls.updateNextGame(C, game.id);
 
     $('#quick-start').addEventListener('click', startSession);
     $('#quick-resume').addEventListener('click', resumeSession);
     $('#quick-discard').addEventListener('click', discardActive);
-    $('#quick-exit').addEventListener('click', () => {
-      if (!confirm('Session beenden und bisherigen Fortschritt verwerfen?')) return;
-      discardActive();
-      $('#quick-play').hidden = true;
-      $('#quick-setup').hidden = false;
-    });
-    $('#quick-replay').addEventListener('click', () => {
-      $('#quick-result').hidden = true;
-      $('#quick-setup').hidden = false;
-      startSession();
-    });
 
     const updateConnection = () => { $('#quick-connection').textContent = navigator.onLine ? 'Online' : 'Offline-Modus'; };
     addEventListener('online', updateConnection);
