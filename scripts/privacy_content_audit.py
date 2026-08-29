@@ -14,10 +14,25 @@ SHIPPED_CONTENT_SOURCES = [
     'party-viral-catalog.js',
     'party-core-release-catalog.js',
     'party-core-classic-content.js',
+    'party-wave-one-catalog.js',
+    'party-wave-one-imposter-catalog.js',
+    'party-wave-one-writing-catalog.js',
+    'party-wave-one-voting-catalog.js',
+    'party-wave-one-bluff-catalog.js',
+    'party-wave-one-clue-catalog.js',
 ]
 
-# These are not generic topic words. They are concrete prompt patterns that would
-# turn private device/account data into required party-game material.
+WAVE_ONE_SOURCES = {
+    'party-wave-one-catalog.js',
+    'party-wave-one-imposter-catalog.js',
+    'party-wave-one-writing-catalog.js',
+    'party-wave-one-voting-catalog.js',
+    'party-wave-one-bluff-catalog.js',
+    'party-wave-one-clue-catalog.js',
+}
+
+# Concrete prompt patterns that would turn private device/account data into
+# required party-game material.
 BLOCKED_PROMPT_FRAGMENTS = [
     'Was ist das Seltsamste in deiner Kamerarolle?',
     'Lies die letzte Nachricht auf deinem Handy',
@@ -48,9 +63,6 @@ BLOCKED_PROMPT_FRAGMENTS = [
     'Zeige deine Kontodaten',
 ]
 
-# Broader device/privacy phrases need an explicit review if they return. We keep
-# this list narrowly action-oriented so harmless references such as "Gruppenchat"
-# or "letzte App geöffnet" are not incorrectly blocked.
 REVIEW_REQUIRED_FRAGMENTS = [
     'letzte private Nachricht',
     'private Nachricht vorlesen',
@@ -71,12 +83,29 @@ required_safe_markers = {
         'Welches Foto-Motiv findest du besonders lustig?',
         'Lies einen selbst erfundenen Satz wie einen dramatischen Theatermonolog vor.',
     ],
+    'party-wave-one-catalog.js': [
+        "id: 'party-quiz'",
+        "id: 'fact-or-fake'",
+    ],
+    'party-wave-one-imposter-catalog.js': [
+        "id: 'undercover-similar-word'",
+        "id: 'no-word-imposter'",
+    ],
+    'party-wave-one-writing-catalog.js': [
+        "id: 'fill-blank-battle'",
+        "id: 'who-wrote-it'",
+    ],
+    'party-wave-one-voting-catalog.js': [
+        "id: 'percent-guess'",
+        "id: 'party-bracket'",
+    ],
+    'party-wave-one-bluff-catalog.js': ["id: 'bluff-trivia'"],
+    'party-wave-one-clue-catalog.js': ["id: 'password-one-word'"],
 }
 
-# Classic Content currently retains a historical replacement dictionary as a
-# defensive fallback. Its keys are not playable content. Strip exactly that
-# dictionary before scanning for blocked prompts, while still requiring the safe
-# replacement values and scanning every actual content/game override.
+# Classic Content retains a historical replacement dictionary as a defensive
+# fallback. Its keys are not playable content; strip exactly that dictionary
+# before scanning actual playable source text.
 def playable_source(relative: str, source: str) -> str:
     if relative != 'party-core-classic-content.js':
         return source
@@ -105,7 +134,7 @@ for relative in SHIPPED_CONTENT_SOURCES:
             violations.append(f'{relative}: privacy-sensitive action requires review: {fragment}')
     for marker in required_safe_markers.get(relative, []):
         if marker not in source:
-            violations.append(f'{relative}: required privacy-safe replacement missing: {marker}')
+            violations.append(f'{relative}: required privacy-safe marker missing: {marker}')
 
 base_source = (ROOT / 'party-catalog.js').read_text(encoding='utf-8') if (ROOT / 'party-catalog.js').is_file() else ''
 for fragment in (
@@ -115,7 +144,6 @@ for fragment in (
     if fragment in base_source:
         violations.append(f'party-catalog.js: historical private-device prompt must be physically absent: {fragment}')
 
-# Exact German source phrase, kept separate from the typo-resistant broader scan.
 if 'Lies die letzte Nachricht auf deinem Handy wie ein Theatermonolog, ohne Namen zu nennen.' in base_source:
     violations.append('party-catalog.js: historical last-message prompt must be physically absent')
 
@@ -139,6 +167,8 @@ if violations:
 print(json.dumps({
     'privacy_content_audit': 'PASS',
     'shipped_sources_scanned': len(scanned),
+    'wave_one_catalogs_scanned': len(WAVE_ONE_SOURCES),
+    'wave_one_sources_complete': WAVE_ONE_SOURCES.issubset(scanned.keys()),
     'blocked_prompt_fragments': len(BLOCKED_PROMPT_FRAGMENTS),
     'review_required_fragments': len(REVIEW_REQUIRED_FRAGMENTS),
     'sc_content_priv_001_safe_replacements_required': True,
