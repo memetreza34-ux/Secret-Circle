@@ -14,9 +14,36 @@
     "frozenAt": null
   },
   "gates": {
-    "ci": {"status": "BLOCKED", "commit": null, "evidence": null},
+    "ci": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "latestReproducedRun": 3652,
+        "runId": 33255174732,
+        "jobId": 99107510570,
+        "head": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+        "steps": 0,
+        "runnerId": 0,
+        "repositoryCodeExecuted": false
+      }
+    },
     "crossBrowser": {"status": "OPEN", "commit": null, "evidence": null},
-    "branchProtection": {"status": "OPEN", "commit": null, "evidence": null},
+    "branchProtection": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "checkedBranch": "main",
+        "checkedHead": "d347c7138bae18325c288632222917ad618e6547",
+        "protected": false,
+        "protectionEnabled": false,
+        "requiredStatusCheckEnforcement": "off",
+        "requiredStatusCheckContexts": [],
+        "reconciliationCandidatePullRequest": 15,
+        "reconciliationCandidateHead": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+        "reconciliationCandidateBehindMain": 0,
+        "reconciliationMergedIntoReleaseBranch": false
+      }
+    },
     "stagingHttpSmoke": {"status": "OPEN", "commit": null, "evidence": null},
     "pwaUpgradeRollback": {"status": "OPEN", "commit": null, "evidence": null},
     "android": {"status": "OPEN", "commit": null, "evidence": null},
@@ -31,11 +58,12 @@
     "productionSmoke": {"status": "OPEN", "commit": null, "evidence": null}
   },
   "knownBlockers": [
-    "GitHub Actions jobs currently end before repository steps",
-    "The stacked PR chain must be reconciled with two later main commits before any release merge sequence",
+    "GitHub Actions jobs currently end before repository steps and receive no Hosted Runner",
+    "main branch protection is currently disabled and has no required status checks",
+    "Draft PR #15 contains the controlled main/release reconciliation candidate but has not been merged into the active release branch",
     "Root icon.svg rights basis is unresolved",
     "operator-release.json remains PREPARED/BLOCKED until real operator, hosting, legal, support and incident evidence exists",
     "HTTPS staging/production origins and real-device/group evidence are not final"
   ],
-  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. Fill only with evidence from one immutable release candidate commit. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached. Branch-stack reconciliation changes the candidate ancestry and therefore requires fresh release evidence on the resulting immutable commit."
+  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. Current BLOCKED evidence may document real pre-RC repository state, but no gate may become PASS until it is bound to one immutable release candidate commit. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached. PR #15 reconciles current main history on an isolated candidate branch; merging it into the release path creates a new candidate that requires fresh CI, browser, PWA and regression evidence."
 }

@@ -1,19 +1,29 @@
 # Secret Circle – Branch Protection, PR-Stack und Required Checks
 
 Stand: 29. August 2026  
-Status: **PREPARED – GitHub-Einstellung selbst noch nicht belastbar bestätigt**  
-Evidence-Status: **OPEN**
+Status: **BLOCKED – `main` ist real ungeschützt; Hosted Runner weiterhin vor Step 1 blockiert**  
+Evidence-Status: **BLOCKED**
 
 Maschinenlesbare Freigabequelle: `release-evidence.json → gates.branchProtection`.  
 Aktueller Arbeitsstand: `release-meta.json`.
 
-## 1. Ziel
+## 1. Real verifizierter GitHub-Status
 
-Dieser Vertrag definiert, wie der stabile Secret-Circle-Releasezweig geschützt werden soll. Er beschreibt die gewünschte Repository-Konfiguration und den späteren Abnahmenachweis; `Evidence-Status: OPEN` behauptet ausdrücklich **nicht**, dass GitHub diese Einstellungen bereits aktiviert hat.
+Der GitHub-Branch-Endpunkt für `main` liefert aktuell:
+
+- `protected: false`
+- `protection.enabled: false`
+- Required-Check-Enforcement: `off`
+- Required-Check-Kontexte: leer
+- aktueller `main`-Head: `d347c7138bae18325c288632222917ad618e6547`
+
+Damit ist Branch Protection nicht nur unbewiesen, sondern **nachweislich nicht aktiv**. Das Release-Gate bleibt `BLOCKED`.
+
+Die vollständige Protection-Detail-API war über die Integration zuvor nicht zugänglich; der Branch-Endpunkt selbst liefert jedoch eindeutig `protected: false` und deaktivierte Protection.
 
 ## 2. Aktuelle PR-/Branch-Kette
 
-Der aktuelle Entwicklungsstand liegt in einem gestapelten PR-Aufbau:
+Der aktive Release-Stack bleibt:
 
 ```text
 main
@@ -23,38 +33,43 @@ main
 ```
 
 Aktueller Release-Arbeitszweig: `agent/release-foundation-2027`.  
-Aktueller Release-PR: **#13 (Draft)**.
+Aktueller Release-PR: **#13 (Draft / NO_GO)**.
 
-### Wichtiger Main-Drift-Befund
+### Main-Drift auf dem aktiven Release-Branch
 
-Der Vergleich `main` → `codex/improve-gameplay-v3` ist aktuell **diverged**:
-
-- Stack-Layer #3 ist 181 Commits vor seinem Merge-Base
-- zugleich fehlen ihm **2 spätere Commits von `main`**
-- Merge-Base: `a16a612c8e5f919eaca2dcf0a905e7e8824ec472`
-- aktuelles `main`: `d347c7138bae18325c288632222917ad618e6547`
-
-Die zwei Main-Commits außerhalb der Stack-Abstammung sind:
+Der aktive Stack enthält zwei spätere `main`-Commits nicht in seiner Abstammung:
 
 1. `6b6bddd0ae619d160b4468b61ae49cb30e2ea834` – sichere Legacy-ZIP-Inventar-/Tooling-Grenzen
-2. `d347c7138bae18325c288632222917ad618e6547` – finale Hub-Separation dokumentiert
+2. `d347c7138bae18325c288632222917ad618e6547` – finale Hub-Separation
 
-Diese Commits dürfen vor dem Release nicht versehentlich verloren gehen. Vor einer Mergefolge muss die Stack-Basis kontrolliert mit dem aktuellen `main` abgeglichen werden. Ein späterer Merge/Rebase ist **kein Dokumentationsschritt**, sondern eine Codeintegration und benötigt anschließend vollständige Retests.
+Die fehlende Arbeit war inhaltlich relevant: das aktive v64-Branch enthielt das Archiv-Inventarwerkzeug, die zugehörigen Sicherheits-/Source-Verträge und die Hub-Trennungsdoku nicht.
 
-PR #11 liegt vollständig auf PR #3 (`behind_by = 0`), und PR #13 liegt vollständig auf PR #11 (`behind_by = 0`). Das interne Stack-Verhältnis ist damit sauber; offen ist die Basis gegenüber aktuellem `main`.
+## 3. Kontrollierter Reconciliation-Kandidat – PR #15
 
-## 3. Stack-Merge-Regel
+Dafür existiert jetzt isoliert:
 
-Bis zur kontrollierten Basis-Synchronisierung:
+- Branch: `integration/v64-main-sync`
+- Draft PR: **#15**
+- Head: `8ccb43d8920d94f385cb5172440b5a0b63fb468c`
+- Base: `agent/release-foundation-2027`
+- Diff gegenüber aktivem v64-Branch: **9 Dateien**
+- GitHub: `mergeable: true`
+- Merge-State: `unstable`, weil CI weiterhin fehlschlägt
 
-- PR #3 nicht unabhängig als releasefertig behandeln
-- PR #11 bleibt Draft und historischer Mittellayer
-- PR #13 bleibt Draft und ist die einzige aktuelle Release-Arbeitsfläche
-- keine direkte Retarget-/Force-Push-Aktion nur zum kosmetischen Aufräumen
-- keine der zwei späteren Main-Änderungen verlieren
-- nach jeder echten Basisintegration neue CI-/Browser-/PWA-/Regression-Evidence auf dem neuen Commit
+Der Integrationsbranch wurde bewusst manuell aufgelöst:
 
-Erst wenn die Stack-Basis mit `main` reconciled und die resultierende Commitkette geprüft ist, darf eine endgültige Merge-Strategie festgelegt werden.
+- sieben Main-only Sicherheits-/Source-Dateien blob-identisch wiederhergestellt
+- alte Main-README/CI-Versionen **nicht** blind über v64 kopiert
+- moderner v64-CI um das Archiv-Sicherheitsgate erweitert
+- v64-README um die historische Archiv-/Hub-Grenze ergänzt
+- danach echter Merge-Commit mit aktuellem `main` als zweitem Parent erzeugt
+
+Verifizierte Abstammung dieses Kandidaten:
+
+- gegen `main`: `behind_by = 0`
+- gegen `agent/release-foundation-2027`: `behind_by = 0`
+
+PR #15 wird **nicht automatisch gemergt**. Erst Review + echter Runner-PASS + Retest.
 
 ## 4. Verbindlicher normaler PR-Check
 
@@ -65,11 +80,30 @@ Workflow:
 - Job: `validate`
 - gewünschter Required-Check-Kontext: **`Secret Circle CI / validate`**
 
-Der Job muss echten Checkout und alle vorgesehenen Repository-Schritte ausführen. Ein GitHub-Job mit `steps: []` gilt **nicht** als bestandener Required Check.
+Der Job muss echten Checkout und alle Repository-Schritte ausführen. Ein Job mit `steps: []` gilt weder als PASS noch als negativer Code-Test.
 
-Aktueller v64-Nachweis: Run #3608 / Job `99103557030` endete erneut mit `steps: []`, `runner_id: 0` und leerem Runner-Namen. Kein Repositorycode wurde ausgeführt.
+Aktuelle Beispiele:
 
-## 5. Cross-Browser ist Release-Gate, aber derzeit kein permanenter PR-Required-Check
+- v64 Run #3608 / Job `99103557030`: `steps: []`, `runner_id: 0`
+- v64 Run #3644 / Job `99106788535`: `steps: []`, `runner_id: 0`
+- Reconciliation PR #15 Run #3652 / Job `99107510570`: `steps: []`, `runner_id: 0`
+
+Damit ist auch der isolierte Main-Sync nicht repositoryseitig ausgeführt worden.
+
+## 5. Warum Required Check noch nicht aktiviert wird
+
+Die gewünschte finale Regel verlangt `Secret Circle CI / validate` als Required Check. Der Hosted Runner startet aktuell aber keinen einzigen Workflow-Step.
+
+Würde jetzt ein dauerhaft erforderlicher CI-Check aktiviert, wäre `main` zwar formal stärker blockiert, aber ohne funktionierenden Runner gäbe es keinen belastbaren grünen Pfad. Deshalb gilt die Reihenfolge:
+
+1. Hosted-Runner-/Actions-/Billing-/Policy-Blocker beheben.
+2. mindestens einen echten CI-Lauf mit Checkout und Repositoryschritten erhalten.
+3. `Secret Circle CI / validate` erfolgreich ausführen.
+4. danach Branch Protection + Required Check verbindlich aktivieren und erneut verifizieren.
+
+Bis dahin darf niemand direkt in `main` releaserelevante Änderungen einspielen.
+
+## 6. Cross-Browser ist Release-Gate
 
 Workflow:
 
@@ -78,109 +112,92 @@ Workflow:
 - Job: `smoke`
 - Trigger aktuell: `workflow_dispatch`
 
-Dieser Workflow ist für Release Candidate / Releasefreigabe zwingend, läuft aber nicht automatisch für jeden Pull Request. Solange das so bleibt, darf `Secret Circle Cross-Browser Smoke / smoke` **nicht** als dauerhaft erforderlicher PR-Check konfiguriert werden.
+Cross-Browser ist für den RC zwingend, aber derzeit kein permanenter PR-Required-Check. Vor Release muss Chromium/Firefox/WebKit auf dem **exakten unveränderten RC** grün dokumentiert sein.
 
-Vor RC muss der Cross-Browser-Workflow auf dem **exakten unveränderten RC-Commit** manuell grün ausgeführt und dokumentiert werden.
+## 7. Reproduzierbarer Installationsvertrag
 
-## 6. Reproduzierbarer Installationsvertrag
-
-`package-lock.json` liegt als Lockfile v3 vor.
-
-Beide Workflows verwenden:
+`package-lock.json` liegt als Lockfile v3 vor. CI und Cross-Browser verwenden:
 
 ```bash
 npm ci --ignore-scripts --no-audit --no-fund
 ```
 
-`actions/setup-node` nutzt den npm-Cache auf Basis des Lockfiles.
+Ein echter Online-`npm ci`-PASS bleibt offen.
 
-`scripts/lockfile_contract_audit.py` schützt:
+Der Reconciliation-Kandidat ergänzt im normalen CI außerdem die Legacy-Archiv-Sicherheitsprüfung:
 
-- Root-Package/Version/Engine/Dev-Dependency-Synchronität
-- minimale Paketmenge
-- exakte Playwright-Version 1.54.2
-- optionales `fsevents` 2.3.2
-- Registry-URLs und `sha512`-Integrities
-- `npm ci` in normalem und Cross-Browser-Workflow
+```bash
+python -m py_compile tools/inventory_legacy_archive.py tests/archive-inventory.test.py scripts/validate_archive_tool.py
+python tests/archive-inventory.test.py
+python scripts/validate_archive_tool.py
+```
 
-Ein echter Online-`npm ci`-PASS auf dem unveränderten Commit bleibt erforderlich und wird nicht durch die Existenz des Lockfiles ersetzt.
+Diese Schritte wurden wegen des Hosted-Runner-Blockers noch nicht auf GitHub ausgeführt.
 
-## 7. Empfohlene Branch-Protection-Regeln
+## 8. Zielregeln für den stabilen Branch
 
-Für den stabilen Zielzweig vor öffentlichem Release:
+Vor öffentlichem Release:
 
 - Änderungen nur über Pull Request
-- mindestens `Secret Circle CI / validate` als Required Check
-- Branch muss vor Merge mit der gewählten GitHub-Regel kompatibel/aktuell sein
-- direkte Force-Pushes deaktivieren
-- Branch-Löschung deaktivieren
+- `Secret Circle CI / validate` als Required Check
+- Force-Pushes deaktiviert
+- Branch-Löschung deaktiviert
 - offene Review-Threads vor Merge auflösen
-- Administrator-/Bypass-Ausnahmen so klein wie praktisch halten
+- Bypass-/Admin-Ausnahmen minimal halten
 - Merge erst nach vollständiger `RELEASE_CHECKLIST.md`
+- finaler RC muss die reconciled Main-Historie enthalten
 
-Ein Mindestreview durch eine zweite reale Person ist sinnvoll, falls vor Release eine zweite berechtigte Person verfügbar ist. Dieser Punkt wird nicht als bereits eingerichtet behauptet.
+## 9. Merge-Grenze
 
-## 8. Merge-Grenze für PR #13
+PR #13 beziehungsweise ein daraus abgeleiteter finaler RC darf erst Richtung stabilen Zielbranch gehen, wenn:
 
-Unabhängig von GitHub-Einstellungen gilt:
-
-1. Stack-Basis zuerst kontrolliert mit aktuellem `main` reconciliieren.
-2. PR #13 bleibt Draft bis Release-Gates erfüllt sind.
-3. Kein Merge bei `steps: []`.
-4. Kein Merge ohne grünes Online-`npm ci` auf unverändertem Commit.
-5. Kein Merge ohne grünen `npm run ci` auf demselben Commit.
-6. Kein Merge ohne grünen manuellen Cross-Browser-Lauf auf demselben RC-Commit.
-7. Kein Merge ohne echte Branch-Protection-Abnahme.
-8. Kein Merge ohne HTTPS-Staging-/PWA-/Device-/Accessibility-/Gruppenabnahme.
-9. Kein Merge ohne finalen Legal-/Asset-/Support-Sign-off.
-
-## 9. Aktuelle externe/strukturelle Blocker
-
-### Extern
-
-`CI_TROUBLESHOOTING.md` dokumentiert wiederholte Actions-Jobs mit `steps: []`. Solange kein echter Runner Repository-Schritte ausführt, kann die gewünschte Required-Check-Regel technisch vorbereitet, aber nicht belastbar als funktionierend abgenommen werden.
-
-### Strukturell
-
-Die PR-Stack-Basis enthält die zwei späteren `main`-Commits nicht in ihrer Abstammung. Das muss vor RC/Merge kontrolliert aufgelöst werden. Dieser Punkt ist unabhängig vom Hosted-Runner-Problem.
+1. PR #15 oder eine äquivalent geprüfte Reconciliation übernommen wurde.
+2. beide Main-only Änderungen erhalten sind.
+3. Actions einen echten Hosted Runner erhält.
+4. Online-`npm ci` grün ist.
+5. `npm run ci` grün ist.
+6. Cross-Browser grün ist.
+7. Branch Protection real aktiviert und erneut abgefragt wurde.
+8. HTTPS-/PWA-/Geräte-/Accessibility-/Gruppentests bestanden sind.
+9. Legal-/Asset-/Support-/Incident-Gates geschlossen sind.
 
 ## 10. Abnahmeprotokoll
 
 ```text
-Protected branch:
-Protection verified at:
-Current main reconciled into release stack: yes/no
-Main reconciliation commit/review:
-Pull requests required: yes/no
-Required check contexts:
-Force pushes blocked: yes/no
-Branch deletion blocked: yes/no
-Review conversation resolution required: yes/no
-Admin/bypass rules reviewed: yes/no
-Test PR used for verification:
-Successful npm ci run:
-Successful CI run:
-Successful RC cross-browser run:
-Verifier:
-Evidence reference:
+Protected branch: main
+Protection verified at: 2026-08-29 current state = disabled
+Current main reconciled into release stack: candidate prepared in Draft PR #15, not merged
+Main reconciliation candidate: 8ccb43d8920d94f385cb5172440b5a0b63fb468c
+Pull requests required: currently not enforced by branch protection
+Required check contexts: currently none
+Force pushes blocked: not confirmed/enforced by current protection state
+Branch deletion blocked: not confirmed/enforced by current protection state
+Review conversation resolution required: not confirmed/enforced
+Admin/bypass rules reviewed: open
+Successful npm ci run: open
+Successful CI run: open
+Successful RC cross-browser run: open
+Final verifier: open
+Final evidence reference: open
 ```
 
 ## 11. Release-Gate
 
 `BRANCH PROTECTION PASS` erst wenn:
 
-- [ ] tatsächlicher stabiler Zielbranch festgelegt
-- [ ] aktueller `main` kontrolliert in die Release-/PR-Stack-Basis integriert oder eine äquivalente geprüfte Merge-Strategie abgeschlossen
-- [ ] die zwei späteren Main-Änderungen nachweislich erhalten
-- [ ] Pull-Request-Pflicht in GitHub bestätigt
-- [ ] `Secret Circle CI / validate` als Required Check bestätigt
-- [ ] Required Check auf echtem Runner mindestens einmal erfolgreich durchgelaufen
-- [ ] Force-Push-/Löschregeln geprüft
+- [x] aktueller realer Branchstatus geprüft: `main protected = false`
+- [x] kontrollierter Main-Reconciliation-Kandidat in Draft PR #15 erstellt
+- [x] Kandidat ist gegen `main` `behind_by = 0`
+- [ ] PR #15 geprüft und in den aktiven Releasepfad übernommen
+- [ ] Hosted Runner führt echte Steps aus
+- [ ] Online-`npm ci` grün
+- [ ] `Secret Circle CI / validate` grün
+- [ ] Branch Protection auf `main` real aktiviert
+- [ ] PR-Pflicht bestätigt
+- [ ] Required Check bestätigt
+- [ ] Force-Push-/Löschregeln bestätigt
 - [ ] Review-/Bypass-Regeln geprüft
-- [x] Lockfile/`npm ci` im Workflow technisch aktiv
-- [ ] Online-`npm ci` auf unverändertem Commit grün
-- [ ] RC-Cross-Browser-Lauf separat grün dokumentiert
-- [ ] `release-evidence.json.gates.branchProtection = PASS` mit demselben RC-Commit und echter Evidence
-- [ ] `Evidence-Status` in diesem Dokument auf `PASS` aktualisiert
+- [ ] RC-Cross-Browser-Lauf grün
+- [ ] `release-evidence.json.gates.branchProtection = PASS` mit finaler RC-Evidence
 
-Solange diese Punkte nicht real erfüllt sind, bleibt `Evidence-Status: OPEN` und Branch Protection **RELEASE NO_GO**.
+**Aktuell: BLOCKED / RELEASE NO_GO.**

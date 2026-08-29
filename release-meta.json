@@ -28,7 +28,7 @@
     "pullRequestState": "DRAFT"
   },
   "branchStack": {
-    "status": "DIVERGED_FROM_MAIN",
+    "status": "DIVERGED_FROM_MAIN_WITH_RECONCILIATION_CANDIDATE",
     "mainHead": "d347c7138bae18325c288632222917ad618e6547",
     "stackMergeBase": "a16a612c8e5f919eaca2dcf0a905e7e8824ec472",
     "layers": [
@@ -36,18 +36,38 @@
       {"pullRequest": 11, "branch": "codex/party-hub-foundation"},
       {"pullRequest": 13, "branch": "agent/release-foundation-2027"}
     ],
-    "mainCommitsOutsideStackAncestry": [
+    "mainCommitsOutsideActiveStackAncestry": [
       "6b6bddd0ae619d160b4468b61ae49cb30e2ea834",
       "d347c7138bae18325c288632222917ad618e6547"
     ],
+    "reconciliation": {
+      "pullRequest": 15,
+      "branch": "integration/v64-main-sync",
+      "head": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+      "draft": true,
+      "mergeable": true,
+      "behindMain": 0,
+      "behindReleaseBranch": 0,
+      "changedFiles": 9,
+      "mergedIntoReleaseBranch": false
+    },
     "reconciliationRequiredBeforeReleaseMerge": true
+  },
+  "branchProtection": {
+    "status": "BLOCKED",
+    "branch": "main",
+    "protected": false,
+    "protectionEnabled": false,
+    "requiredStatusCheckEnforcement": "off",
+    "requiredStatusCheckContexts": []
   },
   "ci": {
     "status": "BLOCKED_BEFORE_STEP_1",
-    "latestInvestigatedRunNumber": 3608,
-    "latestInvestigatedRunId": 33253663445,
-    "latestInvestigatedJobId": 99103557030,
-    "latestInvestigatedHead": "2297868e1f65b45753294151a3b1f401a55f6288",
+    "latestInvestigatedRunNumber": 3652,
+    "latestInvestigatedRunId": 33255174732,
+    "latestInvestigatedJobId": 99107510570,
+    "latestInvestigatedHead": "8ccb43d8920d94f385cb5172440b5a0b63fb468c",
+    "latestInvestigatedBranch": "integration/v64-main-sync",
     "runnerAssigned": false,
     "repositoryCodeExecuted": false
   },
