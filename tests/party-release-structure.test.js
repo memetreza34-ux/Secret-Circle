@@ -6,6 +6,7 @@ const path = require('node:path');
 const catalog = require('../party-wave-one-clue-catalog.js');
 const release = require('../party-release-structure.js');
 const releaseMeta = require('../release-meta.json');
+const operatorRelease = require('../operator-release.json');
 const packageMeta = require('../package.json');
 
 function read(file) { return fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8'); }
@@ -57,6 +58,18 @@ assert.equal(releaseMeta.scopePolicy.coreFrozen, true);
 assert.equal(releaseMeta.scopePolicy.newCoreGamesBeforeReleaseGates, false);
 assert.equal(releaseMeta.scopePolicy.largeArchitectureMigrationBeforeRc, false);
 
+// Operator evidence must be tied to the same release generation/cache and may not drift independently.
+assert.deepEqual(operatorRelease.releaseContext, {
+  sourceGeneration: releaseMeta.sourceGeneration,
+  appVersion: releaseMeta.packageVersion,
+  expectedCache: releaseMeta.offlineCache.production,
+  expectedStagingCache: releaseMeta.offlineCache.staging,
+  releaseTarget: releaseMeta.release.target,
+  releaseDecision: releaseMeta.release.decision
+});
+assert.equal(operatorRelease.evidenceStatus, 'PREPARED');
+assert.equal(operatorRelease.operatorGate, 'BLOCKED');
+
 const runtime = read('runtime-guard.js'); const worker = read('sw.js'); const tierStyles = read('party-release.css'); const searchStyles = read('party-search.css');
 assert.match(runtime, /party-release-structure\.js/); assert.match(runtime, /party-filter-state\.js/); assert.match(runtime, /party-search-assist\.js/);
 assert.ok(runtime.indexOf('loadPartyReleaseStructure') < runtime.lastIndexOf('loadPartyFilterState'));
@@ -72,5 +85,6 @@ console.log(JSON.stringify({
   waveOneLabs, waveOneComplete: catalog.waveOneGameIds.length, customGamesClassifiedAsExtended: true,
   plannedGamesClassifiedAsLabs: true, ageAndReleaseTierCombined: true, offlineAssetsIntegrated: true,
   releaseMetadataSynchronized: true, packageVersionSynchronized: true, cacheMetadataSynchronized: true,
+  operatorReleaseContextSynchronized: true, operatorReleaseStillBlocked: true,
   responsiveTierStyles: true, accessibleSearchStyles: true
 }, null, 2));

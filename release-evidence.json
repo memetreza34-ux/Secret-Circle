@@ -28,7 +28,14 @@
         "repositoryCodeExecuted": false
       }
     },
-    "crossBrowser": {"status": "OPEN", "commit": null, "evidence": null},
+    "crossBrowser": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "reason": "GitHub-hosted runner allocation is blocked before Step 1; cross-browser evidence cannot be executed on the required hosted runner yet",
+        "relatedIssue": 7
+      }
+    },
     "branchProtection": {
       "status": "BLOCKED",
       "commit": null,
@@ -47,7 +54,17 @@
         "reconciliationMergedIntoReleaseBranch": false
       }
     },
-    "stagingHttpSmoke": {"status": "OPEN", "commit": null, "evidence": null},
+    "stagingHttpSmoke": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "source": "operator-release.json",
+        "operatorGate": "BLOCKED",
+        "providerSelected": false,
+        "stagingOriginAvailable": false,
+        "httpsConfirmed": false
+      }
+    },
     "pwaUpgradeRollback": {"status": "OPEN", "commit": null, "evidence": null},
     "android": {"status": "OPEN", "commit": null, "evidence": null},
     "ios": {"status": "OPEN", "commit": null, "evidence": null},
@@ -56,17 +73,55 @@
     "groups": {"status": "OPEN", "commit": null, "evidence": null},
     "contentPrivacyReference": {"status": "OPEN", "commit": null, "evidence": null},
     "assetsThirdParty": {"status": "BLOCKED", "commit": null, "evidence": null},
-    "legalPrivacy": {"status": "OPEN", "commit": null, "evidence": null},
-    "supportIncident": {"status": "OPEN", "commit": null, "evidence": null},
-    "productionSmoke": {"status": "OPEN", "commit": null, "evidence": null}
+    "legalPrivacy": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "source": "operator-release.json",
+        "operatorGate": "BLOCKED",
+        "operatorIdentityFinal": false,
+        "hostingPrivacyFinal": false,
+        "legalNoticePageAvailable": false,
+        "finalLegalReviewCompleted": false
+      }
+    },
+    "supportIncident": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "source": "operator-release.json",
+        "operatorGate": "BLOCKED",
+        "supportEmailAvailable": false,
+        "securityReportingRouteAvailable": false,
+        "supportContactTested": false,
+        "securityRouteTested": false,
+        "sampleSupportCaseCompleted": false,
+        "incidentOwnersAssigned": false,
+        "sev1DrillCompleted": false,
+        "rollbackDrillCompleted": false
+      }
+    },
+    "productionSmoke": {
+      "status": "BLOCKED",
+      "commit": null,
+      "evidence": {
+        "source": "operator-release.json",
+        "operatorGate": "BLOCKED",
+        "providerSelected": false,
+        "productionOriginAvailable": false,
+        "httpsConfirmed": false
+      }
+    }
   },
   "knownBlockers": [
     "GitHub Actions jobs currently end before repository steps and receive no Hosted Runner",
+    "Cross-browser release evidence is blocked by the same Hosted Runner allocation failure",
     "main branch protection is currently disabled and has no required status checks",
     "Draft PR #15 contains the controlled main/release reconciliation candidate but has not been merged into the active release branch",
     "Root icon.svg rights basis is unresolved",
-    "operator-release.json remains PREPARED/BLOCKED until real operator, hosting, legal, support and incident evidence exists",
-    "HTTPS staging/production origins and real-device/group evidence are not final"
+    "No real hosting provider or distinct HTTPS staging/production origins have been selected yet",
+    "operator-release.json remains PREPARED/BLOCKED with no final operator identity, support/security contacts or completed incident drills",
+    "real-device, accessibility and group evidence is not final"
   ],
-  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. Current BLOCKED evidence may document real pre-RC repository state, but no gate may become PASS until it is bound to one immutable release candidate commit. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached. PR #15 reconciles current main history on an isolated candidate branch; merging it into the release path creates a new candidate that requires fresh CI, browser, PWA and regression evidence."
+  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. BLOCKED means a known prerequisite is currently absent; OPEN means the gate can in principle be executed but has not yet received acceptable final RC evidence. No gate may become PASS until it is bound to one immutable release candidate commit. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached. PR #15 reconciles current main history on an isolated candidate branch; merging it into the release path creates a new candidate that requires fresh CI, browser, PWA and regression evidence."
 }

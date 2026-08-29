@@ -5,6 +5,7 @@ Stand: 29. August 2026
 Diese Checkliste gilt ausschließlich für **einen unveränderten Release-Candidate-Commit**. Vorhandener Code, Tests oder Dokumentation sind kein PASS ohne tatsächliche Ausführung/Abnahme.
 
 Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**.  
+Package: **`1.0.0-beta.3`**.  
 Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**.  
 Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**.  
 Core Source Review/Hardening: **15/15 PREPARED**.  
@@ -24,6 +25,7 @@ Quellsseitig vorbereitet:
 - [x] Wave-1-Unit-/E2E-/Syntaxverträge im Buildpfad
 - [x] 1000-Zeilen-Modulgrenze aktiv
 - [x] Runner-Problem als Pre-Step-/Hosted-Runner-Problem isoliert
+- [x] Operator-Release-Kontext an v64/App-Version/Cache gebunden
 
 Für den RC offen:
 
@@ -32,14 +34,15 @@ Für den RC offen:
 - [ ] Online-`npm ci --ignore-scripts --no-audit --no-fund`
 - [ ] `npm run check` / `npm test` / `npm run validate` / `npm run ci`
 - [ ] Chromium / Firefox / WebKit auf demselben Commit
-- [ ] Required Check + Branch Protection real aktiv
+- [ ] **Required Check aktiv und grün** sowie Branch Protection real verifiziert
 
-Frisch bestätigter v64-Blocker vom 29. August 2026:
+Aktuellster direkt untersuchter reconciled Kandidat:
 
-- Run **#3608**
-- Run ID `33253663445`
-- Job `99103557030`
-- Head `2297868e1f65b45753294151a3b1f401a55f6288`
+- Run **#3660**
+- Run ID `33255333073`
+- Job `99107918414`
+- Head `c3b1f423c48d623ac22c6a0c38c5fdf927773ab3`
+- Branch `integration/v64-main-sync`
 - Ergebnis `failure`
 - `steps: []`
 - `runner_id: 0`
@@ -47,7 +50,7 @@ Frisch bestätigter v64-Blocker vom 29. August 2026:
 - requested label `ubuntu-latest`
 - **kein Repositorycode ausgeführt**
 
-**v50–v64 besitzen keinen Hosted-Runner-PASS.** Solange der Job keinen Runner erhält, dürfen App-Code, Workflow-Gates oder Tests nicht als vermeintlicher Fix abgeschwächt werden.
+Solange der Job keinen Runner erhält, dürfen App-Code, Workflow-Gates oder Tests nicht als vermeintlicher Fix abgeschwächt werden. CI und Cross-Browser bleiben **BLOCKED**.
 
 ## 2. Bestehende Engine-/Session-/Daten-Gates
 
@@ -152,16 +155,45 @@ Keine offenen Critical-/High-Defects in Core oder gemeinsam genutzter Plattforml
 - [ ] normaler Same-Page-Abschluss räumt Snapshot auf
 - [ ] nächster Round kann keine stale Restzeit erben
 
-## 7. HTTPS-Staging-Smoke / Production
+## 7. HTTPS-Staging-Smoke / Production / Security Header
+
+Aktuell wegen fehlendem realen Provider und Origins **BLOCKED**.
+
+Grundlage:
+
+- [x] `scripts/staging_smoke.py` prüft HTTPS und Same-Origin-Redirects
+- [x] Netzwerkdownloads sind größenbegrenzt
+- [x] Manifest-/Icon-/PWA-Head-Verträge im Smoke
+- [x] Response-Security-Header-Vertrag im Smoke
+- [x] Service-Worker Cache-Control-Vertrag im Smoke
+- [x] `HOSTING_DECISION.md`, `ENVIRONMENTS.md` und `DEPLOYMENT.md` dokumentieren denselben Vertrag
+
+Real vor `STAGING PASS`:
 
 - [ ] Hostingprovider und Produkt final
 - [ ] getrennte HTTPS-Staging-/Production-Origin
 - [ ] Log-/Retention-/Processor-/Drittlandprüfung
+- [ ] Response-CSP enthält mindestens `default-src 'self'`
+- [ ] Response-CSP enthält `script-src 'self'`
+- [ ] Response-CSP enthält `object-src 'none'`
+- [ ] Response-CSP enthält `base-uri 'none'`
+- [ ] Response-CSP enthält **`frame-ancestors 'none'`**
+- [ ] `X-Content-Type-Options: nosniff`
+- [ ] `Referrer-Policy: no-referrer`
+- [ ] `X-Frame-Options: DENY`
+- [ ] `sw.js` wird **nicht** mit `Cache-Control: immutable` ausgeliefert
+- [ ] `sw.js` hat bei gesetztem `max-age` höchstens **3600 Sekunden**
 - [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v64` grün
 - [ ] manueller PWA-Staging-Smoke einschließlich Spezialgates + Wave-1-Labs
-- [ ] Production nutzt exakt denselben RC
-- [ ] `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v64 --production` grün
+
+Zusätzlich vor `PRODUCTION PASS`:
+
+- [ ] Production nutzt exakt denselben freigegebenen RC
+- [ ] `Strict-Transport-Security` mit `max-age >= 31536000`
+- [ ] **Production-Smoke**: `npm run staging:smoke -- <PRODUCTION> --expected-cache secret-circle-v64 --production` grün
 - [ ] Rollback-Drill auf HTTPS-Origin dokumentiert
+
+Eine Meta-CSP im HTML ersetzt die Response-CSP nicht. `frame-ancestors` muss als HTTP-Response-CSP geprüft werden.
 
 ## 8. Accessibility / reale Geräte
 
@@ -192,7 +224,7 @@ Keine offenen Critical-/High-Defects in Core oder gemeinsam genutzter Plattforml
 - [ ] Wave-1-Labs separat dokumentieren; keine stillschweigende Core-Promotion
 - [ ] keine offenen Critical/High Bugs
 
-Jeder Nachweis dokumentiert mindestens Version/Commit, Cachegeneration, Gerät, Browser/PWA, Gruppengröße, Testfall und Ergebnis.
+Jeder Nachweis dokumentiert mindestens Version/Commit, Cachegeneration, Gerät, Browser/PWA, Gruppengröße, Testfall und Ergebnis. Mindestens eine **reale Gruppe** muss die dokumentierten Core-Flows ohne Entwicklerhilfe spielen.
 
 ## 10. Assets / Third Party / Legal / Betrieb
 
@@ -211,6 +243,7 @@ Jeder Nachweis dokumentiert mindestens Version/Commit, Cachegeneration, Gerät, 
 ## 11. Repository-/Branch-Releasehygiene
 
 - [ ] finaler RC stammt aus klar dokumentierter Branch-/PR-Kette
+- [ ] PR #15 / Main-Reconciliation kontrolliert abgeschlossen
 - [ ] Branch Protection / Required Checks real verifiziert
 - [ ] keine ungeklärte Änderung nach Freeze
 - [ ] ältere Draft-/Foundation-Branches sind eindeutig als historisch/superseded oder weiterhin notwendig dokumentiert
@@ -234,4 +267,4 @@ PR #13 bleibt bis zum realen PASS aller Pflichtgates **Draft**.
 - [ ] alle Release-Audits grün
 - [ ] `releaseDecision = GO` erst danach
 
-**Aktuell: NO_GO. PR #13 bleibt Draft und wird nicht gemergt.**
+**Aktuell: NO_GO. PR #13 und PR #15 bleiben Draft und werden nicht gemergt.**
