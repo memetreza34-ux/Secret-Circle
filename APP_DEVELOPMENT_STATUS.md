@@ -39,7 +39,7 @@ v45 Core → v46 Hub-A11y → v47 Secondary-A11y → v48 Word-Imposter → v49 H
 | 8 | Repo / Git / Build | BLOCKED | Issue #7 + Branch Protection |
 | 9 | Feature-Entwicklungsloop | PREPARED | nur gezielte Hardening-Funde; kein Scope-Bloat |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Quota/Update/Resume/Restore/Replacement/Timer/BFCache/Background/Cold Resume real |
-| 11 | Tests / CI | BLOCKED | funktionierender Hosted Runner |
+| 11 | Tests / CI | BLOCKED | Hosted-Runner-Zuteilung/Actions-Gate lösen |
 | 12 | Offline / PWA / Resume | PREPARED | v64 Install/Upgrade/Rollback + Spezialgates |
 | 13 | Content / Alter / Privacy | IN PROGRESS | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | G1–G5 + Spezialgates bis HS60 + PN1–PN3 + Wave-1-Labs |
@@ -100,14 +100,17 @@ Die Implementierung verwendet sechs wiederverwendbare Enginefamilien: Quiz, Impo
 - keine npm-Runtime-Dependencies
 - Syntax-, Unit-, Contract-, Audit- und Playwright-Gates sind vorbereitet
 - Wave-1-Audits für Quiz, Imposter, Writing und Remaining-Block sind Bestandteil der Validierung
-- letzter vollständig untersuchter App-Actions-Lauf: **Run #2787 auf v49**, `steps: null` / `steps: []`; kein Repositorycode ausgeführt
+- aktuellster direkt untersuchter Actions-Lauf: **Run #3608**, Run ID `33253663445`, Job `99103557030`, Head `2297868e1f65b45753294151a3b1f401a55f6288`
+- Run #3608: `failure`, `steps: []`, `runner_id: 0`, `runner_name: ""`, Label `ubuntu-latest`
+- kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wurde ausgeführt
+- der aktuelle v64-Stand bestätigt damit denselben externen Vor-Step-Blocker wie die historischen Läufe
 - **v50–v64 besitzen keinen echten Hosted-Runner-PASS**
 
-Status: **CLOSED IN CODE / ONLINE RUNNER VERIFICATION OPEN**.
+Status: **CLOSED IN CODE / HOSTED-RUNNER VERIFICATION BLOCKED**.
 
 ## Zentrale offene Issues
 
-- **#7:** GitHub Actions endet vor Step 1
+- **#7:** GitHub Actions endet vor Step 1; frischer v64-Nachweis in Run #3608
 - **#8:** reale Geräte, v64 Offline-PWA, Accessibility, Spezialgates bis HS60, Wave-1-Labs und Partytests
 - **#14:** Operator, Hosting, Legal, Support und Incident Evidence
 
@@ -115,17 +118,18 @@ Zusätzlich bleibt die Root-`icon.svg`-Rechtebasis offen.
 
 ## Höchste Prioritäten
 
-1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
-2. Branch Protection
-3. Provider + HTTPS-Staging/Production
-4. v64 PWA-Smoke / Upgrade / Rollback
-5. Spezialgates bis HS60 real
-6. Wave-1-Labs real in Browser/PWA/Accessibility/Gruppe prüfen
-7. Android / iPhone / Tablet inkl. App-Wechsel/Screen-Lock/Prozess-Kill
-8. VoiceOver / TalkBack / Tastatur / Zoom
-9. reale Gruppentests für alle 15 Core-Spiele
-10. Asset-/Operator-/Legal-/Support-/Incident-Sign-off
-11. unveränderter RC + `release-evidence.json = FINAL / GO`
+1. Hosted Runner / Actions-Account-, Billing- und Policy-Gate lösen
+2. Online-`npm ci` / CI / Cross-Browser auf demselben Commit
+3. Branch Protection
+4. Provider + HTTPS-Staging/Production
+5. v64 PWA-Smoke / Upgrade / Rollback
+6. Spezialgates bis HS60 real
+7. Wave-1-Labs real in Browser/PWA/Accessibility/Gruppe prüfen
+8. Android / iPhone / Tablet inkl. App-Wechsel/Screen-Lock/Prozess-Kill
+9. VoiceOver / TalkBack / Tastatur / Zoom
+10. reale Gruppentests für alle 15 Core-Spiele
+11. Asset-/Operator-/Legal-/Support-/Incident-Sign-off
+12. unveränderter RC + `release-evidence.json = FINAL / GO`
 
 ## Entwicklungsregel ab v64
 
@@ -136,6 +140,7 @@ Bis die zentralen Release-Gates geschlossen sind:
 - keine künstliche Freigabe offener Gates
 - neue Labs nur, wenn sie keinen Releasepfad destabilisieren; bevorzugt Feature-Freeze
 - reale Fehler aus CI, Browser-, Geräte-, Accessibility- und Gruppentests haben Vorrang vor neuen Features
+- keine App-Codeänderung auf Verdacht als Workaround für einen Job mit `runner_id: 0` und `steps: []`
 
 ## Nicht als bestanden behaupten
 
