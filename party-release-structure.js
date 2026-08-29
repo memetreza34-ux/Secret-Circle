@@ -8,7 +8,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function createPartyReleaseStructure() {
   'use strict';
 
-  const VERSION = 3;
+  const VERSION = 4;
   const CORE_IDS = Object.freeze([
     'imposter', 'truth-dare', 'never-have', 'most-likely', 'would-rather',
     'paranoia', 'charades', 'taboo', 'hot-potato', 'word-chain',
@@ -19,7 +19,8 @@
     'pass-the-phone', 'red-green-flag', 'secret-mission', 'tier-list',
     'put-a-finger-down', 'guess-the-price', 'higher-lower', 'know-me-best',
     'hear-me-out', 'hot-seat', 'story-chain', 'finish-the-sentence',
-    'party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter'
+    'party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter',
+    'fill-blank-battle', 'who-wrote-it'
   ]);
   const CORE = new Set(CORE_IDS);
   const LABS = new Set(LAB_IDS);
@@ -183,11 +184,7 @@
     const Observer = root.MutationObserver;
     if (Observer) {
       const observer = new Observer(schedule);
-      for (const target of [
-        grid,
-        documentRef.querySelector('#featured-grid'),
-        documentRef.querySelector('#favorites-grid')
-      ].filter(Boolean)) {
+      for (const target of [grid, documentRef.querySelector('#featured-grid'), documentRef.querySelector('#favorites-grid')].filter(Boolean)) {
         observer.observe(target, { childList: true, subtree: true });
       }
     }
