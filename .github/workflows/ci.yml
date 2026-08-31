@@ -19,29 +19,41 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Check JavaScript syntax
+
+      - name: JavaScript-Syntax prüfen
         run: |
           node --check app.js
           node --check game-engine.js
           node --check word-packs.js
           node --check accessibility.js
           node --check sw.js
-      - name: Compile archive inventory tooling
+
+      - name: Python-Werkzeuge kompilieren
         run: |
           python -m py_compile \
             tools/inventory_legacy_archive.py \
             tests/archive-inventory.test.py \
             scripts/validate_archive_tool.py \
             scripts/validate_project.py
-      - name: Run deterministic engine tests
+
+      - name: Spielengine testen (Fairness, Punkte, Persistenz)
         run: node tests/engine.test.js
-      - name: Validate curated word packs
+
+      - name: Wortpakete prüfen
         run: node tests/content.test.js
-      - name: Validate accessibility and offline shell
-        run: node tests/accessibility.test.js
-      - name: Validate safe legacy archive inventory tooling
-        run: python tests/archive-inventory.test.py
-      - name: Validate legacy source and deletion boundary
-        run: python scripts/validate_archive_tool.py
-      - name: Validate offline PWA structure
+
+      - name: Markup- und Skriptverträge prüfen
+        run: node tests/dom-contract.test.js
+
+      - name: Archivwerkzeug prüfen
+        run: |
+          python tests/archive-inventory.test.py
+          python scripts/validate_archive_tool.py
+
+      - name: Icons reproduzierbar erzeugen
+        run: |
+          node scripts/build-icons.mjs
+          git diff --exit-code -- '*.png'
+
+      - name: Release-Struktur prüfen
         run: python scripts/validate_project.py

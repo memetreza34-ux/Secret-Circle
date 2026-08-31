@@ -1,15 +1,19 @@
 {
   "name": "Secret Circle – Imposter Partyspiel",
   "short_name": "Secret Circle",
-  "description": "Offline spielbares lokales Imposter-Partyspiel für drei bis zwanzig Personen.",
+  "description": "Imposter-Partyspiel für ein Gerät. Offline spielbar, für 3 bis 20 Personen.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#100d1e",
-  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "background_color": "#08080A",
+  "theme_color": "#08080A",
   "lang": "de",
   "categories": ["games", "entertainment"],
   "icons": [
-    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
   ]
 }

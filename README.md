@@ -5,21 +5,48 @@ Secret Circle ist ein lokales Imposter-Partyspiel für drei bis zwanzig Personen
 ## Start
 
 ```bash
-python -m http.server 8080
+npm start
 ```
 
-Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kann die App offline verwendet und auf unterstützten Geräten installiert werden.
+Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden läuft die App offline und lässt sich auf unterstützten Geräten installieren.
+
+Zum Testen auf dem Handy im selben WLAN reicht die Netzwerk-IP (`http://192.168.x.x:8080`). Das Spiel läuft dort, Service Worker und Installation brauchen aber HTTPS oder localhost.
+
+## Aufbau
+
+Die App startet mit einem Startbildschirm, nicht mit einem Formular. Einstellungen liegen hinter
+Listenzeilen, die auf eigene Screens führen — dasselbe Muster, das Party-Apps im Store benutzen.
+
+| Screen | Inhalt |
+| --- | --- |
+| Home | Wortmarke, Banner mit dem Spiel, ein Knopf. Fortsetzen-Zeile, wenn ein Match läuft. Streifen der letzten Runden |
+| Spiel einrichten | drei Zeilen: Spieler · Kategorie · Regeln, jeweils mit aktuellem Wert |
+| Spieler | Namensliste, unten das Eingabefeld |
+| Kategorie | Liste mit Symbol, Begriffszahl und Haken bei der gewählten |
+| Regeln | Imposter, Redezeit, Rundenzahl, Hilfswort |
+| Karten | geheime Klappkarte, Spielerkreis als Fortschritt |
+| Runde | Timer-Ring, Regeln, Punktestand |
+| Abstimmung | ein Name pro Tipp, danach versiegelte Stimme |
+| Ergebnis | Begriff, Imposter, Punkte, Matchgewinner |
+| Eigene Kategorien · Verlauf | vom Home aus erreichbar |
+
+Gestaltung: schwarzer Grund, weiße Flächen für alles Wichtige, ein einziger Signalton (`#ff3b5c`) für
+den Imposter. Die Zivilisten-Karte ist weiß, die Imposter-Karte rot — der Unterschied ist aus dem
+Augenwinkel erkennbar.
 
 ## Funktionen
 
-- drei bis zwanzig eindeutige Spielernamen
+- drei bis zwanzig eindeutige Spielernamen als einzeln entfernbare Chips
+- Kategorieauswahl als Kacheln mit Begriffszahl
 - ein bis mehrere Imposter
 - acht integrierte Wortpakete und gemischter Modus
 - 80 intern ausgewählte familienfreundliche Begriffe
 - sichtbare Wortpaket-Version `2026.08-rc1`
 - eigene Kategorien im Format `Begriff | Hilfswort`
 - ein, drei, fünf oder zehn Runden pro Match
-- geheime Kartenübergabe
+- geheime Kartenübergabe mit aufklappbarer Karte
+- Rollen, Kartenreihenfolge, Abstimmungsreihenfolge und Begriffswahl aus getrennten Zufallsströmen
+- keine Begriffswiederholung innerhalb eines Matches
 - konfigurierbarer Diskussionstimer
 - geheime Einzelabstimmung am selben Gerät
 - Schutz vor Selbststimmen
@@ -27,7 +54,7 @@ Danach `http://localhost:8080` öffnen. Nach dem ersten vollständigen Laden kan
 - Punktesystem für Zivilpersonen und Imposter
 - Rangliste nach jeder Runde
 - Matchgewinner nach der letzten Runde
-- Wiederaufnahme während Kartenverteilung, Diskussion oder Abstimmung
+- Wiederaufnahme in jeder Phase, auch nach dem Rundenergebnis
 - lokaler Verlauf der letzten zwanzig Runden
 - installierbare PWA mit Offline-Cache
 - keine Anmeldung und keine Serverübertragung
@@ -43,8 +70,9 @@ Die Bedienoberfläche ergänzt:
 - Live-Ansage beim Bildschirmwechsel
 - semantische Gruppe für Abstimmungsziele
 - Timer-Rolle und Live-Bereiche für geheime Karte und Ergebnis
-- `aria-expanded` für eigene Kategorien
-- Schließen des Kategorienbereichs mit Escape
+- `aria-expanded` für die aufklappbaren Bereiche
+- Schließen der aufklappbaren Bereiche mit Escape
+- Fokusübergabe auch dann, wenn der Tab im Hintergrund liegt
 - Unterstützung für reduzierte Bewegung
 - zusätzliche Darstellung für erzwungene Systemfarben
 
@@ -78,13 +106,15 @@ Die Kennzeichnung ist keine externe Altersfreigabe oder pädagogische Zertifizie
 `game-engine.js` übernimmt:
 
 - validierte Spieler-, Runden- und Imposter-Konfiguration
-- deterministische Rollen- und Begriffsverteilung
+- deterministische, aber untereinander unabhängige Ziehung von Rollen, Kartenreihenfolge, Abstimmungsreihenfolge und Begriff
+- Ausschluss bereits gespielter Begriffe im laufenden Match
 - Match-ID, Rundennummer und fortlaufende Punktestände
 - Diskussion, Abstimmung und Auswertung
 - Mehrheits- und Gleichstandsberechnung
 - Rangliste und nächste Runde
-- sichere Wiederherstellung gespeicherter Spielstände
+- sichere Wiederherstellung gespeicherter Spielstände in jeder Phase
 - Manipulationsprüfung von Stimmen und Punkten
+- Startwert ohne `crypto.randomUUID`, damit die App auch ohne Secure Context startet
 
 ## Historisches Archiv
 
@@ -135,23 +165,40 @@ Die synthetische Sicherheitssuite ist bestanden. Die tatsächliche Archivinventu
 ## Technische Prüfung
 
 ```bash
-node --check app.js
-node --check game-engine.js
-node --check word-packs.js
-node --check accessibility.js
-node --check sw.js
-python -m py_compile \
-  tools/inventory_legacy_archive.py \
-  tests/archive-inventory.test.py \
-  scripts/validate_archive_tool.py \
-  scripts/validate_project.py
-node tests/engine.test.js
-node tests/content.test.js
-node tests/accessibility.test.js
-python tests/archive-inventory.test.py
-python scripts/validate_archive_tool.py
-python scripts/validate_project.py
+npm test
 ```
+
+Einzeln:
+
+```bash
+node tests/engine.test.js        # Fairness, Mehr-Runden-Logik, Punkte, Persistenz
+node tests/content.test.js       # Wortpakete und Metadaten
+node tests/dom-contract.test.js  # Markup, Skript-Selektoren, Offline-Assets
+python3 scripts/validate_project.py
+```
+
+Formatierung und Icons:
+
+```bash
+npm run format:check
+npm run icons
+```
+
+`scripts/build-icons.mjs` erzeugt die PNG-Icons aus derselben Geometrie wie `icon.svg`, ohne externe Abhängigkeiten. Die CI prüft, dass die eingecheckten Icons reproduzierbar sind.
+
+## Dateien
+
+| Datei | Zweck |
+| --- | --- |
+| `index.html` | Markup aller fünf Spielphasen |
+| `styles.css` | vollständige Gestaltung |
+| `game-engine.js` | Regeln, Zufall, Validierung, Punkte |
+| `word-packs.js` | redaktionelle Inhalte |
+| `app.js` | Oberfläche, Speicher, Ablauf |
+| `accessibility.js` | Fokusführung und Ansagen |
+| `sw.js` | Offline-Cache |
+| `scripts/dev-server.py` | Entwicklungsserver, der nichts cacht |
+| `scripts/build-icons.mjs` | erzeugt die PNG-Icons aus `icon.svg` |
 
 ## Status
 

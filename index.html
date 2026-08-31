@@ -1,75 +1,412 @@
 <!doctype html>
 <html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#7c3aed">
-  <meta name="description" content="Secret Circle – offline spielbares Imposter-Partyspiel mit Mehr-Runden-Modus.">
-  <title>Secret Circle</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="pwa.css">
-  <link rel="stylesheet" href="match.css">
-  <link rel="stylesheet" href="accessibility.css">
-</head>
-<body>
-  <a class="skip-link" href="#setup-screen">Direkt zum Spiel</a>
-  <div id="screen-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
-  <main class="shell" id="main-content">
-    <header>
-      <div class="topbar"><span id="connection" class="connection">Online</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
-      <p class="eyebrow">Offline Partyspiel</p><h1>Secret Circle</h1><p>Begriffe verteilen, abstimmen und über mehrere Runden Punkte sammeln.</p><p id="content-meta" class="content-meta">Wortpakete werden geladen.</p>
-    </header>
-    <p id="status" class="status" role="status" aria-live="polite"></p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#08080A" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+      name="description"
+      content="Secret Circle – Imposter-Partyspiel für ein Gerät. Offline spielbar, für 3 bis 20 Personen."
+    />
+    <title>Secret Circle</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon-180.png" />
+    <link rel="preload" href="assets/fonts/anton-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#home-screen">Direkt zum Spiel</a>
+    <div id="screen-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
-    <section id="setup-screen" class="card" data-screen tabindex="-1">
-      <div id="resume-box" class="resume" hidden><div><strong>Aktives Match fortsetzen</strong><span id="resume-text"></span></div><div><button id="resume" type="button">Fortsetzen</button><button id="discard-resume" class="secondary" type="button">Verwerfen</button></div></div>
-      <h2>Match einrichten</h2>
-      <label>Spielernamen<textarea id="players" rows="7" placeholder="Ein Name pro Zeile">Alex
-Sam
-Mika
-Lina</textarea></label>
-      <div class="grid four"><label>Kategorie<select id="category"></select></label><label>Imposter<input id="imposters" type="number" min="1" max="6" value="1"></label><label>Rundenzeit<select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select></label><label>Runden<select id="round-count"><option value="1">1 Runde</option><option value="3" selected>3 Runden</option><option value="5">5 Runden</option><option value="10">10 Runden</option></select></label></div>
-      <label class="check"><input id="hint" type="checkbox" checked><span>Imposter erhält ein neutrales Hilfswort</span></label>
-      <div class="actions"><button id="start" type="button">Match starten</button><button id="toggle-custom" class="secondary" type="button" aria-expanded="false" aria-controls="custom-panel">Eigene Kategorien</button></div>
-      <section id="custom-panel" class="subpanel" hidden><h3>Eigene Kategorie erstellen</h3><form id="custom-form"><label>Name<input id="custom-name" maxlength="50" required placeholder="z. B. Anime"></label><label>Begriffe<textarea id="custom-words" rows="6" required placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea></label><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
-      <section class="history"><div class="section-heading"><h3>Letzte Runden</h3><button id="clear-history" class="secondary compact" type="button">Verlauf löschen</button></div><div id="history-list"></div></section>
-    </section>
+    <main id="main-content">
+      <p id="status" class="status" role="status" aria-live="polite"></p>
 
-    <section id="reveal-screen" class="card" data-screen tabindex="-1" hidden>
-      <p id="reveal-progress" class="eyebrow"></p><h2 id="player-name"></h2><p id="handoff-note" class="handoff"></p>
-      <button id="show-card" class="card-button" type="button" aria-controls="secret">Geheime Karte anzeigen</button>
-      <div id="secret" class="secret" hidden aria-live="polite" aria-atomic="true"><p id="role"></p><strong id="word"></strong><small id="hint-text"></small></div>
-      <button id="next-player" type="button" hidden>Karte schließen und weitergeben</button>
-      <button class="secondary text-button" data-new-game type="button">Match abbrechen</button>
-    </section>
+      <!-- ────────────────────────  HOME  ──────────────────────── -->
+      <section id="home-screen" class="screen" data-screen tabindex="-1">
+        <div class="appbar">
+          <span class="wordmark">Secret Circle</span>
+          <button id="go-packs" class="icon-button" type="button" aria-label="Eigene Kategorien">✎</button>
+        </div>
 
-    <section id="round-screen" class="card" data-screen tabindex="-1" hidden>
-      <p id="round-label" class="eyebrow"></p><h2>Wer kennt den Begriff nicht?</h2><p><strong id="round-category"></strong> · <span id="round-players"></span></p>
-      <div class="timer"><span id="time" role="timer" aria-label="Verbleibende Zeit">03:00</span><button id="timer-toggle" class="secondary" type="button">Timer starten</button></div>
-      <ol class="rules"><li>Eine Person beginnt mit einem kurzen Hinweis.</li><li>Der Begriff darf nicht direkt genannt werden.</li><li>Danach stimmt jede Person geheim ab.</li></ol>
-      <section class="scoreboard"><h3>Zwischenstand</h3><div id="live-scoreboard"></div></section>
-      <div class="actions"><button id="start-voting" type="button">Abstimmung starten</button><button class="secondary" data-new-game type="button">Match abbrechen</button></div>
-    </section>
+        <div class="scroll">
+          <article class="banner">
+            <div class="banner-art" aria-hidden="true">
+              <svg viewBox="0 0 200 200" class="banner-svg">
+                <circle class="banner-orbit" cx="100" cy="100" r="66" />
+                <g class="banner-seats">
+                  <circle cx="100" cy="34" r="11" />
+                  <circle cx="157" cy="67" r="11" />
+                  <circle cx="157" cy="133" r="11" />
+                  <circle cx="100" cy="166" r="11" />
+                  <circle cx="43" cy="133" r="11" />
+                </g>
+                <circle class="banner-odd" cx="43" cy="67" r="13" />
+              </svg>
+            </div>
+            <div class="banner-body">
+              <span class="pill-badge">Partyspiel · 3–20 Personen</span>
+              <h2>Findet den<span>Imposter</span></h2>
+              <p>Alle kennen denselben Begriff. Einer nicht. Wer bleibt unauffällig?</p>
+              <button id="go-setup" class="pill pill-light" type="button">Spielen</button>
+            </div>
+          </article>
 
-    <section id="voting-screen" class="card" data-screen tabindex="-1" hidden>
-      <p id="vote-progress" class="eyebrow"></p><h2 id="voter-name"></h2><p id="vote-note" class="handoff"></p>
-      <div id="vote-targets" class="vote-grid" role="group" aria-label="Abstimmungsziele"></div>
-      <button id="next-voter" type="button" hidden>Nächste Person</button>
-      <button class="secondary text-button" data-new-game type="button">Match abbrechen</button>
-    </section>
+          <div id="home-resume" class="rowcard resume" hidden>
+            <button id="resume" class="row" type="button">
+              <span class="row-icon" aria-hidden="true">▶</span>
+              <span class="row-label">
+                Match fortsetzen
+                <small id="resume-text"></small>
+              </span>
+              <span class="row-chevron" aria-hidden="true"></span>
+            </button>
+            <button id="discard-resume" class="row row-quiet" type="button">
+              <span class="row-icon" aria-hidden="true">✕</span>
+              <span class="row-label">Verwerfen</span>
+            </button>
+          </div>
 
-    <section id="result-screen" class="card" data-screen tabindex="-1" hidden>
-      <p id="result-round" class="eyebrow"></p><h2>Der Begriff war</h2><div id="result-word" class="result-word" aria-live="polite"></div><p id="result-meta"></p><p id="vote-result" class="vote-result"></p><h3>Imposter</h3><ul id="result-imposters" class="imposter-list"></ul>
-      <section class="scoreboard"><h3>Punktestand</h3><div id="result-scoreboard"></div></section>
-      <p id="match-finished" class="match-finished" hidden></p>
-      <div class="actions"><button id="next-round" type="button">Nächste Runde</button><button class="secondary" data-new-game type="button">Neues Match</button></div>
-    </section>
-  </main>
-  <script src="game-engine.js"></script>
-  <script src="word-packs.js"></script>
-  <script src="app.js"></script>
-  <script src="accessibility.js"></script>
-</body>
+          <section class="section">
+            <div class="section-head">
+              <h3>Zuletzt gespielt</h3>
+              <button id="go-history" class="section-more" type="button">Alle</button>
+            </div>
+            <div id="home-history" class="history-strip"></div>
+          </section>
+
+          <p class="footnote">
+            <span id="connection" class="connection">Offline bereit</span>
+            <span id="content-meta"></span>
+          </p>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  SPIEL EINRICHTEN  ──────────────────────── -->
+      <section id="setup-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-back="home-screen" type="button" aria-label="Zurück">‹</button>
+        </div>
+
+        <div class="scroll">
+          <h2 class="game-title">Findet den<span>Imposter</span></h2>
+
+          <div class="rowcard">
+            <button id="row-players" class="row" type="button">
+              <span class="row-icon" aria-hidden="true">👥</span>
+              <span class="row-label">Spieler</span>
+              <span id="players-value" class="row-value">4</span>
+              <span class="row-chevron" aria-hidden="true"></span>
+            </button>
+            <button id="row-category" class="row" type="button">
+              <span class="row-icon" aria-hidden="true">🎲</span>
+              <span class="row-label">Kategorie</span>
+              <span id="category-value" class="row-value">Gemischt</span>
+              <span class="row-chevron" aria-hidden="true"></span>
+            </button>
+            <button id="row-rules" class="row" type="button">
+              <span class="row-icon" aria-hidden="true">⚙</span>
+              <span class="row-label">Regeln</span>
+              <span id="rules-value" class="row-value">1 · 3 min · 3</span>
+              <span class="row-chevron" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <p class="lede">
+            Jede Person sieht ihre Karte allein und gibt das Gerät weiter. Danach wird geredet und geheim abgestimmt.
+          </p>
+        </div>
+
+        <div class="dock">
+          <button id="start" class="pill pill-light wide" type="button">Spiel starten</button>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  SPIELER  ──────────────────────── -->
+      <section id="players-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-back="setup-screen" type="button" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Spieler</span>
+        </div>
+
+        <div class="scroll">
+          <div class="counter-line">
+            <h2>Am Start</h2>
+            <span id="player-count" class="count-badge">0/20</span>
+          </div>
+          <div id="player-list" class="rowcard"></div>
+          <p class="lede">Mindestens drei Personen. Namen lassen sich einzeln entfernen.</p>
+        </div>
+
+        <div class="dock">
+          <form id="player-form" class="add-row">
+            <label class="sr-only" for="player-input">Name hinzufügen</label>
+            <input
+              id="player-input"
+              type="text"
+              maxlength="32"
+              autocomplete="off"
+              autocapitalize="words"
+              enterkeyhint="done"
+              placeholder="Neuer Spieler"
+            />
+            <button type="submit" class="pill pill-light" aria-label="Person hinzufügen">+</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  KATEGORIE  ──────────────────────── -->
+      <section id="category-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-back="setup-screen" type="button" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Kategorie</span>
+        </div>
+
+        <div class="scroll">
+          <div id="category-list" class="rowcard"></div>
+          <button id="add-pack" class="pill pill-quiet wide" type="button">Eigene Kategorie anlegen</button>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  REGELN  ──────────────────────── -->
+      <section id="rules-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-back="setup-screen" type="button" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Regeln</span>
+        </div>
+
+        <div class="scroll">
+          <fieldset class="setting">
+            <legend>Imposter</legend>
+            <div class="stepper">
+              <button id="imposters-down" class="icon-button" type="button" aria-label="Ein Imposter weniger">−</button>
+              <output id="imposters-value" for="imposters">1</output>
+              <button id="imposters-up" class="icon-button" type="button" aria-label="Ein Imposter mehr">+</button>
+            </div>
+            <input
+              id="imposters"
+              type="number"
+              min="1"
+              max="6"
+              value="1"
+              class="sr-only"
+              tabindex="-1"
+              aria-hidden="true"
+            />
+          </fieldset>
+
+          <fieldset class="setting">
+            <legend>Redezeit pro Runde</legend>
+            <div class="segmented" id="duration">
+              <label><input type="radio" name="duration" value="1" /><span>1</span></label>
+              <label><input type="radio" name="duration" value="2" /><span>2</span></label>
+              <label><input type="radio" name="duration" value="3" checked /><span>3</span></label>
+              <label><input type="radio" name="duration" value="5" /><span>5</span></label>
+              <label><input type="radio" name="duration" value="10" /><span>10</span></label>
+            </div>
+            <p class="setting-note">Minuten</p>
+          </fieldset>
+
+          <fieldset class="setting">
+            <legend>Runden im Match</legend>
+            <div class="segmented" id="round-count">
+              <label><input type="radio" name="rounds" value="1" /><span>1</span></label>
+              <label><input type="radio" name="rounds" value="3" checked /><span>3</span></label>
+              <label><input type="radio" name="rounds" value="5" /><span>5</span></label>
+              <label><input type="radio" name="rounds" value="10" /><span>10</span></label>
+            </div>
+          </fieldset>
+
+          <label class="switch-row">
+            <span class="row-label">
+              Hilfswort für Imposter
+              <small>Ein vager Themenhinweis statt gar nichts.</small>
+            </span>
+            <input id="hint" type="checkbox" checked />
+            <span class="switch-track" aria-hidden="true"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  KARTEN  ──────────────────────── -->
+      <section id="reveal-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-new-game type="button" aria-label="Match abbrechen">✕</button>
+          <span id="reveal-progress" class="appbar-title"></span>
+        </div>
+
+        <div class="stage">
+          <div id="reveal-ring" class="ring-wrap"></div>
+          <h2 id="player-name" class="huge-name">—</h2>
+          <p id="handoff-note" class="handoff">Nur diese Person darf jetzt schauen.</p>
+
+          <button id="show-card" class="flipcard" type="button" aria-controls="secret" aria-expanded="false">
+            <span class="flipcard-inner">
+              <span class="flipcard-back">
+                <span class="card-crest" aria-hidden="true"></span>
+                <span class="card-back-label">Tippen zum Aufdecken</span>
+              </span>
+              <span class="flipcard-front" id="secret" aria-live="polite" aria-atomic="true">
+                <span id="role" class="card-role"></span>
+                <strong id="word" class="card-word"></strong>
+                <small id="hint-text" class="card-note"></small>
+              </span>
+            </span>
+          </button>
+        </div>
+
+        <div class="dock">
+          <button id="next-player" class="pill pill-light wide" type="button" disabled>Karte zu, weitergeben</button>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  RUNDE  ──────────────────────── -->
+      <section id="round-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-new-game type="button" aria-label="Match abbrechen">✕</button>
+          <span id="round-label" class="appbar-title"></span>
+        </div>
+
+        <div class="stage">
+          <div class="clock">
+            <svg class="clock-ring" viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="clock-track" cx="100" cy="100" r="92"></circle>
+              <circle id="clock-progress" class="clock-fill" cx="100" cy="100" r="92"></circle>
+            </svg>
+            <div class="clock-face">
+              <span id="time" role="timer" aria-label="Verbleibende Redezeit">03:00</span>
+              <span id="round-category" class="clock-meta"></span>
+            </div>
+          </div>
+
+          <button id="timer-toggle" class="pill pill-quiet" type="button">Zeit starten</button>
+
+          <ol class="rules-list">
+            <li>Reihum ein Hinweis zum Begriff.</li>
+            <li>Den Begriff selbst nie aussprechen.</li>
+            <li>Dann stimmt jede Person geheim ab.</li>
+          </ol>
+
+          <details class="fold">
+            <summary>Punktestand · <span id="round-players"></span></summary>
+            <div id="live-scoreboard" class="scoreboard"></div>
+          </details>
+        </div>
+
+        <div class="dock">
+          <button id="start-voting" class="pill pill-light wide" type="button">Zur Abstimmung</button>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  ABSTIMMUNG  ──────────────────────── -->
+      <section id="voting-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-new-game type="button" aria-label="Match abbrechen">✕</button>
+          <span id="vote-progress" class="appbar-title"></span>
+        </div>
+
+        <div class="stage">
+          <div id="vote-ring" class="ring-wrap"></div>
+          <h2 id="voter-name" class="huge-name">—</h2>
+          <p id="vote-note" class="handoff">Wer kennt den Begriff nicht?</p>
+          <div id="vote-targets" class="vote-grid" role="group" aria-label="Abstimmungsziele"></div>
+          <div id="vote-sealed" class="sealed" hidden>
+            <span class="seal" aria-hidden="true"></span>
+            <p>Stimme versiegelt</p>
+          </div>
+        </div>
+
+        <div class="dock">
+          <button id="next-voter" class="pill pill-light wide" type="button" disabled>Weitergeben</button>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  ERGEBNIS  ──────────────────────── -->
+      <section id="result-screen" class="screen tinted" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-new-game type="button" aria-label="Neues Match">✕</button>
+          <span id="result-round" class="appbar-title"></span>
+        </div>
+
+        <div class="scroll">
+          <p class="reveal-label">Der Begriff war</p>
+          <div id="result-word" class="paper-word" aria-live="polite"></div>
+          <p id="vote-result" class="verdict"></p>
+
+          <section class="section">
+            <div class="section-head">
+              <h3>Imposter</h3>
+              <span id="result-meta" class="count-badge"></span>
+            </div>
+            <ul id="result-imposters" class="imposter-list"></ul>
+          </section>
+
+          <section class="section">
+            <div class="section-head"><h3>Punkte</h3></div>
+            <div id="result-scoreboard" class="scoreboard"></div>
+          </section>
+
+          <p id="match-finished" class="crown" hidden></p>
+        </div>
+
+        <div class="dock">
+          <button id="next-round" class="pill pill-light wide" type="button">Nächste Runde</button>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  EIGENE KATEGORIEN  ──────────────────────── -->
+      <section id="packs-screen" class="screen" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-back="home-screen" type="button" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Eigene Kategorien</span>
+        </div>
+
+        <div class="scroll">
+          <form id="custom-form" class="form-card">
+            <label class="field" for="custom-name">
+              <span>Name</span>
+              <input id="custom-name" type="text" maxlength="50" required placeholder="z. B. Anime" />
+            </label>
+            <label class="field" for="custom-words">
+              <span>Begriffe, eine Zeile pro Begriff</span>
+              <textarea
+                id="custom-words"
+                rows="5"
+                required
+                placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"
+              ></textarea>
+            </label>
+            <button type="submit" class="pill pill-light wide">Speichern</button>
+          </form>
+
+          <section class="section">
+            <div class="section-head"><h3>Gespeichert</h3></div>
+            <div id="custom-list" class="rowcard"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ────────────────────────  VERLAUF  ──────────────────────── -->
+      <section id="history-screen" class="screen" data-screen tabindex="-1" hidden>
+        <div class="appbar">
+          <button class="icon-button" data-back="home-screen" type="button" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Verlauf</span>
+        </div>
+
+        <div class="scroll">
+          <div id="history-list" class="rowcard"></div>
+          <button id="clear-history" class="pill pill-quiet wide" type="button">Verlauf löschen</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="game-engine.js"></script>
+    <script src="word-packs.js"></script>
+    <script src="app.js"></script>
+    <script src="accessibility.js"></script>
+  </body>
 </html>

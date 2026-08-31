@@ -1,0 +1,17 @@
+{
+  "name": "secret-circle",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Imposter-Partyspiel für ein Gerät — offline spielbare PWA.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node tests/engine.test.js && node tests/content.test.js && node tests/dom-contract.test.js && python3 tests/archive-inventory.test.py && python3 scripts/validate_project.py",
+    "icons": "node scripts/build-icons.mjs",
+    "format": "prettier --write \"**/*.{js,mjs,css,html,json}\"",
+    "format:check": "prettier --check \"**/*.{js,mjs,css,html,json}\"",
+    "start": "python3 scripts/dev-server.py 8080"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}

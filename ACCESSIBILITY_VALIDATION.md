@@ -1,69 +1,77 @@
-# Accessibility- und Wortpaket-Validierung
+# Validierungsstand
 
-Stand: 2026-08-02
+Stand: 2026-08-30
 
-## Wortpakete
+## Behobene Fehler dieser Runde
 
-Ausgeführt:
+**Imposter waren vorhersagbar.** Die Imposter wurden als die ersten Einträge der Kartenreihenfolge gezogen
+(`imposters = revealOrder.slice(0, imposterCount)`). Da die Reihenfolge für alle im Raum sichtbar ist, war die
+Rolle ablesbar: In 200 von 200 simulierten Spielen war die Person mit der ersten Karte der Imposter.
+Rollen, Kartenreihenfolge, Abstimmungsreihenfolge und Begriffswahl ziehen jetzt aus getrennten Zufallsströmen.
+
+Gegenprobe mit wiederhergestelltem Fehler:
+
+```
+AssertionError: Imposter zu oft auf Kartenposition 1: 4000 statt ~800
+```
+
+**Start ohne Secure Context war unmöglich.** `crypto.randomUUID()` existiert nur unter HTTPS oder auf
+localhost. Beim Aufruf über die Netzwerk-IP brach der Start mit `crypto.randomUUID is not a function` ab.
+`E.createSeed()` fällt jetzt auf `getRandomValues` und zuletzt auf `Date.now()` zurück.
+
+**Punkte gingen bei jedem Rundenende verloren.** `finalizeVoting()` löschte den aktiven Spielstand. Ein Reload
+auf dem Ergebnisbildschirm beendete das Match samt Punktestand. Der Stand wird jetzt weitergeschrieben.
+
+**Begriffe wiederholten sich.** Ohne Merkliste kam in einem Zehn-Runden-Match innerhalb einer Kategorie mit
+100 % Wahrscheinlichkeit ein Begriff doppelt vor. `usedWords` schließt verbrauchte Begriffe für das laufende
+Match aus.
+
+**Fokus wurde in unsichtbaren Tabs nie gesetzt.** Die Fokusübergabe hing allein an `requestAnimationFrame`,
+das in versteckten Tabs pausiert. `afterPaint()` fällt auf `setTimeout` zurück.
+
+## Ausgeführte Prüfungen
 
 ```bash
-node --check word-packs.js
+node tests/engine.test.js
 node tests/content.test.js
+node tests/dom-contract.test.js
+python3 scripts/validate_project.py
 ```
-
-Ergebnis:
 
 ```json
 {
   "ok": true,
-  "version": "2026.08-rc1",
-  "packs": 8,
-  "entries": 80,
-  "familyFriendly": true,
-  "externalReview": false
+  "deterministic": true,
+  "multiround": true,
+  "voting": true,
+  "scoring": true,
+  "ties": true,
+  "persistence": true,
+  "fairRoles": true,
+  "noWordRepeats": true
 }
 ```
 
-Bestätigt wurden acht Pakete mit jeweils zehn eindeutigen Begriffen, vollständige Hilfswörter und konsistente Metadaten.
+`tests/dom-contract.test.js` löst jede in `app.js` und `accessibility.js` verwendete ID gegen das Markup auf,
+prüft alle `aria-controls`/`aria-labelledby`/`for`-Verweise, die Existenz aller im Service Worker gecachten
+Dateien und der lokalen Schriftdateien. Das ersetzt die frühere Marker-Suche, die nur nach Zeichenketten
+gesucht hat, ohne Verhalten zu prüfen.
 
-## Accessibility und Offline-Shell
+## Im Browser bestätigt
 
-Ausgeführt:
+Durchgespielt mit 4 und mit 12 Personen, jeweils Kartenverteilung, Diskussion, Abstimmung und Auswertung:
 
-```bash
-node --check accessibility.js
-node --check sw.js
-node tests/accessibility.test.js
-```
-
-Ergebnis:
-
-```json
-{
-  "ok": true,
-  "focusManagement": true,
-  "screenAnnouncements": true,
-  "keyboardFocus": true,
-  "reducedMotion": true,
-  "forcedColors": true,
-  "offlineShell": true
-}
-```
-
-Bestätigt wurden Sprunglink, fünf fokussierbare Spielphasen, Live-Ansagen, Fokusübergaben, semantische Abstimmungsgruppe, Timer-Rolle, starke Tastaturfokusse, reduzierte Bewegung, erzwungene Systemfarben und der Offline-Cache für die neuen Dateien.
-
-## Bestehende Engine und App-Verbindung
-
-Die Spielengine wurde nicht geändert. Ihr bestehender Test deckt deterministische Verteilung, Mehr-Runden-Modus, Abstimmung, Punkte, Gleichstand, Persistenz und Manipulationsprüfung ab.
-
-Der vollständige Remote-Blob von `app.js` wurde nach der Übertragung geprüft. Die App verwendet `SecretCircleContent`, validiert die Pakete beim Start und ersetzt ausschließlich die frühere eingebettete Begriffsliste. Speicher-Keys, Phasenlogik, Abstimmung und Punkteberechnung bleiben unverändert.
-
-## GitHub-Actions-Befund
-
-Der PR-Lauf `30753838883` endete vor Schritt 1. GitHub stellte keine Steps und keine Job-Logs bereit; Checkout, Syntaxprüfungen, Engine-, Content-, Accessibility- und Strukturtests wurden nicht ausgeführt. Dieser Lauf ist weder ein grüner CI-Nachweis noch ein ausgeführter Codefehler.
+- Rollenverteilung nicht mehr aus der Reihenfolge ablesbar
+- Reload auf dem Ergebnisbildschirm setzt das Match mit erhaltenen Punkten fort
+- Fokus wandert beim Screenwechsel auf die Überschrift, Ansage lautet z. B.
+  `Runde 2/3 · Karte 1 von 12. Jonas`
+- Karte klappt auf und zu, Inhalt wird beim Schließen aus dem DOM entfernt
+- Abstimmung zeigt nach der Stimmabgabe keine Namen mehr
 
 ## Grenzen
 
-Die statischen und logischen Tests ersetzen keine Prüfung mit realen Screenreadern, Tastaturnutzenden, Switch-Control, Sprachsteuerung oder mehreren Mobilgeräten. Die Wortpakete besitzen keine externe Alters- oder Inhaltsfreigabe.
+Diese Prüfungen ersetzen keine Tests mit realen Screenreadern, Switch Control, Sprachsteuerung oder auf
+mehreren Mobilgeräten. Keine vollständige WCAG-Prüfung. Die Wortpakete haben keine externe Alters- oder
+Inhaltsfreigabe.
 
 Gate: `LOCAL_ACCESSIBLE_PARTY_PWA_GO / PUBLIC_RELEASE_NO_GO`.
