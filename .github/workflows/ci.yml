@@ -40,6 +40,15 @@ jobs:
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
+      - name: Validate legacy archive safety tooling
+        run: |
+          python -m py_compile \
+            tools/inventory_legacy_archive.py \
+            tests/archive-inventory.test.py \
+            scripts/validate_archive_tool.py
+          python tests/archive-inventory.test.py
+          python scripts/validate_archive_tool.py
+
       - name: Check JavaScript syntax
         run: npm run check
 

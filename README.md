@@ -85,6 +85,30 @@ Nicht 100 separate Engines bauen. Ziel:
 
 Der Januar-Core bleibt bei 15 Spielen. Standardspiele sollen in maximal 2–3 Entscheidungen bis zur ersten echten Aktion starten. Built-in-Content bleibt ohne 18+-Bereich.
 
+## Historisches Archiv / Hub-Trennung
+
+Das frühere Projekt-Hub-Repository enthält einen historischen `secret-circle.zip`-Blob als mögliche Backfill-Quelle. Dieser Blob gehört **nicht** in das aktive Secret-Circle-Repository und darf nicht auf Verdacht gelöscht werden.
+
+Verbindliche Grenzen:
+
+- aktives Zielrepository: `memetreza34-ux/Secret-Circle`
+- historischer ZIP-Git-Blob: `0bda8a341c6167d83f3a10c2f62fb4efacbd42d7`
+- Löschstatus des historischen Archivs: **`DO_NOT_DELETE`**
+- tatsächliche Archivinventur bleibt blockiert, solange die exakte Binärdatei nicht sicher lokal verfügbar ist
+- das Zielrepository enthält **keine aktive ZIP-Kopie**
+- `tools/inventory_legacy_archive.py` inventarisiert ein lokal bereitgestelltes ZIP ohne Extraktion oder Ausführung und prüft unter anderem Git-Blob, Pfade, Symlinks, Verschlüsselung, Größen und Kompressionsraten
+
+Dokumentation und Sicherheitsvertrag:
+
+- `docs/HUB_SEPARATION_ARCHIVE.md`
+- `docs/LEGACY_ARCHIVE_INVENTORY.md`
+- `docs/ARCHIVE_TOOL_VALIDATION.md`
+- `docs/legacy-archive-source.json`
+- `scripts/validate_archive_tool.py`
+- `tests/archive-inventory.test.py`
+
+Die synthetische Sicherheitssuite und der Source-/Deletion-Vertrag sind Bestandteil des modernen v64-CI-Vertrags. Die **echte** Inventur des historischen ZIPs darf erst als bestanden markiert werden, wenn genau der erwartete Binärblob tatsächlich geprüft wurde.
+
 ## CI – extern blockiert
 
 GitHub Actions endet weiterhin vor Repository-Ausführung mit `steps: []`, `runner_id: 0` und leerem Runner-Namen bei angefordertem `ubuntu-latest`. Dadurch laufen weder Checkout noch `npm ci`, Playwright oder Python-Audits.
@@ -125,7 +149,7 @@ Der **alte Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete
 2. **#8** – reale Geräte, v64 Offline-PWA, Accessibility, Spezialgates, Wave-1-Labs und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
-Zusätzlich bleibt Draft-PR #15 als kontrollierter Main/Reconciliation-Kandidat vor Release zu synchronisieren und mit funktionierender CI zu prüfen.
+Draft-PR #15 bleibt der kontrollierte Main/Reconciliation-Kandidat und muss vor Review/Merge per Live-Compare `behind_by = 0` sowie exakt neun definierte Reconciliation-Pfade zeigen.
 
 ## Höchste Priorität
 

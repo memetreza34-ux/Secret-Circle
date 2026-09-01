@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-08-04T12:41:00+02:00",
+  "source": {
+    "repository": "memetreza34-ux/autonomous-project-hub",
+    "path": "secret-circle.zip",
+    "git_blob_sha1": "0bda8a341c6167d83f3a10c2f62fb4efacbd42d7",
+    "content_type": "application/zip"
+  },
+  "target_repository": "memetreza34-ux/Secret-Circle",
+  "tracking_issue": 6,
+  "inventory_tool": {
+    "path": "tools/inventory_legacy_archive.py",
+    "git_blob_sha1": "20cb67dabcb3eb48952faeca98e925f31e086296",
+    "execution_mode": "READ_HASH_NO_EXTRACTION",
+    "synthetic_security_suite": "PASS"
+  },
+  "inventory_test": {
+    "path": "tests/archive-inventory.test.py",
+    "git_blob_sha1": "b08d0cdc2aaaa8dbfff3a07db014097cbb0807a7",
+    "result": {
+      "validInventory": true,
+      "gitBlobVerification": true,
+      "noExtraction": true,
+      "pathTraversalBlocked": true,
+      "absolutePathsBlocked": true,
+      "caseCollisionsBlocked": true,
+      "duplicatesBlocked": true,
+      "symlinksBlocked": true,
+      "encryptedEntriesBlocked": true,
+      "compressionBombBlocked": true,
+      "fileSizeLimit": true,
+      "entryCountLimit": true,
+      "limitValidation": true
+    }
+  },
+  "actual_archive": {
+    "local_file_available": false,
+    "inventory_executed": false,
+    "blocker": "BINARY_TRANSFER_UNAVAILABLE_IN_CURRENT_EXECUTION_ENVIRONMENT",
+    "known_entry_count": null,
+    "known_uncompressed_bytes": null,
+    "known_contents": null
+  },
+  "deletion": {
+    "hub_archive_deletion_allowed": false,
+    "status": "DO_NOT_DELETE"
+  },
+  "gate": "LEGACY_ARCHIVE_TOOLING_GO / ACTUAL_ARCHIVE_INVENTORY_BLOCKED / HUB_ARCHIVE_DO_NOT_DELETE / PUBLIC_RELEASE_NO_GO"
+}
