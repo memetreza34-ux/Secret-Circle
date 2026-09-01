@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#0A0B0F" />
+    <meta name="color-scheme" content="dark" />
+    <title>Secret Circle</title>
+    <link rel="stylesheet" href="v2-theme.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- ─────────── START ─────────── -->
+      <section class="screen" data-screen="home">
+        <div class="inner appbar">
+          <span class="wordmark">Secret Circle</span>
+          <button class="icon-btn" type="button" aria-label="Suchen" data-tab="games">⌕</button>
+          <button class="icon-btn" type="button" aria-label="Profil" data-tab="profile">🙂</button>
+        </div>
+        <div class="body">
+          <div class="inner">
+            <article class="hero">
+              <div class="hero-art">
+                <span class="hero-badge" id="hero-badge">Meistgespielt</span>
+                <div id="hero-art"></div>
+              </div>
+              <div class="hero-pad">
+                <h2>Findet den<em>Imposter</em></h2>
+                <p id="hero-text"></p>
+                <button class="pill pill-primary" type="button" data-game="imposter">▶ Spielen</button>
+                <div class="dots"><i class="on"></i><i></i><i></i></div>
+              </div>
+            </article>
+
+            <div id="sections"></div>
+          </div>
+        </div>
+        <nav class="tabbar" id="tabbar"></nav>
+      </section>
+
+      <!-- ─────────── ALLE SPIELE ─────────── -->
+      <section class="screen" data-screen="games" hidden>
+        <div class="inner appbar"><span class="wordmark">Spiele</span></div>
+        <div class="body">
+          <div class="inner">
+            <label class="sr-only" for="q">Spiel suchen</label>
+            <input class="search" id="q" type="search" placeholder="Spiele finden…" />
+            <div class="filters" id="filters"></div>
+            <div class="grid" id="grid"></div>
+          </div>
+        </div>
+        <nav class="tabbar"></nav>
+      </section>
+
+      <!-- ─────────── MODUS ─────────── -->
+      <section class="screen" data-screen="mode" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-back aria-label="Zurück">‹</button>
+        </div>
+        <div class="body">
+          <div class="inner">
+            <div class="mode-head">
+              <div class="mode-emblem" id="mode-emblem"></div>
+              <h2 class="mode-title" id="mode-title"></h2>
+              <p class="mode-sub" id="mode-sub"></p>
+            </div>
+
+            <div class="meta" id="mode-meta"></div>
+
+            <div class="rows">
+              <div class="row">
+                <span class="row-ico">📺</span><span class="row-main">Wie es geht</span>
+                <span class="row-action">Ansehen</span>
+              </div>
+              <button class="row" type="button" data-open="players">
+                <span class="row-ico">👥</span><span class="row-main">Spieler</span>
+                <span class="row-val" id="players-count">4</span><span class="row-chev"></span>
+              </button>
+              <button class="row" type="button" data-open="packs">
+                <span class="row-ico">🎲</span><span class="row-main">Kategorie</span>
+                <span class="row-val" id="pack-value">Gemischt</span><span class="row-chev"></span>
+              </button>
+              <button class="row" type="button" data-open="rules">
+                <span class="row-ico">⚙</span>
+                <span class="row-main">Regeln<small id="rules-value"></small></span>
+                <span class="row-chev"></span>
+              </button>
+            </div>
+
+            <ol class="steps" id="mode-steps"></ol>
+          </div>
+        </div>
+        <div class="dock"><button class="pill pill-primary wide" type="button">Spiel starten</button></div>
+      </section>
+
+      <!-- ─────────── SPIELER ─────────── -->
+      <section class="screen" data-screen="players" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-back-to="mode" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Spieler</span>
+        </div>
+        <div class="body">
+          <div class="inner">
+            <div class="counter">
+              <h2>Am Start</h2>
+              <span class="count-badge" id="player-badge">4/20</span>
+            </div>
+            <div class="rows" id="player-list"></div>
+          </div>
+        </div>
+        <div class="dock">
+          <form class="add-row" id="player-form">
+            <label class="sr-only" for="player-input">Name</label>
+            <input id="player-input" type="text" maxlength="32" autocomplete="off" autocapitalize="words"
+                   enterkeyhint="done" placeholder="Neuer Spieler" />
+            <button class="pill pill-tint" type="submit" aria-label="Person hinzufügen">+</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ─────────── PROFIL ─────────── -->
+      <section class="screen" data-screen="profile" hidden>
+        <div class="inner appbar"><span class="wordmark">Profil</span></div>
+        <div class="body">
+          <div class="inner">
+            <div class="profile-head">
+              <div class="avatar">🕵️</div>
+              <div>
+                <h2>Arman</h2>
+                <p>Seit kurzem dabei</p>
+              </div>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><b>24</b><span>Runden</span></div>
+              <div class="stat"><b>7</b><span>Siege</span></div>
+              <div class="stat"><b>12</b><span>Spiele probiert</span></div>
+            </div>
+
+            <section class="sec">
+              <div class="sec-head"><h3>Zuletzt gespielt</h3></div>
+              <div class="strip" id="profile-recent"></div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head"><h3>Einstellungen</h3></div>
+              <div class="setting-rows">
+                <button class="row" type="button">
+                  <span class="row-ico">✎</span><span class="row-main">Name ändern</span><span class="row-chev"></span>
+                </button>
+                <button class="row" type="button">
+                  <span class="row-ico">🎨</span><span class="row-main">Eigene Kategorien</span
+                  ><span class="row-chev"></span>
+                </button>
+                <button class="row" type="button">
+                  <span class="row-ico">🔒</span><span class="row-main">Datenschutz</span><span class="row-chev"></span>
+                </button>
+                <button class="row" type="button">
+                  <span class="row-ico">?</span><span class="row-main">Hilfe</span><span class="row-chev"></span>
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+        <nav class="tabbar"></nav>
+      </section>
+
+      <!-- ─────────── KATEGORIE ─────────── -->
+      <section class="screen" data-screen="packs" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-back-to="mode" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Kategorie</span>
+        </div>
+        <div class="body">
+          <div class="inner">
+            <div class="rows" id="pack-list"></div>
+            <p class="lede-dim" id="pack-note"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────── REGELN ─────────── -->
+      <section class="screen" data-screen="rules" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-back-to="mode" aria-label="Zurück">‹</button>
+          <span class="appbar-title">Regeln</span>
+        </div>
+        <div class="body">
+          <div class="inner" id="rules-body"></div>
+        </div>
+      </section>
+
+      <!-- ─────────── SPIEL: GEHEIME KARTE ─────────── -->
+      <section class="screen" data-screen="play-secret" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-quit aria-label="Abbrechen">✕</button>
+          <span class="appbar-title" id="secret-progress"></span>
+        </div>
+        <div class="body play-body">
+          <div class="inner play-center">
+            <div class="seat-ring" id="secret-ring"></div>
+            <h2 class="play-name" id="secret-name">—</h2>
+            <p class="play-note" id="secret-note">Nur diese Person darf jetzt schauen.</p>
+            <button class="flipcard" id="flipcard" type="button" aria-expanded="false" aria-controls="flipface">
+              <span class="flip-inner">
+                <span class="flip-back"><span class="flip-emblem"></span><span class="flip-hint">Tippen zum Aufdecken</span></span>
+                <span class="flip-front" id="flipface" aria-live="polite">
+                  <span class="flip-kick" id="secret-role"></span>
+                  <strong class="flip-word" id="secret-word"></strong>
+                  <small class="flip-sub" id="secret-tip"></small>
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="dock"><button class="pill pill-primary wide" id="secret-next" type="button" disabled>Karte zu, weitergeben</button></div>
+      </section>
+
+      <!-- ─────────── SPIEL: OFFENE KARTE ─────────── -->
+      <section class="screen" data-screen="play-prompt" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-quit aria-label="Abbrechen">✕</button>
+          <span class="appbar-title" id="prompt-progress"></span>
+        </div>
+        <div class="body play-body">
+          <div class="inner play-center">
+            <p class="play-turn" id="prompt-turn"></p>
+            <div class="prompt-card" id="prompt-text"></div>
+          </div>
+        </div>
+        <div class="dock"><button class="pill pill-primary wide" id="prompt-next" type="button">Nächste Frage</button></div>
+      </section>
+
+      <!-- ─────────── SPIEL: TIMER ─────────── -->
+      <section class="screen" data-screen="play-timer" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-quit aria-label="Abbrechen">✕</button>
+          <span class="appbar-title" id="timer-label"></span>
+        </div>
+        <div class="body play-body">
+          <div class="inner play-center">
+            <div class="clock">
+              <svg class="clock-ring" viewBox="0 0 200 200" aria-hidden="true">
+                <circle class="clock-track" cx="100" cy="100" r="92"></circle>
+                <circle class="clock-fill" id="clock-fill" cx="100" cy="100" r="92"></circle>
+              </svg>
+              <div class="clock-face">
+                <span id="clock-time" role="timer" aria-label="Verbleibende Zeit">03:00</span>
+                <span class="clock-meta" id="clock-meta"></span>
+              </div>
+            </div>
+            <button class="pill pill-tint" id="timer-toggle" type="button">Zeit starten</button>
+            <ol class="steps" id="timer-steps"></ol>
+          </div>
+        </div>
+        <div class="dock"><button class="pill pill-primary wide" id="timer-next" type="button">Weiter</button></div>
+      </section>
+
+      <!-- ─────────── SPIEL: ABSTIMMUNG ─────────── -->
+      <section class="screen" data-screen="play-vote" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-quit aria-label="Abbrechen">✕</button>
+          <span class="appbar-title" id="vote-progress"></span>
+        </div>
+        <div class="body play-body">
+          <div class="inner play-center">
+            <div class="seat-ring" id="vote-ring"></div>
+            <h2 class="play-name" id="vote-name">—</h2>
+            <p class="play-note" id="vote-note">Wer war es?</p>
+            <div class="vote-grid" id="vote-targets" role="group" aria-label="Abstimmung"></div>
+            <div class="sealed" id="vote-sealed" hidden><span class="seal" aria-hidden="true"></span><p>Stimme versiegelt</p></div>
+          </div>
+        </div>
+        <div class="dock"><button class="pill pill-primary wide" id="vote-next" type="button" disabled>Weitergeben</button></div>
+      </section>
+
+      <!-- ─────────── SPIEL: ERGEBNIS ─────────── -->
+      <section class="screen" data-screen="play-result" data-tint hidden>
+        <div class="inner appbar">
+          <button class="icon-btn" type="button" data-quit aria-label="Beenden">✕</button>
+          <span class="appbar-title" id="result-round"></span>
+        </div>
+        <div class="body">
+          <div class="inner">
+            <p class="result-kick" id="result-kick"></p>
+            <div class="result-word" id="result-word"></div>
+            <p class="verdict" id="result-verdict"></p>
+            <div class="rows" id="result-board"></div>
+          </div>
+        </div>
+        <div class="dock"><button class="pill pill-primary wide" id="result-next" type="button">Nächste Runde</button></div>
+      </section>
+    </div>
+
+    <script src="party-catalog.js"></script>
+    <script src="party-expansion.js"></script>
+    <script src="party-trending-catalog.js"></script>
+    <script src="party-mega-catalog.js"></script>
+    <script src="party-viral-catalog.js"></script>
+    <script src="party-core-release-catalog.js"></script>
+    <script src="party-wave-one-catalog.js"></script>
+    <script src="party-wave-one-imposter-catalog.js"></script>
+    <script src="party-wave-one-writing-catalog.js"></script>
+    <script src="party-wave-one-voting-catalog.js"></script>
+    <script src="party-wave-one-bluff-catalog.js"></script>
+    <script src="party-wave-one-clue-catalog.js"></script>
+    <script src="v2-hub.js"></script>
+  </body>
+</html>
