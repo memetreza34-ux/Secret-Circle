@@ -46,7 +46,7 @@ if 'scripts/quick_bfcache_resume_audit.py' not in scripts.get('validate',''): vi
 if scripts.get('test:e2e') != 'playwright test': violations.append('BF58 browser contract missing from full Playwright gate.')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or int(cache.group(1)) < 58: violations.append('BF58 requires cache v58 or newer.')
-if cache and f"secret-circle-v{cache.group(1)}" not in sw_test: violations.append('BF58 SW test cache drift.')
+if cache and 'releaseMeta.offlineCache.production' not in sw_test: violations.append('BF58 SW test cache drift.')
 
 if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({

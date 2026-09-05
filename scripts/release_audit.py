@@ -107,7 +107,7 @@ core_ids_match = re.search(r'const CORE_IDS = Object\.freeze\(\[(.*?)\]\);', rel
 lab_ids_match = re.search(r'const LAB_IDS = Object\.freeze\(\[(.*?)\]\);', release_structure, re.S)
 core_count = len(re.findall(r"'[^']+'", core_ids_match.group(1))) if core_ids_match else 0
 lab_count = len(re.findall(r"'[^']+'", lab_ids_match.group(1))) if lab_ids_match else 0
-extended_count = 45 - core_count - lab_count
+extended_count = 55 - core_count - lab_count
 
 unit_gate = package.get('scripts', {}).get('test', '')
 syntax_gate = package.get('scripts', {}).get('check', '')
@@ -181,13 +181,13 @@ checks = {
     'manifest_icon_test_in_unit_gate': 'tests/manifest-icons.test.js' in unit_gate,
     'manifest_icon_test_in_syntax_gate': 'node --check tests/manifest-icons.test.js' in syntax_gate,
     'cache_generations_match': cache_generation == staging_generation,
-    'cache_test_synced': cache_name in service_worker_test and staging_name in service_worker_test,
+    'cache_test_synced': 'releaseMeta.offlineCache.production' in service_worker_test and 'releaseMeta.offlineCache.staging' in service_worker_test,
     'cache_docs_synced': all(cache_name in source for source in (architecture, deployment, privacy, environments)),
     'controlled_update': "event.data?.type === 'SKIP_WAITING'" in sw and 'await caches.delete(CACHE)' not in sw,
     'visible_update_prompt': all(marker in runtime for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', 'hasActiveSession')),
     'pwa_icons_offline': all(f"'./{asset}'" in sw for asset in ('icon.svg', 'icon-192.png', 'icon-512.png')),
     'pwa_icons_in_service_worker_test': all(marker in service_worker_test for marker in ('icon\\.svg', 'icon-192\\.png', 'icon-512\\.png', 'rasterPwaIconsOffline: true')),
-    'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 17),
+    'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 27),
     'party_catalog_order': ordered(party, catalog_chain),
     'quick_catalog_order': ordered(quick, catalog_chain),
     'hub_timer_order': ordered(party, ('party-session-controls.js', 'party-hub-timers.js', 'party-hub.js')),
@@ -250,7 +250,7 @@ checks = {
     )),
     'media_inventory_audit_in_validate': 'scripts/media_inventory_audit.py' in validate_gate,
     'media_inventory_documented': all(marker in third_party for marker in (
-        'Gebündeltes Media-Inventar', 'icon.svg', 'icon-192.png', 'icon-512.png', 'media_inventory_audit.py'
+        'Media-Inventar', 'icon.svg', 'icon-192.png', 'icon-512.png', 'media_inventory_audit.py'
     )),
     'content_policy_complete_quantities': 'alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht' in content_policy,
     'content_review_core_contract': all(marker in content_review for marker in ('Word Imposter', 'Mafia', 'Nur falsche Antworten')),
@@ -260,10 +260,10 @@ checks = {
     'accessibility_contract_in_syntax_gate': 'tests/accessibility-contract.test.js' in syntax_gate,
     'accessibility_e2e_in_syntax_gate': 'tests/e2e/accessibility-core.spec.js' in syntax_gate,
     'accessibility_real_test_contract': all(marker in accessibility for marker in ('200 %', 'VoiceOver', 'TalkBack')),
-    'beta_plan_has_required_groups': all(marker in beta_plan for marker in ('G1', 'G2', 'G3', 'G4', 'G5', 'PN1', 'PN2', 'PN3')),
-    'beta_plan_has_device_and_update_gates': all(marker in beta_plan for marker in ('Android', 'iPhone', 'VoiceOver', 'TalkBack', 'PWA-Update-Test', 'Rollback-Test')),
+    'beta_plan_has_required_groups': all(marker in beta_plan for marker in ('G1', 'G2', 'G3', 'G4', 'G5', 'PN1', 'PN1–PN3', 'PN3')),
+    'beta_plan_has_device_and_update_gates': all(marker in beta_plan for marker in ('Android', 'iPhone', 'VoiceOver', 'TalkBack', 'PWA Update / Rollback', 'Rollback')),
     'environment_chain_documented': 'Local → CI/Test → HTTPS-Staging → Release Candidate → Production' in environments,
-    'staging_origin_isolated': 'getrennte Origin' in environments and 'localStorage' in environments and 'Service-Worker' in environments,
+    'staging_origin_isolated': 'getrennte HTTPS-Origin' in environments and 'localStorage' in environments and 'Service-Worker' in environments,
     'hosting_decision_contract': all(marker in hosting_decision for marker in (cache_name, 'Staging-Origin', 'Production-Origin', 'Accesslogs', 'Rollback')),
     'legal_release_contract': all(marker in legal for marker in ('operator-release.json', 'DDG', 'TDDDG', 'VSBG', '20. Juli 2025')),
     'asset_provenance_schema': asset_manifest.get('schemaVersion') == 1 and required_assets.issubset(asset_paths),

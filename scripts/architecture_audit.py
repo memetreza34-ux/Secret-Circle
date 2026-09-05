@@ -84,7 +84,7 @@ contracts={
  'backup-schema-registry.js':['const VERSION = 2;','MAX_FILE_BYTES = 1_500_000',"format: 'secret-circle-complete-backup'",'isAllowedCompleteStorageKey',"'secret-circle-party-quick-timers-v1'",'validQuickTimerSnapshot'],
  'session-ledger.js':['createSessionId','legacySessionId','completionId','recordCompletion'],
  'party-session-controls.js':['const VERSION = 5;','createController','remainingMilliseconds','function setPaused',"TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1'",'familyForGame','consumePersistedRemaining','function persistRunningTimerSnapshot(preserveOnNextStop = true)','timerContextMatches','function handlePageHide()','return persistRunningTimerSnapshot(true);','function handlePageShow(event)','reloadFn();','function handleVisibilityChange()','setPaused(true);','persistRunningTimerSnapshot(false);'],
- 'word-imposter-resume-guard.js':['validateSnapshot'], 'party-hub-resume-guard.js':['SecretCirclePartyHubResumeGuard'],
+ 'word-imposter-resume-guard.js':['hasSequentialVotes'], 'party-hub-resume-guard.js':['SecretCirclePartyHubResumeGuard'],
  'party-hub-round-state.js':['SecretCirclePartyHubRoundState','SAFE_CURRENT_MODES','CONCEALED_CURRENT_MODES','truthDarePools','normalizeCurrent','normalizeResume','ensureCurrent','markParanoiaQuestion','resolveParanoia','clearCurrent'],
  'advanced-resume-guard.js':['version: 4','validateSnapshot','expectedRoleCounts','const hasVoteFields =','if (hasVoteFields === hasGuessFields) return false;','if (computedWinner) return false;'],
  'party-advanced-runner.js':["const pendingMafiaRound = session.advanced?.stage === 'finished' ? 1 : 0;","window.confirm('Gespeicherte Session verwerfen und eine neue beginnen?')",'if (!clearActive()) return;'],
@@ -150,8 +150,10 @@ if not cache or not staging: violations.append('Service-worker cache contract co
 else:
     cache_name=cache.group(1); generation=cache.group(2)
     if staging.group(2)!=generation: violations.append('Service-worker active/staging cache generations differ.')
-    for relative in ('ARCHITECTURE.md','DEPLOYMENT.md','privacy.html','ENVIRONMENTS.md','tests/service-worker.test.js'):
+    for relative in ('ARCHITECTURE.md','DEPLOYMENT.md','privacy.html','ENVIRONMENTS.md'):
         if cache_name not in read(relative): violations.append(f'Current cache {cache_name} not synchronized in {relative}.')
+    if generation not in read('release-meta.json'): violations.append(f'Current cache generation v{generation} not synchronized in release-meta.json.')
+    if 'releaseMeta.offlineCache.production' not in read('tests/service-worker.test.js'): violations.append('tests/service-worker.test.js no longer binds the cache contract to release-meta.json.')
 for asset in ('./party-wave-one-voting-catalog.js','./party-wave-one-bluff-catalog.js','./party-wave-one-clue-catalog.js','./party-wave-one-voting-modes.js','./party-wave-one-bluff-modes.js','./party-wave-one-clue-modes.js','./quick-loader.js','./session-ledger.js','./party-session-controls.js'):
     if asset not in sw: violations.append(f'Offline core missing architecture-critical asset: {asset}')
 if 'await caches.delete(CACHE)' in sw: violations.append('Service-worker must not destroy the active cache before promotion.')

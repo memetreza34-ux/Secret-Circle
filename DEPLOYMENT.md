@@ -44,6 +44,7 @@ Ein Job mit `steps: []` ist kein Code-/Testnachweis.
 
 Offline enthalten sind alle Wave-1-Kataloge und Runner, `party-session-controls.js` Version 5, Quick Replacement Guard v2, Quick Loader v11 und Backup Registry v2.
 
+- **PT54:** Hot-Potato-/Word-Chain-Pre-Timer-Resume.
 - **QT57:** Restzeit über normalen Reload.
 - **BF58:** BFCache-Rückkehr sicher.
 - **BG59:** Hidden pausiert.

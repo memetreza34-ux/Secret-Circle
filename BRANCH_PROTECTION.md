@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **BLOCKED – `main` ist real ungeschützt; Hosted Runner weiterhin vor Step 1 blockiert**  
-Evidence-Status: **BLOCKED**
+Evidence-Status: **OPEN**
 
 Maschinenlesbare Freigabequelle: `release-evidence.json → gates.branchProtection`.  
 Aktueller Arbeitsstand: `release-meta.json`.
@@ -33,7 +33,7 @@ main
 ```
 
 Aktueller Release-Arbeitszweig: `agent/release-foundation-2027`.  
-Aktueller Release-PR: **#13 (Draft / NO_GO)**.
+Aktueller Release-PR: **#13 (Draft / NO_GO)**, Base **`codex/party-hub-foundation`**.
 
 ### Main-Drift auf dem aktiven Release-Branch
 
@@ -80,7 +80,7 @@ Workflow:
 - Job: `validate`
 - gewünschter Required-Check-Kontext: **`Secret Circle CI / validate`**
 
-Der Job muss echten Checkout und alle Repository-Schritte ausführen. Ein Job mit `steps: []` gilt weder als PASS noch als negativer Code-Test.
+Der Job muss echten Checkout und alle Repository-Schritte ausführen. Ein Job mit `steps: []` gilt weder als PASS noch als negativer Code-Test. Kein Merge bei `steps: []`.
 
 Aktuelle Beispiele:
 
@@ -112,7 +112,7 @@ Workflow:
 - Job: `smoke`
 - Trigger aktuell: `workflow_dispatch`
 
-Cross-Browser ist für den RC zwingend, aber derzeit kein permanenter PR-Required-Check. Vor Release muss Chromium/Firefox/WebKit auf dem **exakten unveränderten RC** grün dokumentiert sein.
+Cross-Browser ist für den RC zwingend. Aktuell darf `Secret Circle Cross-Browser Smoke / smoke` **nicht** als dauerhaft erforderlicher PR-Check aktiviert werden, weil der Job nur manuell (`workflow_dispatch`) läuft. Vor Release muss Chromium/Firefox/WebKit auf dem **exakten unveränderten RC-Commit** grün dokumentiert sein.
 
 ## 7. Reproduzierbarer Installationsvertrag
 
@@ -122,7 +122,7 @@ Cross-Browser ist für den RC zwingend, aber derzeit kein permanenter PR-Require
 npm ci --ignore-scripts --no-audit --no-fund
 ```
 
-Ein echter Online-`npm ci`-PASS bleibt offen.
+Ein echter Online-`npm ci` auf unverändertem Commit grün bleibt offen.
 
 Der Reconciliation-Kandidat ergänzt im normalen CI außerdem die Legacy-Archiv-Sicherheitsprüfung:
 

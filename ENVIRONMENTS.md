@@ -67,7 +67,7 @@ Mindestens:
 
 - Service Worker / Installation / Offline-Neustart
 - Hub/Word Imposter/Advanced/Quick/Creator/Privacy + Query-Routen offline
-- bestehende Spezialgates DWI bis HS60
+- bestehende Spezialgates DWI bis HS60 (inkl. PT54)
 - **alle 10 Wave-1-Modi erscheinen als Labs**
 - jeder neue Modus startet in höchstens 2–3 Entscheidungen
 - Quiz/Fake-Fakt Ergebnis-Resume stabil

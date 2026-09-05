@@ -129,7 +129,7 @@ checks = {
     'branch_required_check_defined': 'Secret Circle CI / validate' in branch,
     'environment_contract_is_stateful': all(marker in environments for marker in (
         'Local → CI/Test → HTTPS-Staging → Release Candidate → Production',
-        'getrennte Origin', 'scripts/staging_smoke.py'
+        'getrennte HTTPS-Origin', 'scripts/staging_smoke.py'
     )),
     'staging_smoke_command_documented': 'npm run staging:smoke' in environments and 'npm run staging:smoke' in deployment,
     'production_smoke_mode_documented': '--production' in environments and '--production' in deployment,

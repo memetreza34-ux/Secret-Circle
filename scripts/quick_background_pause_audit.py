@@ -44,7 +44,7 @@ if 'scripts/quick_background_pause_audit.py' not in scripts.get('validate',''): 
 if scripts.get('test:e2e') != 'playwright test': violations.append('BG59 browser contract missing from full Playwright gate.')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or int(cache.group(1)) < 59: violations.append('BG59 requires cache v59 or newer.')
-if cache and f"secret-circle-v{cache.group(1)}" not in sw_test: violations.append('BG59 SW test cache drift.')
+if cache and 'releaseMeta.offlineCache.production' not in sw_test: violations.append('BG59 SW test cache drift.')
 
 if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({

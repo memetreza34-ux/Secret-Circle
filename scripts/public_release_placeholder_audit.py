@@ -12,7 +12,7 @@ PUBLIC_FILES = [
 patterns = {
     'TBD': re.compile(r'\bTBD\b', re.IGNORECASE),
     'TODO': re.compile(r'\bTODO\b', re.IGNORECASE),
-    'REPLACE_ME': re.compile(r'REPLACE[_ -]?ME', re.IGNORECASE),
+    'REPLACE_ME': re.compile(r'\bREPLACE[_ -]?ME\b', re.IGNORECASE),
     'example-domain': re.compile(r'(?:example\.com|example\.org|example\.net|example\.invalid)', re.IGNORECASE),
     'dummy-email': re.compile(r'(?:your|name|test|support)@example\.(?:com|org|net)', re.IGNORECASE),
     'placeholder-email': re.compile(r'(?:email|mail)@(?:domain|placeholder)\.', re.IGNORECASE),

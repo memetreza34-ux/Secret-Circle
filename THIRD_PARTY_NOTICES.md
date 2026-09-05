@@ -41,7 +41,7 @@ Verbindlich ist `assets/manifests/asset-provenance.json`, Schema-Version 1.
 - Creator/Source/Rechtebasis bei verifizierten Assets
 - `commercialUse = true`
 
-Erlaubte Statuswerte bleiben `unresolved`, `verified-own` und `verified-third-party`.
+Erlaubte Statuswerte bleiben `unresolved`, `verified-own` und `verified-third-party`. Ein Eintrag ohne belegte Herkunft wird nicht automatisch als eigenes Werk behandelt.
 
 ## 5. Aktuelles App-Iconset – Rechtebasis gelöst
 

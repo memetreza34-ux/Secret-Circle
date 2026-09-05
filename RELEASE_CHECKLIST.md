@@ -98,7 +98,7 @@ Real je relevante Enginefamilie:
 - [ ] Rollback/Hotfix nutzt neue Cachegeneration
 - [ ] Offline-Neustart nach vollständigem Prozessende
 
-## 6. HTTPS-Staging / Production
+## 6. HTTPS-Staging / Production (HTTPS-Staging-Smoke)
 
 Source vorbereitet:
 

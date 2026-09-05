@@ -86,9 +86,9 @@ for marker in (
         violations.append(f'Advanced runner integrity marker missing: {marker}')
 
 for marker in (
-    'Mafia finished round is counted exactly once when the session is saved before starting another round',
+    'a finished Mafia round saved directly is counted once and remains idempotent on retry',
     'expect(hub.history.filter(item => item.gameId === \'mafia\')).toHaveLength(1)',
-    "expect(hub.stats.mafia).toEqual({ plays: 1, rounds: 1, best: 6 })"
+    "expect(hub.stats.mafia).toEqual({ plays: 1, rounds: 1, best: 3 })"
 ):
     if marker not in completion:
         violations.append(f'Advanced completion browser marker missing: {marker}')

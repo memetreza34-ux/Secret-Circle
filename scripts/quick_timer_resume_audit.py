@@ -59,7 +59,7 @@ if 'scripts/quick_timer_resume_audit.py' not in scripts.get('validate', ''): vio
 if './party-session-controls.js' not in sw: violations.append('QT57 shared session controls missing from offline core.')
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or int(cache.group(1)) < 57: violations.append('QT57 requires offline cache generation v57 or newer.')
-if cache and f"secret-circle-v{cache.group(1)}" not in sw_test: violations.append('QT57 current cache is not synchronized in service-worker test.')
+if cache and 'releaseMeta.offlineCache.production' not in sw_test: violations.append('QT57 current cache is not synchronized in service-worker test.')
 
 if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({

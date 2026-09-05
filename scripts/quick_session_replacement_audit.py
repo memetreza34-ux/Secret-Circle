@@ -39,7 +39,7 @@ for marker in (
     "const REPLACEMENT_GUARD_SOURCE = 'quick-session-replacement-guard.js';",
     "const WAVE_ONE_SOURCE = 'party-wave-one-modes.js';", 'catalog.waveOneGameIds?.includes(gameId)',
     'replacementGuardReady = false', 'plan.push(REPLACEMENT_GUARD_SOURCE)',
-    'Boolean(windowRef.SecretCircleQuickSessionReplacementGuard)', 'version: 8'
+    'Boolean(windowRef.SecretCircleQuickSessionReplacementGuard)', 'version: 11'
 ):
     if marker not in loader: violations.append(f'Quick loader replacement marker missing: {marker}')
 
@@ -78,7 +78,7 @@ if not cache or int(cache.group(1)) < 56: violations.append('Quick replacement h
 
 if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({
-    'quick_session_replacement_audit': 'PASS', 'guard_version': 2, 'loader_version': 8,
+    'quick_session_replacement_audit': 'PASS', 'guard_version': 2, 'loader_version': 11,
     'wave_one_uses_quick_family': True, 'families_guarded': ['quick','mega','viral','created'],
     'same_game_confirmation': True, 'cross_game_family_confirmation': True,
     'failed_write_preserves_previous_snapshot': True, 'browser_load_order_guarded': True,

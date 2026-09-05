@@ -44,7 +44,7 @@ checks = {
     'syntax_gate': 'node --check party-hub-a11y.js' in syntax_gate,
     'self_audit_in_validate': 'scripts/hub_a11y_contract_audit.py' in validate_gate,
     'unit_contract': all(marker in unit for marker in (
-        'modalBackgroundIsolation: true', 'modalFocusTrapContract: true', 'activeGameDialogSemantics: true'
+        'hubModalBackgroundIsolation: true', 'hubModalFocusTrapContract: true', 'activeHubGameDialogSemantics: true'
     )),
     'browser_heading_focus': 'hub view changes move programmatic focus to the visible heading' in e2e,
     'browser_detail_focus': 'hub detail modal isolates background and traps keyboard focus' in e2e,

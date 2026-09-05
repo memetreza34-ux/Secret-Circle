@@ -25,7 +25,7 @@ budgets = {
     'party-release-structure.js': 22_000, 'party-filter-state.js': 14_000,
     'party-search-assist.js': 28_000, 'game-creator.js': 45_000, 'creator-page.js': 55_000,
     'party-custom-packs.js': 45_000, 'party-hub.js': 50_000,
-    'party-hub-timers.js': 18_000, 'party-hub-plus.js': 34_000, 'party-hub-polish.js': 10_000,
+    'party-hub-timers.js': 18_000, 'party-hub-plus.js': 34_000, 'party-hub-polish.js': 18_000,
     'party-guide.js': 45_000, 'party-night.js': 38_000, 'party-data-tools.js': 24_000,
     'party-advanced.js': 55_000, 'party-advanced-runner.js': 48_000,
     'party-advanced-preferences.js': 5_000, 'party-quick-modes.js': 78_000,

@@ -96,8 +96,9 @@ for asset in ('./party-wave-one-catalog.js','./party-wave-one-imposter-catalog.j
     if asset not in core: raise SystemExit(f'Offline core missing: {asset}')
 if len(core)!=len(set(core)): raise SystemExit('Service-worker CORE contains duplicates.')
 if 'await caches.delete(CACHE)' in sw: raise SystemExit('Active cache must not be destroyed before promotion.')
-for relative in ('ARCHITECTURE.md','DEPLOYMENT.md','privacy.html','ENVIRONMENTS.md','tests/service-worker.test.js'):
+for relative in ('ARCHITECTURE.md','DEPLOYMENT.md','privacy.html','ENVIRONMENTS.md'):
     if cache_name not in read(relative): raise SystemExit(f'Current cache {cache_name} not synchronized in {relative}.')
+if 'releaseMeta.offlineCache.production' not in read('tests/service-worker.test.js'): raise SystemExit('tests/service-worker.test.js no longer binds the cache contract to release-meta.json.')
 
 package=json.loads(read('package.json')); lock=json.loads(read('package-lock.json')); release_evidence=json.loads(read('release-evidence.json'))
 if package.get('version')!='1.0.0-beta.3' or package.get('engines',{}).get('node')!='>=20': raise SystemExit('Package metadata invalid.')

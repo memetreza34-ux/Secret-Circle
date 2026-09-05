@@ -135,7 +135,7 @@ Für Cloudflare Pages als bevorzugten Kandidaten beschreibt `CLOUDFLARE_PAGES_ST
 
 Zusätzlich real prüfen:
 
-- bestehende Spezialgates DWI bis HS60
+- bestehende Spezialgates DWI bis HS60 (inkl. PT54)
 - alle zehn Wave-1-Labs erscheinen weiterhin als Labs
 - Quiz-Familie: Result-Resume/Score exact-once
 - Imposter-Familie: private Handoff-/Vote-UI nach Fokus-/Appwechsel wieder verdeckt

@@ -76,7 +76,7 @@ if scripts.get('test:e2e') != 'playwright test':
 cache = re.search(r"const CACHE='secret-circle-v(\d+)'", sw)
 if not cache or int(cache.group(1)) < 60:
     violations.append('HS60 requires cache v60 or newer.')
-if cache and f"secret-circle-v{cache.group(1)}" not in sw_test:
+if cache and 'releaseMeta.offlineCache.production' not in sw_test:
     violations.append('HS60 SW test cache drift.')
 
 if violations:

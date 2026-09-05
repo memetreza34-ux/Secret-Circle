@@ -62,7 +62,7 @@ allowed_gate_statuses = {'OPEN', 'BLOCKED', 'PASS', 'FAIL'}
 checks = {
     'backup_registry_v2': all(marker in registry for marker in (
         'const VERSION = 2;', 'const MAX_FILE_BYTES = 1_500_000;',
-        'WORD_STORAGE_KEY', 'PARTY_STORAGE_KEY', 'isAllowedCompleteStorageKey',
+        'COMPLETE_STORAGE_KEYS', 'isAllowedCompleteStorageKey',
         "format: 'secret-circle-complete-backup'", 'maximumEntries: 100', 'maximumValueBytes: 1_000_000'
     )),
     'backup_runtime_consumes_registry': all(marker in data_tools for marker in (
@@ -94,7 +94,7 @@ checks = {
     )),
 
     'release_tiers': all(marker in release_structure for marker in (
-        'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Labs'"
+        'CORE_IDS', 'LAB_IDS', "label: 'Kernspiel'", "label: 'Erweiterung'", "label: 'Lab'"
     )),
     'persistent_filters': all(marker in filter_state for marker in (
         'secret-circle-party-catalog-filters-v1', 'age-filter', 'status-filter', 'release-tier-filter'
