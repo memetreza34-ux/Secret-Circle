@@ -78,7 +78,7 @@ assert.match(worker, /\.\/party-release-structure\.js/); assert.match(worker, /\
 assert.match(worker, new RegExp(`const CACHE='${releaseMeta.offlineCache.production}'`));
 assert.match(worker, new RegExp(`const STAGING_CACHE='${releaseMeta.offlineCache.staging}'`));
 assert.match(tierStyles, /\.release-tier-overview/); assert.match(tierStyles, /\.release-tier-pill/); assert.match(tierStyles, /prefers-reduced-motion/);
-assert.match(searchStyles, /\.party-search-suggestions/); assert.match(searchStyles, /focus-visible/); assert.match(searchStyles, /prefers-reduced-motion/);
+assert.match(searchStyles, /\.game-search-suggestions/); assert.match(searchStyles, /focus-visible/); assert.match(searchStyles, /prefers-reduced-motion/);
 
 console.log(JSON.stringify({
   ok: true, totalBuiltInGames: catalog.games.length, coreGames: summary.core, extendedGames: summary.extended, labsGames: summary.labs,

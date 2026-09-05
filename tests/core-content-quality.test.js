@@ -226,5 +226,5 @@ console.log(JSON.stringify({
   wordImposterCategories: wordCategories.length, wordImposterWords,
   routedCoreItemsExcludingWordImposter: routedCoreItems, truthDareCards: 96,
   structuredContentValidated: ['truth-dare', 'would-rather', 'taboo', 'question-imposter', 'location-spy', 'mafia', 'word-chain'],
-  markupRejected: true, exactNormalizedDuplicatesRejected: true, editorialDepthShortfalls
+  markupRejected: true, exactNormalizedDuplicatesRejected: true, editorialDepthShortfalls: editorialShortfalls.length
 }, null, 2));

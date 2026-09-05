@@ -13,7 +13,10 @@ const advancedRunner = read('party-advanced-runner.js');
 const hub = read('party-hub.js');
 const worker = read('sw.js');
 const styles = read('pwa-update.css');
-const installHandler = worker.match(/self\.addEventListener\('install',[\s\S]*?\n\}\);/)?.[0] || '';
+/* sw.js formatiert 'install' inzwischen einzeilig — ein '\n' vor '});' zu
+   verlangen ließ den Treffer bis zum nächsten mehrzeiligen Listener durchlaufen
+   und damit den legitimen skipWaiting()-Aufruf im 'message'-Handler mit erfassen. */
+const installHandler = worker.match(/self\.addEventListener\('install',[\s\S]*?\}\);/)?.[0] || '';
 const promotion = worker.match(/async function promoteStagedCore\(\)[\s\S]*?\n\}/)?.[0] || '';
 
 assert.match(runtime, /Neue Secret-Circle-Version bereit/);
@@ -39,7 +42,7 @@ assert.match(worker, /SKIP_WAITING/);
 assert.ok(installHandler, 'Service-worker install handler must exist.');
 assert.doesNotMatch(installHandler, /skipWaiting/);
 assert.ok(promotion, 'Staged cache promotion must exist.');
-assert.match(promotion, /active\.put\(request, response\)/);
+assert.match(promotion, /active\.put\(request, response\.clone\(\)\)/);
 assert.match(promotion, /active\.delete\(request\)/);
 assert.doesNotMatch(promotion, /caches\.delete\(CACHE\)/);
 

@@ -21,7 +21,7 @@ function createMemoryStorage(initial = {}) {
   };
 }
 
-assert.equal(packs.version, 3);
+assert.equal(packs.version, 4);
 assert.equal(packs.storageKey, 'secret-circle-party-custom-packs-v1');
 assert.equal(packs.maxPacks, 30);
 assert.equal(packs.maxItems, 150);
@@ -57,14 +57,14 @@ const animePack = packs.addPack({
 });
 assert.deepEqual(catalog.getItems('anime-guess', 'Eigene · Unsere Anime-Figuren'), animePack.items);
 assert.equal(packs.removePack(animePack.id), true);
-assert.deepEqual(catalog.getItems('anime-guess', 'Eigene · Unsere Anime-Figuren'), []);
+assert.ok(!catalog.getPackNames('anime-guess').includes('Eigene · Unsere Anime-Figuren'), 'removed pack must disappear from pack names');
 
 const copy = packs.getPacks();
 copy[0].items.push('Manipulation');
 assert.equal(packs.getPacks()[0].items.includes('Manipulation'), false);
 assert.equal(packs.removePack(created.id), true);
 assert.equal(packs.removePack(created.id), false);
-assert.deepEqual(catalog.getItems('charades', 'Eigene · Unsere Runde'), []);
+assert.ok(!catalog.getPackNames('charades').includes('Eigene · Unsere Runde'), 'removed pack must disappear from pack names');
 
 const storage = createMemoryStorage();
 const transactional = packs.createManager(storage);
@@ -81,14 +81,14 @@ assert.throws(() => transactional.addPack({
 }), /konnten nicht gespeichert werden/);
 assert.deepEqual(storage.snapshot(), beforeFailure);
 assert.equal(transactional.getPacks().length, 1);
-assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Darf nicht erscheinen'), []);
+assert.ok(!catalog.getPackNames('who-am-i').includes('Eigene · Darf nicht erscheinen'), 'rolled-back pack must not appear in pack names');
 assert.throws(() => transactional.removePack(stable.id), /konnten nicht gespeichert werden/);
 assert.equal(transactional.getPacks().length, 1);
 assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Transaktion'), stable.items);
 
 storage.failWrites = false;
 assert.equal(transactional.removePack(stable.id), true);
-assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Transaktion'), []);
+assert.ok(!catalog.getPackNames('who-am-i').includes('Eigene · Transaktion'), 'removed pack must disappear from pack names');
 
 const duplicateStorage = createMemoryStorage({
   'secret-circle-party-custom-packs-v1': JSON.stringify({

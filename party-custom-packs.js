@@ -99,17 +99,24 @@
   }
 
   function applyPacks() {
+    /* catalog.content[gameId] kommt eingefroren aus dem Katalog — direktes
+       Schreiben schlägt fehl. Stattdessen je Spiel ein neues, beschreibbares
+       Objekt aufbauen und die ganze Property ersetzen (der äußere content-
+       Container selbst ist nicht eingefroren). */
+    const byGame = new Map();
+    for (const pack of state.packs) {
+      if (!byGame.has(pack.gameId)) byGame.set(pack.gameId, []);
+      byGame.get(pack.gameId).push(pack);
+    }
     for (const game of supportedGames) {
       const gameContent = catalog.content[game.id];
       if (!gameContent || typeof gameContent !== 'object' || Array.isArray(gameContent)) continue;
+      const rebuilt = {};
       for (const key of Object.keys(gameContent)) {
-        if (key.startsWith('Eigene · ')) delete gameContent[key];
+        if (!key.startsWith('Eigene · ')) rebuilt[key] = gameContent[key];
       }
-    }
-    for (const pack of state.packs) {
-      const gameContent = catalog.content[pack.gameId];
-      if (!gameContent || typeof gameContent !== 'object' || Array.isArray(gameContent)) continue;
-      gameContent[storagePackName(pack)] = [...pack.items];
+      for (const pack of byGame.get(game.id) || []) rebuilt[storagePackName(pack)] = [...pack.items];
+      catalog.content[game.id] = rebuilt;
     }
   }
 

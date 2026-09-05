@@ -195,8 +195,10 @@
       let number = 1;
       let title = copyTitle(source.title, number);
       while (state.games.some(game => keyText(game.title) === keyText(title))) title = copyTitle(source.title, ++number);
-      const now = new Date().toISOString();
-      return save({ ...source, id: createId(), title, createdAt: now, updatedAt: now });
+      /* createdAt bleibt unbelegt, damit save() denselben "now"-Wert für beide
+         Zeitstempel verwendet — sonst driften zwei separate Date.now()-Aufrufe
+         um wenige Millisekunden auseinander. */
+      return save({ ...source, id: createId(), title, createdAt: undefined });
     }
 
     function exportData() {

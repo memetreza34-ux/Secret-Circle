@@ -12,10 +12,10 @@ const truthPacks = C.getPackNames('truth-dare');
 assert.deepEqual(truthPacks, ['Locker', 'Lustig', 'Tiefer', 'Chaos']);
 for (const pack of truthPacks) {
   const items = C.getItems('truth-dare', pack);
-  assert.equal(items.length, 16, `Structured Truth/Dare pack must flatten to 16 cards: ${pack}`);
+  assert.equal(items.length, 24, `Structured Truth/Dare pack must flatten to 24 cards: ${pack}`);
   assert.ok(items.every(item => typeof item === 'string' && item.trim().length > 0));
 }
-assert.equal(C.itemCount('truth-dare'), 64);
+assert.equal(C.itemCount('truth-dare'), 96);
 
 const expectedAdvancedPacks = {
   'two-truths': ['Locker', 'Reise', 'Schule & Arbeit'],

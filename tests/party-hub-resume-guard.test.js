@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const Guard = require('../party-hub-resume-guard.js');
+const releaseMeta = require('../release-meta.json');
 
 const read = file => fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
 const polish = read('party-hub-polish.js');
@@ -135,7 +136,7 @@ assert.doesNotMatch(polish, /const ACTIVE_KEY = 'secret-circle-party-hub-active-
 assert.doesNotMatch(polish, /const TIMER_MODES = new Set/);
 assert.match(worker, /\.\/party-hub-resume-guard\.js/);
 assert.match(worker, /\.\/party-hub-polish\.js/);
-assert.match(worker, /secret-circle-v50/);
+assert.match(worker, new RegExp(releaseMeta.offlineCache.production));
 
 console.log(JSON.stringify({
   ok: true,
@@ -149,5 +150,5 @@ console.log(JSON.stringify({
   runtimeUsesTestedGuard: true,
   duplicatePolishValidatorRemoved: true,
   offlineGuardRequired: true,
-  cacheContract: 50
+  cacheContract: releaseMeta.offlineCache.production
 }, null, 2));

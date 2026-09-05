@@ -68,7 +68,7 @@ for (const marker of ['aria-autocomplete', 'listbox', 'ArrowDown', 'ArrowUp', 'E
   assert.match(searchSource, new RegExp(marker), `Search accessibility marker missing: ${marker}`);
 }
 
-assert.match(extraCss, /\.hub-session-controls \.ghost-button\{min-height:44px/);
+assert.match(partyCss, /\.hub-session-controls \.ghost-button\{min-height:44px/);
 assert.match(extraCss, /\.favorite-button[^}]*min-height:44px/);
 assert.match(extraCss, /\.close-button[^}]*min-height:44px/);
 
