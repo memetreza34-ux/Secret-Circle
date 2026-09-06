@@ -15,7 +15,7 @@ Main-Reconciliation: Draft #15
 **Built-ins:** 55 · 15 Core / 13 Extended / 27 Labs  
 **Wave 1:** 10/10 source-implemented; reale Evidence offen  
 **Core Source Review/Hardening:** 15/15 PREPARED  
-**CI / Cross-Browser:** BLOCKED  
+**CI:** npm test/validate GRÜN, E2E-Timeout offen · **Cross-Browser:** BLOCKED  
 **Branch Protection:** BLOCKED  
 **Hosting / Operator / Legal / Support:** PREPARED / BLOCKED  
 **Asset-Icon-Provenienz:** SOURCE RESOLVED  
@@ -38,28 +38,18 @@ Die zehn Wave-1-Labs sind quellsseitig implementiert:
 
 Der Januar-Core bleibt bei **15 Spielen**. Keine neuen Core-Modi und keine große Architekturmigration vor den offenen Release-Gates.
 
-## CI – P0 BLOCKED
+## CI – npm test / npm run validate grün, E2E-Timeout offen
 
-GitHub Actions reproduziert weiterhin denselben Fehler vor Repository-Ausführung:
+Der Hosted Runner läuft seit dem 5. September 2026 real durch (Checkout, `npm ci`, Python-Audits, Node-Tests) — die frühere `steps: []` / `runner_id: 0`-Blockade war ein temporäres Infrastrukturproblem und ist behoben.
 
-- Job endet mit `steps: []`
-- `runner_id: 0`
-- leerer Runner-Name
-- angefordert: `ubuntu-latest`
-- kein Checkout
-- kein `npm ci`
-- kein Node-/Python-Test
-- kein Playwright
-- kein Repositorycode
+Aktueller Stand (verifiziert per `gh run view`):
 
-Das ist kein App-Code-Fehlernachweis. Issue #7 bleibt der externe P0-Blocker.
+1. `npm run check` (Syntax) — grün
+2. `npm test` (Engine-/Storage-Tests) — grün
+3. `npm run validate` (34 Python-Release-Audits) — grün
+4. `npm run test:e2e` (Playwright, 58 Spec-Dateien × 2 Projekte) — überschreitet den 20-Minuten-Job-Timeout, Job wird abgebrochen
 
-Sobald Actions wieder einen Hosted Runner erhält, ist die Reihenfolge:
-
-1. Online-`npm ci --ignore-scripts --no-audit --no-fund`
-2. `npm run ci`
-3. Chromium / Firefox / WebKit auf exakt demselben Commit
-4. erst danach reale Code-/Testfehler beheben
+Nächster Schritt: E2E-Laufzeit lokal reproduzieren, Root Cause (Suite zu lang vs. einzelner hängender Test) klären und beheben, danach `Secret Circle CI / validate` als real grün dokumentieren.
 
 ## PR #15 – Main/Reconciliation
 

@@ -2,7 +2,11 @@
 
 Stand: 29. August 2026
 
-## Aktueller Befund
+## Update 5./6. September 2026 – Runner-Blocker behoben
+
+Der unten beschriebene Pre-Step-/Runner-Ausfall (`steps: []`, `runner_id: 0`) ist seit dem 5. September 2026 nicht mehr reproduzierbar. Der Hosted Runner führt Checkout, Setup, `npm ci`, Python-Audits und Node-Tests real aus. `npm test` und `npm run validate` sind auf GitHub Actions grün; offen ist aktuell nur noch, dass `npm run test:e2e` den 20-Minuten-Job-Timeout überschreitet (siehe `RELEASE_STATUS.md`). Der folgende historische Befund bleibt als Nachweis stehen, beschreibt aber nicht mehr den aktuellen Zustand.
+
+## Aktueller Befund (historisch, bis 29. August 2026)
 
 Die geprüften GitHub-Actions-Jobs erreichen weiterhin **keinen Workflow-Schritt**. Der aktuelle v64-Nachweis bestätigt das Problem erneut auf dem aktiven Release-Foundation-Branch.
 
