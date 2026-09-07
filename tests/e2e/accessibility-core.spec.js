@@ -66,9 +66,13 @@ test('party hub exposes skip link as first keyboard target', async ({ page }) =>
 });
 
 test('personal social content communicates voluntary participation', async ({ page }) => {
-  await page.goto('/party.html');
-  await expect(page.getByText(/Persönliche Inhalte sind freiwillig/i)).toBeVisible();
-  await expect(page.getByText(/Überspringen ist jederzeit erlaubt/i)).toBeVisible();
+  /* Der Hinweis steht bewusst im Detaildialog direkt vor dem Spielstart,
+     nicht dauerhaft auf der Startansicht. */
+  await page.goto('/party.html?view=games');
+  await page.locator('#game-grid [data-open-game="truth-dare"]').first().click();
+  const detail = page.locator('#game-detail');
+  await expect(detail.getByText(/Persönliche Inhalte sind freiwillig/i)).toBeVisible();
+  await expect(detail.getByText(/Überspringen ist jederzeit erlaubt/i)).toBeVisible();
 
   await page.goto('/advanced.html?game=two-truths');
   await expect(page.getByText(/Persönliche Aussagen und Antworten sind freiwillig/i)).toBeVisible();
@@ -104,7 +108,7 @@ test('hub detail modal isolates background and traps keyboard focus', async ({ p
   await page.goto('/party.html?view=games');
   await expect.poll(() => page.evaluate(() => Boolean(window.SecretCirclePartyHubA11y))).toBe(true);
 
-  await page.locator('[data-open-game="truth-dare"]').first().click();
+  await page.locator('#game-grid [data-open-game="truth-dare"]').first().click();
   await expect(page.locator('#game-detail')).toBeVisible();
   await expect(page.locator('#game-detail')).toHaveAttribute('role', 'dialog');
   await expect(page.locator('#game-detail')).toHaveAttribute('aria-modal', 'true');
@@ -127,14 +131,15 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
   await page.goto('/party.html?view=games');
   await expect.poll(() => page.evaluate(() => Boolean(window.SecretCirclePartyHubA11y))).toBe(true);
 
-  await page.locator('[data-open-game="truth-dare"]').first().click();
+  await page.locator('#game-grid [data-open-game="truth-dare"]').first().click();
   await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();
   await expect(page.locator('#play-layer')).toHaveAttribute('role', 'dialog');
   await expect(page.locator('#play-layer')).toHaveAttribute('aria-modal', 'true');
   await expect.poll(() => page.evaluate(() => document.querySelector('.hub-shell').inert)).toBe(true);
 
-  await page.getByRole('button', { name: 'Pflicht' }).focus();
+  /* exact, sonst trifft der Teilstring auch den Spieltitel "Wahrheit oder Pflicht". */
+  await page.getByRole('button', { name: 'Pflicht', exact: true }).focus();
   await page.keyboard.press('Tab');
   await expect(page.locator('#finish-hub-game')).toBeFocused();
 });

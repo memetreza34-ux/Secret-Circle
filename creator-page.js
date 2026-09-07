@@ -517,12 +517,26 @@
     help.items.forEach(item => list.append(element('li', '', item)));
     content.append(list);
     $('#creator-help').hidden = false;
-    $('#close-creator-help').focus();
+    /* Fokus auf die Dialogüberschrift, damit Screenreader den Titel ansagen.
+       secondary-surface-a11y.js verfolgt dieselbe Absicht (preferHeading), setzt
+       den Fokus aber nicht mehr um, wenn er bereits im Dialog liegt — beide
+       Stellen müssen deshalb dasselbe Ziel wählen. Der Schließen-Button bleibt
+       Rückfallebene, falls die Überschrift fehlt. */
+    const helpTitle = $('#creator-help-title');
+    if (helpTitle) {
+      if (!helpTitle.hasAttribute('tabindex')) helpTitle.setAttribute('tabindex', '-1');
+      helpTitle.focus();
+    } else $('#close-creator-help').focus();
   }
 
   function closeHelp() {
     $('#creator-help').hidden = true;
-    lastHelpTrigger?.focus();
+    /* secondary-surface-a11y.js hebt das inert der Hintergrundelemente erst in
+       seinem MutationObserver auf. Ein sofortiger focus() bliebe wirkungslos,
+       weil das Ziel in diesem Moment noch in einem inerten Teilbaum liegt. */
+    const trigger = lastHelpTrigger;
+    if (!trigger) return;
+    window.requestAnimationFrame(() => { if (trigger.isConnected) trigger.focus(); });
   }
 
   function bindEvents() {

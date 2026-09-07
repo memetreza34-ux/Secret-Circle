@@ -258,11 +258,20 @@
       badges?.insertAdjacentElement('afterend', summary);
     }
     const list = summary.querySelector('ol');
-    list.replaceChildren();
     const rules = game.instructions.slice(0, 3);
-    rules.forEach(rule => list.append(element('li', '', rule)));
+    /* Nur bei echter Änderung neu aufbauen: replaceChildren erzeugt sonst bei
+       jedem Aufruf childList-Mutationen. Da observeDynamicUi den gesamten Body
+       überwacht und daraufhin wieder enhanceDetail aufruft, entstünde eine
+       Endlosschleife, die den Klick auf eine Spielkarte blockiert. */
+    const current = [...list.children].map(item => item.textContent);
+    if (current.length !== rules.length || rules.some((rule, index) => current[index] !== rule)) {
+      list.replaceChildren();
+      rules.forEach(rule => list.append(element('li', '', rule)));
+    }
     const start = $('#start-selected-game');
-    if (start && game.status === 'playable' && game.mode !== 'link') start.textContent = 'Jetzt spielen';
+    if (start && game.status === 'playable' && game.mode !== 'link' && start.textContent !== 'Jetzt spielen') {
+      start.textContent = 'Jetzt spielen';
+    }
   }
 
   function addOnboarding() {
