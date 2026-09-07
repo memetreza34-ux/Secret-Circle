@@ -5,9 +5,16 @@
   const api = factory(root, catalog, typeof localStorage === 'undefined' ? null : localStorage, typeof document === 'undefined' ? null : document);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.SecretCirclePartyCustomPacks = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function createManager(root, catalog, storage, documentRef) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function createManager(root, catalog, storage, documentRef, skipGlobalPublish) {
   'use strict';
   if (!catalog) throw new Error('Party-Katalog für eigene Packs fehlt.');
+  const publishGlobal = skipGlobalPublish !== true;
+
+  /* catalog bleibt die unveränderte Basis. Im Browser laufen vor diesem Modul
+     mehrere Wave-1-Layer, die games/content einfrieren — eigene Packs werden
+     deshalb wie jeder andere Katalog-Layer als neues Objekt darübergelegt,
+     niemals in die Basis geschrieben. */
+  const baseCatalog = catalog;
 
   const KEY = 'secret-circle-party-custom-packs-v1';
   const MAX_PACKS = 30;
@@ -98,26 +105,44 @@
     return `Eigene · ${pack.name}`;
   }
 
-  function applyPacks() {
-    /* catalog.content[gameId] kommt eingefroren aus dem Katalog — direktes
-       Schreiben schlägt fehl. Stattdessen je Spiel ein neues, beschreibbares
-       Objekt aufbauen und die ganze Property ersetzen (der äußere content-
-       Container selbst ist nicht eingefroren). */
+  function buildCatalog() {
     const byGame = new Map();
     for (const pack of state.packs) {
       if (!byGame.has(pack.gameId)) byGame.set(pack.gameId, []);
       byGame.get(pack.gameId).push(pack);
     }
+    const content = { ...baseCatalog.content };
     for (const game of supportedGames) {
-      const gameContent = catalog.content[game.id];
+      const gameContent = baseCatalog.content[game.id];
       if (!gameContent || typeof gameContent !== 'object' || Array.isArray(gameContent)) continue;
-      const rebuilt = {};
-      for (const key of Object.keys(gameContent)) {
-        if (!key.startsWith('Eigene · ')) rebuilt[key] = gameContent[key];
-      }
-      for (const pack of byGame.get(game.id) || []) rebuilt[storagePackName(pack)] = [...pack.items];
-      catalog.content[game.id] = rebuilt;
+      const packsForGame = byGame.get(game.id) || [];
+      if (!packsForGame.length) continue;
+      const rebuilt = { ...gameContent };
+      for (const pack of packsForGame) rebuilt[storagePackName(pack)] = [...pack.items];
+      content[game.id] = rebuilt;
     }
+    Object.freeze(content);
+
+    function getPackNames(id) {
+      return content[id] && typeof content[id] === 'object' ? Object.keys(content[id]) : [];
+    }
+    function getItems(id, pack) {
+      const value = content[id];
+      if (!value || typeof value !== 'object') return [];
+      if (pack && Array.isArray(value[pack])) return value[pack];
+      return Object.values(value).flatMap(items => (Array.isArray(items) ? items : []));
+    }
+    function itemCount(id) { return getItems(id).length; }
+
+    return Object.freeze({ ...baseCatalog, content, getPackNames, getItems, itemCount });
+  }
+
+  let activeCatalog = baseCatalog;
+
+  function applyPacks() {
+    activeCatalog = buildCatalog();
+    if (publishGlobal && root) root.SecretCirclePartyCatalog = activeCatalog;
+    return activeCatalog;
   }
 
   function restoreStorage(raw) {
@@ -266,7 +291,7 @@
   initializeUi();
 
   return Object.freeze({
-    version: 4,
+    version: 5,
     storageKey: KEY,
     maxPacks: MAX_PACKS,
     maxItems: MAX_ITEMS,
@@ -277,6 +302,7 @@
     addPack,
     removePack,
     applyPacks,
-    createManager: (nextStorage, nextDocument = null) => createManager(root, catalog, nextStorage, nextDocument)
+    get catalog() { return activeCatalog; },
+    createManager: (nextStorage, nextDocument = null) => createManager(root, baseCatalog, nextStorage, nextDocument, true)
   });
 });

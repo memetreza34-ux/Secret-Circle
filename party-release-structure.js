@@ -105,20 +105,36 @@
     if (title) title.textContent = 'Kernspiele, Erweiterungen & Labs';
     if (description?.tagName === 'P') description.textContent = 'Wähle nach Qualität, Spielart, Stimmung, Gruppe und Altersstufe. Labs bleiben klar von den priorisierten Kernspielen getrennt.';
 
-    let scheduled = false; let applying = false;
+    let scheduled = false; let applying = false; let observer = null;
+    const observedTargets = [grid, documentRef.querySelector('#featured-grid'), documentRef.querySelector('#favorites-grid')].filter(Boolean);
+    function startObserving() {
+      if (!observer) return;
+      for (const target of observedTargets) observer.observe(target, { childList: true, subtree: true });
+    }
     function decorateCard(card) {
       const game = catalog.getGame?.(card.dataset.gameId); if (!game) return null;
       const tier = tierFor(game); card.dataset.releaseTier = tier;
+      const pillClass = `release-tier-pill tier-${tier}`; const pillLabel = TIERS[tier].label;
       let pill = card.querySelector('.release-tier-pill');
       if (!pill) {
-        pill = element(documentRef, 'span', `release-tier-pill tier-${tier}`, TIERS[tier].label);
+        pill = element(documentRef, 'span', pillClass, pillLabel);
         const statusPill = card.querySelector('.status-pill');
         if (statusPill) statusPill.insertAdjacentElement('beforebegin', pill); else card.append(pill);
-      } else { pill.className = `release-tier-pill tier-${tier}`; pill.textContent = TIERS[tier].label; }
+      } else {
+        /* Nur bei echter Änderung schreiben: textContent ersetzt sonst bei jedem
+           Durchlauf den Textknoten und weckt den MutationObserver erneut. */
+        if (pill.className !== pillClass) pill.className = pillClass;
+        if (pill.textContent !== pillLabel) pill.textContent = pillLabel;
+      }
       return { game, tier };
     }
     function apply() {
       scheduled = false; if (applying) return; applying = true;
+      /* Der Observer überwacht genau das Grid, das hier dekoriert wird. Ohne
+         Pause meldet jede eigene Änderung sofort den nächsten Lauf an; da
+         schedule() über queueMicrotask läuft, entstünde eine Microtask-Schleife,
+         die den Main-Thread blockiert und das load-Event nie auslöst. */
+      observer?.disconnect();
       const selectedTier = filter.value; const selectedAge = ageFilter?.value || 'all'; let visible = 0;
       for (const card of documentRef.querySelectorAll('.game-card[data-game-id]')) {
         const decorated = decorateCard(card); if (!decorated || !card.closest('#game-grid')) continue;
@@ -127,7 +143,8 @@
       }
       grid.querySelector('.release-tier-empty')?.remove(); grid.querySelector('.age-empty-state')?.remove();
       if (!visible && grid.querySelector('.game-card')) grid.append(element(documentRef, 'p', 'release-tier-empty empty-state', 'Keine Spiele passen zu diesen Filtern. Passe Reifestufe, Alter oder die übrigen Katalogfilter an.'));
-      if (resultCount) resultCount.textContent = String(visible); applying = false;
+      if (resultCount && resultCount.textContent !== String(visible)) resultCount.textContent = String(visible);
+      applying = false; startObserving();
     }
     function schedule() { if (scheduled || applying) return; scheduled = true; (root.queueMicrotask || (callback => Promise.resolve().then(callback)))(apply); }
     filter.addEventListener('change', schedule); ageFilter?.addEventListener('change', schedule);
@@ -136,10 +153,7 @@
       filter.value = button.dataset.releaseTierTarget; documentRef.querySelector('[data-view-target="games"]')?.click(); schedule(); filter.focus();
     });
     const Observer = root.MutationObserver;
-    if (Observer) {
-      const observer = new Observer(schedule);
-      for (const target of [grid, documentRef.querySelector('#featured-grid'), documentRef.querySelector('#favorites-grid')].filter(Boolean)) observer.observe(target, { childList: true, subtree: true });
-    }
+    if (Observer) { observer = new Observer(schedule); startObserving(); }
     schedule(); return true;
   }
 

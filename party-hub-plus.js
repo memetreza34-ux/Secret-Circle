@@ -58,10 +58,20 @@
     return game.age === 'all' || game.age === 'teen';
   }
 
+  function releaseStructureOwnsGrid() {
+    return Boolean($('#release-tier-filter'));
+  }
+
   function applyAgeFilter() {
     const select = $('#age-filter');
     const grid = $('#game-grid');
     if (!select || !grid) return;
+    /* Ist die Reifegrad-Schicht installiert, filtert sie Alter und Stufe
+       gemeinsam und besitzt Kartensichtbarkeit, Ergebniszähler und Leermeldung.
+       Ein zweiter Filter schriebe dieselben Knoten gegenläufig; da beide Module
+       das Grid per MutationObserver überwachen, lösen sie sich sonst endlos
+       gegenseitig aus und blockieren den Main-Thread. */
+    if (releaseStructureOwnsGrid()) return;
     const level = select.value;
     let visible = 0;
     grid.querySelectorAll('[data-game-id]').forEach(card => {
@@ -81,14 +91,24 @@
     } else if (visible && empty) empty.remove();
   }
 
+  let syncingAgeLevel = false;
   function setAgeLevel(level, persist = true) {
+    if (syncingAgeLevel) return;
     const normalized = ['family', 'teen', 'all'].includes(level) ? level : 'all';
     const catalogSelect = $('#age-filter');
     const settingsSelect = $('#settings-age-level');
     if (catalogSelect) catalogSelect.value = normalized;
     if (settingsSelect) settingsSelect.value = normalized;
     if (persist) savePreferences({ ageLevel: normalized });
-    applyAgeFilter();
+    /* Der Wert wird hier programmatisch gesetzt, das löst kein change-Event aus.
+       Besitzt die Reifegrad-Schicht das Grid, muss sie darüber informiert
+       werden, sonst bliebe die Auswahl ohne sichtbare Wirkung. Das Flag
+       verhindert, dass der eigene change-Listener setAgeLevel erneut aufruft. */
+    if (releaseStructureOwnsGrid()) {
+      syncingAgeLevel = true;
+      try { catalogSelect?.dispatchEvent(new Event('change', { bubbles: true })); }
+      finally { syncingAgeLevel = false; }
+    } else applyAgeFilter();
   }
 
   function repairStatsFromHistory() {

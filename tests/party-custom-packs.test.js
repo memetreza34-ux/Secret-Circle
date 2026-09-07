@@ -3,6 +3,16 @@ const assert = require('node:assert/strict');
 const catalog = require('../party-routing.js');
 const packs = require('../party-custom-packs.js');
 
+/* Im Browser laufen vor party-custom-packs.js mehrere Wave-1-Layer, die
+   games/content einfrieren. Der Node-Katalog ist das nicht — genau deshalb
+   blieb ein Schreibzugriff auf den eingefrorenen Katalog hier unentdeckt und
+   brach party.html. Der Test friert die Basis darum bewusst ein. */
+Object.freeze(catalog.content);
+for (const value of Object.values(catalog.content)) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) Object.freeze(value);
+}
+const baseCharadesPacks = catalog.getPackNames('charades');
+
 function createMemoryStorage(initial = {}) {
   const values = new Map(Object.entries(initial));
   return {
@@ -21,7 +31,7 @@ function createMemoryStorage(initial = {}) {
   };
 }
 
-assert.equal(packs.version, 4);
+assert.equal(packs.version, 5);
 assert.equal(packs.storageKey, 'secret-circle-party-custom-packs-v1');
 assert.equal(packs.maxPacks, 30);
 assert.equal(packs.maxItems, 150);
@@ -46,7 +56,8 @@ const created = packs.addPack({
   items: ['Pinguin', 'Raumstation', 'Kaffeetasse', 'Pinguin']
 });
 assert.deepEqual(created.items, ['Pinguin', 'Raumstation', 'Kaffeetasse']);
-assert.deepEqual(catalog.getItems('charades', 'Eigene · Unsere Runde'), created.items);
+assert.deepEqual(packs.catalog.getItems('charades', 'Eigene · Unsere Runde'), created.items);
+assert.deepEqual(catalog.getPackNames('charades'), baseCharadesPacks, 'Basiskatalog darf nicht verändert werden');
 assert.throws(() => packs.addPack({
   gameId: 'charades', name: 'unsere runde', items: ['Eins', 'Zwei', 'Drei']
 }), /existiert bereits/);
@@ -55,16 +66,16 @@ const animePack = packs.addPack({
   gameId: 'anime-guess', name: 'Unsere Anime-Figuren',
   items: ['Eigene Figur A', 'Eigene Figur B', 'Eigene Figur C']
 });
-assert.deepEqual(catalog.getItems('anime-guess', 'Eigene · Unsere Anime-Figuren'), animePack.items);
+assert.deepEqual(packs.catalog.getItems('anime-guess', 'Eigene · Unsere Anime-Figuren'), animePack.items);
 assert.equal(packs.removePack(animePack.id), true);
-assert.ok(!catalog.getPackNames('anime-guess').includes('Eigene · Unsere Anime-Figuren'), 'removed pack must disappear from pack names');
+assert.ok(!packs.catalog.getPackNames('anime-guess').includes('Eigene · Unsere Anime-Figuren'), 'removed pack must disappear from pack names');
 
 const copy = packs.getPacks();
 copy[0].items.push('Manipulation');
 assert.equal(packs.getPacks()[0].items.includes('Manipulation'), false);
 assert.equal(packs.removePack(created.id), true);
 assert.equal(packs.removePack(created.id), false);
-assert.ok(!catalog.getPackNames('charades').includes('Eigene · Unsere Runde'), 'removed pack must disappear from pack names');
+assert.ok(!packs.catalog.getPackNames('charades').includes('Eigene · Unsere Runde'), 'removed pack must disappear from pack names');
 
 const storage = createMemoryStorage();
 const transactional = packs.createManager(storage);
@@ -72,7 +83,7 @@ const stable = transactional.addPack({
   gameId: 'who-am-i', name: 'Transaktion', items: ['Rakete', 'Satellit', 'Raumanzug']
 });
 assert.equal(transactional.getPacks().length, 1);
-assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Transaktion'), stable.items);
+assert.deepEqual(transactional.catalog.getItems('who-am-i', 'Eigene · Transaktion'), stable.items);
 const beforeFailure = storage.snapshot();
 
 storage.failWrites = true;
@@ -81,14 +92,14 @@ assert.throws(() => transactional.addPack({
 }), /konnten nicht gespeichert werden/);
 assert.deepEqual(storage.snapshot(), beforeFailure);
 assert.equal(transactional.getPacks().length, 1);
-assert.ok(!catalog.getPackNames('who-am-i').includes('Eigene · Darf nicht erscheinen'), 'rolled-back pack must not appear in pack names');
+assert.ok(!transactional.catalog.getPackNames('who-am-i').includes('Eigene · Darf nicht erscheinen'), 'rolled-back pack must not appear in pack names');
 assert.throws(() => transactional.removePack(stable.id), /konnten nicht gespeichert werden/);
 assert.equal(transactional.getPacks().length, 1);
-assert.deepEqual(catalog.getItems('who-am-i', 'Eigene · Transaktion'), stable.items);
+assert.deepEqual(transactional.catalog.getItems('who-am-i', 'Eigene · Transaktion'), stable.items);
 
 storage.failWrites = false;
 assert.equal(transactional.removePack(stable.id), true);
-assert.ok(!catalog.getPackNames('who-am-i').includes('Eigene · Transaktion'), 'removed pack must disappear from pack names');
+assert.ok(!transactional.catalog.getPackNames('who-am-i').includes('Eigene · Transaktion'), 'removed pack must disappear from pack names');
 
 const duplicateStorage = createMemoryStorage({
   'secret-circle-party-custom-packs-v1': JSON.stringify({
@@ -103,7 +114,7 @@ const duplicateStorage = createMemoryStorage({
 const normalized = packs.createManager(duplicateStorage);
 assert.equal(normalized.getPacks().length, 1);
 assert.equal(normalized.getPacks()[0].name, 'Doppelt');
-assert.deepEqual(catalog.getItems('word-chain', 'Eigene · Doppelt'), ['Alpha', 'Beta', 'Gamma']);
+assert.deepEqual(normalized.catalog.getItems('word-chain', 'Eigene · Doppelt'), ['Alpha', 'Beta', 'Gamma']);
 assert.equal(normalized.removePack('eins'), true);
 
 console.log(JSON.stringify({
