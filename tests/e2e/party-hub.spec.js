@@ -54,7 +54,7 @@ test('age preference filters and persists the visible catalog', async ({ page })
 test('truth or dare can be configured and played from the hub', async ({ page }) => {
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await page.locator('#game-search').fill('Wahrheit oder Pflicht');
-  await page.locator('[data-open-game="truth-dare"]').click();
+  await page.locator('[data-open-game="truth-dare"]:visible').click();
 
   await expect(page.locator('#detail-title')).toHaveText('Wahrheit oder Pflicht');
   await expect(page.locator('#detail-packs')).toContainText('Locker');
@@ -64,7 +64,7 @@ test('truth or dare can be configured and played from the hub', async ({ page })
 
   await expect(page.locator('#play-layer')).toBeVisible();
   await expect(page.locator('#play-player')).toContainText('Alex');
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
   await expect(page.locator('#play-content')).not.toHaveText('Wähle Wahrheit oder Pflicht.');
   await page.getByRole('button', { name: 'Erledigt · nächste Person' }).click();
   await expect(page.locator('#play-player')).toContainText('Sam');
@@ -103,7 +103,7 @@ test('shared players, presets and favorites persist locally', async ({ page }) =
 test('advanced Quick Trend and Viral Modes are all playable', async ({ page }) => {
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await page.locator('#game-search').fill('Mafia');
-  await page.locator('[data-open-game="mafia"]').click();
+  await page.locator('[data-open-game="mafia"]:visible').click();
   await expect(page.locator('#detail-badges')).toContainText('Jetzt spielbar');
   await page.getByRole('button', { name: 'Erweitertes Spiel öffnen' }).click();
   await expect(page).toHaveURL(/advanced\.html\?game=mafia/);
@@ -111,21 +111,21 @@ test('advanced Quick Trend and Viral Modes are all playable', async ({ page }) =
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Wellenlänge');
-  await page.locator('[data-open-game="wavelength"]').click();
+  await page.locator('[data-open-game="wavelength"]:visible').click();
   await page.getByRole('button', { name: 'Quick Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=wavelength/);
 
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Wer bin ich');
-  await page.locator('[data-open-game="who-am-i"]').click();
+  await page.locator('[data-open-game="who-am-i"]:visible').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=who-am-i/);
 
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Finger runter');
-  await page.locator('[data-open-game="put-a-finger-down"]').click();
+  await page.locator('[data-open-game="put-a-finger-down"]:visible').click();
   await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=put-a-finger-down/);
   await expect(page.getByRole('heading', { name: 'Finger runter' })).toBeVisible();

@@ -24,7 +24,7 @@ async function hubState(page) {
 
 test('opening an Advanced core game updates recent but never plays', async ({ page }) => {
   await seedHub(page);
-  await page.locator('[data-open-game="mafia"]').first().click();
+  await page.locator('[data-open-game="mafia"]:visible').first().click();
   await expect(page.locator('#detail-title')).toHaveText('Mafia');
 
   const navigation = page.waitForURL(/advanced\.html\?game=mafia$/);
@@ -40,12 +40,12 @@ test('opening an Advanced core game updates recent but never plays', async ({ pa
 test('a completed direct Hub round counts once and a zero-round finish counts zero', async ({ page }) => {
   await seedHub(page);
 
-  await page.locator('[data-open-game="truth-dare"]').first().click();
+  await page.locator('[data-open-game="truth-dare"]:visible').first().click();
   await expect(page.locator('#detail-title')).toHaveText('Wahrheit oder Pflicht');
   await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
   await page.getByRole('button', { name: /Erledigt.*nächste Person/ }).click();
   await expect(page.locator('#play-progress')).toContainText('1 Runden');
   await page.getByRole('button', { name: 'Beenden & speichern' }).click();
@@ -58,7 +58,7 @@ test('a completed direct Hub round counts once and a zero-round finish counts ze
   expect(state.history[0].id).toMatch(/^completion-hub-/);
   expect(state.stats['truth-dare']).toEqual({ plays: 1, rounds: 1, best: 0 });
 
-  await page.locator('[data-open-game="truth-dare"]').first().click();
+  await page.locator('[data-open-game="truth-dare"]:visible').first().click();
   await page.locator('#start-selected-game').click();
   await page.getByRole('button', { name: 'Beenden & speichern' }).click();
 

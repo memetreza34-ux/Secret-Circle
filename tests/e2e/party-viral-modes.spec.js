@@ -18,7 +18,7 @@ test('Party Hub exposes 45 playable games and Viral Mode actions', async ({ page
   await expect(page.locator('#result-count')).toHaveText('45');
   await expect(page.locator('.game-card.playable')).toHaveCount(45);
   await page.locator('#game-search').fill('Finger runter');
-  await page.locator('[data-open-game="put-a-finger-down"]').click();
+  await page.locator('[data-open-game="put-a-finger-down"]:visible').click();
   await expect(page.getByRole('button', { name: 'Viral Mode öffnen' })).toBeVisible();
   await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=put-a-finger-down/);
@@ -103,7 +103,7 @@ test('completed Viral Mode records one history entry and one play', async ({ pag
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Satz beenden');
-  await page.locator('[data-open-game="finish-the-sentence"]').click();
+  await page.locator('[data-open-game="finish-the-sentence"]:visible').click();
   await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();
   await page.locator('#quick-rounds').selectOption('3');
   await page.getByRole('button', { name: 'Spiel starten' }).click();

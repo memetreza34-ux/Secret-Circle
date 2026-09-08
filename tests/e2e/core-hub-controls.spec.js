@@ -22,9 +22,9 @@ async function openCatalog(page) {
 }
 
 async function startGame(page, gameId) {
-  const opener = page.locator(`[data-open-game="${gameId}"]`).first();
+  const opener = page.locator(`[data-open-game="${gameId}"]:visible`).first();
   if (await opener.count() === 0) await openCatalog(page);
-  await page.locator(`[data-open-game="${gameId}"]`).first().click();
+  await page.locator(`[data-open-game="${gameId}"]:visible`).first().click();
   await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();
 }
@@ -40,7 +40,7 @@ test('personal hub games make voluntary skipping explicit during play', async ({
   await expect(page.locator('#hub-voluntary-play-note')).toContainText('ohne Begründung');
   await expect(page.locator('#skip-hub-round')).toHaveText('Überspringen · nächste Person');
   await expect(page.locator('#skip-hub-round')).toHaveAttribute('aria-label', /ohne Punkt/i);
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
   await expect(page.locator('#hub-voluntary-play-note')).toBeVisible();
 });
 
@@ -181,7 +181,7 @@ test('abort discards active progress and never writes history or stats', async (
 test('Escape uses the same confirmed discard path instead of silently saving', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
   page.once('dialog', dialog => dialog.accept());
   await page.keyboard.press('Escape');
   await expect(page.locator('#play-layer')).toBeHidden();

@@ -19,7 +19,7 @@ test('Party Hub exposes 45 playable games and dedicated Trend Mode actions', asy
   await expect(page.locator('#result-count')).toHaveText('45');
   await expect(page.locator('.game-card.playable')).toHaveCount(45);
   await page.locator('#game-search').fill('Anime-Figuren');
-  await page.locator('[data-open-game="anime-guess"]').click();
+  await page.locator('[data-open-game="anime-guess"]:visible').click();
   await expect(page.locator('#detail-title')).toHaveText('Anime-Figuren erraten');
   await expect(page.getByRole('button', { name: 'Trend Mode öffnen' })).toBeVisible();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
@@ -79,7 +79,7 @@ test('completed Trend Mode records one play and one history entry', async ({ pag
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Geld-Challenge');
-  await page.locator('[data-open-game="money-challenge"]').click();
+  await page.locator('[data-open-game="money-challenge"]:visible').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await page.locator('#quick-rounds').selectOption('3');
   await page.getByRole('button', { name: 'Spiel starten' }).click();

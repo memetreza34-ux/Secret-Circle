@@ -18,7 +18,7 @@ async function seedHub(page) {
 
 async function startGame(page, gameId) {
   await page.locator('#browse-games').click();
-  await page.locator(`[data-open-game="${gameId}"]`).first().click();
+  await page.locator(`[data-open-game="${gameId}"]:visible`).first().click();
   await expect(page.locator('#game-detail')).toBeVisible();
   await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();
@@ -36,7 +36,7 @@ function clockSeconds(text) {
 test('Truth or Dare restores the exact safe current card after reload', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
 
   const card = (await page.locator('#play-content').textContent())?.trim();
   expect(card).toBeTruthy();
@@ -61,14 +61,14 @@ test('Truth and Dare keep independent used-card index spaces', async ({ page }) 
   await seedHub(page);
   await startGame(page, 'truth-dare');
 
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
   const truth = await activeState(page);
   expect(truth.session.usedByPool.truth).toHaveLength(1);
   expect(truth.session.usedByPool.dare).toHaveLength(0);
   expect(truth.session.used).toHaveLength(0);
 
   await page.getByRole('button', { name: 'Erledigt · nächste Person' }).click();
-  await page.getByRole('button', { name: 'Pflicht' }).click();
+  await page.getByRole('button', { name: 'Pflicht', exact: true }).click();
   const dare = await activeState(page);
   expect(dare.session.usedByPool.truth).toEqual(truth.session.usedByPool.truth);
   expect(dare.session.usedByPool.dare).toHaveLength(1);
@@ -150,7 +150,7 @@ test('Paranoia reload preserves the already decided coin outcome without exposin
 test('cross-mode timer corruption is discarded instead of resuming the wrong game runner', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
 
   await page.evaluate(key => {
     const active = JSON.parse(localStorage.getItem(key));
@@ -172,7 +172,7 @@ test('cross-mode timer corruption is discarded instead of resuming the wrong gam
 test('v50 keeps resume actions disabled until the delayed guard finishes validation', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
 
   let releaseGuard;
   await page.route('**/party-hub-resume-guard.js', async route => {
@@ -202,7 +202,7 @@ test('v50 keeps resume actions disabled until the delayed guard finishes validat
 test('v50 fails closed when the Hub resume guard cannot load', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
 
   await page.route('**/party-hub-resume-guard.js', route => route.abort('failed'));
   await page.reload();
@@ -283,7 +283,7 @@ test('Word Chain restores its letter and paused remaining time', async ({ page }
 test('discarding a restored Hub session never creates history or stats', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit' }).click();
+  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
   await page.reload();
   await expect(page.locator('#hub-resume-session')).toBeVisible();
 

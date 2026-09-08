@@ -18,7 +18,7 @@ async function seedHub(page) {
 
 async function startGame(page, gameId) {
   await page.locator('#browse-games').click();
-  await page.locator(`[data-open-game="${gameId}"]`).first().click();
+  await page.locator(`[data-open-game="${gameId}"]:visible`).first().click();
   await expect(page.locator('#game-detail')).toBeVisible();
   await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();

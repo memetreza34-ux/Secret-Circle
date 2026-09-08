@@ -36,7 +36,7 @@ test('custom pack editor validates saves and exposes cards in the selected game'
 
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Scharade');
-  await page.locator('[data-open-game="charades"]').click();
+  await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs')).toContainText('Eigene · Unsere Gruppe');
   await page.locator('#pack-select').selectOption('Eigene · Unsere Gruppe');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
@@ -110,7 +110,7 @@ test('custom pack markup stays text in editor details and gameplay', async ({ pa
 
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Scharade');
-  await page.locator('[data-open-game="charades"]').click();
+  await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs img, #detail-packs script, #detail-packs svg')).toHaveCount(0);
   const ownOption = page.locator('#pack-select option').filter({ hasText: 'Eigene · <img' });
   await expect(ownOption).toHaveCount(1);
@@ -141,7 +141,7 @@ test('failed custom pack write leaves storage and catalog unchanged', async ({ p
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-party-custom-packs-v1'))).toBeNull();
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Scharade');
-  await page.locator('[data-open-game="charades"]').click();
+  await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs')).not.toContainText('Nicht gespeichert');
 });
 
@@ -173,6 +173,6 @@ test('failed custom pack deletion keeps the pack visible and playable', async ({
 
   await page.getByRole('button', { name: 'Spiele' }).click();
   await page.locator('#game-search').fill('Scharade');
-  await page.locator('[data-open-game="charades"]').click();
+  await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs')).toContainText('Eigene · Bleibt erhalten');
 });

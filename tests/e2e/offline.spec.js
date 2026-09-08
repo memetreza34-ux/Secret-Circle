@@ -72,7 +72,7 @@ test('offline Party Hub can create a Party Night plan and run a prompt game', as
   await expect(page.locator('.party-night-step')).toHaveCount(2);
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await page.locator('#game-search').fill('Entweder oder');
-  await page.locator('[data-open-game="would-rather"]').click();
+  await page.locator('[data-open-game="would-rather"]:visible').click();
   await page.getByRole('button', { name: 'Jetzt spielen' }).click();
   await expect(page.locator('#play-layer')).toBeVisible();
 });

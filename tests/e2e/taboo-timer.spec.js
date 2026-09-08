@@ -17,7 +17,7 @@ async function seedHub(page) {
 }
 
 async function startTaboo(page) {
-  await page.locator('[data-open-game="taboo"]').first().click();
+  await page.locator('[data-open-game="taboo"]:visible').first().click();
   await page.locator('#start-selected-game').click();
   await page.getByRole('button', { name: '60-Sekunden-Runde starten' }).click();
   await expect(page.locator('.timer-display')).toBeVisible();

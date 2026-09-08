@@ -20,7 +20,7 @@ test('Party Hub exposes 45 playable games and accurate Quick Mode actions', asyn
   await expect(page.locator('.game-card.playable')).toHaveCount(45);
   await expect(page.locator('.game-card.planned')).toHaveCount(0);
 
-  await page.locator('[data-game-id="wavelength"] [data-open-game="wavelength"]').click();
+  await page.locator('[data-game-id="wavelength"] [data-open-game="wavelength"]:visible').click();
   await expect(page.locator('#detail-title')).toHaveText('Wellenlänge');
   await expect(page.locator('#start-selected-game')).toHaveText('Quick Mode öffnen');
   await page.locator('#start-selected-game').click();
