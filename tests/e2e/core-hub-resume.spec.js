@@ -152,6 +152,10 @@ test('cross-mode timer corruption is discarded instead of resuming the wrong gam
   await startGame(page, 'truth-dare');
   await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
 
+  /* Abseits des Hubs bearbeiten: party.html schreibt seine aktive Session im
+     pagehide-Handler zurueck und macht eine Bearbeitung vor dem Neuladen
+     wieder rueckgaengig. */
+  await page.goto('/privacy.html');
   await page.evaluate(key => {
     const active = JSON.parse(localStorage.getItem(key));
     active.session.running = true;
@@ -162,139 +166,146 @@ test('cross-mode timer corruption is discarded instead of resuming the wrong gam
     localStorage.setItem(key, JSON.stringify(active));
   }, ACTIVE_KEY);
 
-  await page.reload();
+  await page.goto('/party.html');
   await expect(page.locator('#play-layer')).toBeHidden();
   await expect(page.locator('#hub-resume-session')).toHaveCount(0);
   await expect(page.locator('#hub-status')).toContainText('inkonsistenter Timer-Spielstand');
   expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).toBeNull();
 });
 
-test('v50 keeps resume actions disabled until the delayed guard finishes validation', async ({ page }) => {
-  await seedHub(page);
-  await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
+/* Ohne Service Worker: Er liefert party-hub-resume-guard.js aus dem Cache und
+   umgeht damit die hier simulierte Verzoegerung. Geprueft wird das Verhalten
+   beim ersten, ungecachten Aufruf. */
+test.describe('Resume-Schutz ohne Cache', () => {
+  test.use({ serviceWorkers: 'block' });
 
-  let releaseGuard;
-  await page.route('**/party-hub-resume-guard.js', async route => {
-    await new Promise(resolve => { releaseGuard = resolve; });
-    await route.continue();
+  test('v50 keeps resume actions disabled until the delayed guard finishes validation', async ({ page }) => {
+    await seedHub(page);
+    await startGame(page, 'truth-dare');
+    await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
+
+    let releaseGuard;
+    await page.route('**/party-hub-resume-guard.js', async route => {
+      await new Promise(resolve => { releaseGuard = resolve; });
+      await route.continue();
+    });
+
+    await page.reload({ waitUntil: 'commit' });
+    const resume = page.locator('#hub-resume-session');
+    const resumeButton = page.getByRole('button', { name: 'Session fortsetzen' });
+    const discardButton = page.getByRole('button', { name: 'Gespeicherten Stand verwerfen' });
+
+    await expect(resume).toBeVisible();
+    await expect(resume).toHaveAttribute('aria-busy', 'true');
+    await expect(resumeButton).toBeDisabled();
+    await expect(discardButton).toBeDisabled();
+    expect(typeof releaseGuard).toBe('function');
+
+    releaseGuard();
+
+    await expect(resume).not.toHaveAttribute('aria-busy', 'true');
+    await expect(resumeButton).toBeEnabled();
+    await expect(discardButton).toBeEnabled();
+    expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).not.toBeNull();
   });
 
-  await page.reload({ waitUntil: 'commit' });
-  const resume = page.locator('#hub-resume-session');
-  const resumeButton = page.getByRole('button', { name: 'Session fortsetzen' });
-  const discardButton = page.getByRole('button', { name: 'Gespeicherten Stand verwerfen' });
+  test('v50 fails closed when the Hub resume guard cannot load', async ({ page }) => {
+    await seedHub(page);
+    await startGame(page, 'truth-dare');
+    await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
 
-  await expect(resume).toBeVisible();
-  await expect(resume).toHaveAttribute('aria-busy', 'true');
-  await expect(resumeButton).toBeDisabled();
-  await expect(discardButton).toBeDisabled();
-  expect(typeof releaseGuard).toBe('function');
+    await page.route('**/party-hub-resume-guard.js', route => route.abort('failed'));
+    await page.reload();
 
-  releaseGuard();
+    await expect(page.locator('#play-layer')).toBeHidden();
+    await expect(page.locator('#hub-resume-session')).toHaveCount(0);
+    await expect(page.locator('#hub-status')).toContainText('Resume-Schutz konnte nicht geladen werden');
+    expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).not.toBeNull();
+  });
 
-  await expect(resume).not.toHaveAttribute('aria-busy', 'true');
-  await expect(resumeButton).toBeEnabled();
-  await expect(discardButton).toBeEnabled();
-  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).not.toBeNull();
-});
+  test('Charades restores the remaining time paused and continues from that value', async ({ page }) => {
+    await seedHub(page);
+    await startGame(page, 'charades');
+    await page.getByRole('button', { name: 'Runde starten' }).click();
+    await page.waitForTimeout(1200);
+    await page.reload();
 
-test('v50 fails closed when the Hub resume guard cannot load', async ({ page }) => {
-  await seedHub(page);
-  await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
+    const stored = await activeState(page);
+    expect(stored.session.timer.kind).toBe('charades');
+    expect(stored.session.timer.phase).toBe('running');
+    expect(stored.session.timer.remainingMs).toBeGreaterThan(0);
+    expect(stored.session.timer.remainingMs).toBeLessThan(60_000);
 
-  await page.route('**/party-hub-resume-guard.js', route => route.abort('failed'));
-  await page.reload();
+    await page.getByRole('button', { name: 'Session fortsetzen' }).click();
+    const pause = page.locator('#pause-hub-game');
+    await expect(pause).toBeEnabled();
+    await expect(pause).toHaveText('Fortsetzen');
+    const timer = page.locator('#play-actions .timer-display').first();
+    const frozen = clockSeconds(await timer.textContent());
+    await page.waitForTimeout(900);
+    expect(clockSeconds(await timer.textContent())).toBe(frozen);
 
-  await expect(page.locator('#play-layer')).toBeHidden();
-  await expect(page.locator('#hub-resume-session')).toHaveCount(0);
-  await expect(page.locator('#hub-status')).toContainText('Resume-Schutz konnte nicht geladen werden');
-  expect(await page.evaluate(key => localStorage.getItem(key), ACTIVE_KEY)).not.toBeNull();
-});
+    await pause.click();
+    await expect(pause).toHaveText('Pause');
+    await page.waitForTimeout(1200);
+    expect(clockSeconds(await timer.textContent())).toBeLessThan(frozen);
+  });
 
-test('Charades restores the remaining time paused and continues from that value', async ({ page }) => {
-  await seedHub(page);
-  await startGame(page, 'charades');
-  await page.getByRole('button', { name: 'Runde starten' }).click();
-  await page.waitForTimeout(1200);
-  await page.reload();
+  test('Hot Potato restores a hidden random remainder without exposing a countdown', async ({ page }) => {
+    await seedHub(page);
+    await startGame(page, 'hot-potato');
+    await page.getByRole('button', { name: 'Zufallstimer starten' }).click();
+    await page.waitForTimeout(800);
+    await page.reload();
 
-  const stored = await activeState(page);
-  expect(stored.session.timer.kind).toBe('charades');
-  expect(stored.session.timer.phase).toBe('running');
-  expect(stored.session.timer.remainingMs).toBeGreaterThan(0);
-  expect(stored.session.timer.remainingMs).toBeLessThan(60_000);
+    const stored = await activeState(page);
+    expect(stored.session.timer.kind).toBe('hot-potato');
+    expect(stored.session.timer.remainingMs).toBeGreaterThan(0);
+    expect(stored.session.timer.remainingMs).toBeLessThanOrEqual(25_000);
 
-  await page.getByRole('button', { name: 'Session fortsetzen' }).click();
-  const pause = page.locator('#pause-hub-game');
-  await expect(pause).toBeEnabled();
-  await expect(pause).toHaveText('Fortsetzen');
-  const timer = page.locator('#play-actions .timer-display').first();
-  const frozen = clockSeconds(await timer.textContent());
-  await page.waitForTimeout(900);
-  expect(clockSeconds(await timer.textContent())).toBe(frozen);
+    await page.getByRole('button', { name: 'Session fortsetzen' }).click();
+    await expect(page.locator('#pause-hub-game')).toHaveText('Fortsetzen');
+    await expect(page.locator('#play-actions .timer-display').first()).toHaveText('●');
+    await expect(page.locator('#play-actions span[hidden]')).toBeHidden();
+  });
 
-  await pause.click();
-  await expect(pause).toHaveText('Pause');
-  await page.waitForTimeout(1200);
-  expect(clockSeconds(await timer.textContent())).toBeLessThan(frozen);
-});
+  test('Word Chain restores its letter and paused remaining time', async ({ page }) => {
+    await seedHub(page);
+    await startGame(page, 'word-chain');
+    const startText = await page.locator('#play-content').textContent();
+    const letter = startText.match(/Startbuchstabe:\s*(\S+)/)?.[1];
+    expect(letter).toBeTruthy();
+    await page.getByRole('button', { name: '30-Sekunden-Runde starten' }).click();
+    await page.waitForTimeout(800);
+    await page.reload();
 
-test('Hot Potato restores a hidden random remainder without exposing a countdown', async ({ page }) => {
-  await seedHub(page);
-  await startGame(page, 'hot-potato');
-  await page.getByRole('button', { name: 'Zufallstimer starten' }).click();
-  await page.waitForTimeout(800);
-  await page.reload();
+    const stored = await activeState(page);
+    expect(stored.session.timer.kind).toBe('word-chain');
+    expect(stored.session.timer.letter).toBe(letter);
+    expect(stored.session.timer.remainingMs).toBeGreaterThan(0);
+    expect(stored.session.timer.remainingMs).toBeLessThan(30_000);
 
-  const stored = await activeState(page);
-  expect(stored.session.timer.kind).toBe('hot-potato');
-  expect(stored.session.timer.remainingMs).toBeGreaterThan(0);
-  expect(stored.session.timer.remainingMs).toBeLessThanOrEqual(25_000);
+    await page.getByRole('button', { name: 'Session fortsetzen' }).click();
+    await expect(page.locator('#play-content')).toContainText(`Start mit ${letter}`);
+    await expect(page.locator('#pause-hub-game')).toHaveText('Fortsetzen');
+  });
 
-  await page.getByRole('button', { name: 'Session fortsetzen' }).click();
-  await expect(page.locator('#pause-hub-game')).toHaveText('Fortsetzen');
-  await expect(page.locator('#play-actions .timer-display').first()).toHaveText('●');
-  await expect(page.locator('#play-actions span[hidden]')).toBeHidden();
-});
+  test('discarding a restored Hub session never creates history or stats', async ({ page }) => {
+    await seedHub(page);
+    await startGame(page, 'truth-dare');
+    await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
+    await page.reload();
+    await expect(page.locator('#hub-resume-session')).toBeVisible();
 
-test('Word Chain restores its letter and paused remaining time', async ({ page }) => {
-  await seedHub(page);
-  await startGame(page, 'word-chain');
-  const startText = await page.locator('#play-content').textContent();
-  const letter = startText.match(/Startbuchstabe:\s*(\S+)/)?.[1];
-  expect(letter).toBeTruthy();
-  await page.getByRole('button', { name: '30-Sekunden-Runde starten' }).click();
-  await page.waitForTimeout(800);
-  await page.reload();
+    page.once('dialog', dialog => dialog.accept());
+    await page.getByRole('button', { name: 'Gespeicherten Stand verwerfen' }).click();
 
-  const stored = await activeState(page);
-  expect(stored.session.timer.kind).toBe('word-chain');
-  expect(stored.session.timer.letter).toBe(letter);
-  expect(stored.session.timer.remainingMs).toBeGreaterThan(0);
-  expect(stored.session.timer.remainingMs).toBeLessThan(30_000);
-
-  await page.getByRole('button', { name: 'Session fortsetzen' }).click();
-  await expect(page.locator('#play-content')).toContainText(`Start mit ${letter}`);
-  await expect(page.locator('#pause-hub-game')).toHaveText('Fortsetzen');
-});
-
-test('discarding a restored Hub session never creates history or stats', async ({ page }) => {
-  await seedHub(page);
-  await startGame(page, 'truth-dare');
-  await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
-  await page.reload();
-  await expect(page.locator('#hub-resume-session')).toBeVisible();
-
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Gespeicherten Stand verwerfen' }).click();
-
-  const result = await page.evaluate(({ hubKey, activeKey }) => ({
-    active: localStorage.getItem(activeKey),
-    hub: JSON.parse(localStorage.getItem(hubKey))
-  }), { hubKey: HUB_KEY, activeKey: ACTIVE_KEY });
-  expect(result.active).toBeNull();
-  expect(result.hub.history).toHaveLength(0);
-  expect(result.hub.stats['truth-dare']).toBeUndefined();
+    const result = await page.evaluate(({ hubKey, activeKey }) => ({
+      active: localStorage.getItem(activeKey),
+      hub: JSON.parse(localStorage.getItem(hubKey))
+    }), { hubKey: HUB_KEY, activeKey: ACTIVE_KEY });
+    expect(result.active).toBeNull();
+    expect(result.hub.history).toHaveLength(0);
+    expect(result.hub.stats['truth-dare']).toBeUndefined();
+  });
 });
