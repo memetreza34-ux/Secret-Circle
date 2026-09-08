@@ -65,7 +65,7 @@ test('Rapid Fire finishes three rounds and records history and statistics', asyn
 
   for (let round = 1; round <= 3; round += 1) {
     await page.getByRole('button', { name: /Sekunden starten/ }).click();
-    await page.getByRole('button', { name: /geschafft/ }).click();
+    await page.getByRole('button', { name: /^\d+ geschafft$/ }).click();
     await expect(page.locator('#quick-content')).toContainText('Geschafft');
     await page.getByRole('button', { name: 'Nächste Challenge' }).click();
   }
