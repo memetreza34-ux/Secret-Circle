@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
   await page.locator('#match-rounds').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
 });
 
 test('secret card is concealed and sensitive text is cleared when the app loses focus', async ({ page }) => {

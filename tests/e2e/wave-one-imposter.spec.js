@@ -21,7 +21,7 @@ async function startGame(page, gameId, pack) {
   await expect(page.locator('#quick-group')).toContainText('Labs');
   await page.locator('#quick-pack').selectOption(pack);
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start-selected-game').click();
   await expect(page.locator('#quick-play')).toBeVisible();
 }
 
@@ -114,7 +114,7 @@ test('Wave 1 Imposter games use the same Quick-family replacement protection', a
     expect(dialog.message()).toContain('Imposter ohne Wort');
     dialog.dismiss();
   });
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
 
   const preserved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
   expect(preserved.gameId).toBe('undercover-similar-word');

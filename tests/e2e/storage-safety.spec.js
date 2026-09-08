@@ -15,7 +15,7 @@ test('malformed local JSON is discarded without breaking startup', async ({ page
   await page.reload();
 
   await expect(page.locator('#setup-screen')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled();
   await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
   await expect(page.locator('#history-list')).toContainText('Noch keine abgeschlossenen Runden');
   await expect(page.locator('#resume-box')).toBeHidden();

@@ -39,7 +39,7 @@ test('custom pack editor validates saves and exposes cards in the selected game'
   await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs')).toContainText('Eigene · Unsere Gruppe');
   await page.locator('#pack-select').selectOption('Eigene · Unsere Gruppe');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();
   await page.getByRole('button', { name: 'Runde starten' }).click();
   await expect(page.locator('#play-content')).toHaveText(/Pinguin|Raumstation|Kaffeetasse/);
@@ -115,7 +115,7 @@ test('custom pack markup stays text in editor details and gameplay', async ({ pa
   const ownOption = page.locator('#pack-select option').filter({ hasText: 'Eigene · <img' });
   await expect(ownOption).toHaveCount(1);
   await page.locator('#pack-select').selectOption({ label: await ownOption.textContent() });
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start-selected-game').click();
   await page.getByRole('button', { name: 'Runde starten' }).click();
   await expect(page.locator('#play-content img, #play-content script, #play-content svg')).toHaveCount(0);
   await expect(page.locator('#play-content')).toContainText(/<script>|<b|<svg/);

@@ -49,8 +49,8 @@ test('service worker caches the complete v30 core including Creator guidance and
 
   await context.setOffline(true);
   await page.goto('/party.html');
-  await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('45');
+  await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
+  await expect(page.locator('#playable-count')).toHaveText('55');
   await expect(page.getByRole('heading', { name: 'In drei Schritten zur ersten Runde' })).toBeVisible();
   await page.goto('/creator.html');
   await expect(page.getByRole('heading', { name: 'Eigenes Spiel erstellen' })).toBeVisible();
@@ -98,7 +98,7 @@ test('Creator can save launch and resume a custom game completely offline', asyn
   await page.getByRole('button', { name: 'Eigenes Spiel starten' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('.choice-card')).toHaveCount(2);
   await page.locator('.choice-card').first().click();
   await page.getByRole('button', { name: 'Nächste Entscheidung' }).click();
@@ -115,7 +115,7 @@ test('advanced Question Imposter starts completely offline', async ({ page, cont
   await context.setOffline(true);
   await page.goto('/advanced.html?game=question-imposter');
   await expect(page.getByRole('heading', { name: /Question Imposter/ })).toBeVisible();
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
   await expect(page.locator('#advanced-play-layer')).toBeVisible();
 });
 
@@ -125,7 +125,7 @@ test('classic Wavelength Quick Mode starts and resumes offline', async ({ page, 
   await waitForWorker(page);
   await context.setOffline(true);
   await page.goto('/quick-play.html?game=wavelength');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
@@ -139,7 +139,7 @@ test('Anime Trend Mode starts and resumes completely offline', async ({ page, co
   await context.setOffline(true);
   await page.goto('/quick-play.html?game=anime-guess');
   await expect(page.getByRole('heading', { name: 'Anime-Figuren erraten' })).toBeVisible();
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
   await expect(page.locator('.challenge-card')).not.toHaveText('');
   await page.reload();
@@ -154,7 +154,7 @@ test('Price Guess Viral Mode starts and resumes completely offline', async ({ pa
   await context.setOffline(true);
   await page.goto('/quick-play.html?game=guess-the-price');
   await expect(page.getByRole('heading', { name: 'Preis schätzen' })).toBeVisible();
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await page.locator('input[type="number"]').fill('50');
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
@@ -167,7 +167,7 @@ test('offline mode preserves a locally saved active Imposter game', async ({ pag
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
   await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
   await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
   await waitForWorker(page);

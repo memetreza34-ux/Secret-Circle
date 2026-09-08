@@ -39,7 +39,7 @@ test('discussion requests a screen wake lock and releases it before voting', asy
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
   await page.locator('#match-rounds').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
   await revealAll(page);
 
   await expect(page.locator('#round-screen')).toBeVisible();
@@ -61,7 +61,7 @@ test('wake lock remains an optional enhancement when the API is unavailable', as
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
   await revealAll(page);
 
   await expect(page.locator('#round-screen')).toBeVisible();

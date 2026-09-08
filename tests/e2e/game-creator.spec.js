@@ -67,7 +67,7 @@ test('creates a custom choice game and opens it through the resumable Creator pl
   await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
   await expect(page.getByRole('heading', { name: 'Unser Anime Duell' })).toBeVisible();
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('.choice-card')).toHaveCount(2);
   await page.locator('.choice-card').first().click();
   await expect(page.locator('.choice-result')).toContainText('Gewählt:');

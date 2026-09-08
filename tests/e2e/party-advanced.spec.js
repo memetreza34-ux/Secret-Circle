@@ -21,7 +21,7 @@ test('two truths and a lie supports private entry group voting and round persist
   await page.goto('/advanced.html?game=two-truths');
   await expect(page.getByRole('heading', { name: /Zwei Wahrheiten/ })).toBeVisible();
   await page.locator('#advanced-length').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
 
   const inputs = page.locator('.advanced-form input');
   await inputs.nth(0).fill('Ich war schon in Rom');
@@ -48,7 +48,7 @@ test('two truths and a lie supports private entry group voting and round persist
 test('question imposter privately distributes similar questions and resolves a vote', async ({ page }) => {
   await configurePlayers(page, ['Alex', 'Sam', 'Mika', 'Lina']);
   await page.goto('/advanced.html?game=question-imposter');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
 
   for (let index = 0; index < 4; index += 1) {
     await page.getByRole('button', { name: 'Meine Frage anzeigen' }).click();
@@ -67,7 +67,7 @@ test('question imposter privately distributes similar questions and resolves a v
 test('location spy distributes secret roles and provides a location guess resolution', async ({ page }) => {
   await configurePlayers(page, ['Alex', 'Sam', 'Mika', 'Lina']);
   await page.goto('/advanced.html?game=location-spy');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
 
   for (let index = 0; index < 4; index += 1) {
     await page.getByRole('button', { name: 'Karte anzeigen' }).click();
@@ -83,7 +83,7 @@ test('location spy distributes secret roles and provides a location guess resolu
 test('mafia deals private roles and opens a protected moderator overview', async ({ page }) => {
   await configurePlayers(page, ['Alex', 'Sam', 'Mika', 'Lina', 'Noah', 'Aylin']);
   await page.goto('/advanced.html?game=mafia');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
 
   for (let index = 0; index < 6; index += 1) {
     await page.getByRole('button', { name: 'Meine Rolle anzeigen' }).click();
@@ -100,7 +100,7 @@ test('mafia deals private roles and opens a protected moderator overview', async
 test('advanced sessions survive a reload and can be resumed', async ({ page }) => {
   await configurePlayers(page, ['Alex', 'Sam', 'Mika']);
   await page.goto('/advanced.html?game=two-truths');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
   await expect(page.locator('#advanced-play-layer')).toBeVisible();
   await page.reload();
   await expect(page.getByRole('button', { name: /Session fortsetzen/ })).toBeVisible();
@@ -113,7 +113,7 @@ test('resumed sessions keep their original player snapshot after the shared lobb
   const originalPlayers = ['Alex', 'Sam', 'Mika', 'Lina'];
   await configurePlayers(page, originalPlayers);
   await page.goto('/advanced.html?game=question-imposter');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
   await expect(page.locator('#play-player')).toContainText('Alex');
 
   await page.evaluate(() => {
@@ -135,7 +135,7 @@ test('resumed sessions keep their original player snapshot after the shared lobb
 test('a failed history write keeps the completed session active and recoverable', async ({ page }) => {
   await configurePlayers(page, ['Alex', 'Sam', 'Mika']);
   await page.goto('/advanced.html?game=two-truths');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
   await page.evaluate(() => {
     const active = JSON.parse(localStorage.getItem('secret-circle-party-active-v1'));
     active.session.rounds = active.session.targetRounds;

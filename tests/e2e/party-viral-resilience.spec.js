@@ -32,7 +32,7 @@ test('corrupted Viral snapshots are ignored without breaking setup', async ({ pa
   await page.goto('/quick-play.html?game=guess-the-price');
   await expect(page.locator('#quick-setup')).toBeVisible();
   await expect(page.locator('#quick-resume-box')).toBeHidden();
-  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
+  await expect(page.locator('#quick-start')).toBeEnabled();
 });
 
 test('malicious-looking names remain plain text in Viral results', async ({ page }) => {
@@ -40,7 +40,7 @@ test('malicious-looking names remain plain text in Viral results', async ({ page
   await seedPlayers(page, [malicious, 'Sam', 'Mika']);
   await page.goto('/quick-play.html?game=finish-the-sentence');
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   for (let round = 0; round < 3; round += 1) {
     await page.getByRole('button', { name: 'Kreativer Treffer' }).click();
     await page.getByRole('button', { name: 'Nächster Satz' }).click();
@@ -55,7 +55,7 @@ test('malicious-looking names remain plain text in Viral results', async ({ page
 test('price guesses are clamped to the supported safe range', async ({ page }) => {
   await seedPlayers(page);
   await page.goto('/quick-play.html?game=guess-the-price');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   const input = page.locator('input[type="number"]');
   await expect(input).toHaveAttribute('min', '0');
   await expect(input).toHaveAttribute('max', '100000');
@@ -67,7 +67,7 @@ test('price guesses are clamped to the supported safe range', async ({ page }) =
 test('Who Knows Me Best never reveals the secret choice during group voting', async ({ page }) => {
   await seedPlayers(page, ['Alex', 'Sam', 'Mika']);
   await page.goto('/quick-play.html?game=know-me-best');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   const options = page.locator('#quick-actions button');
   const secretLabel = await options.first().textContent();
   await options.first().click();
@@ -83,8 +83,8 @@ test('Viral Mode controls remain keyboard reachable and labelled', async ({ page
     .filter(control => !(control.labels?.length || control.getAttribute('aria-label') || control.getAttribute('aria-labelledby')))
     .map(control => control.id || control.type));
   expect(unlabeled).toEqual([]);
-  await page.getByRole('button', { name: 'Spiel starten' }).focus();
-  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeFocused();
+  await page.locator('#quick-start').focus();
+  await expect(page.locator('#quick-start')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('input[type="number"]')).toBeVisible();
   await page.locator('input[type="number"]').focus();

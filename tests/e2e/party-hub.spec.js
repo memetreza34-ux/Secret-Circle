@@ -13,19 +13,19 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
-test('party hub exposes a clear 45-game playable catalog', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('45');
+test('party hub exposes a clear 55-game playable catalog', async ({ page }) => {
+  await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
+  await expect(page.locator('#playable-count')).toHaveText('55');
   await expect(page.locator('#planned-count')).toHaveText('0');
   await expect(page.locator('#content-count')).not.toHaveText('0');
 
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
-  await expect(page.getByRole('heading', { name: 'Alle Spiele' })).toBeVisible();
-  await expect(page.locator('#result-count')).toHaveText('45');
+  await expect(page.getByRole('heading', { name: 'Kernspiele, Erweiterungen & Labs' })).toBeVisible();
+  await expect(page.locator('#result-count')).toHaveText('55');
   await expect(page.locator('.game-card')).toHaveCount(45);
 
   await page.locator('#status-filter').selectOption('playable');
-  await expect(page.locator('#result-count')).toHaveText('45');
+  await expect(page.locator('#result-count')).toHaveText('55');
   await page.locator('#game-search').fill('Scharade');
   await expect(page.locator('#result-count')).toHaveText('1');
   await expect(page.getByRole('heading', { name: 'Scharade' })).toBeVisible();
@@ -36,19 +36,19 @@ test('age preference filters and persists the visible catalog', async ({ page })
   await page.locator('#age-filter').selectOption('family');
   const visibleCards = page.locator('.game-card:not([hidden])');
   await expect(visibleCards).not.toHaveCount(0);
-  await expect(page.locator('[data-game-id="truth-dare"]')).toBeHidden();
-  await expect(page.locator('[data-game-id="charades"]')).toBeVisible();
+  await expect(page.locator('#game-grid [data-game-id="truth-dare"]')).toBeHidden();
+  await expect(page.locator('#game-grid [data-game-id="charades"]')).toBeVisible();
 
   await page.reload();
   await page.getByRole('button', { name: 'Spiele' }).click();
   await expect(page.locator('#age-filter')).toHaveValue('family');
-  await expect(page.locator('[data-game-id="truth-dare"]')).toBeHidden();
+  await expect(page.locator('#game-grid [data-game-id="truth-dare"]')).toBeHidden();
 
   await page.getByRole('button', { name: 'Daten' }).click();
   await expect(page.locator('#settings-age-level')).toHaveValue('family');
   await page.locator('#settings-age-level').selectOption('all');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await expect(page.locator('[data-game-id="truth-dare"]')).toBeVisible();
+  await expect(page.locator('#game-grid [data-game-id="truth-dare"]')).toBeVisible();
 });
 
 test('truth or dare can be configured and played from the hub', async ({ page }) => {
@@ -60,7 +60,7 @@ test('truth or dare can be configured and played from the hub', async ({ page })
   await expect(page.locator('#detail-packs')).toContainText('Locker');
   await expect(page.locator('#detail-packs')).toContainText('Chaos');
   await page.locator('#pack-select').selectOption('Lustig');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start-selected-game').click();
 
   await expect(page.locator('#play-layer')).toBeVisible();
   await expect(page.locator('#play-player')).toContainText('Alex');
@@ -142,5 +142,5 @@ test('party hub links back to the production word imposter flow', async ({ page 
   await page.getByRole('link', { name: 'Word Imposter direkt' }).click();
   await expect(page).toHaveURL(/\/index\.html$/);
   await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeVisible();
+  await expect(page.locator('#quick-start')).toBeVisible();
 });

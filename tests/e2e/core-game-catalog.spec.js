@@ -44,7 +44,7 @@ test('assembled browser catalog keeps all 15 January core games valid', async ({
     };
   }, CORE);
 
-  expect(snapshot.total).toBe(45);
+  expect(snapshot.total).toBe(55);
   expect(snapshot.games).toHaveLength(15);
 
   for (const game of snapshot.games) {

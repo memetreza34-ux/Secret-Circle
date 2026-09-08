@@ -33,7 +33,7 @@ test('minimum setup supports three players and two imposters', async ({ page }) 
   await page.locator('#players').fill(playerNames(3).join('\n'));
   await page.locator('#imposters').fill('2');
   await page.locator('#match-rounds').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
 
   await expect(page.locator('#reveal-screen')).toBeVisible();
   const state = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
@@ -46,7 +46,7 @@ test('maximum setup supports twenty players and six imposters', async ({ page })
   await page.locator('#players').fill(playerNames(20).join('\n'));
   await page.locator('#imposters').fill('6');
   await page.locator('#match-rounds').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
 
   await expect(page.locator('#reveal-screen')).toBeVisible();
   const state = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
@@ -59,7 +59,7 @@ test('maximum setup supports twenty players and six imposters', async ({ page })
 test('more than twenty players is rejected without persisting a game', async ({ page }) => {
   await page.locator('#players').fill(playerNames(21).join('\n'));
   await expect(page.locator('#players-help')).toContainText('Höchstens 20');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
 
   await expect(page.locator('#setup-screen')).toBeVisible();
   await expect(page.locator('#status')).toContainText('Höchstens 20 Personen');
@@ -69,7 +69,7 @@ test('more than twenty players is rejected without persisting a game', async ({ 
 test('imposter count must remain below the player count', async ({ page }) => {
   await page.locator('#players').fill(playerNames(3).join('\n'));
   await page.locator('#imposters').fill('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
 
   await expect(page.locator('#setup-screen')).toBeVisible();
   await expect(page.locator('#status')).toContainText('kleiner als die Spielerzahl');

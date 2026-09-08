@@ -20,7 +20,7 @@ async function startGame(page, gameId, pack) {
   await expect(page.locator('#quick-title')).not.toHaveText('Spiel laden');
   await page.locator('#quick-pack').selectOption(pack);
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start-selected-game').click();
   await expect(page.locator('#quick-play')).toBeVisible();
 }
 
@@ -81,7 +81,7 @@ test('Wave 1 games share Quick-family replacement protection across games', asyn
     expect(dialog.message()).toContain('Fake oder Fakt');
     dialog.dismiss();
   });
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
 
   const preserved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
   expect(preserved.gameId).toBe('party-quiz');

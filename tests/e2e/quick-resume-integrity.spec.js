@@ -22,7 +22,7 @@ async function seedHub(page) {
 async function startGame(page, gameId) {
   await page.goto(`/quick-play.html?game=${encodeURIComponent(gameId)}`);
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start-selected-game').click();
   await expect(page.locator('#quick-play')).toBeVisible();
 }
 

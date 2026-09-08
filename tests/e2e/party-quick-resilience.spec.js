@@ -31,7 +31,7 @@ test('corrupted Quick Mode snapshots are ignored without breaking setup', async 
   await page.goto('/quick-play.html?game=wavelength');
   await expect(page.locator('#quick-setup')).toBeVisible();
   await expect(page.locator('#quick-resume-box')).toBeHidden();
-  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
+  await expect(page.locator('#quick-start')).toBeEnabled();
 });
 
 test('malicious-looking player names stay text in Quick Mode results', async ({ page }) => {
@@ -39,7 +39,7 @@ test('malicious-looking player names stay text in Quick Mode results', async ({ 
   await seedPlayers(page, [malicious, 'Sam', 'Mika']);
   await page.goto('/quick-play.html?game=caption-battle');
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   for (let round = 0; round < 3; round += 1) {
     await page.getByRole('button', { name: 'Captions sind bereit' }).click();
     await page.locator('#quick-controls select').selectOption(malicious);
@@ -60,8 +60,8 @@ test('Quick Mode setup and active round retain accessible labels and keyboard fo
     .map(control => control.id || control.type));
   expect(setupIssues).toEqual([]);
 
-  await page.getByRole('button', { name: 'Spiel starten' }).focus();
-  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeFocused();
+  await page.locator('#quick-start').focus();
+  await expect(page.locator('#quick-start')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#quick-play')).toBeVisible();
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).focus();
@@ -74,7 +74,7 @@ test('mobile Quick Mode controls meet touch and overflow gates', async ({ page, 
   test.skip(!isMobile, 'Nur für mobile Projekte relevant.');
   await seedPlayers(page);
   await page.goto('/quick-play.html?game=rapid-fire');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   const audit = await page.evaluate(() => {
     const undersized = [...document.querySelectorAll('button, a, input, select, summary')]
       .filter(node => {

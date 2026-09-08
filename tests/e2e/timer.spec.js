@@ -5,7 +5,7 @@ async function startDiscussion(page) {
   await page.locator('#players').fill(players.join('\n'));
   await page.locator('#duration').selectOption('1');
   await page.locator('#match-rounds').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
   for (let index = 0; index < players.length; index += 1) {
     await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
     await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();

@@ -12,12 +12,12 @@ async function configurePlayers(page, players = ['Alex', 'Sam', 'Mika', 'Lina'])
   }, players);
 }
 
-test('Party Hub exposes 45 playable games and accurate Quick Mode actions', async ({ page }) => {
+test('Party Hub exposes 55 playable games and accurate Quick Mode actions', async ({ page }) => {
   await configurePlayers(page);
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await expect(page.locator('#result-count')).toHaveText('45');
-  await expect(page.locator('.game-card.playable')).toHaveCount(45);
+  await expect(page.locator('#result-count')).toHaveText('55');
+  await expect(page.locator('.game-card.playable')).toHaveCount(55);
   await expect(page.locator('.game-card.planned')).toHaveCount(0);
 
   await page.locator('[data-game-id="wavelength"] [data-open-game="wavelength"]:visible').click();
@@ -32,7 +32,7 @@ test('Wavelength completes a round and persists a resumable session', async ({ p
   await configurePlayers(page);
   await page.goto('/quick-play.html?game=wavelength');
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('#quick-progress')).toContainText('Runde 1 von 3');
   await expect(page.locator('.spectrum-card strong')).toContainText('Ziel:');
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
@@ -61,7 +61,7 @@ test('Rapid Fire finishes three rounds and records history and statistics', asyn
   await configurePlayers(page);
   await page.goto('/quick-play.html?game=rapid-fire');
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
 
   for (let round = 1; round <= 3; round += 1) {
     await page.getByRole('button', { name: /Sekunden starten/ }).click();
@@ -94,7 +94,7 @@ test('all ten classic Quick Modes load original content without runtime errors',
     await expect(page.locator('#quick-title')).not.toHaveText('Spiel laden');
     await expect(page.locator('#quick-pack option')).not.toHaveCount(0);
     await expect(page.locator('#quick-content-count')).toContainText('Karten');
-    await page.getByRole('button', { name: 'Spiel starten' }).click();
+    await page.locator('#quick-start').click();
     await expect(page.locator('#quick-play')).toBeVisible();
     expect(await page.locator('script[src="party-quick-modes.js"]').count()).toBe(1);
     expect(await page.locator('script[src="party-mega-modes.js"]').count()).toBe(0);

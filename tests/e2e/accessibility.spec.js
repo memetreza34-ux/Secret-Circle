@@ -76,7 +76,7 @@ test('all Word Imposter phases retain focus and accessible controls', async ({ p
   const players = ['Alex', 'Sam', 'Mika'];
   await page.locator('#players').fill(players.join('\n'));
   await page.locator('#match-rounds').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
   await expect(page.locator('#reveal-screen')).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
   await expect(page.locator('#reveal-screen')).toBeFocused();
@@ -97,13 +97,13 @@ test('all Word Imposter phases retain focus and accessible controls', async ({ p
 
 test('Party Hub navigation catalog data and custom-pack editor satisfy structural gates', async ({ page }) => {
   await page.goto('/party.html');
-  await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
 
   await page.getByRole('button', { name: 'Spiele' }).focus();
   await expect(page.getByRole('button', { name: 'Spiele' })).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('heading', { name: 'Alle Spiele' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Kernspiele, Erweiterungen & Labs' })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
 
   await page.getByRole('button', { name: 'Daten' }).click();
@@ -124,7 +124,7 @@ test('advanced Question Imposter setup and private card screen satisfy structura
   await page.goto('/advanced.html?game=question-imposter');
   await expect(page.getByRole('heading', { name: /Question Imposter/ })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#advanced-start').click();
   await expect(page.locator('#advanced-play-layer')).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
   await page.getByRole('button', { name: 'Meine Frage anzeigen' }).focus();

@@ -33,7 +33,7 @@ test('malicious-looking player names stay text through reveal and voting', async
   const players = [maliciousPlayer, 'Sam', 'Mika'];
   await page.locator('#players').fill(players.join('\n'));
   await page.locator('#match-rounds').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
 
   for (let index = 0; index < players.length; index += 1) {
     await expect(page.locator('#player-name')).not.toContainText('[object Object]');

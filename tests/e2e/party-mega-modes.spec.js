@@ -11,13 +11,13 @@ async function seedHub(page, players = ['Alex', 'Sam', 'Mika', 'Lina']) {
   }, players);
 }
 
-test('Party Hub exposes 45 playable games and dedicated Trend Mode actions', async ({ page }) => {
+test('Party Hub exposes 55 playable games and dedicated Trend Mode actions', async ({ page }) => {
   await seedHub(page);
   await page.goto('/party.html');
-  await expect(page.locator('#playable-count')).toHaveText('45');
+  await expect(page.locator('#playable-count')).toHaveText('55');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await expect(page.locator('#result-count')).toHaveText('45');
-  await expect(page.locator('.game-card.playable')).toHaveCount(45);
+  await expect(page.locator('#result-count')).toHaveText('55');
+  await expect(page.locator('.game-card.playable')).toHaveCount(55);
   await page.locator('#game-search').fill('Anime-Figuren');
   await page.locator('[data-open-game="anime-guess"]:visible').click();
   await expect(page.locator('#detail-title')).toHaveText('Anime-Figuren erraten');
@@ -31,7 +31,7 @@ test('Anime fan quiz and Who Am I hide the identity before guessing', async ({ p
   await seedHub(page);
   await page.goto('/quick-play.html?game=anime-guess');
   await page.locator('#quick-pack').selectOption('Shōnen-Klassiker');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('#quick-content')).toContainText('ratende Person schaut weg');
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
   const animeName = await page.locator('.challenge-card').textContent();
@@ -45,7 +45,7 @@ test('Anime fan quiz and Who Am I hide the identity before guessing', async ({ p
   await page.evaluate(() => localStorage.removeItem('secret-circle-party-mega-active-v1'));
   await page.goto('/quick-play.html?game=who-am-i');
   await page.locator('#quick-pack').selectOption('Geschichte');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Identität der Gruppe zeigen' }).click();
   const identity = await page.locator('.challenge-card').textContent();
   await page.getByRole('button', { name: 'Verbergen und 60 Sekunden starten' }).click();
@@ -58,7 +58,7 @@ test('Blind Ranking fills all five positions and Money Challenge scores safely',
   await seedHub(page);
   await page.goto('/quick-play.html?game=blind-ranking');
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   for (const rank of [1, 2, 3, 4, 5]) await page.getByRole('button', { name: `Rang ${rank}` }).click();
   await expect(page.locator('.blind-ranking-result li')).toHaveCount(5);
   await expect(page.locator('#quick-score')).toContainText('1 Punkte');
@@ -66,7 +66,7 @@ test('Blind Ranking fills all five positions and Money Challenge scores safely',
   await page.evaluate(() => localStorage.removeItem('secret-circle-party-mega-active-v1'));
   await page.goto('/quick-play.html?game=money-challenge');
   await page.locator('#quick-pack').selectOption('Für 100 Euro');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('.money-amount')).toHaveText('100 €');
   await expect(page.locator('#quick-content')).toContainText('keine echte Zahlung');
   await page.getByRole('button', { name: 'Würde ich machen' }).click();
@@ -82,7 +82,7 @@ test('completed Trend Mode records one play and one history entry', async ({ pag
   await page.locator('[data-open-game="money-challenge"]:visible').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start-selected-game').click();
   for (let round = 0; round < 3; round += 1) await page.getByRole('button', { name: 'Würde ich machen' }).click();
   await expect(page.locator('#quick-result')).toBeVisible();
   const hub = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')));
@@ -104,7 +104,7 @@ test('all nine mega trend modes load category content through only the mega engi
     await page.goto(`/quick-play.html?game=${id}`);
     await expect(page.locator('#quick-title')).not.toHaveText('Spiel laden');
     await expect(page.locator('#quick-pack option')).not.toHaveCount(0);
-    await page.getByRole('button', { name: 'Spiel starten' }).click();
+    await page.locator('#start-selected-game').click();
     await expect(page.locator('#quick-play')).toBeVisible();
     expect(await page.locator('script[src="party-mega-modes.js"]').count()).toBe(1);
     expect(await page.locator('script[src="party-quick-modes.js"]').count()).toBe(0);
@@ -128,7 +128,7 @@ test('custom Anime character packs appear in the fan quiz', async ({ page }) => 
   await page.goto('/quick-play.html?game=anime-guess');
   await expect(page.locator('#quick-pack')).toContainText('Eigene · Unsere Figuren (3)');
   await page.locator('#quick-pack').selectOption('Eigene · Unsere Figuren');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
   await expect(page.locator('.challenge-card')).toHaveText(/Figur (Alpha|Beta|Gamma)/);
 });

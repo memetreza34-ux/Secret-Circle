@@ -21,7 +21,7 @@ test('shared controls pause a running timer, skip, abort, replay and offer next 
   await seedHub(page);
   await page.goto('/quick-play.html?game=rapid-fire');
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
 
   await expect(page.locator('#quick-session-controls')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
@@ -53,7 +53,7 @@ test('shared controls pause a running timer, skip, abort, replay and offer next 
   await expect(page.locator('#quick-play')).toBeHidden();
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-party-quick-active-v1'))).toBeNull();
 
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Runde überspringen' }).click();
   await page.getByRole('button', { name: 'Runde überspringen' }).click();
   await page.getByRole('button', { name: 'Runde überspringen' }).click();

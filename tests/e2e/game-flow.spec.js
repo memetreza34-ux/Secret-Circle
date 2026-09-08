@@ -36,7 +36,7 @@ async function startBasicGame(page, players, rounds = '1') {
   await page.locator('#players').fill(players.join('\n'));
   await page.locator('#match-rounds').selectOption(rounds);
   await page.locator('#duration').selectOption('1');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -100,7 +100,7 @@ test('starts multiple match rounds, preserves scores and avoids repeated words',
 
 test('restores an interrupted round from local storage', async ({ page }) => {
   await page.locator('#players').fill('Alex\nSam\nMika');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
   await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
   await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
 
@@ -113,7 +113,7 @@ test('restores an interrupted round from local storage', async ({ page }) => {
 
 test('rejects invalid player setup without creating a game', async ({ page }) => {
   await page.locator('#players').fill('Alex\nAlex\nSam');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#start').click();
   await expect(page.locator('#status')).toContainText('Doppelter Spielername');
   await expect(page.locator('#setup-screen')).toBeVisible();
   await expect(page.locator('#resume-box')).toBeHidden();
@@ -182,6 +182,6 @@ test('exposes privacy information and remains usable on mobile viewport', async 
   await page.goBack();
   if (isMobile) {
     await expect(page.locator('#setup-screen')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeVisible();
+    await expect(page.locator('#start')).toBeVisible();
   }
 });

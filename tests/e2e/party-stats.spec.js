@@ -88,7 +88,7 @@ test('statistics storage failure is reported without breaking the Hub', async ({
     };
   });
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Der ganze Spieleabend in einer App' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
   await expect(page.locator('#hub-status')).toContainText('Statistik konnte nicht repariert');
   const stats = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).stats);
   expect(stats).toEqual({});

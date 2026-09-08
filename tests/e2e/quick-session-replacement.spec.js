@@ -18,7 +18,7 @@ async function seedHub(page) {
 async function startRapidFire(page) {
   await page.goto('/quick-play.html?game=rapid-fire');
   await page.locator('#quick-rounds').selectOption('3');
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('#quick-play')).toBeVisible();
   return page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
 }
@@ -36,7 +36,7 @@ test('starting again requires confirmation and cancel preserves the same Quick s
     expect(dialog.message()).toContain('neue Session beginnen');
     dialog.dismiss();
   });
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
 
   const afterCancel = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
   expect(afterCancel.sessionId).toBe(before.sessionId);
@@ -45,7 +45,7 @@ test('starting again requires confirmation and cancel preserves the same Quick s
   await expect(page.locator('#quick-status')).toContainText('bleibt erhalten');
 
   page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('#quick-play')).toBeVisible();
 
   const afterConfirm = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
@@ -65,7 +65,7 @@ test('cross-game start in the same Quick family cannot silently overwrite anothe
     expect(dialog.message()).toContain('Spektrum');
     dialog.dismiss();
   });
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
 
   const preserved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
   expect(preserved.sessionId).toBe(before.sessionId);
@@ -73,7 +73,7 @@ test('cross-game start in the same Quick family cannot silently overwrite anothe
   await expect(page.locator('#quick-play')).toBeHidden();
 
   page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('#quick-play')).toBeVisible();
 
   const replaced = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
@@ -101,7 +101,7 @@ test('failed replacement write reloads fail-closed and preserves the previous st
   }, QUICK_KEY);
 
   page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Spiel starten' }).click();
+  await page.locator('#quick-start').click();
 
   await expect(page.locator('#quick-status')).toContainText('Die neue Session konnte nicht gespeichert werden');
   await expect(page.locator('#quick-resume-box')).toBeVisible();
