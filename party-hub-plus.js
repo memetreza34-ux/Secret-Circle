@@ -230,8 +230,13 @@
   const pref = preferences();
   const ageSelect = $('#age-filter');
   const settingsAge = $('#settings-age-level');
-  if (ageSelect) ageSelect.addEventListener('change', () => setAgeLevel(ageSelect.value));
-  if (settingsAge) settingsAge.addEventListener('change', () => setAgeLevel(settingsAge.value));
+  /* Nur echte Auswahl speichern. party-filter-state.js stellt beim Laden seine
+     eigenen Katalogfilter wieder her und feuert dabei ein change-Ereignis auf
+     demselben Feld; dieses ist als Wiederherstellung markiert und darf die
+     zuvor gespeicherte Altersauswahl nicht überschreiben. */
+  const userChosen = event => event?.secretCircleRestored !== true;
+  if (ageSelect) ageSelect.addEventListener('change', event => setAgeLevel(ageSelect.value, userChosen(event)));
+  if (settingsAge) settingsAge.addEventListener('change', event => setAgeLevel(settingsAge.value, userChosen(event)));
   setAgeLevel(pref.ageLevel, false);
 
   const defaultLength = $('#default-session-length');

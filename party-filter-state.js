@@ -115,9 +115,17 @@
 
     const EventType = EventConstructor || globalThis.Event;
     if (EventType) {
-      search?.dispatchEvent(new EventType('input', { bubbles: true }));
-      documentRef.querySelector('#age-filter')?.dispatchEvent(new EventType('change', { bubbles: true }));
-      documentRef.querySelector('#release-tier-filter')?.dispatchEvent(new EventType('change', { bubbles: true }));
+      /* Als Wiederherstellung markieren: party-hub-plus.js speichert die
+         Altersauswahl bei jedem change. Ohne diese Kennzeichnung überschriebe
+         der hier wiederhergestellte Filterwert die gespeicherte Einstellung. */
+      const restored = type => {
+        const event = new EventType(type, { bubbles: true });
+        event.secretCircleRestored = true;
+        return event;
+      };
+      search?.dispatchEvent(restored('input'));
+      documentRef.querySelector('#age-filter')?.dispatchEvent(restored('change'));
+      documentRef.querySelector('#release-tier-filter')?.dispatchEvent(restored('change'));
     }
     return state;
   }
@@ -153,6 +161,15 @@
       if (saveTimer !== null) root.clearTimeout(saveTimer);
       saveTimer = root.setTimeout(saveNow, 120);
     }
+
+    /* Ausstehende Speicherung vor dem Verlassen der Seite nachholen: Ohne das
+       geht eine Filterauswahl verloren, wenn direkt danach neu geladen oder
+       navigiert wird — die 120-ms-Verzögerung käme dann nicht mehr zum Zug. */
+    root.addEventListener?.('pagehide', () => {
+      if (saveTimer === null) return;
+      root.clearTimeout(saveTimer);
+      saveNow();
+    });
 
     const reset = documentRef.createElement('button');
     reset.type = 'button';
