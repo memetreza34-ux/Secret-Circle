@@ -105,7 +105,7 @@ test('advanced Quick Trend and Viral Modes are all playable', async ({ page }) =
   await page.locator('#game-search').fill('Mafia');
   await page.locator('[data-open-game="mafia"]:visible').click();
   await expect(page.locator('#detail-badges')).toContainText('Jetzt spielbar');
-  await page.getByRole('button', { name: 'Erweitertes Spiel öffnen' }).click();
+  await page.locator('#start-selected-game').click();
   await expect(page).toHaveURL(/advanced\.html\?game=mafia/);
 
   await page.goto('/party.html');
@@ -142,5 +142,5 @@ test('party hub links back to the production word imposter flow', async ({ page 
   await page.getByRole('link', { name: 'Word Imposter direkt' }).click();
   await expect(page).toHaveURL(/\/index\.html$/);
   await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
-  await expect(page.locator('#quick-start')).toBeVisible();
+  await expect(page.locator('#start')).toBeVisible();
 });
