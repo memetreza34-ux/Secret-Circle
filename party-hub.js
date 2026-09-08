@@ -384,7 +384,13 @@
     clearNode(badges);
     [`${game.minPlayers}–${game.maxPlayers} Personen`, `ca. ${game.duration} Minuten`, game.age === 'all' ? 'Familienfreundlich' : 'Ab 12 empfohlen', game.status === 'playable' ? 'Jetzt spielbar' : 'In Entwicklung'].forEach(text => badges.append(makeElement('span', 'badge', text)));
     const packs = $('#detail-packs');
-    clearNode(packs); game.packs.forEach(pack => packs.append(makeElement('span', 'pack-chip', pack)));
+    /* Die tatsächlich vorhandenen Kategorien anzeigen statt der statischen
+       Metadaten: Letztere bewerben bei einzelnen Spielen Kategorien ohne Inhalt
+       und lassen selbst erstellte Packs aus. Nur wenn kein Inhalt hinterlegt ist
+       (verlinkte Modi), bleibt die deklarierte Liste die Grundlage. */
+    const contentPacks = C.getPackNames(game.id);
+    const chipNames = contentPacks.length ? contentPacks : game.packs;
+    clearNode(packs); chipNames.forEach(pack => packs.append(makeElement('span', 'pack-chip', pack)));
     const rules = $('#detail-rules');
     clearNode(rules); game.instructions.forEach(rule => rules.append(makeElement('li', '', rule)));
     const select = $('#pack-select');
