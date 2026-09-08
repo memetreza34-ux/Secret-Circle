@@ -90,7 +90,7 @@ test('completed Trend Mode records one play and one history entry', async ({ pag
   await page.locator('[data-open-game="money-challenge"]:visible').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await page.locator('#quick-rounds').selectOption('3');
-  await page.locator('#start-selected-game').click();
+  await page.locator('#quick-start').click();
   for (let round = 0; round < 3; round += 1) await page.getByRole('button', { name: 'Würde ich machen' }).click();
   await expect(page.locator('#quick-result')).toBeVisible();
   const hub = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')));
@@ -109,15 +109,19 @@ test('all nine mega trend modes load category content through only the mega engi
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   for (const id of ids) {
+    /* Vor jedem Spiel abseits der Spielseite leeren: Der Runner schreibt seinen
+       Stand im pagehide-Handler zurueck, sonst blockiert der Session-Ersatz-
+       Schutz den Start des naechsten Spiels. */
+    await page.goto('/party.html');
+    await page.evaluate(() => localStorage.removeItem('secret-circle-party-mega-active-v1'));
     await page.goto(`/quick-play.html?game=${id}`);
     await expect(page.locator('#quick-title')).not.toHaveText('Spiel laden');
     await expect(page.locator('#quick-pack option')).not.toHaveCount(0);
-    await page.locator('#start-selected-game').click();
+    await page.locator('#quick-start').click();
     await expect(page.locator('#quick-play')).toBeVisible();
     expect(await page.locator('script[src="party-mega-modes.js"]').count()).toBe(1);
     expect(await page.locator('script[src="party-quick-modes.js"]').count()).toBe(0);
     expect(await page.locator('script[src="party-viral-modes.js"]').count()).toBe(0);
-    await page.evaluate(() => localStorage.removeItem('secret-circle-party-mega-active-v1'));
   }
   expect(errors).toEqual([]);
 });

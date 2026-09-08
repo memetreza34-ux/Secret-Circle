@@ -114,7 +114,7 @@ test('completed Viral Mode records one history entry and one play', async ({ pag
   await page.locator('[data-open-game="finish-the-sentence"]:visible').click();
   await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();
   await page.locator('#quick-rounds').selectOption('3');
-  await page.locator('#start-selected-game').click();
+  await page.locator('#quick-start').click();
   for (let round = 0; round < 3; round += 1) {
     await page.getByRole('button', { name: 'Kreativer Treffer' }).click();
     await page.getByRole('button', { name: 'Nächster Satz' }).click();

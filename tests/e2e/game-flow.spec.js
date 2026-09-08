@@ -173,7 +173,7 @@ test('recovers safely from corrupted persisted data', async ({ page }) => {
   await page.reload();
   await expect(page.locator('#setup-screen')).toBeVisible();
   await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
-  await expect(page.locator('#status')).toContainText('beschädigte lokale Daten wurden entfernt');
+  await expect(page.locator('#status')).toContainText('Lokale Daten wurden auf die neue App-Version aktualisiert');
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-custom-v7'))).toBeNull();
 });
 
