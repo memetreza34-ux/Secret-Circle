@@ -12,12 +12,12 @@ test.beforeEach(async ({ page }) => {
 
 test('setup explains live player count and valid imposter range', async ({ page }) => {
   await expect(page.locator('#players-help')).toContainText('4 eindeutige Personen erkannt');
-  await expect(page.locator('#imposters-help')).toContainText('1 bis 3 Imposter');
+  await expect(page.locator('#imposters-help')).toContainText('1 bis 3 möglich');
   await expect(page.locator('#imposters')).toHaveAttribute('max', '3');
 
   await page.locator('#players').fill('Alex\nSam\nMika');
   await expect(page.locator('#players-help')).toContainText('3 eindeutige Personen erkannt');
-  await expect(page.locator('#imposters-help')).toContainText('1 bis 2 Imposter');
+  await expect(page.locator('#imposters-help')).toContainText('1 bis 2 möglich');
   await expect(page.locator('#imposters')).toHaveAttribute('max', '2');
 
   await page.locator('#imposters').fill('2');
@@ -59,19 +59,25 @@ test('maximum setup supports twenty players and six imposters', async ({ page })
 test('more than twenty players is rejected without persisting a game', async ({ page }) => {
   await page.locator('#players').fill(playerNames(21).join('\n'));
   await expect(page.locator('#players-help')).toContainText('Höchstens 20');
-  await page.locator('#start').click();
 
+  /* Das Setup lässt den ungültigen Zustand gar nicht erst zu: Der Startknopf
+     bleibt gesperrt, statt den Klick anzunehmen und danach zu meckern. */
+  await expect(page.locator('#start')).toBeDisabled();
   await expect(page.locator('#setup-screen')).toBeVisible();
-  await expect(page.locator('#status')).toContainText('Höchstens 20 Personen');
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-active-v7'))).toBeNull();
 });
 
 test('imposter count must remain below the player count', async ({ page }) => {
   await page.locator('#players').fill(playerNames(3).join('\n'));
   await page.locator('#imposters').fill('3');
-  await page.locator('#start').click();
 
-  await expect(page.locator('#setup-screen')).toBeVisible();
-  await expect(page.locator('#status')).toContainText('kleiner als die Spielerzahl');
-  expect(await page.evaluate(() => localStorage.getItem('secret-circle-active-v7'))).toBeNull();
+  /* Bei drei Personen sind höchstens zwei Imposter möglich; das Feld wird auf
+     diesen Wert begrenzt, damit nie eine Runde ohne Unschuldige entsteht. */
+  await expect(page.locator('#imposters')).toHaveValue('2');
+  await expect(page.locator('#imposters')).toHaveAttribute('max', '2');
+
+  await page.locator('#start').click();
+  const active = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7') || 'null'));
+  expect(active.imposters.length).toBe(2);
+  expect(active.players.length).toBe(3);
 });
