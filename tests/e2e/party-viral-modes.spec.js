@@ -66,6 +66,10 @@ test('Higher or Lower and Hot Seat run complete timed interactions', async ({ pa
   await page.getByRole('button', { name: /Höher/ }).click();
   await expect(page.locator('#quick-content')).toContainText(/Richtig|Nicht richtig/);
 
+  /* Abseits der Spielseite leeren: Der Runner schreibt seinen Stand im
+     pagehide-Handler zurueck und macht ein Loeschen auf der laufenden Seite
+     wieder rueckgaengig. */
+  await page.goto('/party.html');
   await page.evaluate(() => localStorage.removeItem('secret-circle-party-viral-active-v1'));
   await page.goto('/quick-play.html?game=hot-seat');
   await page.locator('#quick-start').click();
@@ -93,6 +97,10 @@ test('all eight Viral Modes load categories and exactly one engine without error
     expect(await page.locator('script[src="party-viral-modes.js"]').count()).toBe(1);
     expect(await page.locator('script[src="party-mega-modes.js"]').count()).toBe(0);
     expect(await page.locator('script[src="party-quick-modes.js"]').count()).toBe(0);
+  /* Abseits der Spielseite leeren: Der Runner schreibt seinen Stand im
+       pagehide-Handler zurueck und macht ein Loeschen auf der laufenden Seite
+       wieder rueckgaengig. */
+    await page.goto('/party.html');
     await page.evaluate(() => localStorage.removeItem('secret-circle-party-viral-active-v1'));
   }
   expect(errors).toEqual([]);

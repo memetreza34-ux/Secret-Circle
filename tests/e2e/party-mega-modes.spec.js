@@ -42,6 +42,10 @@ test('Anime fan quiz and Who Am I hide the identity before guessing', async ({ p
   await expect(page.locator('#quick-content')).not.toContainText(animeName);
   await expect(page.locator('#quick-content')).toContainText('Erklärt die Anime-Figur');
 
+  /* Abseits der Spielseite leeren: Der Runner schreibt seinen Stand im
+     pagehide-Handler zurueck und macht ein Loeschen auf der laufenden Seite
+     wieder rueckgaengig. */
+  await page.goto('/party.html');
   await page.evaluate(() => localStorage.removeItem('secret-circle-party-mega-active-v1'));
   await page.goto('/quick-play.html?game=who-am-i');
   await page.locator('#quick-pack').selectOption('Geschichte');
@@ -63,6 +67,10 @@ test('Blind Ranking fills all five positions and Money Challenge scores safely',
   await expect(page.locator('.blind-ranking-result li')).toHaveCount(5);
   await expect(page.locator('#quick-score')).toContainText('1 Punkte');
 
+  /* Abseits der Spielseite leeren: Der Runner schreibt seinen Stand im
+     pagehide-Handler zurueck und macht ein Loeschen auf der laufenden Seite
+     wieder rueckgaengig. */
+  await page.goto('/party.html');
   await page.evaluate(() => localStorage.removeItem('secret-circle-party-mega-active-v1'));
   await page.goto('/quick-play.html?game=money-challenge');
   await page.locator('#quick-pack').selectOption('Für 100 Euro');

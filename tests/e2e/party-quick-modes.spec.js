@@ -99,6 +99,10 @@ test('all ten classic Quick Modes load original content without runtime errors',
     expect(await page.locator('script[src="party-quick-modes.js"]').count()).toBe(1);
     expect(await page.locator('script[src="party-mega-modes.js"]').count()).toBe(0);
     expect(await page.locator('script[src="party-viral-modes.js"]').count()).toBe(0);
+  /* Abseits der Spielseite leeren: Der Runner schreibt seinen Stand im
+       pagehide-Handler zurueck und macht ein Loeschen auf der laufenden Seite
+       wieder rueckgaengig. */
+    await page.goto('/party.html');
     await page.evaluate(() => localStorage.removeItem('secret-circle-party-quick-active-v1'));
   }
   expect(errors).toEqual([]);
