@@ -21,11 +21,11 @@ test('Party Hub exposes 55 playable games and accurate Quick Mode actions', asyn
   await expect(page.locator('#game-grid .game-card.planned')).toHaveCount(0);
 
   await page.locator('[data-game-id="wavelength"] [data-open-game="wavelength"]:visible').click();
-  await expect(page.locator('#detail-title')).toHaveText('Wellenlänge');
+  await expect(page.locator('#detail-title')).toHaveText('Spektrum-Tipp');
   await expect(page.locator('#start-selected-game')).toHaveText('Quick Mode öffnen');
   await page.locator('#start-selected-game').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=wavelength/);
-  await expect(page.getByRole('heading', { name: 'Wellenlänge' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Spektrum-Tipp' })).toBeVisible();
 });
 
 test('Wavelength completes a round and persists a resumable session', async ({ page }) => {

@@ -110,7 +110,7 @@ test('advanced Quick Trend and Viral Modes are all playable', async ({ page }) =
 
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele', exact: true }).click();
-  await page.locator('#game-search').fill('Wellenlänge');
+  await page.locator('#game-search').fill('Spektrum');
   await page.locator('[data-open-game="wavelength"]:visible').click();
   await page.getByRole('button', { name: 'Quick Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=wavelength/);

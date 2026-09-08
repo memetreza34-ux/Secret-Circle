@@ -42,10 +42,10 @@ test('loads the 45-game Hub and all four external engine families', async ({ pag
 
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
-  await page.locator('#game-search').fill('Wellenlänge');
+  await page.locator('#game-search').fill('Spektrum');
   await page.locator('[data-open-game="wavelength"]').click();
   await page.getByRole('button', { name: 'Quick Mode öffnen' }).click();
-  await expect(page.getByRole('heading', { name: 'Wellenlänge' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Spektrum-Tipp' })).toBeVisible();
 
   await page.goto('/party.html');
   await page.getByRole('button', { name: 'Spiele' }).click();
