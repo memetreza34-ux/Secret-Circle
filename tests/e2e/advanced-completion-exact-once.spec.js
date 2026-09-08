@@ -86,9 +86,10 @@ async function finishPendingMafiaRound(page) {
   await expect(page.locator('#advanced-start')).toContainText('Session fortsetzen');
   await page.locator('#advanced-start').click();
   await expect(page.locator('#play-eyebrow')).toHaveText('Mafia beendet');
-  await expect(page.getByRole('button', { name: 'Session beenden' })).toBeVisible();
+  const finish = page.getByRole('button', { name: 'Session beenden' });
+  await expect(finish).toBeVisible();
   const navigation = page.waitForURL(/party\.html\?view=stats$/);
-  await page.getByRole('button', { name: 'Session beenden' }).click();
+  await finish.click();
   await navigation;
 }
 

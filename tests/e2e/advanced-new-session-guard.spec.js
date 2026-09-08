@@ -31,7 +31,11 @@ async function createResumableQuestionSession(page) {
 
 test('cancelling New Session keeps the existing Advanced resume state untouched', async ({ page }) => {
   await seedPlayers(page);
-  const before = await createResumableQuestionSession(page);
+  await createResumableQuestionSession(page);
+  /* Erst hier lesen: Direkt nach dem Start ist der Rundenzustand noch nicht
+     geschrieben. Ein früherer Schnappschuss vergliche zwei verschiedene
+     Zeitpunkte statt der Wirkung des Abbrechens. */
+  const before = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), ACTIVE_KEY);
 
   page.once('dialog', dialog => dialog.dismiss());
   await page.getByRole('button', { name: 'Neue Session beginnen' }).click();

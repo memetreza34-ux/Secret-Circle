@@ -136,13 +136,17 @@ test('a failed history write keeps the completed session active and recoverable'
   await configurePlayers(page, ['Alex', 'Sam', 'Mika']);
   await page.goto('/advanced.html?game=two-truths');
   await page.locator('#advanced-start').click();
+  /* Die Änderung muss abseits von advanced.html passieren: Der Runner schreibt
+     seinen eigenen Stand im pagehide-Handler zurück und überschreibt damit eine
+     Bearbeitung, die vor einem reload auf derselben Seite gemacht wurde. */
+  await page.goto('/party.html');
   await page.evaluate(() => {
     const active = JSON.parse(localStorage.getItem('secret-circle-party-active-v1'));
     active.session.rounds = active.session.targetRounds;
     active.session.advanced = null;
     localStorage.setItem('secret-circle-party-active-v1', JSON.stringify(active));
   });
-  await page.reload();
+  await page.goto('/advanced.html?game=two-truths');
   await page.getByRole('button', { name: 'Abgeschlossene Session ansehen' }).click();
   await expect(page.getByRole('button', { name: 'Session speichern und beenden' })).toBeVisible();
 

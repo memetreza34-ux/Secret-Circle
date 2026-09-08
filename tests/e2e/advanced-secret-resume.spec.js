@@ -69,7 +69,8 @@ for (const scenario of [
 
 test('Mafia role overview requires moderator confirmation again after reload', async ({ page }) => {
   await seedPlayers(page);
-  await page.goto('/advanced.html?game=mafia');
+  /* Stand setzen, solange party.html offen ist: Wird er der bereits laufenden
+     Advanced-Seite untergeschoben, räumt deren Runner ihn beim Verlassen weg. */
   await page.evaluate(({ activeKey, players }) => {
     // 8-player Klassisch contract: 2 Mafia, 1 Detektiv, 1 Arzt, 4 Dorfbewohner.
     const roles = {
@@ -98,7 +99,7 @@ test('Mafia role overview requires moderator confirmation again after reload', a
       }
     }));
   }, { activeKey: ACTIVE_KEY, players: PLAYERS });
-  await page.reload();
+  await page.goto('/advanced.html?game=mafia');
 
   await expect(page.locator('#advanced-start')).toContainText('Session fortsetzen');
   await page.locator('#advanced-start').click();

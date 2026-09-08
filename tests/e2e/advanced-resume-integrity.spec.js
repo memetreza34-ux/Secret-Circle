@@ -16,7 +16,10 @@ async function seedHub(page) {
 }
 
 async function seedForgedSession(page, gameId, advanced, pack) {
-  await page.goto(`/advanced.html?game=${gameId}`);
+  /* Der Stand muss gesetzt sein, BEVOR advanced.html lädt. Wird er der bereits
+     laufenden Seite untergeschoben, räumt der Advanced-Runner ihn beim Verlassen
+     wieder weg — der Resume-Schutz bekäme ihn dann nie zu sehen und die
+     Verwerfen-Meldung erschiene nie. seedHub() steht hier noch auf party.html. */
   await page.evaluate(({ activeKey, gameId, players, advanced, pack }) => {
     localStorage.setItem(activeKey, JSON.stringify({
       version: 2,
@@ -36,7 +39,7 @@ async function seedForgedSession(page, gameId, advanced, pack) {
       }
     }));
   }, { activeKey: ACTIVE_KEY, gameId, players: PLAYERS, advanced, pack });
-  await page.reload();
+  await page.goto(`/advanced.html?game=${gameId}`);
 }
 
 async function expectDiscarded(page) {
