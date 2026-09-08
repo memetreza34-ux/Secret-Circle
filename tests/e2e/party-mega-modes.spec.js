@@ -18,19 +18,19 @@ test('Party Hub exposes 55 playable games and dedicated Trend Mode actions', asy
   await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await expect(page.locator('#result-count')).toHaveText('55');
   await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(55);
-  await page.locator('#game-search').fill('Anime-Figuren');
+  await page.locator('#game-search').fill('Anime-Archetypen');
   await page.locator('[data-open-game="anime-guess"]:visible').click();
-  await expect(page.locator('#detail-title')).toHaveText('Anime-Figuren erraten');
+  await expect(page.locator('#detail-title')).toHaveText('Anime-Archetypen erraten');
   await expect(page.getByRole('button', { name: 'Trend Mode öffnen' })).toBeVisible();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=anime-guess/);
-  await expect(page.getByRole('heading', { name: 'Anime-Figuren erraten' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Anime-Archetypen erraten' })).toBeVisible();
 });
 
 test('Anime fan quiz and Who Am I hide the identity before guessing', async ({ page }) => {
   await seedHub(page);
   await page.goto('/quick-play.html?game=anime-guess');
-  await page.locator('#quick-pack').selectOption('Shōnen-Klassiker');
+  await page.locator('#quick-pack').selectOption('Action & Abenteuer');
   await page.locator('#quick-start').click();
   await expect(page.locator('#quick-content')).toContainText('ratende Person schaut weg');
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();

@@ -21,7 +21,7 @@ test('unexpected runtime errors produce a recoverable user message', async ({ pa
   });
   await expect(page.locator('#status')).toHaveClass(/error/);
   await expect(page.locator('#status')).toContainText('unerwarteter Fehler');
-  await expect(page.locator('#status')).toContainText('gespeicherter Spielstand bleibt erhalten');
+  await expect(page.locator('#status')).toContainText('Deine lokal gespeicherten Daten bleiben erhalten');
 });
 
 test('critical resource errors are surfaced instead of leaving a silent broken screen', async ({ page }) => {
@@ -39,7 +39,8 @@ test('all game engines Creator and guidance are available from cache v30', async
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   const cached = await page.evaluate(async () => {
-    const cache = await caches.open('secret-circle-v30');
+    const names = await caches.keys();
+    const cache = await caches.open(names.find(name => /^secret-circle-v\d+$/.test(name)));
     const assets = [
       'runtime-guard.js', 'party-night.js', 'party-night.css', 'quick-play.html',
       'party-trending-catalog.js', 'party-mega-catalog.js', 'party-viral-catalog.js',

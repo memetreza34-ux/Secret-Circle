@@ -113,10 +113,14 @@ test('restores an interrupted round from local storage', async ({ page }) => {
 
 test('rejects invalid player setup without creating a game', async ({ page }) => {
   await page.locator('#players').fill('Alex\nAlex\nSam');
-  await page.locator('#start').click();
-  await expect(page.locator('#status')).toContainText('Doppelter Spielername');
+  /* Das Setup lässt den ungültigen Zustand gar nicht erst zu: Der doppelte Name
+     wird benannt und der Startknopf bleibt gesperrt, statt den Klick anzunehmen
+     und danach eine Fehlermeldung zu zeigen. */
+  await expect(page.locator('#players-help')).toContainText('doppelter Name');
+  await expect(page.locator('#start')).toBeDisabled();
   await expect(page.locator('#setup-screen')).toBeVisible();
   await expect(page.locator('#resume-box')).toBeHidden();
+  expect(await page.evaluate(() => localStorage.getItem('secret-circle-active-v7'))).toBeNull();
 });
 
 test('creates a custom category and clears all local data', async ({ page }) => {
@@ -129,7 +133,7 @@ test('creates a custom category and clears all local data', async ({ page }) => 
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
   await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
-  await expect(page.locator('#status')).toContainText('Alle lokalen Daten wurden gelöscht');
+  await expect(page.locator('#status')).toContainText('Alle lokalen Secret-Circle-Daten wurden gelöscht');
   const keys = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('secret-circle-')));
   expect(keys).toEqual([]);
 });
@@ -169,7 +173,7 @@ test('recovers safely from corrupted persisted data', async ({ page }) => {
   await page.reload();
   await expect(page.locator('#setup-screen')).toBeVisible();
   await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
-  await expect(page.locator('#status')).toContainText('aktuelle Format aktualisiert');
+  await expect(page.locator('#status')).toContainText('beschädigte lokale Daten wurden entfernt');
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-custom-v7'))).toBeNull();
 });
 
@@ -178,7 +182,7 @@ test('exposes privacy information and remains usable on mobile viewport', async 
   await expect(privacyLink).toBeVisible();
   await privacyLink.click();
   await expect(page).toHaveURL(/privacy\.html$/);
-  await expect(page.getByRole('heading', { name: 'Datenschutz' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
   await page.goBack();
   if (isMobile) {
     await expect(page.locator('#setup-screen')).toBeVisible();

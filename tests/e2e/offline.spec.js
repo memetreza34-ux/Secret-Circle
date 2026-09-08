@@ -25,7 +25,10 @@ test('service worker caches the complete v30 core including Creator guidance and
 
   const cacheState = await page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open('secret-circle-v30');
+    /* Cachegeneration nicht festschreiben: Sie steigt mit jedem Offline-Release.
+       Geprueft wird, dass genau ein Produktions-Cache existiert und vollstaendig ist. */
+    const production = names.filter(name => /^secret-circle-v\d+$/.test(name));
+    const cache = await caches.open(production[0]);
     const expected = [
       './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
       './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css', './party-guide.css', './creator.css',
@@ -43,8 +46,8 @@ test('service worker caches the complete v30 core including Creator guidance and
     for (const path of expected) if (!await cache.match(path)) missing.push(path);
     return { names, missing };
   });
-  expect(cacheState.names).toContain('secret-circle-v30');
-  expect(cacheState.names.filter(name => name.startsWith('secret-circle-'))).toEqual(['secret-circle-v30']);
+  const productionCaches = cacheState.names.filter(name => /^secret-circle-v\d+$/.test(name));
+  expect(productionCaches).toHaveLength(1);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
@@ -55,7 +58,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/creator.html');
   await expect(page.getByRole('heading', { name: 'Eigenes Spiel erstellen' })).toBeVisible();
   await page.goto('/privacy.html');
-  await expect(page.getByRole('heading', { name: 'Deine Daten bleiben auf deinem Gerät' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
 });
@@ -138,7 +141,7 @@ test('Anime Trend Mode starts and resumes completely offline', async ({ page, co
   await waitForWorker(page);
   await context.setOffline(true);
   await page.goto('/quick-play.html?game=anime-guess');
-  await expect(page.getByRole('heading', { name: 'Anime-Figuren erraten' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Anime-Archetypen erraten' })).toBeVisible();
   await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
   await expect(page.locator('.challenge-card')).not.toHaveText('');
