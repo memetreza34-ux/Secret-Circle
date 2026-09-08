@@ -24,7 +24,9 @@ async function hubState(page) {
 
 test('opening an Advanced core game updates recent but never plays', async ({ page }) => {
   await seedHub(page);
-  await page.locator('[data-open-game="mafia"]:visible').first().click();
+  /* Mafia liegt nur im Katalog, nicht unter den Empfehlungen der Startansicht. */
+  await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
+  await page.locator('#game-grid [data-open-game="mafia"]').first().click();
   await expect(page.locator('#detail-title')).toHaveText('Mafia');
 
   const navigation = page.waitForURL(/advanced\.html\?game=mafia$/);

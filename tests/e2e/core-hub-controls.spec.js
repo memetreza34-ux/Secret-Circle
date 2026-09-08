@@ -141,6 +141,9 @@ test('saving while a timer is running records the deliberately shortened round e
 test('saving an ended timer before pressing next records that round exactly once', async ({ page }) => {
   await seedHub(page);
   await startGame(page, 'word-chain');
+  /* Abseits des Hubs bearbeiten: party.html schreibt seine aktive Session im
+     pagehide-Handler zurueck und macht die Bearbeitung sonst rueckgaengig. */
+  await page.goto('/privacy.html');
   await page.evaluate(key => {
     const active = JSON.parse(localStorage.getItem(key));
     active.session.current = null;
@@ -151,7 +154,7 @@ test('saving an ended timer before pressing next records that round exactly once
     };
     localStorage.setItem(key, JSON.stringify(active));
   }, ACTIVE_KEY);
-  await page.reload();
+  await page.goto('/party.html');
   await page.getByRole('button', { name: 'Session fortsetzen' }).click();
   await expect(page.getByRole('button', { name: 'Neue Runde' })).toBeVisible();
   await page.locator('#finish-hub-game').click();
