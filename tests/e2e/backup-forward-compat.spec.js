@@ -28,7 +28,7 @@ async function openDataView(page) {
     localStorage.setItem(futureKey, JSON.stringify({ version: 99, future: 'namespace-must-survive' }));
   }, { hubV1: HUB_V1, hubV2: HUB_V2, futureKey: FUTURE_KEY });
   await page.reload();
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
 }
 
 test('v51 older complete restore preserves future party namespace and future version of a known key', async ({ page }) => {

@@ -15,10 +15,10 @@ async function configurePlayers(page, players = ['Alex', 'Sam', 'Mika', 'Lina'])
 test('Party Hub exposes 55 playable games and accurate Quick Mode actions', async ({ page }) => {
   await configurePlayers(page);
   await page.goto('/party.html');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await expect(page.locator('#result-count')).toHaveText('55');
-  await expect(page.locator('.game-card.playable')).toHaveCount(55);
-  await expect(page.locator('.game-card.planned')).toHaveCount(0);
+  await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(55);
+  await expect(page.locator('#game-grid .game-card.planned')).toHaveCount(0);
 
   await page.locator('[data-game-id="wavelength"] [data-open-game="wavelength"]:visible').click();
   await expect(page.locator('#detail-title')).toHaveText('Wellenlänge');

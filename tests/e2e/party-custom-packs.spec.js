@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('custom pack editor validates saves and exposes cards in the selected game', async ({ page }) => {
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Eigene Hub-Kategorien' })).toBeVisible();
   await expect(page.locator('#custom-pack-game option')).not.toHaveCount(0);
 
@@ -34,7 +34,7 @@ test('custom pack editor validates saves and exposes cards in the selected game'
   expect(stored.packs).toHaveLength(1);
   expect(stored.packs[0].items).toEqual(['Pinguin', 'Raumstation', 'Kaffeetasse']);
 
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Scharade');
   await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs')).toContainText('Eigene · Unsere Gruppe');
@@ -46,7 +46,7 @@ test('custom pack editor validates saves and exposes cards in the selected game'
 });
 
 test('custom pack editor rejects too little content and duplicate pack names', async ({ page }) => {
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await page.locator('#custom-pack-game').selectOption('hot-potato');
   await page.locator('#custom-pack-name').fill('Mini');
   await page.locator('#custom-pack-items').fill('Eins\nZwei');
@@ -58,7 +58,7 @@ test('custom pack editor rejects too little content and duplicate pack names', a
   const firstReload = page.waitForEvent('load');
   await page.getByRole('button', { name: 'Eigenes Pack speichern' }).click();
   await firstReload;
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await page.locator('#custom-pack-game').selectOption('hot-potato');
   await page.locator('#custom-pack-name').fill('mini');
   await page.locator('#custom-pack-items').fill('Vier\nFünf\nSechs');
@@ -67,21 +67,21 @@ test('custom pack editor rejects too little content and duplicate pack names', a
 });
 
 test('custom packs can be deleted and remain part of the complete data namespace', async ({ page }) => {
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await page.locator('#custom-pack-game').selectOption('word-chain');
   await page.locator('#custom-pack-name').fill('Spezial');
   await page.locator('#custom-pack-items').fill('Solar\nRakete\nEnergie');
   const saveReload = page.waitForEvent('load');
   await page.getByRole('button', { name: 'Eigenes Pack speichern' }).click();
   await saveReload;
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await expect(page.locator('#custom-pack-list')).toContainText('Spezial');
 
   page.once('dialog', dialog => dialog.accept());
   const deleteReload = page.waitForEvent('load');
   await page.locator('#custom-pack-list').getByRole('button', { name: 'Löschen' }).click();
   await deleteReload;
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await expect(page.locator('#custom-pack-list')).toContainText('Noch kein eigenes Hub-Pack');
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-custom-packs-v1')));
   expect(stored.packs).toEqual([]);
@@ -91,7 +91,7 @@ test('custom pack markup stays text in editor details and gameplay', async ({ pa
   await page.evaluate(() => {
     delete window.__customPackInjected;
   });
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await page.locator('#custom-pack-game').selectOption('charades');
   await page.locator('#custom-pack-name').fill('<img src=x onerror=window.__customPackInjected=1>');
   await page.locator('#custom-pack-items').fill([
@@ -103,12 +103,12 @@ test('custom pack markup stays text in editor details and gameplay', async ({ pa
   await page.getByRole('button', { name: 'Eigenes Pack speichern' }).click();
   await reloaded;
 
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await expect(page.locator('#custom-pack-list')).toContainText('<img src=x');
   await expect(page.locator('#custom-pack-list img, #custom-pack-list script, #custom-pack-list svg')).toHaveCount(0);
   expect(await page.evaluate(() => window.__customPackInjected)).toBeUndefined();
 
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Scharade');
   await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs img, #detail-packs script, #detail-packs svg')).toHaveCount(0);
@@ -123,7 +123,7 @@ test('custom pack markup stays text in editor details and gameplay', async ({ pa
 });
 
 test('failed custom pack write leaves storage and catalog unchanged', async ({ page }) => {
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = function setItem(key, value) {
@@ -139,21 +139,21 @@ test('failed custom pack write leaves storage and catalog unchanged', async ({ p
   await page.getByRole('button', { name: 'Eigenes Pack speichern' }).click();
   await expect(page.locator('#hub-status')).toContainText('konnten nicht gespeichert werden');
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-party-custom-packs-v1'))).toBeNull();
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Scharade');
   await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs')).not.toContainText('Nicht gespeichert');
 });
 
 test('failed custom pack deletion keeps the pack visible and playable', async ({ page }) => {
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await page.locator('#custom-pack-game').selectOption('charades');
   await page.locator('#custom-pack-name').fill('Bleibt erhalten');
   await page.locator('#custom-pack-items').fill('Eins\nZwei\nDrei');
   const reloaded = page.waitForEvent('load');
   await page.getByRole('button', { name: 'Eigenes Pack speichern' }).click();
   await reloaded;
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
 
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;
@@ -171,7 +171,7 @@ test('failed custom pack deletion keeps the pack visible and playable', async ({
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-custom-packs-v1')));
   expect(stored.packs).toHaveLength(1);
 
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Scharade');
   await page.locator('[data-open-game="charades"]:visible').click();
   await expect(page.locator('#detail-packs')).toContainText('Eigene · Bleibt erhalten');

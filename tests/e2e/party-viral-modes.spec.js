@@ -14,9 +14,9 @@ test('Party Hub exposes 55 playable games and Viral Mode actions', async ({ page
   await seedHub(page);
   await page.goto('/party.html');
   await expect(page.locator('#playable-count')).toHaveText('55');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await expect(page.locator('#result-count')).toHaveText('55');
-  await expect(page.locator('.game-card.playable')).toHaveCount(55);
+  await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(55);
   await page.locator('#game-search').fill('Finger runter');
   await page.locator('[data-open-game="put-a-finger-down"]:visible').click();
   await expect(page.getByRole('button', { name: 'Viral Mode öffnen' })).toBeVisible();
@@ -101,7 +101,7 @@ test('all eight Viral Modes load categories and exactly one engine without error
 test('completed Viral Mode records one history entry and one play', async ({ page }) => {
   await seedHub(page);
   await page.goto('/party.html');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Satz beenden');
   await page.locator('[data-open-game="finish-the-sentence"]:visible').click();
   await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();

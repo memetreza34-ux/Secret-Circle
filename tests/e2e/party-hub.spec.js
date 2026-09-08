@@ -22,7 +22,7 @@ test('party hub exposes a clear 55-game playable catalog', async ({ page }) => {
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await expect(page.getByRole('heading', { name: 'Kernspiele, Erweiterungen & Labs' })).toBeVisible();
   await expect(page.locator('#result-count')).toHaveText('55');
-  await expect(page.locator('.game-card')).toHaveCount(45);
+  await expect(page.locator('#game-grid .game-card')).toHaveCount(55);
 
   await page.locator('#status-filter').selectOption('playable');
   await expect(page.locator('#result-count')).toHaveText('55');
@@ -34,20 +34,20 @@ test('party hub exposes a clear 55-game playable catalog', async ({ page }) => {
 test('age preference filters and persists the visible catalog', async ({ page }) => {
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await page.locator('#age-filter').selectOption('family');
-  const visibleCards = page.locator('.game-card:not([hidden])');
+  const visibleCards = page.locator('#game-grid .game-card:not([hidden])');
   await expect(visibleCards).not.toHaveCount(0);
   await expect(page.locator('#game-grid [data-game-id="truth-dare"]')).toBeHidden();
   await expect(page.locator('#game-grid [data-game-id="charades"]')).toBeVisible();
 
   await page.reload();
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await expect(page.locator('#age-filter')).toHaveValue('family');
   await expect(page.locator('#game-grid [data-game-id="truth-dare"]')).toBeHidden();
 
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await expect(page.locator('#settings-age-level')).toHaveValue('family');
   await page.locator('#settings-age-level').selectOption('all');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await expect(page.locator('#game-grid [data-game-id="truth-dare"]')).toBeVisible();
 });
 
@@ -70,14 +70,14 @@ test('truth or dare can be configured and played from the hub', async ({ page })
   await expect(page.locator('#play-player')).toContainText('Sam');
   await page.getByRole('button', { name: 'Beenden & speichern' }).click();
 
-  await page.getByRole('button', { name: 'Verlauf' }).click();
+  await page.getByRole('button', { name: 'Verlauf', exact: true }).click();
   await expect(page.locator('#hub-history')).toContainText('Wahrheit oder Pflicht');
   await expect(page.locator('#hub-history')).toContainText('1 Runden');
   await expect(page.locator('#achievement-count')).toHaveText('1');
 });
 
 test('shared players, presets and favorites persist locally', async ({ page }) => {
-  await page.getByRole('button', { name: 'Spieler' }).click();
+  await page.getByRole('button', { name: 'Spieler', exact: true }).click();
   await page.locator('#hub-players').fill('Aylin\nBen\nCem\nDaria\nEren');
   await page.getByRole('button', { name: 'Spieler speichern' }).click();
   await expect(page.locator('#hub-players-help')).toContainText('5 eindeutige Personen');
@@ -86,17 +86,17 @@ test('shared players, presets and favorites persist locally', async ({ page }) =
   await page.getByRole('button', { name: 'Aktuelle Gruppe als Preset' }).click();
   await expect(page.locator('#preset-list')).toContainText('Freitag');
 
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Hot Takes');
   await page.locator('[data-favorite-game="hot-takes"]').click();
-  await page.getByRole('button', { name: 'Favoriten' }).click();
+  await page.getByRole('button', { name: 'Favoriten', exact: true }).click();
   await expect(page.locator('#favorites-grid')).toContainText('Hot Takes');
 
   await page.reload();
-  await page.getByRole('button', { name: 'Spieler' }).click();
+  await page.getByRole('button', { name: 'Spieler', exact: true }).click();
   await expect(page.locator('#hub-players')).toHaveValue('Aylin\nBen\nCem\nDaria\nEren');
   await expect(page.locator('#preset-list')).toContainText('Freitag');
-  await page.getByRole('button', { name: 'Favoriten' }).click();
+  await page.getByRole('button', { name: 'Favoriten', exact: true }).click();
   await expect(page.locator('#favorites-grid')).toContainText('Hot Takes');
 });
 
@@ -109,21 +109,21 @@ test('advanced Quick Trend and Viral Modes are all playable', async ({ page }) =
   await expect(page).toHaveURL(/advanced\.html\?game=mafia/);
 
   await page.goto('/party.html');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Wellenlänge');
   await page.locator('[data-open-game="wavelength"]:visible').click();
   await page.getByRole('button', { name: 'Quick Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=wavelength/);
 
   await page.goto('/party.html');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Wer bin ich');
   await page.locator('[data-open-game="who-am-i"]:visible').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();
   await expect(page).toHaveURL(/quick-play\.html\?game=who-am-i/);
 
   await page.goto('/party.html');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Finger runter');
   await page.locator('[data-open-game="put-a-finger-down"]:visible').click();
   await page.getByRole('button', { name: 'Viral Mode öffnen' }).click();

@@ -64,7 +64,7 @@ test.beforeEach(async ({ page }) => {
     localStorage.setItem('secret-circle-settings-v7', JSON.stringify({ duration: 3 }));
   });
   await page.reload();
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
 });
 
 test('complete backup exports Hub custom packs and Word Imposter local data together', async ({ page }) => {
@@ -99,11 +99,11 @@ test('complete backup import replaces managed Secret Circle data and reloads saf
   await reloaded;
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players.join(',')))
     .toBe('Aylin,Ben,Cem,Daria');
-  await page.getByRole('button', { name: 'Spieler' }).click();
+  await page.getByRole('button', { name: 'Spieler', exact: true }).click();
   await expect(page.locator('#hub-players')).toHaveValue('Aylin\nBen\nCem\nDaria');
-  await page.getByRole('button', { name: 'Favoriten' }).click();
+  await page.getByRole('button', { name: 'Favoriten', exact: true }).click();
   await expect(page.locator('#favorites-grid')).toContainText('Mafia');
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await expect(page.locator('#default-session-length')).toHaveValue('10');
   await expect(page.locator('#settings-age-level')).toHaveValue('family');
   await expect(page.locator('#custom-pack-list')).toContainText('Importiert');

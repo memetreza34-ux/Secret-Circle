@@ -21,7 +21,7 @@ test('history repairs cumulative play round and best-score statistics', async ({
     }));
   });
   await page.reload();
-  await page.getByRole('button', { name: 'Verlauf' }).click();
+  await page.getByRole('button', { name: 'Verlauf', exact: true }).click();
 
   expect(await page.evaluate(() => window.SecretCirclePartyHubPlus?.version)).toBe(5);
   await expect.poll(() => page.evaluate(() => {
@@ -43,7 +43,7 @@ test('statistics repair never reduces newer aggregate values', async ({ page }) 
     }));
   });
   await page.reload();
-  await page.getByRole('button', { name: 'Verlauf' }).click();
+  await page.getByRole('button', { name: 'Verlauf', exact: true }).click();
   const stats = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).stats['hot-takes']);
   expect(stats).toEqual({ plays: 7, rounds: 20, best: 9 });
 });
@@ -64,7 +64,7 @@ test('invalid negative and non-finite history values are normalized safely', asy
   await page.reload();
   const stats = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).stats.charades);
   expect(stats).toEqual({ plays: 1, rounds: 0, best: 0 });
-  await page.getByRole('button', { name: 'Verlauf' }).click();
+  await page.getByRole('button', { name: 'Verlauf', exact: true }).click();
   await expect(page.locator('#achievement-count')).toHaveText('1');
 });
 
@@ -105,7 +105,7 @@ test('preference storage failure keeps the current filter usable and reports per
     };
   });
   await page.reload();
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await page.locator('#settings-age-level').selectOption('family');
   await expect(page.locator('#hub-status')).toContainText('gilt nur bis zum Neuladen');
   await expect(page.locator('#settings-age-level')).toHaveValue('family');

@@ -15,9 +15,9 @@ test('Party Hub exposes 55 playable games and dedicated Trend Mode actions', asy
   await seedHub(page);
   await page.goto('/party.html');
   await expect(page.locator('#playable-count')).toHaveText('55');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await expect(page.locator('#result-count')).toHaveText('55');
-  await expect(page.locator('.game-card.playable')).toHaveCount(55);
+  await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(55);
   await page.locator('#game-search').fill('Anime-Figuren');
   await page.locator('[data-open-game="anime-guess"]:visible').click();
   await expect(page.locator('#detail-title')).toHaveText('Anime-Figuren erraten');
@@ -77,7 +77,7 @@ test('Blind Ranking fills all five positions and Money Challenge scores safely',
 test('completed Trend Mode records one play and one history entry', async ({ page }) => {
   await seedHub(page);
   await page.goto('/party.html');
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill('Geld-Challenge');
   await page.locator('[data-open-game="money-challenge"]:visible').click();
   await page.getByRole('button', { name: 'Trend Mode öffnen' }).click();

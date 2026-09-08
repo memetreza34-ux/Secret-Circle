@@ -100,13 +100,13 @@ test('Party Hub navigation catalog data and custom-pack editor satisfy structura
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
 
-  await page.getByRole('button', { name: 'Spiele' }).focus();
-  await expect(page.getByRole('button', { name: 'Spiele' })).toBeFocused();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).focus();
+  await expect(page.getByRole('button', { name: 'Spiele', exact: true })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('heading', { name: 'Kernspiele, Erweiterungen & Labs' })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);
 
-  await page.getByRole('button', { name: 'Daten' }).click();
+  await page.getByRole('button', { name: 'Daten', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Daten & Einstellungen' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Eigene Hub-Kategorien' })).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);

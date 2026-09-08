@@ -83,10 +83,10 @@ test('15 minute planning produces one focused game and player count refreshes fr
   await page.getByRole('button', { name: 'Plan erstellen' }).click();
   await expect(page.locator('.party-night-step')).toHaveCount(1);
 
-  await page.getByRole('button', { name: 'Spieler' }).click();
+  await page.getByRole('button', { name: 'Spieler', exact: true }).click();
   await page.locator('#hub-players').fill('Aylin\nBen\nCem\nDaria\nEmir\nFatma');
   await page.getByRole('button', { name: 'Spieler speichern' }).click();
-  await page.getByRole('button', { name: 'Start' }).click();
+  await page.getByRole('button', { name: 'Start', exact: true }).click();
   await expect(page.locator('#party-night-player-count')).toHaveText('6');
 });
 

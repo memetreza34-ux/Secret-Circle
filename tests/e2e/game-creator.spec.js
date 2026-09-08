@@ -136,7 +136,7 @@ test('Hub guidance makes the main actions and short explanations visible', async
   await page.getByRole('button', { name: 'Hilfe zum Schnellstart' }).click();
   await expect(page.locator('#hub-help-sheet')).toContainText('In weniger als einer Minute starten');
   await page.getByRole('button', { name: 'Hilfe schließen' }).click();
-  await page.getByRole('button', { name: 'Spiele' }).click();
+  await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await expect(page.locator('.filter-help')).toContainText('Suche und Filter lassen sich kombinieren');
   await expect(page.locator('.game-card .open-game').first()).toHaveText('Spielen');
 });
