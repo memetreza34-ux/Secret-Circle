@@ -20,7 +20,7 @@ async function startGame(page, gameId, pack) {
   await expect(page.locator('#quick-title')).not.toHaveText('Spiel laden');
   await page.locator('#quick-pack').selectOption(pack);
   await page.locator('#quick-rounds').selectOption('3');
-  await page.locator('#start-selected-game').click();
+  await page.locator('#quick-start').click();
   await expect(page.locator('#quick-play')).toBeVisible();
   await expect(page.locator('#quick-group')).toContainText('Labs');
 }

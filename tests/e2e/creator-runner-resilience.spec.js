@@ -54,7 +54,7 @@ test('Creator runner increments plays and history exactly once per completed ses
   await seedCreatorGame(page);
   await page.goto(`/quick-play.html?game=${GAME_ID}`);
   await page.locator('#quick-rounds').selectOption('3');
-  await page.locator('#start-selected-game').click();
+  await page.locator('#quick-start').click();
   await completeThreeChoiceRounds(page);
 
   let state = await page.evaluate(gameId => {
@@ -74,7 +74,7 @@ test('Creator runner increments plays and history exactly once per completed ses
   expect(state.history).toHaveLength(1);
 
   await page.locator('#quick-rounds').selectOption('3');
-  await page.locator('#start-selected-game').click();
+  await page.locator('#quick-start').click();
   await completeThreeChoiceRounds(page);
 
   state = await page.evaluate(gameId => {
