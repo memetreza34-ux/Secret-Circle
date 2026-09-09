@@ -49,6 +49,9 @@
       });
       const lieLabel = ctx.makeElement('label', '', 'Welche Aussage ist die Lüge?');
       const lieSelect = document.createElement('select');
+      /* Das umschliessende Label zieht sonst alle Optionstexte in den
+         zugaenglichen Namen ("... Aussage 1 Aussage 2 Aussage 3"). */
+      lieSelect.setAttribute('aria-label', 'Welche Aussage ist die Lüge?');
       [1, 2, 3].forEach(number => lieSelect.add(new Option(`Aussage ${number}`, String(number - 1))));
       lieLabel.append(lieSelect);
       const submit = button(ctx, 'Aussagen mischen und verdecken', () => {});

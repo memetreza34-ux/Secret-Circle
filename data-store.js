@@ -217,6 +217,23 @@
       return null;
     }
 
+    /* Eine einzelne kaputte Kategorie darf nicht die ganze Sammlung kosten:
+       ungueltige oder doppelte Eintraege einzeln entfernen, den Rest behalten.
+       Eine ueberlange Liste bleibt komplett verworfen — sie deutet auf
+       manipulierte Daten hin, nicht auf einen einzelnen Fehler. */
+    function salvageCustom(value, engine) {
+      if (!Array.isArray(value) || value.length > MAX_CUSTOM_CATEGORIES) return [];
+      const result = [];
+      const seen = new Set();
+      for (const item of value) {
+        const single = normalizeCustom([item], engine);
+        if (!single || !single.length || seen.has(single[0].id)) continue;
+        seen.add(single[0].id);
+        result.push(single[0]);
+      }
+      return result;
+    }
+
     function legacyKey(kind, version) {
       return `secret-circle-${kind}-v${version}`;
     }
@@ -236,6 +253,16 @@
             if (result.ok) warnings.push(`${kind}: Spielstand wurde auf die neue App-Version aktualisiert.`);
           }
           return normalized;
+        }
+        if (kind === 'custom') {
+          const salvaged = salvageCustom(parsed, engine);
+          if (salvaged.length) {
+            const result = rawSet(keys[kind], JSON.stringify(salvaged));
+            if (result.ok) {
+              warnings.push(`${kind}: beschädigte Kategorien wurden entfernt.`);
+              return salvaged;
+            }
+          }
         }
         rawRemove(keys[kind]);
         warnings.push(`${kind}: beschädigte lokale Daten wurden entfernt.`);

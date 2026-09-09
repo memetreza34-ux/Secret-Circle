@@ -60,6 +60,11 @@
     };
   }
 
+  function storedRaw(storage) {
+    try { return storage?.getItem?.(STORAGE_KEY) ?? null; }
+    catch { return null; }
+  }
+
   function read(storage) {
     try { return normalize(JSON.parse(storage?.getItem?.(STORAGE_KEY))); }
     catch { return { ...defaults }; }
@@ -202,6 +207,13 @@
     });
 
     const stored = read(storage);
+    /* Ohne gespeicherten Filterzustand bleibt die Altersstufe unangetastet:
+       Sie ist eine dauerhafte Einstellung (party-hub-plus.js) und darf nicht
+       vom Standardwert dieses Speichers überschrieben werden. */
+    if (storedRaw(storage) === null) {
+      const currentAge = documentRef.querySelector('#age-filter')?.value;
+      if (currentAge) stored.age = currentAge;
+    }
     const requestedView = new root.URLSearchParams(root.location.search).get('view');
     currentView = resolveView(stored.view, requestedView);
     apply(documentRef, { ...stored, view: currentView }, root.Event);

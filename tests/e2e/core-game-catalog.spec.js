@@ -38,6 +38,7 @@ test('assembled browser catalog keeps all 15 January core games valid', async ({
           minPlayers: game?.minPlayers,
           maxPlayers: game?.maxPlayers,
           rules: game?.instructions || [],
+          chips: game?.packs || [],
           packs: catalog.getPackNames(id).map(name => ({ name, count: catalog.getItems(id, name).length }))
         };
       })
@@ -55,8 +56,14 @@ test('assembled browser catalog keeps all 15 January core games valid', async ({
     expect(game.maxPlayers).toBeLessThanOrEqual(20);
     expect(game.rules.length, `${game.id} rules`).toBeGreaterThanOrEqual(1);
     expect(game.rules.length, `${game.id} rules`).toBeLessThanOrEqual(4);
-    expect(game.packs.length, `${game.id} packs`).toBeGreaterThanOrEqual(1);
-    for (const pack of game.packs) expect(pack.count, `${game.id}/${pack.name}`).toBeGreaterThan(0);
+    if (game.id === 'imposter') {
+      /* Der Klassiker liefert seine Wortlisten in content.js aus, nicht im
+         Party-Katalog: dort stehen nur die Karten-Chips. */
+      expect(game.chips.length, 'imposter chips').toBeGreaterThanOrEqual(1);
+    } else {
+      expect(game.packs.length, `${game.id} packs`).toBeGreaterThanOrEqual(1);
+      for (const pack of game.packs) expect(pack.count, `${game.id}/${pack.name}`).toBeGreaterThan(0);
+    }
 
     if (game.id === 'imposter') {
       expect(game.mode).toBe('link');

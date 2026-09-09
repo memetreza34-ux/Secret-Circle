@@ -72,7 +72,7 @@ test('browser role assignment is deterministic and independent from reveal order
     };
   });
 
-  expect(result.apiVersion).toBe(2);
+  expect(result.apiVersion).toBe(3);
   expect(result.maximumImposters).toBe(6);
   expect(result.firstRevealStates).toEqual([false, true]);
   expect(result.prefixMatches).toBeGreaterThan(0);

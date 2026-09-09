@@ -1,5 +1,5 @@
 (function (root, factory) {
-  const api = factory();
+  const api = Object.freeze(factory());
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.SecretCircleEngine = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {

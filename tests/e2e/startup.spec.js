@@ -29,15 +29,15 @@ test('all production modules load without startup or resource errors', async ({ 
     engineFrozen: Object.isFrozen(window.SecretCircleEngine),
     maximumImposters: window.SecretCircleEngine?.MAX_IMPOSTERS,
     contentVersion: window.SecretCircleContent?.version,
-    storeVersion: window.SecretCircleStore?.version,
+    storeVersion: window.SecretCircleStore?.keyVersion,
     createGameType: typeof window.SecretCircleEngine?.createGame,
     restoreGameType: typeof window.SecretCircleEngine?.restoreGame
   }));
 
   expect(runtime).toMatchObject({
     runtimeVersion: '1.0.0-beta.3',
-    setupVersion: 3,
-    privacyVersion: 2,
+    setupVersion: 5,
+    privacyVersion: 4,
     wakeLockVersion: 1,
     roleVersion: 3,
     engineVersion: 7,

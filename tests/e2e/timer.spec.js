@@ -54,14 +54,16 @@ test('elapsed background deadline becomes an expired timer after resume', async 
   await startDiscussion(page);
   await page.getByRole('button', { name: 'Timer starten' }).click();
 
-  await page.evaluate(() => {
-    const key = 'secret-circle-active-v7';
-    const game = JSON.parse(localStorage.getItem(key));
-    game.timerRunning = true;
-    game.timerDeadline = Date.now() - 1_000;
-    game.remainingSeconds = 30;
-    localStorage.setItem(key, JSON.stringify(game));
+  const expired = await page.evaluate(() => {
+    const game = JSON.parse(localStorage.getItem('secret-circle-active-v7'));
+    return { ...game, timerRunning: true, timerDeadline: Date.now() - 1_000, remainingSeconds: 30 };
   });
+  /* Die App sichert den laufenden Timer beim Verlassen der Seite. Der Stand
+     muss deshalb erst im neuen Dokument gesetzt werden, sonst überschreibt
+     das pagehide-Speichern ihn wieder. */
+  await page.addInitScript(game => {
+    localStorage.setItem('secret-circle-active-v7', JSON.stringify(game));
+  }, expired);
 
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();

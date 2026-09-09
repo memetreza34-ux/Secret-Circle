@@ -126,11 +126,19 @@
     function getPackNames(id) {
       return content[id] && typeof content[id] === 'object' ? Object.keys(content[id]) : [];
     }
+    /* Manche Kategorien sind verschachtelt (z. B. Wahrheit/Pflicht je Pack).
+       Wie die Basis-Schicht flach ziehen, sonst meldet der Katalog fuer diese
+       Spiele null Karten. */
+    function flattenItems(value) {
+      if (Array.isArray(value)) return value;
+      if (!value || typeof value !== 'object') return [];
+      return Object.values(value).flatMap(flattenItems);
+    }
     function getItems(id, pack) {
       const value = content[id];
-      if (!value || typeof value !== 'object') return [];
-      if (pack && Array.isArray(value[pack])) return value[pack];
-      return Object.values(value).flatMap(items => (Array.isArray(items) ? items : []));
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
+      if (pack && Object.prototype.hasOwnProperty.call(value, pack)) return flattenItems(value[pack]);
+      return flattenItems(value);
     }
     function itemCount(id) { return getItems(id).length; }
 
