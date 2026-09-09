@@ -15,6 +15,13 @@
   const gameId = new URLSearchParams(location.search).get('game') || '';
   const game = C.getGame(gameId);
 
+  /* Muss vor loadHub()/loadActive() stehen: Diese lesen ueber cleanPlayers()
+     auf clean() zu. Stand die Deklaration darunter, warf der Zugriff einen
+     ReferenceError, der stillschweigend verschluckt wurde — gespeicherte Runden
+     galten dadurch als ungueltig und gingen beim Neuladen verloren. */
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const clean = (value, maximum = 140) => String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
+
   let hub = loadHub();
   let active = loadActive();
   let entryVisible = false;
@@ -29,8 +36,6 @@
     onReplay: replaySession
   });
 
-  const clone = value => JSON.parse(JSON.stringify(value));
-  const clean = (value, maximum = 140) => String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
 
   function cleanPlayers(value) {
     const result = [];
@@ -105,7 +110,11 @@
   function normalizeCurrent(value, players, pack, phase) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
     const prompt = clean(value.prompt, 220);
-    if (!prompt || !C.getItems(gameId, pack).includes(prompt)) return null;
+    /* Beide Seiten gleich normalisieren: clean() wendet NFKC an und macht aus
+       dem Auslassungszeichen '…' drei Punkte. Ein direkter Vergleich mit dem
+       Katalogtext schlug deshalb immer fehl — die gespeicherte Runde galt als
+       ungültig und ging beim Neuladen verloren. */
+    if (!prompt || !C.getItems(gameId, pack).some(item => clean(item, 220) === prompt)) return null;
     const entryIndex = Number(value.entryIndex);
     if (!Number.isInteger(entryIndex) || entryIndex < 0 || entryIndex > players.length) return null;
     const answers = normalizeAnswers(value.answers, players);

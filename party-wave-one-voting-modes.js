@@ -15,6 +15,13 @@
   const gameId = new URLSearchParams(location.search).get('game') || '';
   const game = C.getGame(gameId);
 
+  /* Muss vor loadHub()/loadActive() stehen: Diese lesen ueber cleanPlayers()
+     auf clean() zu. Stand die Deklaration darunter, warf der Zugriff einen
+     ReferenceError, der stillschweigend verschluckt wurde — gespeicherte Runden
+     galten dadurch als ungueltig und gingen beim Neuladen verloren. */
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const clean = (value, maximum = 160) => String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
+
   let hub = loadHub();
   let active = loadActive();
 
@@ -28,8 +35,6 @@
     onReplay: replaySession
   });
 
-  const clone = value => JSON.parse(JSON.stringify(value));
-  const clean = (value, maximum = 160) => String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
 
   function cleanPlayers(value) {
     const result = [];
