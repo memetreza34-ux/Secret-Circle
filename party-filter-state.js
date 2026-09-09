@@ -184,9 +184,14 @@
     filterBar.append(reset);
 
     documentRef.addEventListener('input', event => {
+      if (event.secretCircleRestored) return;
       if (event.target?.id === 'game-search') scheduleSave();
     });
     documentRef.addEventListener('change', event => {
+      /* Wiederhergestellte Werte nicht erneut speichern: Sonst legt die Seite
+         den Filterschlüssel direkt nach einer vollständigen Datenlöschung
+         wieder an. */
+      if (event.secretCircleRestored) return;
       if (['group-filter', 'mood-filter', 'player-filter', 'age-filter', 'status-filter', 'release-tier-filter'].includes(event.target?.id)) scheduleSave();
     });
     documentRef.addEventListener('click', event => {

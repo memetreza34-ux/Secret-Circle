@@ -42,7 +42,12 @@ function makeId() {
 function screen(id) {
   $$('[data-screen]').forEach(node => { node.hidden = node.id !== id; });
   const target = $(`#${id}`);
-  requestAnimationFrame(() => target?.focus?.());
+  requestAnimationFrame(() => {
+    /* Den Bereich nur fokussieren, wenn inzwischen nichts darin den Fokus
+       übernommen hat: Die Abstimmung setzt den Fokus direkt auf den ersten
+       Knopf, und der Rahmen darf ihn nicht wieder wegnehmen. */
+    if (target && !target.contains(document.activeElement)) target.focus?.();
+  });
 }
 
 function setStatus(message = '', error = false) {
