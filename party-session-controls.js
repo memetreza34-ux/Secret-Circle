@@ -212,12 +212,17 @@
     function clearPersistedTimer() { if (timerFamily) setFamilyTimerSnapshot(storage, timerFamily, null); }
 
     function stopTimer() {
+      /* Nur einen Timer beenden, der in diesem Dokument auch lief. Beim
+         Fortsetzen einer Runde raeumt die Oberflaeche zuerst auf; ohne diese
+         Pruefung loeschte das den gespeicherten Reststand aus dem vorherigen
+         Dokument, und der Timer startete wieder mit voller Dauer. */
+      const wasRunning = timerId !== null || timerDurationMs > 0;
       resetRuntimeTimer();
       if (preservePersistedOnNextStop) {
         preservePersistedOnNextStop = false;
         return;
       }
-      clearPersistedTimer();
+      if (wasRunning) clearPersistedTimer();
     }
 
     function finishTimer() {

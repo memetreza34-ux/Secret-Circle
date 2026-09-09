@@ -86,6 +86,8 @@ test('every fast engine loads controls and replacement guard before its engine',
     expect(controlsIndex).toBeGreaterThanOrEqual(0);
     expect(guardIndex).toBeGreaterThan(controlsIndex);
     expect(engineIndex).toBeGreaterThan(guardIndex);
-    await expect(page.getByRole('button', { name: 'Pause' })).toBeDisabled();
+    /* Die Steuerleiste liegt im noch verborgenen Spielbereich; ohne aktive
+       Session muss der Knopf trotzdem gesperrt sein. */
+    await expect(page.locator('#quick-pause')).toBeDisabled();
   }
 });

@@ -30,10 +30,14 @@ test('privacy-sensitive Quick snapshot with impossible reveal phase is quarantin
   await seedHub(page);
   await startGame(page, 'draw-guess');
 
-  const seeded = await page.evaluate(({ quickKey, timerKey }) => {
-    const active = JSON.parse(localStorage.getItem(quickKey));
-    active.phase = 'result';
-    localStorage.setItem(quickKey, JSON.stringify(active));
+  const seeded = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
+  expect(seeded.current?.prompt).toBeTruthy();
+
+  /* Die Engine sichert die laufende Session beim Verlassen der Seite. Der
+     manipulierte Stand muss deshalb erst im neuen Dokument gesetzt werden,
+     sonst überschreibt das pagehide-Speichern ihn wieder. */
+  await page.addInitScript(({ quickKey, timerKey, active }) => {
+    localStorage.setItem(quickKey, JSON.stringify({ ...active, phase: 'result' }));
     localStorage.setItem(timerKey, JSON.stringify({
       version: 1,
       snapshots: {
@@ -55,9 +59,7 @@ test('privacy-sensitive Quick snapshot with impossible reveal phase is quarantin
         }
       }
     }));
-    return active;
-  }, { quickKey: QUICK_KEY, timerKey: TIMER_KEY });
-  expect(seeded.current?.prompt).toBeTruthy();
+  }, { quickKey: QUICK_KEY, timerKey: TIMER_KEY, active: seeded });
 
   await page.reload();
 
@@ -74,13 +76,12 @@ test('Mega identity snapshot cannot use an unknown phase to fall through into id
   await seedHub(page);
   await startGame(page, 'who-am-i');
 
-  const before = await page.evaluate(key => {
-    const active = JSON.parse(localStorage.getItem(key));
-    active.phase = 'unexpected-reveal';
-    localStorage.setItem(key, JSON.stringify(active));
-    return active;
-  }, MEGA_KEY);
+  const before = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), MEGA_KEY);
   expect(before.current?.identity).toBeTruthy();
+
+  await page.addInitScript(({ key, active }) => {
+    localStorage.setItem(key, JSON.stringify({ ...active, phase: 'unexpected-reveal' }));
+  }, { key: MEGA_KEY, active: before });
 
   await page.reload();
 

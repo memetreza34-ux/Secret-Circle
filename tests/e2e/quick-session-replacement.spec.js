@@ -61,7 +61,7 @@ test('cross-game start in the same Quick family cannot silently overwrite anothe
   await expect(page.locator('#quick-resume-box')).toBeHidden();
 
   page.once('dialog', dialog => {
-    expect(dialog.message()).toContain('Rapid');
+    expect(dialog.message()).toContain('Schnellfeuer');
     expect(dialog.message()).toContain('Spektrum');
     dialog.dismiss();
   });
@@ -103,7 +103,7 @@ test('failed replacement write reloads fail-closed and preserves the previous st
   page.once('dialog', dialog => dialog.accept());
   await page.locator('#quick-start').click();
 
-  await expect(page.locator('#quick-status')).toContainText('Die neue Session konnte nicht gespeichert werden');
+  await expect(page.locator('#quick-status')).toContainText('Session konnte nicht gespeichert werden');
   await expect(page.locator('#quick-resume-box')).toBeVisible();
   await expect(page.locator('#quick-play')).toBeHidden();
 
