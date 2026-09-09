@@ -123,7 +123,7 @@ test('Ein-Wort-Hinweis never auto-reveals the target and keeps the resolved roun
   await page.getByRole('button', { name: 'Hinweis speichern & verdecken' }).click();
   await expect(page.locator('#quick-content')).toContainText('Hinweiswort');
   await expect(page.locator('#quick-content')).not.toContainText(target);
-  await page.getByRole('button', { name: 'Erraten' }).click();
+  await page.getByRole('button', { name: 'Erraten', exact: true }).click();
   await expect(page.locator('#quick-content')).toContainText(`Zielwort: ${target}`);
   const before = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), QUICK_KEY);
   expect(before.phase).toBe('result');

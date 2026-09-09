@@ -16,11 +16,12 @@
   const game = C.getGame(gameId);
 
   /* Muss vor loadHub()/loadActive() stehen: Diese lesen ueber cleanPlayers()
-     auf clean() zu. Stand die Deklaration darunter, warf der Zugriff einen
+     auf clean() und keyText() zu. Stand die Deklaration darunter, warf der Zugriff einen
      ReferenceError, der stillschweigend verschluckt wurde — gespeicherte Runden
      galten dadurch als ungueltig und gingen beim Neuladen verloren. */
   const clone = value => JSON.parse(JSON.stringify(value));
   const clean = (value, maximum = 80) => String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum);
+  const keyText = value => clean(value, 80).toLocaleLowerCase('de-DE');
 
   let hub = loadHub();
   let active = loadActive();
@@ -35,8 +36,6 @@
     onAbort: abortSession,
     onReplay: replaySession
   });
-
-  const keyText = value => clean(value, 80).toLocaleLowerCase('de-DE');
 
   function cleanPlayers(value) {
     const result = [];
