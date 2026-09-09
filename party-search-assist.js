@@ -246,6 +246,9 @@
         event.preventDefault();
         choose(activeIndex);
       } else if (event.key === 'Escape') {
+        /* Escape schliesst nur die Vorschlaege. Ohne preventDefault leert der
+           Browser bei input[type=search] zusaetzlich die Eingabe. */
+        if (!panel.hidden) event.preventDefault();
         close();
       }
     });

@@ -65,7 +65,9 @@ test('service worker caches the complete v30 core including Creator guidance and
 
 test('offline Party Hub can create a Party Night plan and run a prompt game', async ({ page, context }) => {
   await page.goto('/party.html');
-  await page.evaluate(() => localStorage.removeItem('secret-circle-party-hub-v1'));
+  /* Der Party-Night-Planer braucht gespeicherte Personen — ohne sie weist er
+     korrekt darauf hin, statt einen Plan zu erstellen. */
+  await seedPlayers(page);
   await waitForWorker(page);
   await context.setOffline(true);
   await page.reload();

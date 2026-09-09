@@ -22,30 +22,30 @@
       "kind": "pwa-icon-raster",
       "status": "verified-own",
       "creator": "Deterministic derivative of the verified-own replacement icon.svg",
-      "source": "icon.svg rendered with CairoSVG 2.8.2 and palette-optimized with Pillow on 2026-08-29",
-      "createdAt": "2026-08-29",
-      "sha256": "fb5a9f0bc7162f97f6397323adc270ed4f15e00eb09a62743c0875a9e5fb7b65",
+      "source": "icon.svg mit Chromium (Playwright) gerendert am 2026-09-09",
+      "createdAt": "2026-09-09",
+      "sha256": "b2a845833a4e24131e7a58843f8a50d80998ec03829a17c8c4eacd91b765a774",
       "license": "Same project-owned rights basis as icon.svg",
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "icon.svg",
       "dimensions": "192x192",
-      "notes": "Raster derivative only; no additional third-party material."
+      "notes": "Raster-Ableitung ohne fremdes Material. Neu erzeugt am 2026-09-09: die vorherigen Dateien hatten einen defekten IDAT-Datenstrom und liessen sich von Browsern nicht dekodieren."
     },
     {
       "path": "icon-512.png",
       "kind": "pwa-icon-raster",
       "status": "verified-own",
       "creator": "Deterministic derivative of the verified-own replacement icon.svg",
-      "source": "icon.svg rendered with CairoSVG 2.8.2 and palette-optimized with Pillow on 2026-08-29",
-      "createdAt": "2026-08-29",
-      "sha256": "e28ebf25a491bb2ba55545657b0a02f21999edd26e0be72ee671c1bbb1697300",
+      "source": "icon.svg mit Chromium (Playwright) gerendert am 2026-09-09",
+      "createdAt": "2026-09-09",
+      "sha256": "5622c519b8f8b4711131bc05f78281eb3a9848ed4fb46c7df5eff75acac6af76",
       "license": "Same project-owned rights basis as icon.svg",
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "icon.svg",
       "dimensions": "512x512",
-      "notes": "Raster derivative only; no additional third-party material."
+      "notes": "Raster-Ableitung ohne fremdes Material. Neu erzeugt am 2026-09-09: die vorherigen Dateien hatten einen defekten IDAT-Datenstrom und liessen sich von Browsern nicht dekodieren."
     }
   ]
 }

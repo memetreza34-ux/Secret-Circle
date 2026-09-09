@@ -36,7 +36,9 @@ test('corrupted Viral snapshots are ignored without breaking setup', async ({ pa
 });
 
 test('malicious-looking names remain plain text in Viral results', async ({ page }) => {
-  const malicious = '<img src=x onerror=window.__viralInjected=1>';
+  /* Namen werden auf 32 Zeichen gekürzt — die Nutzlast muss darunter bleiben,
+     damit der Vergleich den vollständigen Text prüft. */
+  const malicious = '<img src=x onerror=window.vi=1>';
   await seedPlayers(page, [malicious, 'Sam', 'Mika']);
   await page.goto('/quick-play.html?game=finish-the-sentence');
   await page.locator('#quick-rounds').selectOption('3');
@@ -49,7 +51,7 @@ test('malicious-looking names remain plain text in Viral results', async ({ page
   await expect(page.locator('#quick-result img')).toHaveCount(0);
   await expect(page.locator('#quick-result script')).toHaveCount(0);
   await expect(page.locator('#quick-result-text')).toContainText(malicious);
-  expect(await page.evaluate(() => window.__viralInjected)).toBeUndefined();
+  expect(await page.evaluate(() => window.vi)).toBeUndefined();
 });
 
 test('price guesses are clamped to the supported safe range', async ({ page }) => {

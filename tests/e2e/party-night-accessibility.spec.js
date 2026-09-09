@@ -82,5 +82,7 @@ test('Party Night disables planner motion when reduced motion is requested', asy
     const card = getComputedStyle(document.querySelector('.game-card'));
     return [progress.transitionDuration, card.transitionDuration];
   });
-  expect(durations.every(value => value === '0s' || value === '0ms')).toBe(true);
+  /* Die Reduced-Motion-Regeln setzen 0.01ms statt 0, damit transitionend
+     weiterhin feuert — praktisch also keine Bewegung. */
+  expect(durations.every(value => Number.parseFloat(value) <= 0.001)).toBe(true);
 });

@@ -35,7 +35,9 @@ test('corrupted Quick Mode snapshots are ignored without breaking setup', async 
 });
 
 test('malicious-looking player names stay text in Quick Mode results', async ({ page }) => {
-  const malicious = '<img src=x onerror=window.__quickInjected=1>';
+  /* Namen werden auf 32 Zeichen gekürzt — die Nutzlast muss darunter bleiben,
+     damit der Vergleich den vollständigen Text prüft. */
+  const malicious = '<img src=x onerror=window.qi=1>';
   await seedPlayers(page, [malicious, 'Sam', 'Mika']);
   await page.goto('/quick-play.html?game=caption-battle');
   await page.locator('#quick-rounds').selectOption('3');
@@ -49,7 +51,7 @@ test('malicious-looking player names stay text in Quick Mode results', async ({ 
   await expect(page.locator('#quick-result img')).toHaveCount(0);
   await expect(page.locator('#quick-result script')).toHaveCount(0);
   await expect(page.locator('#quick-result-text')).toContainText(malicious);
-  expect(await page.evaluate(() => window.__quickInjected)).toBeUndefined();
+  expect(await page.evaluate(() => window.qi)).toBeUndefined();
 });
 
 test('Quick Mode setup and active round retain accessible labels and keyboard focus', async ({ page }) => {
