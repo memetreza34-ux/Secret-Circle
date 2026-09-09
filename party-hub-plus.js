@@ -106,8 +106,13 @@
        verhindert, dass der eigene change-Listener setAgeLevel erneut aufruft. */
     if (releaseStructureOwnsGrid()) {
       syncingAgeLevel = true;
-      try { catalogSelect?.dispatchEvent(new Event('change', { bubbles: true })); }
-      finally { syncingAgeLevel = false; }
+      try {
+        const sync = new Event('change', { bubbles: true });
+        /* Programmatische Synchronisierung, keine Nutzerauswahl:
+           party-filter-state.js darf sie nicht als neuen Filterstand sichern. */
+        sync.secretCircleRestored = true;
+        catalogSelect?.dispatchEvent(sync);
+      } finally { syncingAgeLevel = false; }
     } else applyAgeFilter();
   }
 
