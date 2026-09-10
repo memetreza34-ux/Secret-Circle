@@ -12,7 +12,7 @@
   const quickHref = id => `quick-play.html?game=${encodeURIComponent(id)}`;
   const newGames = [
     {
-      id: 'who-am-i', title: 'Wer bin ich?', icon: '❓', group: 'Raten', status: 'playable', mode: 'link',
+      id: 'who-am-i', title: 'Wer bin ich?', icon: '❓', group: 'Darstellen & Erklären', status: 'playable', mode: 'link',
       href: quickHref('who-am-i'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'clever'], age: 'all', featured: true,
       description: 'Die Gruppe kennt deine geheime Identität. Du stellst nur Ja-Nein-Fragen, bis du herausfindest, wer oder was du bist.',
@@ -20,7 +20,7 @@
       packs: ['Anime-Archetypen', 'Gaming & Internet', 'Märchen & Mythen', 'Berufe', 'Tiere', 'Geschichte', 'Sport', 'Musik & Bühne']
     },
     {
-      id: 'anime-guess', title: 'Anime-Archetypen erraten', icon: '✨', group: 'Anime-Quiz', status: 'playable', mode: 'link',
+      id: 'anime-guess', title: 'Anime-Archetypen erraten', icon: '✨', group: 'Wissen & Quiz', status: 'playable', mode: 'link',
       href: quickHref('anime-guess'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['competitive', 'clever'], age: 'teen', featured: true,
       description: 'Ein eigenständiges Anime-Archetypen-Quiz ohne konkrete Franchise-Figuren, Logos, Bilder oder Zitate.',
@@ -28,7 +28,7 @@
       packs: ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']
     },
     {
-      id: 'money-challenge', title: 'Geld-Challenge', icon: '💶', group: 'Entscheidung', status: 'playable', mode: 'link',
+      id: 'money-challenge', title: 'Geld-Challenge', icon: '💶', group: 'Abstimmen & Ranking', status: 'playable', mode: 'link',
       href: quickHref('money-challenge'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'deep'], age: 'teen',
       description: 'Hypothetische Geldfragen und sichere Herausforderungen. Es muss niemals wirklich Geld gezahlt werden.',
@@ -36,7 +36,7 @@
       packs: ['Für 10 Euro', 'Für 50 Euro', 'Für 100 Euro', 'Für 500 Euro', 'Wer zahlt?']
     },
     {
-      id: 'blind-ranking', title: 'Blind Ranking', icon: '🙈', group: 'Ranking', status: 'playable', mode: 'link',
+      id: 'blind-ranking', title: 'Blind Ranking', icon: '🙈', group: 'Abstimmen & Ranking', status: 'playable', mode: 'link',
       href: quickHref('blind-ranking'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'competitive'], age: 'all', featured: true,
       description: 'Fünf Begriffe erscheinen nacheinander. Jeder muss sofort auf einen freien Rang gesetzt werden, ohne die nächsten Begriffe zu kennen.',
@@ -44,7 +44,7 @@
       packs: ['Essen', 'Freizeit', 'Technik', 'Reisen', 'Superkräfte', 'Party']
     },
     {
-      id: 'emoji-quiz', title: 'Emoji Quiz', icon: '🧩', group: 'Quiz', status: 'playable', mode: 'link',
+      id: 'emoji-quiz', title: 'Emoji Quiz', icon: '🧩', group: 'Wissen & Quiz', status: 'playable', mode: 'link',
       href: quickHref('emoji-quiz'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['clever', 'friendly'], age: 'all',
       description: 'Eine Emoji-Kombination stellt ein Tier, Essen, einen Beruf, Ort oder Alltagsbegriff dar.',
@@ -52,7 +52,7 @@
       packs: ['Tiere', 'Essen', 'Berufe', 'Orte', 'Sprichwörter', 'Alltag']
     },
     {
-      id: 'pass-the-phone', title: 'Pass das Handy', icon: '📱', group: 'Social', status: 'playable', mode: 'link',
+      id: 'pass-the-phone', title: 'Pass das Handy', icon: '📱', group: 'Social & Klassiker', status: 'playable', mode: 'link',
       href: quickHref('pass-the-phone'), minPlayers: 3, maxPlayers: 20, duration: 15,
       moods: ['funny', 'friendly'], age: 'teen',
       description: 'Die Karte beschreibt, an welche Person das Handy weitergegeben wird. Locker, direkt und ohne geheime Datensammlung.',
@@ -60,7 +60,7 @@
       packs: ['Freundschaft', 'Komplimente', 'Chaos', 'Team', 'Entscheidungen']
     },
     {
-      id: 'red-green-flag', title: 'Red Flag oder Green Flag', icon: '🚩', group: 'Abstimmen', status: 'playable', mode: 'link',
+      id: 'red-green-flag', title: 'Red Flag oder Green Flag', icon: '🚩', group: 'Abstimmen & Ranking', status: 'playable', mode: 'link',
       href: quickHref('red-green-flag'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['deep', 'funny'], age: 'teen',
       description: 'Die Gruppe bewertet Situationen als Warnsignal oder positives Zeichen und diskutiert kurz die Gründe.',
@@ -68,7 +68,7 @@
       packs: ['Freundschaft', 'Dating', 'Alltag', 'Schule & Arbeit', 'Internet']
     },
     {
-      id: 'secret-mission', title: 'Geheime Mission', icon: '🕵️', group: 'Challenge', status: 'playable', mode: 'link',
+      id: 'secret-mission', title: 'Geheime Mission', icon: '🕵️', group: 'Schnell & Challenge', status: 'playable', mode: 'link',
       href: quickHref('secret-mission'), minPlayers: 3, maxPlayers: 20, duration: 20,
       moods: ['chaotic', 'funny'], age: 'all',
       description: 'Jede Person erhält eine sichere geheime Aufgabe und versucht sie unauffällig während der Runde zu erfüllen.',
@@ -76,7 +76,7 @@
       packs: ['Unauffällig', 'Gespräch', 'Bewegung', 'Team', 'Chaos']
     },
     {
-      id: 'tier-list', title: 'Tier List Battle', icon: '📊', group: 'Ranking', status: 'playable', mode: 'link',
+      id: 'tier-list', title: 'Tier List Battle', icon: '📊', group: 'Abstimmen & Ranking', status: 'playable', mode: 'link',
       href: quickHref('tier-list'), minPlayers: 2, maxPlayers: 20, duration: 20,
       moods: ['competitive', 'deep'], age: 'all',
       description: 'Ein Begriff wird gemeinsam in S, A, B, C oder D eingeordnet. Unterschiedliche Meinungen sorgen für die Diskussion.',

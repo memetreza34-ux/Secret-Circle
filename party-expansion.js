@@ -35,28 +35,28 @@
 
   games.push(
     Object.freeze({
-      id: 'wavelength', title: 'Spektrum-Tipp', icon: '📡', group: 'Einschätzen', status: 'planned', mode: 'planned',
+      id: 'wavelength', title: 'Spektrum-Tipp', icon: '📡', group: 'Schätzen & Tippen', status: 'planned', mode: 'planned',
       minPlayers: 4, maxPlayers: 20, duration: 20, moods: ['clever', 'friendly'], age: 'all',
       description: 'Ein geheimer Zielwert liegt zwischen zwei Polen. Eine Person gibt einen kurzen Hinweis, die Gruppe setzt ihre Position auf dem Spektrum.',
       instructions: ['Spektrum und geheimen Zielwert ansehen.', 'Einen kurzen passenden Hinweis geben.', 'Ziel verbergen und die Gruppe eine Position festlegen lassen.', 'Abstand aufdecken und Punkte vergeben.'],
       packs: ['Alltag', 'Popkultur', 'Gefühle']
     }),
     Object.freeze({
-      id: 'draw-guess', title: 'Zeichnen & Raten', icon: '✏️', group: 'Kreativ', status: 'planned', mode: 'planned',
+      id: 'draw-guess', title: 'Zeichnen & Raten', icon: '✏️', group: 'Kreativ & Schreiben', status: 'planned', mode: 'planned',
       minPlayers: 3, maxPlayers: 20, duration: 20, moods: ['funny', 'competitive'], age: 'all',
       description: 'Begriffe werden auf Papier oder einem späteren Zeichenfeld dargestellt und von der Gruppe erraten.',
       instructions: ['Begriff geheim öffnen.', 'Ohne Buchstaben zeichnen.', 'Zeitlimit beachten.', 'Treffer zählen und weitergeben.'],
       packs: ['Alltag', 'Tiere', 'Filme', 'Schwer']
     }),
     Object.freeze({
-      id: 'rapid-fire', title: 'Schnellfeuer', icon: '⏱️', group: 'Schnell', status: 'planned', mode: 'planned',
+      id: 'rapid-fire', title: 'Schnellfeuer', icon: '⏱️', group: 'Schnell & Challenge', status: 'planned', mode: 'planned',
       minPlayers: 2, maxPlayers: 20, duration: 10, moods: ['chaotic', 'competitive'], age: 'all',
       description: 'Eine Person muss in wenigen Sekunden mehrere Antworten zu einer Kategorie nennen.',
       instructions: ['Kategorie öffnen.', 'Timer starten.', 'Geforderte Anzahl nennen.', 'Bei Erfolg Punkt vergeben.'],
       packs: ['3 in 5 Sekunden', '5 in 10 Sekunden', 'Extrem']
     }),
     Object.freeze({
-      id: 'sound-imitation', title: 'Geräusche erraten', icon: '🔊', group: 'Darstellen', status: 'planned', mode: 'planned',
+      id: 'sound-imitation', title: 'Geräusche erraten', icon: '🔊', group: 'Darstellen & Erklären', status: 'planned', mode: 'planned',
       minPlayers: 3, maxPlayers: 20, duration: 15, moods: ['funny', 'chaotic'], age: 'all',
       description: 'Nur mit Geräuschen wird ein Tier, Gegenstand, Ort oder eine Situation dargestellt.',
       instructions: ['Karte geheim ansehen.', 'Nur Geräusche machen.', 'Keine Wörter oder Gesten.', 'Treffer zählen.'],

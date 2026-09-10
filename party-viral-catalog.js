@@ -12,7 +12,7 @@
   const quickHref = id => `quick-play.html?game=${encodeURIComponent(id)}`;
   const newGames = [
     {
-      id: 'put-a-finger-down', title: 'Finger runter', icon: '☝️', group: 'Social', status: 'playable', mode: 'link',
+      id: 'put-a-finger-down', title: 'Finger runter', icon: '☝️', group: 'Social & Klassiker', status: 'playable', mode: 'link',
       href: quickHref('put-a-finger-down'), minPlayers: 2, maxPlayers: 20, duration: 12,
       moods: ['funny', 'friendly'], age: 'teen', featured: true,
       description: 'Eine sichere „Put a Finger Down“-Runde mit Alltag, Internet, Gaming, Essen, Reisen und Freundschaft.',
@@ -20,7 +20,7 @@
       packs: ['Alltag', 'Internet', 'Gaming', 'Essen', 'Reisen', 'Freundschaft']
     },
     {
-      id: 'guess-the-price', title: 'Preis schätzen', icon: '🏷️', group: 'Schätzen', status: 'playable', mode: 'link',
+      id: 'guess-the-price', title: 'Preis schätzen', icon: '🏷️', group: 'Schätzen & Tippen', status: 'playable', mode: 'link',
       href: quickHref('guess-the-price'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['competitive', 'clever'], age: 'all',
       description: 'Schätzt den festgelegten Spielpreis. Die Werte sind reine Spielwerte und keine aktuellen Händlerpreise.',
@@ -28,7 +28,7 @@
       packs: ['Supermarkt', 'Technik', 'Reise', 'Party', 'Luxus', 'Absurd']
     },
     {
-      id: 'higher-lower', title: 'Höher oder tiefer', icon: '↕️', group: 'Schätzen', status: 'playable', mode: 'link',
+      id: 'higher-lower', title: 'Höher oder tiefer', icon: '↕️', group: 'Schätzen & Tippen', status: 'playable', mode: 'link',
       href: quickHref('higher-lower'), minPlayers: 2, maxPlayers: 20, duration: 12,
       moods: ['competitive', 'clever'], age: 'all', featured: true,
       description: 'Entscheidet, ob die nächste stabile Zahl höher oder tiefer ist als die sichtbare Zahl.',
@@ -36,7 +36,7 @@
       packs: ['Alltag', 'Zeit', 'Sport', 'Natur', 'Technik', 'Wissen']
     },
     {
-      id: 'know-me-best', title: 'Wer kennt mich am besten?', icon: '🧠', group: 'Freundschaft', status: 'playable', mode: 'link',
+      id: 'know-me-best', title: 'Wer kennt mich am besten?', icon: '🧠', group: 'Social & Klassiker', status: 'playable', mode: 'link',
       href: quickHref('know-me-best'), minPlayers: 3, maxPlayers: 20, duration: 20,
       moods: ['deep', 'friendly'], age: 'all',
       description: 'Die aktive Person wählt heimlich eine von drei Antworten. Die Gruppe versucht, diese Antwort vorherzusagen.',
@@ -44,7 +44,7 @@
       packs: ['Alltag', 'Essen', 'Reisen', 'Freizeit', 'Zukunft', 'Freundschaft']
     },
     {
-      id: 'hear-me-out', title: 'Hear Me Out', icon: '🎤', group: 'Debatte', status: 'playable', mode: 'link',
+      id: 'hear-me-out', title: 'Hear Me Out', icon: '🎤', group: 'Abstimmen & Ranking', status: 'playable', mode: 'link',
       href: quickHref('hear-me-out'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'deep'], age: 'teen',
       description: 'Verteidige eine überraschende, harmlose These in 30 Sekunden. Danach entscheidet die Gruppe, ob sie überzeugt ist.',
@@ -52,7 +52,7 @@
       packs: ['Essen', 'Alltag', 'Technik', 'Reisen', 'Fantasie', 'Unpopuläre Meinung']
     },
     {
-      id: 'hot-seat', title: 'Hot Seat', icon: '🔥', group: 'Schnellfragen', status: 'playable', mode: 'link',
+      id: 'hot-seat', title: 'Hot Seat', icon: '🔥', group: 'Schnell & Challenge', status: 'playable', mode: 'link',
       href: quickHref('hot-seat'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'deep'], age: 'teen',
       description: 'Eine Person beantwortet in kurzer Zeit fünf sichere Schnellfragen. Überspringen ist jederzeit erlaubt.',
@@ -60,7 +60,7 @@
       packs: ['Locker', 'Entscheidungen', 'Erinnerungen', 'Zukunft', 'Chaos', 'Kreativ']
     },
     {
-      id: 'story-chain', title: 'Story Chain', icon: '📖', group: 'Kreativ', status: 'playable', mode: 'link',
+      id: 'story-chain', title: 'Story Chain', icon: '📖', group: 'Kreativ & Schreiben', status: 'playable', mode: 'link',
       href: quickHref('story-chain'), minPlayers: 3, maxPlayers: 20, duration: 15,
       moods: ['funny', 'chaotic'], age: 'all',
       description: 'Eine Geschichte beginnt mit einem Satz. Jede Person ergänzt genau einen Satz, bis der Timer endet.',
@@ -68,7 +68,7 @@
       packs: ['Alltag', 'Mystery', 'Fantasy', 'Science-Fiction', 'Reise', 'Chaos']
     },
     {
-      id: 'finish-the-sentence', title: 'Satz beenden', icon: '✍️', group: 'Kreativ', status: 'playable', mode: 'link',
+      id: 'finish-the-sentence', title: 'Satz beenden', icon: '✍️', group: 'Kreativ & Schreiben', status: 'playable', mode: 'link',
       href: quickHref('finish-the-sentence'), minPlayers: 2, maxPlayers: 20, duration: 12,
       moods: ['funny', 'friendly'], age: 'all',
       description: 'Die aktive Person beendet einen offenen Satz spontan. Die Gruppe vergibt den Punkt für eine ehrliche oder kreative Antwort.',

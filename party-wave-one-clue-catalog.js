@@ -10,7 +10,7 @@
   if (!base) throw new Error('Wave-1-Katalog für Ein-Wort-Hinweis fehlt.');
 
   const game = Object.freeze({
-    id: 'password-one-word', title: 'Ein-Wort-Hinweis', icon: '🔑', group: 'Raten & Hinweise', status: 'playable', mode: 'link',
+    id: 'password-one-word', title: 'Ein-Wort-Hinweis', icon: '🔑', group: 'Darstellen & Erklären', status: 'playable', mode: 'link',
     href: 'quick-play.html?game=password-one-word', minPlayers: 3, maxPlayers: 20, duration: 12,
     moods: ['clever', 'friendly', 'competitive'], age: 'all', featured: false,
     description: 'Eine Person sieht geheim ein Zielwort und darf genau ein Hinweiswort geben. Die Gruppe versucht das Ziel zu erraten.',

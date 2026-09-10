@@ -11,7 +11,7 @@
 
   const quickHref = id => `quick-play.html?game=${encodeURIComponent(id)}`;
   const game = Object.freeze({
-    id: 'bluff-trivia', title: 'Bluff Trivia', icon: '🎭', group: 'Bluff & Wissen', status: 'playable', mode: 'link',
+    id: 'bluff-trivia', title: 'Bluff Trivia', icon: '🎭', group: 'Täuschung & Bluff', status: 'playable', mode: 'link',
     href: quickHref('bluff-trivia'), minPlayers: 3, maxPlayers: 10, duration: 18,
     moods: ['funny', 'clever', 'competitive'], age: 'all', featured: false,
     description: 'Alle erfinden privat eine glaubwürdige falsche Antwort. Danach werden echte und erfundene Antworten anonym gemischt.',

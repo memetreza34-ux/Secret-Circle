@@ -161,7 +161,7 @@ for (const pack of catalog.getPackNames('word-chain')) {
 const animeGame = catalog.getGame('anime-guess');
 assert.ok(animeGame);
 assert.equal(animeGame.title, 'Anime-Archetypen erraten');
-assert.equal(animeGame.group, 'Anime-Quiz');
+assert.equal(animeGame.group, 'Wissen & Quiz');
 assert.deepEqual(animeGame.packs, ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']);
 assert.equal(catalog.itemCount('anime-guess'), 40);
 for (const pack of animeGame.packs) {
@@ -182,7 +182,7 @@ for (const removed of [
 const spectrumGame = catalog.getGame('wavelength');
 assert.ok(spectrumGame, 'Spectrum mode is missing.');
 assert.equal(spectrumGame.title, 'Spektrum-Tipp');
-assert.equal(spectrumGame.group, 'Einschätzen');
+assert.equal(spectrumGame.group, 'Schätzen & Tippen');
 assert.doesNotMatch(spectrumGame.title, /Wellenlänge/i);
 
 assert.ok(wordContent && wordContent.categories, 'Word Imposter content runtime missing.');

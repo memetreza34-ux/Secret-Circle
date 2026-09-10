@@ -25,7 +25,7 @@
 
   const newGames = [
     {
-      id: 'forehead-guess', title: 'Stirn-Raten', icon: '🤳', group: 'Erklären', status: 'playable', mode: 'link',
+      id: 'forehead-guess', title: 'Stirn-Raten', icon: '🤳', group: 'Darstellen & Erklären', status: 'playable', mode: 'link',
       href: quickHref('forehead-guess'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'competitive'], age: 'all', featured: true,
       description: 'Eine Person sieht den Begriff nicht. Die Gruppe erklärt, spielt oder umschreibt, bis geraten oder übersprungen wird.',
@@ -33,7 +33,7 @@
       packs: ['Alltag', 'Tiere', 'Berufe', 'Popkultur']
     },
     {
-      id: 'letter-categories', title: 'Buchstaben-Kategorien', icon: '🔤', group: 'Schnell', status: 'playable', mode: 'link',
+      id: 'letter-categories', title: 'Buchstaben-Kategorien', icon: '🔤', group: 'Schnell & Challenge', status: 'playable', mode: 'link',
       href: quickHref('letter-categories'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['clever', 'competitive'], age: 'all',
       description: 'Ein Buchstabe und mehrere Kategorien erscheinen. Unter Zeitdruck werden passende, möglichst einzigartige Antworten gesammelt.',
@@ -41,7 +41,7 @@
       packs: ['Klassisch', 'Alltag', 'Kreativ']
     },
     {
-      id: 'dont-laugh', title: 'Nicht lachen!', icon: '😐', group: 'Challenge', status: 'playable', mode: 'link',
+      id: 'dont-laugh', title: 'Nicht lachen!', icon: '😐', group: 'Schnell & Challenge', status: 'playable', mode: 'link',
       href: quickHref('dont-laugh'), minPlayers: 2, maxPlayers: 20, duration: 10,
       moods: ['funny', 'chaotic'], age: 'all',
       description: 'Eine Person versucht mit einer sicheren Aufgabe die anderen zum Lachen zu bringen. Wer ernst bleibt, punktet.',
@@ -49,7 +49,7 @@
       packs: ['Gesichter', 'Stimmen', 'Mini-Szenen']
     },
     {
-      id: 'hum-song', title: 'Melodie summen', icon: '🎵', group: 'Audio', status: 'playable', mode: 'link',
+      id: 'hum-song', title: 'Melodie summen', icon: '🎵', group: 'Darstellen & Erklären', status: 'playable', mode: 'link',
       href: quickHref('hum-song'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'friendly'], age: 'all',
       description: 'Eine Person summt eine passende Melodie, ohne Wörter zu benutzen. Die Gruppe errät Titel, Stil oder Anlass.',
@@ -57,7 +57,7 @@
       packs: ['Anlässe', 'Genres', 'Film & Serie']
     },
     {
-      id: 'scavenger-hunt', title: 'Gegenstandsjagd', icon: '🔎', group: 'Bewegung', status: 'playable', mode: 'link',
+      id: 'scavenger-hunt', title: 'Gegenstandsjagd', icon: '🔎', group: 'Schnell & Challenge', status: 'playable', mode: 'link',
       href: quickHref('scavenger-hunt'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['chaotic', 'competitive'], age: 'all',
       description: 'Die App nennt eine sichere Eigenschaft. Wer zuerst einen passenden Gegenstand findet und zurückbringt, erhält den Punkt.',
@@ -65,7 +65,7 @@
       packs: ['Wohnung', 'Farben', 'Eigenschaften']
     },
     {
-      id: 'caption-battle', title: 'Caption Battle', icon: '💬', group: 'Kreativ', status: 'playable', mode: 'link',
+      id: 'caption-battle', title: 'Caption Battle', icon: '💬', group: 'Kreativ & Schreiben', status: 'playable', mode: 'link',
       href: quickHref('caption-battle'), minPlayers: 3, maxPlayers: 20, duration: 20,
       moods: ['funny', 'competitive'], age: 'teen',
       description: 'Zu einer absurden Situation erfindet jeder spontan eine Bildunterschrift. Die Gruppe wählt den stärksten Beitrag.',

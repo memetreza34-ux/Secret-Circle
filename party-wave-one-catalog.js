@@ -12,7 +12,7 @@
   const quickHref = id => `quick-play.html?game=${encodeURIComponent(id)}`;
   const quizGames = [
     Object.freeze({
-      id: 'party-quiz', title: 'Party Quiz', icon: '🧠', group: 'Quiz & Wissen', status: 'playable', mode: 'link',
+      id: 'party-quiz', title: 'Party Quiz', icon: '🧠', group: 'Wissen & Quiz', status: 'playable', mode: 'link',
       href: quickHref('party-quiz'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['clever', 'competitive', 'friendly'], age: 'all', featured: false,
       description: 'Schnelles Multiple-Choice-Quiz für Gruppen. Eine Antwort wählen, direkt auflösen und Punkte sammeln.',
@@ -20,7 +20,7 @@
       packs: ['Allgemeinwissen', 'Film & Serie', 'Technik']
     }),
     Object.freeze({
-      id: 'fact-or-fake', title: 'Fake oder Fakt', icon: '✅', group: 'Quiz & Wissen', status: 'playable', mode: 'link',
+      id: 'fact-or-fake', title: 'Fake oder Fakt', icon: '✅', group: 'Wissen & Quiz', status: 'playable', mode: 'link',
       href: quickHref('fact-or-fake'), minPlayers: 2, maxPlayers: 20, duration: 10,
       moods: ['clever', 'friendly'], age: 'all', featured: false,
       description: 'Eine Aussage erscheint. Die Gruppe entscheidet gleichzeitig: stimmt sie oder ist sie erfunden?',
@@ -30,7 +30,7 @@
   ];
   const imposterGames = [
     Object.freeze({
-      id: 'undercover-similar-word', title: 'Undercover – ähnliches Wort', icon: '🕶️', group: 'Täuschung', status: 'playable', mode: 'link',
+      id: 'undercover-similar-word', title: 'Undercover – ähnliches Wort', icon: '🕶️', group: 'Täuschung & Bluff', status: 'playable', mode: 'link',
       href: quickHref('undercover-similar-word'), minPlayers: 3, maxPlayers: 20, duration: 12,
       moods: ['clever', 'competitive', 'funny'], age: 'all', featured: false,
       description: 'Fast alle bekommen denselben Begriff. Eine Person erhält ein ähnliches Wort und muss unauffällig bleiben.',
@@ -38,7 +38,7 @@
       packs: ['Alltag', 'Essen', 'Gaming']
     }),
     Object.freeze({
-      id: 'no-word-imposter', title: 'Imposter ohne Wort', icon: '🫥', group: 'Täuschung', status: 'playable', mode: 'link',
+      id: 'no-word-imposter', title: 'Imposter ohne Wort', icon: '🫥', group: 'Täuschung & Bluff', status: 'playable', mode: 'link',
       href: quickHref('no-word-imposter'), minPlayers: 3, maxPlayers: 20, duration: 12,
       moods: ['clever', 'competitive', 'funny'], age: 'all', featured: false,
       description: 'Alle außer dem Imposter kennen den Begriff. Wird der Imposter gewählt, bekommt er einen letzten Versuch, das Wort zu erraten.',

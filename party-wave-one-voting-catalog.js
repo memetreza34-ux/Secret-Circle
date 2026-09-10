@@ -12,7 +12,7 @@
   const quickHref = id => `quick-play.html?game=${encodeURIComponent(id)}`;
   const gamesAdded = [
     Object.freeze({
-      id: 'percent-guess', title: 'Prozent schätzen', icon: '📊', group: 'Schätzen & Voting', status: 'playable', mode: 'link',
+      id: 'percent-guess', title: 'Prozent schätzen', icon: '📊', group: 'Schätzen & Tippen', status: 'playable', mode: 'link',
       href: quickHref('percent-guess'), minPlayers: 2, maxPlayers: 20, duration: 12,
       moods: ['clever', 'competitive', 'friendly'], age: 'all', featured: false,
       description: 'Eine Person schätzt einen Prozentwert. Je näher die Schätzung am Zielwert liegt, desto mehr Punkte gibt es.',
@@ -20,7 +20,7 @@
       packs: ['Alltag', 'Zeit & Zahlen', 'Technik']
     }),
     Object.freeze({
-      id: 'party-bracket', title: 'Party Bracket', icon: '🏆', group: 'Schätzen & Voting', status: 'playable', mode: 'link',
+      id: 'party-bracket', title: 'Party Bracket', icon: '🏆', group: 'Schätzen & Tippen', status: 'playable', mode: 'link',
       href: quickHref('party-bracket'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['funny', 'competitive', 'friendly'], age: 'all', featured: false,
       description: 'Acht Optionen treten im K.-o.-System gegeneinander an. Die Gruppe stimmt Paar für Paar bis zum Sieger ab.',

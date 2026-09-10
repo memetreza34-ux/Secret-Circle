@@ -32,7 +32,7 @@ for (const id of megaIds) {
 
 const animeGame = mega.getGame('anime-guess');
 assert.equal(animeGame.title, 'Anime-Archetypen erraten');
-assert.equal(animeGame.group, 'Anime-Quiz');
+assert.equal(animeGame.group, 'Wissen & Quiz');
 assert.deepEqual(animeGame.packs, ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']);
 assert.equal(mega.itemCount('anime-guess'), 40);
 for (const pack of animeGame.packs) assert.equal(mega.getItems('anime-guess', pack).length, 10);

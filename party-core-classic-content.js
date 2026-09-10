@@ -151,7 +151,7 @@
   const referenceSafeGameOverrides = Object.freeze({
     'anime-guess': Object.freeze({
       title: 'Anime-Archetypen erraten',
-      group: 'Anime-Quiz',
+      group: 'Wissen & Quiz',
       description: 'Ein eigenständiges Anime-Archetypen-Quiz ohne konkrete Franchise-Figuren, Logos, Bilder oder Zitate.',
       instructions: Object.freeze([
         'Archetypen-Pack wählen.',
@@ -163,7 +163,7 @@
     }),
     wavelength: Object.freeze({
       title: 'Spektrum-Tipp',
-      group: 'Einschätzen',
+      group: 'Schätzen & Tippen',
       description: 'Ein geheimer Zielwert liegt zwischen zwei Polen. Eine Person gibt einen kurzen Hinweis, die Gruppe setzt ihre Position auf dem Spektrum.',
       instructions: Object.freeze([
         'Spektrum und geheimen Zielwert ansehen.',

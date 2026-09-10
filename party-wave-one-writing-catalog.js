@@ -12,7 +12,7 @@
   const quickHref = id => `quick-play.html?game=${encodeURIComponent(id)}`;
   const gamesAdded = [
     Object.freeze({
-      id: 'fill-blank-battle', title: 'Satzduell', icon: '✍️', group: 'Schreiben & Kreativ', status: 'playable', mode: 'link',
+      id: 'fill-blank-battle', title: 'Satzduell', icon: '✍️', group: 'Kreativ & Schreiben', status: 'playable', mode: 'link',
       href: quickHref('fill-blank-battle'), minPlayers: 3, maxPlayers: 12, duration: 15,
       moods: ['funny', 'creative', 'friendly'], age: 'all', featured: false,
       description: 'Alle vervollständigen denselben harmlosen Satz privat. Danach werden die Antworten anonym gemischt und die Gruppe wählt den Favoriten.',
@@ -20,7 +20,7 @@
       packs: ['Alltag', 'Gaming', 'Fantasie']
     }),
     Object.freeze({
-      id: 'who-wrote-it', title: 'Wer hat das geschrieben?', icon: '📝', group: 'Schreiben & Kreativ', status: 'playable', mode: 'link',
+      id: 'who-wrote-it', title: 'Wer hat das geschrieben?', icon: '📝', group: 'Kreativ & Schreiben', status: 'playable', mode: 'link',
       href: quickHref('who-wrote-it'), minPlayers: 3, maxPlayers: 12, duration: 15,
       moods: ['funny', 'friendly', 'clever'], age: 'all', featured: false,
       description: 'Alle beantworten dieselbe harmlose Frage privat. Danach versucht die Gruppe, die anonymen Antworten den Personen zuzuordnen.',
