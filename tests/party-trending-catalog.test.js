@@ -18,14 +18,14 @@ const expectedQuickModes = [
 const minimumItems = {
   wavelength: 24,
   'draw-guess': 30,
-  'rapid-fire': 20,
+  'rapid-fire': 40,
   'sound-imitation': 30,
   'forehead-guess': 40,
-  'letter-categories': 9,
-  'dont-laugh': 18,
+  'letter-categories': 30,
+  'dont-laugh': 36,
   'hum-song': 24,
   'scavenger-hunt': 24,
-  'caption-battle': 18
+  'caption-battle': 36
 };
 assert.deepEqual([...trending.trendingGameIds], expectedQuickModes);
 

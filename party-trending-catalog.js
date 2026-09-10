@@ -98,17 +98,26 @@
       '3 in 5 Sekunden': [
         ['Nenne drei rote Dinge', 3, 5], ['Nenne drei Tiere mit vier Beinen', 3, 5], ['Nenne drei Apps', 3, 5],
         ['Nenne drei Frühstückssachen', 3, 5], ['Nenne drei Länder', 3, 5], ['Nenne drei Berufe', 3, 5],
-        ['Nenne drei Dinge im Badezimmer', 3, 5], ['Nenne drei Wörter mit S', 3, 5]
+        ['Nenne drei Dinge im Badezimmer', 3, 5], ['Nenne drei Wörter mit S', 3, 5],
+        ['Nenne drei Obstsorten', 3, 5], ['Nenne drei Dinge in deiner Tasche', 3, 5],
+        ['Nenne drei Farben', 3, 5], ['Nenne drei Dinge, die fliegen', 3, 5],
+        ['Nenne drei Wörter mit K', 3, 5], ['Nenne drei Musikinstrumente', 3, 5]
       ],
       '5 in 10 Sekunden': [
         ['Nenne fünf Getränke', 5, 10], ['Nenne fünf Filmgenres', 5, 10], ['Nenne fünf Städte', 5, 10],
         ['Nenne fünf Dinge mit Bildschirm', 5, 10], ['Nenne fünf Sportarten', 5, 10], ['Nenne fünf Dinge für eine Reise', 5, 10],
-        ['Nenne fünf Lebensmittel im Kühlschrank', 5, 10], ['Nenne fünf Geräusche im Alltag', 5, 10]
+        ['Nenne fünf Lebensmittel im Kühlschrank', 5, 10], ['Nenne fünf Geräusche im Alltag', 5, 10],
+        ['Nenne fünf Tiere im Zoo', 5, 10], ['Nenne fünf Dinge im Klassenzimmer', 5, 10],
+        ['Nenne fünf Berufe mit Uniform', 5, 10], ['Nenne fünf Gemüsesorten', 5, 10],
+        ['Nenne fünf Dinge, die man falten kann', 5, 10], ['Nenne fünf Wörter mit Doppelbuchstaben', 5, 10]
       ],
       Extrem: [
         ['Nenne sieben Wörter ohne den Buchstaben E', 7, 15], ['Nenne sechs Dinge, die rollen', 6, 12],
         ['Nenne sechs berühmte Erfindungen', 6, 12], ['Nenne sieben Dinge, die man sammeln kann', 7, 15],
-        ['Nenne sechs Begriffe zum Thema Strom', 6, 12], ['Nenne sieben Dinge, die leuchten', 7, 15]
+        ['Nenne sechs Begriffe zum Thema Strom', 6, 12], ['Nenne sieben Dinge, die leuchten', 7, 15],
+        ['Nenne sieben Dinge, die kalt sind', 7, 15], ['Nenne sechs Wörter mit Umlaut', 6, 12],
+        ['Nenne sieben Dinge in einer Küche', 7, 15], ['Nenne sechs Länder in Europa', 6, 12],
+        ['Nenne sieben Wörter, die auf -ung enden', 7, 15], ['Nenne sechs Dinge, die man tragen kann', 6, 12]
       ]
     },
     'sound-imitation': {
@@ -125,23 +134,44 @@
     'letter-categories': {
       Klassisch: [
         ['Stadt', 'Land', 'Tier', 'Beruf', 'Essen'], ['Vorname', 'Ort', 'Gegenstand', 'Pflanze', 'Marke'],
-        ['Film oder Serie', 'Sport', 'Getränk', 'Kleidungsstück', 'Fahrzeug']
+        ['Film oder Serie', 'Sport', 'Getränk', 'Kleidungsstück', 'Fahrzeug'],
+        ['Hauptstadt', 'Fluss', 'Musikinstrument', 'Farbe', 'Körperteil'],
+        ['Insel', 'Baum', 'Süßigkeit', 'Schulfach', 'Möbelstück'],
+        ['Beruf mit Uniform', 'Meerestier', 'Gemüse', 'Werkzeug', 'Gebäude'],
+        ['Nachname', 'Gebirge', 'Vogel', 'Backware', 'Sportgerät'],
+        ['Fahrzeugtyp', 'Landschaftsform', 'Käsesorte', 'Tanzstil', 'Metall'],
+        ['Sprache', 'Wort zur Jahreszeit', 'Blume', 'Getreide', 'Beruf im Krankenhaus'],
+        ['Stadtteil', 'Fisch', 'Gewürz', 'Brettspielbegriff', 'Winterkleidung']
       ],
       Alltag: [
         ['Im Haushalt', 'Im Supermarkt', 'In der Schule', 'In der Stadt', 'Auf Reisen'],
         ['App', 'Elektrogerät', 'Möbelstück', 'Werkzeug', 'Hobby'],
-        ['Frühstück', 'Geschenk', 'Geräusch', 'Gewohnheit', 'Wochenendaktivität']
+        ['Frühstück', 'Geschenk', 'Geräusch', 'Gewohnheit', 'Wochenendaktivität'],
+        ['Im Badezimmer', 'Auf dem Schreibtisch', 'Im Auto', 'Im Garten', 'In der Küche'],
+        ['Etwas aus Papier', 'Etwas aus Holz', 'Etwas aus Glas', 'Etwas aus Metall', 'Etwas aus Stoff'],
+        ['Ding im Rucksack', 'Ding im Kühlschrank', 'Ding in der Schublade', 'Ding im Regal', 'Ding im Klassenzimmer'],
+        ['Anlass zum Feiern', 'Möbel im Wohnzimmer', 'Putzsache', 'Sache zum Aufladen', 'Sache mit Knopf'],
+        ['Beruf im Freien', 'Ding am Bahnhof', 'Ding im Schwimmbad', 'Ding im Kino', 'Ding im Wartezimmer'],
+        ['Ausrede fürs Zuspätkommen', 'Grund für gute Laune', 'Nerviges Geräusch', 'Sache, die man verliert', 'Sache, die man teilt'],
+        ['Hallensportart', 'Snack für unterwegs', 'Sache im Verbandskasten', 'Ding beim Zelten', 'Ding im Hotelzimmer']
       ],
       Kreativ: [
         ['Superkraft', 'Fantasieort', 'Bandname', 'Erfindung', 'Bösewicht'],
         ['Ausrede', 'Podcastname', 'Robotername', 'Festival', 'Geheimversteck'],
-        ['Traumberuf', 'Filmfigur', 'Produktidee', 'Teamname', 'Abenteuer']
+        ['Traumberuf', 'Filmfigur', 'Produktidee', 'Teamname', 'Abenteuer'],
+        ['Raumschiffname', 'Zaubertrank', 'Geheimorganisation', 'Fabelwesen', 'Planetenname'],
+        ['Comictitel', 'Schurkenplan', 'Roboterfunktion', 'Zeitreiseziel', 'Held ohne Superkraft'],
+        ['Alkoholfreier Drink', 'Restaurantname', 'Gericht auf der Karte', 'Werbespruch', 'Ladenname'],
+        ['Songtitel', 'Albumname', 'Tanzschritt', 'Instrument aus Alltagsdingen', 'Festivalmotto'],
+        ['Brettspielidee', 'Quizshow-Titel', 'Podcastfolge', 'Buchkapitel', 'Filmschurke'],
+        ['Neuer Feiertag', 'Regel für eine Insel', 'Gesetz für Haustiere', 'Sportart der Zukunft', 'Schulfach der Zukunft'],
+        ['Detail im Traumhaus', 'Ort auf der Schatzkarte', 'Wunschkraft', 'Zauberspruch', 'Rätselwort']
       ]
     },
     'dont-laugh': {
-      Gesichter: ['Ernst bleiben und nur mit den Augen überrascht wirken.', 'Eine extrem langsame Grimasse machen.', 'So tun, als würdest du gegen einen Nieser kämpfen.', 'Ein unsichtbares saures Bonbon essen.', 'Mit völlig ernstem Gesicht wie ein verwirrter Roboter schauen.', 'Eine dramatische Augenbrauen-Unterhaltung spielen.'],
-      Stimmen: ['Eine Wettervorhersage für den Kühlschrank sprechen.', 'Wie ein Nachrichtensprecher über eine verlorene Socke berichten.', 'Ein Kochrezept wie einen Actionfilm ankündigen.', 'Mit Roboterstimme ein Geburtstagslied ohne Melodie sprechen.', 'Eine Durchsage für einen verspäteten Aufzug machen.', 'Einen Staubsauger als Luxusprodukt bewerben.'],
-      'Mini-Szenen': ['Versuche eine unsichtbare Tür zu öffnen, die immer wieder klemmt.', 'Führe ein ernstes Interview mit einem Kissen.', 'Spiele eine dramatische Suche nach deiner eigenen Hand.', 'Begrüße einen imaginären Prominenten völlig übertrieben.', 'Tu so, als wäre der Boden plötzlich sehr langsam.', 'Führe einen Streit mit einer leeren Wasserflasche.']
+      Gesichter: ['Ernst bleiben und nur mit den Augen überrascht wirken.', 'Eine extrem langsame Grimasse machen.', 'So tun, als würdest du gegen einen Nieser kämpfen.', 'Ein unsichtbares saures Bonbon essen.', 'Mit völlig ernstem Gesicht wie ein verwirrter Roboter schauen.', 'Eine dramatische Augenbrauen-Unterhaltung spielen.', 'Ein unsichtbares, sehr schweres Buch nur mit den Augenbrauen heben.', 'So schauen, als hättest du gerade eine schwierige Formel im Kopf gelöst.', 'Mit ernstem Blick ganz langsam blinzeln, als wäre es harte Arbeit.', 'Tu so, als würde dich ein einzelner Sonnenstrahl dramatisch stören.', 'Ein stummes Gespräch mit der Zimmerdecke führen.', 'Schaue, als hättest du deinen Namen vergessen und gerade wiedergefunden.'],
+      Stimmen: ['Eine Wettervorhersage für den Kühlschrank sprechen.', 'Wie ein Nachrichtensprecher über eine verlorene Socke berichten.', 'Ein Kochrezept wie einen Actionfilm ankündigen.', 'Mit Roboterstimme ein Geburtstagslied ohne Melodie sprechen.', 'Eine Durchsage für einen verspäteten Aufzug machen.', 'Einen Staubsauger als Luxusprodukt bewerben.', 'Eine Bahnhofsdurchsage für den Weg in die Küche sprechen.', 'Wie ein Sportreporter beschreiben, wie jemand ein Glas hebt.', 'Eine Bedienungsanleitung für Schuhe vorlesen, als wäre sie spannend.', 'Sprich eine Runde lang, als wäre jeder Satz ein großes Geheimnis.', 'Erzähle eine Doku über eine Zimmerpflanze.', 'Kündige das Wetter für die nächsten fünf Sekunden an.'],
+      'Mini-Szenen': ['Versuche eine unsichtbare Tür zu öffnen, die immer wieder klemmt.', 'Führe ein ernstes Interview mit einem Kissen.', 'Spiele eine dramatische Suche nach deiner eigenen Hand.', 'Begrüße einen imaginären Prominenten völlig übertrieben.', 'Tu so, als wäre der Boden plötzlich sehr langsam.', 'Führe einen Streit mit einer leeren Wasserflasche.', 'Überzeuge eine unsichtbare Katze, vom Schrank herunterzukommen.', 'Spiele in extremer Zeitlupe, wie du einen Stuhl erreichst.', 'Führe eine ernste Verhandlung mit deinem eigenen Schatten.', 'Trage einen unsichtbaren, sehr wackeligen Turm durch den Raum.', 'Begrüße jede Person, als wärst du seit Jahren verschollen.', 'Bitte eine unsichtbare Fliege sehr höflich nach draußen.']
     },
     'hum-song': {
       Anlässe: ['Geburtstagslied', 'Stadiongesang', 'Schlaflied', 'Feierlied', 'Weihnachtsmelodie', 'Hochzeitsmusik', 'Reiselied', 'Kinderlied'],
@@ -154,9 +184,9 @@
       Eigenschaften: ['Etwas überraschend Schweres', 'Etwas sehr Leichtes', 'Etwas Älteres als ein Jahr', 'Etwas mit einer interessanten Oberfläche', 'Etwas, das sich öffnen lässt', 'Etwas mit einem Kabel', 'Etwas, das rollen kann', 'Etwas, das man stapeln kann']
     },
     'caption-battle': {
-      Alltag: ['Du öffnest den Kühlschrank zum fünften Mal und erwartest neue Inhalte.', 'Der Bus fährt genau in dem Moment ab, in dem du ankommst.', 'Jemand sagt: Das dauert nur fünf Minuten.', 'Der Wecker klingelt, aber dein Körper stimmt dagegen.', 'Du suchst dein Handy, während du es in der Hand hältst.', 'Die letzte Pommes liegt in der Mitte des Tisches.'],
-      Internet: ['Das WLAN funktioniert erst wieder, nachdem niemand mehr hinschaut.', 'Der Gruppenchat wird plötzlich um drei Uhr morgens aktiv.', 'Ein Update verspricht kleine Verbesserungen und braucht eine Stunde.', 'Du öffnest eine App und vergisst sofort warum.', 'Autokorrektur entscheidet sich gegen deinen Ruf.', 'Ein Video lädt bei 99 Prozent nicht weiter.'],
-      Fantasie: ['Ein Drache muss beim Bürgeramt eine Nummer ziehen.', 'Ein Roboter entdeckt seinen ersten Montag.', 'Ein Zauberer hat sein Passwort vergessen.', 'Aliens versuchen einen Toaster zu verstehen.', 'Ein Ritter bestellt Essen per App.', 'Eine Zeitmaschine landet fünf Minuten zu spät.']
+      Alltag: ['Du öffnest den Kühlschrank zum fünften Mal und erwartest neue Inhalte.', 'Der Bus fährt genau in dem Moment ab, in dem du ankommst.', 'Jemand sagt: Das dauert nur fünf Minuten.', 'Der Wecker klingelt, aber dein Körper stimmt dagegen.', 'Du suchst dein Handy, während du es in der Hand hältst.', 'Die letzte Pommes liegt in der Mitte des Tisches.', 'Du erklärst souverän den Weg und merkst mitten im Satz, dass du falschliegst.', 'Der Einkaufswagen mit dem einen kaputten Rad wählt genau dich aus.', 'Jemand fragt, ob noch jemand etwas möchte, kurz bevor alles leer ist.', 'Du wachst eine Minute vor dem Wecker auf und freust dich zu früh.', 'Die Kopfhörer bleiben zuverlässig an der Türklinke hängen.', 'Du winkst zurück, obwohl die Person hinter dir gemeint war.'],
+      Internet: ['Das WLAN funktioniert erst wieder, nachdem niemand mehr hinschaut.', 'Der Gruppenchat wird plötzlich um drei Uhr morgens aktiv.', 'Ein Update verspricht kleine Verbesserungen und braucht eine Stunde.', 'Du öffnest eine App und vergisst sofort warum.', 'Autokorrektur entscheidet sich gegen deinen Ruf.', 'Ein Video lädt bei 99 Prozent nicht weiter.', 'Die Ladeanzeige dreht sich, als hätte sie alle Zeit der Welt.', 'Du tippst eine lange Nachricht und löschst sie wieder.', 'Jemand antwortet nach drei Tagen mit einem einzigen Zeichen.', 'Der Akku springt von zwanzig Prozent direkt auf fünf.', 'Im Videocall wirst du gefragt, ob du noch da bist.', 'Die Suchleiste kennt deine Frage besser als du selbst.'],
+      Fantasie: ['Ein Drache muss beim Bürgeramt eine Nummer ziehen.', 'Ein Roboter entdeckt seinen ersten Montag.', 'Ein Zauberer hat sein Passwort vergessen.', 'Aliens versuchen einen Toaster zu verstehen.', 'Ein Ritter bestellt Essen per App.', 'Eine Zeitmaschine landet fünf Minuten zu spät.', 'Ein Vampir stellt fest, dass der Termin am Vormittag liegt.', 'Ein Superheld sucht einen Parkplatz.', 'Eine Meerjungfrau probiert Schuhe an.', 'Ein Geist versucht, leise die Treppe zu nehmen.', 'Ein Zeitreisender kommt genau zur Kaffeepause.', 'Ein Troll erklärt geduldig seine Brückenregeln.']
     }
   };
 
