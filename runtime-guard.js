@@ -18,6 +18,38 @@
     'secret-circle-party-created-active-v1',
     'secret-circle-party-active-v1'
   ];
+  /* Manche Browser sperren den lokalen Speicher vollständig (privates Fenster,
+     "alle Cookies blockieren", strenge Firmenprofile). Dann wirft bereits der
+     Zugriff auf window.localStorage, und jedes Modul bricht beim Laden ab — die
+     Seite bliebe leer. Der Ersatzspeicher hält die Sitzung im Arbeitsspeicher:
+     Alles ist spielbar, nur nach dem Schließen ist der Stand weg. Ersetzt wird
+     ausschließlich, wenn schon das Lesen fehlschlägt; ein voller Speicher wird
+     an anderer Stelle behandelt und darf nicht verworfen werden. */
+  function installStorageFallback() {
+    try {
+      const store = root.localStorage;
+      if (!store) return false;
+      store.getItem('__secret_circle_probe__');
+      return false;
+    } catch { /* unten wird ersetzt */ }
+
+    const memory = new Map();
+    const shim = {
+      getItem(key) { const name = String(key); return memory.has(name) ? memory.get(name) : null; },
+      setItem(key, value) { memory.set(String(key), String(value)); },
+      removeItem(key) { memory.delete(String(key)); },
+      clear() { memory.clear(); },
+      key(index) { const keys = [...memory.keys()]; const position = Number(index); return keys[position] ?? null; },
+      get length() { return memory.size; }
+    };
+    try {
+      Object.defineProperty(root, 'localStorage', { configurable: true, get: () => shim });
+      return true;
+    } catch { return false; }
+  }
+
+  const storageFallbackActive = installStorageFallback();
+
   let fatalMessageShown = false;
   let waitingWorker = null;
   let updateRequested = false;
@@ -217,6 +249,16 @@
     });
   }
 
+  function announceStorageFallback() {
+    if (!storageFallbackActive) return;
+    const status = statusElement();
+    if (!status || status.textContent) return;
+    status.textContent = 'Dieser Browser erlaubt keinen lokalen Speicher. Alles ist spielbar, aber der Spielstand geht beim Schließen verloren.';
+    status.classList.add('error');
+  }
+
+  root.addEventListener('load', announceStorageFallback, { once: true });
+
   const initialisePageEnhancements = () => loadPartyReleaseStructure();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialisePageEnhancements, { once: true });
   else initialisePageEnhancements();
@@ -229,6 +271,7 @@
 
   root.SecretCircleRuntime = Object.freeze({
     version: VERSION,
+    storageFallbackActive,
     updateStyle: UPDATE_STYLE,
     partyReleaseStyle: PARTY_RELEASE_STYLE,
     partyReleaseSource: PARTY_RELEASE_SOURCE,
