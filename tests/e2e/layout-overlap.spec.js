@@ -25,6 +25,10 @@ async function topElementAt(page, selector) {
   return page.evaluate(id => {
     const node = document.querySelector(id);
     if (!node) return 'fehlt';
+    /* Erst in den sichtbaren Bereich holen: Auf kleinen Fenstern liegt die
+       Leiste zunächst unterhalb des Sichtfelds, das ist in Ordnung. Geprüft
+       wird, ob sie dort von etwas anderem überdeckt wird. */
+    node.scrollIntoView({ block: 'center' });
     const box = node.getBoundingClientRect();
     const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
     if (!hit) return 'nichts';
