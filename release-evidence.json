@@ -15,17 +15,28 @@
   },
   "gates": {
     "ci": {
-      "status": "BLOCKED",
+      "status": "OPEN",
       "commit": null,
       "evidence": {
-        "latestInvestigatedRun": 3660,
-        "runId": 33255333073,
-        "jobId": 99107918414,
-        "head": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
-        "branch": "integration/v64-main-sync",
-        "steps": 0,
-        "runnerId": 0,
-        "repositoryCodeExecuted": false
+        "note": "Die Pipeline läuft und besteht alle Tore auf main. PASS erfordert laut Vertrag einen eingefrorenen Release-Kandidaten.",
+        "lastGreenRun": {
+          "runId": 34498210202,
+          "jobId": 102942257341,
+          "job": "validate",
+          "conclusion": "success",
+          "head": "bc798fb89b05b1c046e731356c2bbd3e517f039d",
+          "branch": "main",
+          "steps": 16,
+          "successfulSteps": 16,
+          "finishedAt": "2026-09-10T16:03:47Z",
+          "repositoryCodeExecuted": true,
+          "gatesRun": [
+            "npm run check",
+            "npm test",
+            "npm run validate",
+            "npm run test:e2e"
+          ]
+        }
       }
     },
     "crossBrowser": {
@@ -63,13 +74,41 @@
         "httpsConfirmed": false
       }
     },
-    "pwaUpgradeRollback": {"status": "OPEN", "commit": null, "evidence": null},
-    "android": {"status": "OPEN", "commit": null, "evidence": null},
-    "ios": {"status": "OPEN", "commit": null, "evidence": null},
-    "tablet": {"status": "OPEN", "commit": null, "evidence": null},
-    "accessibility": {"status": "OPEN", "commit": null, "evidence": null},
-    "groups": {"status": "OPEN", "commit": null, "evidence": null},
-    "contentPrivacyReference": {"status": "OPEN", "commit": null, "evidence": null},
+    "pwaUpgradeRollback": {
+      "status": "OPEN",
+      "commit": null,
+      "evidence": null
+    },
+    "android": {
+      "status": "OPEN",
+      "commit": null,
+      "evidence": null
+    },
+    "ios": {
+      "status": "OPEN",
+      "commit": null,
+      "evidence": null
+    },
+    "tablet": {
+      "status": "OPEN",
+      "commit": null,
+      "evidence": null
+    },
+    "accessibility": {
+      "status": "OPEN",
+      "commit": null,
+      "evidence": null
+    },
+    "groups": {
+      "status": "OPEN",
+      "commit": null,
+      "evidence": null
+    },
+    "contentPrivacyReference": {
+      "status": "OPEN",
+      "commit": null,
+      "evidence": null
+    },
     "assetsThirdParty": {
       "status": "BLOCKED",
       "commit": null,
@@ -128,8 +167,7 @@
     }
   },
   "knownBlockers": [
-    "GitHub Actions jobs currently end before repository steps and receive no Hosted Runner",
-    "Cross-browser release evidence is blocked by the same Hosted Runner allocation failure",
+    "Cross-browser release evidence is still open: the pipeline runs Chromium desktop and mobile; other browser engines have no evidence yet",
     "main branch protection is currently disabled and has no required status checks",
     "Draft PR #15 is the controlled main/release reconciliation candidate and must show behind_by=0 plus exactly the expected 9 changed paths in a fresh GitHub compare immediately before review/merge",
     "The old icon rights blocker is resolved, but final asset/third-party PASS still requires functioning-runner audits, online dependency integrity evidence and final manual visual/trademark review",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-29",
+  "updatedAt": "2026-09-10",
   "sourceGeneration": "v64",
   "packageVersion": "1.0.0-beta.3",
   "offlineCache": {
@@ -32,9 +32,18 @@
     "mainHeadAtDiscovery": "d347c7138bae18325c288632222917ad618e6547",
     "stackMergeBaseAtDiscovery": "a16a612c8e5f919eaca2dcf0a905e7e8824ec472",
     "layers": [
-      {"pullRequest": 3, "branch": "codex/improve-gameplay-v3"},
-      {"pullRequest": 11, "branch": "codex/party-hub-foundation"},
-      {"pullRequest": 13, "branch": "agent/release-foundation-2027"}
+      {
+        "pullRequest": 3,
+        "branch": "codex/improve-gameplay-v3"
+      },
+      {
+        "pullRequest": 11,
+        "branch": "codex/party-hub-foundation"
+      },
+      {
+        "pullRequest": 13,
+        "branch": "agent/release-foundation-2027"
+      }
     ],
     "mainCommitsMissingAtDiscovery": [
       "6b6bddd0ae619d160b4468b61ae49cb30e2ea834",
@@ -72,20 +81,18 @@
     "requiredStatusCheckContexts": []
   },
   "ci": {
-    "status": "BLOCKED_BEFORE_STEP_1",
-    "lastDeeplyInvestigated": {
-      "runNumber": 3660,
-      "runId": 33255333073,
-      "jobId": 99107918414,
-      "head": "c3b1f423c48d623ac22c6a0c38c5fdf927773ab3",
-      "branch": "integration/v64-main-sync",
-      "steps": 0,
-      "runnerId": 0,
-      "runnerName": "",
-      "requestedLabel": "ubuntu-latest",
-      "repositoryCodeExecuted": false
+    "status": "GREEN_ON_MAIN",
+    "lastGreenRun": {
+      "runId": 34498210202,
+      "jobId": 102942257341,
+      "head": "bc798fb89b05b1c046e731356c2bbd3e517f039d",
+      "branch": "main",
+      "steps": 16,
+      "conclusion": "success",
+      "finishedAt": "2026-09-10T16:03:47Z",
+      "repositoryCodeExecuted": true
     },
-    "interpretation": "EXTERNAL_HOSTED_RUNNER_OR_ACCOUNT_POLICY_BLOCKER_NOT_APP_CODE"
+    "interpretation": "PIPELINE_RUNS_ON_MAIN_AND_PASSES_ALL_GATES_RC_EVIDENCE_STILL_OPEN"
   },
   "scopePolicy": {
     "coreFrozen": true,
