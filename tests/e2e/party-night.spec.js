@@ -114,3 +114,25 @@ test('completed Hub history automatically advances the matching Party Night step
   expect(stored.steps[0].status).toBe('done');
   expect(stored.currentIndex).toBe(1);
 });
+
+test('Party Night progress bar reflects handled stations without CSP violations', async ({ page }) => {
+  /* Die Breite stand als style-Attribut im HTML-String. Die CSP (style-src 'self')
+     blockiert das, die Leiste war deshalb immer voll. */
+  const violations = [];
+  page.on('console', message => {
+    if (/Content Security Policy|style-src/i.test(message.text())) violations.push(message.text());
+  });
+  await page.locator('#party-night-duration').selectOption('30');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+  await expect(page.locator('.party-night-step')).toHaveCount(2);
+
+  const fill = () => page.locator('.party-night-progress').evaluate(bar => {
+    const span = bar.querySelector('span');
+    return Math.round(span.getBoundingClientRect().width / bar.clientWidth * 100);
+  });
+  expect(await fill()).toBe(0);
+  await page.locator('.party-night-step').first().getByRole('button', { name: 'Als erledigt' }).click();
+  await expect(page.locator('.party-night-progress')).toHaveAttribute('aria-label', /1 von 2/);
+  await expect.poll(fill).toBe(50);
+  expect(violations).toEqual([]);
+});

@@ -429,7 +429,10 @@
       summary.className = 'party-night-summary';
       summary.innerHTML = `
         <div><p class="eyebrow">${complete ? 'Abend abgeschlossen' : `Station ${Math.min(activePlan.currentIndex + 1, activePlan.steps.length)} von ${activePlan.steps.length}`}</p><h3>${moodLabel(activePlan.config.mood)} · ${activePlan.config.players} Personen</h3><p>Etwa ${activePlan.estimatedMinutes} Minuten · ${completed} erledigt · ${handled - completed} übersprungen</p></div>
-        <div class="party-night-progress" aria-label="${handled} von ${activePlan.steps.length} Stationen bearbeitet"><span style="width:${Math.round((handled / activePlan.steps.length) * 100)}%"></span></div>`;
+        <div class="party-night-progress" aria-label="${handled} von ${activePlan.steps.length} Stationen bearbeitet"><span></span></div>`;
+      /* Breite per CSSOM setzen: Ein style-Attribut im HTML blockiert die CSP
+         (style-src 'self'), die Leiste stand dann immer auf voll. */
+      summary.querySelector('.party-night-progress span').style.width = `${Math.round((handled / activePlan.steps.length) * 100)}%`;
       result.append(summary);
 
       const list = documentRef.createElement('ol');
