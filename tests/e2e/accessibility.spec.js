@@ -175,3 +175,20 @@ test('reduced motion preference is respected across product pages', async ({ pag
     expect(Math.max(...durations.transition)).toBeLessThanOrEqual(0.00002);
   }
 });
+
+test('view switches jump to the top without a scroll animation', async ({ page }) => {
+  /* Der neue Inhalt erscheint sofort. Eine Scroll-Animation darüber verwirrt und
+     lässt Tipps währenddessen auf dem falschen Element landen. Ein festes
+     behavior: 'smooth' übergeht außerdem die Einstellung „Bewegung reduzieren“. */
+  for (const reducedMotion of ['no-preference', 'reduce']) {
+    await page.emulateMedia({ reducedMotion });
+    await page.goto('/party.html?view=games');
+    await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
+    const afterSwitch = await page.evaluate(() => {
+      document.querySelector('.hub-nav [data-view-target="players"]').click();
+      return window.scrollY;
+    });
+    expect(afterSwitch, `Scrollposition direkt nach dem Wechsel (${reducedMotion})`).toBe(0);
+  }
+});

@@ -324,7 +324,8 @@
       button.className = 'secondary';
       button.type = 'button';
       button.textContent = activePlan ? 'Partyabend fortsetzen' : 'Partyabend planen';
-      button.addEventListener('click', () => section.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+      /* Kein festes 'smooth': Das CSS scrollt sanft und respektiert „Bewegung reduzieren“. */
+      button.addEventListener('click', () => section.scrollIntoView({ block: 'start' }));
       heroActions.append(button);
     }
 

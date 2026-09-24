@@ -293,7 +293,8 @@
     $('#wizard-next').textContent = step === 1 ? 'Weiter zu Details' : step === 2 ? 'Weiter zu Inhalten' : 'Weiter zur Prüfung';
     if (step === 4) updateReview();
     document.querySelector(`.wizard-step[data-step="${step}"] h3`)?.focus?.();
-    window.scrollTo({ top: Math.max(0, $('.creator-wizard').offsetTop - 18), behavior: 'smooth' });
+    /* Kein festes 'smooth': Das CSS scrollt sanft und respektiert „Bewegung reduzieren“. */
+    window.scrollTo({ top: Math.max(0, $('.creator-wizard').offsetTop - 18) });
   }
 
   function updatePreview() {

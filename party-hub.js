@@ -238,7 +238,16 @@
     if (name === 'stats') renderStats();
     const heading = $(`#view-${name} h1`) || $(`#view-${name} h2`);
     heading?.focus?.();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    jumpToTop();
+  }
+  /* Beim Ansichtswechsel sofort nach oben springen. Der Inhalt wechselt
+     schlagartig; eine Scroll-Animation über den neuen Inhalt hilft niemandem,
+     und Tipps während der Animation landeten auf dem falschen Element.
+     'instant' übergeht das sanfte Scrollen aus dem CSS. Ältere Browser kennen
+     den Wert nicht und werfen – die scrollen aber ohnehin nicht sanft. */
+  function jumpToTop() {
+    try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+    catch { window.scrollTo(0, 0); }
   }
   function renderHome() {
     const playable = C.games.filter(game => game.status === 'playable');
