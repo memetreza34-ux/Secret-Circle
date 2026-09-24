@@ -128,7 +128,7 @@ checks = {
     )),
     'privacy_source_gate': all(marker in smoke for marker in ('Was ist das Seltsamste in deiner Kamerarolle?', 'Lies die letzte Nachricht auf deinem Handy')),
     'reference_source_gate': all(marker in smoke for marker in ('Anime-Archetypen erraten', 'Spektrum-Tipp', 'Löwenkönig')),
-    'package_command': scripts.get('staging:smoke') == 'python scripts/staging_smoke.py',
+    'package_command': scripts.get('staging:smoke') == 'python3 scripts/staging_smoke.py',
     'environment_documents_smoke': 'scripts/staging_smoke.py' in environments and 'HTTPS-Staging' in environments and 'tests/pwa-head-metadata.test.js' in environments,
     'deployment_documents_smoke': 'scripts/staging_smoke.py' in deployment and 'Production-Smoke-Test' in deployment and 'tests/pwa-head-metadata.test.js' in deployment,
     'release_checklist_requires_smoke': 'scripts/staging_smoke.py' in checklist and 'HTTPS-Staging-Smoke' in checklist,
