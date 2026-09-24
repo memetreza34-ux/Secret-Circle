@@ -16,6 +16,7 @@
   const MAX_HISTORY = L.maximumHistory;
   const MAX_ACTIVE_USED = 500;
   const $ = selector => document.querySelector(selector);
+  const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
   const $$ = selector => [...document.querySelectorAll(selector)];
   const hubTimer = S.createController({ windowRef: window });
   const defaults = {
@@ -358,7 +359,7 @@
       const row = makeElement('div', 'compact-row');
       const text = makeElement('div');
       text.append(makeElement('strong', '', item.title));
-      text.append(makeElement('small', '', `${formatDate(item.endedAt)} · ${item.rounds} Runden${item.score ? ` · ${item.score} Punkte` : ''}`));
+      text.append(makeElement('small', '', `${formatDate(item.endedAt)} · ${countLabel(item.rounds, 'Runde', 'Runden')}${item.score ? ` · ${countLabel(item.score, 'Punkt', 'Punkte')}` : ''}`));
       const open = makeElement('button', 'secondary', 'Erneut');
       open.type = 'button'; open.dataset.openGame = item.gameId;
       row.append(text, open); history.append(row);
@@ -496,8 +497,8 @@
     $('#play-eyebrow').textContent = ''; $('#play-title').textContent = ''; $('#play-player').textContent = '';
     $('#play-content').className = 'play-content';
     clearNode($('#play-content')); clearNode($('#play-options')); clearNode($('#play-actions'));
-    $('#play-progress').textContent = `${session.rounds} Runden`;
-    $('#play-score').textContent = session.score ? `${session.score} Punkte` : '';
+    $('#play-progress').textContent = countLabel(session.rounds, 'Runde', 'Runden');
+    $('#play-score').textContent = session.score ? countLabel(session.score, 'Punkt', 'Punkte') : '';
   }
   function preparePlayCard() {
     resetPlayCard();
@@ -635,7 +636,7 @@
     const title = makeElement('strong', '', `${game.icon} ${game.title} fortsetzen?`);
     const detail = active.timer?.phase === 'running'
       ? 'Eine laufende Timer-Runde wurde gespeichert. Sie startet nach dem Fortsetzen zunächst pausiert.'
-      : `${active.rounds} abgeschlossene Runden sind lokal gespeichert. Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet.`;
+      : `${countLabel(active.rounds, 'abgeschlossene Runde ist', 'abgeschlossene Runden sind')} lokal gespeichert. Geheime Inhalte werden nach einem Reload nicht automatisch geöffnet.`;
     const copy = makeElement('p', 'muted', detail);
     const actions = makeElement('div', 'inline-actions');
     const resume = actionButton('Session fortsetzen', () => {

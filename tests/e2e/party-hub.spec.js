@@ -72,7 +72,7 @@ test('truth or dare can be configured and played from the hub', async ({ page })
 
   await page.getByRole('button', { name: 'Verlauf', exact: true }).click();
   await expect(page.locator('#hub-history')).toContainText('Wahrheit oder Pflicht');
-  await expect(page.locator('#hub-history')).toContainText('1 Runden');
+  await expect(page.locator('#hub-history')).toContainText(/1 Runde(?!n)/);
   await expect(page.locator('#achievement-count')).toHaveText('1');
 });
 

@@ -5,6 +5,7 @@
   if (!Creator) throw new Error('Game-Creator konnte nicht geladen werden.');
 
   const $ = selector => document.querySelector(selector);
+  const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
   const $$ = selector => [...document.querySelectorAll(selector)];
   const store = Creator.createStore(localStorage);
   const HELP = {
@@ -321,7 +322,7 @@
       ['Kategorie', clean(draft.group, 30) || 'Eigene Spiele'],
       ['Gruppe', `${draft.minPlayers}–${draft.maxPlayers} Personen`],
       ['Dauer', `ca. ${draft.duration} Minuten`],
-      ['Inhalte', `${packs.length} Kategorien · ${total} Karten`],
+      ['Inhalte', `${countLabel(packs.length, 'Kategorie', 'Kategorien')} · ${countLabel(total, 'Karte', 'Karten')}`],
       ['Altersstufe', draft.age === 'teen' ? 'Ab 12 empfohlen' : 'Familienfreundlich']
     ];
     const summary = $('#review-summary');
@@ -432,7 +433,7 @@
       card.append(top, element('h3', '', game.title), element('p', '', game.description));
       const count = game.packs.reduce((sum, pack) => sum + pack.items.length, 0);
       const meta = element('div', 'created-game-meta');
-      meta.append(element('span', '', `${game.minPlayers}–${game.maxPlayers} Personen`), element('span', '', `${game.packs.length} Kategorien`), element('span', '', `${count} Karten`));
+      meta.append(element('span', '', `${game.minPlayers}–${game.maxPlayers} Personen`), element('span', '', countLabel(game.packs.length, 'Kategorie', 'Kategorien')), element('span', '', countLabel(count, 'Karte', 'Karten')));
       card.append(meta);
       const actions = element('div', 'created-game-actions');
       actions.append(

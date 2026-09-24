@@ -12,6 +12,7 @@
   const MAX_HISTORY = L.maximumHistory;
   const ALLOWED = new Set(C.waveOneVotingGameIds || []);
   const $ = selector => document.querySelector(selector);
+  const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
   const gameId = new URLSearchParams(location.search).get('game') || '';
   const game = C.getGame(gameId);
 
@@ -261,7 +262,7 @@
     $('#quick-eyebrow').textContent = active.pack;
     $('#quick-round-title').textContent = game.title;
     $('#quick-progress').textContent = `Runde ${active.round} von ${active.targetRounds}`;
-    $('#quick-score').textContent = `${active.totalScore} Punkte`;
+    $('#quick-score').textContent = countLabel(active.totalScore, 'Punkt', 'Punkte');
     $('#quick-progress-bar').style.width = `${Math.round(((active.round - 1) / active.targetRounds) * 100)}%`;
   }
 
@@ -300,7 +301,7 @@
     const difference = Math.abs(active.current.guess - item.answer);
     $('#quick-content').append(
       element('p', active.current.points ? 'success-text' : 'muted', `Deine Schätzung: ${active.current.guess} % · Zielwert: ${item.answer} %`),
-      element('p', '', `Abweichung: ${difference} Prozentpunkte · +${active.current.points} Punkte`),
+      element('p', '', `Abweichung: ${difference} Prozentpunkte · +${countLabel(active.current.points, 'Punkt', 'Punkte')}`),
       element('p', 'muted', item.explanation)
     );
     $('#quick-actions').append(button(active.round >= active.targetRounds ? 'Session abschließen' : 'Nächste Schätzung', nextRound));

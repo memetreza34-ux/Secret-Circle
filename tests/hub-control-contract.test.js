@@ -37,7 +37,7 @@ assert.match(hub, /Runde übersprungen\. Dafür wurde kein Punkt vergeben\./);
 assert.match(hub, /const activeTimedRound = Boolean\(session\.timer/);
 assert.match(hub, /const completedRounds = session\.rounds \+ \(activeTimedRound \? 1 : 0\)/);
 assert.match(hub, /rounds: completedRounds/);
-assert.match(hub, /\$\('#play-progress'\)\.textContent = `\$\{session\.rounds\} Runden`/);
+assert.match(hub, /\$\('#play-progress'\)\.textContent = countLabel\(session\.rounds, 'Runde', 'Runden'\)/);
 assert.match(hub, /const T = window\.SecretCirclePartyHubTimers/);
 assert.match(hub, /T\.createTimerGames\(/);
 assert.match(hub, /game\.mode === 'taboo'\) timerGames\.renderTabooStart\(\)/);

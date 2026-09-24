@@ -12,6 +12,7 @@
   const MAX_HISTORY = L.maximumHistory;
   const ALLOWED = new Set(C.waveOneClueGameIds || []);
   const $ = selector => document.querySelector(selector);
+  const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
   const gameId = new URLSearchParams(location.search).get('game') || '';
   const game = C.getGame(gameId);
 
@@ -134,7 +135,7 @@
 
   function resetRoundUi() {
     clearNode($('#quick-content')); clearNode($('#quick-controls')); clearNode($('#quick-actions')); $('#quick-private-note').hidden = true;
-    $('#quick-eyebrow').textContent = active.pack; $('#quick-round-title').textContent = game.title; $('#quick-progress').textContent = `Runde ${active.round} von ${active.targetRounds}`; $('#quick-score').textContent = `${active.totalScore} Punkte`; $('#quick-progress-bar').style.width = `${Math.round(((active.round - 1) / active.targetRounds) * 100)}%`;
+    $('#quick-eyebrow').textContent = active.pack; $('#quick-round-title').textContent = game.title; $('#quick-progress').textContent = `Runde ${active.round} von ${active.targetRounds}`; $('#quick-score').textContent = countLabel(active.totalScore, 'Punkt', 'Punkte'); $('#quick-progress-bar').style.width = `${Math.round(((active.round - 1) / active.targetRounds) * 100)}%`;
   }
 
   function concealSecret() {

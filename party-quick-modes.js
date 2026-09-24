@@ -14,6 +14,7 @@
   const MAX_HISTORY = L.maximumHistory;
   const ALLOWED = new Set(C.trendingGameIds || []);
   const $ = selector => document.querySelector(selector);
+  const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
 
   const gameId = new URLSearchParams(location.search).get('game') || '';
   const game = C.getGame(gameId);
@@ -210,7 +211,7 @@
     $('#quick-round-title').textContent = game.title;
     $('#quick-player').textContent = currentPlayer();
     $('#quick-progress').textContent = `Runde ${active.round} von ${active.targetRounds}`;
-    $('#quick-score').textContent = `${active.totalScore} Punkte`;
+    $('#quick-score').textContent = countLabel(active.totalScore, 'Punkt', 'Punkte');
     $('#quick-progress-bar').style.width = `${Math.round(((active.round - 1) / active.targetRounds) * 100)}%`;
   }
 
@@ -273,7 +274,7 @@
     const distance = Math.abs(current.target - current.guess);
     $('#quick-content').append(
       element('div', 'reveal-number', String(current.target)),
-      element('p', '', `Eure Position: ${current.guess} · Abstand: ${distance} · ${current.points} Punkte`)
+      element('p', '', `Eure Position: ${current.guess} · Abstand: ${distance} · ${countLabel(current.points, 'Punkt', 'Punkte')}`)
     );
     $('#quick-actions').append(button('Nächstes Spektrum', nextRound));
   }

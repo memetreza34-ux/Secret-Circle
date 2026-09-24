@@ -46,7 +46,7 @@ test('creates a custom choice game and opens it through the resumable Creator pl
   await expect(page.locator('.pack-count')).toContainText('4 gültige Karten');
   await page.getByRole('button', { name: 'Weiter zur Prüfung' }).click();
   await expect(page.locator('#review-summary')).toContainText('Unser Anime Duell');
-  await expect(page.locator('#review-summary')).toContainText('1 Kategorien · 4 Karten');
+  await expect(page.locator('#review-summary')).toContainText('1 Kategorie · 4 Karten');
   await page.locator('#creator-safe-confirm').check();
   await page.getByRole('button', { name: 'Spiel speichern' }).click();
 

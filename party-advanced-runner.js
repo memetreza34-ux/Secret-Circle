@@ -11,6 +11,7 @@
   const MAX_HISTORY = 50;
   const MAX_SESSION_ROUNDS = 20;
   const $ = selector => document.querySelector(selector);
+  const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
   const gameId = new URLSearchParams(window.location.search).get('game') || '';
   const game = C.getGame(gameId);
   let hubState = loadHubState();
@@ -239,7 +240,7 @@
     nodes.player.textContent = '';
     nodes.content.className = 'play-content';
     nodes.progress.textContent = `Runde ${Math.min(session.rounds + 1, session.targetRounds)} von ${session.targetRounds}`;
-    nodes.score.textContent = session.score ? `${session.score} Punkte` : '0 Punkte';
+    nodes.score.textContent = countLabel(session.score || 0, 'Punkt', 'Punkte');
   }
 
   function completeRound() {
@@ -255,7 +256,7 @@
     resetPlayCard();
     nodes.eyebrow.textContent = 'Session abgeschlossen';
     nodes.title.textContent = game.title;
-    nodes.player.textContent = `${session.rounds} Runden gespielt`;
+    nodes.player.textContent = `${countLabel(session.rounds, 'Runde', 'Runden')} gespielt`;
     const summary = makeElement('div', 'session-summary');
     summary.append(makeElement('strong', '', String(session.score)), makeElement('span', '', 'Punkte'));
     nodes.content.append(summary);

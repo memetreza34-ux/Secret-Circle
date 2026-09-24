@@ -49,7 +49,7 @@ test('a completed direct Hub round counts once and a zero-round finish counts ze
 
   await page.getByRole('button', { name: 'Wahrheit', exact: true }).click();
   await page.getByRole('button', { name: /Erledigt.*nächste Person/ }).click();
-  await expect(page.locator('#play-progress')).toContainText('1 Runden');
+  await expect(page.locator('#play-progress')).toHaveText('1 Runde');
   await page.getByRole('button', { name: 'Beenden & speichern' }).click();
   await expect(page.locator('#play-layer')).toBeHidden();
 

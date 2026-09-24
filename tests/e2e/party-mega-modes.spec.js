@@ -65,7 +65,7 @@ test('Blind Ranking fills all five positions and Money Challenge scores safely',
   await page.locator('#quick-start').click();
   for (const rank of [1, 2, 3, 4, 5]) await page.getByRole('button', { name: `Rang ${rank}` }).click();
   await expect(page.locator('.blind-ranking-result li')).toHaveCount(5);
-  await expect(page.locator('#quick-score')).toContainText('1 Punkte');
+  await expect(page.locator('#quick-score')).toHaveText('1 Punkt');
 
   /* Abseits der Spielseite leeren: Der Runner schreibt seinen Stand im
      pagehide-Handler zurueck und macht ein Loeschen auf der laufenden Seite
@@ -79,7 +79,7 @@ test('Blind Ranking fills all five positions and Money Challenge scores safely',
   await expect(page.locator('#quick-content')).toContainText('keine echte Zahlung');
   await page.getByRole('button', { name: 'Würde ich machen' }).click();
   await expect(page.locator('#quick-progress')).toContainText('Runde 2');
-  await expect(page.locator('#quick-score')).toContainText('1 Punkte');
+  await expect(page.locator('#quick-score')).toHaveText('1 Punkt');
 });
 
 test('completed Trend Mode records one play and one history entry', async ({ page }) => {

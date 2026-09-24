@@ -23,6 +23,7 @@
   const VERSION = 1;
   const MAX_HISTORY = L.maximumHistory;
   const $ = selector => document.querySelector(selector);
+  const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
   let hub = loadHub();
   let active = loadActive();
   const sessionControls = S.createController({
@@ -246,7 +247,7 @@
     $('#quick-round-title').textContent = game.title;
     $('#quick-player').textContent = currentPlayer();
     $('#quick-progress').textContent = `Runde ${active.round} von ${active.targetRounds}`;
-    $('#quick-score').textContent = `${active.score} Punkte`;
+    $('#quick-score').textContent = countLabel(active.score, 'Punkt', 'Punkte');
     $('#quick-progress-bar').style.width = `${Math.round(((active.round - 1) / active.targetRounds) * 100)}%`;
   }
 

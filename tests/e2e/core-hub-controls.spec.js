@@ -114,7 +114,7 @@ test('global skip advances a round without awarding a point and finish records i
   await seedHub(page);
   await startGame(page, 'truth-dare');
   await page.locator('#skip-hub-round').click();
-  await expect(page.locator('#play-progress')).toContainText('1 Runden');
+  await expect(page.locator('#play-progress')).toHaveText('1 Runde');
   await expect(page.locator('#hub-status')).toContainText('kein Punkt');
   await page.locator('#finish-hub-game').click();
   const hub = await storedHub(page);
