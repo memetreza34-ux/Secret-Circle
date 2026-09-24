@@ -69,3 +69,23 @@ test('age and release tier remain combined after either filter changes', async (
   expect(teenVisible.every(item => item.tier === 'core')).toBeTruthy();
   expect(teenVisible.every(item => item.age === 'all' || item.age === 'teen')).toBeTruthy();
 });
+
+test('filter bar stays inside the page on tablet landscape widths', async ({ page }) => {
+  /* Zwischen etwa 1000 und 1060 px ragte der Reifestufe-Filter aus der Leiste,
+     weil er eine feste Mindestbreite hatte. Die Seite scrollte dann seitlich. */
+  for (const width of [1001, 1024, 1060]) {
+    await page.setViewportSize({ width, height: 768 });
+    await page.goto('/party.html?view=games');
+    await expect(page.locator('#release-tier-filter')).toBeVisible();
+    const layout = await page.evaluate(() => {
+      const bar = document.querySelector('.filter-bar').getBoundingClientRect();
+      const tier = document.querySelector('#release-tier-filter').getBoundingClientRect();
+      return {
+        overflow: document.documentElement.scrollWidth - window.innerWidth,
+        tierPastBar: tier.right - bar.right
+      };
+    });
+    expect(layout.overflow, `Seitlicher Überlauf bei ${width} px`).toBeLessThanOrEqual(0);
+    expect(layout.tierPastBar, `Reifestufe ragt bei ${width} px aus der Leiste`).toBeLessThanOrEqual(0);
+  }
+});

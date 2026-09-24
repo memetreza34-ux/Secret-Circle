@@ -55,8 +55,11 @@
   box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.18);
 }
 
+/* Keine feste Mindestbreite: Die Filterleiste teilt die Spalten selbst auf.
+   Mit 11rem ragte das Feld zwischen etwa 1000 und 1060 px Breite aus der
+   Leiste und die ganze Seite scrollte seitlich. */
 .release-tier-filter-label {
-  min-width: 11rem;
+  min-width: 0;
 }
 
 .filter-reset-button {
