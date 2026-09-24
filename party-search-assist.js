@@ -231,7 +231,9 @@
     }
 
     input.addEventListener('input', render);
-    input.addEventListener('focus', () => { if (input.value.trim()) render(); });
+    /* Eine offene Liste nicht neu zeichnen: Das ersetzt alle Vorschläge, und ein
+       laufender Klick träfe ein bereits entferntes Element. */
+    input.addEventListener('focus', () => { if (input.value.trim() && panel.hidden) render(); });
     input.addEventListener('keydown', event => {
       if (panel.hidden && !['ArrowDown', 'ArrowUp'].includes(event.key)) return;
       if (event.key === 'ArrowDown') {
@@ -252,7 +254,11 @@
         close();
       }
     });
-    input.addEventListener('blur', () => root.setTimeout(close, 120));
+    /* Nur schließen, wenn der Fokus nach der Karenzzeit wirklich woanders ist.
+       Fensterwechsel nehmen ihn kurz weg und geben ihn sofort zurück. */
+    input.addEventListener('blur', () => root.setTimeout(() => {
+      if (documentRef.activeElement !== input) close();
+    }, 120));
     documentRef.addEventListener('click', event => {
       if (event.target !== input && !panel.contains(event.target)) close();
     });

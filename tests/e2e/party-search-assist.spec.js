@@ -62,3 +62,23 @@ test('suggestions stay anchored directly below the filter bar', async ({ page })
   expect(box.y - (bar.y + bar.height)).toBeLessThanOrEqual(12);
   expect(Math.abs(box.x - bar.x)).toBeLessThanOrEqual(2);
 });
+
+test('suggestions survive a brief focus loss and stay the same elements', async ({ page }) => {
+  /* Fensterwechsel oder Systemdialoge nehmen dem Feld kurz den Fokus. Früher
+     schloss der verzögerte Blur die Liste trotzdem, und der erneute Fokus
+     zeichnete sie neu – ein laufender Klick traf dann ein entferntes Element. */
+  await page.goto('/party.html?view=games');
+  const search = page.locator('#game-search');
+  await search.fill('werwolf');
+  const option = page.locator('#game-search-suggestions [data-game-id="mafia"]');
+  await expect(option).toBeVisible();
+  await option.evaluate(node => { node.dataset.marker = 'original'; });
+
+  await search.evaluate(input => { input.blur(); input.focus(); });
+  await page.waitForTimeout(300);
+
+  await expect(page.locator('#game-search-suggestions')).toBeVisible();
+  await expect(option).toHaveAttribute('data-marker', 'original');
+  await option.click();
+  await expect(search).toHaveValue('Mafia');
+});
