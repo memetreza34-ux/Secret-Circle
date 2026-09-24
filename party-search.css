@@ -19,7 +19,9 @@
   display: none;
 }
 
-.search-box {
+/* Anker der Vorschlagsliste. Ohne ihn berechnet der Browser `top: 100%`
+   gegen den Seitenkoerper und legt das Panel irgendwo unter die Trefferliste. */
+.filter-bar {
   position: relative;
 }
 

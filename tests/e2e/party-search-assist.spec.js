@@ -44,3 +44,21 @@ test('escape closes suggestions without changing the query', async ({ page }) =>
   await expect(page.locator('#game-search-suggestions')).toBeHidden();
   await expect(search).toHaveValue('montagsmaler');
 });
+
+test('suggestions stay anchored directly below the filter bar', async ({ page }) => {
+  await page.goto('/party.html?view=games');
+  const sheet = await page.evaluate(() => matchMedia('(max-width: 42rem)').matches);
+  test.skip(sheet, 'Schmale Viewports zeigen die Vorschläge als fixiertes Blatt am unteren Rand.');
+
+  await page.locator('#game-search').fill('werwolf');
+  const panel = page.locator('#game-search-suggestions');
+  await expect(panel).toBeVisible();
+
+  /* Ohne positionierten Anker rechnet der Browser `top: 100%` gegen den
+     Seitenkoerper und legt die Liste irgendwo ueber die Treffer. */
+  const bar = await page.locator('.filter-bar').boundingBox();
+  const box = await panel.boundingBox();
+  expect(box.y - (bar.y + bar.height)).toBeGreaterThanOrEqual(0);
+  expect(box.y - (bar.y + bar.height)).toBeLessThanOrEqual(12);
+  expect(Math.abs(box.x - bar.x)).toBeLessThanOrEqual(2);
+});
