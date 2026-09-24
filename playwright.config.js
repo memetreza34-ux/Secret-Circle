@@ -24,6 +24,12 @@ module.exports = defineConfig({
   },
   projects: [
     { name: 'chromium-desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'chromium-mobile', use: { ...devices['Pixel 7'] } }
+    { name: 'chromium-mobile', use: { ...devices['Pixel 7'] } },
+    /* Safari/iOS teilen sich die WebKit-Engine. Ohne diese Projekte blieben
+       Fehler unentdeckt, die nur dort auftreten. Die Offline-Tests laufen hier
+       nicht: Der WebKit-Build von Playwright unterstützt keine Service Worker
+       und bricht beim Neuladen im Offline-Modus intern ab. */
+    { name: 'webkit-desktop', use: { ...devices['Desktop Safari'] }, testIgnore: /offline\.spec\.js/ },
+    { name: 'webkit-mobile', use: { ...devices['iPhone 14'] }, testIgnore: /offline\.spec\.js/ }
   ]
 });

@@ -57,7 +57,11 @@ test('word imposter setup reports duplicates and a group-size recommendation', a
   await expect(start).toBeEnabled();
 });
 
-test('party hub exposes skip link as first keyboard target', async ({ page }) => {
+test('party hub exposes skip link as first keyboard target', async ({ page, browserName }) => {
+  /* Safari springt mit der Tabulatortaste standardmäßig nur zwischen
+     Formularfeldern; Links erreicht man dort erst mit vollem Tastaturzugriff.
+     Das ist eine Browsereinstellung, keine Eigenschaft der Seite. */
+  test.skip(browserName === 'webkit', 'Safari überspringt Links im Standard-Tabulatorlauf.');
   await page.goto('/party.html');
   await page.keyboard.press('Tab');
   const active = page.locator(':focus');
