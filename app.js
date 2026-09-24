@@ -583,9 +583,15 @@ async function importData(event) {
   }
 }
 
+/* „offline bereit“ erst, wenn der Service Worker die Seite steuert und damit
+   der Offline-Core im Cache liegt. */
+function offlineReady() {
+  try { return Boolean(navigator.serviceWorker?.controller); } catch { return false; }
+}
+
 function updateConnection() {
   const online = navigator.onLine;
-  $('#connection').textContent = online ? 'Online · offline bereit' : 'Offline-Modus';
+  $('#connection').textContent = online ? (offlineReady() ? 'Online · offline bereit' : 'Online') : 'Offline-Modus';
   $('#connection').classList.toggle('offline', !online);
 }
 
@@ -612,6 +618,7 @@ function registerPwa() {
   });
   window.addEventListener('online', updateConnection);
   window.addEventListener('offline', updateConnection);
+  try { navigator.serviceWorker?.addEventListener('controllerchange', updateConnection); } catch {}
   updateConnection();
 }
 

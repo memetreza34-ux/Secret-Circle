@@ -673,9 +673,15 @@
     $('#preset-name').value = '';
     saveState(); renderPlayers(); setStatus(`Preset „${name}“ gespeichert.`);
   }
+  /* „offline bereit“ erst, wenn der Service Worker die Seite steuert. Er
+     übernimmt sie erst, nachdem der Offline-Core vollständig im Cache liegt.
+     Im privaten Modus oder in In-App-Browsern kommt es nie dazu. */
+  function offlineReady() {
+    try { return Boolean(navigator.serviceWorker?.controller); } catch { return false; }
+  }
   function updateConnection() {
     const online = navigator.onLine;
-    $('#hub-connection').textContent = online ? 'Online · offline bereit' : 'Offline-Modus';
+    $('#hub-connection').textContent = online ? (offlineReady() ? 'Online · offline bereit' : 'Online') : 'Offline-Modus';
     $('#hub-connection').classList.toggle('offline', !online);
   }
   function bindEvents() {
@@ -719,6 +725,7 @@
     });
     window.addEventListener('online', updateConnection);
     window.addEventListener('offline', updateConnection);
+    try { navigator.serviceWorker?.addEventListener('controllerchange', updateConnection); } catch {}
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden || !session) return;
       if (hubTimer.remainingMilliseconds() > 0) setHubPaused(true);
