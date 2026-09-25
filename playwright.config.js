@@ -28,8 +28,13 @@ module.exports = defineConfig({
     /* Safari/iOS teilen sich die WebKit-Engine. Ohne diese Projekte blieben
        Fehler unentdeckt, die nur dort auftreten. Die Offline-Tests laufen hier
        nicht: Der WebKit-Build von Playwright unterstützt keine Service Worker
-       und bricht beim Neuladen im Offline-Modus intern ab. */
-    { name: 'webkit-desktop', use: { ...devices['Desktop Safari'] }, testIgnore: /offline\.spec\.js/ },
-    { name: 'webkit-mobile', use: { ...devices['iPhone 14'] }, testIgnore: /offline\.spec\.js/ }
+       und bricht beim Neuladen im Offline-Modus intern ab.
+       Reduzierte Bewegung: Die Seite scrollt per CSS sanft, und WebKit animiert
+       dann auch das Scrollen, mit dem Playwright ein Element vor dem Klick
+       sichtbar macht. Der Klick landete so gelegentlich außerhalb des Ziels.
+       Das Standardverhalten deckt Chromium ab; Bewegungstests setzen die
+       Einstellung ohnehin selbst. */
+    { name: 'webkit-desktop', use: { ...devices['Desktop Safari'], contextOptions: { reducedMotion: 'reduce' } }, testIgnore: /offline\.spec\.js/ },
+    { name: 'webkit-mobile', use: { ...devices['iPhone 14'], contextOptions: { reducedMotion: 'reduce' } }, testIgnore: /offline\.spec\.js/ }
   ]
 });
