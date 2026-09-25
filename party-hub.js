@@ -237,7 +237,10 @@
     if (name === 'favorites') renderFavorites();
     if (name === 'stats') renderStats();
     const heading = $(`#view-${name} h1`) || $(`#view-${name} h2`);
-    heading?.focus?.();
+    /* Wer schon in dieser Ansicht tippt, behält den Fokus. Der Filterstand
+       ruft die Ansicht beim Laden erneut auf, auf langsamen Geräten mitunter
+       erst, wenn schon jemand in der Suche ist. */
+    if (!$(`#view-${name}`)?.contains(document.activeElement)) heading?.focus?.();
     jumpToTop();
   }
   /* Beim Ansichtswechsel sofort nach oben springen. Der Inhalt wechselt

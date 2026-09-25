@@ -82,3 +82,24 @@ test('suggestions survive a brief focus loss and stay the same elements', async 
   await option.click();
   await expect(search).toHaveValue('Mafia');
 });
+
+test('late view focus does not steal the search field while typing', async ({ page }) => {
+  /* Auf langsamen Geräten laufen Ansichtswechsel und Fokussteuerung erst, wenn
+     schon getippt wird. Die Überschrift darf den Fokus dann nicht an sich
+     ziehen – sonst schließt die Vorschlagsliste mitten in der Eingabe. */
+  await page.goto('/party.html?view=games');
+  const search = page.locator('#game-search');
+  await expect(search).toHaveAttribute('aria-autocomplete', 'list');
+  await search.fill('werwolf');
+  await expect(page.locator('#game-search-suggestions')).toBeVisible();
+
+  // Nachzügler der Fokussteuerung: reagiert auf jede Änderung an einer Ansicht.
+  await page.evaluate(() => { document.querySelector('#view-home').hidden = true; });
+  await page.waitForTimeout(300);
+  await expect(search).toBeFocused();
+  await expect(page.locator('#game-search-suggestions')).toBeVisible();
+
+  // Erneuter Wechsel in dieselbe Ansicht, wie ihn der Filterstand beim Laden auslöst.
+  await page.evaluate(() => document.querySelector('#browse-games').click());
+  await expect(search).toBeFocused();
+});

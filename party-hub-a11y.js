@@ -72,6 +72,9 @@
     const view = main.querySelector('.hub-view:not([hidden])');
     const heading = view?.querySelector('h1, h2');
     if (!heading) return false;
+    /* Steht der Fokus schon in dieser Ansicht – etwa in der Suche –, bleibt er
+       dort. Sonst zöge ein verspäteter Frame ihn mitten in der Eingabe weg. */
+    if (view.contains(document.activeElement)) return document.activeElement === heading;
     if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
     heading.focus({ preventScroll: true });
     return document.activeElement === heading;
