@@ -255,7 +255,10 @@
   function renderHome() {
     const playable = C.games.filter(game => game.status === 'playable');
     $('#playable-count').textContent = String(playable.length);
-    $('#planned-count').textContent = String(C.games.length - playable.length);
+    const planned = C.games.length - playable.length;
+    $('#planned-count').textContent = String(planned);
+    /* „0 in Arbeit“ sagt nichts aus; die Kachel erscheint erst, wenn etwas ansteht. */
+    $('#planned-count').parentElement.hidden = planned === 0;
     $('#content-count').textContent = String(C.games.reduce((sum, game) => sum + C.itemCount(game.id), 0));
     const featured = $('#featured-grid');
     clearNode(featured);

@@ -258,7 +258,7 @@
       badges?.insertAdjacentElement('afterend', summary);
     }
     const list = summary.querySelector('ol');
-    const rules = game.instructions.slice(0, 3);
+    const rules = game.instructions.slice(0, 5);
     /* Nur bei echter Änderung neu aufbauen: replaceChildren erzeugt sonst bei
        jedem Aufruf childList-Mutationen. Da observeDynamicUi den gesamten Body
        überwacht und daraufhin wieder enhanceDetail aufruft, entstünde eine
@@ -268,6 +268,12 @@
       list.replaceChildren();
       rules.forEach(rule => list.append(element('li', '', rule)));
     }
+    /* Die Kurzanleitung zeigt alle Schritte. Die Regelliste darunter
+       wiederholte sie nur und bleibt dann verborgen. Nur bei Änderung setzen:
+       Der Beobachter reagiert auf jedes hidden-Attribut. */
+    const fullRules = $('#detail-rules')?.closest('section');
+    const covered = rules.length === game.instructions.length;
+    if (fullRules && fullRules.hidden !== covered) fullRules.hidden = covered;
     const start = $('#start-selected-game');
     if (start && game.status === 'playable' && game.mode !== 'link' && start.textContent !== 'Jetzt spielen') {
       start.textContent = 'Jetzt spielen';

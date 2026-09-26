@@ -53,7 +53,10 @@ assert.match(timers, /banned: Array\.isArray\(value\.banned\)/);
 assert.match(css, /\.hub-session-controls/);
 assert.match(css, /\.hub-abort-button/);
 assert.match(css, /min-height:44px/);
-assert.match(css, /@media \(max-width:480px\)[\s\S]*\.hub-session-controls\{grid-template-columns:1fr\}/);
+/* Auf schmalen Geräten zwei Spalten statt vier Knöpfe untereinander: Sonst
+   begann die Spielkarte erst nach rund 200 px Steuerung. */
+assert.match(css, /@media \(max-width:720px\)[^@]*\.hub-session-controls\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\);width:100%\}/);
+assert.doesNotMatch(css, /\.hub-session-controls\{grid-template-columns:1fr\}/);
 
 console.log(JSON.stringify({
   hubControlContract: 'PASS',

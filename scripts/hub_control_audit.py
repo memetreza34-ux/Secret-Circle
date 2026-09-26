@@ -68,8 +68,8 @@ checks = {
     )),
     'responsive_touch_controls': all(marker in css for marker in (
         '.hub-session-controls', '.hub-abort-button', 'min-height:44px',
-        '.hub-session-controls{grid-template-columns:1fr}',
-    )),
+        '.hub-session-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}',
+    )) and '.hub-session-controls{grid-template-columns:1fr}' not in css,
     'static_contract': all(marker in static_test for marker in (
         'distinctFinishAndAbort', 'roundSkipWithoutPoint', 'focusManagement', 'timedTaboo',
     )),

@@ -102,16 +102,36 @@
 }
 
 @media (max-width: 54rem) {
-  .release-tier-overview {
-    grid-template-columns: 1fr;
-  }
-
   .release-tier-card {
     min-height: auto;
   }
 
   .filter-reset-button {
     width: 100%;
+  }
+}
+
+/* Auf dem Handy drei kompakte Kacheln nebeneinander statt drei hoher Karten
+   untereinander: Sonst begann die Spieleliste erst nach über 1500 px. */
+@media (max-width: 34rem) {
+  .release-tier-overview {
+    gap: 0.45rem;
+  }
+
+  .release-tier-card {
+    padding: 0.7rem 0.5rem;
+    text-align: center;
+  }
+
+  .release-tier-card strong {
+    margin: 0;
+    font-size: 0.9rem;
+    hyphens: auto;
+    overflow-wrap: anywhere;
+  }
+
+  .release-tier-card span {
+    display: none;
   }
 }
 

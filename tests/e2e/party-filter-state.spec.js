@@ -71,7 +71,7 @@ test('age and release tier remain combined after either filter changes', async (
 });
 
 test('filter bar stays inside the page on tablet landscape widths', async ({ page }) => {
-  /* Zwischen etwa 1000 und 1060 px ragte der Reifestufe-Filter aus der Leiste,
+  /* Zwischen etwa 1000 und 1060 px ragte der Auswahl-Filter aus der Leiste,
      weil er eine feste Mindestbreite hatte. Die Seite scrollte dann seitlich. */
   for (const width of [1001, 1024, 1060]) {
     await page.setViewportSize({ width, height: 768 });
@@ -86,6 +86,6 @@ test('filter bar stays inside the page on tablet landscape widths', async ({ pag
       };
     });
     expect(layout.overflow, `Seitlicher Überlauf bei ${width} px`).toBeLessThanOrEqual(0);
-    expect(layout.tierPastBar, `Reifestufe ragt bei ${width} px aus der Leiste`).toBeLessThanOrEqual(0);
+    expect(layout.tierPastBar, `Auswahl-Filter ragt bei ${width} px aus der Leiste`).toBeLessThanOrEqual(0);
   }
 });

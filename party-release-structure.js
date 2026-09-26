@@ -26,9 +26,9 @@
   const CORE = new Set(CORE_IDS);
   const LABS = new Set(LAB_IDS);
   const TIERS = Object.freeze({
-    core: Object.freeze({ id: 'core', label: 'Kernspiel', plural: 'Kernspiele', description: 'Für Januar 2027 vollständig priorisiert und nach den strengsten Release-Gates geprüft.' }),
-    extended: Object.freeze({ id: 'extended', label: 'Erweiterung', plural: 'Erweiterungen', description: 'Spielbar und nützlich, aber nach den Kernspielen priorisiert.' }),
-    labs: Object.freeze({ id: 'labs', label: 'Lab', plural: 'Labs', description: 'Experimentelle Modi in Prüfung. Nicht automatisch Teil des Kernrelease.' })
+    core: Object.freeze({ id: 'core', label: 'Kernspiel', plural: 'Kernspiele', description: 'Die bewährten Klassiker: schnell erklärt und am gründlichsten getestet.' }),
+    extended: Object.freeze({ id: 'extended', label: 'Erweiterung', plural: 'Erweiterungen', description: 'Mehr Abwechslung, wenn eure Gruppe die Klassiker schon kennt.' }),
+    labs: Object.freeze({ id: 'labs', label: 'Lab', plural: 'Labs', description: 'Neue Experimente. Regeln und Inhalte können sich noch ändern.' })
   });
 
   function tierFor(game) {
@@ -76,11 +76,11 @@
 
     const filterLabel = element(documentRef, 'label', 'release-tier-filter-label');
     filterLabel.htmlFor = 'release-tier-filter';
-    filterLabel.append(documentRef.createTextNode('Reifestufe'));
+    filterLabel.append(documentRef.createTextNode('Auswahl'));
     const filter = documentRef.createElement('select');
     filter.id = 'release-tier-filter';
     const options = [
-      ['Alle Stufen', 'all'], [`Kernspiele (${summary.core})`, 'core'],
+      ['Alle', 'all'], [`Kernspiele (${summary.core})`, 'core'],
       [`Erweiterungen (${summary.extended})`, 'extended'], [`Labs (${summary.labs})`, 'labs']
     ];
     for (const [label, value] of options) {
@@ -92,7 +92,7 @@
     if (filterBar) filterBar.insertBefore(filterLabel, statusLabel || null);
 
     const overview = element(documentRef, 'section', 'release-tier-overview');
-    overview.setAttribute('aria-label', 'Release-Stufen');
+    overview.setAttribute('aria-label', 'Spielauswahl');
     for (const tier of ['core', 'extended', 'labs']) {
       const info = TIERS[tier]; const button = element(documentRef, 'button', `release-tier-card tier-${tier}`);
       button.type = 'button'; button.dataset.releaseTierTarget = tier;
@@ -103,7 +103,7 @@
 
     const title = documentRef.querySelector('#games-title'); const description = title?.nextElementSibling;
     if (title) title.textContent = 'Kernspiele, Erweiterungen & Labs';
-    if (description?.tagName === 'P') description.textContent = 'Wähle nach Qualität, Spielart, Stimmung, Gruppe und Altersstufe. Labs bleiben klar von den priorisierten Kernspielen getrennt.';
+    if (description?.tagName === 'P') description.textContent = 'Filtere nach Spielart, Stimmung, Gruppengröße und Altersstufe. Labs sind als Experimente gekennzeichnet.';
 
     let scheduled = false; let applying = false; let observer = null;
     const observedTargets = [grid, documentRef.querySelector('#featured-grid'), documentRef.querySelector('#favorites-grid')].filter(Boolean);
@@ -142,7 +142,7 @@
         card.hidden = !show; if (show) visible += 1;
       }
       grid.querySelector('.release-tier-empty')?.remove(); grid.querySelector('.age-empty-state')?.remove();
-      if (!visible && grid.querySelector('.game-card')) grid.append(element(documentRef, 'p', 'release-tier-empty empty-state', 'Keine Spiele passen zu diesen Filtern. Passe Reifestufe, Alter oder die übrigen Katalogfilter an.'));
+      if (!visible && grid.querySelector('.game-card')) grid.append(element(documentRef, 'p', 'release-tier-empty empty-state', 'Keine Spiele passen zu diesen Filtern. Passe Auswahl, Altersstufe oder die übrigen Filter an.'));
       if (resultCount && resultCount.textContent !== String(visible)) resultCount.textContent = String(visible);
       applying = false; startObserving();
     }
