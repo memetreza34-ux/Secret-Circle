@@ -12,7 +12,13 @@ Secret Circle ist derzeit lokales Pass-and-Play. Es gibt keine Raumcodes, Pflich
 
 Der Hosted Runner führt Checkout, `npm ci`, Python-Audits und Node-Tests seit dem 5. September 2026 real aus (verifiziert per `gh run view`). `npm test` (Engine-/Storage-Tests) und `npm run validate` (34 Python-Release-Audits) sind auf GitHub Actions grün.
 
-Offen bleibt: `npm run test:e2e` (Playwright, 58 Spec-Dateien × 2 Projekte) überschreitet den 20-Minuten-Job-Timeout und wird von GitHub Actions abgebrochen, bevor der Lauf durchläuft. Root Cause (Suite genuinely zu lang vs. einzelner hängender Test) ist noch nicht abschließend verifiziert.
+Die Browser-Tests (`npm run test:e2e`, Playwright, 61 Spec-Dateien) laufen seit dem 25. September 2026 vollständig durch. Chromium (Desktop + Pixel 7) läuft im Job `validate`, WebKit (Desktop Safari + iPhone 14) parallel im Job `e2e-webkit`; beide Engines in einem Job hatten mit rund 40 Minuten das Zeitlimit gesprengt. Erster grüner Lauf beider Jobs: 36162934330 (Chromium 517 bestanden in 13 Minuten, WebKit 496 bestanden in 27 Minuten).
+
+Grenzen der WebKit-Abdeckung:
+
+- Playwrights WebKit-Build unterstützt keine Service Worker. Die Offline-Tests laufen deshalb nur auf Chromium; Safari-/iOS-PWA-Offlineverhalten bleibt ein reales Geräte-Gate.
+- WebKit läuft mit reduzierter Bewegung. Sonst animiert WebKit wegen `scroll-behavior: smooth` auch Playwrights eigenes Scrollen, und Klicks landen gelegentlich außerhalb des Ziels. Das Standardverhalten deckt Chromium ab.
+- Playwrights WebKit ist nicht das echte iOS-Safari. Darstellung, Tastatur, Bildschirmsperre und Hintergrundverhalten auf iPhones sind damit nicht abgenommen.
 
 ## 55 eingebaute Spiele
 

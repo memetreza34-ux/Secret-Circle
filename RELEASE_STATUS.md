@@ -38,7 +38,7 @@ Die zehn Wave-1-Labs sind quellsseitig implementiert:
 
 Der Januar-Core bleibt bei **15 Spielen**. Keine neuen Core-Modi und keine große Architekturmigration vor den offenen Release-Gates.
 
-## CI – npm test / npm run validate grün, E2E-Timeout offen
+## CI – alle Schritte grün, Browser-Tests auf zwei Jobs verteilt
 
 Der Hosted Runner läuft seit dem 5. September 2026 real durch (Checkout, `npm ci`, Python-Audits, Node-Tests) — die frühere `steps: []` / `runner_id: 0`-Blockade war ein temporäres Infrastrukturproblem und ist behoben.
 
@@ -47,9 +47,11 @@ Aktueller Stand (verifiziert per `gh run view`):
 1. `npm run check` (Syntax) — grün
 2. `npm test` (Engine-/Storage-Tests) — grün
 3. `npm run validate` (34 Python-Release-Audits) — grün
-4. `npm run test:e2e` (Playwright, 58 Spec-Dateien × 2 Projekte) — überschreitet den 20-Minuten-Job-Timeout, Job wird abgebrochen
+4. `npm run test:e2e` (Playwright, 61 Spec-Dateien) — grün, verteilt auf zwei parallele Jobs:
+   - `validate`: Chromium Desktop + Pixel 7 (Lauf 36162934330: 517 bestanden, 13 Minuten)
+   - `e2e-webkit`: Desktop Safari + iPhone 14 (Lauf 36162934330: 496 bestanden, 27 Minuten)
 
-Nächster Schritt: E2E-Laufzeit lokal reproduzieren, Root Cause (Suite zu lang vs. einzelner hängender Test) klären und beheben, danach `Secret Circle CI / validate` als real grün dokumentieren.
+Ursache des früheren Abbruchs war die reine Laufzeit: Mit beiden Engines in einem Job brauchte die Suite rund 40 Minuten. Grenzen der WebKit-Abdeckung stehen in `KNOWN_LIMITATIONS.md`.
 
 ## PR #15 – Main/Reconciliation
 
