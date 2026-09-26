@@ -62,6 +62,8 @@ test('Quick Mode setup and active round retain accessible labels and keyboard fo
     .map(control => control.id || control.type));
   expect(setupIssues).toEqual([]);
 
+  // Der Knopf ist gesperrt, bis die Engine geladen ist; gesperrte Knöpfe nehmen keinen Fokus an.
+  await expect(page.locator('#quick-start')).toBeEnabled();
   await page.locator('#quick-start').focus();
   await expect(page.locator('#quick-start')).toBeFocused();
   await page.keyboard.press('Enter');

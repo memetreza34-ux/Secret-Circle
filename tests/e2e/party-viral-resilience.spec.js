@@ -85,6 +85,8 @@ test('Viral Mode controls remain keyboard reachable and labelled', async ({ page
     .filter(control => !(control.labels?.length || control.getAttribute('aria-label') || control.getAttribute('aria-labelledby')))
     .map(control => control.id || control.type));
   expect(unlabeled).toEqual([]);
+  // Der Knopf ist gesperrt, bis die Engine geladen ist; gesperrte Knöpfe nehmen keinen Fokus an.
+  await expect(page.locator('#quick-start')).toBeEnabled();
   await page.locator('#quick-start').focus();
   await expect(page.locator('#quick-start')).toBeFocused();
   await page.keyboard.press('Enter');

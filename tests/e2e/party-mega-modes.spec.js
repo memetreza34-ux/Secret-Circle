@@ -144,3 +144,27 @@ test('custom Anime character packs appear in the fan quiz', async ({ page }) => 
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
   await expect(page.locator('.challenge-card')).toHaveText(/Figur (Alpha|Beta|Gamma)/);
 });
+
+test.describe('slow engine load', () => {
+  /* Ohne Service Worker: Er lieferte die Engine aus seinem Cache, und die
+     Verzögerung unten griffe nicht. */
+  test.use({ serviceWorkers: 'block' });
+
+  test('start button stays disabled until the game engine has loaded', async ({ page }) => {
+    /* Die Engine kommt über eine Kette nachgeladener Skripte. Vorher war der
+       Startknopf schon klickbar – ein Tippen blieb auf langsamen Verbindungen
+       einfach wirkungslos. */
+    await seedHub(page);
+    let releaseEngine;
+    const engineGate = new Promise(resolve => { releaseEngine = resolve; });
+    await page.route('**/party-mega-modes.js', async route => { await engineGate; await route.continue(); });
+    // Nicht auf "load" warten: Das zurückgehaltene Skript verzögert genau dieses Ereignis.
+    await page.goto('/quick-play.html?game=money-challenge', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#quick-start')).toBeDisabled();
+
+    releaseEngine();
+    await expect(page.locator('#quick-start')).toBeEnabled();
+    await page.locator('#quick-start').click();
+    await expect(page.getByRole('button', { name: 'Würde ich machen' })).toBeVisible();
+  });
+});
