@@ -50,6 +50,13 @@
 
   const storageFallbackActive = installStorageFallback();
 
+  /* Quick Play: Der Startknopf steht im HTML vor allen Skripten, den Klick
+     hängt aber erst die nachgeladene Engine an. Dieses Skript läuft als erstes
+     und sperrt ihn sofort; quick-loader.js gibt ihn frei, sobald die Engine
+     geladen ist. Beide liegen in derselben Cache-Generation des Service
+     Workers, anders als das HTML, das immer frisch kommt. */
+  root.document?.querySelector?.('#quick-setup #quick-start')?.setAttribute('disabled', '');
+
   let fatalMessageShown = false;
   let waitingWorker = null;
   let updateRequested = false;

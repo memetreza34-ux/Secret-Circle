@@ -167,4 +167,21 @@ test.describe('slow engine load', () => {
     await page.locator('#quick-start').click();
     await expect(page.getByRole('button', { name: 'Würde ich machen' })).toBeVisible();
   });
+
+  test('start button is disabled even while the page scripts are still loading', async ({ page }) => {
+    /* Der Knopf steht im HTML vor allen Skripten. Hängt der Parser an einem
+       Skript fest, war er vorher schon klickbar, ohne dass etwas an ihm hing. */
+    await seedHub(page);
+    let releaseCatalog;
+    const catalogGate = new Promise(resolve => { releaseCatalog = resolve; });
+    await page.route('**/party-catalog.js', async route => { await catalogGate; await route.continue(); });
+    await page.goto('/quick-play.html?game=money-challenge', { waitUntil: 'commit' });
+    await expect(page.locator('#quick-start')).toBeAttached();
+    await expect(page.locator('#quick-start')).toBeDisabled();
+
+    releaseCatalog();
+    await expect(page.locator('#quick-start')).toBeEnabled();
+    await page.locator('#quick-start').click();
+    await expect(page.getByRole('button', { name: 'Würde ich machen' })).toBeVisible();
+  });
 });
