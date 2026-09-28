@@ -8,13 +8,13 @@ Stand: 29. August 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v64**
+- Source-Generation: **v65**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
 - Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**
+- Offline-Core: **`secret-circle-v65` / `secret-circle-v65-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 - PR-Stack: **muss vor Release mit zwei späteren `main`-Commits reconciled werden**
@@ -110,6 +110,19 @@ Gemeinsame Architektur:
 - aktueller zusammengesetzter Katalog: **55 Built-ins / 15 Core / 13 Extended / 27 Labs**
 - Wave-1-Unit-/E2E-/Audit-Verträge sind vorbereitet
 - reale Browser-/PWA-/Accessibility-/Gruppenevidence bleibt offen
+
+### v65 – Offline-Core-Sperre und Hub-Korrekturen
+
+Seit dem 10. September hatten 16 Commits Offline-Core-Dateien geändert, ohne die Cachegeneration zu erhöhen. Installierte Apps bekamen deshalb frisches HTML zu alten Skripten und Styles. v65 liefert alle diese Korrekturen aus.
+
+- `scripts/offline_core_lock.py` hält eine Prüfsumme über alle CORE-Dateien in `release-meta.json` fest. `npm run validate` schlägt fehl, sobald sich eine Datei ändert, ohne dass die Generation steigt.
+- `python3 scripts/offline_core_lock.py --bump` erhöht die Generation und zieht `sw.js`, `release-meta.json`, `operator-release.json`, `privacy.html` und die Statusdokumente nach.
+- Hub: Ein neues Spiel ersetzt einen gespeicherten Spielstand nur noch nach Rückfrage; die alte Fortsetzen-Karte verschwindet danach.
+- Hub: Die Beschriftung des Startknopfs entsteht nur noch in `party-hub.js`. `party-hub-polish.js` (v18) und `party-hub-plus.js` (v6) überschreiben sie nicht mehr.
+- Hub: Spiele werden über ihre ID erkannt statt über den Titel. Ein eigenes Spiel mit dem Namen eines eingebauten wird nicht mehr verwechselt.
+- Hub: Beobachter und Fokusfalle bleiben nach `pagehide` verbunden. Nach der Rückkehr aus dem Back-Forward-Cache stimmen Knopftexte, Spielhinweise und Tastaturfokus weiterhin.
+- Service Worker: Das Staging lädt den Offline-Core mit `cache: 'reload'`. Vorher konnte ein Update noch frische HTTP-Cache-Einträge der alten Version übernehmen und sie bis zur nächsten Generation offline ausliefern.
+- Party Night aktualisiert sich nach „Spiel beenden“ wieder; der Klick-Hook zeigte auf den entfernten Knopf `#exit-game`.
 
 ### Release-Metadaten / Drift-Schutz
 

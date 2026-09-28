@@ -17,8 +17,8 @@ Laut `release-meta.json`:
 
 - Source-Generation: **v64**
 - Package-Version: **1.0.0-beta.3**
-- Offline-Cache: **`secret-circle-v64`**
-- Staging-Cache: **`secret-circle-v64-staging`**
+- Offline-Cache: **`secret-circle-v65`**
+- Staging-Cache: **`secret-circle-v65-staging`**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 source-implemented, real evidence OPEN**
 - Arbeitsbranch: `agent/release-foundation-2027`

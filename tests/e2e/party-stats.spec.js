@@ -23,7 +23,7 @@ test('history repairs cumulative play round and best-score statistics', async ({
   await page.reload();
   await page.getByRole('button', { name: 'Verlauf', exact: true }).click();
 
-  expect(await page.evaluate(() => window.SecretCirclePartyHubPlus?.version)).toBe(5);
+  expect(await page.evaluate(() => window.SecretCirclePartyHubPlus?.version)).toBe(6);
   await expect.poll(() => page.evaluate(() => {
     const stats = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).stats.charades;
     return `${stats.plays}:${stats.rounds}:${stats.best}`;

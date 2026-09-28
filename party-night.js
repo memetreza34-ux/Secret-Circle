@@ -513,7 +513,7 @@
     section.querySelector('#surprise-party-night').addEventListener('click', surprise);
     documentRef.addEventListener('click', event => {
       if (event.target.closest('[data-view-target="home"]')) rootRef.setTimeout(() => refresh(true), 0);
-      if (event.target.closest('#exit-game')) rootRef.setTimeout(() => refresh(true), 100);
+      if (event.target.closest('#finish-hub-game')) rootRef.setTimeout(() => refresh(true), 100);
     });
     rootRef.addEventListener('focus', () => refresh(true));
     rootRef.addEventListener('pageshow', () => refresh(true));

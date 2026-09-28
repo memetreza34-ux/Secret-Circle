@@ -309,3 +309,29 @@ test.describe('Resume-Schutz ohne Cache', () => {
     expect(result.hub.stats['truth-dare']).toBeUndefined();
   });
 });
+
+test('starting another hub game asks before replacing a stored session', async ({ page }) => {
+  await seedHub(page);
+  await startGame(page, 'never-have');
+  await page.getByRole('button', { name: 'Nächste Karte' }).click();
+  const stored = await activeState(page);
+  expect(stored.session).toMatchObject({ gameId: 'never-have', rounds: 1 });
+
+  await page.reload();
+  await expect(page.locator('#hub-resume-session')).toBeVisible();
+
+  const messages = [];
+  page.once('dialog', dialog => { messages.push(dialog.message()); dialog.dismiss(); });
+  await page.locator('#browse-games').click();
+  await page.locator('[data-open-game="would-rather"]:visible').first().click();
+  await page.locator('#start-selected-game').click();
+  expect(messages[0]).toContain('„Ich habe noch nie“');
+  await expect(page.locator('#play-layer')).toBeHidden();
+  expect((await activeState(page)).session).toMatchObject({ gameId: 'never-have', rounds: 1 });
+
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#start-selected-game').click();
+  await expect(page.locator('#play-layer')).toBeVisible();
+  expect((await activeState(page)).session).toMatchObject({ gameId: 'would-rather', rounds: 0 });
+  await expect(page.locator('#hub-resume-session')).toHaveCount(0);
+});

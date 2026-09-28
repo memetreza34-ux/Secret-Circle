@@ -240,8 +240,7 @@
   function enhanceDetail() {
     const modal = $('#game-detail');
     if (!modal || modal.hidden) return;
-    const title = $('#detail-title')?.textContent;
-    const game = C.games.find(item => item.title === title);
+    const game = C.getGame(modal.dataset.gameId);
     if (!game) return;
     const card = modal.querySelector('.modal-card');
     let summary = card.querySelector('.detail-quick-guide');
@@ -274,10 +273,6 @@
     const fullRules = $('#detail-rules')?.closest('section');
     const covered = rules.length === game.instructions.length;
     if (fullRules && fullRules.hidden !== covered) fullRules.hidden = covered;
-    const start = $('#start-selected-game');
-    if (start && game.status === 'playable' && game.mode !== 'link' && start.textContent !== 'Jetzt spielen') {
-      start.textContent = 'Jetzt spielen';
-    }
   }
 
   function addOnboarding() {
@@ -331,7 +326,6 @@
       enhanceDetail();
     });
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
-    addEventListener('pagehide', () => observer.disconnect(), { once: true });
   }
 
   function initialize() {
