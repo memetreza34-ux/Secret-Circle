@@ -24,7 +24,7 @@ Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcon
 
 `scripts/lockfile_contract_audit.py` schützt diesen Snapshot gegen Drift. CI und Cross-Browser verwenden `npm ci`.
 
-Noch offen bleibt ein **echter Online-`npm ci`-PASS** auf einem **unverändertem Commit** mit anschließendem CI-/Cross-Browser-/Integrity-Nachweis. Der aktuelle GitHub-Hosted-Runner-Blocker verhindert diese reale Evidence weiterhin vor Step 1.
+Online-`npm ci` läuft seit dem 5. September 2026 real in der CI (letzter grüner Lauf `36292530012`). Noch offen bleibt ein **echter Online-`npm ci`-PASS** für den Release-Kandidaten mit **unverändertem Commit** und anschließendem CI-/Cross-Browser-/Integrity-Nachweis.
 
 ## 4. Maschinenlesbare Asset-Provenienz
 

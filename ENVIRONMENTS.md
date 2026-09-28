@@ -14,7 +14,7 @@ Secret Circle besitzt kein klassisches Backend, benötigt aber getrennte Umgebun
 
 Local ist kein Releasebeweis. CI benötigt sichtbare Runner-Steps, Checkout, Online-`npm ci`, `npm run ci` und Cross-Browser auf demselben RC. `steps: []` bleibt kein Code-Test.
 
-Aktuell ist CI durch fehlende Hosted-Runner-Zuteilung vor Step 1 **BLOCKED**.
+Der Hosted Runner läuft seit dem 5. September 2026 real; CI ist auf `main` grün (Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`)). Offen sind der Cross-Browser-Workflow und derselbe Nachweis auf dem RC.
 
 Lokaler Quellvertrag für die PWA-Head-Metadaten: `tests/pwa-head-metadata.test.js`.  
 Netzwerk-Smoke-Implementierung: `scripts/staging_smoke.py`.

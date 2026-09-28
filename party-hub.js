@@ -700,6 +700,15 @@
       if (!clearActiveSession()) return;
       card.remove(); setStatus('Gespeicherter Hub-Spielstand wurde verworfen.');
     }, 'secondary');
+    /* Gesperrt anlegen: Erst party-hub-polish.js gibt die Knöpfe frei, nachdem
+       der Resume-Schutz den gespeicherten Stand geprüft hat. Sonst ließe sich ein
+       inkonsistenter Stand fortsetzen, solange die Skripte noch laden. */
+    card.setAttribute('aria-busy', 'true');
+    for (const button of [resume, discard]) {
+      button.disabled = true;
+      button.setAttribute('aria-disabled', 'true');
+      button.dataset.resumeGuardDisabled = 'true';
+    }
     actions.append(resume, discard);
     card.append(title, copy, actions);
     $('#hub-status')?.insertAdjacentElement('afterend', card);

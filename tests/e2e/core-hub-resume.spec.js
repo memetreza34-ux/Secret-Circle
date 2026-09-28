@@ -335,3 +335,37 @@ test('starting another hub game asks before replacing a stored session', async (
   expect((await activeState(page)).session).toMatchObject({ gameId: 'would-rather', rounds: 0 });
   await expect(page.locator('#hub-resume-session')).toHaveCount(0);
 });
+
+test.describe('resume guard timing', () => {
+  // Der Service Worker würde die verzögerte Datei aus dem Cache liefern und die Verzögerung umgehen.
+  test.use({ serviceWorkers: 'block' });
+
+  test('resume stays locked until the resume guard has checked the stored session', async ({ page }) => {
+    await seedHub(page);
+    await startGame(page, 'charades');
+    await page.getByRole('button', { name: 'Runde starten' }).click();
+    await expect.poll(async () => (await activeState(page))?.session?.timer?.phase).toBe('running');
+
+    // Auf einer anderen Seite manipulieren, damit der Hub den Stand beim Verlassen nicht neu schreibt.
+    await page.goto('/privacy.html');
+    await page.evaluate(key => {
+      const value = JSON.parse(localStorage.getItem(key));
+      value.session.running = false;
+      localStorage.setItem(key, JSON.stringify(value));
+    }, ACTIVE_KEY);
+
+    // Solange die Skripte laden, darf die Karte nicht bedienbar sein.
+    await page.route('**/party-hub-plus.js', async route => {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      await route.continue();
+    });
+    await page.goto('/party.html', { waitUntil: 'commit' });
+    await expect(page.locator('#hub-resume-session')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Session fortsetzen' })).toBeDisabled();
+
+    await expect(page.locator('#hub-resume-session')).toHaveCount(0);
+    await expect(page.locator('#hub-status')).toContainText('inkonsistenter Timer-Spielstand wurde sicher verworfen');
+    await expect(page.locator('#play-layer')).toBeHidden();
+    expect(await activeState(page)).toBeNull();
+  });
+});

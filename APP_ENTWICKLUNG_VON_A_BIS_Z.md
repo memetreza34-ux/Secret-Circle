@@ -444,7 +444,7 @@ Ebenen:
 
 Ein Test, der nicht ausgeführt wurde, ist kein Pass.
 
-Secret Circle: Actions `steps: []` bleibt externer P0-Blocker.
+Secret Circle: Der frühere Actions-Blocker (`steps: []`) ist seit dem 5. September 2026 behoben.
 
 ---
 
@@ -738,7 +738,7 @@ Stark vorbereitet:
 
 Aktuelle Hauptblocker:
 
-1. GitHub-Actions-Runner (`steps: []`)
+1. GitHub-Actions-Runner (`steps: []`) – seit 5. September 2026 behoben
 2. `package-lock.json` + `npm ci`
 3. Branch Protection
 4. reale Geräte/PWA-Upgrades/Rollback

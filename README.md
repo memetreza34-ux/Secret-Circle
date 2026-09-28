@@ -109,13 +109,11 @@ Dokumentation und Sicherheitsvertrag:
 
 Die synthetische Sicherheitssuite und der Source-/Deletion-Vertrag sind Bestandteil des modernen v64-CI-Vertrags. Die **echte** Inventur des historischen ZIPs darf erst als bestanden markiert werden, wenn genau der erwartete Binärblob tatsächlich geprüft wurde.
 
-## CI – extern blockiert
+## CI
 
-GitHub Actions endet weiterhin vor Repository-Ausführung mit `steps: []`, `runner_id: 0` und leerem Runner-Namen bei angefordertem `ubuntu-latest`. Dadurch laufen weder Checkout noch `npm ci`, Playwright oder Python-Audits.
+Der frühere Runner-Ausfall (`steps: []`, `runner_id: 0`, Issue #7) ist seit dem 5. September 2026 behoben. GitHub Actions führt Checkout, `npm ci`, Syntax-, Unit-, Audit- und Browser-Tests real aus. Letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`). Details: `CI_TROUBLESHOOTING.md`.
 
-Der Befund wurde auf mehreren v64-/PR-#15-Ständen reproduziert. Details: Issue #7 / `CI_TROUBLESHOOTING.md`.
-
-**Es gibt deshalb weiterhin keinen aktuellen Hosted-Runner-PASS.** App-Code wird nicht auf Verdacht als Workaround für einen Job geändert, der keinen Runner erhält.
+Offen bleiben der noch nie gestartete Cross-Browser-Workflow und ein CI-Nachweis auf einem eingefrorenen Release-Kandidaten.
 
 ## Hosting-Hardening
 
@@ -145,7 +143,7 @@ Der **alte Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete
 
 ## Zentrale offene Issues
 
-1. **#7** – GitHub Actions / Hosted Runner endet vor Step 1
+1. **#7** – Runner-Ausfall: seit 5. September 2026 behoben, Issue auf GitHub noch offen
 2. **#8** – reale Geräte, v64 Offline-PWA, Accessibility, Spezialgates, Wave-1-Labs und Partytests
 3. **#14** – Operator, Hosting, Legal, Support und Incident Evidence
 
@@ -153,7 +151,7 @@ Draft-PR #15 bleibt der kontrollierte Main/Reconciliation-Kandidat und muss vor 
 
 ## Höchste Priorität
 
-1. Hosted Runner / Online-`npm ci` / CI / Cross-Browser
+1. Cross-Browser-Workflow und CI auf dem eingefrorenen RC
 2. PR #15 live synchronisieren + 9-Pfade-Scope bestätigen
 3. Branch Protection + Required Check
 4. realen Hostingprovider + getrennte HTTPS-Staging-/Production-Origin

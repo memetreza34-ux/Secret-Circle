@@ -1,6 +1,6 @@
 # Secret Circle – A-bis-Z Entwicklungsstatus
 
-Stand: 29. August 2026
+Stand: 29. August 2026 (CI-Stand aktualisiert am 28. September 2026)
 
 Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 
@@ -38,10 +38,10 @@ v45 Core → v46 Hub-A11y → v47 Secondary-A11y → v48 Word-Imposter → v49 H
 | 5 | UX / IA / Design | PREPARED | reale UX-/Tastaturtests |
 | 6 | Architektur / ADR | PREPARED | v64-PWA-/Lifecycle-Evidence |
 | 7 | Security / Threat Model | PREPARED | echter Browser/Runner |
-| 8 | Repo / Git / Build | BLOCKED | Issue #7 + PR #15 + Branch Protection |
+| 8 | Repo / Git / Build | BLOCKED | PR #15 + Branch Protection (Runner-Issue #7 technisch erledigt) |
 | 9 | Feature-Entwicklungsloop | PREPARED | nur gezielte Hardening-Funde; kein Scope-Bloat |
 | 10 | Fehlerbehandlung / Resilienz | PREPARED | Quota/Update/Resume/Restore/Replacement/Timer/BFCache/Background/Cold Resume real |
-| 11 | Tests / CI | BLOCKED | Hosted-Runner-Zuteilung/Actions-Gate lösen |
+| 11 | Tests / CI | PREPARED | CI auf `main` grün; Cross-Browser-Workflow + Lauf auf dem RC |
 | 12 | Offline / PWA / Resume | PREPARED | v64 Install/Upgrade/Rollback + Spezialgates |
 | 13 | Content / Alter / Privacy | IN PROGRESS | reale Gruppen + finaler Sign-off |
 | 14 | Beta / reale Gruppen | PREPARED | Core + Spezialgates + Wave-1-Labs real |
@@ -99,11 +99,11 @@ Die Implementierung verwendet sechs wiederverwendbare Enginefamilien: Quiz, Impo
 - Playwright 1.54.2
 - keine npm-Runtime-Dependencies
 - Syntax-, Unit-, Contract-, Audit- und Playwright-Gates vorbereitet
-- GitHub Actions reproduziert vor Step 1 `steps: []`, `runner_id: 0`, leeren Runner-Namen
-- kein Checkout, npm, Playwright, Python-Audit oder Repositorycode wird in diesen Jobs ausgeführt
-- kein aktueller Hosted-Runner-PASS
+- der frühere Runner-Ausfall (`steps: []`, `runner_id: 0`) ist seit dem 5. September 2026 behoben
+- GitHub Actions führt Checkout, `npm ci`, Syntax-, Unit-, Audit- und Browser-Tests real aus
+- letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`)
 
-Status: **CLOSED IN CODE / HOSTED-RUNNER VERIFICATION BLOCKED**.
+Status: **GRÜN AUF `main` / Cross-Browser-Workflow und RC-Lauf offen**.
 
 ## Asset-Hardening
 
@@ -125,14 +125,14 @@ Der alte Icon-Rechteblocker ist damit **source-seitig geschlossen**. Offen bleib
 
 ## Zentrale offene Issues
 
-- **#7:** GitHub Actions endet vor Step 1
+- **#7:** Runner-Ausfall – seit 5. September 2026 behoben, Issue noch schließen
 - **#8:** reale Geräte, v64 Offline-PWA, Accessibility, Spezialgates, Wave-1-Labs und Partytests
 - **#14:** Operator, Hosting, Legal, Support und Incident Evidence
 - **PR #15:** nach dem aktuellen Hardening wieder live gegen Releasebranch synchronisieren und 9-Pfade-Scope bestätigen
 
 ## Höchste Prioritäten
 
-1. Hosted Runner / Actions-Account-, Billing- und Policy-Gate lösen
+1. Cross-Browser-Workflow einmal real ausführen
 2. PR #15 live synchronisieren + Scope bestätigen
 3. Online-`npm ci` / CI / Cross-Browser auf demselben Commit
 4. Branch Protection

@@ -173,9 +173,9 @@ Historie: v56 Quick Session Replacement → v57 Quick Timer Resume → v58 BFCac
 
 ## 8. CI-Abhängigkeit
 
-Hosting kann vorbereitet und ein Provider ausgewählt werden, aber ein Production-Release darf den aktuellen CI-Blocker nicht umgehen.
+Hosting kann vorbereitet und ein Provider ausgewählt werden, aber ein Production-Release darf die CI-Gates nicht umgehen.
 
-Der aktuelle Hosted-Runner-Fehler endet vor Step 1 mit `steps: []` / `runner_id: 0`; kein Repositorycode wird ausgeführt. Vor RC-Freigabe müssen Online-`npm ci`, `npm run ci` und Cross-Browser auf dem unveränderten Kandidaten real laufen.
+Der frühere Hosted-Runner-Ausfall (`steps: []` / `runner_id: 0`) ist seit dem 5. September 2026 behoben. Vor RC-Freigabe müssen Online-`npm ci`, `npm run ci` und Cross-Browser auf dem unveränderten Kandidaten real laufen.
 
 ## 9. Release-Gate
 

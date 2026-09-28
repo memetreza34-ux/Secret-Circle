@@ -275,6 +275,13 @@
     if (fullRules && fullRules.hidden !== covered) fullRules.hidden = covered;
   }
 
+  /* Die Karte verschwindet auch dann, wenn der Speicher voll oder gesperrt ist;
+     sie erscheint dann beim nächsten Laden eben noch einmal. */
+  function closeOnboarding(panel) {
+    try { localStorage.setItem(ONBOARDING_KEY, 'done'); } catch {}
+    panel.remove();
+  }
+
   function addOnboarding() {
     if (localStorage.getItem(ONBOARDING_KEY) === 'done' || $('#onboarding-card')) return;
     const home = $('#view-home');
@@ -289,10 +296,10 @@
     const actions = element('div', 'inline-actions');
     const start = element('button', '', 'Spiel empfehlen');
     start.type = 'button';
-    start.addEventListener('click', () => { localStorage.setItem(ONBOARDING_KEY, 'done'); panel.remove(); $('#quick-start')?.click(); });
+    start.addEventListener('click', () => { closeOnboarding(panel); $('#quick-start')?.click(); });
     const dismiss = element('button', 'secondary', 'Verstanden');
     dismiss.type = 'button';
-    dismiss.addEventListener('click', () => { localStorage.setItem(ONBOARDING_KEY, 'done'); panel.remove(); });
+    dismiss.addEventListener('click', () => closeOnboarding(panel));
     actions.append(start, dismiss);
     panel.append(text, actions);
     hero.insertAdjacentElement('beforebegin', panel);

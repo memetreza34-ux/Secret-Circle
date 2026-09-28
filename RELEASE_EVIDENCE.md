@@ -42,9 +42,9 @@ Zusätzlich existiert `operator-release.json` als eigene maschinenlesbare Akte f
 
 Es werden keine Run-IDs, Geräteprüfungen, URLs, Betreiberangaben, Zeitpunkte oder Sign-offs erfunden.
 
-## 4. Aktueller CI-Blocker
+## 4. CI-Stand
 
-Der zuletzt konkret untersuchte v64-Actions-Lauf ist **Run #3608**:
+Bis zum 29. August 2026 endeten die Actions-Läufe vor Step 1. Der zuletzt untersuchte Lauf dieser Art war **Run #3608**:
 
 - Run-ID `33253663445`
 - Job-ID `99103557030`
@@ -55,7 +55,7 @@ Der zuletzt konkret untersuchte v64-Actions-Lauf ist **Run #3608**:
 - `runner_name: ""`
 - kein Repositorycode ausgeführt
 
-Damit bleibt das CI-Gate **BLOCKED**. Dieser Lauf ist kein negativer App-Code-Test, weil der Job keinen Hosted Runner/Workflow-Step erreicht hat.
+Seit dem 5. September 2026 läuft der Hosted Runner real. Letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`); Details in `release-evidence.json → gates.ci`. Das CI-Gate bleibt **OPEN**, weil PASS einen eingefrorenen Release-Kandidaten verlangt. Der Cross-Browser-Workflow wurde noch nie gestartet.
 
 ## 5. Kandidatenidentität
 
