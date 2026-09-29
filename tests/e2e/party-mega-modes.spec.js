@@ -19,6 +19,13 @@ test('Party Hub exposes 55 playable games and dedicated Trend Mode actions', asy
   await expect(page.locator('#result-count')).toHaveText('55');
   await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(55);
   await page.locator('#game-search').fill('Anime-Archetypen');
+  /* Die Kategorie gibt es auch bei Stirn-Raten. Mit zwei Treffern liegt die
+     Vorschlagsliste auf schmalen Bildschirmen über den Karten; erst schließen. */
+  await expect(page.locator('#game-grid [data-game-id="forehead-guess"]')).toBeVisible();
+  await expect(page.locator('#game-search-suggestions')).toBeVisible();
+  await page.locator('#game-search').press('Escape');
+  await expect(page.locator('#game-search-suggestions')).toBeHidden();
+  await expect(page.locator('#game-search')).toHaveValue('Anime-Archetypen');
   await page.locator('[data-open-game="anime-guess"]:visible').click();
   await expect(page.locator('#detail-title')).toHaveText('Anime-Archetypen erraten');
   await expect(page.getByRole('button', { name: 'Trend Mode öffnen' })).toBeVisible();
