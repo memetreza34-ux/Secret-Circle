@@ -214,7 +214,7 @@ def assert_pwa_head_metadata(source: str, label: str) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Secret Circle HTTPS staging/production smoke test')
     parser.add_argument('base_url', help='Basis-URL, z. B. https://staging.example.com/')
-    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v64')
+    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v65')
     parser.add_argument('--production', action='store_true', help='Strengere Production-Prüfungen aktivieren')
     return parser.parse_args()
 

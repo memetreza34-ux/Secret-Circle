@@ -1,6 +1,6 @@
 # Release-Status – Secret Circle
 
-Stand: 29. August 2026  
+Stand: 29. August 2026 (CI-Stand aktualisiert am 28. September 2026)  
 Zielrelease: 4.–15. Januar 2027  
 Arbeitsbranch: `agent/release-foundation-2027`  
 Release-PR: Draft #13  
@@ -11,11 +11,11 @@ Main-Reconciliation: Draft #15
 **Phase:** Release-Härtung / Verifikation  
 **Öffentliche Freigabe:** **NO_GO**  
 **Package:** `1.0.0-beta.3`  
-**Offline-Core:** `secret-circle-v64` / `secret-circle-v64-staging`  
+**Offline-Core:** `secret-circle-v65` / `secret-circle-v65-staging`  
 **Built-ins:** 55 · 15 Core / 13 Extended / 27 Labs  
 **Wave 1:** 10/10 source-implemented; reale Evidence offen  
 **Core Source Review/Hardening:** 15/15 PREPARED  
-**CI:** npm test/validate GRÜN, E2E-Timeout offen · **Cross-Browser:** BLOCKED  
+**CI:** auf `main` grün inkl. Browser-Tests (Run `36292530012`, 27. September 2026) · **Cross-Browser-Workflow:** noch nie ausgeführt  
 **Branch Protection:** BLOCKED  
 **Hosting / Operator / Legal / Support:** PREPARED / BLOCKED  
 **Asset-Icon-Provenienz:** SOURCE RESOLVED  
@@ -172,7 +172,7 @@ Weiter offen:
 
 ## Nächste Reihenfolge
 
-1. GitHub Actions / Hosted Runner / Billing-/Policy-Blocker lösen
+1. Cross-Browser-Workflow einmal real ausführen
 2. PR #15 erneut mit aktuellem Releasebranch synchronisieren und 9-Pfade-Scope bestätigen
 3. CI + Cross-Browser auf demselben Commit real ausführen
 4. Branch Protection + Required Check aktivieren

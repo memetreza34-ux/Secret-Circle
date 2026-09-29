@@ -5,7 +5,7 @@
   if (!C) return;
   const HUB_KEY = 'secret-circle-party-hub-v1';
   const PREF_KEY = 'secret-circle-party-preferences-v1';
-  const VERSION = 5;
+  const VERSION = 6;
   const $ = selector => document.querySelector(selector);
   let installPrompt = null;
 
@@ -188,14 +188,6 @@
     if (count) count.textContent = String(achievements.filter(item => item[3]).length);
   }
 
-  function fixDetailAction(gameId) {
-    const game = C.getGame(gameId);
-    const button = $('#start-selected-game');
-    if (!game || !button) return;
-    if (game.advancedMode) button.textContent = `${game.title} öffnen`;
-    else if (game.id === 'imposter') button.textContent = 'Word Imposter öffnen';
-  }
-
   function escapeSelector(value) {
     if (window.CSS?.escape) return window.CSS.escape(value);
     return String(value).replace(/[^a-zA-Z0-9_-]/g, character => `\\${character.codePointAt(0).toString(16)} `);
@@ -258,9 +250,6 @@
       renderAchievements();
     }, 0);
     if (event.target.closest('[data-view-target="games"]')) window.setTimeout(applyAgeFilter, 0);
-    if (event.target.closest('#exit-game')) window.setTimeout(repairStatsFromHistory, 0);
-    const open = event.target.closest('[data-open-game]');
-    if (open) window.setTimeout(() => fixDetailAction(open.dataset.openGame), 0);
   });
 
   installSupport();
@@ -276,7 +265,6 @@
     preferences,
     savePreferences,
     setAgeLevel,
-    fixDetailAction,
     repairStatsFromHistory,
     escapeSelector
   });

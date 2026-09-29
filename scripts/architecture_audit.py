@@ -111,7 +111,7 @@ contracts={
  'party-core-classic-content.js':['const VERSION = 4;','coreClassicContentVersion','referenceSafeGameOverrides','referenceSafeContent','referenceSafeRemovedConcreteNames: 40'],
  'party-routing.js':["require('./party-core-classic-content.js')",'createCatalog','version: 8'],
  'party-hub.js':['SecretCircleSessionLedger','SecretCircleSessionControls','SecretCirclePartyHubTimers','SecretCirclePartyHubRoundState',"ACTIVE_KEY = 'secret-circle-party-hub-active-v1'",'R.normalizeResume','R.ensureCurrent','R.clearCurrent','skipHubRound','abortSession'],
- 'party-hub-polish.js':['party-hub-a11y.js','loadHubA11y','guardStoredResumeIntegrity','version: 17','privatePromptContext'],
+ 'party-hub-polish.js':['party-hub-a11y.js','loadHubA11y','guardStoredResumeIntegrity','version: 18','privatePromptContext'],
  'runtime-guard.js':['Neue Secret-Circle-Version bereit','Jetzt aktualisieren','hasActiveSession'],
  'game-creator.js':["STORAGE_KEY = 'secret-circle-party-created-games-v1'",'MAX_GAMES = 40'],
  'party-data-tools.js':['SecretCircleBackupSchemas','replaceEntries','registry.isAllowedCompleteStorageKey'],

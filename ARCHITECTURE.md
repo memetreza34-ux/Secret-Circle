@@ -113,11 +113,11 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**.
+Aktueller Offline-Core: **`secret-circle-v65` / `secret-circle-v65-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
-Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Upgrade/Rollback real testen.
+Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → `python3 scripts/offline_core_lock.py --bump` (erhöht die Cachegeneration und zieht `sw.js`, `release-meta.json`, `operator-release.json`, `privacy.html` und die Statusdokumente nach) → CHANGELOG ergänzen → Upgrade/Rollback real testen. `npm run validate` schlägt fehl, solange eine CORE-Datei von der in `release-meta.json` festgehaltenen Prüfsumme abweicht.
 
 ## 19. PWA-Installationsmetadaten
 
