@@ -125,6 +125,8 @@ Seit dem 10. September hatten 16 Commits Offline-Core-Dateien geändert, ohne di
 - Party Night aktualisiert sich nach „Spiel beenden“ wieder; der Klick-Hook zeigte auf den entfernten Knopf `#exit-game`.
 - Hub: Die Fortsetzen-Karte bleibt gesperrt, bis der Resume-Schutz den gespeicherten Stand geprüft hat. Vorher ließ sich ein inkonsistenter Timer-Stand fortsetzen, solange die Skripte noch luden.
 - Hub: Die Einführungskarte schließt auch, wenn der Speicher voll oder gesperrt ist.
+- Party Night plant ohne gespeicherte Gruppe mit derselben Beispielgruppe wie Hub und Spiel-Engines. Vorher zeigte der Planer bei neuen Nutzern „0 Personen“ und verweigerte den Plan.
+- `tests/cross-browser/smoke.spec.js` lief nie und prüfte noch den Stand mit 45 Spielen; er ist auf 55 Spiele und die aktuellen Texte nachgezogen.
 - Katalog: Die beworbenen Kategorien von `wavelength`, `draw-guess`, `sound-imitation` und `forehead-guess` entsprechen jetzt dem Inhalt. Die Suche fand vorher „Filme“ oder „Fahrzeuge“, die es nicht gibt, aber nicht die sechs zusätzlichen Stirn-Raten-Kategorien.
 - Offline-Core: zwölf Schriftdateien (136 KB) entfernt, die seit dem Entfernen des v2-Prototyps kein Stylesheet mehr nutzte.
 - `tests/extended-labs-content-quality.test.js` prüft alle 55 Spiele und läuft jetzt in `npm test`; `scripts/extended_labs_content_audit.py` läuft in `npm run validate`.
