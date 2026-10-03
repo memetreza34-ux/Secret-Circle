@@ -4,20 +4,26 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 ## Unreleased – Januar-2027 Release Foundation
 
-Stand: 29. August 2026
+Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v66**
+- Source-Generation: **v67**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
 - Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v66` / `secret-circle-v66-staging`**
+- Offline-Core: **`secret-circle-v67` / `secret-circle-v67-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 - PR-Stack: **muss vor Release mit zwei späteren `main`-Commits reconciled werden**
+
+### v67 – Quick Play im v2-Design
+
+- Setup, Spielansicht, Pause, Sitzungssteuerung und Ergebnis nutzen `v2-theme.css` und `v2-play.css`.
+- Die bestehende Spiellogik, Element-IDs, Fortsetzung und Offline-Funktionen bleiben erhalten.
+- `v2-play.css` ist Teil des Offline-Core; die Cachegeneration wurde nach dem Style-Wechsel erhöht.
 
 ### v46–v47 – Accessibility
 

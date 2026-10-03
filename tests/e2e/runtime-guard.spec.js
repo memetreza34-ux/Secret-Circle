@@ -45,7 +45,7 @@ test('all game engines Creator and guidance are available from cache v30', async
       'runtime-guard.js', 'party-night.js', 'party-night.css', 'quick-play.html',
       'party-trending-catalog.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
       'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-      'party-created-modes.js', 'quick-loader.js', 'party-quick.css', 'creator.html',
+      'party-created-modes.js', 'quick-loader.js', 'party-quick.css', 'v2-play.css', 'creator.html',
       'game-creator.js', 'creator-page.js', 'creator.css', 'party-guide.js', 'party-guide.css'
     ];
     const result = {};
