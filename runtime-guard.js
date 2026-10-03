@@ -64,7 +64,7 @@
   let updateBanner = null;
 
   function statusElement() {
-    return document.querySelector('#status, #hub-status, #advanced-status, #quick-status, #creator-status');
+    return document.querySelector('#status, #hub-status, #advanced-status, #quick-status, #creator-status, #app-status');
   }
 
   function showRuntimeError(message) {

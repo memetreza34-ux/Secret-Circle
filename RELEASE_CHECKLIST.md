@@ -7,7 +7,7 @@ Diese Checkliste gilt nur für **einen unveränderten Release-Candidate-Commit**
 Aktueller Arbeitsstand:
 
 - Package `1.0.0-beta.3`
-- Offline-Core `secret-circle-v65` / `secret-circle-v65-staging`
+- Offline-Core `secret-circle-v66` / `secret-circle-v66-staging`
 - 55 Built-ins · 15 Core / 13 Extended / 27 Labs
 - Wave 1: 10/10 source-implemented
 - öffentliche Freigabe: **NO_GO**
@@ -117,7 +117,7 @@ Real offen:
 - [ ] Hostingprovider/Produkt final
 - [ ] DPA-/Processor-/Transferposition final geprüft
 - [ ] getrennte HTTPS-Staging-/Production-Origin
-- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v65` grün
+- [ ] `npm run staging:smoke -- <STAGING> --expected-cache secret-circle-v66` grün
 - [ ] manueller PWA-Staging-Smoke
 - [ ] **Production-Smoke** auf exakt demselben freigegebenen RC grün
 - [ ] HTTPS-Rollback-Drill dokumentiert

@@ -59,11 +59,9 @@ test('creates a custom choice game and opens it through the resumable Creator pl
   expect(saved.games[0].packs[0].items[0]).toEqual(['Ninja', 'Magier']);
 
   await page.locator('#created-games-list').getByRole('link', { name: 'Testen', exact: true }).click();
-  await expect(page).toHaveURL(/party\.html\?game=custom-game-/);
-  await expect(page.locator('#game-detail')).toBeVisible();
-  await expect(page.locator('#detail-title')).toHaveText('Unser Anime Duell');
-  await expect(page.locator('#start-selected-game')).toHaveText('Eigenes Spiel starten');
-  await page.locator('#start-selected-game').click();
+  await expect(page).toHaveURL(/v2-hub\.html#spiel=custom-game-/);
+  await expect(page.locator('#mode-title')).toHaveText('Unser Anime Duell');
+  await page.locator('#start-btn').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
   await expect(page.getByRole('heading', { name: 'Unser Anime Duell' })).toBeVisible();
   await page.locator('#quick-rounds').selectOption('3');

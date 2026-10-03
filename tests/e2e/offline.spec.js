@@ -99,8 +99,8 @@ test('Creator can save launch and resume a custom game completely offline', asyn
   await page.locator('#creator-safe-confirm').check();
   await page.getByRole('button', { name: 'Spiel speichern' }).click();
   await page.locator('#created-games-list').getByRole('link', { name: 'Testen', exact: true }).click();
-  await expect(page.locator('#detail-title')).toHaveText('Offline Duell');
-  await page.getByRole('button', { name: 'Eigenes Spiel starten' }).click();
+  await expect(page.locator('#mode-title')).toHaveText('Offline Duell');
+  await page.locator('#start-btn').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
   await page.locator('#quick-rounds').selectOption('3');
   await page.locator('#quick-start').click();
