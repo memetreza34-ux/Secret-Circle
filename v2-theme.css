@@ -1432,3 +1432,36 @@ button.row:hover { background: #ffffff08; }
     animation-iteration-count: 1 !important;
   }
 }
+
+/* ── Anbindung an die App ────────────────────────────────────────────── */
+
+/* Ersetzen frühere Inline-Styles: Die Content-Security-Policy der App
+   erlaubt Stile nur aus Stylesheets. */
+.svg-block { display: block; }
+.howto-fit { margin-bottom: 8px; }
+.howto-sub { margin: 0 0 22px; max-width: none; }
+.sec-ico { width: 20px; height: 20px; color: #838A9C; }
+
+/* Fehlermeldungen aus runtime-guard.js, etwa bei gesperrtem Speicher. */
+.app-status {
+  position: absolute;
+  z-index: 20;
+  top: calc(env(safe-area-inset-top) + 8px);
+  left: 12px;
+  right: 12px;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #43101d;
+  border: 1px solid var(--signal);
+  color: var(--fg);
+  font-size: .86rem;
+  font-weight: 600;
+}
+.app-status:empty { display: none; }
+
+/* Fortsetzen und Einstellungen führen auf andere Seiten und sind deshalb Links. */
+a.resume-main { display: block; }
+a.resume-go { display: inline-flex; align-items: center; }
+a.row:hover { background: #ffffff08; color: var(--fg); }
+.text-block + .pill { margin-top: 8px; }

@@ -24,6 +24,10 @@ Browserkette auf Hub und Quick-Play:
 
 Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare Enginefamilien**: Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. Themen bleiben Content-Layer; neue sichtbare Varianten sollen bevorzugt auf vorhandenen Engines entstehen.
 
+## 4a. Oberfläche im Claude-Design (v2)
+
+`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. Die Spielseiten selbst tragen noch das bisherige Design; ihre Umstellung ist der nächste Schritt.
+
 ## 5. Hub- und Timergrenzen
 
 `party-hub.js`, `party-hub-round-state.js`, `party-hub-timers.js`, `party-session-controls.js`, `party-hub-resume-guard.js`, `party-hub-polish.js` und `party-hub-a11y.js` besitzen getrennte Verantwortlichkeiten. Runtime-Reihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub-round-state.js → party-hub.js`.
@@ -113,7 +117,7 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v65` / `secret-circle-v65-staging`**.
+Aktueller Offline-Core: **`secret-circle-v66` / `secret-circle-v66-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 

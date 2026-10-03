@@ -9,7 +9,7 @@ Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcon
 
 ## 2. Runtime-Abhängigkeiten
 
-`package.json` enthält **keine npm-Runtime-Dependencies**. Die Production-PWA lädt keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets.
+`package.json` enthält **keine npm-Runtime-Dependencies**. Die Production-PWA lädt keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets. Die Schriften der v2-Oberfläche liegen lokal im Projekt (siehe Abschnitt 7a).
 
 ## 3. Reproduzierbarer npm-Snapshot
 
@@ -77,6 +77,19 @@ Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle 
 3. `icon-512.png`
 
 Eine während des Ersatzes kurz vorhandene zusätzliche SVG-Quellkopie wurde wieder entfernt, damit der bestehende Releasevertrag nicht still erweitert wird.
+
+## 7a. Gebündelte Schriften
+
+Die v2-Oberfläche (`v2-hub.html`, `v2-theme.css`) liefert zwölf WOFF2-Teilmengen aus `fonts/` lokal aus:
+
+| Schrift | Schnitte | Urheber | Lizenz |
+|---|---|---|---|
+| Figtree | 400, 500, 600, 700, 800 (latin, latin-ext) | Erik Kennedy | SIL Open Font License 1.1 |
+| Archivo Black | 400 (latin, latin-ext) | Omnibus-Type | SIL Open Font License 1.1 |
+
+Die OFL erlaubt Bündelung und Weitergabe mit der App, solange die Schriften nicht einzeln verkauft werden und der Lizenzhinweis mitgeliefert wird. Vor einem öffentlichen Release gehört der vollständige OFL-Text zu den ausgelieferten Dateien.
+
+**Bekannter Mangel (3. Oktober 2026):** `archivo-black-latin-400`, `figtree-latin-500`, `figtree-latin-700` und `figtree-latin-ext-700` lassen sich nicht dekodieren; der Browser weicht für diese Schnitte auf eine Ersatzschrift aus. Die Dateien stammen so aus dem Claude-Design-Export vom 3. September und müssen aus der Originalquelle neu bezogen werden.
 
 ## 7. Emoji und Systemglyphen
 

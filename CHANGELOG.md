@@ -8,13 +8,13 @@ Stand: 29. August 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v65**
+- Source-Generation: **v66**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
 - Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v65` / `secret-circle-v65-staging`**
+- Offline-Core: **`secret-circle-v66` / `secret-circle-v66-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 - PR-Stack: **muss vor Release mit zwei späteren `main`-Commits reconciled werden**
@@ -110,6 +110,19 @@ Gemeinsame Architektur:
 - aktueller zusammengesetzter Katalog: **55 Built-ins / 15 Core / 13 Extended / 27 Labs**
 - Wave-1-Unit-/E2E-/Audit-Verträge sind vorbereitet
 - reale Browser-/PWA-/Accessibility-/Gruppenevidence bleibt offen
+
+### v66 – Oberfläche im Claude-Design
+
+Das Design aus Claude Design (`v2-hub.html`, `v2-hub.js`, `v2-theme.css`, Schriften in `fonts/`) ist zurück und jetzt die Startseite der App. Es war am 24. September als ungenutzter Prototyp entfernt worden.
+
+- „Spiel starten“ übergibt an die geprüften Engines statt an die vereinfachte eigene Spielmechanik des Prototyps (die entfällt). Hub-Spiele starten über `party.html?play=…&from=v2` und kehren danach zu v2 zurück.
+- Spielerliste, Verlauf und gespeicherte Spielstände sind dieselben wie im Rest der App; der Prototyp hatte einen eigenen Speicher.
+- Die sechs Farbwelten bündeln die neun aktuellen Katalog-Gruppen. Mit der alten Zuordnung wären fast alle Spiele unter „Täuschung“ gelandet.
+- „Top 10 aktuell“ und „Meistgespielt“ ohne Datengrundlage ersetzt: „Meistgespielt“ nur mit echtem Verlauf, sonst „Empfehlung“.
+- Die Startseite bietet echte gespeicherte Spielstände zum Fortsetzen an.
+- Content-Security-Policy, Manifest, `runtime-guard.js` und vollständige Katalogkette ergänzt; Inline-Styles durch Klassen ersetzt.
+- Zurück-Links der Spielseiten, Creator und Datenschutzseite führen zu v2.
+- Bekannter Mangel: Vier Schriftdateien aus dem Design-Export sind defekt (siehe `THIRD_PARTY_NOTICES.md`).
 
 ### v65 – Offline-Core-Sperre und Hub-Korrekturen
 

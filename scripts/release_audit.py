@@ -164,7 +164,7 @@ checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
     'node_baseline': package.get('engines', {}).get('node') == '>=20',
     'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
-    'manifest_party_hub': manifest.get('name') == 'Secret Circle – Party Hub' and manifest.get('start_url') == './party.html',
+    'manifest_party_hub': manifest.get('name') == 'Secret Circle – Party Hub' and manifest.get('start_url') == './v2-hub.html',
     'standalone_pwa': manifest.get('display') == 'standalone' and manifest.get('scope') == './',
     'manifest_icon_contract_v42': (
         manifest_icons_by_src.get('icon-192.png', {}).get('sizes') == '192x192'
