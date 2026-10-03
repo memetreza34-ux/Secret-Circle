@@ -31,7 +31,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const cache = await caches.open(production[0]);
     const expected = [
       './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
-      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css', './party-guide.css', './creator.css',
+      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css', './v2-theme.css', './v2-play.css', './party-guide.css', './creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
       './app.js', './game-engine.js', './role-assignment.js', './word-packs.js', './data-store.js',
       './party-catalog.js', './party-expansion.js', './party-trending-catalog.js', './party-mega-catalog.js',
@@ -99,8 +99,8 @@ test('Creator can save launch and resume a custom game completely offline', asyn
   await page.locator('#creator-safe-confirm').check();
   await page.getByRole('button', { name: 'Spiel speichern' }).click();
   await page.locator('#created-games-list').getByRole('link', { name: 'Testen', exact: true }).click();
-  await expect(page.locator('#detail-title')).toHaveText('Offline Duell');
-  await page.getByRole('button', { name: 'Eigenes Spiel starten' }).click();
+  await expect(page.locator('#mode-title')).toHaveText('Offline Duell');
+  await page.locator('#start-btn').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
   await page.locator('#quick-rounds').selectOption('3');
   await page.locator('#quick-start').click();

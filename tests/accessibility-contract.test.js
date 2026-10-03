@@ -40,6 +40,8 @@ const quick = pages['quick-play.html'];
 assert.match(quick, /id="quick-pause"[^>]*aria-pressed="false"/);
 assert.match(quick, /id="quick-pause-overlay"[^>]*role="status"[^>]*aria-live="polite"/);
 assert.match(quick, /secondary-surface-a11y\.js/);
+assert.match(quick, /href="v2-theme\.css"/);
+assert.match(quick, /href="v2-play\.css"/);
 
 const creator = pages['creator.html'];
 assert.match(creator, /role="radiogroup"/);
@@ -51,6 +53,8 @@ assert.match(creator, /secondary-surface-a11y\.js/);
 const partyCss = read('party.css');
 const extraCss = read('party-extra.css');
 const creatorCss = read('creator.css');
+const v2ThemeCss = read('v2-theme.css');
+const v2PlayCss = read('v2-play.css');
 const searchSource = read('party-search-assist.js');
 const polishSource = read('party-hub-polish.js');
 const hubA11y = read('party-hub-a11y.js');
@@ -63,6 +67,10 @@ assert.match(partyCss, /\.hub-nav button\{min-height:44px/);
 assert.match(partyCss, /@media \(prefers-reduced-motion:reduce\)/);
 assert.match(extraCss, /@media\(prefers-reduced-motion:reduce\)/);
 assert.match(creatorCss, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(v2ThemeCss, /:focus-visible\s*\{\s*outline:\s*3px solid var\(--fg\)/);
+assert.match(v2PlayCss, /\.quick-shell \.pill\s*\{\s*min-height:\s*48px/);
+assert.match(v2PlayCss, /\.quick-shell \.session-control-bar \.pill\s*\{[^}]*min-height:\s*var\(--touch\)/);
+assert.match(v2PlayCss, /@media \(prefers-reduced-motion: reduce\)/);
 
 for (const marker of ['aria-autocomplete', 'listbox', 'ArrowDown', 'ArrowUp', 'Enter', 'Escape']) {
   assert.match(searchSource, new RegExp(marker), `Search accessibility marker missing: ${marker}`);

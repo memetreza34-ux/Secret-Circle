@@ -41,7 +41,7 @@ assert.match(hub, /timerGames\.renderStoredTimerSession\(\)/);
 assert.match(hub, /window\.addEventListener\('pagehide'/);
 assert.match(hub, /document\.addEventListener\('visibilitychange'/);
 assert.ok(partyPage.indexOf('party-hub-round-state.js') < partyPage.indexOf('party-hub.js'));
-assert.match(polish, /version: 17/);
+assert.match(polish, /version: 18/);
 assert.match(polish, /game\.id === 'paranoia'/);
 assert.match(polish, /!playOptions\?\.querySelector\('button'\)/);
 

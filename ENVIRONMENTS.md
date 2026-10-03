@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **BLOCKED – Provider und konkrete HTTPS-Staging-/Production-Origins offen**  
-Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**
+Offline-Core: **`secret-circle-v67` / `secret-circle-v67-staging`**
 
 ## 1. Ziel
 
@@ -14,7 +14,7 @@ Secret Circle besitzt kein klassisches Backend, benötigt aber getrennte Umgebun
 
 Local ist kein Releasebeweis. CI benötigt sichtbare Runner-Steps, Checkout, Online-`npm ci`, `npm run ci` und Cross-Browser auf demselben RC. `steps: []` bleibt kein Code-Test.
 
-Aktuell ist CI durch fehlende Hosted-Runner-Zuteilung vor Step 1 **BLOCKED**.
+Der Hosted Runner läuft seit dem 5. September 2026 real; CI ist auf `main` grün (Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`)). Offen sind der Cross-Browser-Workflow und derselbe Nachweis auf dem RC.
 
 Lokaler Quellvertrag für die PWA-Head-Metadaten: `tests/pwa-head-metadata.test.js`.  
 Netzwerk-Smoke-Implementierung: `scripts/staging_smoke.py`.
@@ -31,8 +31,8 @@ Der gewählte Host muss Response-Security- und Cache-Header kontrollierbar ausli
 
 ## 4. Aktueller Cachevertrag
 
-- aktiv: `secret-circle-v64`
-- staging: `secret-circle-v64-staging`
+- aktiv: `secret-circle-v67`
+- staging: `secret-circle-v67-staging`
 
 Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
@@ -41,13 +41,13 @@ Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backu
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v64
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v67
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v64 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v67 --production
 ```
 
 Der echte Netzwerk-Smoke verlangt auf öffentlichen HTML-Antworten mindestens:
