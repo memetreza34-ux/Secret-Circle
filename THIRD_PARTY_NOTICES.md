@@ -80,16 +80,16 @@ Eine während des Ersatzes kurz vorhandene zusätzliche SVG-Quellkopie wurde wie
 
 ## 7a. Gebündelte Schriften
 
-Die v2-Oberfläche (`v2-hub.html`, `v2-theme.css`) liefert zwölf WOFF2-Teilmengen aus `fonts/` lokal aus:
+Die v2-Oberfläche (`v2-hub.html`, `v2-theme.css`) liefert vier WOFF2-Dateien lokal aus `fonts/` aus. Sie stammen unverändert von Google Fonts (`fonts.gstatic.com`, Figtree v9, Archivo Black v23), bezogen am 3. Oktober 2026:
 
-| Schrift | Schnitte | Urheber | Lizenz |
-|---|---|---|---|
-| Figtree | 400, 500, 600, 700, 800 (latin, latin-ext) | Erik Kennedy | SIL Open Font License 1.1 |
-| Archivo Black | 400 (latin, latin-ext) | Omnibus-Type | SIL Open Font License 1.1 |
+| Datei | Schrift | Schnitte | Urheber | Lizenz |
+|---|---|---|---|---|
+| `figtree-latin.woff2`, `figtree-latin-ext.woff2` | Figtree (variabel) | 400–800 | Erik Kennedy | SIL Open Font License 1.1 |
+| `archivo-black-latin-400.woff2`, `archivo-black-latin-ext-400.woff2` | Archivo Black | 400 | Omnibus-Type | SIL Open Font License 1.1 |
 
 Die OFL erlaubt Bündelung und Weitergabe mit der App, solange die Schriften nicht einzeln verkauft werden und der Lizenzhinweis mitgeliefert wird. Vor einem öffentlichen Release gehört der vollständige OFL-Text zu den ausgelieferten Dateien.
 
-**Bekannter Mangel (3. Oktober 2026):** `archivo-black-latin-400`, `figtree-latin-500`, `figtree-latin-700` und `figtree-latin-ext-700` lassen sich nicht dekodieren; der Browser weicht für diese Schnitte auf eine Ersatzschrift aus. Die Dateien stammen so aus dem Claude-Design-Export vom 3. September und müssen aus der Originalquelle neu bezogen werden.
+Die zwölf Dateien aus dem Claude-Design-Export vom 3. September waren teilweise defekt (vier ließen sich nicht dekodieren) und sind ersetzt.
 
 ## 7. Emoji und Systemglyphen
 

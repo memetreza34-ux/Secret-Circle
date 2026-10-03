@@ -122,7 +122,7 @@ Das Design aus Claude Design (`v2-hub.html`, `v2-hub.js`, `v2-theme.css`, Schrif
 - Die Startseite bietet echte gespeicherte Spielstände zum Fortsetzen an.
 - Content-Security-Policy, Manifest, `runtime-guard.js` und vollständige Katalogkette ergänzt; Inline-Styles durch Klassen ersetzt.
 - Zurück-Links der Spielseiten, Creator und Datenschutzseite führen zu v2.
-- Bekannter Mangel: Vier Schriftdateien aus dem Design-Export sind defekt (siehe `THIRD_PARTY_NOTICES.md`).
+- Schriften: Die zwölf Dateien aus dem Design-Export waren teilweise defekt (unter anderem Archivo Black); der Browser zeigte dort eine Ersatzschrift. Ersetzt durch vier Originaldateien von Google Fonts, Figtree als variable Schrift (52 statt 136 KB).
 
 ### v65 – Offline-Core-Sperre und Hub-Korrekturen
 
