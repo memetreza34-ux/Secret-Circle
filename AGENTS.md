@@ -9,13 +9,16 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 - **Daten:** Spielerliste und Verlauf liegen in `secret-circle-party-hub-v1`. v2 führt keinen eigenen Speicher. Alle Speicher-Keys und Backups regelt `backup-schema-registry.js`.
 - Details: `ARCHITECTURE.md` Abschnitt 4a.
 
-## Nächste Schritte
+## Nächste Schritte: Umstellung auf das v2-Design
 
-1. Die Spielansichten der Engines in das v2-Design bringen. Farben, Abstände, Schriften und Bausteine (Karten, Timer, Pillen, Reihen) stehen als Tokens und Klassen in `v2-theme.css`; dort sind auch die Stile der früheren v2-Spielbildschirme (`.flipcard`, `.play-*`, `.vote-*`, `.result-*`) erhalten.
-2. Partyabend-Planer, Backup und eigene Kategorien von `party.html` in v2 übernehmen (das Profil verlinkt sie bisher auf die alte Seite).
-3. Bilder einbinden (siehe unten).
+**Zuständig ist Codex, allein.** Der vollständige Plan mit Reihenfolge, Dateiliste, betroffenen Tests und Abnahmekriterien steht in `docs/V2_DESIGN_UMSTELLUNG.md`. Kurz:
 
-Bestehende Spiellogik, Schutzfunktionen (Fortsetzen, Verdecken geheimer Inhalte, exact-once-Verlauf) und Element-IDs nicht umbauen, nur weil sich das Aussehen ändert – viele Tests hängen daran.
+1. Die Spielansichten der Engines in das v2-Design bringen (`quick-play.html`, Spielansicht von `party.html`, `advanced.html`, `index.html`, `privacy.html`, `creator.html`). Farben, Abstände, Schriften und Bausteine (Karten, Timer, Pillen, Reihen) stehen als Tokens und Klassen in `v2-theme.css`; dort sind auch die Stile der früheren v2-Spielbildschirme (`.flipcard`, `.play-*`, `.vote-*`, `.result-*`) erhalten. Neue Spiel-Stile in `v2-play.css`.
+2. Partyabend-Planer, Daten und Sicherung, eigene Kategorien, Favoriten sowie Statistik und Erfolge von `party.html` in v2 übernehmen (das Profil verlinkt sie bisher auf die alte Seite).
+3. Altes Design löschen.
+4. Danach Bilder einbinden (siehe unten).
+
+Je Schritt ein eigener Branch und Pull Request gegen `main`. Bestehende Spiellogik, Schutzfunktionen (Fortsetzen, Verdecken geheimer Inhalte, exact-once-Verlauf) und Element-IDs nicht umbauen, nur weil sich das Aussehen ändert – viele Tests hängen daran. Einige Tests lesen alte Stildateien direkt (`party.css`, `party-extra.css`, `creator.css`, `party-release.css`, `party-search.css`, `pwa-update.css`); beim Umzug der Stile diese Prüfungen mit derselben Zusage auf die neue Datei umstellen, nie abschwächen. Keine Funktion streichen.
 
 ## Bilder und andere Medien
 
@@ -30,7 +33,7 @@ Bestehende Spiellogik, Schutzfunktionen (Fortsetzen, Verdecken geheimer Inhalte,
 - **Offline-Cache:** Jede Datei in der `CORE`-Liste von `sw.js` ist durch eine Prüfsumme gesperrt. Nach Änderungen an solchen Dateien (und nach dem Hinzufügen neuer Dateien zu `CORE`) `python3 scripts/offline_core_lock.py --bump` ausführen und einen Eintrag in `CHANGELOG.md` ergänzen. Sonst schlägt `npm run validate` fehl – und installierte Apps bekämen die Änderung nie.
 - **Neue Dateien, die offline gebraucht werden** (Bilder, Skripte, Stile), gehören in die `CORE`-Liste von `sw.js`.
 - **Sicherheit:** keine Inline-Skripte, keine `style`-Attribute in HTML (die CSP blockiert sie; Stile per Klasse oder per `element.style` aus JavaScript). Nutzer- oder Speicherdaten nie per `innerHTML` einsetzen, sondern per `textContent`.
-- **Größe:** Produktionsdateien bleiben unter 1000 Zeilen.
+- **Größe:** JavaScript-Dateien der App bleiben unter 1000 Zeilen und 100 KB (`scripts/architecture_audit.py`). Jede Stildatei hat ein Größenbudget in `scripts/performance_budget.py`; neue Stildateien brauchen dort einen Eintrag.
 
 ## Prüfen
 
@@ -40,6 +43,8 @@ npm test             # Unit- und Vertragstests
 npm run validate     # 36 Audits inkl. Offline-Sperre
 npm run test:e2e     # Playwright: Chromium und WebKit, Desktop und Handy
 ```
+
+Lokal ansehen: `python3 -m http.server 4174 --bind 127.0.0.1`, dann `http://127.0.0.1:4174/v2-hub.html`.
 
 `npm run ci` führt alles nacheinander aus. Einzelne Browser-Tests können unter Last zeitlich wackeln (die CI wiederholt einmal); ein Fehler, der sich wiederholt, ist echt.
 
