@@ -120,8 +120,8 @@ Selbst erstellte Spiele sind keine eigenen Kernspiele. Sie werden im Hub als Erw
 ## Aktueller technischer Release-Stand
 
 - Source-Generation: **v64**
-- Offline-Cache: **`secret-circle-v69`**
-- Staging-Cache: **`secret-circle-v69-staging`**
+- Offline-Cache: **`secret-circle-v70`**
+- Staging-Cache: **`secret-circle-v70-staging`**
 - Built-ins: **55**
 - Core: **15**
 - Extended: **13**

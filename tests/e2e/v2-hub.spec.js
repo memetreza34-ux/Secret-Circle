@@ -56,6 +56,12 @@ test('game artwork loads locally and leaves the mobile banner title visible', as
   await expect.poll(() => modeImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
 
   await openV2(page, '#spiel=never-have');
+  const memoryImage = page.locator('#mode-emblem img');
+  await expect(memoryImage).toHaveAttribute('src', 'assets/images/ich-habe-noch-nie.webp');
+  await expect(memoryImage).toHaveAttribute('alt', /Elefant erinnert sich/);
+  await expect.poll(() => memoryImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+
+  await openV2(page, '#spiel=most-likely');
   await expect(page.locator('#mode-emblem svg')).toBeVisible();
 });
 

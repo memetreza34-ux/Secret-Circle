@@ -16,10 +16,13 @@ EXPECTED_CURRENT_MEDIA = {
     'icon.svg', 'icon-192.png', 'icon-512.png',
     'assets/images/word-imposter-chamaeleon.webp',
     'assets/images/wahrheit-oder-pflicht.webp',
+    'assets/images/ich-habe-noch-nie.webp',
     'docs/screenshots/word-imposter-handy-375x812.webp',
     'docs/screenshots/word-imposter-desktop-1280x800.webp',
     'docs/screenshots/wahrheit-oder-pflicht-handy-375x812.webp',
     'docs/screenshots/wahrheit-oder-pflicht-desktop-1280x800.webp',
+    'docs/screenshots/ich-habe-noch-nie-handy-375x812.webp',
+    'docs/screenshots/ich-habe-noch-nie-desktop-1280x800.webp',
 }
 
 if not PROVENANCE.is_file():

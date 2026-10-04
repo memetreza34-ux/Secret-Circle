@@ -11,6 +11,7 @@ budgets = {
     'v2-hub.html': 20_000, 'v2-hub.js': 50_000, 'v2-theme.css': 50_000,
     'assets/images/word-imposter-chamaeleon.webp': 90_000,
     'assets/images/wahrheit-oder-pflicht.webp': 90_000,
+    'assets/images/ich-habe-noch-nie.webp': 90_000,
     'runtime-guard.js': 22_000, 'setup-ux.js': 14_000, 'privacy-guard.js': 10_000,
     'wake-lock.js': 10_000, 'role-assignment.js': 14_000, 'app.js': 80_000,
     'game-engine.js': 60_000, 'data-store.js': 55_000, 'backup-schema-registry.js': 12_000,

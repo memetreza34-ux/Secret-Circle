@@ -34,6 +34,21 @@
       "notes": "Eule beantwortet eine Frage, Waschbär führt eine Aufgabe aus. Visueller Ähnlichkeitsreview vor finalem Release weiterhin erforderlich."
     },
     {
+      "status": "verified-own",
+      "createdAt": "2026-10-04",
+      "commercialUse": true,
+      "attribution": null,
+      "path": "assets/images/ich-habe-noch-nie.webp",
+      "kind": "game-key-art",
+      "creator": "OpenAI integriertes image_gen im Auftrag des Secret-Circle-Projekts",
+      "source": "Originalbild vom 2026-10-04; projektseitige v2-Bildwelt als allgemeine Stilreferenz; mit cwebp 1.6.0 als WebP exportiert",
+      "sha256": "bfad5649a3574caf55e452e582568eae26183a7c210c991d7fcfe54463c17c44",
+      "license": "Projektseitige Nutzungsrechte am generierten Output gemäß geltenden OpenAI-Nutzungsbedingungen; keine fremde Figur, Marke oder Grafik im Bild",
+      "derivedFrom": null,
+      "dimensions": "960x720",
+      "notes": "Vom Nutzer als Motiv für Ich habe noch nie ausgewählt. Visueller Ähnlichkeitsreview vor finalem Release weiterhin erforderlich."
+    },
+    {
       "path": "docs/screenshots/word-imposter-handy-375x812.webp",
       "kind": "pr-screenshot",
       "status": "verified-own",
@@ -90,6 +105,36 @@
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "assets/images/wahrheit-oder-pflicht.webp",
+      "dimensions": "1280x800",
+      "notes": "PR-Nachweis; nicht im Offline-Core."
+    },
+    {
+      "status": "verified-own",
+      "createdAt": "2026-10-04",
+      "commercialUse": true,
+      "attribution": null,
+      "path": "docs/screenshots/ich-habe-noch-nie-handy-375x812.webp",
+      "kind": "pr-screenshot",
+      "creator": "Playwright Chromium 1.54.2, lokaler Secret-Circle-v2-Hub; WebP-Export mit cwebp 1.6.0",
+      "source": "Lokaler Screenshot vom 2026-10-04, v2-hub.html#spiel=never-have bei 375x812; nur Dokumentation, kein Laufzeit-Asset",
+      "sha256": "2d7b8c3e6d405a89a5546ca32bfed65e0500caa65336aedab0eba5ad2f42226f",
+      "license": "Projektseitiger Screenshot der eigenen App und des inventarisierten Original-Spielbilds",
+      "derivedFrom": "assets/images/ich-habe-noch-nie.webp",
+      "dimensions": "375x812",
+      "notes": "PR-Nachweis; nicht im Offline-Core."
+    },
+    {
+      "status": "verified-own",
+      "createdAt": "2026-10-04",
+      "commercialUse": true,
+      "attribution": null,
+      "path": "docs/screenshots/ich-habe-noch-nie-desktop-1280x800.webp",
+      "kind": "pr-screenshot",
+      "creator": "Playwright Chromium 1.54.2, lokaler Secret-Circle-v2-Hub; WebP-Export mit cwebp 1.6.0",
+      "source": "Lokaler Screenshot vom 2026-10-04, v2-hub.html#spiel=never-have bei 1280x800; nur Dokumentation, kein Laufzeit-Asset",
+      "sha256": "409efd4f6c52c068e1ff6f04d596fa224b10b367912f2dc04126d7a3a4d57eb3",
+      "license": "Projektseitiger Screenshot der eigenen App und des inventarisierten Original-Spielbilds",
+      "derivedFrom": "assets/images/ich-habe-noch-nie.webp",
       "dimensions": "1280x800",
       "notes": "PR-Nachweis; nicht im Offline-Core."
     },

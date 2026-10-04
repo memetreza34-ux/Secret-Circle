@@ -167,7 +167,7 @@ Technische Absicherung:
 
 **Grenze:** Das schließt zukünftige Store-Screenshots, Social-Media-Material, Marketingvideos oder später hinzukommende Illustrationen ausdrücklich nicht ein. Diese benötigen vor Veröffentlichung einen eigenen finalen Rechte-/Visual-Pass.
 
-**Ergänzung vom 4. Oktober 2026:** Zwei originale KI-generierte WebP-Spielbilder sind jetzt zusätzlich gebündelt. Vier PR-Screenshots unter `docs/screenshots/` dokumentieren die App, gehören aber nicht zum Offline-Core. Der Medienvertrag nennt damit neun Dateien im Repository, davon fünf Laufzeitmedien. Ihre Herkunft steht in `assets/manifests/asset-provenance.json`; der abschließende visuelle Ähnlichkeitsreview für die Spielbilder ist noch offen.
+**Ergänzung vom 4. Oktober 2026:** Drei originale KI-generierte WebP-Spielbilder sind jetzt zusätzlich gebündelt. Sechs PR-Screenshots unter `docs/screenshots/` dokumentieren die App, gehören aber nicht zum Offline-Core. Der Medienvertrag nennt damit zwölf Dateien im Repository, davon sechs Laufzeitmedien. Ihre Herkunft steht in `assets/manifests/asset-provenance.json`; der abschließende visuelle Ähnlichkeitsreview für die Spielbilder ist noch offen.
 
 ## 10. Visuelle Fancontent-Regeln
 

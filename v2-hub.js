@@ -22,7 +22,8 @@
   ];
   var GAME_ART = {
     imposter: { src: 'assets/images/word-imposter-chamaeleon.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Hinweisen' },
-    'truth-dare': { src: 'assets/images/wahrheit-oder-pflicht.webp', alt: 'Eule beantwortet eine Frage, Waschbär erfüllt eine Aufgabe im Handstand' }
+    'truth-dare': { src: 'assets/images/wahrheit-oder-pflicht.webp', alt: 'Eule beantwortet eine Frage, Waschbär erfüllt eine Aufgabe im Handstand' },
+    'never-have': { src: 'assets/images/ich-habe-noch-nie.webp', alt: 'Elefant erinnert sich ertappt und hebt die Hand' }
   };
 
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */

@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "updatedAt": "2026-10-04",
-  "sourceGeneration": "v69",
+  "sourceGeneration": "v70",
   "packageVersion": "1.0.0-beta.3",
   "offlineCache": {
-    "production": "secret-circle-v69",
-    "staging": "secret-circle-v69-staging",
-    "coreHash": "a3515f2d187638c23e14ea581e81c7e8a88649e553becd0cef7c5a7788111c9b"
+    "production": "secret-circle-v70",
+    "staging": "secret-circle-v70-staging",
+    "coreHash": "6d1989245b5522467c997c4da19575203530ac07faa5669ef94a2886357795c7"
   },
   "builtIns": {
     "total": 55,

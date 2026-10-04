@@ -14,5 +14,6 @@ Eine Karte, ein Tisch, dieselbe Farbe oder dieselben Symbole werden nicht als ve
 |---|---|---|---|
 | Word Imposter | Eine Person kennt den Begriff nicht und blufft. | Chamäleon mit leerem Hinweis zwischen zwei gleichen Hinweisen | Violett, warmes Licht, Anpassung |
 | Wahrheit oder Pflicht | Eine Figur beantwortet eine Frage; die andere führt eine Aufgabe aus. | Eulen-Detektivin und Waschbär-Stuntfigur | Kühle Frage-Seite, warme Aufgaben-Seite, unterschiedliche Handlungen |
+| Ich habe noch nie | Nach einer Aussage erinnert sich die Figur an ein eigenes Erlebnis und meldet sich ertappt. | Elefant mit erhobener Hand | Dunkles Grün, warmes Orange, Erinnerung als Charaktereigenschaft |
 
 Die vorhandenen Motive sind der Anfang der Bildwelt, keine Schablonen für weitere Spiele.

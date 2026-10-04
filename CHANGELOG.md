@@ -2,6 +2,11 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v70 – Spielbild für „Ich habe noch nie“
+
+- Eigenständigen Elefantencharakter als lokales WebP in die v2-Spielansicht aufgenommen.
+- Herkunft, Medienvertrag und Offline-Core um das Bild erweitert; Handy- und Desktop-Screenshots für PR #19 ergänzt.
+
 ## Unreleased – Januar-2027 Release Foundation
 
 Stand: 29. August 2026
