@@ -65,7 +65,16 @@ Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsb
 - PNG-Dimensionen
 - PWA-Manifest-Verknüpfung
 
-`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository weiterhin exakt die drei inventarisierten Medien vorhanden sind. Eine zusätzliche Bild-/SVG-/Audio-/Videodatei muss bewusst in den Vertrag aufgenommen werden.
+`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository genau die drei Icondateien, die zwei unten genannten Spielbilder und vier dokumentierende PR-Screenshots vorhanden sind. Die Screenshots liegen unter `docs/screenshots/` und gehören nicht zum Offline-Core. Jede weitere Medienänderung muss bewusst in den Vertrag aufgenommen werden.
+
+## Spielbilder vom 4. Oktober 2026
+
+| Datei | Werkzeug und Herkunft | SHA-256 |
+|---|---|---|
+| `assets/images/word-imposter-chamaeleon.webp` | OpenAI integriertes `image_gen`; Nutzer-Screenshot nur als allgemeine Stilreferenz; WebP mit `cwebp` | `6c5cbe0f92e4676fdeeefa41bb0aced520291152f001d48f4f31e13ef4a107e9` |
+| `assets/images/wahrheit-oder-pflicht.webp` | OpenAI integriertes `image_gen`; projektseitiges Chamäleonbild als Stilreferenz; WebP mit `cwebp` | `bad0722b64128ce81b0c3c75d292f2250b027616540882b3634433baa2f60e82` |
+
+Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedingungen. Die Bilder enthalten nach dem direkten Motivvergleich keine fremden Logos oder erkennbaren geschützten Figuren. Ein finaler visueller Ähnlichkeits- und Markenreview des Release Candidate bleibt offen.
 
 ## Was damit geschlossen ist
 

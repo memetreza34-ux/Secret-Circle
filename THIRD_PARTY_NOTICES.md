@@ -70,13 +70,17 @@ Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle 
 
 ## 6. Media-Inventar
 
-`scripts/media_inventory_audit.py` erwartet weiterhin exakt drei gebündelte Release-Mediendateien:
+`scripts/media_inventory_audit.py` erwartet fünf gebündelte Laufzeitmedien:
 
 1. `icon.svg`
 2. `icon-192.png`
 3. `icon-512.png`
+4. `assets/images/word-imposter-chamaeleon.webp`
+5. `assets/images/wahrheit-oder-pflicht.webp`
 
-Eine während des Ersatzes kurz vorhandene zusätzliche SVG-Quellkopie wurde wieder entfernt, damit der bestehende Releasevertrag nicht still erweitert wird.
+Die beiden Spielbilder wurden am 4. Oktober 2026 mit dem integrierten OpenAI-Bildwerkzeug erzeugt und mit `cwebp` lokal als WebP exportiert. Das Chamäleon verwendet einen vom Nutzer bereitgestellten Splash-Screenshot nur als allgemeine Stilreferenz; keine fremde Figur, Marke oder Bilddatei ist im Ergebnis enthalten. Das zweite Bild verwendet das projektseitige Chamäleonbild als Stilreferenz. Herkunft, Hashes und Rechtebasis stehen in `assets/manifests/asset-provenance.json`. Ein finaler visueller Ähnlichkeitsreview bleibt offen.
+
+Vier weitere WebP-Dateien unter `docs/screenshots/` dokumentieren beide Spielansichten bei 375 × 812 und 1280 × 800 für den Pull Request. Sie sind keine Laufzeitmedien und stehen nicht im Offline-Core. Der Audit inventarisiert damit insgesamt neun Mediendateien.
 
 ## 7a. Gebündelte Schriften
 
@@ -122,7 +126,7 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [x] `icon.svg` auf `verified-own`
 - [x] beide PNG-Ableitungen auf `verified-own`
 - [x] neue SHA-256-/Dimensionsdaten dokumentiert
-- [x] Media-Vertrag bleibt exakt drei Release-Medien
+- [x] Media-Vertrag umfasst fünf Laufzeitmedien und vier PR-Screenshots
 - [ ] echter Online-`npm ci` auf unverändertem Commit grün
 - [ ] Integrity-/Installationsnachweis auf funktionierendem Runner
 - [ ] `scripts/asset_provenance_audit.py` tatsächlich grün

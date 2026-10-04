@@ -8,13 +8,13 @@ Stand: 29. August 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v66**
+- Source-Generation: **v69**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
 - Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v66` / `secret-circle-v66-staging`**
+- Offline-Core: **`secret-circle-v69` / `secret-circle-v69-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 - PR-Stack: **muss vor Release mit zwei späteren `main`-Commits reconciled werden**
@@ -110,6 +110,18 @@ Gemeinsame Architektur:
 - aktueller zusammengesetzter Katalog: **55 Built-ins / 15 Core / 13 Extended / 27 Labs**
 - Wave-1-Unit-/E2E-/Audit-Verträge sind vorbereitet
 - reale Browser-/PWA-/Accessibility-/Gruppenevidence bleibt offen
+
+### v69 – Bildüberlagerungen korrigiert
+
+Empfehlungsbadge und Rangzahl bleiben vor Spielbildern sichtbar.
+
+### v68 – Bildbanner auf dem Handy korrigiert
+
+Das neue Startbanner begrenzt die Bildhöhe; Titel, Beschreibung und Startknopf bleiben bei 375 × 812 sichtbar. Ein Browser-Test prüft Laden und Bild-Titel-Abstand in Chromium und WebKit.
+
+### v67 – Erste Spielbilder im v2-Hub
+
+Word Imposter zeigt das vom Nutzer ausgewählte Chamäleon; Wahrheit oder Pflicht zeigt die Eule beim Antworten und den Waschbären bei einer Aufgabe. Beide Motive sind lokale WebP-Dateien, in Spielkacheln, Startbanner und Spieldetails eingebunden und im Offline-Core enthalten. Vier WebP-Screenshots dokumentieren beide Ansichten auf Handy und Desktop für den PR. Medieninventar, Provenienz, Rechtehinweise und Größenbudgets wurden entsprechend erweitert.
 
 ### v66 – Oberfläche im Claude-Design
 

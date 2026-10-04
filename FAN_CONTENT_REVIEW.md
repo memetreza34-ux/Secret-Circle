@@ -143,7 +143,7 @@ Dieser Befund ist **nur ein ergänzendes Signal**. GitHub-Code-Suche kann wegen 
 
 Der aktuelle Working-Branch-Tree wurde zusätzlich nach tatsächlichen gebündelten Bild-, Audio- und Videodateien geprüft.
 
-Aktueller Medienbestand:
+Medienbestand des damaligen Passes:
 
 1. `icon.svg`
 2. `icon-192.png`
@@ -151,7 +151,7 @@ Aktueller Medienbestand:
 
 Im geprüften Branch wurden keine weiteren tatsächlichen JPG/JPEG/WebP/GIF/AVIF/ICO-, MP3/WAV/OGG/M4A/FLAC- oder MP4/WebM/MOV-Dateien identifiziert.
 
-Das bedeutet für den **aktuellen App-Build**:
+Das bedeutet für den **damals geprüften App-Build**:
 
 - keine gebündelten Anime-/Franchise-Charakterbilder
 - keine fremden Screenshots oder Panels
@@ -161,11 +161,13 @@ Das bedeutet für den **aktuellen App-Build**:
 Technische Absicherung:
 
 - `scripts/media_inventory_audit.py` scannt tatsächliche Mediendateien und verlangt vollständige Provenienz
-- der aktuelle Releasevertrag erlaubt genau die drei Icondateien
+- der damalige Releasevertrag erlaubte genau die drei Icondateien
 - `tests/manifest-icons.test.js` prüft Manifest, Existenz, PNG-IHDR, SVG-ViewBox und Offline-Core
 - beide Gates sind in `package.json` integriert
 
 **Grenze:** Das schließt zukünftige Store-Screenshots, Social-Media-Material, Marketingvideos oder später hinzukommende Illustrationen ausdrücklich nicht ein. Diese benötigen vor Veröffentlichung einen eigenen finalen Rechte-/Visual-Pass.
+
+**Ergänzung vom 4. Oktober 2026:** Zwei originale KI-generierte WebP-Spielbilder sind jetzt zusätzlich gebündelt. Vier PR-Screenshots unter `docs/screenshots/` dokumentieren die App, gehören aber nicht zum Offline-Core. Der Medienvertrag nennt damit neun Dateien im Repository, davon fünf Laufzeitmedien. Ihre Herkunft steht in `assets/manifests/asset-provenance.json`; der abschließende visuelle Ähnlichkeitsreview für die Spielbilder ist noch offen.
 
 ## 10. Visuelle Fancontent-Regeln
 

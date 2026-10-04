@@ -20,6 +20,10 @@
     { id: 'wissen', label: 'Wissen & Schätzen', tint: '#38BDF8', ground: '#093548', groups: ['Wissen & Quiz', 'Schätzen & Tippen'] },
     { id: 'schnell', label: 'Schnell', tint: '#F472B6', ground: '#451234', groups: ['Schnell & Challenge', 'Werkzeuge'] }
   ];
+  var GAME_ART = {
+    imposter: { src: 'assets/images/word-imposter-chamaeleon.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Hinweisen' },
+    'truth-dare': { src: 'assets/images/wahrheit-oder-pflicht.webp', alt: 'Eule beantwortet eine Frage, Waschbär erfüllt eine Aufgabe im Handstand' }
+  };
 
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */
 
@@ -32,6 +36,15 @@
     if (cls) e.className = cls;
     if (txt != null) e.textContent = txt;
     return e;
+  }
+  function gameArt(game) {
+    var art = GAME_ART[game.id];
+    if (!art) return null;
+    var img = make('img', 'game-art-image');
+    img.src = art.src;
+    img.alt = art.alt;
+    img.decoding = 'async';
+    return img;
   }
   function hash(s) {
     var h = 0;
@@ -415,9 +428,15 @@
     b.dataset.gameId = g.id;
     var art = make('span', 'gcard-art');
     if (rank) art.appendChild(make('span', 'gcard-rank', String(rank)));
-    var mk = make('span', 'mark');
-    mk.innerHTML = markSVG(g);
-    art.appendChild(mk);
+    var img = gameArt(g);
+    if (img) {
+      img.loading = 'lazy';
+      art.appendChild(img);
+    } else {
+      var mk = make('span', 'mark');
+      mk.innerHTML = markSVG(g);
+      art.appendChild(mk);
+    }
     var pad = make('span', 'gcard-pad');
     pad.appendChild(make('b', null, g.title));
     var meta = make('small');
@@ -533,7 +552,12 @@
     var hero = heroes.list[heroIdx];
 
     $('#hero-badge').textContent = heroes.real ? 'Meistgespielt' : 'Empfehlung';
-    $('#hero-art').innerHTML = markSVG(hero);
+    var heroArt = $('#hero-art');
+    var heroImage = gameArt(hero);
+    heroArt.parentNode.classList.toggle('has-image', !!heroImage);
+    heroArt.classList.toggle('has-image', !!heroImage);
+    if (heroImage) { clear(heroArt); heroArt.appendChild(heroImage); }
+    else heroArt.innerHTML = markSVG(hero);
     var h2 = $('#hero-title');
     clear(h2);
     if (hero.bucket.id === 'taeuschung') {
@@ -677,7 +701,11 @@
   function renderMode() {
     var g = game();
     if (!g) { show('games', { reset: true }); return; }
-    $('#mode-emblem').innerHTML = markSVG(g);
+    var emblem = $('#mode-emblem');
+    var modeImage = gameArt(g);
+    emblem.parentNode.classList.toggle('has-image', !!modeImage);
+    if (modeImage) { clear(emblem); emblem.appendChild(modeImage); }
+    else emblem.innerHTML = markSVG(g);
     fit($('#mode-title'), g.title, '2.2rem');
     $('#mode-sub').textContent = g.desc;
 

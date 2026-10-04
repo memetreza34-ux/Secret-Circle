@@ -3,10 +3,10 @@
   "evidenceStatus": "PREPARED",
   "operatorGate": "BLOCKED",
   "releaseContext": {
-    "sourceGeneration": "v66",
+    "sourceGeneration": "v69",
     "appVersion": "1.0.0-beta.3",
-    "expectedCache": "secret-circle-v66",
-    "expectedStagingCache": "secret-circle-v66-staging",
+    "expectedCache": "secret-circle-v69",
+    "expectedStagingCache": "secret-circle-v69-staging",
     "releaseTarget": "2027-01",
     "releaseDecision": "NO_GO"
   },
