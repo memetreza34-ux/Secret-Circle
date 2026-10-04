@@ -2,16 +2,13 @@
 
 (() => {
   const C = window.SecretCirclePartyCatalog;
-  const detail = document.querySelector('#game-detail');
-  const title = document.querySelector('#detail-title');
-  const start = document.querySelector('#start-selected-game');
   const playLayer = document.querySelector('#play-layer');
   const playTitle = document.querySelector('#play-title');
   const playContent = document.querySelector('#play-content');
   const playActions = document.querySelector('#play-actions');
   const playOptions = document.querySelector('#play-options');
   const skipRound = document.querySelector('#skip-hub-round');
-  if (!C || !detail || !title || !start) return;
+  if (!C || !playLayer) return;
 
   const PRIVATE_CARD_GAMES = new Set(['charades', 'taboo']);
 
@@ -33,35 +30,11 @@
     'wrong-answers': 'Reihum sofort absichtlich falsch antworten. Wer richtig antwortet oder nach eurer Gruppenregel zu lange braucht, verliert diese Runde; die App vergibt dafür keine Punkte.'
   });
 
-  function currentGame() {
-    return C.games.find(game => game.title === title.textContent) || null;
-  }
-
+  /* party-hub.js hinterlegt die Spiel-ID am Spielfenster. Über den Titel ließe
+     sich ein eigenes Spiel nicht von einem gleichnamigen eingebauten trennen. */
   function currentPlayGame() {
     if (!playTitle?.textContent) return null;
-    return C.games.find(game => game.title === playTitle.textContent) || null;
-  }
-
-  function desiredLabel(game) {
-    if (game.status !== 'playable') return 'Noch nicht spielbar';
-    if (game.custom) return 'Eigenes Spiel starten';
-    if (game.mode !== 'link') return 'Jetzt spielen';
-    if (C.viralGameIds?.includes(game.id)) return 'Viral Mode öffnen';
-    if (C.megaGameIds?.includes(game.id)) return 'Trend Mode öffnen';
-    if (game.href?.startsWith('quick-play.html')) return 'Quick Mode öffnen';
-    if (game.href?.startsWith('advanced.html')) return 'Erweitertes Spiel öffnen';
-    if (game.href === 'index.html') return 'Word Imposter öffnen';
-    return 'Spiel öffnen';
-  }
-
-  function updateStartLabel() {
-    const game = currentGame();
-    if (!game) return;
-    const label = desiredLabel(game);
-    start.textContent = label;
-    window.setTimeout(() => {
-      if (!detail.hidden && currentGame()?.id === game.id) start.textContent = label;
-    }, 0);
+    return C.getGame(playLayer.dataset.gameId) || null;
   }
 
   function makePlayNote(id, className, message) {
@@ -283,11 +256,10 @@
     document.body.append(script);
   }
 
-  const observer = new MutationObserver(updateStartLabel);
-  observer.observe(title, { childList: true, characterData: true, subtree: true });
-  observer.observe(detail, { attributes: true, attributeFilter: ['hidden'] });
-
-  const playObserver = playTitle && playLayer ? new MutationObserver(() => {
+  /* Die Beobachter bleiben bis zum Entladen verbunden. Kehrt die Seite aus dem
+     Back-Forward-Cache zurück, gibt es keinen neuen Aufbau; getrennte
+     Beobachter blieben dann für den Rest der Sitzung stumm. */
+  const playObserver = playTitle ? new MutationObserver(() => {
     updatePlaySafety();
     syncPrivateCover();
   }) : null;
@@ -303,20 +275,13 @@
   window.addEventListener('pagehide', concealPrivatePrompt);
   document.addEventListener('freeze', concealPrivatePrompt);
 
-  addEventListener('pagehide', () => {
-    observer.disconnect();
-    playObserver?.disconnect();
-  }, { once: true });
-
   loadHubResumeGuard();
-  updateStartLabel();
   updatePlaySafety();
   loadGuidance();
   loadHubA11y();
 
   window.SecretCirclePartyHubPolish = Object.freeze({
-    version: 17,
-    updateStartLabel,
+    version: 18,
     updatePlaySafety,
     updatePlayActionLabels,
     timerStateMatchesGame,

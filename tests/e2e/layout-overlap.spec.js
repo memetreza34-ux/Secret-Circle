@@ -52,6 +52,9 @@ test('Steuerknöpfe im Hub-Spiel bleiben auf flachen Fenstern anklickbar', async
   for (const viewport of VIEWPORTS) {
     await page.setViewportSize(viewport);
     await page.goto('/party.html');
+    /* Die Runde aus dem vorigen Durchlauf ist noch gespeichert; ohne Aufräumen
+       fragt der Hub vor dem Ersetzen nach. */
+    await page.evaluate(() => localStorage.removeItem('secret-circle-party-hub-active-v1'));
     await page.locator('[data-open-game="never-have"]:visible').first().click();
     await page.getByRole('button', { name: 'Jetzt spielen' }).click();
     await expect(page.locator('#play-layer')).toBeVisible();

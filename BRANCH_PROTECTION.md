@@ -1,7 +1,7 @@
 # Secret Circle – Branch Protection, PR-Stack und Required Checks
 
 Stand: 29. August 2026  
-Status: **BLOCKED – `main` ist real ungeschützt; Hosted Runner weiterhin vor Step 1 blockiert**  
+Status: **BLOCKED – `main` ist real ungeschützt (geprüft am 28. September 2026); der Hosted Runner läuft seit dem 5. September 2026**  
 Evidence-Status: **OPEN**
 
 Maschinenlesbare Freigabequelle: `release-evidence.json → gates.branchProtection`.  
@@ -82,23 +82,23 @@ Workflow:
 
 Der Job muss echten Checkout und alle Repository-Schritte ausführen. Ein Job mit `steps: []` gilt weder als PASS noch als negativer Code-Test. Kein Merge bei `steps: []`.
 
-Aktuelle Beispiele:
+Historische Beispiele (bis 29. August 2026):
 
 - v64 Run #3608 / Job `99103557030`: `steps: []`, `runner_id: 0`
 - v64 Run #3644 / Job `99106788535`: `steps: []`, `runner_id: 0`
 - Reconciliation PR #15 Run #3652 / Job `99107510570`: `steps: []`, `runner_id: 0`
 
-Damit ist auch der isolierte Main-Sync nicht repositoryseitig ausgeführt worden.
+Damit ist auch der isolierte Main-Sync nicht repositoryseitig ausgeführt worden. Seit dem 5. September 2026 führt der Hosted Runner alle Schritte real aus; letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`).
 
 ## 5. Warum Required Check noch nicht aktiviert wird
 
-Die gewünschte finale Regel verlangt `Secret Circle CI / validate` als Required Check. Der Hosted Runner startet aktuell aber keinen einzigen Workflow-Step.
+Die gewünschte finale Regel verlangt `Secret Circle CI / validate` als Required Check. Bis zum 5. September 2026 startete der Hosted Runner keinen einzigen Workflow-Step.
 
 Würde jetzt ein dauerhaft erforderlicher CI-Check aktiviert, wäre `main` zwar formal stärker blockiert, aber ohne funktionierenden Runner gäbe es keinen belastbaren grünen Pfad. Deshalb gilt die Reihenfolge:
 
-1. Hosted-Runner-/Actions-/Billing-/Policy-Blocker beheben.
-2. mindestens einen echten CI-Lauf mit Checkout und Repositoryschritten erhalten.
-3. `Secret Circle CI / validate` erfolgreich ausführen.
+1. Hosted-Runner-/Actions-/Billing-/Policy-Blocker beheben. – erledigt am 5. September 2026
+2. mindestens einen echten CI-Lauf mit Checkout und Repositoryschritten erhalten. – erledigt
+3. `Secret Circle CI / validate` erfolgreich ausführen. – erledigt, zuletzt Run `36292530012`
 4. danach Branch Protection + Required Check verbindlich aktivieren und erneut verifizieren.
 
 Bis dahin darf niemand direkt in `main` releaserelevante Änderungen einspielen.
@@ -132,7 +132,7 @@ python tests/archive-inventory.test.py
 python scripts/validate_archive_tool.py
 ```
 
-Diese Schritte wurden wegen des Hosted-Runner-Blockers noch nicht auf GitHub ausgeführt.
+Seit dem 5. September 2026 laufen diese Schritte im CI-Job `validate` real mit.
 
 ## 8. Zielregeln für den stabilen Branch
 
@@ -153,7 +153,7 @@ PR #13 beziehungsweise ein daraus abgeleiteter finaler RC darf erst Richtung sta
 
 1. PR #15 oder eine äquivalent geprüfte Reconciliation übernommen wurde.
 2. beide Main-only Änderungen erhalten sind.
-3. Actions einen echten Hosted Runner erhält.
+3. Actions einen echten Hosted Runner erhält (seit 5. September 2026 erfüllt).
 4. Online-`npm ci` grün ist.
 5. `npm run ci` grün ist.
 6. Cross-Browser grün ist.
@@ -189,7 +189,7 @@ Final evidence reference: open
 - [x] kontrollierter Main-Reconciliation-Kandidat in Draft PR #15 erstellt
 - [x] Kandidat ist gegen `main` `behind_by = 0`
 - [ ] PR #15 geprüft und in den aktiven Releasepfad übernommen
-- [ ] Hosted Runner führt echte Steps aus
+- [x] Hosted Runner führt echte Steps aus (seit 5. September 2026)
 - [ ] Online-`npm ci` grün
 - [ ] `Secret Circle CI / validate` grün
 - [ ] Branch Protection auf `main` real aktiviert

@@ -107,15 +107,10 @@
   });
   bodyObserver.observe(document.body, { childList: true });
 
+  /* Beobachter und Fokusfalle bleiben verbunden, auch über pagehide hinaus:
+     Aus dem Back-Forward-Cache kehrt die Seite ohne neuen Aufbau zurück. */
   document.addEventListener('keydown', trapOverlayFocus, true);
   syncBackgroundInert();
-
-  window.addEventListener('pagehide', () => {
-    viewObserver.disconnect();
-    overlayObserver.disconnect();
-    bodyObserver.disconnect();
-    document.removeEventListener('keydown', trapOverlayFocus, true);
-  }, { once: true });
 
   window.SecretCirclePartyHubA11y = Object.freeze({
     version: 2,
