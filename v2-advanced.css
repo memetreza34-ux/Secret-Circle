@@ -1,0 +1,339 @@
+/* Advanced-Spiele (Mafia, Zwei Wahrheiten, Ortsspion, Fragen-Imposter) im v2-Design.
+   Baut auf v2-theme.css auf. Klassen und IDs sind die des Advanced-Runners. */
+
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: calc(var(--safe-top) + 12px);
+  left: 12px;
+  transform: translateY(-180%);
+  padding: 12px 16px;
+  border-radius: var(--r-card);
+  background: var(--fg);
+  color: #000;
+  font-weight: 800;
+}
+.skip-link:focus { transform: translateY(0); }
+
+.advanced-shell {
+  width: min(960px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: calc(var(--safe-top) + 14px) 0 calc(var(--safe-bot) + 40px);
+}
+.advanced-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  color: var(--fg-dim);
+  font-size: .9rem;
+  font-weight: 700;
+}
+.back-link:hover { color: var(--fg); }
+.hub-status { min-height: 1.4em; margin: 0 0 10px; color: var(--ok); font-weight: 700; }
+.hub-status.error { color: var(--signal); }
+.muted { color: var(--fg-dim); font-size: .88rem; }
+.eyebrow {
+  margin: 0;
+  color: var(--fg-dim);
+  font-size: .73rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* ── Einrichtung ─────────────────────────────────────────────────────── */
+
+.advanced-setup { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); gap: 16px; align-items: start; }
+.advanced-summary,
+.advanced-settings {
+  padding: clamp(20px, 4vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-big);
+  background: var(--surface);
+}
+.advanced-summary > .eyebrow { color: var(--signal); }
+.advanced-summary h1 {
+  margin: 6px 0 12px;
+  font: 400 clamp(2rem, 7vw, 3.2rem)/1.03 var(--display);
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+}
+.advanced-summary h2,
+.advanced-settings h2 { margin: 26px 0 12px; font: 400 1.1rem/1.2 var(--display); text-transform: uppercase; }
+.advanced-settings h2 { margin-top: 0; }
+.advanced-summary p { line-height: 1.55; }
+#advanced-description { margin: 0; color: var(--fg-dim); text-wrap: pretty; }
+.advanced-meta,
+.advanced-player-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.advanced-meta { margin: 18px 0; }
+.advanced-meta span,
+.advanced-player-list span {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--fg-dim);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.advanced-player-list span { color: var(--fg); background: var(--surface-2); }
+.advanced-hint {
+  margin: 0;
+  padding: 13px 15px;
+  border: 1px dashed #ffffff33;
+  border-radius: var(--r-card);
+  color: var(--fg-dim);
+  font-size: .92rem;
+}
+#advanced-player-help { margin: 12px 0 0; }
+
+.rule-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.rule-list li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 12px;
+  align-items: start;
+  color: var(--fg-dim);
+  line-height: 1.5;
+  counter-increment: step;
+}
+.rule-list li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--fg);
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.advanced-settings { display: grid; gap: 14px; }
+.advanced-shell label,
+.advanced-form label { display: grid; gap: 8px; font-size: .88rem; font-weight: 700; text-align: left; }
+.advanced-shell select,
+.advanced-form select,
+.advanced-form input,
+.advanced-form textarea {
+  width: 100%;
+  min-height: var(--touch);
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0D0E13;
+  color: var(--fg);
+  font: 600 1rem var(--body);
+}
+.advanced-shell select,
+.advanced-form select {
+  padding-right: 40px;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23EEF1F7' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  background-size: 16px;
+}
+
+/* Knöpfe: weiß ist die Hauptaktion, .secondary und .ghost-button sind leise. */
+.advanced-shell button,
+#advanced-play-layer button,
+.advanced-shell .ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--fg);
+  color: #08090C;
+  font: 800 .95rem/1.25 var(--body);
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.advanced-shell button:hover,
+#advanced-play-layer button:hover { background: #fff; }
+.advanced-shell .ghost-button,
+.advanced-shell .secondary,
+#advanced-play-layer .secondary,
+#advanced-play-layer .ghost-button { border-color: #ffffff36; background: #0D0E13; color: var(--fg); }
+.advanced-shell .ghost-button:hover,
+#advanced-play-layer .secondary:hover,
+#advanced-play-layer .ghost-button:hover { background: var(--surface-2); color: var(--fg); }
+.advanced-shell button:disabled,
+#advanced-play-layer button:disabled {
+  border-color: transparent;
+  background: var(--off-bg);
+  color: var(--off-fg);
+  box-shadow: inset 0 0 0 1px var(--off-line);
+  cursor: default;
+}
+.advanced-settings button,
+.advanced-settings .ghost-button { width: 100%; }
+
+/* ── Spielansicht ────────────────────────────────────────────────────── */
+
+/* Alle Advanced-Spiele gehören zu „Täuschung & Bluff“: roter Grundton wie im Hub. */
+html:has(#advanced-play-layer:not([hidden])),
+body:has(#advanced-play-layer:not([hidden])) { overflow: hidden; background: #43101D; }
+
+#advanced-play-layer {
+  --ground: #43101D;
+  --tint: #FF4560;
+  --fg-dim: #AAB2C2;
+  --line: #353B49;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: calc(var(--safe-top) + 16px) max(16px, env(safe-area-inset-right)) calc(var(--safe-bot) + 24px) max(16px, env(safe-area-inset-left));
+  background: var(--ground);
+}
+/* Lange Formulare dürfen die Karte nicht zusammendrücken: Die Ebene scrollt. */
+#advanced-play-layer > *,
+#advanced-play-layer .play-card > * { flex-shrink: 0; }
+#advanced-play-layer .play-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: min(660px, 100%);
+  margin: 0 auto;
+}
+#advanced-play-layer #advanced-exit { min-height: var(--touch); padding: 9px 18px; font-size: .84rem; }
+#advanced-play-layer .play-topbar > div { display: grid; justify-items: end; gap: 2px; text-align: right; }
+#play-progress,
+#play-score {
+  color: var(--fg-dim);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+#advanced-play-layer .play-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(660px, 100%);
+  min-height: min(560px, calc(100dvh - 120px));
+  margin: 0 auto;
+  padding: clamp(22px, 5vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-big);
+  background: var(--surface);
+  text-align: center;
+}
+#play-eyebrow { color: var(--tint); }
+#play-title {
+  margin: 10px 0 0;
+  font: 400 clamp(1.8rem, 6vw, 3.1rem)/1.05 var(--display);
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+}
+#play-title:focus { outline: none; }
+.active-player { margin: 12px 0 0; color: var(--fg-dim); font-weight: 800; }
+.active-player:empty { display: none; }
+
+#advanced-play-layer .play-content {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  min-height: 140px;
+  margin: 22px 0 18px;
+  padding: clamp(20px, 5vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-big);
+  background: var(--surface-2);
+  font: 400 clamp(1.2rem, 4vw, 1.9rem)/1.25 var(--display);
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+#advanced-play-layer .play-content:empty { display: none; }
+.play-options,
+.play-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
+.play-options:empty,
+.play-actions:empty { display: none; }
+.play-options + .play-actions:not(:empty) { margin-top: 12px; }
+.play-options > button,
+.play-actions > button { flex: 1 1 180px; min-height: 52px; }
+
+/* Inhalte der einzelnen Spiele */
+.advanced-form,
+.advanced-result,
+.role-overview,
+.session-summary { width: 100%; font: 600 1rem/1.45 var(--body); text-wrap: pretty; }
+.advanced-form { display: grid; gap: 14px; text-align: left; }
+.advanced-form button { width: 100%; margin-top: 4px; }
+.advanced-form small { font-weight: 600; }
+.statement-grid,
+.player-vote-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+#advanced-play-layer .statement-grid button,
+#advanced-play-layer .player-vote-grid button {
+  min-height: var(--touch-play);
+  padding: 14px;
+  border: 1px solid #ffffff1f;
+  border-radius: var(--r-card);
+  background: #0D0E13;
+  color: var(--fg);
+  font: 700 1rem/1.35 var(--body);
+}
+#advanced-play-layer .player-vote-grid button { font: 400 1rem/1.15 var(--display); text-transform: uppercase; }
+#advanced-play-layer .statement-grid button:hover,
+#advanced-play-layer .player-vote-grid button:hover { border-color: var(--fg); background: #0D0E13; }
+.statement-grid { grid-template-columns: 1fr; }
+#advanced-play-layer .statement-grid button { justify-content: flex-start; text-align: left; }
+.advanced-result { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: var(--r-card); background: #0D0E13; text-align: left; }
+.advanced-result p { margin: 0; }
+.role-overview { display: grid; gap: 8px; text-align: left; }
+.role-overview > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0D0E13;
+}
+.role-overview span { color: var(--fg-dim); }
+.role-overview .eliminated { opacity: .5; text-decoration: line-through; }
+.session-summary { display: grid; justify-items: center; gap: 4px; }
+.session-summary strong { font: 400 clamp(3rem, 14vw, 5rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+.session-summary span { color: var(--fg-dim); font-weight: 700; }
+#advanced-play-layer .advanced-hint { width: 100%; font: 600 .92rem/1.45 var(--body); text-align: left; }
+
+/* Verdeckung geheimer Inhalte beim Gerätewechsel */
+#advanced-play-layer .private-prompt-cover { border: 1px solid var(--tint); background: #0D0E13; }
+#advanced-play-layer .private-prompt-cover p { margin: 0; font: 600 1rem/1.45 var(--body); color: var(--fg); }
+
+/* ── Anpassungen ─────────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .advanced-setup { grid-template-columns: 1fr; }
+  #advanced-play-layer { gap: 12px; padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+  #advanced-play-layer .play-card { min-height: 0; padding: 22px 18px; }
+  #advanced-play-layer .play-content { min-height: 120px; padding: 20px 14px; }
+  .player-vote-grid { grid-template-columns: 1fr; }
+  .play-options > button,
+  .play-actions > button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
+@media (prefers-contrast: more) {
+  .advanced-summary, .advanced-settings, .advanced-result, .role-overview > div,
+  #advanced-play-layer .play-card, #advanced-play-layer .play-content { border-width: 2px; }
+}
+@media (forced-colors: active) {
+  .advanced-shell select, .advanced-form select { appearance: auto; background-image: none; }
+  #advanced-play-layer .play-card, #advanced-play-layer .play-content, .advanced-summary, .advanced-settings { border: 2px solid CanvasText; }
+}

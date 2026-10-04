@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v73 – Advanced-Spiele im v2-Design
+
+- `advanced.html` (Mafia, Zwei Wahrheiten, Ortsspion, Fragen-Imposter) nutzt `v2-theme.css` und die neue `v2-advanced.css` statt `party.css` und `party-extra.css`.
+- Einrichtung wie Quick Play; die Spielansicht trägt den roten Grundton von „Täuschung & Bluff“ wie die Party-Spielansicht. Lange Formulare lassen die Spielkarte nicht mehr schrumpfen.
+- Spiellogik, IDs, Verdecken und Fortsetzen bleiben unverändert.
+
 ## v72 – Word Imposter im v2-Design
 
 - `index.html` (Word Imposter) und `privacy.html` nutzen `v2-theme.css` und die neue `v2-imposter.css` statt `styles.css` und `pwa.css`.
@@ -24,7 +30,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v72**
+- Source-Generation: **v73**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
