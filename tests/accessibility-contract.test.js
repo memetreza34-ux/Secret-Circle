@@ -55,6 +55,7 @@ const extraCss = read('party-extra.css');
 const creatorCss = read('creator.css');
 const v2ThemeCss = read('v2-theme.css');
 const v2PlayCss = read('v2-play.css');
+const v2PartyPlayCss = read('v2-party-play.css');
 const searchSource = read('party-search-assist.js');
 const polishSource = read('party-hub-polish.js');
 const hubA11y = read('party-hub-a11y.js');
@@ -76,7 +77,9 @@ for (const marker of ['aria-autocomplete', 'listbox', 'ArrowDown', 'ArrowUp', 'E
   assert.match(searchSource, new RegExp(marker), `Search accessibility marker missing: ${marker}`);
 }
 
-assert.match(partyCss, /\.hub-session-controls \.ghost-button\{min-height:44px/);
+assert.match(v2PartyPlayCss, /#play-layer \.hub-session-controls \.ghost-button\s*\{[^}]*min-height:\s*44px/);
+assert.match(v2PartyPlayCss, /#play-layer :focus-visible\s*\{\s*outline:\s*3px solid var\(--fg\)/);
+assert.match(v2PartyPlayCss, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(extraCss, /\.favorite-button[^}]*min-height:44px/);
 assert.match(extraCss, /\.close-button[^}]*min-height:44px/);
 

@@ -26,7 +26,7 @@ Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare En
 
 ## 4a. Oberfläche im Claude-Design (v2)
 
-`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. Die Spielseiten selbst tragen noch das bisherige Design; ihre Umstellung ist der nächste Schritt.
+`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. `quick-play.html` und die laufende Spielansicht in `party.html` verwenden v2-Stile; die alte Hub-Oberfläche von `party.html` und die übrigen Engine-Seiten werden in eigenen Schritten umgestellt.
 
 ## 5. Hub- und Timergrenzen
 
@@ -117,7 +117,7 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v67` / `secret-circle-v67-staging`**.
+Aktueller Offline-Core: **`secret-circle-v68` / `secret-circle-v68-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 

@@ -78,6 +78,8 @@ Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle 
 
 Eine während des Ersatzes kurz vorhandene zusätzliche SVG-Quellkopie wurde wieder entfernt, damit der bestehende Releasevertrag nicht still erweitert wird.
 
+Zwei weitere WebP-Dateien unter `docs/screenshots/` zeigen die eigene v2-Party-Spielansicht bei 375 × 812 und 1280 × 800. Sie wurden am 4. Oktober 2026 lokal mit Playwright aufgenommen und mit `cwebp` exportiert. Ihre Hashes und Herkunft stehen im Provenienzmanifest; sie sind reine PR-Dokumentation und gehören nicht zum Offline-Core. Der Medienvertrag umfasst damit fünf Dateien im Repository.
+
 ## 7a. Gebündelte Schriften
 
 Die v2-Oberfläche (`v2-hub.html`, `v2-theme.css`) liefert vier WOFF2-Dateien lokal aus `fonts/` aus. Sie stammen unverändert von Google Fonts (`fonts.gstatic.com`, Figtree v9, Archivo Black v23), bezogen am 3. Oktober 2026:
@@ -122,7 +124,7 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [x] `icon.svg` auf `verified-own`
 - [x] beide PNG-Ableitungen auf `verified-own`
 - [x] neue SHA-256-/Dimensionsdaten dokumentiert
-- [x] Media-Vertrag bleibt exakt drei Release-Medien
+- [x] Media-Vertrag umfasst drei Release-Medien und zwei PR-Screenshots
 - [ ] echter Online-`npm ci` auf unverändertem Commit grün
 - [ ] Integrity-/Installationsnachweis auf funktionierendem Runner
 - [ ] `scripts/asset_provenance_audit.py` tatsächlich grün

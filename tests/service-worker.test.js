@@ -33,7 +33,7 @@ for (const marker of [
   /party-wave-one-voting-catalog\.js/, /party-wave-one-voting-modes\.js/,
   /party-wave-one-bluff-catalog\.js/, /party-wave-one-bluff-modes\.js/,
   /party-wave-one-clue-catalog\.js/, /party-wave-one-clue-modes\.js/,
-  /icon\.svg/, /icon-192\.png/, /icon-512\.png/, /v2-theme\.css/, /v2-play\.css/
+  /icon\.svg/, /icon-192\.png/, /icon-512\.png/, /v2-theme\.css/, /v2-play\.css/, /v2-party-play\.css/
 ]) assert.match(source, marker);
 assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);

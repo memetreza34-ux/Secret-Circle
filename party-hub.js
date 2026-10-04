@@ -563,6 +563,17 @@
     resetPlayCard();
     const game = C.getGame(session.gameId);
     $('#play-layer').dataset.gameId = game.id;
+    $('#play-layer').dataset.world = ({
+      'Täuschung & Bluff': 'taeuschung',
+      'Social & Klassiker': 'reden',
+      'Abstimmen & Ranking': 'reden',
+      'Darstellen & Erklären': 'raten',
+      'Kreativ & Schreiben': 'kreativ',
+      'Wissen & Quiz': 'wissen',
+      'Schätzen & Tippen': 'wissen',
+      'Schnell & Challenge': 'schnell',
+      'Werkzeuge': 'schnell'
+    })[game.group] || 'taeuschung';
     $('#play-title').textContent = game.title;
     $('#play-eyebrow').textContent = session.pack || game.group;
     return game;

@@ -65,7 +65,7 @@ Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsb
 - PNG-Dimensionen
 - PWA-Manifest-Verknüpfung
 
-`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository weiterhin exakt die drei inventarisierten Medien vorhanden sind. Eine zusätzliche Bild-/SVG-/Audio-/Videodatei muss bewusst in den Vertrag aufgenommen werden.
+`scripts/media_inventory_audit.py` erzwingt zusätzlich die drei Laufzeit-Icons und zwei dokumentierende WebP-Screenshots unter `docs/screenshots/`. Die Screenshots zeigen ausschließlich die eigene Party-Spielansicht und sind nicht im Offline-Core. Jede weitere Medienänderung muss bewusst in den Vertrag aufgenommen werden.
 
 ## Was damit geschlossen ist
 

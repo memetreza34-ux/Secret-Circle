@@ -167,6 +167,8 @@ Technische Absicherung:
 
 **Grenze:** Das schließt zukünftige Store-Screenshots, Social-Media-Material, Marketingvideos oder später hinzukommende Illustrationen ausdrücklich nicht ein. Diese benötigen vor Veröffentlichung einen eigenen finalen Rechte-/Visual-Pass.
 
+**Ergänzung vom 4. Oktober 2026:** Zwei lokale PR-Screenshots der eigenen v2-Party-Spielansicht sind im Medienvertrag und Provenienzmanifest erfasst. Sie sind keine Laufzeitmedien und enthalten keine fremden Figuren oder Logos.
+
 ## 10. Visuelle Fancontent-Regeln
 
 Weiterhin verbindlich:

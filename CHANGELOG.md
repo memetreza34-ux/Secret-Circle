@@ -19,6 +19,12 @@ Stand: 3. Oktober 2026
 - PR #13: **Draft / ungemergt**
 - PR-Stack: **muss vor Release mit zwei späteren `main`-Commits reconciled werden**
 
+### v68 – Party-Spielansicht im v2-Design
+
+- `party.html` zeigt die laufenden Hub-Spiele mit v2-Farben, Schriften, Karten und Steuerung; die bisherige Hub-Oberfläche bleibt erhalten.
+- `v2-party-play.css` ist lokal und offline verfügbar; Medien- und Sicherheitslogik der Spiele bleibt unverändert.
+- Handy- und Desktop-Screenshots der Spielansicht als PR-Dokumentation inventarisiert.
+
 ### v67 – Quick Play im v2-Design
 
 - Setup, Spielansicht, Pause, Sitzungssteuerung und Ergebnis nutzen `v2-theme.css` und `v2-play.css`.
