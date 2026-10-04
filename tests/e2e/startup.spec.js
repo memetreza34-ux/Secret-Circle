@@ -17,7 +17,7 @@ test('all production modules load without startup or resource errors', async ({ 
 
   const response = await page.goto('/');
   expect(response?.ok()).toBe(true);
-  await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 
   const runtime = await page.evaluate(() => ({
     runtimeVersion: window.SecretCircleRuntime?.version,

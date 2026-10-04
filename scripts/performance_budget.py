@@ -37,7 +37,7 @@ budgets = {
     'party-created-modes.js': 78_000, 'quick-loader.js': 18_000,
     'styles.css': 35_000, 'pwa.css': 40_000, 'pwa-update.css': 12_000,
     'party.css': 55_000, 'party-extra.css': 25_000, 'party-night.css': 22_000,
-    'party-quick.css': 40_000, 'v2-play.css': 20_000, 'v2-party-play.css': 15_000, 'party-guide.css': 35_000, 'party-release.css': 12_000,
+    'party-quick.css': 40_000, 'v2-play.css': 20_000, 'v2-party-play.css': 15_000, 'v2-imposter.css': 20_000, 'party-guide.css': 35_000, 'party-release.css': 12_000,
     'party-search.css': 16_000, 'creator.css': 45_000, 'sw.js': 40_000,
     'manifest.webmanifest': 6_000, 'icon.svg': 25_000,
     'icon-192.png': 90_000, 'icon-512.png': 220_000

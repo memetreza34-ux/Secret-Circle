@@ -46,7 +46,11 @@ function screen(id) {
     /* Den Bereich nur fokussieren, wenn inzwischen nichts darin den Fokus
        übernommen hat: Die Abstimmung setzt den Fokus direkt auf den ersten
        Knopf, und der Rahmen darf ihn nicht wieder wegnehmen. */
-    if (target && !target.contains(document.activeElement)) target.focus?.();
+    if (target && !target.contains(document.activeElement)) {
+      /* Die Einrichtung ist länger als der Bildschirm; ohne preventScroll
+         springt die Seite beim Start unter Titel und Spielbild. */
+      target.focus?.({ preventScroll: id === 'setup-screen' });
+    }
   });
 }
 

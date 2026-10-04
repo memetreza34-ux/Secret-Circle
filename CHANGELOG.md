@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v72 – Word Imposter im v2-Design
+
+- `index.html` (Word Imposter) und `privacy.html` nutzen `v2-theme.css` und die neue `v2-imposter.css` statt `styles.css` und `pwa.css`.
+- Einrichtung zeigt das Chamäleon-Spielbild; Karte, Timer, Abstimmung und Auflösung folgen den v2-Spielbildschirmen. Lange Begriffe werden getrennt statt mitten im Wort umgebrochen.
+- Beim Start springt die Seite nicht mehr unter Titel und Bild (Fokus ohne Scrollen auf der Einrichtung). Spiellogik, IDs, Verdecken und Fortsetzen bleiben unverändert.
+
 ## v71 – Codex-Stände zusammengeführt
 
 - Quick Play (v2), Party-Spielansicht (v2) und die ersten drei Spielbilder liegen jetzt in einem gemeinsamen Stand.
@@ -18,7 +24,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v71**
+- Source-Generation: **v72**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

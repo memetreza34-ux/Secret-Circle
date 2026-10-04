@@ -31,7 +31,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const cache = await caches.open(production[0]);
     const expected = [
       './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
-      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css', './v2-theme.css', './v2-play.css', './v2-party-play.css', './party-guide.css', './creator.css',
+      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css', './v2-theme.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './party-guide.css', './creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
       './app.js', './game-engine.js', './role-assignment.js', './word-packs.js', './data-store.js',
       './party-catalog.js', './party-expansion.js', './party-trending-catalog.js', './party-mega-catalog.js',
@@ -60,7 +60,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 });
 
 test('offline Party Hub can create a Party Night plan and run a prompt game', async ({ page, context }) => {
