@@ -2,6 +2,11 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v75 – Ungenutzte alte Stildateien entfernt
+
+- `styles.css`, `pwa.css`, `creator.css` und `party-quick.css` werden von keiner Seite mehr geladen und sind gelöscht; Offline-Core, Größenbudget und Offline-Tests nennen sie nicht mehr.
+- Die Zusage „reduzierte Bewegung und Touch-Mindesthöhe“ aus `creator.css` prüft `tests/accessibility-contract.test.js` jetzt für `v2-creator.css`, `v2-imposter.css` und `v2-advanced.css`.
+
 ## v74 – Creator im v2-Design
 
 - `creator.html` nutzt `v2-theme.css` und die neue `v2-creator.css` statt `party.css`, `party-guide.css` und `creator.css`.
@@ -36,7 +41,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v74**
+- Source-Generation: **v75**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

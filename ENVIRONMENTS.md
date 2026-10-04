@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **BLOCKED – Provider und konkrete HTTPS-Staging-/Production-Origins offen**  
-Offline-Core: **`secret-circle-v74` / `secret-circle-v74-staging`**
+Offline-Core: **`secret-circle-v75` / `secret-circle-v75-staging`**
 
 ## 1. Ziel
 
@@ -31,8 +31,8 @@ Der gewählte Host muss Response-Security- und Cache-Header kontrollierbar ausli
 
 ## 4. Aktueller Cachevertrag
 
-- aktiv: `secret-circle-v74`
-- staging: `secret-circle-v74-staging`
+- aktiv: `secret-circle-v75`
+- staging: `secret-circle-v75-staging`
 
 Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backup → v52 sichere Current-Runden → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer-Restzeit → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
@@ -41,13 +41,13 @@ Historie: v49 Hub Resume Guard → v50 fail-closed Loader → v51 Complete Backu
 Staging:
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v74
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v75
 ```
 
 Production:
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v74 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v75 --production
 ```
 
 Der echte Netzwerk-Smoke verlangt auf öffentlichen HTML-Antworten mindestens:

@@ -52,7 +52,9 @@ assert.match(creator, /secondary-surface-a11y\.js/);
 
 const partyCss = read('party.css');
 const extraCss = read('party-extra.css');
-const creatorCss = read('creator.css');
+const v2CreatorCss = read('v2-creator.css');
+const v2ImposterCss = read('v2-imposter.css');
+const v2AdvancedCss = read('v2-advanced.css');
 const v2ThemeCss = read('v2-theme.css');
 const v2PlayCss = read('v2-play.css');
 const v2PartyPlayCss = read('v2-party-play.css');
@@ -67,7 +69,10 @@ assert.match(partyCss, /button\{min-height:46px/);
 assert.match(partyCss, /\.hub-nav button\{min-height:44px/);
 assert.match(partyCss, /@media \(prefers-reduced-motion:reduce\)/);
 assert.match(extraCss, /@media\(prefers-reduced-motion:reduce\)/);
-assert.match(creatorCss, /@media\(prefers-reduced-motion:reduce\)/);
+for (const [name, source] of [['v2-creator.css', v2CreatorCss], ['v2-imposter.css', v2ImposterCss], ['v2-advanced.css', v2AdvancedCss]]) {
+  assert.match(source, /@media \(prefers-reduced-motion: reduce\)/, `${name}: reduzierte Bewegung fehlt`);
+  assert.match(source, /min-height: var\(--touch\)/, `${name}: Touch-Mindesthöhe fehlt`);
+}
 assert.match(v2ThemeCss, /:focus-visible\s*\{\s*outline:\s*3px solid var\(--fg\)/);
 assert.match(v2PlayCss, /\.quick-shell \.pill\s*\{\s*min-height:\s*48px/);
 assert.match(v2PlayCss, /\.quick-shell \.session-control-bar \.pill\s*\{[^}]*min-height:\s*var\(--touch\)/);

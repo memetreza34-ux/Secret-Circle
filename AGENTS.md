@@ -5,20 +5,20 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 ## Stand der Oberfläche
 
 - **Startseite:** `v2-hub.html` mit `v2-hub.js` und `v2-theme.css` – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.
-- **Spielabläufe (Engines, noch altes Design):** `party.html` (Hub-Spiele, gestartet über `party.html?play=<id>&pack=<name>&from=v2`), `quick-play.html`, `advanced.html`, `index.html` (Word Imposter), `creator.html`.
+- **Spielabläufe (Engines, im v2-Design):** `party.html` (Hub-Spiele, gestartet über `party.html?play=<id>&pack=<name>&from=v2`; die alte Hub-Oberfläche dort trägt noch das alte Design), `quick-play.html`, `advanced.html`, `index.html` (Word Imposter), `creator.html`, `privacy.html`.
 - **Daten:** Spielerliste und Verlauf liegen in `secret-circle-party-hub-v1`. v2 führt keinen eigenen Speicher. Alle Speicher-Keys und Backups regelt `backup-schema-registry.js`.
 - Details: `ARCHITECTURE.md` Abschnitt 4a.
 
 ## Nächste Schritte: Umstellung auf das v2-Design
 
-**Zuständig ist Codex, allein.** Der vollständige Plan mit Reihenfolge, Dateiliste, betroffenen Tests und Abnahmekriterien steht in `docs/V2_DESIGN_UMSTELLUNG.md`. Kurz:
+**Zuständig ist seit 4. Oktober 2026 Claude Code, allein; Codex arbeitet nicht am Design.** Plan und aktueller Stand stehen in `docs/V2_DESIGN_UMSTELLUNG.md`. Schritte 1–5 sind erledigt. Kurz:
 
 1. Die Spielansichten der Engines in das v2-Design bringen (`quick-play.html`, Spielansicht von `party.html`, `advanced.html`, `index.html`, `privacy.html`, `creator.html`). Farben, Abstände, Schriften und Bausteine (Karten, Timer, Pillen, Reihen) stehen als Tokens und Klassen in `v2-theme.css`; dort sind auch die Stile der früheren v2-Spielbildschirme (`.flipcard`, `.play-*`, `.vote-*`, `.result-*`) erhalten. Neue Spiel-Stile in `v2-play.css`.
 2. Partyabend-Planer, Daten und Sicherung, eigene Kategorien, Favoriten sowie Statistik und Erfolge von `party.html` in v2 übernehmen (das Profil verlinkt sie bisher auf die alte Seite).
 3. Altes Design löschen.
 4. Danach Bilder einbinden (siehe unten).
 
-Je Schritt ein eigener Branch und Pull Request gegen `main`. Bestehende Spiellogik, Schutzfunktionen (Fortsetzen, Verdecken geheimer Inhalte, exact-once-Verlauf) und Element-IDs nicht umbauen, nur weil sich das Aussehen ändert – viele Tests hängen daran. Einige Tests lesen alte Stildateien direkt (`party.css`, `party-extra.css`, `creator.css`, `party-release.css`, `party-search.css`, `pwa-update.css`); beim Umzug der Stile diese Prüfungen mit derselben Zusage auf die neue Datei umstellen, nie abschwächen. Keine Funktion streichen.
+Je Schritt ein eigener Branch und Pull Request gegen `main`. Bestehende Spiellogik, Schutzfunktionen (Fortsetzen, Verdecken geheimer Inhalte, exact-once-Verlauf) und Element-IDs nicht umbauen, nur weil sich das Aussehen ändert – viele Tests hängen daran. Einige Tests lesen alte Stildateien direkt (`party.css`, `party-extra.css`, `party-release.css`, `party-search.css`, `pwa-update.css`); beim Umzug der Stile diese Prüfungen mit derselben Zusage auf die neue Datei umstellen, nie abschwächen. Keine Funktion streichen.
 
 ## Bilder und andere Medien
 
