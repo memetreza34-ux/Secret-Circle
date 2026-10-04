@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v74 – Creator im v2-Design
+
+- `creator.html` nutzt `v2-theme.css` und die neue `v2-creator.css` statt `party.css`, `party-guide.css` und `creator.css`.
+- Vorlagen, Felder, Icon- und Akzentwahl, Karteneditor, Prüfung, Vorschau, „Meine Spiele“ und Hilfeblatt folgen dem v2-Design; Akzentfarben erscheinen als Punkt statt als Fläche.
+- Bei 320 px Breite läuft nichts mehr seitlich über. Logik, IDs und Fokusführung bleiben unverändert.
+
 ## v73 – Advanced-Spiele im v2-Design
 
 - `advanced.html` (Mafia, Zwei Wahrheiten, Ortsspion, Fragen-Imposter) nutzt `v2-theme.css` und die neue `v2-advanced.css` statt `party.css` und `party-extra.css`.
@@ -30,7 +36,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v73**
+- Source-Generation: **v74**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
