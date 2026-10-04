@@ -2,19 +2,29 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v71 – Codex-Stände zusammengeführt
+
+- Quick Play (v2), Party-Spielansicht (v2) und die ersten drei Spielbilder liegen jetzt in einem gemeinsamen Stand.
+- Offline-Core enthält `v2-play.css`, `v2-party-play.css` und die drei WebP-Spielbilder; Medienvertrag nennt sechs Laufzeitmedien und acht PR-Screenshots.
+
+## v70 – Spielbild für „Ich habe noch nie“
+
+- Eigenständigen Elefantencharakter als lokales WebP in die v2-Spielansicht aufgenommen.
+- Herkunft, Medienvertrag und Offline-Core um das Bild erweitert; Handy- und Desktop-Screenshots für PR #19 ergänzt.
+
 ## Unreleased – Januar-2027 Release Foundation
 
 Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v67**
+- Source-Generation: **v71**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
 - Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v67` / `secret-circle-v67-staging`**
+- Offline-Core: **`secret-circle-v70` / `secret-circle-v70-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 - PR-Stack: **muss vor Release mit zwei späteren `main`-Commits reconciled werden**
@@ -123,6 +133,18 @@ Gemeinsame Architektur:
 - Wave-1-Unit-/E2E-/Audit-Verträge sind vorbereitet
 - reale Browser-/PWA-/Accessibility-/Gruppenevidence bleibt offen
 
+### v69 – Bildüberlagerungen korrigiert
+
+Empfehlungsbadge und Rangzahl bleiben vor Spielbildern sichtbar.
+
+### v68 – Bildbanner auf dem Handy korrigiert
+
+Das neue Startbanner begrenzt die Bildhöhe; Titel, Beschreibung und Startknopf bleiben bei 375 × 812 sichtbar. Ein Browser-Test prüft Laden und Bild-Titel-Abstand in Chromium und WebKit.
+
+### v67 – Erste Spielbilder im v2-Hub
+
+Word Imposter zeigt das vom Nutzer ausgewählte Chamäleon; Wahrheit oder Pflicht zeigt die Eule beim Antworten und den Waschbären bei einer Aufgabe. Beide Motive sind lokale WebP-Dateien, in Spielkacheln, Startbanner und Spieldetails eingebunden und im Offline-Core enthalten. Vier WebP-Screenshots dokumentieren beide Ansichten auf Handy und Desktop für den PR. Medieninventar, Provenienz, Rechtehinweise und Größenbudgets wurden entsprechend erweitert.
+
 ### v66 – Oberfläche im Claude-Design
 
 Das Design aus Claude Design (`v2-hub.html`, `v2-hub.js`, `v2-theme.css`, Schriften in `fonts/`) ist zurück und jetzt die Startseite der App. Es war am 24. September als ungenutzter Prototyp entfernt worden.
@@ -166,7 +188,7 @@ Seit dem 10. September hatten 16 Commits Offline-Core-Dateien geändert, ohne di
 
 ### PWA / Offline – v64
 
-- Offline-Core auf **`secret-circle-v64` / `secret-circle-v64-staging`** erhöht.
+- Offline-Core auf **`secret-circle-v70` / `secret-circle-v70-staging`** erhöht.
 - SessionControls v5, QT57, BF58, BG59, HS60, Quick Replacement Guard und Quick Loader v11 werden offline ausgeliefert.
 - alle sechs Wave-1-Katalog-/Runnerfamilien sind im Service-Worker-Core enthalten.
 - alle früheren Advanced-/A11y-/Resume-/Privacy-/Backup-Verträge bleiben enthalten.

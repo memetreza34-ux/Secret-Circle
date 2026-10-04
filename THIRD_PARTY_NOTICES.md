@@ -70,13 +70,18 @@ Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle 
 
 ## 6. Media-Inventar
 
-`scripts/media_inventory_audit.py` erwartet weiterhin exakt drei gebündelte Release-Mediendateien:
+`scripts/media_inventory_audit.py` erwartet sechs gebündelte Laufzeitmedien:
 
 1. `icon.svg`
 2. `icon-192.png`
 3. `icon-512.png`
+4. `assets/images/word-imposter-chamaeleon.webp`
+5. `assets/images/wahrheit-oder-pflicht.webp`
+6. `assets/images/ich-habe-noch-nie.webp`
 
-Eine während des Ersatzes kurz vorhandene zusätzliche SVG-Quellkopie wurde wieder entfernt, damit der bestehende Releasevertrag nicht still erweitert wird.
+Die drei Spielbilder wurden am 4. Oktober 2026 mit dem integrierten OpenAI-Bildwerkzeug erzeugt und mit `cwebp` lokal als WebP exportiert. Das Chamäleon verwendet einen vom Nutzer bereitgestellten Splash-Screenshot nur als allgemeine Stilreferenz; keine fremde Figur, Marke oder Bilddatei ist im Ergebnis enthalten. Das zweite Bild verwendet das projektseitige Chamäleonbild als Stilreferenz. Das dritte Bild zeigt einen eigenständigen Elefantencharakter. Herkunft, Hashes und Rechtebasis stehen in `assets/manifests/asset-provenance.json`. Ein finaler visueller Ähnlichkeitsreview bleibt offen.
+
+Sechs weitere WebP-Dateien unter `docs/screenshots/` dokumentieren die drei Spielansichten bei 375 × 812 und 1280 × 800 für den Pull Request. Sie sind keine Laufzeitmedien und stehen nicht im Offline-Core. Der Audit inventarisiert damit insgesamt zwölf Mediendateien.
 
 Zwei weitere WebP-Dateien unter `docs/screenshots/` zeigen die eigene v2-Party-Spielansicht bei 375 × 812 und 1280 × 800. Sie wurden am 4. Oktober 2026 lokal mit Playwright aufgenommen und mit `cwebp` exportiert. Ihre Hashes und Herkunft stehen im Provenienzmanifest; sie sind reine PR-Dokumentation und gehören nicht zum Offline-Core. Der Medienvertrag umfasst damit fünf Dateien im Repository.
 
@@ -124,7 +129,7 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [x] `icon.svg` auf `verified-own`
 - [x] beide PNG-Ableitungen auf `verified-own`
 - [x] neue SHA-256-/Dimensionsdaten dokumentiert
-- [x] Media-Vertrag umfasst drei Release-Medien und zwei PR-Screenshots
+- [x] Media-Vertrag umfasst sechs Laufzeitmedien und acht PR-Screenshots
 - [ ] echter Online-`npm ci` auf unverändertem Commit grün
 - [ ] Integrity-/Installationsnachweis auf funktionierendem Runner
 - [ ] `scripts/asset_provenance_audit.py` tatsächlich grün

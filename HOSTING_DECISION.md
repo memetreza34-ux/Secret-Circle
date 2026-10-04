@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **PREPARED – Cloudflare Pages technisch bevorzugt, Provider/Account/Domains noch nicht final ausgewählt**  
-Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v68` / `secret-circle-v68-staging`**
+Aktueller Smoke-/Offline-Vertrag: **`secret-circle-v71` / `secret-circle-v71-staging`**
 
 Secret Circle ist eine statische offline-first PWA ohne eigenes Backend. Der Hostinganbieter verarbeitet dennoch HTTP-Verbindungen und kann technische Access-/Securitylogs erzeugen. Hosting bleibt deshalb ein eigenes Release-Gate.
 
@@ -111,7 +111,7 @@ Die Repositorydatei `_headers` bildet diese Policy portabel für passende Static
 ## 5. Staging-Vertrag – v64
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v68
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v71
 ```
 
 Der Netzwerk-Smoke prüft unter anderem:
@@ -154,15 +154,15 @@ Zusätzlich real prüfen:
 Production erhält **denselben unveränderten RC**, der auf Staging vollständig freigegeben wurde.
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v68 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v71 --production
 ```
 
 Production muss zusätzlich den HSTS-Vertrag erfüllen. Wenn nach Staging ein Code-/Asset-/Service-Worker-/Header-Fix nötig wird, ist der frühere Kandidat nicht mehr dieselbe RC-Evidence. Betroffene Gates müssen auf dem neuen Stand erneut ausgeführt werden.
 
 ## 7. Cache-/Rollback-Regel
 
-- aktuell: `secret-circle-v68`
-- Staging: `secret-circle-v68-staging`
+- aktuell: `secret-circle-v71`
+- Staging: `secret-circle-v71-staging`
 - Cachegeneration nach Offline-Core-Änderung nicht wiederverwenden
 - Rollback/Hotfix erhält eine **neue** Generation
 - kompatible lokale Daten und aktive Sessions soweit vorgesehen erhalten

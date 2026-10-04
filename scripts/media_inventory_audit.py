@@ -16,6 +16,15 @@ EXPECTED_CURRENT_MEDIA = {
     'icon.svg', 'icon-192.png', 'icon-512.png',
     'docs/screenshots/v2-party-spiel-handy-375x812.webp',
     'docs/screenshots/v2-party-spiel-desktop-1280x800.webp',
+    'assets/images/word-imposter-chamaeleon.webp',
+    'assets/images/wahrheit-oder-pflicht.webp',
+    'assets/images/ich-habe-noch-nie.webp',
+    'docs/screenshots/word-imposter-handy-375x812.webp',
+    'docs/screenshots/word-imposter-desktop-1280x800.webp',
+    'docs/screenshots/wahrheit-oder-pflicht-handy-375x812.webp',
+    'docs/screenshots/wahrheit-oder-pflicht-desktop-1280x800.webp',
+    'docs/screenshots/ich-habe-noch-nie-handy-375x812.webp',
+    'docs/screenshots/ich-habe-noch-nie-desktop-1280x800.webp',
 }
 
 if not PROVENANCE.is_file():
@@ -65,5 +74,5 @@ print(json.dumps({
     'current_release_media_contract': sorted(EXPECTED_CURRENT_MEDIA),
     'audio_files': [],
     'video_files': [],
-    'other_raster_files': [],
+    'other_raster_files': sorted(path for path in media_paths if path.endswith('.webp')),
 }, ensure_ascii=False, indent=2))

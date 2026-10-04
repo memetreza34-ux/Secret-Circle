@@ -37,6 +37,34 @@ test('start screen renders from the real catalog without invented claims', async
   expect(errors).toEqual([]);
 });
 
+test('game artwork loads locally and leaves the mobile banner title visible', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await seedHub(page);
+  await openV2(page);
+  const heroImage = page.locator('#hero-art img');
+  await expect(heroImage).toHaveAttribute('src', 'assets/images/word-imposter-chamaeleon.webp');
+  await expect.poll(() => heroImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+  await expect(page.locator('#hero-title')).toBeVisible();
+  const bannerBottom = await page.locator('.hero-art').evaluate(el => el.getBoundingClientRect().bottom);
+  const titleTop = await page.locator('#hero-title').evaluate(el => el.getBoundingClientRect().top);
+  expect(bannerBottom).toBeLessThanOrEqual(titleTop);
+
+  await openV2(page, '#spiel=truth-dare');
+  const modeImage = page.locator('#mode-emblem img');
+  await expect(modeImage).toHaveAttribute('src', 'assets/images/wahrheit-oder-pflicht.webp');
+  await expect(modeImage).toHaveAttribute('alt', /Eule beantwortet eine Frage/);
+  await expect.poll(() => modeImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+
+  await openV2(page, '#spiel=never-have');
+  const memoryImage = page.locator('#mode-emblem img');
+  await expect(memoryImage).toHaveAttribute('src', 'assets/images/ich-habe-noch-nie.webp');
+  await expect(memoryImage).toHaveAttribute('alt', /Elefant erinnert sich/);
+  await expect.poll(() => memoryImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+
+  await openV2(page, '#spiel=most-likely');
+  await expect(page.locator('#mode-emblem svg')).toBeVisible();
+});
+
 test('games screen lists all 55 games in six non-empty colour worlds', async ({ page }) => {
   await seedHub(page);
   await openV2(page, '#spiele');
