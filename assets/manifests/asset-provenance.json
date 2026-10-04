@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-29",
+  "updatedAt": "2026-10-04",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -46,6 +46,36 @@
       "derivedFrom": "icon.svg",
       "dimensions": "512x512",
       "notes": "Raster-Ableitung ohne fremdes Material. Neu erzeugt am 2026-09-09: die vorherigen Dateien hatten einen defekten IDAT-Datenstrom und liessen sich von Browsern nicht dekodieren."
+    },
+    {
+      "path": "docs/screenshots/v2-party-spiel-handy-375x812.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2, lokaler Secret-Circle-Branch; WebP-Export mit cwebp 1.6.0",
+      "source": "Lokaler Screenshot vom 2026-10-04, party.html?play=never-have&pack=Alltag&from=v2 bei 375x812; nur PR-Dokumentation, kein Laufzeit-Asset",
+      "createdAt": "2026-10-04",
+      "sha256": "d589e75e7525736d3ec9c638b3b9c6f9cce8df54a5f553f82384d8c6678af734",
+      "license": "Projektseitiger Screenshot der eigenen App; keine fremden Bildinhalte",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "375x812",
+      "notes": "PR-Nachweis der v2-Party-Spielansicht; nicht im Offline-Core."
+    },
+    {
+      "path": "docs/screenshots/v2-party-spiel-desktop-1280x800.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2, lokaler Secret-Circle-Branch; WebP-Export mit cwebp 1.6.0",
+      "source": "Lokaler Screenshot vom 2026-10-04, party.html?play=never-have&pack=Alltag&from=v2 bei 1280x800; nur PR-Dokumentation, kein Laufzeit-Asset",
+      "createdAt": "2026-10-04",
+      "sha256": "a2e08ff9eeb3b6f55274cca0659eb3431ea9e697a8dc0e318bf362647467d86f",
+      "license": "Projektseitiger Screenshot der eigenen App; keine fremden Bildinhalte",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "1280x800",
+      "notes": "PR-Nachweis der v2-Party-Spielansicht; nicht im Offline-Core."
     }
   ]
 }

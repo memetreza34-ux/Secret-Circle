@@ -91,8 +91,9 @@
 
     /* Den Klick auf den Startknopf hängt erst die Engine an. Bis sie geladen
        ist, bleibt er gesperrt – vorher blieb ein Tippen einfach wirkungslos.
-       Sperren und Freigeben liegen beide hier: Der Service Worker liefert
-       Skripte aus dem Cache, HTML aber frisch, und beides muss zusammenpassen. */
+       runtime-guard.js sperrt ihn schon beim Parsen, hier noch einmal für den
+       Fall, dass es fehlt. Nicht im HTML: Der Service Worker liefert Skripte
+       aus dem Cache, HTML aber frisch, und beides muss zusammenpassen. */
     const startButton = documentRef.querySelector?.('#quick-start');
     startButton?.setAttribute('disabled', '');
 

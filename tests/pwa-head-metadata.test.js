@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const pages = ['party.html', 'index.html', 'creator.html', 'advanced.html', 'quick-play.html'];
+const pages = ['v2-hub.html', 'party.html', 'index.html', 'creator.html', 'advanced.html', 'quick-play.html'];
 
 for (const page of pages) {
   const source = fs.readFileSync(path.join(ROOT, page), 'utf8');

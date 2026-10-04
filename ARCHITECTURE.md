@@ -24,6 +24,10 @@ Browserkette auf Hub und Quick-Play:
 
 Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare Enginefamilien**: Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. Themen bleiben Content-Layer; neue sichtbare Varianten sollen bevorzugt auf vorhandenen Engines entstehen.
 
+## 4a. Oberfläche im Claude-Design (v2)
+
+`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. `quick-play.html` und die laufende Spielansicht in `party.html` verwenden v2-Stile; die alte Hub-Oberfläche von `party.html` und die übrigen Engine-Seiten werden in eigenen Schritten umgestellt.
+
 ## 5. Hub- und Timergrenzen
 
 `party-hub.js`, `party-hub-round-state.js`, `party-hub-timers.js`, `party-session-controls.js`, `party-hub-resume-guard.js`, `party-hub-polish.js` und `party-hub-a11y.js` besitzen getrennte Verantwortlichkeiten. Runtime-Reihenfolge: `party-session-controls.js → party-hub-timers.js → party-hub-round-state.js → party-hub.js`.
@@ -113,11 +117,11 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**.
+Aktueller Offline-Core: **`secret-circle-v68` / `secret-circle-v68-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
-Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → Cachegeneration erhöhen → SW-Test aktualisieren → Architektur/Deployment/Privacy/Environment/Hosting synchronisieren → Upgrade/Rollback real testen.
+Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → `python3 scripts/offline_core_lock.py --bump` (erhöht die Cachegeneration und zieht `sw.js`, `release-meta.json`, `operator-release.json`, `privacy.html` und die Statusdokumente nach) → CHANGELOG ergänzen → Upgrade/Rollback real testen. `npm run validate` schlägt fehl, solange eine CORE-Datei von der in `release-meta.json` festgehaltenen Prüfsumme abweicht.
 
 ## 19. PWA-Installationsmetadaten
 

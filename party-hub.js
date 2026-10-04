@@ -28,6 +28,13 @@
   let selectedGameId = null;
   let currentView = 'home';
   let session = null;
+  /* Aus der v2-Oberfläche gestartet: Nach dem Spiel geht es dorthin zurück. */
+  const returnToV2 = new URLSearchParams(window.location.search).get('from') === 'v2';
+  function leaveToV2() {
+    if (!returnToV2) return false;
+    window.location.replace('v2-hub.html');
+    return true;
+  }
   function clone(value) { return JSON.parse(JSON.stringify(value)); }
   function cleanText(value, maximum = 200) { return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum); }
   function safeInteger(value, maximum = 1_000_000) {
@@ -415,11 +422,25 @@
     names.forEach(name => select.add(new Option(`${name} (${packCount(game.id, name)})`, name)));
     $('#pack-select-label').hidden = names.length === 0 || game.mode === 'link';
     const start = $('#start-selected-game');
-    start.textContent = game.status === 'planned' ? 'Noch nicht spielbar' : game.mode === 'link' ? 'Word Imposter öffnen' : 'Spiel starten';
+    start.textContent = startLabel(game);
     start.disabled = game.status !== 'playable';
     updateDetailFavorite();
+    $('#game-detail').dataset.gameId = game.id;
     $('#game-detail').hidden = false;
     $('#close-detail').focus();
+  }
+  /* Einzige Quelle für die Beschriftung des Startknopfs. Verlinkte Spiele
+     öffnen je nach Familie eine eigene Seite; der Text sagt, welche. */
+  function startLabel(game) {
+    if (game.status !== 'playable') return 'Noch nicht spielbar';
+    if (game.custom) return 'Eigenes Spiel starten';
+    if (game.mode !== 'link') return 'Jetzt spielen';
+    if (game.advancedMode || game.href?.startsWith('advanced.html')) return `${game.title} öffnen`;
+    if (C.viralGameIds?.includes(game.id)) return 'Viral Mode öffnen';
+    if (C.megaGameIds?.includes(game.id)) return 'Trend Mode öffnen';
+    if (game.href?.startsWith('quick-play.html')) return 'Quick Mode öffnen';
+    if (game.href === 'index.html') return 'Word Imposter öffnen';
+    return 'Spiel öffnen';
   }
   function packCount(gameId, pack) {
     const value = C.content[gameId]?.[pack];
@@ -438,6 +459,22 @@
     if (saved) renderHome();
     return saved;
   }
+  /* Liest den gespeicherten Stand ohne Nebenwirkung; beschädigte Stände
+     behandelt weiterhin loadActiveSession beim Laden der Seite. */
+  function storedActiveSession() {
+    try { return normalizeActiveSession(JSON.parse(localStorage.getItem(ACTIVE_KEY))); }
+    catch { return null; }
+  }
+  /* Ein gespeicherter Spielstand wird nie still ersetzt – wie in den Quick-Modi. */
+  function confirmReplacingStoredSession(game) {
+    const stored = storedActiveSession();
+    if (!stored) return true;
+    const previous = C.getGame(stored.gameId)?.title || stored.gameId;
+    const message = stored.gameId === game.id
+      ? `Die gespeicherte Session „${previous}“ wird durch einen Neustart verworfen. Wirklich eine neue Session beginnen?`
+      : `Es gibt noch eine gespeicherte Session „${previous}“. Sie würde durch „${game.title}“ ersetzt. Wirklich verwerfen und neu starten?`;
+    return window.confirm(message);
+  }
   function startSelectedGame() {
     const game = C.getGame(selectedGameId);
     if (!game || game.status !== 'playable') return;
@@ -447,6 +484,11 @@
       setStatus(`${game.title} benötigt ${game.minPlayers}–${game.maxPlayers} Personen. Bitte passe die aktive Gruppe an.`, true);
       return;
     }
+    if (!confirmReplacingStoredSession(game)) {
+      setStatus('Der gespeicherte Spielstand bleibt erhalten.');
+      return;
+    }
+    $('#hub-resume-session')?.remove();
     rememberRecent(game.id);
     stopHubTimer();
     session = {
@@ -484,6 +526,7 @@
     session = null; setHubSessionActive(false); $('#play-layer').hidden = true; renderHome();
     if (currentView === 'stats') renderStats();
     setStatus(completedRounds > 0 ? 'Session lokal im Verlauf gespeichert.' : 'Session beendet. Es war noch keine Runde abgeschlossen.');
+    if (leaveToV2()) return;
     $('#quick-start')?.focus?.();
   }
   function abortSession() {
@@ -493,6 +536,7 @@
     stopHubTimer(); hubTimer.setPaused(false); session = null; setHubSessionActive(false); $('#play-layer').hidden = true; renderHome();
     if (currentView === 'stats') renderStats();
     setStatus('Session abgebrochen. Fortschritt wurde nicht gespeichert.');
+    if (leaveToV2()) return true;
     $('#quick-start')?.focus?.();
     return true;
   }
@@ -518,6 +562,18 @@
   function preparePlayCard() {
     resetPlayCard();
     const game = C.getGame(session.gameId);
+    $('#play-layer').dataset.gameId = game.id;
+    $('#play-layer').dataset.world = ({
+      'Täuschung & Bluff': 'taeuschung',
+      'Social & Klassiker': 'reden',
+      'Abstimmen & Ranking': 'reden',
+      'Darstellen & Erklären': 'raten',
+      'Kreativ & Schreiben': 'kreativ',
+      'Wissen & Quiz': 'wissen',
+      'Schätzen & Tippen': 'wissen',
+      'Schnell & Challenge': 'schnell',
+      'Werkzeuge': 'schnell'
+    })[game.group] || 'taeuschung';
     $('#play-title').textContent = game.title;
     $('#play-eyebrow').textContent = session.pack || game.group;
     return game;
@@ -663,7 +719,17 @@
       if (!window.confirm('Gespeicherten Hub-Spielstand wirklich verwerfen? Er wird nicht als abgeschlossene Session gezählt.')) return;
       if (!clearActiveSession()) return;
       card.remove(); setStatus('Gespeicherter Hub-Spielstand wurde verworfen.');
+      leaveToV2();
     }, 'secondary');
+    /* Gesperrt anlegen: Erst party-hub-polish.js gibt die Knöpfe frei, nachdem
+       der Resume-Schutz den gespeicherten Stand geprüft hat. Sonst ließe sich ein
+       inkonsistenter Stand fortsetzen, solange die Skripte noch laden. */
+    card.setAttribute('aria-busy', 'true');
+    for (const button of [resume, discard]) {
+      button.disabled = true;
+      button.setAttribute('aria-disabled', 'true');
+      button.dataset.resumeGuardDisabled = 'true';
+    }
     actions.append(resume, discard);
     card.append(title, copy, actions);
     $('#hub-status')?.insertAdjacentElement('afterend', card);
@@ -768,4 +834,20 @@
   showView('home');
   const active = loadActiveSession();
   if (active) offerHubResume(active);
+  /* v2-hub.html übergibt Hub-Spiele als party.html?play=<id>&pack=<name>&from=v2.
+     Gestartet wird über denselben Weg wie aus dem Hub, inklusive Rückfrage vor
+     dem Ersetzen eines gespeicherten Spielstands. */
+  function startRequestedGame() {
+    const params = new URLSearchParams(window.location.search);
+    const game = C.getGame(params.get('play'));
+    if (!game || game.status !== 'playable' || game.mode === 'link') return;
+    /* Ein Neuladen soll den Spielstand fortsetzen, nicht erneut starten. */
+    window.history.replaceState(null, '', returnToV2 ? 'party.html?from=v2' : 'party.html');
+    openDetail(game.id);
+    const pack = params.get('pack');
+    if (pack && C.getPackNames(game.id).includes(pack)) $('#pack-select').value = pack;
+    startSelectedGame();
+    if (!session) leaveToV2();
+  }
+  startRequestedGame();
 })();

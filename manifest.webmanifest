@@ -3,7 +3,7 @@
   "name": "Secret Circle – Party Hub",
   "short_name": "Secret Circle",
   "description": "Offline spielbarer Party Hub mit vielen lokalen Gruppen-, Täuschungs-, Frage- und Schnellspielen.",
-  "start_url": "./party.html",
+  "start_url": "./v2-hub.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

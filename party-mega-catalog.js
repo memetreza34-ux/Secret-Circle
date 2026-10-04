@@ -207,7 +207,12 @@
     'Musik & Bühne': megaContent['who-am-i']['Musik & Bühne']
   };
 
-  const games = Object.freeze([...base.games, ...newGames]);
+  /* Stirn-Raten erhält hier sechs weitere Kategorien; die Metadaten nennen sie
+     mit, damit Suche und Detailansicht dieselben Kategorien kennen wie das Spiel. */
+  const baseGames = base.games.map(game => game.id === 'forehead-guess'
+    ? Object.freeze({ ...game, packs: Object.freeze(Object.keys(expandedForehead)) })
+    : game);
+  const games = Object.freeze([...baseGames, ...newGames]);
   const content = Object.assign({}, base.content, { 'forehead-guess': expandedForehead }, megaContent);
   const megaGameIds = Object.freeze(newGames.map(game => game.id));
   const quickGameIds = Object.freeze([...(base.quickGameIds || base.trendingGameIds || []), ...megaGameIds]);
