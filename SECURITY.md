@@ -250,7 +250,7 @@ Vor Release:
 
 Ein CI-Lauf ist nur dann ein Sicherheitsnachweis, wenn ein Runner tatsächlich Checkout und Prüfungen ausführt. `steps: []` ist ausdrücklich **kein** grüner Sicherheitsnachweis.
 
-Historisch letzter vollständig untersuchter App-Lauf: Run #2787 auf v49. v50/v51 besitzen keinen Runner-PASS.
+Letzter vollständig grüner App-Lauf: Run `36292530012` auf `main` (27. September 2026, Head `0d157ba`). Zwischen v50 und dem 5. September 2026 gab es wegen des Runner-Ausfalls keinen Runner-PASS.
 
 ## Logging und Telemetrie
 

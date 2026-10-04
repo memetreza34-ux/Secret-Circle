@@ -9,7 +9,7 @@ Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcon
 
 ## 2. Runtime-Abhängigkeiten
 
-`package.json` enthält **keine npm-Runtime-Dependencies**. Die Production-PWA lädt keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets.
+`package.json` enthält **keine npm-Runtime-Dependencies**. Die Production-PWA lädt keine externen JavaScript-CDNs, Webfonts, Analyse-/Werbe-SDKs oder Remote-Spielassets. Die Schriften der v2-Oberfläche liegen lokal im Projekt (siehe Abschnitt 7a).
 
 ## 3. Reproduzierbarer npm-Snapshot
 
@@ -24,7 +24,7 @@ Dieses Dokument inventarisiert externe Software, gebündelte Assets, Referenzcon
 
 `scripts/lockfile_contract_audit.py` schützt diesen Snapshot gegen Drift. CI und Cross-Browser verwenden `npm ci`.
 
-Noch offen bleibt ein **echter Online-`npm ci`-PASS** auf einem **unverändertem Commit** mit anschließendem CI-/Cross-Browser-/Integrity-Nachweis. Der aktuelle GitHub-Hosted-Runner-Blocker verhindert diese reale Evidence weiterhin vor Step 1.
+Online-`npm ci` läuft seit dem 5. September 2026 real in der CI (letzter grüner Lauf `36292530012`). Noch offen bleibt ein **echter Online-`npm ci`-PASS** für den Release-Kandidaten mit **unverändertem Commit** und anschließendem CI-/Cross-Browser-/Integrity-Nachweis.
 
 ## 4. Maschinenlesbare Asset-Provenienz
 
@@ -77,6 +77,19 @@ Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle 
 3. `icon-512.png`
 
 Eine während des Ersatzes kurz vorhandene zusätzliche SVG-Quellkopie wurde wieder entfernt, damit der bestehende Releasevertrag nicht still erweitert wird.
+
+## 7a. Gebündelte Schriften
+
+Die v2-Oberfläche (`v2-hub.html`, `v2-theme.css`) liefert vier WOFF2-Dateien lokal aus `fonts/` aus. Sie stammen unverändert von Google Fonts (`fonts.gstatic.com`, Figtree v9, Archivo Black v23), bezogen am 3. Oktober 2026:
+
+| Datei | Schrift | Schnitte | Urheber | Lizenz |
+|---|---|---|---|---|
+| `figtree-latin.woff2`, `figtree-latin-ext.woff2` | Figtree (variabel) | 400–800 | Erik Kennedy | SIL Open Font License 1.1 |
+| `archivo-black-latin-400.woff2`, `archivo-black-latin-ext-400.woff2` | Archivo Black | 400 | Omnibus-Type | SIL Open Font License 1.1 |
+
+Die OFL erlaubt Bündelung und Weitergabe mit der App, solange die Schriften nicht einzeln verkauft werden und der Lizenzhinweis mitgeliefert wird. Vor einem öffentlichen Release gehört der vollständige OFL-Text zu den ausgelieferten Dateien.
+
+Die zwölf Dateien aus dem Claude-Design-Export vom 3. September waren teilweise defekt (vier ließen sich nicht dekodieren) und sind ersetzt.
 
 ## 7. Emoji und Systemglyphen
 

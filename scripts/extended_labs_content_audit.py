@@ -13,7 +13,7 @@ for path in (TEST, REVIEW):
 
 review = REVIEW.read_text(encoding='utf-8')
 for marker in (
-    '13 Extended', '17 Labs', '30 Nicht-Core-Spiele',
+    '13 Extended', '27 Labs', '40 Nicht-Core-Spiele',
     'MANUAL SIGN-OFF OPEN', 'extended-labs-content-quality.test.js'
 ):
     if marker not in review:
@@ -40,9 +40,9 @@ except json.JSONDecodeError as exc:
 
 if node_payload.get('extendedLabsContentQuality') != 'PASS':
     raise SystemExit('Extended/Labs Node contract did not report PASS.')
-if node_payload.get('releaseTiers') != {'core': 15, 'extended': 13, 'labs': 17}:
+if node_payload.get('releaseTiers') != {'core': 15, 'extended': 13, 'labs': 27}:
     raise SystemExit('Extended/Labs release tier counts drifted.')
-if node_payload.get('contentDrivenGames') != 28:
+if node_payload.get('contentDrivenGames') != 38:
     raise SystemExit('Unexpected number of content-driven non-core games.')
 if sorted(node_payload.get('contentlessUtilityGames', [])) != ['dice-coin', 'spin-bottle']:
     raise SystemExit('Unexpected contentless utility game set.')
