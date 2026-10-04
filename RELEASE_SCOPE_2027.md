@@ -120,8 +120,8 @@ Selbst erstellte Spiele sind keine eigenen Kernspiele. Sie werden im Hub als Erw
 ## Aktueller technischer Release-Stand
 
 - Source-Generation: **v64**
-- Offline-Cache: **`secret-circle-v64`**
-- Staging-Cache: **`secret-circle-v64-staging`**
+- Offline-Cache: **`secret-circle-v70`**
+- Staging-Cache: **`secret-circle-v70-staging`**
 - Built-ins: **55**
 - Core: **15**
 - Extended: **13**
@@ -129,7 +129,7 @@ Selbst erstellte Spiele sind keine eigenen Kernspiele. Sie werden im Hub als Erw
 - Wave 1: **10/10 source-implemented, real evidence OPEN**
 - öffentliche Freigabe: **NO_GO**
 
-GitHub Actions bleibt extern blockiert. Der frische v64-Lauf **#3608** erhielt keinen Hosted Runner: `steps: []`, `runner_id: 0`, leerer Runner-Name; Repositorycode wurde nicht ausgeführt. Dieser Blocker darf nicht durch Abschwächen von Tests oder App-Code umgangen werden.
+Der frühere Actions-Blocker (`steps: []`, `runner_id: 0`) ist seit dem 5. September 2026 behoben; letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026). CI-Gates dürfen weiterhin nicht durch Abschwächen von Tests oder App-Code umgangen werden.
 
 ## Release-Grenzen
 

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0A0B0F">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Secret Circle – offline spielbare Partyspiele für eine Gruppe und ein Gerät.">
+  <meta name="referrer" content="no-referrer">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Secret Circle">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Secret Circle</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="v2-theme.css">
+</head>
+<body>
+  <p class="sr-only" id="live" role="status" aria-live="polite"></p>
+
+  <div id="app">
+    <p class="app-status" id="app-status" role="status" aria-live="polite"></p>
+
+    <!-- ─────────── START ─────────── -->
+    <section class="screen" data-screen="home">
+      <div class="inner appbar">
+        <span class="wordmark">Secret Circle</span>
+        <button class="icon-btn" type="button" aria-label="Suchen" data-tab="games" data-icon="search"></button>
+        <button class="icon-btn" type="button" aria-label="Profil" data-tab="profile" data-icon="user"></button>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Start</h1>
+
+          <div id="resume-slot"></div>
+
+          <article class="hero">
+            <div class="hero-art">
+              <span class="hero-badge" id="hero-badge">Empfehlung</span>
+              <div class="mark" id="hero-art"></div>
+            </div>
+            <div class="hero-pad">
+              <h2 id="hero-title"></h2>
+              <p id="hero-text"></p>
+              <button class="pill pill-primary" type="button" id="hero-play" data-icon-before="play">Spielen</button>
+              <div class="dots"></div>
+            </div>
+          </article>
+
+          <div id="sections"></div>
+        </div>
+      </div>
+      <nav class="tabbar" aria-label="Bereiche"></nav>
+    </section>
+
+    <!-- ─────────── ALLE SPIELE ─────────── -->
+    <section class="screen" data-screen="games" hidden>
+      <div class="inner appbar">
+        <span class="wordmark">Spiele</span>
+        <span class="count-badge" id="grid-count"></span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Alle Spiele</h1>
+          <label class="sr-only" for="q">Spiel suchen</label>
+          <input class="search" id="q" type="search" placeholder="Spiele finden…" autocomplete="off">
+          <div class="filters scroll" id="filters" role="group" aria-label="Nach Kategorie filtern"></div>
+          <div class="grid" id="grid"></div>
+          <p class="empty" id="grid-empty" hidden>Kein Spiel gefunden. Anderen Suchbegriff probieren.</p>
+        </div>
+      </div>
+      <nav class="tabbar" aria-label="Bereiche"></nav>
+    </section>
+
+    <!-- ─────────── MODUS ─────────── -->
+    <section class="screen" data-screen="mode" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+      </div>
+      <div class="body scroll" id="mode-body">
+        <div class="inner">
+          <div class="mode-head">
+            <div class="mode-emblem"><div class="mark" id="mode-emblem"></div></div>
+            <div class="fit">
+              <h1 class="fit-text" id="mode-title" tabindex="-1" data-head></h1>
+            </div>
+            <p class="mode-sub" id="mode-sub"></p>
+          </div>
+
+          <div class="meta" id="mode-meta"></div>
+
+          <div class="rows">
+            <div class="row">
+              <span class="row-ico" data-icon="tv"></span>
+              <span class="row-main">Wie es geht</span>
+              <button class="row-action" type="button" id="howto-btn">Ansehen</button>
+            </div>
+            <button class="row" type="button" data-open="players" id="players-row">
+              <span class="row-ico" data-icon="users"></span>
+              <span class="row-main">Spieler</span>
+              <span class="row-val" id="players-count"></span>
+              <span class="row-chev" data-icon="chev"></span>
+            </button>
+            <button class="row" type="button" data-open="packs" id="pack-row">
+              <span class="row-ico" data-icon="dice"></span>
+              <span class="row-main">Kategorie</span>
+              <span class="row-val" id="pack-value"></span>
+              <span class="row-chev" data-icon="chev"></span>
+            </button>
+          </div>
+
+          <ol class="steps" id="mode-steps"></ol>
+        </div>
+      </div>
+      <div class="dock">
+        <p class="dock-note" id="start-note"></p>
+        <button class="pill pill-primary wide" type="button" id="start-btn">Spiel starten</button>
+      </div>
+    </section>
+
+    <!-- ─────────── SPIELER ─────────── -->
+    <section class="screen" data-screen="players" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Spieler</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <div class="counter">
+            <h1 tabindex="-1" data-head>Am Start</h1>
+            <span class="count-badge" id="player-badge"></span>
+          </div>
+          <div class="rows" id="player-list"></div>
+          <p class="hint-line" id="player-hint"></p>
+          <div id="seat-preview"></div>
+        </div>
+      </div>
+      <div class="dock">
+        <form class="add-row" id="player-form">
+          <label class="sr-only" for="player-input">Neuer Spieler</label>
+          <input id="player-input" type="text" maxlength="32" autocomplete="off" autocapitalize="words"
+                 enterkeyhint="done" placeholder="Neuer Spieler">
+          <button class="add-btn" type="submit" id="player-add" aria-label="Person hinzufügen" data-icon="plus"></button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ─────────── KATEGORIE ─────────── -->
+    <section class="screen" data-screen="packs" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Kategorie</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Kategorie wählen</h1>
+          <div class="rows" id="pack-list"></div>
+          <p class="lede-dim">Gespielt wird mit einer Kategorie. Eigene Kategorien legst du unter Profil → Daten und eigene Inhalte an.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── WIE ES GEHT ─────────── -->
+    <section class="screen" data-screen="howto" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Wie es geht</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <div class="fit howto-fit">
+            <h1 class="fit-text" id="howto-title" tabindex="-1" data-head></h1>
+          </div>
+          <p class="mode-sub howto-sub" id="howto-sub"></p>
+          <ol class="steps" id="howto-steps"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── PROFIL ─────────── -->
+    <section class="screen" data-screen="profile" hidden>
+      <div class="inner appbar"><span class="wordmark">Profil</span></div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Profil</h1>
+          <div class="profile-head">
+            <div class="avatar"><div class="mark" id="profile-avatar"></div></div>
+            <div>
+              <h2 id="profile-name">Eure Runde</h2>
+              <p id="profile-since"></p>
+            </div>
+          </div>
+
+          <div class="stats" id="profile-stats"></div>
+
+          <section class="sec">
+            <div class="sec-head"><h3>Zuletzt gespielt</h3></div>
+            <div class="strip scroll" id="profile-recent"></div>
+            <p class="empty" id="recent-empty" hidden>Noch nichts gespielt. Such dir auf der Startseite etwas aus.</p>
+          </section>
+
+          <section class="sec">
+            <div class="sec-head"><h3>Einstellungen</h3></div>
+            <div class="setting-rows">
+              <button class="row" type="button" data-open="players">
+                <span class="row-ico" data-icon="users"></span>
+                <span class="row-main">Spieler<small>Gilt für alle Spiele außer Word Imposter</small></span>
+                <span class="row-val" id="settings-players"></span>
+                <span class="row-chev" data-icon="chev"></span>
+              </button>
+              <a class="row" href="party.html">
+                <span class="row-ico" data-icon="spark"></span>
+                <span class="row-main">Partyabend planen<small>Mehrere Spiele zu einem Abend zusammenstellen</small></span>
+                <span class="row-chev" data-icon="chev"></span>
+              </a>
+              <a class="row" href="creator.html">
+                <span class="row-ico" data-icon="pencil"></span>
+                <span class="row-main">Eigenes Spiel erstellen</span>
+                <span class="row-chev" data-icon="chev"></span>
+              </a>
+              <a class="row" href="party.html?view=settings">
+                <span class="row-ico" data-icon="folder"></span>
+                <span class="row-main">Daten und eigene Inhalte<small>Eigene Kategorien, Sicherung, alles löschen</small></span>
+                <span class="row-chev" data-icon="chev"></span>
+              </a>
+              <button class="row" type="button" data-open="profile-privacy">
+                <span class="row-ico" data-icon="shield"></span>
+                <span class="row-main">Datenschutz</span>
+                <span class="row-chev" data-icon="chev"></span>
+              </button>
+              <button class="row" type="button" data-open="profile-help">
+                <span class="row-ico" data-icon="help"></span>
+                <span class="row-main">Hilfe</span>
+                <span class="row-chev" data-icon="chev"></span>
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+      <nav class="tabbar" aria-label="Bereiche"></nav>
+    </section>
+
+    <!-- ─────────── PROFIL: DATENSCHUTZ ─────────── -->
+    <section class="screen" data-screen="profile-privacy" hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Datenschutz</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Datenschutz</h1>
+          <div class="text-block">
+            <p>Kein Konto, keine Cloud.</p>
+            <p>Secret Circle sammelt nichts. Es gibt keine Anmeldung, keine Analyse, keine Werbung und keine Übertragung an Dritte.</p>
+          </div>
+          <div class="text-block">
+            <p>Was gespeichert wird</p>
+            <p>Die Namen eurer Gruppe, der Verlauf abgeschlossener Spiele, laufende Spielstände, eigene Kategorien und Spiele sowie Einstellungen. Alles liegt im lokalen Speicher dieses Browsers.</p>
+          </div>
+          <div class="text-block">
+            <p>Wie du es wieder loswirst</p>
+            <p>Unter Profil → Daten und eigene Inhalte sicherst du alles als Datei oder löschst es vollständig. Das Löschen wirkt sofort und lässt sich nicht rückgängig machen.</p>
+          </div>
+          <a class="pill pill-quiet wide" href="privacy.html">Vollständige Datenschutzhinweise</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── PROFIL: HILFE ─────────── -->
+    <section class="screen" data-screen="profile-help" hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Hilfe</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Hilfe</h1>
+          <div class="text-block">
+            <p>Ein Handy reicht</p>
+            <p>Secret Circle wird herumgereicht. Wer dran ist, steht groß auf dem Bildschirm. Gib das Gerät erst weiter, wenn geheime Inhalte wieder verdeckt sind.</p>
+          </div>
+          <div class="text-block">
+            <p>Vor dem Start</p>
+            <p>Trag unter „Spieler“ eure Gruppe ein. Die Liste gilt für alle Spiele außer Word Imposter, das seine Runde selbst einrichtet. Zu wenige oder zu viele Personen blockieren den Start — die Zahl wird dann rot.</p>
+          </div>
+          <div class="text-block">
+            <p>Ein Spiel läuft weiter</p>
+            <p>Schließt du die App mitten im Spiel, steht der Spielstand beim nächsten Öffnen oben auf der Startseite. Fortgesetzt wird erst nach einer Prüfung; geheime Inhalte öffnen sich dabei nicht von selbst.</p>
+          </div>
+          <div class="text-block">
+            <p>Eigene Inhalte</p>
+            <p>Eigene Kategorien und ganze eigene Spiele legst du über das Profil an. Eigene Spiele erscheinen danach in der Spieleliste.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="runtime-guard.js"></script>
+  <script src="party-catalog.js"></script>
+  <script src="party-expansion.js"></script>
+  <script src="party-trending-catalog.js"></script>
+  <script src="party-mega-catalog.js"></script>
+  <script src="party-viral-catalog.js"></script>
+  <script src="party-core-release-catalog.js"></script>
+  <script src="party-core-classic-content.js"></script>
+  <script src="party-routing.js"></script>
+  <script src="party-wave-one-catalog.js"></script>
+  <script src="party-wave-one-imposter-catalog.js"></script>
+  <script src="party-wave-one-writing-catalog.js"></script>
+  <script src="party-wave-one-voting-catalog.js"></script>
+  <script src="party-wave-one-bluff-catalog.js"></script>
+  <script src="party-wave-one-clue-catalog.js"></script>
+  <script src="party-custom-packs.js"></script>
+  <script src="v2-hub.js"></script>
+</body>
+</html>

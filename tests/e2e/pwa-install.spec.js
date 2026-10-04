@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('manifest opens the Party Hub and exposes installable mobile metadata with valid PNG icons', async ({ page }) => {
+test('manifest opens the v2 start screen and exposes installable mobile metadata with valid PNG icons', async ({ page }) => {
   await page.goto('/party.html');
 
   const result = await page.evaluate(async () => {
@@ -37,7 +37,7 @@ test('manifest opens the Party Hub and exposes installable mobile metadata with 
 
   expect(result.manifest.id).toBe('./');
   expect(result.manifest.name).toBe('Secret Circle – Party Hub');
-  expect(result.manifest.start_url).toBe('./party.html');
+  expect(result.manifest.start_url).toBe('./v2-hub.html');
   expect(result.manifest.scope).toBe('./');
   expect(result.manifest.display).toBe('standalone');
   expect(result.manifest.lang).toBe('de');

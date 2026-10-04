@@ -12,7 +12,18 @@ MEDIA_SUFFIXES = {
 IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
-EXPECTED_CURRENT_MEDIA = {'icon.svg', 'icon-192.png', 'icon-512.png'}
+EXPECTED_CURRENT_MEDIA = {
+    'icon.svg', 'icon-192.png', 'icon-512.png',
+    'assets/images/word-imposter-chamaeleon.webp',
+    'assets/images/wahrheit-oder-pflicht.webp',
+    'assets/images/ich-habe-noch-nie.webp',
+    'docs/screenshots/word-imposter-handy-375x812.webp',
+    'docs/screenshots/word-imposter-desktop-1280x800.webp',
+    'docs/screenshots/wahrheit-oder-pflicht-handy-375x812.webp',
+    'docs/screenshots/wahrheit-oder-pflicht-desktop-1280x800.webp',
+    'docs/screenshots/ich-habe-noch-nie-handy-375x812.webp',
+    'docs/screenshots/ich-habe-noch-nie-desktop-1280x800.webp',
+}
 
 if not PROVENANCE.is_file():
     raise SystemExit('Media inventory cannot run without asset-provenance.json.')
@@ -54,11 +65,12 @@ print(json.dumps({
     'media_inventory_audit': 'PASS',
     'media_extensions_scanned': sorted(MEDIA_SUFFIXES),
     'ignored_directories': sorted(IGNORED_DIRS),
-    'bundled_media': sorted(media_paths),
-    'bundled_media_count': len(media_paths),
+    'bundled_media': sorted(path for path in media_paths if not path.startswith('docs/screenshots/')),
+    'bundled_media_count': len([path for path in media_paths if not path.startswith('docs/screenshots/')]),
+    'documentation_screenshots': sorted(path for path in media_paths if path.startswith('docs/screenshots/')),
     'all_media_in_provenance_manifest': True,
     'current_release_media_contract': sorted(EXPECTED_CURRENT_MEDIA),
     'audio_files': [],
     'video_files': [],
-    'other_raster_files': [],
+    'other_raster_files': sorted(path for path in media_paths if path.endswith('.webp')),
 }, ensure_ascii=False, indent=2))

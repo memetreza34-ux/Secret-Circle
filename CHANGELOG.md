@@ -2,19 +2,24 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v70 – Spielbild für „Ich habe noch nie“
+
+- Eigenständigen Elefantencharakter als lokales WebP in die v2-Spielansicht aufgenommen.
+- Herkunft, Medienvertrag und Offline-Core um das Bild erweitert; Handy- und Desktop-Screenshots für PR #19 ergänzt.
+
 ## Unreleased – Januar-2027 Release Foundation
 
 Stand: 29. August 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v64**
+- Source-Generation: **v69**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**
 - Accessibility: **PREPARED**
 - Spezialgates DWI bis HS60: **quellsseitig PREPARED, real offen**
-- Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**
+- Offline-Core: **`secret-circle-v69` / `secret-circle-v69-staging`**
 - `release-evidence.json`: **PREPARED / NO_GO**
 - PR #13: **Draft / ungemergt**
 - PR-Stack: **muss vor Release mit zwei späteren `main`-Commits reconciled werden**
@@ -110,6 +115,52 @@ Gemeinsame Architektur:
 - aktueller zusammengesetzter Katalog: **55 Built-ins / 15 Core / 13 Extended / 27 Labs**
 - Wave-1-Unit-/E2E-/Audit-Verträge sind vorbereitet
 - reale Browser-/PWA-/Accessibility-/Gruppenevidence bleibt offen
+
+### v69 – Bildüberlagerungen korrigiert
+
+Empfehlungsbadge und Rangzahl bleiben vor Spielbildern sichtbar.
+
+### v68 – Bildbanner auf dem Handy korrigiert
+
+Das neue Startbanner begrenzt die Bildhöhe; Titel, Beschreibung und Startknopf bleiben bei 375 × 812 sichtbar. Ein Browser-Test prüft Laden und Bild-Titel-Abstand in Chromium und WebKit.
+
+### v67 – Erste Spielbilder im v2-Hub
+
+Word Imposter zeigt das vom Nutzer ausgewählte Chamäleon; Wahrheit oder Pflicht zeigt die Eule beim Antworten und den Waschbären bei einer Aufgabe. Beide Motive sind lokale WebP-Dateien, in Spielkacheln, Startbanner und Spieldetails eingebunden und im Offline-Core enthalten. Vier WebP-Screenshots dokumentieren beide Ansichten auf Handy und Desktop für den PR. Medieninventar, Provenienz, Rechtehinweise und Größenbudgets wurden entsprechend erweitert.
+
+### v66 – Oberfläche im Claude-Design
+
+Das Design aus Claude Design (`v2-hub.html`, `v2-hub.js`, `v2-theme.css`, Schriften in `fonts/`) ist zurück und jetzt die Startseite der App. Es war am 24. September als ungenutzter Prototyp entfernt worden.
+
+- „Spiel starten“ übergibt an die geprüften Engines statt an die vereinfachte eigene Spielmechanik des Prototyps (die entfällt). Hub-Spiele starten über `party.html?play=…&from=v2` und kehren danach zu v2 zurück.
+- Spielerliste, Verlauf und gespeicherte Spielstände sind dieselben wie im Rest der App; der Prototyp hatte einen eigenen Speicher.
+- Die sechs Farbwelten bündeln die neun aktuellen Katalog-Gruppen. Mit der alten Zuordnung wären fast alle Spiele unter „Täuschung“ gelandet.
+- „Top 10 aktuell“ und „Meistgespielt“ ohne Datengrundlage ersetzt: „Meistgespielt“ nur mit echtem Verlauf, sonst „Empfehlung“.
+- Die Startseite bietet echte gespeicherte Spielstände zum Fortsetzen an.
+- Content-Security-Policy, Manifest, `runtime-guard.js` und vollständige Katalogkette ergänzt; Inline-Styles durch Klassen ersetzt.
+- Zurück-Links der Spielseiten, Creator und Datenschutzseite führen zu v2.
+- Schriften: Die zwölf Dateien aus dem Design-Export waren teilweise defekt (unter anderem Archivo Black); der Browser zeigte dort eine Ersatzschrift. Ersetzt durch vier Originaldateien von Google Fonts, Figtree als variable Schrift (52 statt 136 KB).
+
+### v65 – Offline-Core-Sperre und Hub-Korrekturen
+
+Seit dem 10. September hatten 16 Commits Offline-Core-Dateien geändert, ohne die Cachegeneration zu erhöhen. Installierte Apps bekamen deshalb frisches HTML zu alten Skripten und Styles. v65 liefert alle diese Korrekturen aus.
+
+- `scripts/offline_core_lock.py` hält eine Prüfsumme über alle CORE-Dateien in `release-meta.json` fest. `npm run validate` schlägt fehl, sobald sich eine Datei ändert, ohne dass die Generation steigt.
+- `python3 scripts/offline_core_lock.py --bump` erhöht die Generation und zieht `sw.js`, `release-meta.json`, `operator-release.json`, `privacy.html` und die Statusdokumente nach.
+- Hub: Ein neues Spiel ersetzt einen gespeicherten Spielstand nur noch nach Rückfrage; die alte Fortsetzen-Karte verschwindet danach.
+- Hub: Die Beschriftung des Startknopfs entsteht nur noch in `party-hub.js`. `party-hub-polish.js` (v18) und `party-hub-plus.js` (v6) überschreiben sie nicht mehr.
+- Hub: Spiele werden über ihre ID erkannt statt über den Titel. Ein eigenes Spiel mit dem Namen eines eingebauten wird nicht mehr verwechselt.
+- Hub: Beobachter und Fokusfalle bleiben nach `pagehide` verbunden. Nach der Rückkehr aus dem Back-Forward-Cache stimmen Knopftexte, Spielhinweise und Tastaturfokus weiterhin.
+- Service Worker: Das Staging lädt den Offline-Core mit `cache: 'reload'`. Vorher konnte ein Update noch frische HTTP-Cache-Einträge der alten Version übernehmen und sie bis zur nächsten Generation offline ausliefern.
+- Party Night aktualisiert sich nach „Spiel beenden“ wieder; der Klick-Hook zeigte auf den entfernten Knopf `#exit-game`.
+- Hub: Die Fortsetzen-Karte bleibt gesperrt, bis der Resume-Schutz den gespeicherten Stand geprüft hat. Vorher ließ sich ein inkonsistenter Timer-Stand fortsetzen, solange die Skripte noch luden.
+- Hub: Die Einführungskarte schließt auch, wenn der Speicher voll oder gesperrt ist.
+- Party Night plant ohne gespeicherte Gruppe mit derselben Beispielgruppe wie Hub und Spiel-Engines. Vorher zeigte der Planer bei neuen Nutzern „0 Personen“ und verweigerte den Plan.
+- `tests/cross-browser/smoke.spec.js` lief nie und prüfte noch den Stand mit 45 Spielen; er ist auf 55 Spiele und die aktuellen Texte nachgezogen.
+- Katalog: Die beworbenen Kategorien von `wavelength`, `draw-guess`, `sound-imitation` und `forehead-guess` entsprechen jetzt dem Inhalt. Die Suche fand vorher „Filme“ oder „Fahrzeuge“, die es nicht gibt, aber nicht die sechs zusätzlichen Stirn-Raten-Kategorien.
+- Offline-Core: zwölf Schriftdateien (136 KB) entfernt, die seit dem Entfernen des v2-Prototyps kein Stylesheet mehr nutzte.
+- `tests/extended-labs-content-quality.test.js` prüft alle 55 Spiele und läuft jetzt in `npm test`; `scripts/extended_labs_content_audit.py` läuft in `npm run validate`.
+- Statusdokumente und `release-evidence.json` beschreiben den CI-Stand wieder richtig: Der Runner-Ausfall ist seit dem 5. September 2026 behoben, der Cross-Browser-Workflow wurde noch nie gestartet.
 
 ### Release-Metadaten / Drift-Schutz
 

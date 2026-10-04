@@ -144,3 +144,34 @@ test('party hub links back to the production word imposter flow', async ({ page 
   await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
   await expect(page.locator('#start')).toBeVisible();
 });
+test('start labels survive a back-forward cache round trip', async ({ page }) => {
+  await page.goto('/party.html');
+  await page.evaluate(() => {
+    dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true }));
+    dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+  });
+  await page.locator('#browse-games').click();
+  for (const [id, label] of [['emoji-quiz', 'Trend Mode öffnen'], ['hot-seat', 'Viral Mode öffnen'], ['mafia', 'Mafia öffnen'], ['imposter', 'Word Imposter öffnen'], ['truth-dare', 'Jetzt spielen']]) {
+    await page.locator(`#game-grid [data-open-game="${id}"]`).click();
+    await expect(page.locator('#start-selected-game')).toHaveText(label);
+    await page.locator('#close-detail').click();
+  }
+});
+
+test('a custom game sharing a built-in title keeps its own start label', async ({ page }) => {
+  await page.goto('/party.html');
+  await page.evaluate(() => {
+    const title = window.SecretCirclePartyCatalog.getGame('truth-dare').title;
+    localStorage.setItem('secret-circle-party-created-games-v1', JSON.stringify({ version: 1, games: [{
+      id: 'custom-game-same-title', title, description: 'Eigenes Spiel mit gleichem Namen', templateId: 'prompt',
+      packs: [{ name: 'Test', items: ['Karte eins', 'Karte zwei', 'Karte drei'] }]
+    }] }));
+  });
+  await page.reload();
+  await page.locator('#browse-games').click();
+  await page.locator('#game-grid [data-open-game="custom-game-same-title"]').click();
+  await expect(page.locator('#start-selected-game')).toHaveText('Eigenes Spiel starten');
+  await page.locator('#close-detail').click();
+  await page.locator('#game-grid [data-open-game="truth-dare"]').click();
+  await expect(page.locator('#start-selected-game')).toHaveText('Jetzt spielen');
+});

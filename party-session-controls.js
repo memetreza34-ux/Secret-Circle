@@ -48,7 +48,7 @@
 
   function nextGameHref(catalog, currentGameId) {
     const id = nextGameId(catalog, currentGameId);
-    return id ? `quick-play.html?game=${encodeURIComponent(id)}` : 'party.html?view=games';
+    return id ? `quick-play.html?game=${encodeURIComponent(id)}` : 'v2-hub.html#spiele';
   }
 
   function familyForGame(catalog, gameId) {
@@ -351,7 +351,7 @@
       const next = query('#quick-next-game');
       if (!next) return null;
       const id = nextGameId(catalog, currentGameId);
-      next.href = id ? `quick-play.html?game=${encodeURIComponent(id)}` : 'party.html?view=games';
+      next.href = id ? `quick-play.html?game=${encodeURIComponent(id)}` : 'v2-hub.html#spiele';
       next.dataset.nextGameId = id || '';
       return id;
     }
