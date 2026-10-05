@@ -510,6 +510,13 @@ input[disabled] {
   font-weight: 700;
 }
 
+.app-version {
+  margin: 22px 0 8px;
+  text-align: center;
+  color: var(--fg-faint);
+  font-size: .75rem;
+}
+
 .empty {
   padding: 30px 18px;
   text-align: center;

@@ -342,9 +342,6 @@
   font-weight: 700;
 }
 .creator-preview-card button { width: 100%; }
-.asset-note { margin-top: 14px; padding: 14px; border: 1px dashed #ffffff33; border-radius: var(--r-card); }
-.asset-note strong { display: block; margin-bottom: 4px; font-size: .9rem; }
-.asset-note p { margin: 0; color: var(--fg-dim); font-size: .84rem; line-height: 1.5; }
 
 /* ── Meine Spiele ────────────────────────────────────────────────────── */
 

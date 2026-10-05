@@ -865,6 +865,8 @@
     $('#profile-avatar').innerHTML = avatarSVG(1);
     var group = players();
     $('#profile-since').textContent = group.length + (group.length === 1 ? ' Person' : ' Personen') + ' in der Gruppe';
+    var runtime = window.SecretCircleRuntime;
+    $('#app-version').textContent = runtime ? 'Version ' + runtime.version : '';
 
     var hub = hubHistory();
     var imposter = imposterHistory();

@@ -139,12 +139,15 @@ test('recovers safely from corrupted persisted data', async ({ page }) => {
 });
 
 test('exposes privacy information and remains usable on mobile viewport', async ({ page, isMobile }) => {
-  const privacyLink = page.getByRole('link', { name: 'Datenschutz' });
+  /* Der Datenschutz-Link liegt im Profil der Startseite. */
+  await page.goto('/v2-hub.html#profil');
+  await page.getByRole('button', { name: 'Datenschutz' }).click();
+  const privacyLink = page.getByRole('link', { name: 'Vollständige Datenschutzhinweise' });
   await expect(privacyLink).toBeVisible();
   await privacyLink.click();
   await expect(page).toHaveURL(/privacy\.html$/);
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
-  await page.goBack();
+  await page.goto('/');
   if (isMobile) {
     await expect(page.locator('#setup-screen')).toBeVisible();
     await expect(page.locator('#start')).toBeVisible();

@@ -543,8 +543,6 @@
 /* Ist das Match vorbei, bleibt „Neues Match“ die einzige und damit die Hauptaktion. */
 .shell #next-round[hidden] + .secondary { border-color: transparent; background: var(--fg); color: #000; }
 
-.app-footer { margin-top: 26px; color: var(--fg-faint); font-size: .78rem; line-height: 1.5; text-align: center; }
-.app-footer a { display: inline-flex; align-items: center; min-height: var(--touch); padding: 0 8px; color: var(--fg-dim); text-decoration: underline; text-underline-offset: 3px; }
 
 /* ── Datenschutzseite ────────────────────────────────────────────────── */
 

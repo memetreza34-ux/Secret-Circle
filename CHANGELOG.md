@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v84 – Überflüssige Hinweise entfernt
+
+- Word Imposter: Die Fußzeile („Version … · Lokale Offline-PWA · Datenschutz“) und die Zeile „Secret Circle · Offline-Partyspiel“ über dem Titel sind weg.
+- Die Versionsnummer steht jetzt klein unten im Profil der Startseite; der Datenschutz bleibt dort unter Profil → Datenschutz erreichbar.
+- Creator: Der Entwicklerhinweis „Für spätere Bilder und Animationen vorbereitet“ und der Zusatz „Secret Circle Creator · lokale Daten“ in der Fußzeile sind entfernt.
+
 ## v83 – Verbindungsanzeige nur noch offline
 
 - Die Anzeige „Online · offline bereit“ oben rechts ist weg. Word Imposter, Party Hub und Quick Play zeigen nur noch „Offline-Modus“, wenn das Gerät kein Netz hat; online bleibt die Stelle leer.

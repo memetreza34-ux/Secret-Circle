@@ -9,7 +9,8 @@ test.beforeEach(async ({ page }) => {
 test('runtime version matches the visible production beta version', async ({ page }) => {
   const runtimeVersion = await page.evaluate(() => window.SecretCircleRuntime?.version);
   expect(runtimeVersion).toBe('1.0.0-beta.3');
-  await expect(page.locator('.app-footer')).toContainText('Version 1.0.0-beta.3');
+  await page.goto('/v2-hub.html#profil');
+  await expect(page.locator('#app-version')).toHaveText('Version 1.0.0-beta.3');
 });
 
 test('unexpected runtime errors produce a recoverable user message', async ({ page }) => {
