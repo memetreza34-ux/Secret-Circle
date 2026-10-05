@@ -75,7 +75,7 @@ test('rules and scoring guide is keyboard accessible', async ({ page }) => {
 test('all Word Imposter phases retain focus and accessible controls', async ({ page }) => {
   const players = ['Alex', 'Sam', 'Mika'];
   await page.locator('#players').fill(players.join('\n'));
-  await page.locator('#match-rounds').selectOption('1');
+  await page.locator('#match-rounds').fill('1');
   await page.locator('#start').click();
   await expect(page.locator('#reveal-screen')).toBeVisible();
   expect(await auditDocument(page)).toEqual([]);

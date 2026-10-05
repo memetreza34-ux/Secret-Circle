@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v78 – Spielerliste zum Bearbeiten, freie Rundenzeit und Rundenzahl
+
+- Word Imposter zeigt die Spieler als Liste: Jeder Name steht in einem eigenen Feld und lässt sich direkt ändern; × entfernt, „Spieler hinzufügen“ öffnet ein neues Feld. Leere Felder verschwinden wieder, doppelte Namen werden rot markiert.
+- Rundenzeit (1–10 Minuten) und Runden (1–20) lassen sich in Einerschritten mit − und + oder per Eingabe einstellen statt nur in festen Stufen. Gespeicherte Einstellungen übernehmen jeden Wert in diesem Bereich.
+- Der Fokusrahmen um den Spielbereich nach dem Laden entfällt; per Tastatur erreichbare Bedienelemente behalten ihren Fokusrahmen.
+
 ## v77 – Word Imposter ohne eigene Kategorien
 
 - Word Imposter bietet nur noch die eingebauten Kategorien zur Auswahl; das Anlegen und Löschen eigener Kategorien ist aus der Einrichtung entfernt.
@@ -53,7 +59,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v77**
+- Source-Generation: **v78**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

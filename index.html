@@ -34,9 +34,9 @@
 
       <div class="players-field">
         <div class="field-head"><span id="players-label" class="field-label">Spieler</span><small id="players-help" class="field-note" aria-live="polite"></small></div>
-        <ul id="player-chips" class="player-chips" aria-labelledby="players-label"></ul>
-        <form id="player-add" class="player-add" novalidate><input id="player-new-name" maxlength="30" autocomplete="off" enterkeyhint="done" placeholder="Name hinzufügen" aria-labelledby="players-label"><button id="add-player" type="submit" aria-label="Spieler hinzufügen">+</button></form>
-        <!-- Datenfeld: Die Namens-Chips schreiben hier hinein; app.js und die Prüfung lesen von hier. -->
+        <ol id="player-list" class="player-list" aria-labelledby="players-label"></ol>
+        <button id="add-player" class="add-player" type="button">Spieler hinzufügen</button>
+        <!-- Datenfeld: Die Spielerliste schreibt hier hinein; app.js und die Prüfung lesen von hier. -->
         <textarea id="players" class="data-field" tabindex="-1" aria-hidden="true" aria-label="Spielerliste">Alex
 Sam
 Mika
@@ -47,8 +47,8 @@ Lina</textarea>
         <label class="setting" for="category"><span>Kategorie</span><select id="category"></select></label>
         <div class="setting"><label for="imposters">Imposter</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Imposter">−</button><input id="imposters" type="number" min="1" max="6" value="1" inputmode="numeric" aria-describedby="imposters-help"><button type="button" data-step="1" aria-label="Mehr Imposter">+</button></div></div>
         <small id="imposters-help" class="setting-note" aria-live="polite"></small>
-        <div class="setting"><label for="duration">Rundenzeit</label><div class="stepper"><button type="button" data-step="-1" aria-label="Kürzere Rundenzeit">−</button><select id="duration"><option value="1">1 Min</option><option value="2">2 Min</option><option value="3" selected>3 Min</option><option value="5">5 Min</option><option value="10">10 Min</option></select><button type="button" data-step="1" aria-label="Längere Rundenzeit">+</button></div></div>
-        <div class="setting"><label for="match-rounds">Runden</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Runden">−</button><select id="match-rounds"><option value="1">1</option><option value="3">3</option><option value="5" selected>5</option><option value="10">10</option></select><button type="button" data-step="1" aria-label="Mehr Runden">+</button></div></div>
+        <div class="setting"><label for="duration">Rundenzeit<span class="sr-only"> in Minuten</span></label><div class="stepper"><button type="button" data-step="-1" aria-label="Kürzere Rundenzeit">−</button><span class="stepper-value"><input id="duration" type="number" min="1" max="10" value="3" inputmode="numeric"><span class="unit" aria-hidden="true">Min</span></span><button type="button" data-step="1" aria-label="Längere Rundenzeit">+</button></div></div>
+        <div class="setting"><label for="match-rounds">Runden</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Runden">−</button><input id="match-rounds" type="number" min="1" max="20" value="5" inputmode="numeric"><button type="button" data-step="1" aria-label="Mehr Runden">+</button></div></div>
         <label class="setting" for="hint"><span>Hilfswort für Imposter</span><input id="hint" class="switch" type="checkbox" role="switch" checked></label>
       </div>
 

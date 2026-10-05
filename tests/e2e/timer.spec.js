@@ -3,8 +3,8 @@ const { test, expect } = require('@playwright/test');
 async function startDiscussion(page) {
   const players = ['Alex', 'Sam', 'Mika'];
   await page.locator('#players').fill(players.join('\n'));
-  await page.locator('#duration').selectOption('1');
-  await page.locator('#match-rounds').selectOption('1');
+  await page.locator('#duration').fill('1');
+  await page.locator('#match-rounds').fill('1');
   await page.locator('#start').click();
   for (let index = 0; index < players.length; index += 1) {
     await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();

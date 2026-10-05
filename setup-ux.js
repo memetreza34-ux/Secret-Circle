@@ -6,10 +6,11 @@
   const playersHelp = document.querySelector('#players-help');
   const impostersHelp = document.querySelector('#imposters-help');
   const startButton = document.querySelector('#start');
-  const chipList = document.querySelector('#player-chips');
-  const addForm = document.querySelector('#player-add');
-  const nameInput = document.querySelector('#player-new-name');
+  const playerList = document.querySelector('#player-list');
+  const addButton = document.querySelector('#add-player');
   const MAX_PLAYERS = 20;
+  const AVATAR_COLORS = ['#FFB020', '#4DD9A0', '#A78BFA', '#F472B6', '#38BDF8', '#FF8A65'];
+  let writingFromList = false;
   if (!playersField || !impostersField || !playersHelp || !impostersHelp) return;
 
   function normalizedNames() {
@@ -24,56 +25,109 @@
     return Math.max(1, Math.min(maximum, suggested));
   }
 
-  /* Die Namens-Chips sind die sichtbare Spielerliste. Gespeichert und geprüft
-     wird weiter das Datenfeld #players, damit app.js unverändert bleibt. */
-  function writeNames(names) {
-    playersField.value = names.join('\n');
+  /* Die Spielerliste zeigt jeden Namen als eigenes, direkt änderbares Feld.
+     Gespeichert und geprüft wird weiter das Datenfeld #players, damit app.js unverändert bleibt. */
+  function cleanName(value) {
+    return value.trim().replace(/\s+/g, ' ');
+  }
+
+  function listInputs() {
+    return playerList ? [...playerList.querySelectorAll('input')] : [];
+  }
+
+  function listNames() {
+    return listInputs().map(input => cleanName(input.value)).filter(Boolean);
+  }
+
+  function writeFromList() {
+    writingFromList = true;
+    playersField.value = listNames().join('\n');
     playersField.dispatchEvent(new Event('input', { bubbles: true }));
+    writingFromList = false;
   }
 
-  function renderChips(names) {
-    if (!chipList) return;
+  function refreshRows() {
     const seen = new Set();
-    chipList.replaceChildren(...names.map((name, index) => {
+    listInputs().forEach((input, index) => {
+      const row = input.closest('li');
+      const name = cleanName(input.value);
       const key = name.toLocaleLowerCase('de-DE');
-      const item = document.createElement('li');
-      const label = document.createElement('span');
-      const remove = document.createElement('button');
-      if (seen.has(key)) item.className = 'duplicate';
-      seen.add(key);
-      label.textContent = name;
-      remove.type = 'button';
-      remove.textContent = '×';
-      remove.setAttribute('aria-label', `${name} entfernen`);
-      remove.addEventListener('click', () => {
-        writeNames(normalizedNames().filter((_, position) => position !== index));
-        nameInput?.focus();
-      });
-      item.append(label, remove);
-      return item;
-    }));
+      const duplicate = Boolean(name) && seen.has(key);
+      if (name) seen.add(key);
+      row.classList.toggle('duplicate', duplicate);
+      input.setAttribute('aria-invalid', String(duplicate));
+      input.setAttribute('aria-label', `Spieler ${index + 1}`);
+      const avatar = row.querySelector('.avatar');
+      avatar.textContent = name ? name.charAt(0).toLocaleUpperCase('de-DE') : '?';
+      avatar.style.background = AVATAR_COLORS[index % AVATAR_COLORS.length];
+      row.querySelector('button').setAttribute('aria-label', `${name || `Spieler ${index + 1}`} entfernen`);
+    });
+    if (addButton) addButton.disabled = listInputs().length >= MAX_PLAYERS;
   }
 
-  function addPlayer(event) {
-    event.preventDefault();
-    const name = nameInput.value.trim().replace(/\s+/g, ' ');
-    if (!name) {
-      nameInput.focus();
-      return;
-    }
-    const names = normalizedNames();
-    if (names.some(existing => existing.toLocaleLowerCase('de-DE') === name.toLocaleLowerCase('de-DE'))) {
-      playersHelp.textContent = `${name} ist schon dabei.`;
-      nameInput.select();
-      return;
-    }
-    if (names.length >= MAX_PLAYERS) {
+  function makeRow(name) {
+    const row = document.createElement('li');
+    const avatar = document.createElement('span');
+    const input = document.createElement('input');
+    const remove = document.createElement('button');
+    avatar.className = 'avatar';
+    avatar.setAttribute('aria-hidden', 'true');
+    input.value = name;
+    input.maxLength = 30;
+    input.autocomplete = 'off';
+    input.enterKeyHint = 'next';
+    input.placeholder = 'Name';
+    remove.type = 'button';
+    remove.textContent = '×';
+    input.addEventListener('input', () => {
+      writeFromList();
+      refreshRows();
+    });
+    input.addEventListener('keydown', event => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      const next = row.nextElementSibling?.querySelector('input');
+      if (next) next.focus();
+      else addRow();
+    });
+    /* Ein leer gelassenes Feld verschwindet wieder, sobald man woanders hintippt. */
+    input.addEventListener('blur', () => {
+      if (cleanName(input.value) || !row.isConnected) return;
+      row.remove();
+      refreshRows();
+    });
+    remove.addEventListener('click', () => {
+      const neighbour = row.nextElementSibling || row.previousElementSibling;
+      row.remove();
+      writeFromList();
+      refreshRows();
+      (neighbour?.querySelector('input') || addButton)?.focus();
+    });
+    row.append(avatar, input, remove);
+    return row;
+  }
+
+  function renderRows(names) {
+    if (!playerList) return;
+    playerList.replaceChildren(...names.map(makeRow));
+    refreshRows();
+  }
+
+  function addRow() {
+    if (!playerList) return;
+    if (listInputs().length >= MAX_PLAYERS) {
       playersHelp.textContent = `Höchstens ${MAX_PLAYERS} Spieler.`;
       return;
     }
-    nameInput.value = '';
-    writeNames([...names, name]);
-    nameInput.focus();
+    const empty = listInputs().find(input => !cleanName(input.value));
+    if (empty) {
+      empty.focus();
+      return;
+    }
+    const row = makeRow('');
+    playerList.append(row);
+    refreshRows();
+    row.querySelector('input').focus();
   }
 
   function stepperControl(stepper) {
@@ -149,7 +203,9 @@
     /* Im gültigen Bereich sorgen die Knöpfe − und + für passende Werte; ein Hinweis erscheint nur bei Fehlern. */
     impostersHelp.textContent = validImposters ? '' : `Bitte eine ganze Zahl zwischen 1 und ${maximumImposters} wählen.`;
 
-    renderChips(names);
+    /* Nur neu aufbauen, wenn sich die Namen von außen geändert haben – sonst bleibt beim Tippen der Fokus erhalten. */
+    if (!writingFromList && names.join('\n') !== listNames().join('\n')) renderRows(names);
+    else refreshRows();
     refreshSteppers();
   }
 
@@ -163,8 +219,20 @@
     });
   });
   document.querySelectorAll('.stepper select').forEach(select => select.addEventListener('change', refreshSteppers));
+  /* Frei getippte Werte bei Rundenzeit und Runden in den erlaubten Bereich holen. */
+  document.querySelectorAll('.stepper input[type="number"]').forEach(input => {
+    if (input === impostersField) return;
+    input.addEventListener('change', () => {
+      const minimum = Number(input.min) || 1;
+      const maximum = Number(input.max) || minimum;
+      const value = Math.round(Number(input.value));
+      input.value = String(Number.isFinite(value) && input.value !== '' ? Math.max(minimum, Math.min(maximum, value)) : minimum);
+      refreshSteppers();
+    });
+    input.addEventListener('input', refreshSteppers);
+  });
 
-  addForm?.addEventListener('submit', addPlayer);
+  addButton?.addEventListener('click', addRow);
   playersField.addEventListener('input', update);
   playersField.addEventListener('change', update);
   impostersField.addEventListener('input', update);

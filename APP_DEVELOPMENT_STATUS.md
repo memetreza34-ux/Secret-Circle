@@ -9,7 +9,7 @@ Operativer Fortschrittstracker zu `APP_ENTWICKLUNG_VON_A_BIS_Z.md`.
 **Öffentliche Releasefreigabe: NO_GO**  
 **Built-ins: 55 · 15 Core / 13 Extended / 27 Labs**  
 **Expansion Wave 1: 10/10 quellsseitig implementiert**  
-**Offline-Core: `secret-circle-v77` / `secret-circle-v77-staging`**
+**Offline-Core: `secret-circle-v78` / `secret-circle-v78-staging`**
 **Package: `1.0.0-beta.3`**  
 **Core Source Review/Hardening: 15/15 PREPARED**  
 **Accessibility: PREPARED**  
@@ -86,8 +86,8 @@ Die Implementierung verwendet sechs wiederverwendbare Enginefamilien: Quiz, Impo
 
 ## Offline / PWA v64
 
-- `secret-circle-v77`
-- `secret-circle-v77-staging`
+- `secret-circle-v78`
+- `secret-circle-v78-staging`
 - SessionControls v5 + QT57 + BF58 + BG59 + HS60 offline
 - Quick Replacement Guard + Wave-1-Routing offline
 - alle früheren Resume-/Privacy-/A11y-/Backup-/Advanced-Verträge enthalten

@@ -94,6 +94,8 @@
 }
 .card:focus { outline: none; }
 .card:focus-visible { outline: 3px solid var(--fg); outline-offset: 4px; }
+/* Die Spielbereiche bekommen den Fokus nur per Skript (für Screenreader); per Tab erreicht man sie nicht. */
+.card[data-screen]:focus-visible { outline: none; }
 .card h2 {
   margin: 0 0 16px;
   font: 400 clamp(1.5rem, 6vw, 2.15rem)/1.08 var(--display);
@@ -239,26 +241,51 @@
   border-top: 1px solid var(--line);
 }
 
-/* Spieler als Namens-Chips */
+/* Spieler als Liste: jeder Name ein eigenes, änderbares Feld */
 .data-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
-.field-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.field-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .field-label { font: 400 1.02rem/1.2 var(--display); text-transform: uppercase; }
 .field-note { color: var(--fg-dim); font-size: .84rem; font-weight: 700; text-align: right; }
 .players-field:has(#players[aria-invalid='true']) .field-note { color: var(--signal); }
-.player-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
-.player-chips:empty { display: none; }
-.player-chips li {
-  display: inline-flex;
+.player-list { display: grid; gap: 8px; margin: 0 0 8px; padding: 0; list-style: none; }
+.player-list:empty { display: none; }
+.player-list li {
+  display: flex;
   align-items: center;
-  min-height: var(--touch);
-  padding-left: 15px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
+  gap: 12px;
+  min-height: 54px;
+  padding: 0 4px 0 10px;
+  border: 1px solid transparent;
+  border-radius: 16px;
   background: var(--surface-2);
-  font-weight: 700;
 }
-.player-chips li.duplicate { border-color: var(--signal); color: var(--signal); }
-.shell .player-chips button {
+.player-list li:focus-within { border-color: #ffffff40; }
+.player-list li.duplicate { border-color: var(--signal); }
+.player-list .avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #0A0B0F;
+  font-size: .95rem;
+  font-weight: 800;
+}
+.shell .player-list input:not([type='checkbox']):not([type='file']) {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--touch);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 700 1.05rem var(--body);
+}
+.shell .player-list input:not([type='checkbox']):hover { border: 0; }
+.shell .player-list input:focus-visible { outline: none; }
+.shell .player-list li.duplicate input { color: var(--signal); }
+.shell .player-list button {
+  flex: none;
   width: var(--touch);
   min-height: var(--touch);
   padding: 0;
@@ -266,13 +293,37 @@
   border-radius: 50%;
   background: none;
   color: var(--fg-dim);
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 500;
 }
-.shell .player-chips button:hover { background: #ffffff12; color: var(--fg); }
-.player-add { display: flex; gap: 8px; }
-.shell .player-add input { flex: 1; min-width: 0; }
-.shell .player-add button { flex: none; width: 52px; min-height: 48px; padding: 0; font-size: 1.5rem; font-weight: 600; }
+.shell .player-list button:hover { background: #ffffff12; color: var(--fg); }
+.shell .add-player {
+  width: 100%;
+  min-height: 54px;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0 14px 0 10px;
+  border: 1px dashed #ffffff3d;
+  border-radius: 16px;
+  background: none;
+  color: var(--fg);
+  font-weight: 700;
+}
+.shell .add-player::before {
+  content: '+';
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--fg);
+  color: #0A0B0F;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.shell .add-player:hover { border-color: var(--fg); background: none; color: var(--fg); }
+.shell .add-player:disabled { border-style: dashed; box-shadow: none; }
 
 /* Einstellungen als Zeilen: Name links, Wert rechts */
 .settings-list { margin: 24px 0 22px; border-top: 1px solid var(--line); }
@@ -326,7 +377,10 @@
 .shell .setting > span { margin: 0; font-size: 1rem; font-weight: 700; }
 .shell .setting > select { border-color: transparent; background-color: transparent; color: var(--fg); font-weight: 700; }
 .shell .setting > select:hover { border-color: var(--line); }
-.shell .setting .stepper input { width: 74px; min-height: var(--touch); padding: 0 4px; border: 0; background: none; text-align: center; }
+.shell .setting .stepper input { width: 86px; min-height: var(--touch); padding: 0 4px; border: 0; background: none; color: var(--fg); font: 800 1.08rem var(--body); text-align: center; }
+.stepper-value { display: flex; align-items: center; justify-content: center; width: 86px; }
+.shell .setting .stepper-value input { width: 30px; padding: 0; text-align: right; }
+.stepper-value .unit { padding-left: 4px; font-weight: 800; font-size: 1.08rem; }
 .setting-note { display: block; padding: 8px 0 0; color: var(--signal); font-size: .84rem; font-weight: 700; }
 .setting-note:empty { display: none; }
 

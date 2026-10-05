@@ -33,8 +33,8 @@ async function resolveAllVotingRounds(page, players, firstRoundTargets) {
 
 async function startBasicGame(page, players, rounds = '1') {
   await page.locator('#players').fill(players.join('\n'));
-  await page.locator('#match-rounds').selectOption(rounds);
-  await page.locator('#duration').selectOption('1');
+  await page.locator('#match-rounds').fill(rounds);
+  await page.locator('#duration').fill('1');
   await page.locator('#start').click();
 }
 
