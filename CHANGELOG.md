@@ -2,6 +2,15 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v87 – Altes Design gelöscht, alles im v2-Design
+
+- Die Oberfläche von `party.html` (Start, Katalog, Spieler, Favoriten, Verlauf und Erfolge, Daten und Sicherung, eigene Kategorien, Partyabend-Planer, Spieldetail, Anleitung) trägt jetzt das v2-Design: neutrale dunkle Flächen, weiße Pillen-Knöpfe, Archivo-Black-Überschriften. Alle Funktionen, IDs und Abläufe bleiben unverändert.
+- Neue Stildateien: `v2-party-hub.css` für diese Oberfläche, `v2-update.css` für den Hinweis „Neue Secret-Circle-Version bereit“.
+- Gelöscht: `party.css`, `party-extra.css`, `party-night.css`, `party-guide.css`, `party-release.css`, `party-search.css`, `pwa-update.css`. `runtime-guard.js` und `party-hub-polish.js` laden sie nicht mehr nach.
+- Manifest und `party.html` verwenden die v2-Grundfarbe `#0A0B0F` als Theme- und Hintergrundfarbe.
+- Die Fußzeile von `party.html` führt zur Startseite zurück und nennt keine „lokale Offline-PWA“ mehr.
+- Prüfungen, die die alten Stildateien lasen, prüfen dieselben Zusagen jetzt in `v2-party-hub.css` und `v2-update.css`.
+
 ## v84 – Überflüssige Hinweise entfernt
 
 - Word Imposter: Die Fußzeile („Version … · Lokale Offline-PWA · Datenschutz“) und die Zeile „Secret Circle · Offline-Partyspiel“ über dem Titel sind weg.

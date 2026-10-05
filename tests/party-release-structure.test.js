@@ -71,7 +71,7 @@ assert.deepEqual(operatorRelease.releaseContext, {
 assert.equal(operatorRelease.evidenceStatus, 'PREPARED');
 assert.equal(operatorRelease.operatorGate, 'BLOCKED');
 
-const runtime = read('runtime-guard.js'); const worker = read('sw.js'); const tierStyles = read('party-release.css'); const searchStyles = read('party-search.css');
+const runtime = read('runtime-guard.js'); const worker = read('sw.js'); const tierStyles = read('v2-party-hub.css'); const searchStyles = tierStyles;
 assert.match(runtime, /party-release-structure\.js/); assert.match(runtime, /party-filter-state\.js/); assert.match(runtime, /party-search-assist\.js/);
 assert.ok(runtime.indexOf('loadPartyReleaseStructure') < runtime.lastIndexOf('loadPartyFilterState'));
 assert.ok(runtime.indexOf('loadPartyFilterState') < runtime.lastIndexOf('loadPartySearchAssist'));

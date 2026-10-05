@@ -80,7 +80,7 @@ Cloudflare Pages dokumentiert `_headers` für statische Assets. V1 verwendet kei
 Sobald eine echte Staging-Origin existiert:
 
 ```bash
-npm run staging:smoke -- https://REAL-STAGING-ORIGIN/ --expected-cache secret-circle-v84
+npm run staging:smoke -- https://REAL-STAGING-ORIGIN/ --expected-cache secret-circle-v87
 ```
 
 Erforderlich:
@@ -171,7 +171,7 @@ Cloudflare Pages erlaubt laut aktueller Dokumentation die Steuerung automatische
 Nur wenn Staging auf **demselben unveränderten RC** bestanden ist:
 
 ```bash
-npm run staging:smoke -- https://REAL-PRODUCTION-ORIGIN/ --expected-cache secret-circle-v84 --production
+npm run staging:smoke -- https://REAL-PRODUCTION-ORIGIN/ --expected-cache secret-circle-v87 --production
 ```
 
 Zusätzlich Production:

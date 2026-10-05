@@ -50,8 +50,8 @@ assert.match(creator, /role="status" aria-live="polite"/);
 assert.match(creator, /id="creator-help"[^>]*role="dialog"[^>]*aria-modal="true"/);
 assert.match(creator, /secondary-surface-a11y\.js/);
 
-const partyCss = read('party.css');
-const extraCss = read('party-extra.css');
+const partyCss = read('v2-party-hub.css');
+const extraCss = partyCss;
 const v2CreatorCss = read('v2-creator.css');
 const v2ImposterCss = read('v2-imposter.css');
 const v2AdvancedCss = read('v2-advanced.css');
@@ -64,7 +64,7 @@ const hubA11y = read('party-hub-a11y.js');
 const secondaryA11y = read('secondary-surface-a11y.js');
 
 assert.match(partyCss, /:focus-visible/);
-assert.match(partyCss, /outline:3px solid var\(--accent\)/);
+assert.match(partyCss, /outline:3px solid var\(--fg\)/);
 assert.match(partyCss, /button\{min-height:46px/);
 assert.match(partyCss, /\.hub-nav button\{min-height:44px/);
 assert.match(partyCss, /@media \(prefers-reduced-motion:reduce\)/);

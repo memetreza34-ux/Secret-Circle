@@ -31,7 +31,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const cache = await caches.open(production[0]);
     const expected = [
       './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
-      './party.css', './party-extra.css', './party-night.css', './v2-theme.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css', './party-guide.css',
+      './v2-theme.css', './v2-party-hub.css', './v2-update.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
       './app.js', './game-engine.js', './role-assignment.js', './word-packs.js', './data-store.js',
       './party-catalog.js', './party-expansion.js', './party-trending-catalog.js', './party-mega-catalog.js',
@@ -196,7 +196,7 @@ test('connection badge stays hidden while online and appears only offline', asyn
   await expect(page.locator('#connection')).toHaveText('Offline-Modus');
   await expect(page.locator('#connection')).toBeVisible();
   await page.goto('/party.html');
-  /* party.css blendet die Pille auf schmalen Bildschirmen ganz aus. */
+  /* v2-party-hub.css blendet die Pille auf schmalen Bildschirmen ganz aus. */
   await expect(page.locator('#hub-connection')).toHaveText('Offline-Modus');
   await expect(page.locator('#hub-connection')).not.toHaveAttribute('hidden', '');
   await page.goto('/quick-play.html?game=rapid-fire');

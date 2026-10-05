@@ -1,6 +1,6 @@
 # Secret Circle – Designsystem
 
-Stand: 16. August 2026
+Stand: 5. Oktober 2026
 
 ## 1. Ziel
 
@@ -19,44 +19,30 @@ Secret Circle soll über Hub, Kernspiele, Advanced, Creator und Datenbereiche wi
 
 ## 3. Aktuelle visuelle Basis
 
-Das aktuelle Produkt verwendet ein dunkles System mit violett/cyaner Akzentwelt.
+Seit Oktober 2026 gilt nur noch das v2-Design aus Claude Design: dunkel, neutral, weiße Hauptaktion, Rot (`--signal`) nur für Gefahr und Abbruch.
 
-### Kernfarben aus `party.css`
+### Kernfarben aus `v2-theme.css`
 
 | Token | Wert | Bedeutung |
 |---|---|---|
-| `--bg` | `#070b14` | App-Hintergrund |
-| `--surface` | `#101827` | Hauptflächen |
-| `--surface-2` | `#172033` | Karten/sekundäre Flächen |
-| `--surface-3` | `#1d2940` | aktive/tertiäre Flächen |
-| `--border` | `#2a3853` | Standardrahmen |
-| `--text` | `#f8fafc` | Haupttext |
-| `--muted` | `#9fb0c9` | Sekundärtext |
-| `--primary` | `#8b5cf6` | primäre Aktion |
-| `--primary-strong` | `#7c3aed` | primärer Verlauf |
-| `--accent` | `#22d3ee` | Fokus/Akzent |
-| `--success` | `#34d399` | Erfolg |
-| `--warning` | `#fbbf24` | Warnung/Offline |
-| `--danger` | `#fb7185` | Gefahr/Fehler |
+| `--bg` | `#0A0B0F` | App-Hintergrund |
+| `--surface` | `#14161D` | Karten und Flächen |
+| `--surface-2` | `#1D202A` | aktive oder zweite Ebene |
+| `--line` | `#262A36` | Rahmen |
+| `--fg` | `#EEF1F7` | Text und Hauptaktion |
+| `--fg-dim` | `#838A9C` | Nebentext |
+| `--signal` | `#FF4560` | Gefahr, Abbruch, Fehler |
+| `--ok` | `#4DD9A0` | Erfolg, spielbar |
 
 ### Form
 
-- globaler Hauptradius: `22px`
-- große Hero-/Play-Flächen: ca. `28–32px`
-- kleinere Controls: ca. `10–16px`
-- Karten nutzen weiche Schatten und dünne Borders
-
-Diese Basis wird beibehalten; neue Bereiche sollen nicht eigene unabhängige Farbwelten erfinden.
+- Karten: `--r-card` (16px), große Flächen: `--r-big` (22px)
+- Knöpfe als Pillen (`border-radius: 999px`), Mindesthöhe `--touch` (44px)
+- keine Verläufe, keine farbigen Schatten
 
 ## 4. Typografie
 
-Aktuelle Font-Familie:
-
-```css
-Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
-```
-
-Da Secret Circle keine externe Runtime-Schriftart benötigt, muss das UI auch mit Systemfonts vollständig funktionieren.
+Überschriften: `Archivo Black` (`--display`), in Großbuchstaben. Fließtext: `Figtree` (`--body`). Beide liegen lokal in `fonts/` und werden über `v2-theme.css` geladen; ohne sie greifen Systemschriften.
 
 ### Hierarchie
 

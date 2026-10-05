@@ -35,10 +35,9 @@ budgets = {
     'party-advanced-preferences.js': 5_000, 'party-quick-modes.js': 78_000,
     'party-mega-modes.js': 80_000, 'party-viral-modes.js': 80_000,
     'party-created-modes.js': 78_000, 'quick-loader.js': 18_000,
-    'pwa-update.css': 12_000,
-    'party.css': 55_000, 'party-extra.css': 25_000, 'party-night.css': 22_000,
-    'v2-play.css': 20_000, 'v2-party-play.css': 15_000, 'v2-imposter.css': 24_000, 'v2-advanced.css': 20_000, 'v2-creator.css': 25_000, 'party-guide.css': 35_000, 'party-release.css': 12_000,
-    'party-search.css': 16_000, 'sw.js': 40_000,
+    'v2-update.css': 8_000, 'v2-party-hub.css': 48_000,
+    'v2-play.css': 20_000, 'v2-party-play.css': 15_000, 'v2-imposter.css': 24_000, 'v2-advanced.css': 20_000, 'v2-creator.css': 25_000,
+    'sw.js': 40_000,
     'manifest.webmanifest': 6_000, 'icon.svg': 25_000,
     'icon-192.png': 90_000, 'icon-512.png': 220_000
 }

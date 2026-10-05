@@ -47,7 +47,10 @@ test('manifest opens the v2 start screen and exposes installable mobile metadata
   expect(result.mobileCapable).toBe('yes');
   expect(result.appleCapable).toBe('yes');
   expect(result.appleTitle).toBe('Secret Circle');
-  expect(result.themeColor).toBe('#0f172a');
+  expect(result.themeColor).toBe('#0A0B0F');
+  /* Statusleiste der installierten App und Seite haben dieselbe v2-Grundfarbe. */
+  expect(result.manifest.theme_color).toBe(result.themeColor);
+  expect(result.manifest.background_color).toBe('#0A0B0F');
   expect(result.csp).toContain("default-src 'self'");
   expect(result.csp).toContain("object-src 'none'");
 });

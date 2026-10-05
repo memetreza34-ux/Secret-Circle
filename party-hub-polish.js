@@ -222,12 +222,6 @@
   }
 
   function loadGuidance() {
-    if (!document.querySelector('link[href="party-guide.css"]')) {
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = 'party-guide.css';
-      document.head.append(style);
-    }
     if (!document.querySelector('script[src="party-guide.js"]')) {
       const script = document.createElement('script');
       script.src = 'party-guide.js';

@@ -2,17 +2,17 @@
 
 Plan vom 3. Oktober 2026. Zuständig seit 4. Oktober 2026: **Claude Code, allein.** Codex arbeitet nicht mehr am Design, damit sich niemand in die Quere kommt.
 
-## Stand (4. Oktober 2026)
+## Stand (5. Oktober 2026)
 
 | Schritt | Stand |
 |---|---|
 | 1. `quick-play.html` | erledigt (Codex, `v2-play.css`) |
-| 2. Spielansicht von `party.html` | erledigt (Codex, `v2-party-play.css`; lädt noch zusätzlich die alten Stile für die alte Hub-Oberfläche) |
+| 2. Spielansicht von `party.html` | erledigt (Codex, `v2-party-play.css`) |
 | 3. `advanced.html` | erledigt (`v2-advanced.css`) |
 | 4. `index.html` und `privacy.html` | erledigt (`v2-imposter.css`) |
 | 5. `creator.html` | erledigt (`v2-creator.css`) |
-| 6. Planer, Daten, Kategorien, Favoriten, Statistik nach v2 | offen |
-| 7. Altes Design löschen | teilweise: `styles.css`, `pwa.css`, `creator.css`, `party-quick.css` sind gelöscht. Offen: `party.css`, `party-extra.css`, `party-night.css`, `party-guide.css`, `party-release.css`, `party-search.css`, `pwa-update.css` (hängen an der alten Hub-Oberfläche in `party.html` bzw. am Update-Hinweis) |
+| 6. Planer, Daten, Kategorien, Favoriten, Statistik nach v2 | erledigt: Die Oberfläche von `party.html` trägt das v2-Design (`v2-party-hub.css`); IDs, Abläufe und Funktionen sind unverändert. Update-Hinweis in `v2-update.css`. |
+| 7. Altes Design löschen | erledigt: `party.css`, `party-extra.css`, `party-night.css`, `party-guide.css`, `party-release.css`, `party-search.css` und `pwa-update.css` sind gelöscht, ihr Nachladen in `runtime-guard.js` und `party-hub-polish.js` entfernt. |
 
 Die Tabellen unten beschreiben den Ausgangszustand vom 3. Oktober.
 

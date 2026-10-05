@@ -26,7 +26,7 @@ Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare En
 
 ## 4a. Oberfläche im Claude-Design (v2)
 
-`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. `quick-play.html` und die laufende Spielansicht in `party.html` verwenden v2-Stile; die alte Hub-Oberfläche von `party.html` und die übrigen Engine-Seiten werden in eigenen Schritten umgestellt.
+`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. Alle Seiten laden nur noch v2-Stile: `v2-theme.css` plus je Seite `v2-play.css`, `v2-party-hub.css` und `v2-party-play.css`, `v2-advanced.css`, `v2-imposter.css` oder `v2-creator.css`. Der Update-Hinweis kommt aus `v2-update.css` (von `runtime-guard.js` nachgeladen).
 
 ## 5. Hub- und Timergrenzen
 
@@ -117,7 +117,7 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v84` / `secret-circle-v84-staging`**.
+Aktueller Offline-Core: **`secret-circle-v87` / `secret-circle-v87-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
