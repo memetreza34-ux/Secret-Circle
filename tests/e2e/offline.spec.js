@@ -183,23 +183,24 @@ test('offline mode preserves a locally saved active Imposter game', async ({ pag
   await expect(page.locator('#reveal-progress')).toContainText('Karte 2 von 3');
 });
 
-test('connection badge promises offline use only once the worker controls the page', async ({ page }) => {
+test('connection badge stays hidden while online and appears only offline', async ({ page, context }) => {
   await page.goto('/party.html');
   await waitForWorker(page);
-  await expect(page.locator('#hub-connection')).toHaveText('Online · offline bereit');
+  await expect(page.locator('#hub-connection')).toBeHidden();
   await page.goto('/');
-  await expect(page.locator('#connection')).toHaveText('Online · offline bereit');
-});
-
-test.describe('without a service worker', () => {
-  /* Privater Modus und In-App-Browser blockieren Service Worker. Dann darf die
-     App nicht behaupten, sie sei offline bereit. */
-  test.use({ serviceWorkers: 'block' });
-
-  test('connection badge stays at plain online', async ({ page }) => {
-    await page.goto('/party.html');
-    await expect(page.locator('#hub-connection')).toHaveText('Online');
-    await page.goto('/');
-    await expect(page.locator('#connection')).toHaveText('Online');
-  });
+  await expect(page.locator('#connection')).toBeHidden();
+  await page.goto('/quick-play.html?game=rapid-fire');
+  await expect(page.locator('#quick-connection')).toBeHidden();
+  await context.setOffline(true);
+  await page.goto('/');
+  await expect(page.locator('#connection')).toHaveText('Offline-Modus');
+  await expect(page.locator('#connection')).toBeVisible();
+  await page.goto('/party.html');
+  /* party.css blendet die Pille auf schmalen Bildschirmen ganz aus. */
+  await expect(page.locator('#hub-connection')).toHaveText('Offline-Modus');
+  await expect(page.locator('#hub-connection')).not.toHaveAttribute('hidden', '');
+  await page.goto('/quick-play.html?game=rapid-fire');
+  await expect(page.locator('#quick-connection')).toBeVisible();
+  await context.setOffline(false);
+  await expect(page.locator('#quick-connection')).toBeHidden();
 });

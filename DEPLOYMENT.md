@@ -9,7 +9,7 @@ Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffe
 - **55 Built-ins · 15 Core / 13 Extended / 27 Labs**
 - **Wave 1 = 10/10 geplante Labs quellsseitig implementiert**
 - Word Imposter + Smart Party Night + lokaler Creator
-- aktueller Offline-Core: **`secret-circle-v82` / `secret-circle-v82-staging`**
+- aktueller Offline-Core: **`secret-circle-v83` / `secret-circle-v83-staging`**
 - Package: **`1.0.0-beta.3`**
 - Quick Loader v11
 - Draft-PR #13 auf `agent/release-foundation-2027`
@@ -59,7 +59,7 @@ Offline enthalten sind alle Wave-1-Kataloge und Runner, `party-session-controls.
 ## HTTPS-Staging
 
 ```bash
-npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v82
+npm run staging:smoke -- https://STAGING-ORIGIN/ --expected-cache secret-circle-v83
 ```
 
 Der automatisierte Netzwerk-Smoke prüft die ausgelieferte Origin, nicht nur Repositorydateien. Er verlangt für HTML mindestens:
@@ -102,7 +102,7 @@ Ein alter Cache-Name darf nicht für einen veränderten Offline-Core wiederverwe
 ## Production-Smoke-Test
 
 ```bash
-npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v82 --production
+npm run staging:smoke -- https://PRODUCTION-ORIGIN/ --expected-cache secret-circle-v83 --production
 ```
 
 Production muss zusätzlich liefern:

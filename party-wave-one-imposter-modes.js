@@ -520,7 +520,7 @@
     game.instructions.forEach(rule => $('#quick-rules').append(element('li', '', rule)));
     updateResume(); sessionControls.updateNextGame(C, game.id);
     $('#quick-start').addEventListener('click', startSession); $('#quick-resume').addEventListener('click', resumeSession); $('#quick-discard').addEventListener('click', discardActive);
-    const updateConnection = () => { $('#quick-connection').textContent = navigator.onLine ? 'Online' : 'Offline-Modus'; };
+    const updateConnection = () => { $('#quick-connection').hidden = navigator.onLine; };
     addEventListener('online', updateConnection); addEventListener('offline', updateConnection); updateConnection();
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => setStatus('Offline-Modus konnte nicht aktiviert werden.', true));
   }

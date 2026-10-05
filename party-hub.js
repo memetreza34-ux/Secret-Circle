@@ -755,15 +755,11 @@
     $('#preset-name').value = '';
     saveState(); renderPlayers(); setStatus(`Preset „${name}“ gespeichert.`);
   }
-  /* „offline bereit“ erst, wenn der Service Worker die Seite steuert. Er
-     übernimmt sie erst, nachdem der Offline-Core vollständig im Cache liegt.
-     Im privaten Modus oder in In-App-Browsern kommt es nie dazu. */
-  function offlineReady() {
-    try { return Boolean(navigator.serviceWorker?.controller); } catch { return false; }
-  }
+  /* Der Hinweis erscheint nur ohne Netz; online ist er überflüssig. */
   function updateConnection() {
     const online = navigator.onLine;
-    $('#hub-connection').textContent = online ? (offlineReady() ? 'Online · offline bereit' : 'Online') : 'Offline-Modus';
+    $('#hub-connection').textContent = 'Offline-Modus';
+    $('#hub-connection').hidden = online;
     $('#hub-connection').classList.toggle('offline', !online);
   }
   function bindEvents() {

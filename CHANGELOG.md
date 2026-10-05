@@ -2,6 +2,10 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v83 – Verbindungsanzeige nur noch offline
+
+- Die Anzeige „Online · offline bereit“ oben rechts ist weg. Word Imposter, Party Hub und Quick Play zeigen nur noch „Offline-Modus“, wenn das Gerät kein Netz hat; online bleibt die Stelle leer.
+
 ## v82 – Hilfswort an oder aus, dazu drei Stufen
 
 - Word Imposter: Ein Schalter „Hilfswort für Imposter“ stellt das Hilfswort an oder aus. Ist es an, gibt es drei Stufen: Einfach (Hilfswort), Mittel (nur die Kategorie) und Schwer (nur die Anzahl der Buchstaben des Begriffs). Aus heißt: Der Imposter sieht nichts.

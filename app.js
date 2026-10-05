@@ -472,15 +472,11 @@ function newGame() {
   updateResume();
 }
 
-/* „offline bereit“ erst, wenn der Service Worker die Seite steuert und damit
-   der Offline-Core im Cache liegt. */
-function offlineReady() {
-  try { return Boolean(navigator.serviceWorker?.controller); } catch { return false; }
-}
-
+/* Der Hinweis erscheint nur ohne Netz; online ist er überflüssig. */
 function updateConnection() {
   const online = navigator.onLine;
-  $('#connection').textContent = online ? (offlineReady() ? 'Online · offline bereit' : 'Online') : 'Offline-Modus';
+  $('#connection').textContent = 'Offline-Modus';
+  $('#connection').hidden = online;
   $('#connection').classList.toggle('offline', !online);
 }
 
