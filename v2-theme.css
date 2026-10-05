@@ -126,7 +126,8 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
   background: var(--bg);
 }
 .screen[hidden] { display: none; }
-.screen[data-tint] { background: var(--ground); }
+/* Spielseiten einheitlich: schwarzer Grund, weiße Schrift, weiße Hauptknöpfe. Die Farbe der Spielart bleibt nur als Punkt. */
+.screen[data-tint] { --tint: var(--fg); --ground: var(--bg); background: var(--bg); }
 
 .appbar {
   flex: none;
@@ -284,7 +285,8 @@ input[disabled] {
 .hero-art > .mark { width: 96px; height: 96px; }
 .hero-art.has-image { height: 180px; overflow: hidden; }
 .hero-art > .mark.has-image { position: absolute; inset: 0; width: 100%; height: 100%; }
-.game-art-image { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Die Figuren stehen oben im Bild: beim Zuschneiden den oberen Teil zeigen, damit Köpfe nicht abgeschnitten werden. */
+.game-art-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
 .hero-badge {
   position: absolute;
   z-index: 1;

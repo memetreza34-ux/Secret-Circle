@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 budgets = {
     'index.html': 60_000, 'party.html': 100_000, 'advanced.html': 35_000,
     'quick-play.html': 45_000, 'creator.html': 45_000, 'privacy.html': 32_000,
-    'v2-hub.html': 20_000, 'v2-hub.js': 50_000, 'v2-theme.css': 50_000,
+    'v2-hub.html': 20_000, 'v2-hub.js': 50_000, 'v2-hub-packs.js': 6_000, 'v2-theme.css': 50_000,
     'assets/images/word-imposter-chamaeleon.webp': 90_000,
     'assets/images/wahrheit-oder-pflicht.webp': 90_000,
     'assets/images/ich-habe-noch-nie.webp': 90_000,

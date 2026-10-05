@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v80` / `secret-circle-v80-staging`**
+Offline-Core: **`secret-circle-v81` / `secret-circle-v81-staging`**
 Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**  
 Wave 1: **10/10 source-implemented, real evidence OPEN**
 

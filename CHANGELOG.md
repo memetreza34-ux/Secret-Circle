@@ -2,6 +2,13 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v81 – Startseite: schwarze Spielseiten, ganze Bilder, änderbare Namen, „Gemischt“
+
+- Spielseiten, Spieler- und Kategorieseite sowie die Spielansichten sind einheitlich schwarz mit weißer Schrift und weißen Hauptknöpfen statt in der Farbe der Spielart; die Farbe bleibt als Punkt bei den Spielkacheln und als kleiner Akzent im Spiel.
+- Spielbilder werden oben statt mittig zugeschnitten, damit Köpfe nicht abgeschnitten sind.
+- In der gemeinsamen Spielerliste lassen sich Namen direkt antippen und ändern; doppelte Namen werden abgelehnt.
+- Hub-Spiele mit mehreren Kategorien bieten zuerst „Gemischt“ an: Es nimmt die Karten aller Kategorien in fester Reihenfolge zusammen (`party-hub-round-state.js`), auch beim Fortsetzen nach dem Neuladen. Die Kategorie-Logik der Startseite liegt jetzt in `v2-hub-packs.js`.
+
 ## v80 – Hilfswort in drei Stufen
 
 - Word Imposter: Statt des Schalters „Hilfswort“ gibt es die Stufen Einfach (Imposter sieht das Hilfswort), Mittel (nur die Kategorie des Begriffs) und Schwer (nichts). Eine Zeile darunter sagt, was die Stufe bedeutet.
@@ -64,7 +71,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v80**
+- Source-Generation: **v81**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

@@ -260,33 +260,11 @@
      die gemeinsame Gruppe des Hubs. */
   function usesHubPlayers(g) { return g.href !== 'index.html'; }
 
-  /* ── Kategorien der Hub-Spiele ────────────────────────────────────── */
+  /* ── Kategorien der Hub-Spiele (v2-hub-packs.js) ─────────────────── */
 
-  /* Hub-Spiele laufen in party.html mit genau einer Kategorie. Verlinkte
-     Spiele wählen ihre Kategorie auf ihrer eigenen Seite. */
-  function packCount(g, name) {
-    var v = CAT.content && CAT.content[g.id] ? CAT.content[g.id][name] : null;
-    if (Array.isArray(v)) return v.length;
-    if (v && typeof v === 'object') {
-      return Object.keys(v).reduce(function (n, k) { return n + (Array.isArray(v[k]) ? v[k].length : 0); }, 0);
-    }
-    return 0;
-  }
-
-  function packsOf(g) {
-    if (!g || g.linked || !CAT.getPackNames) return [];
-    return (CAT.getPackNames(g.id) || [])
-      .map(function (name) { return { name: name, count: packCount(g, name) }; })
-      .filter(function (p) { return p.count > 0; });
-  }
-
-  var packChoice = {};
-  function chosenPack(g) {
-    var all = packsOf(g);
-    var want = packChoice[g.id];
-    for (var i = 0; i < all.length; i++) if (all[i].name === want) return all[i];
-    return all[0] || null;
-  }
+  var PACKS = window.SecretCircleV2Packs;
+  function packsOf(g) { return PACKS ? PACKS.list(g) : []; }
+  function chosenPack(g) { return PACKS ? PACKS.chosen(g) : null; }
 
   /* ── Gemeinsame Daten ─────────────────────────────────────────────── */
 
@@ -361,14 +339,6 @@
     if (l) l.textContent = msg;
   }
 
-  function applyTint(name) {
-    var el = screenEl(name);
-    var g = game();
-    if (!el || !el.hasAttribute('data-tint') || !g) return;
-    el.style.setProperty('--tint', g.bucket.tint);
-    el.style.setProperty('--ground', g.bucket.ground);
-    el.style.background = g.bucket.ground;
-  }
 
   function show(name, opts) {
     opts = opts || {};
@@ -376,7 +346,6 @@
     if (opts.reset) NAV = [];
     CURRENT = name;
     $$('.screen').forEach(function (s) { s.hidden = s.dataset.screen !== name; });
-    applyTint(name);
     render(name);
     var head = $('[data-head]', screenEl(name));
     if (head) { try { head.focus({ preventScroll: true }); } catch (e) { head.focus(); } }
@@ -766,7 +735,7 @@
 
   function playerLimits() {
     var g = game();
-    return g && usesHubPlayers(g) ? { min: g.min, max: g.max, title: g.title, tint: g.bucket.tint } : { min: 2, max: MAX_PLAYERS, title: '', tint: BUCKETS[1].tint };
+    return g && usesHubPlayers(g) ? { min: g.min, max: g.max, title: g.title, tint: '#EEF1F7' } : { min: 2, max: MAX_PLAYERS, title: '', tint: '#EEF1F7' };
   }
 
   function renderPlayers() {
@@ -779,7 +748,15 @@
     list.forEach(function (nm, i) {
       var row = make('div', 'prow');
       row.appendChild(make('span', 'prow-n', String(i + 1)));
-      row.appendChild(make('span', 'prow-name', nm));
+      /* Namen direkt antippen und ändern, etwa bei einem Tippfehler. */
+      var field = make('input', 'prow-name');
+      field.value = nm;
+      field.maxLength = 32;
+      field.autocomplete = 'off';
+      field.setAttribute('aria-label', 'Spieler ' + (i + 1));
+      field.addEventListener('keydown', function (e) { if (e.key === 'Enter') field.blur(); });
+      field.addEventListener('change', function () { renamePlayer(i, field.value); });
+      row.appendChild(field);
       var x = make('button', 'prow-x');
       x.type = 'button';
       x.setAttribute('aria-label', nm + ' entfernen');
@@ -814,6 +791,18 @@
       box.appendChild(make('p', null, list.join(' → ') + ' → ' + list[0]));
       prev.appendChild(box);
     }
+  }
+
+  function renamePlayer(index, value) {
+    var list = players();
+    var name = String(value || '').normalize('NFKC').replace(/\s+/g, ' ').trim().slice(0, 32);
+    var taken = list.some(function (n, i) { return i !== index && n.toLocaleLowerCase('de-DE') === name.toLocaleLowerCase('de-DE'); });
+    if (name && !taken && name !== list[index]) {
+      list[index] = name;
+      if (savePlayers(list)) announce('Umbenannt in ' + name + '.');
+    }
+    renderPlayers();
+    if (taken) setPlayerHint(name + ' steht schon in der Liste.', true);
   }
 
   function addPlayer() {
@@ -862,7 +851,7 @@
       b.appendChild(make('span', 'row-main', p.name));
       b.appendChild(make('span', 'pack-count', String(p.count)));
       b.addEventListener('click', function () {
-        packChoice[g.id] = p.name;
+        PACKS.choose(g, p.name);
         announce(p.name + ' gewählt, ' + p.count + ' Karten.');
         back();
       });

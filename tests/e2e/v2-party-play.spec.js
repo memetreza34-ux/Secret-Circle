@@ -25,7 +25,8 @@ test('Hub-Spielansicht nutzt v2-Stil und bleibt auf Handy und Desktop bedienbar'
         horizontalOverflow: node.scrollWidth > node.clientWidth
       };
     });
-    expect(layout.background).toBe('rgb(6, 64, 47)');
+    /* Spielansichten sind einheitlich schwarz; die Spielart zeigt sich nur noch als Akzentfarbe. */
+    expect(layout.background).toBe('rgb(10, 11, 15)');
     expect(layout.displayFont).toContain('Archivo Black');
     expect(layout.columns).toBe(viewport.columns);
     expect(layout.touchHeight).toBeGreaterThanOrEqual(44);

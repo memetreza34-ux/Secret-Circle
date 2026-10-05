@@ -96,7 +96,7 @@
     if (!game || game.status !== 'playable' || game.mode === 'link') return null;
     const players = normalizePlayers(source.players);
     if (players.length < game.minPlayers || players.length > game.maxPlayers) return null;
-    const packs = C.getPackNames(game.id);
+    const packs = R.packChoices(C, game.id);
     const pack = source.pack === null || source.pack === undefined ? null : cleanText(source.pack, 80);
     if (packs.length && !packs.includes(pack)) return null;
     const sessionId = L.normalizeSessionId(source.sessionId);
@@ -158,7 +158,7 @@
     return new Intl.DateTimeFormat('de-DE', { dateStyle: 'short', timeStyle: 'short' }).format(date);
   }
   function contentItems(gameId, pack) {
-    const value = C.content[gameId]?.[pack];
+    const value = R.packContent(C, gameId, pack);
     return Array.isArray(value) ? value : [];
   }
   function clearNode(node) { while (node?.firstChild) node.firstChild.remove(); }
@@ -418,7 +418,7 @@
     clearNode(rules); game.instructions.forEach(rule => rules.append(makeElement('li', '', rule)));
     const select = $('#pack-select');
     clearNode(select);
-    const names = C.getPackNames(game.id);
+    const names = R.packChoices(C, game.id);
     names.forEach(name => select.add(new Option(`${name} (${packCount(game.id, name)})`, name)));
     $('#pack-select-label').hidden = names.length === 0 || game.mode === 'link';
     const start = $('#start-selected-game');
@@ -443,7 +443,7 @@
     return 'Spiel öffnen';
   }
   function packCount(gameId, pack) {
-    const value = C.content[gameId]?.[pack];
+    const value = R.packContent(C, gameId, pack);
     if (Array.isArray(value)) return value.length;
     if (value && typeof value === 'object') return Object.values(value).reduce((sum, list) => sum + list.length, 0);
     return 0;
@@ -620,7 +620,7 @@
     persistActiveSession();
   }
   function revealTruthDare(type) {
-    const items = C.content['truth-dare'][session.pack]?.[type] || [];
+    const items = R.packContent(C, 'truth-dare', session.pack)?.[type] || [];
     const selected = R.ensureCurrent(session, 'truth-dare', items, randomInt, type);
     clearNode($('#play-options'));
     $('#play-eyebrow').textContent = type === 'truth' ? `${session.pack} · Wahrheit` : `${session.pack} · Pflicht`;
@@ -845,7 +845,7 @@
     window.history.replaceState(null, '', returnToV2 ? 'party.html?from=v2' : 'party.html');
     openDetail(game.id);
     const pack = params.get('pack');
-    if (pack && C.getPackNames(game.id).includes(pack)) $('#pack-select').value = pack;
+    if (pack && R.packChoices(C, game.id).includes(pack)) $('#pack-select').value = pack;
     startSelectedGame();
     if (!session) leaveToV2();
   }

@@ -88,9 +88,10 @@ test('a hub game starts in the real engine with the chosen category and returns 
   await expect(page.locator('#mode-title')).toHaveText('Ich habe noch nie');
   await page.locator('#pack-row').click();
   const packs = page.locator('#pack-list .pack-row');
-  await expect(packs.first()).toBeVisible();
-  const second = (await packs.nth(1).locator('.row-main').textContent()).trim();
-  await packs.nth(1).click();
+  await expect(packs.first().locator('.row-main')).toHaveText('Gemischt');
+  await expect(packs.first()).toHaveAttribute('aria-pressed', 'true');
+  const second = (await packs.nth(2).locator('.row-main').textContent()).trim();
+  await packs.nth(2).click();
   await expect(page.locator('#pack-value')).toHaveText(second);
 
   await page.locator('#start-btn').click();
@@ -105,6 +106,23 @@ test('a hub game starts in the real engine with the chosen category and returns 
   await page.getByRole('tab', { name: 'Profil' }).click();
   await expect(page.locator('#profile-stats')).toContainText('1Sessions');
   await expect(page.locator('#profile-recent .gcard')).toHaveCount(1);
+});
+
+test('"Gemischt" spielt Karten aus allen Kategorien und lässt sich nach dem Neuladen fortsetzen', async ({ page }) => {
+  await seedHub(page);
+  await openV2(page, '#spiel=never-have');
+  await expect(page.locator('#pack-value')).toHaveText('Gemischt');
+  await page.locator('#start-btn').click();
+  await expect(page.locator('#play-layer')).toBeVisible();
+  await expect(page.locator('#play-eyebrow')).toHaveText('Gemischt');
+  const card = (await page.locator('#play-content').textContent()).trim();
+  const stored = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).session, ACTIVE_KEY);
+  expect(stored.pack).toBe('Gemischt');
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Session fortsetzen' }).click();
+  await expect(page.locator('#play-layer')).toBeVisible();
+  await expect(page.locator('#play-content')).toHaveText(card);
 });
 
 test('a linked game opens its own engine page', async ({ page }) => {
@@ -132,6 +150,23 @@ test('the player list is shared with the rest of the app and gates the start', a
 
   await page.locator('[data-screen="players"] [data-back]').click();
   await expect(page.locator('#start-btn')).toBeEnabled();
+});
+
+test('Namen in der gemeinsamen Spielerliste lassen sich direkt ändern', async ({ page }) => {
+  await seedHub(page);
+  await openV2(page, '#spiel=never-have');
+  await page.locator('#players-row').click();
+  const first = page.getByRole('textbox', { name: 'Spieler 1' });
+  await first.fill('Alexander');
+  await first.press('Enter');
+  await expect.poll(() => page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alexander', 'Sam', 'Mika', 'Lina']);
+
+  const second = page.getByRole('textbox', { name: 'Spieler 2' });
+  await second.fill('mika');
+  await second.press('Enter');
+  await expect(page.locator('#player-hint')).toContainText('mika steht schon in der Liste');
+  await expect(page.getByRole('textbox', { name: 'Spieler 2' })).toHaveValue('Sam');
+  expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alexander', 'Sam', 'Mika', 'Lina']);
 });
 
 test('a stored session is offered on the start screen and resumes in its engine', async ({ page }) => {

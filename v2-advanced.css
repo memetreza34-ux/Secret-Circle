@@ -177,12 +177,12 @@
 
 /* ── Spielansicht ────────────────────────────────────────────────────── */
 
-/* Alle Advanced-Spiele gehören zu „Täuschung & Bluff“: roter Grundton wie im Hub. */
+/* Spielansichten sind einheitlich schwarz; die Farbe der Spielart bleibt als Akzent. */
 html:has(#advanced-play-layer:not([hidden])),
-body:has(#advanced-play-layer:not([hidden])) { overflow: hidden; background: #43101D; }
+body:has(#advanced-play-layer:not([hidden])) { overflow: hidden; background: #0A0B0F; }
 
 #advanced-play-layer {
-  --ground: #43101D;
+  --ground: #0A0B0F;
   --tint: #FF4560;
   --fg-dim: #AAB2C2;
   --line: #353B49;

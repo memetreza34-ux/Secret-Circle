@@ -5,12 +5,7 @@
 @font-face { font-family: Figtree; font-style: normal; font-weight: 400 800; font-display: swap; src: url('fonts/figtree-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+1E00-1E9F; }
 
 html:has(#play-layer:not([hidden])),
-body:has(#play-layer:not([hidden])) { overflow: hidden; background: #43101D; }
-html:has(#play-layer[data-world='reden']:not([hidden])), body:has(#play-layer[data-world='reden']:not([hidden])) { background: #06402F; }
-html:has(#play-layer[data-world='raten']:not([hidden])), body:has(#play-layer[data-world='raten']:not([hidden])) { background: #462C05; }
-html:has(#play-layer[data-world='kreativ']:not([hidden])), body:has(#play-layer[data-world='kreativ']:not([hidden])) { background: #2D1E52; }
-html:has(#play-layer[data-world='wissen']:not([hidden])), body:has(#play-layer[data-world='wissen']:not([hidden])) { background: #093548; }
-html:has(#play-layer[data-world='schnell']:not([hidden])), body:has(#play-layer[data-world='schnell']:not([hidden])) { background: #451234; }
+body:has(#play-layer:not([hidden])) { overflow: hidden; background: #0A0B0F; }
 
 #play-layer {
   --fg: #EEF1F7;
@@ -22,7 +17,7 @@ html:has(#play-layer[data-world='schnell']:not([hidden])), body:has(#play-layer[
   --off-fg: #9CA4B4;
   --signal: #FF4560;
   --tint: #FF4560;
-  --ground: #43101D;
+  --ground: #0A0B0F;
   --display: 'Archivo Black', Impact, sans-serif;
   --body: Figtree, system-ui, sans-serif;
   --touch: 44px;
@@ -48,11 +43,11 @@ html:has(#play-layer[data-world='schnell']:not([hidden])), body:has(#play-layer[
   -webkit-font-smoothing: antialiased;
   backdrop-filter: none;
 }
-#play-layer[data-world='reden'] { --tint: #4DD9A0; --ground: #06402F; }
-#play-layer[data-world='raten'] { --tint: #FFB020; --ground: #462C05; }
-#play-layer[data-world='kreativ'] { --tint: #A78BFA; --ground: #2D1E52; }
-#play-layer[data-world='wissen'] { --tint: #38BDF8; --ground: #093548; }
-#play-layer[data-world='schnell'] { --tint: #F472B6; --ground: #451234; }
+#play-layer[data-world='reden'] { --tint: #4DD9A0; }
+#play-layer[data-world='raten'] { --tint: #FFB020; }
+#play-layer[data-world='kreativ'] { --tint: #A78BFA; }
+#play-layer[data-world='wissen'] { --tint: #38BDF8; }
+#play-layer[data-world='schnell'] { --tint: #F472B6; }
 #play-layer :focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
 #play-layer button { touch-action: manipulation; box-shadow: none; filter: none; }
 #play-layer button:disabled { opacity: 1; cursor: default; background: var(--off-bg); color: var(--off-fg); border-color: var(--line); }
