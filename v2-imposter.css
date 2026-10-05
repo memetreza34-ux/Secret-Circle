@@ -132,37 +132,6 @@
 .shell textarea:hover,
 .shell select:hover,
 .shell input:hover { border-color: #ffffff3d; }
-.shell .grid.three {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 120px 150px;
-  gap: 0 12px;
-  align-items: end;
-}
-.shell .check { display: flex; align-items: center; gap: 12px; min-height: var(--touch); cursor: pointer; }
-.check input {
-  display: grid;
-  place-items: center;
-  flex: 0 0 24px;
-  width: 24px;
-  height: 24px;
-  margin: 0;
-  border: 1.5px solid #ffffff52;
-  border-radius: 7px;
-  background: #0D0E13;
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-}
-.check input:checked { border-color: var(--fg); background: var(--fg); }
-.check input:checked::after {
-  content: '';
-  width: 6px;
-  height: 11px;
-  border: solid #000;
-  border-width: 0 2.5px 2.5px 0;
-  transform: translateY(-1px) rotate(45deg);
-}
-
 /* ── Knöpfe ──────────────────────────────────────────────────────────── */
 
 .shell button,
@@ -271,7 +240,6 @@
 .subpanel form button { width: 100%; margin-top: 4px; }
 
 .custom-row,
-.history-item,
 .leader-row {
   display: flex;
   align-items: center;
@@ -280,15 +248,155 @@
   padding: 12px 0;
   border-top: 1px solid var(--line);
 }
-.custom-row > div,
-.history-item > div { display: grid; gap: 3px; min-width: 0; }
-.custom-row span,
-.history-item span { color: var(--fg-dim); font-size: .82rem; }
-.history,
-.data-controls { margin-top: 30px; }
-.data-controls { padding-top: 24px; border-top: 1px solid var(--line); }
-.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
-.section-heading h3 { margin: 0; }
+.custom-row > div { display: grid; gap: 3px; min-width: 0; }
+.custom-row span { color: var(--fg-dim); font-size: .82rem; }
+
+/* Spieler als Namens-Chips */
+.data-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.field-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.field-label { font: 400 1.02rem/1.2 var(--display); text-transform: uppercase; }
+.field-note { color: var(--fg-dim); font-size: .84rem; font-weight: 700; text-align: right; }
+.players-field:has(#players[aria-invalid='true']) .field-note { color: var(--signal); }
+.player-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+.player-chips:empty { display: none; }
+.player-chips li {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  padding-left: 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-weight: 700;
+}
+.player-chips li.duplicate { border-color: var(--signal); color: var(--signal); }
+.shell .player-chips button {
+  width: var(--touch);
+  min-height: var(--touch);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--fg-dim);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.shell .player-chips button:hover { background: #ffffff12; color: var(--fg); }
+.player-add { display: flex; gap: 8px; }
+.shell .player-add input { flex: 1; min-width: 0; }
+.shell .player-add button { flex: none; width: 52px; min-height: 48px; padding: 0; font-size: 1.5rem; font-weight: 600; }
+
+/* Einstellungen als Zeilen: Name links, Wert rechts */
+.settings-list { margin: 24px 0 22px; border-top: 1px solid var(--line); }
+.shell .setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 60px;
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.shell .setting > select { width: auto; max-width: 62%; min-height: var(--touch); padding: 10px 36px 10px 14px; background-position: right 11px center; text-align: right; }
+.stepper { display: flex; align-items: center; gap: 4px; }
+.shell .stepper button {
+  width: var(--touch);
+  min-height: var(--touch);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--fg);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.shell .stepper button:hover { background: #2A2E3A; }
+.shell .stepper button:disabled { background: transparent; box-shadow: none; color: var(--off-line); }
+.shell .stepper select,
+.shell .stepper input {
+  width: 74px;
+  min-height: var(--touch);
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  font: 800 1.08rem var(--body);
+  text-align: center;
+  text-align-last: center;
+  font-variant-numeric: tabular-nums;
+  -webkit-appearance: none;
+  appearance: none;
+  -moz-appearance: textfield;
+}
+.shell .stepper input::-webkit-inner-spin-button,
+.shell .stepper input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
+.shell .stepper input[aria-invalid='true'] { color: var(--signal); }
+.shell .setting label,
+.shell .setting > span { margin: 0; font-size: 1rem; font-weight: 700; }
+.shell .setting > select { border-color: transparent; background-color: transparent; color: var(--fg); font-weight: 700; }
+.shell .setting > select:hover { border-color: var(--line); }
+.shell .setting .stepper input { width: 74px; min-height: var(--touch); padding: 0 4px; border: 0; background: none; text-align: center; }
+.setting-note { display: block; padding: 8px 0 0; color: var(--signal); font-size: .84rem; font-weight: 700; }
+.setting-note:empty { display: none; }
+
+/* Schalter statt Häkchen */
+.shell .switch {
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 32px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px #ffffff2e;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+.shell .switch::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--fg-dim);
+  transition: transform .15s ease, background-color .15s ease;
+}
+.shell .switch:checked { background: var(--fg); box-shadow: none; }
+.shell .switch:checked::after { background: #08090C; transform: translateX(20px); }
+
+#start { width: 100%; min-height: 56px; font-size: 1.05rem; }
+.setup-more { margin-top: 14px; }
+.shell .link-button {
+  width: 100%;
+  min-height: 52px;
+  justify-content: space-between;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  color: var(--fg);
+  font-weight: 700;
+}
+.shell .link-button::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: rotate(-45deg);
+}
+.shell .link-button[aria-expanded='true']::after { transform: translateY(-2px) rotate(45deg); }
+.shell .link-button:hover { background: none; color: var(--fg-dim); }
+.setup-more .help-panel { margin-top: 0; }
 
 /* ── Runde ───────────────────────────────────────────────────────────── */
 
@@ -398,6 +506,7 @@
 .shell #next-round[hidden] + .secondary { border-color: transparent; background: var(--fg); color: #000; }
 
 .app-footer { margin-top: 26px; color: var(--fg-faint); font-size: .78rem; line-height: 1.5; text-align: center; }
+.app-footer a { display: inline-flex; align-items: center; min-height: var(--touch); padding: 0 8px; color: var(--fg-dim); text-decoration: underline; text-underline-offset: 3px; }
 
 /* ── Datenschutzseite ────────────────────────────────────────────────── */
 
@@ -409,11 +518,8 @@
 /* ── Anpassungen ─────────────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
-  .shell .grid.three,
   .help-grid { grid-template-columns: 1fr; }
-  .actions,
-  .data-controls .actions { display: grid; grid-template-columns: 1fr; }
-  .section-heading { align-items: flex-start; flex-direction: column; }
+  .actions { display: grid; grid-template-columns: 1fr; }
   .shell .vote-grid { grid-template-columns: 1fr; }
   .shell .card-button { min-height: 200px; }
 }
@@ -428,5 +534,5 @@
 @media (forced-colors: active) {
   .shell select { appearance: auto; background-image: none; }
   .card, .timer, .secret, .subpanel, .leaderboard, .shell .card-button { border: 2px solid CanvasText; }
-  .check input { appearance: auto; }
+  .shell .switch { appearance: auto; width: 24px; height: 24px; }
 }

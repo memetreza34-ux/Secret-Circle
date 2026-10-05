@@ -6,22 +6,11 @@
   const playersHelp = document.querySelector('#players-help');
   const impostersHelp = document.querySelector('#imposters-help');
   const startButton = document.querySelector('#start');
+  const chipList = document.querySelector('#player-chips');
+  const addForm = document.querySelector('#player-add');
+  const nameInput = document.querySelector('#player-new-name');
+  const MAX_PLAYERS = 20;
   if (!playersField || !impostersField || !playersHelp || !impostersHelp) return;
-
-  function addQuickGuide() {
-    const title = document.querySelector('#setup-title');
-    if (!title || document.querySelector('#imposter-quick-guide')) return;
-    const guide = document.createElement('ol');
-    guide.id = 'imposter-quick-guide';
-    guide.className = 'rules setup-quick-guide';
-    guide.setAttribute('aria-label', 'Word Imposter kurz erklärt');
-    ['Namen und Kategorie festlegen.', 'Jede Person sieht ihre Karte allein.', 'Hinweise geben, geheim abstimmen und Punkte sammeln.'].forEach(text => {
-      const item = document.createElement('li');
-      item.textContent = text;
-      guide.append(item);
-    });
-    title.insertAdjacentElement('afterend', guide);
-  }
 
   function normalizedNames() {
     return playersField.value
@@ -33,6 +22,94 @@
   function recommendedImposters(playerCount, maximum) {
     const suggested = playerCount <= 6 ? 1 : playerCount <= 10 ? 2 : playerCount <= 15 ? 3 : 4;
     return Math.max(1, Math.min(maximum, suggested));
+  }
+
+  /* Die Namens-Chips sind die sichtbare Spielerliste. Gespeichert und geprüft
+     wird weiter das Datenfeld #players, damit app.js unverändert bleibt. */
+  function writeNames(names) {
+    playersField.value = names.join('\n');
+    playersField.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function renderChips(names) {
+    if (!chipList) return;
+    const seen = new Set();
+    chipList.replaceChildren(...names.map((name, index) => {
+      const key = name.toLocaleLowerCase('de-DE');
+      const item = document.createElement('li');
+      const label = document.createElement('span');
+      const remove = document.createElement('button');
+      if (seen.has(key)) item.className = 'duplicate';
+      seen.add(key);
+      label.textContent = name;
+      remove.type = 'button';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', `${name} entfernen`);
+      remove.addEventListener('click', () => {
+        writeNames(normalizedNames().filter((_, position) => position !== index));
+        nameInput?.focus();
+      });
+      item.append(label, remove);
+      return item;
+    }));
+  }
+
+  function addPlayer(event) {
+    event.preventDefault();
+    const name = nameInput.value.trim().replace(/\s+/g, ' ');
+    if (!name) {
+      nameInput.focus();
+      return;
+    }
+    const names = normalizedNames();
+    if (names.some(existing => existing.toLocaleLowerCase('de-DE') === name.toLocaleLowerCase('de-DE'))) {
+      playersHelp.textContent = `${name} ist schon dabei.`;
+      nameInput.select();
+      return;
+    }
+    if (names.length >= MAX_PLAYERS) {
+      playersHelp.textContent = `Höchstens ${MAX_PLAYERS} Spieler.`;
+      return;
+    }
+    nameInput.value = '';
+    writeNames([...names, name]);
+    nameInput.focus();
+  }
+
+  function stepperControl(stepper) {
+    return stepper.querySelector('select, input');
+  }
+
+  function stepValue(control, direction) {
+    if (control.tagName === 'SELECT') {
+      const next = Math.max(0, Math.min(control.options.length - 1, control.selectedIndex + direction));
+      if (next === control.selectedIndex) return false;
+      control.selectedIndex = next;
+      return true;
+    }
+    const minimum = Number(control.min) || 1;
+    const maximum = Number(control.max) || minimum;
+    const current = Number.isInteger(Number(control.value)) ? Number(control.value) : minimum;
+    const next = Math.max(minimum, Math.min(maximum, current + direction));
+    if (String(next) === control.value) return false;
+    control.value = String(next);
+    return true;
+  }
+
+  function refreshSteppers() {
+    document.querySelectorAll('.stepper').forEach(stepper => {
+      const control = stepperControl(stepper);
+      if (!control) return;
+      const [less, more] = stepper.querySelectorAll('button[data-step]');
+      if (control.tagName === 'SELECT') {
+        less.disabled = control.selectedIndex <= 0;
+        more.disabled = control.selectedIndex >= control.options.length - 1;
+      } else {
+        const value = Number(control.value);
+        less.disabled = !(value > (Number(control.min) || 1));
+        more.disabled = !(value < (Number(control.max) || 1));
+      }
+    });
   }
 
   function update() {
@@ -51,7 +128,6 @@
     const imposterCount = Number(impostersField.value);
     const validPlayers = duplicateCount === 0 && uniqueCount >= 3 && uniqueCount <= 20;
     const validImposters = Number.isInteger(imposterCount) && imposterCount >= 1 && imposterCount <= maximumImposters;
-    const recommended = recommendedImposters(uniqueCount, maximumImposters);
 
     playersField.setAttribute('aria-invalid', String(!validPlayers));
     impostersField.setAttribute('aria-invalid', String(!validImposters));
@@ -67,32 +143,38 @@
     } else if (uniqueCount > 20) {
       playersHelp.textContent = `${uniqueCount} Personen erkannt. Höchstens 20 sind erlaubt.`;
     } else {
-      playersHelp.textContent = `${uniqueCount} eindeutige Personen erkannt. Bereit zum Spielen.`;
+      playersHelp.textContent = `${uniqueCount} dabei`;
     }
 
-    if (!validImposters) {
-      impostersHelp.textContent = `Bitte eine ganze Zahl zwischen 1 und ${maximumImposters} wählen.`;
-    } else {
-      impostersHelp.textContent = `1 bis ${maximumImposters} möglich · Empfehlung für ${uniqueCount} Personen: ${recommended}.`;
-    }
+    /* Im gültigen Bereich sorgen die Knöpfe − und + für passende Werte; ein Hinweis erscheint nur bei Fehlern. */
+    impostersHelp.textContent = validImposters ? '' : `Bitte eine ganze Zahl zwischen 1 und ${maximumImposters} wählen.`;
+
+    renderChips(names);
+    refreshSteppers();
   }
 
-  function refreshAfterAsyncAction() {
-    root.setTimeout(update, 0);
-    root.setTimeout(update, 250);
-  }
+  document.querySelectorAll('.stepper button[data-step]').forEach(button => {
+    button.addEventListener('click', () => {
+      const control = stepperControl(button.closest('.stepper'));
+      if (!control || !stepValue(control, Number(button.dataset.step))) return;
+      control.dispatchEvent(new Event('input', { bubbles: true }));
+      control.dispatchEvent(new Event('change', { bubbles: true }));
+      refreshSteppers();
+    });
+  });
+  document.querySelectorAll('.stepper select').forEach(select => select.addEventListener('change', refreshSteppers));
 
+  addForm?.addEventListener('submit', addPlayer);
   playersField.addEventListener('input', update);
   playersField.addEventListener('change', update);
   impostersField.addEventListener('input', update);
   impostersField.addEventListener('change', update);
-  document.querySelector('#clear-all-data')?.addEventListener('click', refreshAfterAsyncAction);
-  document.querySelector('#import-data')?.addEventListener('change', refreshAfterAsyncAction);
   root.addEventListener('pageshow', update);
 
-  addQuickGuide();
+  /* app.js setzt gespeicherte Einstellungen erst nach diesem Skript ein. */
   update();
-  refreshAfterAsyncAction();
+  root.setTimeout(update, 0);
+  root.setTimeout(update, 250);
 
-  root.SecretCircleSetupUx = Object.freeze({ update, addQuickGuide, recommendedImposters, version: 5 });
+  root.SecretCircleSetupUx = Object.freeze({ update, recommendedImposters, version: 6 });
 })(window);

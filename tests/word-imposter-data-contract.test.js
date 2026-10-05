@@ -20,12 +20,12 @@ assert.match(store, /maximumCustomEntries: MAX_CUSTOM_ENTRIES/);
 
 assert.match(app, /STORE\.maximumCustomCategories/);
 assert.match(app, /STORE\.maximumCustomEntries/);
-assert.match(app, /STORE\.maximumBackupBytes/);
+assert.doesNotMatch(app, /importBackup|exportBackup/, 'Word Imposter sichert nicht mehr selbst; das macht die zentrale Sicherung im Profil.');
 assert.match(app, /function nextPendingVoterIndex\(\)/);
 assert.match(app, /findIndex\(player => !hasVoteFor\(player\)\)/);
 assert.match(app, /voteIndex = game\.phase === 'voting' \? nextPendingVoterIndex\(\) : 0;/);
 assert.doesNotMatch(app, /voteIndex\s*=\s*Object\.keys\(game\.votes\s*\|\|\s*\{\}\)\.length/);
-assert.match(app, /file\.size > MAX_BACKUP_BYTES/);
+assert.match(read('backup-schema-registry.js'), /const MAX_FILE_BYTES = 1_500_000;/);
 assert.match(app, /custom\.length >= MAX_CUSTOM_CATEGORIES/);
 assert.match(app, /rawRows\.length > MAX_CUSTOM_ENTRIES/);
 

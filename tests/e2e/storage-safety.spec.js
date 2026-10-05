@@ -17,7 +17,6 @@ test('malformed local JSON is discarded without breaking startup', async ({ page
   await expect(page.locator('#setup-screen')).toBeVisible();
   await expect(page.locator('#start')).toBeEnabled();
   await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
-  await expect(page.locator('#history-list')).toContainText('Noch keine abgeschlossenen Runden');
   await expect(page.locator('#resume-box')).toBeHidden();
 });
 
@@ -47,8 +46,7 @@ test('stored user text is rendered as text and never as executable markup', asyn
 
   await page.getByRole('button', { name: 'Eigene Kategorien' }).click();
   await expect(page.locator('#custom-list')).toContainText('<img src=x onerror=window.__xss=true>');
-  await expect(page.locator('#history-list')).toContainText('<script>window.__xss=true</script>');
-  await expect(page.locator('#custom-list img, #custom-list svg, #history-list img, #history-list script')).toHaveCount(0);
+  await expect(page.locator('#custom-list img, #custom-list svg, #setup-screen script')).toHaveCount(0);
   expect(await page.evaluate(() => window.__xss)).toBeUndefined();
 });
 

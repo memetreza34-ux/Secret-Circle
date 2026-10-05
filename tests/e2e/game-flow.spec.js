@@ -1,5 +1,4 @@
 const { test, expect } = require('@playwright/test');
-const fs = require('node:fs/promises');
 
 async function revealAllCards(page, playerCount) {
   for (let index = 0; index < playerCount; index += 1) {
@@ -123,49 +122,15 @@ test('rejects invalid player setup without creating a game', async ({ page }) =>
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-active-v7'))).toBeNull();
 });
 
-test('creates a custom category and clears all local data', async ({ page }) => {
+test('creates a custom Word Imposter category and offers it in the setup', async ({ page }) => {
   await page.getByRole('button', { name: 'Eigene Kategorien' }).click();
   await page.locator('#custom-name').fill('Weltraum');
   await page.locator('#custom-words').fill('Mond | Nacht\nMars | Planet');
   await page.getByRole('button', { name: 'Kategorie speichern' }).click();
   await expect(page.locator('#custom-list')).toContainText('Weltraum');
-
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
-  await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
-  await expect(page.locator('#status')).toContainText('Alle lokalen Secret-Circle-Daten wurden gelöscht');
-  const keys = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('secret-circle-')));
-  expect(keys).toEqual([]);
-});
-
-test('exports and restores a complete local backup', async ({ page }) => {
-  await page.getByRole('button', { name: 'Eigene Kategorien' }).click();
-  await page.locator('#custom-name').fill('Weltraum');
-  await page.locator('#custom-words').fill('Mond | Nacht\nMars | Planet');
-  await page.getByRole('button', { name: 'Kategorie speichern' }).click();
-
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Sicherung exportieren' }).click();
-  const download = await downloadPromise;
-  const downloadPath = await download.path();
-  const backupText = await fs.readFile(downloadPath, 'utf8');
-  const backup = JSON.parse(backupText);
-  expect(backup.format).toBe('secret-circle-backup');
-  expect(backup.version).toBe(1);
-  expect(backup.data.custom[0].name).toBe('Weltraum');
-
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
-  await expect(page.locator('#custom-list')).not.toContainText('Weltraum');
-
-  page.once('dialog', dialog => dialog.accept());
-  await page.locator('#import-data').setInputFiles({
-    name: 'secret-circle-backup.json',
-    mimeType: 'application/json',
-    buffer: Buffer.from(backupText)
-  });
-  await expect(page.locator('#status')).toContainText('Sicherung erfolgreich importiert');
-  await expect(page.locator('#custom-list')).toContainText('Weltraum');
+  await expect(page.locator('#category option', { hasText: 'Weltraum' })).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Sicherung exportieren' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Alle lokalen Daten löschen' })).toHaveCount(0);
 });
 
 test('recovers safely from corrupted persisted data', async ({ page }) => {

@@ -43,7 +43,7 @@ test('word imposter blocks invalid setup before start', async ({ page }) => {
   await expect(start).toBeEnabled();
 });
 
-test('word imposter setup reports duplicates and a group-size recommendation', async ({ page }) => {
+test('word imposter setup reports duplicates and widens the imposter range for bigger groups', async ({ page }) => {
   await page.goto('/index.html');
   const players = page.locator('#players');
   const start = page.locator('#start');
@@ -53,7 +53,8 @@ test('word imposter setup reports duplicates and a group-size recommendation', a
   await expect(start).toBeDisabled();
 
   await players.fill('A\nB\nC\nD\nE\nF\nG\nH');
-  await expect(page.locator('#imposters-help')).toContainText('Empfehlung für 8 Personen: 2');
+  await expect(page.locator('#imposters')).toHaveAttribute('max', '6');
+  await expect(page.locator('#imposters-help')).toHaveText('');
   await expect(start).toBeEnabled();
 });
 

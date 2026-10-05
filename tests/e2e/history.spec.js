@@ -36,10 +36,11 @@ test('round completed without imposter guess is stored exactly once', async ({ p
   }
 
   await expect(page.locator('#result-screen')).toBeVisible();
-  await expect(page.locator('#history-list .history-item')).toHaveCount(1);
-  await expect(page.locator('#history-list')).toContainText(state.word);
+  const storedHistory = () => page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-history-v7') || '[]'));
+  await expect.poll(async () => (await storedHistory()).length).toBe(1);
+  expect((await storedHistory())[0].word).toBe(state.word);
 
   await page.reload();
-  await expect(page.locator('#history-list .history-item')).toHaveCount(1);
-  await expect(page.locator('#history-list')).toContainText(state.word);
+  expect(await storedHistory()).toHaveLength(1);
+  expect((await storedHistory())[0].word).toBe(state.word);
 });

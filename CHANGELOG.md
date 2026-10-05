@@ -2,6 +2,13 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v76 – Einfachere Einrichtung bei Word Imposter
+
+- Spieler werden als Namen hinzugefügt und mit × entfernt statt in ein Textfeld getippt; doppelte Namen fängt das Feld direkt ab.
+- Imposter, Rundenzeit und Runden stellt man mit − und + in je einer Zeile ein; das Hilfswort ist ein Schalter.
+- „Letzte Runden“ und „Lokale Daten“ (Sicherung, Import, alles löschen) sind von der Einrichtung entfernt. Sicherung und Löschen bleiben im Profil unter „Daten und eigene Inhalte“ und umfassen weiter die Word-Imposter-Daten; der Verlauf wird weiter genau einmal gespeichert.
+- Die Kurzanleitung über dem Formular entfällt; die Regeln stehen weiter unter „Spielregeln und Punkte“. Datenschutz ist über die Fußzeile erreichbar.
+
 ## v75 – Ungenutzte alte Stildateien entfernt
 
 - `styles.css`, `pwa.css`, `creator.css` und `party-quick.css` werden von keiner Seite mehr geladen und sind gelöscht; Offline-Core, Größenbudget und Offline-Tests nennen sie nicht mehr.
@@ -41,7 +48,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v75**
+- Source-Generation: **v76**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

@@ -36,7 +36,7 @@ test('all production modules load without startup or resource errors', async ({ 
 
   expect(runtime).toMatchObject({
     runtimeVersion: '1.0.0-beta.3',
-    setupVersion: 5,
+    setupVersion: 6,
     privacyVersion: 4,
     wakeLockVersion: 1,
     roleVersion: 3,

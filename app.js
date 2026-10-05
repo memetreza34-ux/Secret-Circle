@@ -11,7 +11,6 @@ const LABELS = CONTENT.labels;
 const KEYS = STORE.keys;
 const MAX_CUSTOM_CATEGORIES = Number.isInteger(STORE.maximumCustomCategories) ? STORE.maximumCustomCategories : 50;
 const MAX_CUSTOM_ENTRIES = Number.isInteger(STORE.maximumCustomEntries) ? STORE.maximumCustomEntries : 200;
-const MAX_BACKUP_BYTES = Number.isInteger(STORE.maximumBackupBytes) ? STORE.maximumBackupBytes : 1_500_000;
 const persisted = STORE.loadAll(E);
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -439,7 +438,6 @@ function renderResult() {
     .join('');
   $('#next-round').hidden = E.isMatchComplete(game);
   $('#next-round').textContent = `Runde ${game.currentRound + 1} starten`;
-  renderHistory();
 }
 
 function startNextRound() {
@@ -453,16 +451,6 @@ function startNextRound() {
   } catch (error) {
     setStatus(error.message, true);
   }
-}
-
-function renderHistory() {
-  const node = $('#history-list');
-  if (!node) return;
-  node.innerHTML = history.map(item => `
-    <article class="history-item">
-      <div><strong>${esc(item.word)}</strong><span>${esc(item.category)} · Runde ${item.round || 1}</span></div>
-      <span>${item.winner === 'innocents' ? 'Gruppe' : 'Imposter'}</span>
-    </article>`).join('') || '<p class="muted">Noch keine abgeschlossenen Runden.</p>';
 }
 
 function resumeGame() {
@@ -485,7 +473,6 @@ function newGame() {
   remove(KEYS.active);
   screen('setup-screen');
   updateResume();
-  renderHistory();
 }
 
 function addCustomCategory(event) {
@@ -514,77 +501,6 @@ function deleteCategory(id) {
   custom = custom.filter(entry => entry.id !== id);
   write(KEYS.custom, custom);
   renderCategories();
-}
-
-function clearAllData() {
-  if (!confirm('Wirklich alle lokalen Secret-Circle-Daten löschen? Aktive Runde, Verlauf, Einstellungen und eigene Kategorien werden dauerhaft entfernt.')) return;
-  clearTimerLoop();
-  STORE.clearAll();
-  game = null;
-  custom = [];
-  history = [];
-  voteIndex = 0;
-  cardVisible = false;
-  lastPersistedTimerSecond = null;
-  $('#players').value = 'Alex\nSam\nMika\nLina';
-  $('#imposters').value = '1';
-  $('#duration').value = '3';
-  $('#match-rounds').value = '5';
-  $('#hint').checked = true;
-  renderCategories();
-  renderHistory();
-  updateResume();
-  screen('setup-screen');
-  setStatus('Alle lokalen Secret-Circle-Daten wurden gelöscht.');
-}
-
-function exportData() {
-  try {
-    const backup = STORE.exportBackup(E);
-    const blob = new Blob([backup], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `secret-circle-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    setStatus('Lokale Daten wurden als Sicherungsdatei exportiert.');
-  } catch (error) {
-    setStatus(error.message || 'Die Sicherung konnte nicht erstellt werden.', true);
-  }
-}
-
-function chooseImportFile() {
-  $('#import-data').click();
-}
-
-async function importData(event) {
-  const file = event.target.files?.[0];
-  event.target.value = '';
-  if (!file) return;
-  if (file.size > MAX_BACKUP_BYTES) {
-    setStatus('Die Sicherungsdatei ist größer als 1,5 MB.', true);
-    return;
-  }
-  if (!confirm('Die Sicherung ersetzt die aktuell gespeicherten lokalen Daten. Fortfahren?')) return;
-  try {
-    const result = STORE.importBackup(await file.text(), E);
-    if (!result.ok) throw Error(result.error);
-    clearTimerLoop();
-    game = null;
-    custom = result.data.custom;
-    history = result.data.history;
-    renderCategories();
-    renderHistory();
-    restoreSettings();
-    updateResume();
-    screen('setup-screen');
-    setStatus('Sicherung erfolgreich importiert.');
-  } catch (error) {
-    setStatus(error.message || 'Die Sicherung konnte nicht importiert werden.', true);
-  }
 }
 
 /* „offline bereit“ erst, wenn der Service Worker die Seite steuert und damit
@@ -654,17 +570,6 @@ $('#toggle-custom').addEventListener('click', () => {
   if (open) $('#custom-name').focus();
 });
 $('#install-app').addEventListener('click', installApp);
-$('#clear-history').addEventListener('click', () => {
-  if (confirm('Rundenverlauf löschen?')) {
-    history = [];
-    write(KEYS.history, history);
-    renderHistory();
-  }
-});
-$('#clear-all-data').addEventListener('click', clearAllData);
-$('#export-data').addEventListener('click', exportData);
-$('#import-data-trigger').addEventListener('click', chooseImportFile);
-$('#import-data').addEventListener('change', importData);
 
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && game?.phase === 'discussion' && game.timerRunning) syncTimerState({ persist: true, announce: true });
@@ -679,7 +584,6 @@ window.addEventListener('pagehide', () => {
 renderCategories();
 restoreSettings();
 updateResume();
-renderHistory();
 registerPwa();
 screen('setup-screen');
 

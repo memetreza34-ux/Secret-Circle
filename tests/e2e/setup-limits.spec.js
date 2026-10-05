@@ -11,13 +11,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('setup explains live player count and valid imposter range', async ({ page }) => {
-  await expect(page.locator('#players-help')).toContainText('4 eindeutige Personen erkannt');
-  await expect(page.locator('#imposters-help')).toContainText('1 bis 3 möglich');
+  await expect(page.locator('#players-help')).toHaveText('4 dabei');
+  await expect(page.locator('#imposters-help')).toHaveText('');
   await expect(page.locator('#imposters')).toHaveAttribute('max', '3');
 
   await page.locator('#players').fill('Alex\nSam\nMika');
-  await expect(page.locator('#players-help')).toContainText('3 eindeutige Personen erkannt');
-  await expect(page.locator('#imposters-help')).toContainText('1 bis 2 möglich');
+  await expect(page.locator('#players-help')).toHaveText('3 dabei');
+  await expect(page.locator('#imposters-help')).toHaveText('');
   await expect(page.locator('#imposters')).toHaveAttribute('max', '2');
 
   await page.locator('#imposters').fill('2');
@@ -27,6 +27,42 @@ test('setup explains live player count and valid imposter range', async ({ page 
 
   await page.locator('#players').fill('Alex\nAlex\nSam');
   await expect(page.locator('#players-help')).toContainText('1 doppelter Name');
+});
+
+test('Spieler kommen als Namen dazu und gehen wieder, Werte stellt man mit − und + ein', async ({ page }) => {
+  const nameField = page.locator('#player-new-name');
+  await nameField.fill('Noah');
+  await nameField.press('Enter');
+  await expect(page.locator('#player-chips li')).toHaveCount(5);
+  await expect(page.locator('#players')).toHaveValue('Alex\nSam\nMika\nLina\nNoah');
+  await expect(nameField).toBeFocused();
+
+  await nameField.fill('noah');
+  await nameField.press('Enter');
+  await expect(page.locator('#players-help')).toContainText('noah ist schon dabei');
+  await expect(page.locator('#player-chips li')).toHaveCount(5);
+
+  await page.getByRole('button', { name: 'Sam entfernen' }).click();
+  await expect(page.locator('#players')).toHaveValue('Alex\nMika\nLina\nNoah');
+  await expect(page.locator('#players-help')).toHaveText('4 dabei');
+
+  const fewerImposters = page.getByRole('button', { name: 'Weniger Imposter' });
+  await expect(fewerImposters).toBeDisabled();
+  await page.getByRole('button', { name: 'Mehr Imposter' }).click();
+  await expect(page.locator('#imposters')).toHaveValue('2');
+  await expect(fewerImposters).toBeEnabled();
+  await page.getByRole('button', { name: 'Weniger Runden' }).click();
+  await expect(page.locator('#match-rounds')).toHaveValue('3');
+  await page.getByRole('button', { name: 'Längere Rundenzeit' }).click();
+  await expect(page.locator('#duration')).toHaveValue('5');
+
+  await page.locator('#start').click();
+  await expect(page.locator('#reveal-screen')).toBeVisible();
+  const state = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+  expect([...state.players].sort()).toEqual(['Alex', 'Lina', 'Mika', 'Noah']);
+  expect(state.imposters).toHaveLength(2);
+  expect(state.matchRounds).toBe(3);
+  expect(state.roundSeconds).toBe(300);
 });
 
 test('minimum setup supports three players and two imposters', async ({ page }) => {
