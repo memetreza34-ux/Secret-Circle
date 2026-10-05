@@ -230,16 +230,6 @@
 .help-grid ol,
 .help-grid ul { margin: 0; padding-left: 20px; color: var(--fg-dim); line-height: 1.6; }
 
-.subpanel {
-  margin-top: 22px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-card);
-  background: #0D0E13;
-}
-.subpanel form button { width: 100%; margin-top: 4px; }
-
-.custom-row,
 .leader-row {
   display: flex;
   align-items: center;
@@ -248,8 +238,6 @@
   padding: 12px 0;
   border-top: 1px solid var(--line);
 }
-.custom-row > div { display: grid; gap: 3px; min-width: 0; }
-.custom-row span { color: var(--fg-dim); font-size: .82rem; }
 
 /* Spieler als Namens-Chips */
 .data-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
@@ -373,30 +361,7 @@
 
 #start { width: 100%; min-height: 56px; font-size: 1.05rem; }
 .setup-more { margin-top: 14px; }
-.shell .link-button {
-  width: 100%;
-  min-height: 52px;
-  justify-content: space-between;
-  padding: 0;
-  border: 0;
-  border-top: 1px solid var(--line);
-  border-radius: 0;
-  background: none;
-  color: var(--fg);
-  font-weight: 700;
-}
-.shell .link-button::after {
-  content: '';
-  width: 9px;
-  height: 9px;
-  margin-right: 4px;
-  border: solid currentColor;
-  border-width: 0 2px 2px 0;
-  transform: rotate(-45deg);
-}
-.shell .link-button[aria-expanded='true']::after { transform: translateY(-2px) rotate(45deg); }
-.shell .link-button:hover { background: none; color: var(--fg-dim); }
-.setup-more .help-panel { margin-top: 0; }
+.setup-more .help-panel { margin-top: 0; border-bottom: 0; }
 
 /* ── Runde ───────────────────────────────────────────────────────────── */
 
@@ -528,11 +493,11 @@
   * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
 @media (prefers-contrast: more) {
-  .card, .secret, .subpanel, .timer, .leaderboard,
+  .card, .secret, .timer, .leaderboard,
   .shell textarea, .shell select, .shell input, .shell .secondary { border-width: 2px; }
 }
 @media (forced-colors: active) {
   .shell select { appearance: auto; background-image: none; }
-  .card, .timer, .secret, .subpanel, .leaderboard, .shell .card-button { border: 2px solid CanvasText; }
+  .card, .timer, .secret, .leaderboard, .shell .card-button { border: 2px solid CanvasText; }
   .shell .switch { appearance: auto; width: 24px; height: 24px; }
 }

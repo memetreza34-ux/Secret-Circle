@@ -237,7 +237,7 @@ checks = {
     'anime_reference_cleanup_regression': 'concreteAnimeFanNamesRemoved: true' in content_test,
     'word_imposter_data_contract': all(marker in word_data_test for marker in (
         'MAX_CUSTOM_CATEGORIES = 50', 'MAX_CUSTOM_ENTRIES = 200', 'nextPendingVoterIndex',
-        'silentCategoryTruncationRejected', 'backupUiUsesStoreByteLimit'
+        'silentCategoryTruncationRejected', 'centralBackupByteLimit'
     )),
     'reference_content_audit_contract': all(marker in reference_audit for marker in (
         'SHIPPED_CONTENT_SOURCES', 'BLOCKED_LITERALS', 'REVIEW_REQUIRED_LITERALS',

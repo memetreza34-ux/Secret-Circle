@@ -10,24 +10,6 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
-test('custom category markup is rendered only as text', async ({ page }) => {
-  const maliciousName = '<img src=x onerror=window.__x=1>';
-  const maliciousWord = '<script>window.__secretCircleInjected=2</script>';
-  const maliciousHint = '<b onclick="window.__secretCircleInjected=3">Hinweis</b>';
-
-  await page.getByRole('button', { name: 'Eigene Kategorien' }).click();
-  await page.locator('#custom-name').fill(maliciousName);
-  await page.locator('#custom-words').fill(`${maliciousWord} | ${maliciousHint}\nSicher | Neutral`);
-  await page.getByRole('button', { name: 'Kategorie speichern' }).click();
-
-  await expect(page.locator('#custom-list')).toContainText(maliciousName);
-  await expect(page.locator('#custom-list img')).toHaveCount(0);
-  await expect(page.locator('#custom-list script')).toHaveCount(0);
-  await expect(page.locator('#category option').last()).toHaveText(maliciousName);
-  const globals = await page.evaluate(() => ({ x: window.__x, injected: window.__secretCircleInjected }));
-  expect(globals).toEqual({ x: undefined, injected: undefined });
-});
-
 test('malicious-looking player names stay text through reveal and voting', async ({ page }) => {
   const maliciousPlayer = '<img src=x onerror=window.__x=4>';
   const players = [maliciousPlayer, 'Sam', 'Mika'];

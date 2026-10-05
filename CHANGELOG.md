@@ -2,6 +2,11 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v77 – Word Imposter ohne eigene Kategorien
+
+- Word Imposter bietet nur noch die eingebauten Kategorien zur Auswahl; das Anlegen und Löschen eigener Kategorien ist aus der Einrichtung entfernt.
+- Gespeicherte eigene Kategorien älterer Versionen bleiben im Speicher und in der Sicherung erhalten, werden aber nicht mehr angeboten; eine darauf zeigende Einstellung fällt auf „Gemischt“ zurück.
+
 ## v76 – Einfachere Einrichtung bei Word Imposter
 
 - Spieler werden als Namen hinzugefügt und mit × entfernt statt in ein Textfeld getippt; doppelte Namen fängt das Feld direkt ab.
@@ -48,7 +53,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v76**
+- Source-Generation: **v77**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

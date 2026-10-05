@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v76` / `secret-circle-v76-staging`**
+Offline-Core: **`secret-circle-v77` / `secret-circle-v77-staging`**
 Produktstand: **55 Built-ins · 15 Core · 13 Extended · 27 Labs · Wave 1 10/10 source-implemented · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.

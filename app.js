@@ -9,8 +9,6 @@ if (!STORE?.keys || !STORE?.loadAll) throw Error('Secret-Circle-Datenspeicher ko
 const WORDS = CONTENT.words;
 const LABELS = CONTENT.labels;
 const KEYS = STORE.keys;
-const MAX_CUSTOM_CATEGORIES = Number.isInteger(STORE.maximumCustomCategories) ? STORE.maximumCustomCategories : 50;
-const MAX_CUSTOM_ENTRIES = Number.isInteger(STORE.maximumCustomEntries) ? STORE.maximumCustomEntries : 200;
 const persisted = STORE.loadAll(E);
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -20,7 +18,6 @@ let timer = null;
 let lastPersistedTimerSecond = null;
 let cardVisible = false;
 let installPrompt = null;
-let custom = persisted.custom;
 let history = persisted.history;
 let voteIndex = 0;
 
@@ -74,19 +71,13 @@ function remove(key) {
 }
 
 function categoryEntries(id) {
-  if (id === 'all') return Object.values(WORDS).flat().concat(custom.flatMap(item => item.entries));
-  if (id.startsWith('custom:')) {
-    const item = custom.find(entry => entry.id === id.slice(7));
-    if (!item) throw Error('Eigene Kategorie wurde nicht gefunden.');
-    return item.entries;
-  }
+  if (id === 'all') return Object.values(WORDS).flat();
   if (!WORDS[id]) throw Error('Kategorie wurde nicht gefunden.');
   return WORDS[id];
 }
 
 function categoryName(id) {
   if (id === 'all') return 'Gemischt';
-  if (id.startsWith('custom:')) return custom.find(item => item.id === id.slice(7))?.name || 'Eigene Kategorie';
   return LABELS[id] || id;
 }
 
@@ -94,20 +85,8 @@ function renderCategories() {
   const select = $('#category');
   const current = select.value;
   select.innerHTML = '<option value="all">Gemischt</option>'
-    + Object.keys(WORDS).map(id => `<option value="${esc(id)}">${esc(LABELS[id])}</option>`).join('')
-    + (custom.length
-      ? `<optgroup label="Eigene Kategorien">${custom.map(item => `<option value="custom:${esc(item.id)}">${esc(item.name)}</option>`).join('')}</optgroup>`
-      : '');
+    + Object.keys(WORDS).map(id => `<option value="${esc(id)}">${esc(LABELS[id])}</option>`).join('');
   if ([...select.options].some(option => option.value === current)) select.value = current;
-  renderCustomList();
-}
-
-function renderCustomList() {
-  $('#custom-list').innerHTML = custom.map(item => `
-    <div class="custom-row">
-      <div><strong>${esc(item.name)}</strong><span>${item.entries.length} Begriffe</span></div>
-      <button type="button" class="secondary compact" data-delete-category="${esc(item.id)}">Löschen</button>
-    </div>`).join('') || '<p class="muted">Noch keine eigenen Kategorien.</p>';
 }
 
 function setupValues() {
@@ -475,34 +454,6 @@ function newGame() {
   updateResume();
 }
 
-function addCustomCategory(event) {
-  event.preventDefault();
-  try {
-    if (custom.length >= MAX_CUSTOM_CATEGORIES) throw Error(`Es sind höchstens ${MAX_CUSTOM_CATEGORIES} eigene Kategorien möglich.`);
-    const name = $('#custom-name').value.trim();
-    const rawRows = $('#custom-words').value.split(/\n/).map(line => line.trim()).filter(Boolean);
-    if (rawRows.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
-    const entries = E.parseCustomEntries(rawRows.join('\n'));
-    if (entries.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
-    if (name.length < 2) throw Error('Bitte einen Kategorienamen eingeben.');
-    custom = [...custom, { id: makeId(), name: name.slice(0, 50), entries }];
-    if (!write(KEYS.custom, custom)) return;
-    event.currentTarget.reset();
-    renderCategories();
-    setStatus(`Kategorie „${name}“ gespeichert.`);
-  } catch (error) {
-    setStatus(error.message, true);
-  }
-}
-
-function deleteCategory(id) {
-  const item = custom.find(entry => entry.id === id);
-  if (!item || !confirm(`Kategorie „${item.name}“ löschen?`)) return;
-  custom = custom.filter(entry => entry.id !== id);
-  write(KEYS.custom, custom);
-  renderCategories();
-}
-
 /* „offline bereit“ erst, wenn der Service Worker die Seite steuert und damit
    der Offline-Core im Cache liegt. */
 function offlineReady() {
@@ -557,18 +508,6 @@ $('#submit-guess').addEventListener('click', submitGuess);
 $('#imposter-guess').addEventListener('keydown', event => { if (event.key === 'Enter') submitGuess(); });
 $('#next-round').addEventListener('click', startNextRound);
 $$('[data-new-game]').forEach(button => button.addEventListener('click', newGame));
-$('#custom-form').addEventListener('submit', addCustomCategory);
-$('#custom-list').addEventListener('click', event => {
-  const id = event.target.dataset.deleteCategory;
-  if (id) deleteCategory(id);
-});
-$('#toggle-custom').addEventListener('click', () => {
-  const panel = $('#custom-panel');
-  const open = panel.hidden;
-  panel.hidden = !open;
-  $('#toggle-custom').setAttribute('aria-expanded', String(open));
-  if (open) $('#custom-name').focus();
-});
 $('#install-app').addEventListener('click', installApp);
 
 document.addEventListener('visibilitychange', () => {
