@@ -238,13 +238,19 @@
   const hintNotes = {
     easy: 'Imposter sieht ein Hilfswort zum Begriff.',
     medium: 'Imposter sieht nur die Kategorie.',
-    hard: 'Imposter sieht gar nichts.'
+    hard: 'Imposter sieht nur, wie viele Buchstaben der Begriff hat.',
+    off: 'Ohne Hilfswort: Der Imposter sieht gar nichts.'
   };
+  const hintSwitch = document.querySelector('#hint');
   function updateHintNote() {
     const note = document.querySelector('#hint-level-note');
-    const level = document.querySelector('input[name="hint-level"]:checked')?.value;
+    const levels = document.querySelector('#hint-levels');
+    const on = !hintSwitch || hintSwitch.checked;
+    if (levels) levels.hidden = !on;
+    const level = on ? document.querySelector('input[name="hint-level"]:checked')?.value : 'off';
     if (note && hintNotes[level]) note.textContent = hintNotes[level];
   }
+  hintSwitch?.addEventListener('change', updateHintNote);
   document.querySelectorAll('input[name="hint-level"]').forEach(input => input.addEventListener('change', updateHintNote));
   playersField.addEventListener('input', update);
   playersField.addEventListener('change', update);
@@ -255,7 +261,7 @@
   /* app.js setzt gespeicherte Einstellungen erst nach diesem Skript ein. */
   update();
   root.setTimeout(() => { update(); updateHintNote(); }, 0);
-  root.setTimeout(update, 250);
+  root.setTimeout(() => { update(); updateHintNote(); }, 250);
 
   root.SecretCircleSetupUx = Object.freeze({ update, recommendedImposters, version: 6 });
 })(window);

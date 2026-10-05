@@ -82,6 +82,7 @@ function categoryEntries(id) {
 }
 
 function hintLevel() {
+  if ($('#hint') && !$('#hint').checked) return 'off';
   return $('input[name="hint-level"]:checked')?.value || 'easy';
 }
 
@@ -104,7 +105,7 @@ function setupValues() {
     category: $('#category').value,
     imposterCount: Number($('#imposters').value),
     hintLevel: hintLevel(),
-    useHint: hintLevel() !== 'hard',
+    useHint: hintLevel() !== 'off',
     roundSeconds: Number($('#duration').value) * 60,
     matchRounds: Number($('#match-rounds').value)
   };
@@ -116,7 +117,8 @@ function saveSettings() {
     category: $('#category').value,
     imposterCount: $('#imposters').value,
     hintLevel: hintLevel(),
-    useHint: hintLevel() !== 'hard',
+    hintStage: $('input[name="hint-level"]:checked')?.value || 'easy',
+    useHint: hintLevel() !== 'off',
     duration: $('#duration').value,
     matchRounds: $('#match-rounds').value
   });
@@ -127,9 +129,12 @@ function restoreSettings() {
   if (!settings) return;
   $('#players').value = settings.players || $('#players').value;
   $('#imposters').value = settings.imposterCount || '1';
-  const level = ['easy', 'medium', 'hard'].includes(settings.hintLevel) ? settings.hintLevel : (settings.useHint === false ? 'hard' : 'easy');
-  const levelInput = $(`input[name="hint-level"][value="${level}"]`);
+  const level = ['easy', 'medium', 'hard', 'off'].includes(settings.hintLevel) ? settings.hintLevel : (settings.useHint === false ? 'off' : 'easy');
+  $('#hint').checked = level !== 'off';
+  const stage = level === 'off' ? settings.hintStage : level;
+  const levelInput = $(`input[name="hint-level"][value="${['easy', 'medium', 'hard'].includes(stage) ? stage : 'easy'}"]`);
   if (levelInput) levelInput.checked = true;
+  $('#hint').dispatchEvent(new Event('change', { bubbles: true }));
   $('#duration').value = settings.duration || '3';
   $('#match-rounds').value = settings.matchRounds || '5';
   renderCategories();

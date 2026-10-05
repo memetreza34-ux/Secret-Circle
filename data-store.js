@@ -98,7 +98,8 @@
         category: text(value.category || 'all', 100) || 'all',
         imposterCount,
         useHint: value.useHint !== false,
-        hintLevel: ['easy', 'medium', 'hard'].includes(value.hintLevel) ? value.hintLevel : (value.useHint === false ? 'hard' : 'easy'),
+        hintLevel: ['easy', 'medium', 'hard', 'off'].includes(value.hintLevel) ? value.hintLevel : (value.useHint === false ? 'off' : 'easy'),
+        hintStage: ['easy', 'medium', 'hard'].includes(value.hintStage) ? value.hintStage : 'easy',
         duration: wholeNumber(value.duration, 1, 10) ? String(Number(value.duration)) : '3',
         matchRounds: wholeNumber(value.matchRounds, 1, 20) ? String(Number(value.matchRounds)) : '5'
       };

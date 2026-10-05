@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v82 – Hilfswort an oder aus, dazu drei Stufen
+
+- Word Imposter: Ein Schalter „Hilfswort für Imposter“ stellt das Hilfswort an oder aus. Ist es an, gibt es drei Stufen: Einfach (Hilfswort), Mittel (nur die Kategorie) und Schwer (nur die Anzahl der Buchstaben des Begriffs). Aus heißt: Der Imposter sieht nichts.
+- Die Spiellogik kennt dafür `hintLevel: 'off'`; ältere Spielstände mit `useHint: false` werden als „aus“ gelesen. Die gewählte Stufe bleibt gespeichert, auch während das Hilfswort aus ist.
+- Größenbudget für `v2-imposter.css` von 20 auf 24 KB angehoben, weil die Datei jetzt die ganze Einrichtung (Spielerliste, Regler, Schalter, Stufen) trägt.
+
 ## v81 – Startseite: schwarze Spielseiten, ganze Bilder, änderbare Namen, „Gemischt“
 
 - Spielseiten, Spieler- und Kategorieseite sowie die Spielansichten sind einheitlich schwarz mit weißer Schrift und weißen Hauptknöpfen statt in der Farbe der Spielart; die Farbe bleibt als Punkt bei den Spielkacheln und als kleiner Akzent im Spiel.
@@ -71,7 +77,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v81**
+- Source-Generation: **v82**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

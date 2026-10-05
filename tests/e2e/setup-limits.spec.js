@@ -109,6 +109,33 @@ test('Hilfswort in drei Stufen: Mittel zeigt dem Imposter nur die Kategorie', as
   await expect(page.getByRole('radio', { name: 'Mittel' })).toBeChecked();
 });
 
+test('Hilfswort lässt sich ganz ausschalten; Schwer zeigt nur die Länge des Begriffs', async ({ page }) => {
+  await page.getByRole('radio', { name: 'Schwer' }).check();
+  await expect(page.locator('#hint-level-note')).toHaveText('Imposter sieht nur, wie viele Buchstaben der Begriff hat.');
+  await page.getByRole('switch', { name: 'Hilfswort für Imposter' }).uncheck();
+  await expect(page.locator('#hint-levels')).toBeHidden();
+  await expect(page.locator('#hint-level-note')).toHaveText('Ohne Hilfswort: Der Imposter sieht gar nichts.');
+
+  await page.locator('#match-rounds').fill('1');
+  await page.locator('#start').click();
+  const state = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+  expect(state.hintLevel).toBe('off');
+  expect(state.useHint).toBe(false);
+  const imposter = state.revealOrder.indexOf(state.imposters[0]);
+  for (let index = 0; index < state.revealOrder.length; index += 1) {
+    await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
+    if (index === imposter) await expect(page.locator('#word')).toHaveText('Kein Begriff');
+    await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
+  }
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Verwerfen' }).click();
+  await expect(page.getByRole('switch', { name: 'Hilfswort für Imposter' })).not.toBeChecked();
+  await expect(page.locator('#hint-levels')).toBeHidden();
+  await page.getByRole('switch', { name: 'Hilfswort für Imposter' }).check();
+  await expect(page.getByRole('radio', { name: 'Schwer' })).toBeChecked();
+});
+
 test('minimum setup supports three players and two imposters', async ({ page }) => {
   await page.locator('#players').fill(playerNames(3).join('\n'));
   await page.locator('#imposters').fill('2');

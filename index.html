@@ -50,8 +50,8 @@ Lina</textarea>
         <div class="setting"><label for="duration">Rundenzeit<span class="sr-only"> in Minuten</span></label><div class="stepper"><button type="button" data-step="-1" aria-label="Kürzere Rundenzeit">−</button><span class="stepper-value"><input id="duration" type="number" min="1" max="10" value="3" inputmode="numeric"><span class="unit" aria-hidden="true">Min</span></span><button type="button" data-step="1" aria-label="Längere Rundenzeit">+</button></div></div>
         <div class="setting"><label for="match-rounds">Runden</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Runden">−</button><input id="match-rounds" type="number" min="1" max="20" value="5" inputmode="numeric"><button type="button" data-step="1" aria-label="Mehr Runden">+</button></div></div>
         <div class="setting setting-stack">
-          <span id="hint-level-label">Hilfswort</span>
-          <div class="segmented" role="radiogroup" aria-labelledby="hint-level-label" aria-describedby="hint-level-note">
+          <label class="setting-switch" for="hint"><span id="hint-level-label">Hilfswort für Imposter</span><input id="hint" class="switch" type="checkbox" role="switch" checked aria-describedby="hint-level-note"></label>
+          <div id="hint-levels" class="segmented" role="radiogroup" aria-label="Stufe des Hilfsworts" aria-describedby="hint-level-note">
             <label for="hint-easy"><input id="hint-easy" type="radio" name="hint-level" value="easy" checked><span>Einfach</span></label>
             <label for="hint-medium"><input id="hint-medium" type="radio" name="hint-level" value="medium"><span>Mittel</span></label>
             <label for="hint-hard"><input id="hint-hard" type="radio" name="hint-level" value="hard"><span>Schwer</span></label>

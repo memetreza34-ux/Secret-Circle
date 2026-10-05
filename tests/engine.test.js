@@ -122,7 +122,7 @@ assert.throws(() => E.createGame({ ...options, imposterCount: 4 }), /Imposter-Za
 assert.throws(() => E.createGame({ ...options, roundSeconds: 20 }), /Rundenzeit/);
 assert.throws(() => E.createGame({ ...options, matchRounds: 0 }), /Match/);
 
-// Hilfswort-Stufen: Einfach zeigt das Hilfswort, Mittel nur die Kategorie, Schwer nichts.
+// Hilfswort: Einfach zeigt das Hilfswort, Mittel nur die Kategorie, Schwer nur die Länge des Begriffs; aus zeigt nichts.
 const groupedEntries = [['Router', 'Netzwerk', 'Technik'], ['Sensor', 'Messung', 'Technik'], ['Kabel', 'Verbindung', 'Technik']];
 const clueFor = level => {
   const game = E.createGame({ ...options, entries: groupedEntries, category: 'Gemischt', hintLevel: level });
@@ -135,9 +135,12 @@ const medium = clueFor('medium');
 assert.equal(medium.role.value, 'Technik');
 assert.equal(medium.game.hintGroup, 'Technik');
 const hard = clueFor('hard');
-assert.equal(hard.role.value, 'Kein Begriff');
-assert.equal(hard.game.useHint, false);
-assert.equal(E.createGame({ ...options, useHint: false }).hintLevel, 'hard');
+assert.equal(hard.role.value, `${[...hard.game.word].filter(c => /\p{L}/u.test(c)).length} Buchstaben`);
+assert.equal(hard.game.useHint, true);
+const off = clueFor('off');
+assert.equal(off.role.value, 'Kein Begriff');
+assert.equal(off.game.useHint, false);
+assert.equal(E.createGame({ ...options, useHint: false }).hintLevel, 'off');
 assert.equal(E.createGame({ ...options, hintLevel: 'unbekannt' }).hintLevel, 'easy');
 const legacyGame = { ...E.createGame({ ...options, useHint: false }) };
 delete legacyGame.hintLevel;

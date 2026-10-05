@@ -6,8 +6,8 @@
   'use strict';
 
   const VERSION = 7;
-  /* Wie viel Hilfe der Imposter bekommt: Hilfswort, nur die Kategorie oder nichts. */
-  const HINT_LEVELS = ['easy', 'medium', 'hard'];
+  /* Wie viel Hilfe der Imposter bekommt: Hilfswort, nur die Kategorie, nur die Länge des Begriffs – oder ganz ohne. */
+  const HINT_LEVELS = ['easy', 'medium', 'hard', 'off'];
   const MIN_PLAYERS = 3;
   const MAX_PLAYERS = 20;
   const MAX_IMPOSTERS = 6;
@@ -117,7 +117,7 @@
     const entries = normalizeEntries(options?.entries);
     const imposterCount = validateImposterCount(options?.imposterCount ?? 1, players.length);
     const roundSeconds = Number(options?.roundSeconds ?? 180);
-    const hintLevel = HINT_LEVELS.includes(options?.hintLevel) ? options.hintLevel : (options?.useHint === false ? 'hard' : 'easy');
+    const hintLevel = HINT_LEVELS.includes(options?.hintLevel) ? options.hintLevel : (options?.useHint === false ? 'off' : 'easy');
     const matchRounds = Number(options?.matchRounds ?? 5);
     if (!Number.isInteger(roundSeconds) || roundSeconds < MIN_SECONDS || roundSeconds > MAX_SECONDS) throw Error('Die Rundenzeit muss zwischen 1 und 10 Minuten liegen.');
     if (!Number.isInteger(matchRounds) || matchRounds < 1 || matchRounds > 20) throw Error('Ein Match muss zwischen 1 und 20 Runden haben.');
@@ -149,7 +149,7 @@
       hint: selected.hint,
       hintLevel,
       hintGroup: selected.group || text(options?.category, 60) || 'Gemischt',
-      useHint: hintLevel !== 'hard',
+      useHint: hintLevel !== 'off',
       usedWords,
       roundSeconds,
       remainingSeconds: roundSeconds,
@@ -219,13 +219,18 @@
 
   function hintLevelOf(game) {
     if (HINT_LEVELS.includes(game.hintLevel)) return game.hintLevel;
-    return game.useHint ? 'easy' : 'hard';
+    return game.useHint ? 'easy' : 'off';
+  }
+
+  function letterCount(word) {
+    return [...String(word || '')].filter(character => /\p{L}/u.test(character)).length;
   }
 
   function imposterClue(game) {
     const level = hintLevelOf(game);
     if (level === 'easy') return game.hint;
     if (level === 'medium') return game.hintGroup || game.category;
+    if (level === 'hard') return `${letterCount(game.word)} Buchstaben`;
     return 'Kein Begriff';
   }
 
@@ -233,6 +238,7 @@
     const level = hintLevelOf(game);
     if (level === 'easy') return 'Dein Hilfswort. Höre gut zu und bleibe unauffällig.';
     if (level === 'medium') return 'Nur die Kategorie. Höre gut zu und bleibe unauffällig.';
+    if (level === 'hard') return 'Nur die Länge des Begriffs. Höre gut zu und bleibe unauffällig.';
     return 'Kein Hinweis. Höre gut zu, improvisiere und bleibe unauffällig.';
   }
 
