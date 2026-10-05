@@ -70,10 +70,19 @@ function remove(key) {
   STORE.removeByKey(key);
 }
 
+/* Jeder Begriff trägt seine Kategorie mit; auf „Mittel“ sieht der Imposter nur sie. */
+function entriesWithGroup(id) {
+  return WORDS[id].map(entry => Array.isArray(entry) ? [entry[0], entry[1], LABELS[id]] : { ...entry, group: LABELS[id] });
+}
+
 function categoryEntries(id) {
-  if (id === 'all') return Object.values(WORDS).flat();
+  if (id === 'all') return Object.keys(WORDS).flatMap(entriesWithGroup);
   if (!WORDS[id]) throw Error('Kategorie wurde nicht gefunden.');
-  return WORDS[id];
+  return entriesWithGroup(id);
+}
+
+function hintLevel() {
+  return $('input[name="hint-level"]:checked')?.value || 'easy';
 }
 
 function categoryName(id) {
@@ -94,7 +103,8 @@ function setupValues() {
     players: $('#players').value,
     category: $('#category').value,
     imposterCount: Number($('#imposters').value),
-    useHint: $('#hint').checked,
+    hintLevel: hintLevel(),
+    useHint: hintLevel() !== 'hard',
     roundSeconds: Number($('#duration').value) * 60,
     matchRounds: Number($('#match-rounds').value)
   };
@@ -105,7 +115,8 @@ function saveSettings() {
     players: $('#players').value,
     category: $('#category').value,
     imposterCount: $('#imposters').value,
-    useHint: $('#hint').checked,
+    hintLevel: hintLevel(),
+    useHint: hintLevel() !== 'hard',
     duration: $('#duration').value,
     matchRounds: $('#match-rounds').value
   });
@@ -116,7 +127,9 @@ function restoreSettings() {
   if (!settings) return;
   $('#players').value = settings.players || $('#players').value;
   $('#imposters').value = settings.imposterCount || '1';
-  $('#hint').checked = settings.useHint !== false;
+  const level = ['easy', 'medium', 'hard'].includes(settings.hintLevel) ? settings.hintLevel : (settings.useHint === false ? 'hard' : 'easy');
+  const levelInput = $(`input[name="hint-level"][value="${level}"]`);
+  if (levelInput) levelInput.checked = true;
   $('#duration').value = settings.duration || '3';
   $('#match-rounds').value = settings.matchRounds || '5';
   renderCategories();

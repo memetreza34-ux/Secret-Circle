@@ -2,6 +2,11 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v80 – Hilfswort in drei Stufen
+
+- Word Imposter: Statt des Schalters „Hilfswort“ gibt es die Stufen Einfach (Imposter sieht das Hilfswort), Mittel (nur die Kategorie des Begriffs) und Schwer (nichts). Eine Zeile darunter sagt, was die Stufe bedeutet.
+- Die Spiellogik speichert die Stufe (`hintLevel`) und die Kategorie des Begriffs (`hintGroup`); ältere Spielstände und Einstellungen mit `useHint` laden weiter und werden als Einfach bzw. Schwer gelesen.
+
 ## v78 – Spielerliste zum Bearbeiten, freie Rundenzeit und Rundenzahl
 
 - Word Imposter zeigt die Spieler als Liste: Jeder Name steht in einem eigenen Feld und lässt sich direkt ändern; × entfernt, „Spieler hinzufügen“ öffnet ein neues Feld. Leere Felder verschwinden wieder, doppelte Namen werden rot markiert.
@@ -59,7 +64,7 @@ Stand: 3. Oktober 2026
 
 ### Aktueller Status
 
-- Source-Generation: **v78**
+- Source-Generation: **v80**
 - Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**
 - Expansion Wave 1: **10/10 quellsseitig implementiert; real evidence OPEN**
 - Core Source Review/Hardening: **15/15 PREPARED**

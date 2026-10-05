@@ -6,6 +6,8 @@
   'use strict';
 
   const VERSION = 7;
+  /* Wie viel Hilfe der Imposter bekommt: Hilfswort, nur die Kategorie oder nichts. */
+  const HINT_LEVELS = ['easy', 'medium', 'hard'];
   const MIN_PLAYERS = 3;
   const MAX_PLAYERS = 20;
   const MAX_IMPOSTERS = 6;
@@ -41,11 +43,12 @@
     for (const entry of entries) {
       const word = text(Array.isArray(entry) ? entry[0] : entry?.word, 60);
       const hint = text(Array.isArray(entry) ? entry[1] : entry?.hint, 60) || 'Kein Hilfswort';
+      const group = text(Array.isArray(entry) ? entry[2] : entry?.group, 60);
       if (!word) continue;
       const key = lower(word);
       if (seen.has(key)) continue;
       seen.add(key);
-      result.push({ word, hint });
+      result.push(group ? { word, hint, group } : { word, hint });
     }
     if (result.length < 2) throw Error('Eine Kategorie benötigt mindestens zwei unterschiedliche Begriffe.');
     return result;
@@ -114,6 +117,7 @@
     const entries = normalizeEntries(options?.entries);
     const imposterCount = validateImposterCount(options?.imposterCount ?? 1, players.length);
     const roundSeconds = Number(options?.roundSeconds ?? 180);
+    const hintLevel = HINT_LEVELS.includes(options?.hintLevel) ? options.hintLevel : (options?.useHint === false ? 'hard' : 'easy');
     const matchRounds = Number(options?.matchRounds ?? 5);
     if (!Number.isInteger(roundSeconds) || roundSeconds < MIN_SECONDS || roundSeconds > MAX_SECONDS) throw Error('Die Rundenzeit muss zwischen 1 und 10 Minuten liegen.');
     if (!Number.isInteger(matchRounds) || matchRounds < 1 || matchRounds > 20) throw Error('Ein Match muss zwischen 1 und 20 Runden haben.');
@@ -143,7 +147,9 @@
       imposters,
       word: selected.word,
       hint: selected.hint,
-      useHint: options?.useHint !== false,
+      hintLevel,
+      hintGroup: selected.group || text(options?.category, 60) || 'Gemischt',
+      useHint: hintLevel !== 'hard',
       usedWords,
       roundSeconds,
       remainingSeconds: roundSeconds,
@@ -186,6 +192,8 @@
     if (!game.scores || typeof game.scores !== 'object' || Array.isArray(game.scores) || Object.keys(game.scores).length !== players.length || players.some(name => !Number.isInteger(game.scores[name]) || game.scores[name] < 0)) throw Error('Ungültiger Punktestand.');
     if (!game.word || !game.hint || !game.category || !game.createdAt || Number.isNaN(Date.parse(game.createdAt))) throw Error('Unvollständiger Spielstand.');
     if (typeof game.useHint !== 'boolean') throw Error('Ungültige Hilfswort-Einstellung.');
+    if (game.hintLevel !== undefined && !HINT_LEVELS.includes(game.hintLevel)) throw Error('Ungültige Hilfswort-Stufe.');
+    if (game.hintGroup !== undefined && (typeof game.hintGroup !== 'string' || !game.hintGroup.trim())) throw Error('Ungültige Hilfswort-Kategorie.');
     const usedWords = normalizeUsedWords(game.usedWords);
     if (!usedWords.some(word => lower(word) === lower(game.word))) throw Error('Aktueller Begriff fehlt im Begriffsverlauf.');
     if (!game.votes || typeof game.votes !== 'object' || Array.isArray(game.votes) || Object.keys(game.votes).some(voter => !players.includes(voter)) || Object.values(game.votes).some(target => !players.includes(target))) throw Error('Ungültige Abstimmung.');
@@ -209,6 +217,25 @@
     return parsed;
   }
 
+  function hintLevelOf(game) {
+    if (HINT_LEVELS.includes(game.hintLevel)) return game.hintLevel;
+    return game.useHint ? 'easy' : 'hard';
+  }
+
+  function imposterClue(game) {
+    const level = hintLevelOf(game);
+    if (level === 'easy') return game.hint;
+    if (level === 'medium') return game.hintGroup || game.category;
+    return 'Kein Begriff';
+  }
+
+  function imposterInstruction(game) {
+    const level = hintLevelOf(game);
+    if (level === 'easy') return 'Dein Hilfswort. Höre gut zu und bleibe unauffällig.';
+    if (level === 'medium') return 'Nur die Kategorie. Höre gut zu und bleibe unauffällig.';
+    return 'Kein Hinweis. Höre gut zu, improvisiere und bleibe unauffällig.';
+  }
+
   function roleFor(game, player) {
     assertGame(game);
     if (!game.players.includes(player)) throw Error('Spieler gehört nicht zu dieser Runde.');
@@ -217,8 +244,8 @@
       player,
       isImposter,
       label: isImposter ? 'Du bist Imposter' : 'Dein geheimer Begriff',
-      value: isImposter ? (game.useHint ? game.hint : 'Kein Begriff') : game.word,
-      instruction: isImposter ? 'Höre gut zu, improvisiere und bleibe unauffällig.' : 'Beschreibe den Begriff, ohne ihn direkt zu nennen.'
+      value: isImposter ? imposterClue(game) : game.word,
+      instruction: isImposter ? imposterInstruction(game) : 'Beschreibe den Begriff, ohne ihn direkt zu nennen.'
     };
   }
 
@@ -365,6 +392,7 @@
       category: options.category ?? previous.category,
       imposterCount: options.imposterCount ?? previous.imposters.length,
       useHint: options.useHint ?? previous.useHint,
+      hintLevel: options.hintLevel ?? previous.hintLevel,
       roundSeconds: options.roundSeconds ?? previous.roundSeconds,
       matchRounds: previous.matchRounds,
       usedWords: previous.usedWords

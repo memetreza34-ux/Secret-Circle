@@ -86,6 +86,29 @@ test('Spieler lassen sich hinzufügen, umbenennen und entfernen; Zeit und Runden
   expect(settings).toMatchObject({ duration: '4', matchRounds: '19' });
 });
 
+test('Hilfswort in drei Stufen: Mittel zeigt dem Imposter nur die Kategorie', async ({ page }) => {
+  await expect(page.locator('#hint-level-note')).toHaveText('Imposter sieht ein Hilfswort zum Begriff.');
+  await page.getByRole('radio', { name: 'Mittel' }).check();
+  await expect(page.locator('#hint-level-note')).toHaveText('Imposter sieht nur die Kategorie.');
+  await page.locator('#match-rounds').fill('1');
+  await page.locator('#start').click();
+  await expect(page.locator('#reveal-screen')).toBeVisible();
+
+  const state = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+  expect(state.hintLevel).toBe('medium');
+  for (const player of state.revealOrder) {
+    await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
+    const expected = state.imposters.includes(player) ? state.hintGroup : state.word;
+    await expect(page.locator('#word')).toHaveText(expected);
+    await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
+  }
+  await expect(page.locator('#round-screen')).toBeVisible();
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Verwerfen' }).click();
+  await expect(page.getByRole('radio', { name: 'Mittel' })).toBeChecked();
+});
+
 test('minimum setup supports three players and two imposters', async ({ page }) => {
   await page.locator('#players').fill(playerNames(3).join('\n'));
   await page.locator('#imposters').fill('2');

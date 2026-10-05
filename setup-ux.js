@@ -233,6 +233,19 @@
   });
 
   addButton?.addEventListener('click', addRow);
+
+  /* Kurz sagen, was die gewählte Hilfswort-Stufe für den Imposter bedeutet. */
+  const hintNotes = {
+    easy: 'Imposter sieht ein Hilfswort zum Begriff.',
+    medium: 'Imposter sieht nur die Kategorie.',
+    hard: 'Imposter sieht gar nichts.'
+  };
+  function updateHintNote() {
+    const note = document.querySelector('#hint-level-note');
+    const level = document.querySelector('input[name="hint-level"]:checked')?.value;
+    if (note && hintNotes[level]) note.textContent = hintNotes[level];
+  }
+  document.querySelectorAll('input[name="hint-level"]').forEach(input => input.addEventListener('change', updateHintNote));
   playersField.addEventListener('input', update);
   playersField.addEventListener('change', update);
   impostersField.addEventListener('input', update);
@@ -241,7 +254,7 @@
 
   /* app.js setzt gespeicherte Einstellungen erst nach diesem Skript ein. */
   update();
-  root.setTimeout(update, 0);
+  root.setTimeout(() => { update(); updateHintNote(); }, 0);
   root.setTimeout(update, 250);
 
   root.SecretCircleSetupUx = Object.freeze({ update, recommendedImposters, version: 6 });

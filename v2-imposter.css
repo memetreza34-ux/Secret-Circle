@@ -384,34 +384,24 @@
 .setting-note { display: block; padding: 8px 0 0; color: var(--signal); font-size: .84rem; font-weight: 700; }
 .setting-note:empty { display: none; }
 
-/* Schalter statt Häkchen */
-.shell .switch {
-  position: relative;
-  flex: none;
-  width: 52px;
-  height: 32px;
-  margin: 0;
+/* Hilfswort in drei Stufen */
+.shell .setting-stack { display: grid; justify-content: stretch; gap: 10px; padding: 14px 0; }
+.segmented { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface-2); }
+.shell .segmented label { position: relative; display: block; margin: 0; cursor: pointer; }
+.segmented input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.segmented span {
+  display: grid;
+  place-items: center;
+  min-height: var(--touch);
   border-radius: 999px;
-  background: var(--surface-2);
-  box-shadow: inset 0 0 0 1px #ffffff2e;
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  transition: background-color .15s ease;
+  color: var(--fg-dim);
+  font-size: .95rem;
+  font-weight: 800;
+  transition: background-color .15s ease, color .15s ease;
 }
-.shell .switch::after {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--fg-dim);
-  transition: transform .15s ease, background-color .15s ease;
-}
-.shell .switch:checked { background: var(--fg); box-shadow: none; }
-.shell .switch:checked::after { background: #08090C; transform: translateX(20px); }
+.segmented input:checked + span { background: var(--fg); color: #08090C; }
+.segmented input:focus-visible + span { outline: 3px solid var(--fg); outline-offset: 2px; }
+.setting-caption { color: var(--fg-dim); font-size: .84rem; font-weight: 600; }
 
 #start { width: 100%; min-height: 56px; font-size: 1.05rem; }
 .setup-more { margin-top: 14px; }
@@ -553,5 +543,5 @@
 @media (forced-colors: active) {
   .shell select { appearance: auto; background-image: none; }
   .card, .timer, .secret, .leaderboard, .shell .card-button { border: 2px solid CanvasText; }
-  .shell .switch { appearance: auto; width: 24px; height: 24px; }
+  .segmented input:checked + span { outline: 2px solid CanvasText; }
 }
