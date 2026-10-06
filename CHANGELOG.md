@@ -2,6 +2,11 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v89 – „Zuletzt gespielt“ auch auf der Startseite
+
+- Startseite: Eine Reihe „Zuletzt gespielt“ steht über den anderen Reihen und sieht aus wie sie. Sie zeigt die zuletzt beendeten Spiele, jedes einmal, schon ab einem Spiel. „Alle ansehen“ führt zur Liste mit Namen und Datum im Profil.
+- Ohne Verlauf erscheint die Reihe nicht.
+
 ## v88 – Weiterspielen nur im Profil, „Zuletzt gespielt“ mit Namen
 
 - Startseite: Die Karten „Weiterspielen“ oben sind weg. Gespeicherte, nicht beendete Spiele stehen nur noch im Profil.

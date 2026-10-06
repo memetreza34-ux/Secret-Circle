@@ -33,6 +33,7 @@ test('start screen renders from the real catalog without invented claims', async
   await expect(page.locator('#hero-badge')).toHaveText('Empfehlung');
   await expect(page.locator('#sections')).toContainText('Empfohlen');
   await expect(page.locator('#sections')).not.toContainText('Eure meistgespielten');
+  await expect(page.locator('#sections')).not.toContainText('Zuletzt gespielt');
   await expect(page.locator('#resume-slot')).toBeEmpty();
   expect(errors).toEqual([]);
 });
@@ -102,6 +103,9 @@ test('a hub game starts in the real engine with the chosen category and returns 
   await page.locator('#play-actions button').first().click();
   await page.locator('#finish-hub-game').click();
   await expect(page).toHaveURL(/v2-hub\.html$/);
+  const recentStrip = page.locator('#sections .sec').first();
+  await expect(recentStrip).toContainText('Zuletzt gespielt');
+  await expect(recentStrip.locator('.gcard')).toHaveCount(1);
 
   await page.getByRole('tab', { name: 'Profil' }).click();
   await expect(page.locator('#profile-stats')).toContainText('1Sessions');

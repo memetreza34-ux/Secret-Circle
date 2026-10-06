@@ -442,6 +442,23 @@
     return Array.isArray(list) ? list : [];
   }
 
+  /* Beendete Spiele aller Engines, neueste zuerst. */
+  function recentEntries() {
+    return hubHistory().map(function (h) { return { id: h.gameId, at: h.endedAt, names: h.players }; })
+      .concat(gameById('imposter') ? imposterHistory().map(function (h) { return { id: 'imposter', at: h.completedAt, names: h.players }; }) : [])
+      .filter(function (e) { return gameById(e.id); })
+      .sort(function (a, b) { return (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0); })
+      .slice(0, 20);
+  }
+  function recentGames() {
+    var seen = {};
+    return recentEntries().filter(function (e) {
+      if (seen[e.id]) return false;
+      seen[e.id] = true;
+      return true;
+    }).map(function (e) { return gameById(e.id); }).slice(0, 10);
+  }
+
   /* Häufigkeit je Spiel aus dem echten Verlauf. */
   function playCounts() {
     var counts = {};
@@ -503,6 +520,7 @@
   function featured() { return GAMES.filter(function (g) { return g.feat; }); }
 
   var SECTIONS = [
+    { title: 'Zuletzt gespielt', icon: 'play', min: 1, more: 'profile', pick: recentGames },
     { title: 'Eure meistgespielten', icon: 'flame', rank: true, pick: function () { return mostPlayed().slice(0, 10); } },
     { title: 'Empfohlen', icon: 'seal', pick: function () { return mostPlayed().length >= 3 ? [] : featured(); } },
     { title: 'In zehn Minuten durch', icon: 'spark', pick: function (l) { return mix(l.filter(function (g) { return g.dur <= 10; })); } },
@@ -558,8 +576,8 @@
     clear(host);
     SECTIONS.forEach(function (def) {
       var list = def.pick(GAMES);
-      /* Ein Streifen mit ein oder zwei Karten sieht kaputt aus. */
-      if (list.length < 3) return;
+      /* Ein Streifen mit ein oder zwei Karten sieht kaputt aus; „Zuletzt gespielt“ zeigt echte Spiele ab einem. */
+      if (list.length < (def.min || 3)) return;
       var sec = make('section', 'sec');
       var head = make('div', 'sec-head');
       var h3 = make('h3');
@@ -569,7 +587,7 @@
       h3.appendChild(document.createTextNode(def.title));
       var more = make('button', 'sec-more', 'Alle ansehen ›');
       more.type = 'button';
-      more.addEventListener('click', function () { show('games', { reset: true }); });
+      more.addEventListener('click', function () { show(def.more || 'games', { reset: true }); });
       head.appendChild(h3);
       head.appendChild(more);
       var strip = make('div', 'strip scroll');
@@ -883,11 +901,7 @@
     /* Beendete Spiele, neueste zuerst, mit den Namen der Runde. */
     var recent = $('#profile-recent');
     clear(recent);
-    var list = hub.map(function (h) { return { id: h.gameId, at: h.endedAt, names: h.players }; })
-      .concat(gameById('imposter') ? imposter.map(function (h) { return { id: 'imposter', at: h.completedAt, names: h.players }; }) : [])
-      .filter(function (e) { return gameById(e.id); })
-      .sort(function (a, b) { return (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0); })
-      .slice(0, 20);
+    var list = recentEntries();
     list.forEach(function (e) {
       var row = make('button', 'row');
       row.type = 'button';
