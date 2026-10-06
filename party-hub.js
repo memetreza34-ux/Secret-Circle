@@ -68,7 +68,8 @@
       })).filter(item => item.id && item.name && item.players.length) : [],
       history: Array.isArray(value.history) ? value.history.slice(0, MAX_HISTORY).filter(item => C.getGame(item?.gameId)).map(item => ({
         id: String(item.id ?? ''), gameId: item.gameId, title: cleanText(item.title ?? C.getGame(item.gameId)?.title, 80),
-        endedAt: String(item.endedAt ?? ''), rounds: safeInteger(item.rounds, 10_000), score: safeInteger(item.score)
+        endedAt: String(item.endedAt ?? ''), rounds: safeInteger(item.rounds, 10_000), score: safeInteger(item.score),
+        players: normalizePlayers(item.players)
       })) : [],
       stats: value.stats && typeof value.stats === 'object' && !Array.isArray(value.stats) ? value.stats : {}
     };

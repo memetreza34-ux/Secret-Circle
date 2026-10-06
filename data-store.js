@@ -146,6 +146,7 @@
           completedAt: text(item.completedAt, 40),
           category,
           playerCount,
+          players: Array.isArray(item.players) ? item.players.map(name => text(name, 32)).filter(Boolean).slice(0, 20) : [],
           imposterCount,
           word,
           imposters,

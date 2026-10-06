@@ -321,7 +321,8 @@
         title: game.title,
         endedAt: new Date().toISOString(),
         rounds,
-        score: session.score
+        score: session.score,
+        players: normalizePlayers(nextHubState.players)
       });
       nextHubState.history = nextHubState.history.slice(0, MAX_HISTORY);
       nextHubState.recent = [game.id, ...(Array.isArray(nextHubState.recent) ? nextHubState.recent : []).filter(id => id !== game.id)].slice(0, 8);

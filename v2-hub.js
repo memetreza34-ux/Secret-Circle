@@ -554,8 +554,6 @@
       dots.appendChild(b);
     });
 
-    renderResume();
-
     var host = $('#sections');
     clear(host);
     SECTIONS.forEach(function (def) {
@@ -881,17 +879,29 @@
       stats.appendChild(d);
     });
 
+    renderResume();
+    /* Beendete Spiele, neueste zuerst, mit den Namen der Runde. */
     var recent = $('#profile-recent');
     clear(recent);
-    var seen = {};
-    var list = hub.map(function (h) { return h.gameId; })
-      .concat(imposter.length ? ['imposter'] : [])
-      .filter(function (id) {
-        if (seen[id] || !gameById(id)) return false;
-        seen[id] = true;
-        return true;
-      }).slice(0, 8);
-    list.forEach(function (id) { recent.appendChild(gameCard(gameById(id))); });
+    var list = hub.map(function (h) { return { id: h.gameId, at: h.endedAt, names: h.players }; })
+      .concat(gameById('imposter') ? imposter.map(function (h) { return { id: 'imposter', at: h.completedAt, names: h.players }; }) : [])
+      .filter(function (e) { return gameById(e.id); })
+      .sort(function (a, b) { return (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0); })
+      .slice(0, 20);
+    list.forEach(function (e) {
+      var row = make('button', 'row');
+      row.type = 'button';
+      var main = make('span', 'row-main', gameById(e.id).title);
+      var when = Date.parse(e.at) ? new Date(e.at).toLocaleDateString('de-DE', { day: 'numeric', month: 'short' }) : '';
+      var names = Array.isArray(e.names) && e.names.length ? e.names.join(', ') : '';
+      main.appendChild(make('small', null, [names, when].filter(Boolean).join(' · ')));
+      var chev = make('span', 'row-chev');
+      chev.innerHTML = icon('chev');
+      row.appendChild(main);
+      row.appendChild(chev);
+      row.addEventListener('click', function () { openGame(e.id); });
+      recent.appendChild(row);
+    });
     recent.hidden = !list.length;
     $('#recent-empty').hidden = list.length > 0;
 

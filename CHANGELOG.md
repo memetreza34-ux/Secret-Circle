@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v88 – Weiterspielen nur im Profil, „Zuletzt gespielt“ mit Namen
+
+- Startseite: Die Karten „Weiterspielen“ oben sind weg. Gespeicherte, nicht beendete Spiele stehen nur noch im Profil.
+- Profil: „Zuletzt gespielt“ ist eine schlichte Liste der beendeten Spiele, neueste zuerst, mit den Namen der Runde und dem Datum. Ein Tipp öffnet das Spiel.
+- Der Verlauf speichert jetzt, wer mitgespielt hat: `session-ledger.js` legt die Namen (`players`) an jeden Abschluss, Advanced-Spiele und Word Imposter ebenso. Ältere Einträge ohne Namen zeigen nur das Datum.
+
 ## v87 – Altes Design gelöscht, alles im v2-Design
 
 - Die Oberfläche von `party.html` (Start, Katalog, Spieler, Favoriten, Verlauf und Erfolge, Daten und Sicherung, eigene Kategorien, Partyabend-Planer, Spieldetail, Anleitung) trägt jetzt das v2-Design: neutrale dunkle Flächen, weiße Pillen-Knöpfe, Archivo-Black-Überschriften. Alle Funktionen, IDs und Abläufe bleiben unverändert.

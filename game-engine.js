@@ -428,6 +428,7 @@
       completedAt: game.completedAt,
       category: game.category,
       playerCount: game.players.length,
+      players: [...game.players],
       imposterCount: game.imposters.length,
       word: game.word,
       imposters: [...game.imposters],

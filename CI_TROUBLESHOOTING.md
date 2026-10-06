@@ -54,7 +54,7 @@ Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-C
 Zentrale Release-Metadaten: `release-meta.json`.
 
 - Source-Generation `v64`
-- Offline-Core `secret-circle-v87` / `secret-circle-v87-staging`
+- Offline-Core `secret-circle-v88` / `secret-circle-v88-staging`
 - 55 Built-ins · 15 Core / 13 Extended / 27 Labs
 - Expansion Wave 1: 10/10 quellsseitig implementiert
 - v50 Hub Resume Loader fail-closed

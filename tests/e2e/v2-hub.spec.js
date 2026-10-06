@@ -105,7 +105,9 @@ test('a hub game starts in the real engine with the chosen category and returns 
 
   await page.getByRole('tab', { name: 'Profil' }).click();
   await expect(page.locator('#profile-stats')).toContainText('1Sessions');
-  await expect(page.locator('#profile-recent .gcard')).toHaveCount(1);
+  await expect(page.locator('#profile-recent .row')).toHaveCount(1);
+  await expect(page.locator('#profile-recent')).toContainText('Alex, Sam, Mika, Lina');
+  await expect(page.locator('#resume-slot')).toBeEmpty();
 });
 
 test('"Gemischt" spielt Karten aus allen Kategorien und lässt sich nach dem Neuladen fortsetzen', async ({ page }) => {
@@ -169,7 +171,7 @@ test('Namen in der gemeinsamen Spielerliste lassen sich direkt ändern', async (
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alexander', 'Sam', 'Mika', 'Lina']);
 });
 
-test('a stored session is offered on the start screen and resumes in its engine', async ({ page }) => {
+test('a stored session is offered only in the profile and resumes in its engine', async ({ page }) => {
   await seedHub(page);
   await openV2(page, '#spiel=never-have');
   await page.locator('#start-btn').click();
@@ -178,6 +180,8 @@ test('a stored session is offered on the start screen and resumes in its engine'
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).session.gameId, ACTIVE_KEY)).toBe('never-have');
 
   await openV2(page);
+  await expect(page.locator('[data-screen="home"] .resume')).toHaveCount(0);
+  await page.getByRole('tab', { name: 'Profil' }).click();
   await expect(page.locator('#resume-slot .resume')).toHaveCount(1);
   await expect(page.locator('#resume-slot')).toContainText('Ich habe noch nie');
   await page.locator('#resume-slot .resume-go').click();

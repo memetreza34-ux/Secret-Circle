@@ -110,6 +110,7 @@ const completed4 = finishRound(round4);
 assert.equal(E.isMatchComplete(completed4), true);
 assert.equal(E.leaderboard(completed4).length, 4);
 assert.equal(E.historyEntry(completed4).word, completed4.word);
+assert.deepEqual(E.historyEntry(completed4).players, completed4.players);
 assert.deepEqual(E.restoreGame(JSON.stringify(completed4)), completed4);
 
 assert.throws(() => E.restoreGame({ ...completed4, imposters: ['Niemand'] }), /Imposter/);
