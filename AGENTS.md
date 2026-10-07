@@ -9,9 +9,9 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 - **Daten:** Spielerliste und Verlauf liegen in `secret-circle-party-hub-v1`. v2 führt keinen eigenen Speicher. Alle Speicher-Keys und Backups regelt `backup-schema-registry.js`.
 - Details: `ARCHITECTURE.md` Abschnitt 4a.
 
-## Nächste Schritte: Umstellung auf das v2-Design
+## Stand und nächste Schritte
 
-**Zuständig ist seit 4. Oktober 2026 Claude Code, allein; Codex arbeitet nicht am Design.** Plan und Stand stehen in `docs/V2_DESIGN_UMSTELLUNG.md`. Seit 5. Oktober 2026 trägt jede Seite nur noch v2-Stile; die alten Stildateien sind gelöscht. Die Oberfläche von `party.html` (Partyabend, Daten und Sicherung, eigene Kategorien, Favoriten, Verlauf und Erfolge) steht in `v2-party-hub.css`, der Update-Hinweis in `v2-update.css`.
+**Die Umstellung auf das v2-Design ist abgeschlossen (5.–6. Oktober 2026).** Jede Seite trägt nur noch v2-Stile; die alten Stildateien sind gelöscht. Wer ab jetzt weiterarbeitet (Codex, ChatGPT oder Claude Code), startet von `main` – sobald der Pull Request `design/v2-gesamt` (#21) dort gemergt ist; bis dahin vom Branch `design/v2-gesamt`. Plan und Stand stehen in `docs/V2_DESIGN_UMSTELLUNG.md`. Die Oberfläche von `party.html` (Partyabend, Daten und Sicherung, eigene Kategorien, Favoriten, Verlauf und Erfolge) steht in `v2-party-hub.css`, der Update-Hinweis in `v2-update.css`. Die Startseite zeigt „Zuletzt gespielt“ als Reihe; das Profil hat „Weiterspielen“ und die Liste mit Namen. Der Verlauf speichert die Namen der Runde (`players`).
 
 Als Nächstes: Bilder einbinden (siehe unten). Bestehende Spiellogik, Schutzfunktionen (Fortsetzen, Verdecken geheimer Inhalte, exact-once-Verlauf) und Element-IDs nicht umbauen, nur weil sich das Aussehen ändert – viele Tests hängen daran. Einige Tests lesen Stildateien direkt (`v2-party-hub.css`, `v2-party-play.css`, `v2-update.css` usw.); beim Umzug von Stilen diese Prüfungen mit derselben Zusage auf die neue Datei umstellen, nie abschwächen. Keine Funktion streichen.
 

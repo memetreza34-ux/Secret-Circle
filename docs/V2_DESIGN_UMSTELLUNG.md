@@ -1,6 +1,6 @@
 # Umstellung auf das v2-Design
 
-Plan vom 3. Oktober 2026. Zuständig seit 4. Oktober 2026: **Claude Code, allein.** Codex arbeitet nicht mehr am Design, damit sich niemand in die Quere kommt.
+Plan vom 3. Oktober 2026. Die Umstellung ist am 5. Oktober 2026 abgeschlossen (durchgeführt von Claude Code, Quick Play und Party-Spielansicht von Codex). Wer weiterarbeitet, startet von `main` bzw. – bis Pull Request #21 gemergt ist – von `design/v2-gesamt`; es muss nur einer gleichzeitig am Design arbeiten.
 
 ## Stand (5. Oktober 2026)
 
