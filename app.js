@@ -142,6 +142,33 @@ function restoreSettings() {
   updateAdvancedSummary();
 }
 
+/* Importiert die Party-Hub-Gruppe nur auf Wunsch; laufende Spiele bleiben unverändert. */
+function groupPlayers() {
+  try {
+    const hub = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    if (!hub || hub.version !== 1 || !Array.isArray(hub.players)) return [];
+    const names = hub.players.map(value => typeof value === 'string' ? value.normalize('NFKC').trim().replace(/\s+/g, ' ') : '');
+    if (names.length < E.MIN_PLAYERS || names.length > E.MAX_PLAYERS) return [];
+    if (names.some(name => !name || name.length > 30)) return [];
+    if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return [];
+    return names;
+  } catch { return []; }
+}
+function updateGroupImport() {
+  const button = $('#import-group-players');
+  const names = groupPlayers();
+  const current = $('#players').value.split(/\n|,/).map(name => name.trim().replace(/\s+/g, ' ')).filter(Boolean);
+  button.hidden = !names.length || (current.length === names.length && current.every((name, index) => name === names[index]));
+}
+function importGroupPlayers() {
+  const names = groupPlayers();
+  if (!names.length) return;
+  $('#players').value = names.join('\n');
+  $('#players').dispatchEvent(new Event('input', { bubbles: true }));
+  $('#group-import-note').textContent = names.length + ' Spieler aus deiner Gruppe übernommen.';
+  updateGroupImport();
+}
+
 function updateAdvancedSummary() {
   const node = $('#settings-summary');
   if (!node) return;
@@ -352,6 +379,8 @@ function renderVoting({ requireHandoff = false } = {}) {
     game = E.startVoting(game);
     syncVoteIndex();
     saveGame();
+    // Vor einer Stichwahl erhält auch die erste Person eine verdeckte Übergabe.
+    requireHandoff = true;
   } else syncVoteIndex();
 
   if (voteIndex >= game.players.length) {
@@ -367,9 +396,11 @@ function renderVoting({ requireHandoff = false } = {}) {
   const voter = game.players[voteIndex];
   const tie = game.voteLeaders.length > 0;
   const castCount = Object.keys(game.votes || {}).length;
-  if (requireHandoff && castCount > 0) {
+  if (requireHandoff && (castCount > 0 || tie)) {
     $('#vote-next-player').textContent = voter;
-    $('#vote-handoff-progress').textContent = `${tie ? 'Stichwahl · ' : ''}Stimme ${castCount} von ${game.players.length} gespeichert`;
+    $('#vote-handoff-progress').textContent = tie && castCount === 0
+      ? 'Stichwahl · Neue Abstimmung'
+      : `${tie ? 'Stichwahl · ' : ''}Stimme ${castCount} von ${game.players.length} gespeichert`;
     screen('vote-handoff-screen');
     $('#continue-vote').focus();
     return;
@@ -481,6 +512,7 @@ function newGame() {
   game = null;
   remove(KEYS.active);
   screen('setup-screen');
+  updateGroupImport();
   updateResume();
 }
 
@@ -520,6 +552,8 @@ function registerPwa() {
 }
 
 $('#start').addEventListener('click', startGame);
+$('#import-group-players').addEventListener('click', importGroupPlayers);
+$('#players').addEventListener('input', updateGroupImport);
 $('#resume').addEventListener('click', resumeGame);
 $('#discard-resume').addEventListener('click', () => { remove(KEYS.active); updateResume(); });
 $('#show-card').addEventListener('click', revealCard);
@@ -549,6 +583,7 @@ window.addEventListener('pagehide', () => {
 
 renderCategories();
 restoreSettings();
+updateGroupImport();
 updateAdvancedSummary();
 ['input', 'change'].forEach(type => ['#imposters', '#duration', '#match-rounds'].forEach(selector => $(selector).addEventListener(type, updateAdvancedSummary)));
 updateResume();
