@@ -34,6 +34,7 @@ async function resolveAllVotingRounds(page, players, firstRoundTargets) {
 
 async function startBasicGame(page, players, rounds = '1') {
   await page.locator('#players').fill(players.join('\n'));
+  await page.locator('#advanced-settings > summary').click();
   await page.locator('#match-rounds').fill(rounds);
   await page.locator('#duration').fill('1');
   await page.locator('#start').click();
@@ -58,6 +59,60 @@ test('private vote handoff stays covered after reload and resume', async ({ page
   await page.getByRole('button', { name: 'Ich bin bereit' }).click();
   await expect(page.locator('#vote-screen')).toBeVisible();
   await expect(page.locator('#vote-progress')).toContainText('Stimme 2 von 3');
+});
+
+test('tie break starts behind a handoff and stays private after reload', async ({ page }) => {
+  const players = ['Alex', 'Sam', 'Mika', 'Lina'];
+  await startBasicGame(page, players);
+  await revealAllCards(page, players.length);
+  await page.getByRole('button', { name: 'Abstimmung starten' }).click();
+  const votes = { Alex: 'Sam', Sam: 'Alex', Mika: 'Alex', Lina: 'Sam' };
+  for (let index = 0; index < players.length; index += 1) {
+    await page.getByRole('button', { name: votes[players[index]], exact: true }).click();
+    if (index < players.length - 1) await page.getByRole('button', { name: 'Ich bin bereit' }).click();
+  }
+  await expect(page.locator('#vote-handoff-screen')).toBeVisible();
+  await expect(page.locator('#vote-handoff-progress')).toContainText('Stichwahl');
+  await expect(page.locator('#vote-screen')).toBeHidden();
+  await page.reload();
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await expect(page.locator('#vote-handoff-screen')).toBeVisible();
+  await page.getByRole('button', { name: 'Ich bin bereit' }).click();
+  await expect(page.locator('#vote-progress')).toContainText('Stichwahl · Stimme 1 von 4');
+});
+
+test('imposter spoken answer is accepted by the group without a keyboard', async ({ page }) => {
+  const players = ['Alex', 'Sam', 'Mika', 'Lina'];
+  await startBasicGame(page, players);
+  const state = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+  const imposter = state.imposters[0];
+  await revealAllCards(page, players.length);
+  await page.getByRole('button', { name: 'Abstimmung starten' }).click();
+  for (const player of players) {
+    await page.getByRole('button', { name: player === imposter ? players.find(name => name !== imposter) : imposter, exact: true }).click();
+    if (await page.locator('#vote-handoff-screen').isVisible()) await page.getByRole('button', { name: 'Ich bin bereit' }).click();
+  }
+  await expect(page.locator('#guess-screen')).toBeVisible();
+  await expect(page.locator('#guess-screen input')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Richtig', exact: true })).toBeFocused();
+  await page.getByRole('button', { name: 'Richtig', exact: true }).click();
+  await expect(page.locator('#result-heading')).toHaveText('Die Imposter gewinnen');
+});
+
+test('optional group import keeps custom Word Imposter names unless clicked', async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Nora', 'Lea', 'Ben', 'Tariq'],
+    favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
+  await page.reload();
+  await expect(page.locator('#players')).toHaveValue('Alex\nSam\nMika\nLina');
+  await page.getByRole('button', { name: 'Spieler aus meiner Gruppe übernehmen' }).click();
+  await expect(page.locator('#players')).toHaveValue('Nora\nLea\nBen\nTariq');
+  await expect(page.locator('#player-list input')).toHaveCount(4);
+  await expect(page.locator('#start')).toBeEnabled();
+  await page.locator('#start').click();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+  expect(saved.players).toEqual(['Nora', 'Lea', 'Ben', 'Tariq']);
 });
 
 test('completes a full match round with voting and result screen', async ({ page }) => {
