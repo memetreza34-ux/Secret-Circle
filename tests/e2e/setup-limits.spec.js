@@ -8,6 +8,18 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
+  await page.locator('#advanced-settings > summary').click();
+});
+
+test('advanced settings are folded by default with a readable preset', async ({ page }) => {
+  await page.locator('#advanced-settings > summary').click();
+  await expect(page.locator('#advanced-settings')).not.toHaveAttribute('open', '');
+  await expect(page.locator('#category')).toBeVisible();
+  await expect(page.locator('#start')).toBeVisible();
+  await expect(page.locator('#settings-summary')).toHaveText('1 Imposter · 2 Min · 3 Runden');
+  await page.locator('#advanced-settings > summary').click();
+  await page.getByRole('button', { name: 'Mehr Imposter' }).click();
+  await expect(page.locator('#settings-summary')).toContainText('2 Imposter');
 });
 
 test('setup explains live player count and valid imposter range', async ({ page }) => {
@@ -88,7 +100,7 @@ test('Spieler lassen sich hinzufügen, umbenennen und entfernen; Zeit und Runden
 
 test('Hilfswort in drei Stufen: Mittel zeigt dem Imposter nur die Kategorie', async ({ page }) => {
   await expect(page.locator('#hint-level-note')).toHaveText('Imposter sieht ein Hilfswort zum Begriff.');
-  await page.getByRole('radio', { name: 'Mittel' }).check();
+  await page.getByRole('radio', { name: 'Kategorie' }).check();
   await expect(page.locator('#hint-level-note')).toHaveText('Imposter sieht nur die Kategorie.');
   await page.locator('#match-rounds').fill('1');
   await page.locator('#start').click();
@@ -106,13 +118,14 @@ test('Hilfswort in drei Stufen: Mittel zeigt dem Imposter nur die Kategorie', as
 
   await page.reload();
   await page.getByRole('button', { name: 'Verwerfen' }).click();
-  await expect(page.getByRole('radio', { name: 'Mittel' })).toBeChecked();
+  await page.locator('#advanced-settings > summary').click();
+  await expect(page.getByRole('radio', { name: 'Kategorie' })).toBeChecked();
 });
 
 test('Hilfswort lässt sich ganz ausschalten; Schwer zeigt nur die Länge des Begriffs', async ({ page }) => {
-  await page.getByRole('radio', { name: 'Schwer' }).check();
+  await page.getByRole('radio', { name: 'Wortlänge' }).check();
   await expect(page.locator('#hint-level-note')).toHaveText('Imposter sieht nur, wie viele Buchstaben der Begriff hat.');
-  await page.getByRole('switch', { name: 'Hilfswort für Imposter' }).uncheck();
+  await page.getByRole('switch', { name: 'Imposter-Hilfe' }).uncheck();
   await expect(page.locator('#hint-levels')).toBeHidden();
   await expect(page.locator('#hint-level-note')).toHaveText('Ohne Hilfswort: Der Imposter sieht gar nichts.');
 
@@ -130,10 +143,11 @@ test('Hilfswort lässt sich ganz ausschalten; Schwer zeigt nur die Länge des Be
 
   await page.reload();
   await page.getByRole('button', { name: 'Verwerfen' }).click();
-  await expect(page.getByRole('switch', { name: 'Hilfswort für Imposter' })).not.toBeChecked();
+  await page.locator('#advanced-settings > summary').click();
+  await expect(page.getByRole('switch', { name: 'Imposter-Hilfe' })).not.toBeChecked();
   await expect(page.locator('#hint-levels')).toBeHidden();
-  await page.getByRole('switch', { name: 'Hilfswort für Imposter' }).check();
-  await expect(page.getByRole('radio', { name: 'Schwer' })).toBeChecked();
+  await page.getByRole('switch', { name: 'Imposter-Hilfe' }).check();
+  await expect(page.getByRole('radio', { name: 'Wortlänge' })).toBeChecked();
 });
 
 test('minimum setup supports three players and two imposters', async ({ page }) => {
