@@ -323,6 +323,8 @@
   line-height: 1;
 }
 .shell .add-player:hover { border-color: var(--fg); background: none; color: var(--fg); }
+.shell .group-import { width: 100%; margin-top: 10px; padding: 11px 12px; min-height: var(--touch); border: 1px solid var(--line); border-radius: 12px; background: #ffffff0a; color: var(--fg); font-weight: 700; }
+#group-import-note:not(:empty) { display: block; margin-top: 8px; }
 .shell .add-player:disabled { border-style: dashed; box-shadow: none; }
 
 /* Einstellungen als Zeilen: Name links, Wert rechts */
