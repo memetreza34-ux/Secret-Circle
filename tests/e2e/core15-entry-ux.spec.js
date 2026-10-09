@@ -27,12 +27,17 @@ const PLAYERS = ['Alex', 'Sam', 'Mika', 'Lina', 'Noah', 'Lea', 'Emil', 'Sara'];
 
 test('the 15 Core entry cases match the actual published catalog', async ({ page }) => {
   await page.goto('/v2-hub.html');
-  const catalog = await page.evaluate(() => window.SecretCirclePartyCatalog?.games
-    ?.filter(g => g.status === 'playable' && g.releaseTier === 'core')
-    .map(g => g.id) || []);
-  // Some catalog generations use the release structure as their canonical tier source.
-  if (catalog.length) expect(new Set(catalog)).toEqual(new Set(CORE.map(g => g.id)));
+  const catalog = await page.evaluate(() => (window.SecretCirclePartyCatalog?.games || [])
+    .filter(g => g.status === 'playable')
+    .map(g => ({ id: g.id, mode: g.mode, href: g.href || '' })));
   expect(CORE).toHaveLength(15);
+  for (const { id, engine } of CORE) {
+    const matches = catalog.filter(game => game.id === id);
+    expect(matches, `Core title missing or duplicated: ${id}`).toHaveLength(1);
+    if (engine === 'word') expect(matches[0].href).toBe('index.html');
+    else if (engine === 'advanced') expect(matches[0].href).toBe(`advanced.html?game=${id}`);
+    else expect(matches[0].mode).not.toBe('link');
+  }
   expect(new Set(CORE.map(g => g.id)).size).toBe(15);
 });
 
@@ -67,7 +72,7 @@ for (const { id, engine } of CORE) {
     } else {
       await expect(page).toHaveURL(/\/party\.html\?from=v2$/);
       await expect(page.locator('#play-layer')).toBeVisible();
-      await expect(page.locator('#play-content')).toBeVisible();
+      await expect(page.locator('#finish-hub-game')).toBeVisible();
     }
     expect(errors).toEqual([]);
   });
