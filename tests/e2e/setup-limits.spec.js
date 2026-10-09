@@ -85,7 +85,7 @@ test('Spieler lassen sich hinzufügen, umbenennen und entfernen; Zeit und Runden
   await page.getByRole('button', { name: 'Mehr Imposter' }).click();
   await expect(page.locator('#imposters')).toHaveValue('2');
   await page.getByRole('button', { name: 'Längere Rundenzeit' }).click();
-  await expect(page.locator('#duration')).toHaveValue('4');
+  await expect(page.locator('#duration')).toHaveValue('3');
   await page.locator('#match-rounds').fill('7');
   await page.locator('#match-rounds').blur();
   await expect(page.locator('#match-rounds')).toHaveValue('7');
@@ -102,9 +102,9 @@ test('Spieler lassen sich hinzufügen, umbenennen und entfernen; Zeit und Runden
   expect([...state.players].sort()).toEqual(['Alex', 'Lina', 'Noah', 'Sam']);
   expect(state.imposters).toHaveLength(2);
   expect(state.matchRounds).toBe(19);
-  expect(state.roundSeconds).toBe(240);
+  expect(state.roundSeconds).toBe(180);
   const settings = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-settings-v7')));
-  expect(settings).toMatchObject({ duration: '4', matchRounds: '19' });
+  expect(settings).toMatchObject({ duration: '3', matchRounds: '19' });
 });
 
 test('Hilfswort in drei Stufen: Mittel zeigt dem Imposter nur die Kategorie', async ({ page }) => {
