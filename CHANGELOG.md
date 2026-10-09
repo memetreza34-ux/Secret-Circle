@@ -6,7 +6,8 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 - Einfacher Einstieg: Kategorie bleibt sichtbar, selten genutzte Optionen sind hinter „Weitere Einstellungen“ einklappbar; neue Voreinstellung 3 Runden mit 2 Minuten. Bereits gespeicherte Einstellungen bleiben bestehen.
 - Die Imposter-Hilfe zeigt ihre Wirkung direkt: Hilfswort, Kategorie oder Wortlänge.
-- Nach jeder geheimen Stimme folgt eine Weitergabe-Ansicht mit „Ich bin bereit“. Auch beim Fortsetzen nach Neuladen bleibt die nächste Stimmabgabe zunächst verborgen.
+- Nach jeder geheimen Stimme folgt eine Weitergabe-Ansicht mit „Ich bin bereit“. Auch beim Fortsetzen nach Neuladen bleibt die nächste Stimmabgabe zunächst verborgen. Auch der erste Stimmzettel einer Stichwahl bleibt verdeckt, inklusive nach einem Neuladen.
+- Eine vorhandene Gruppe aus dem Party Hub kann auf Wunsch in die Word-Imposter-Einrichtung übernommen werden. Eigene Namen und laufende Runden werden nicht automatisch überschrieben.
 - Der erwischte Imposter sagt seine Antwort laut; die Gruppe bestätigt „Richtig“ oder „Falsch“ und der bestehende Punktemechanismus entscheidet weiter.
 - Engine- und Browser-Tests für den neuen Ablauf ergänzt; Offline-Cachegeneration auf v90 erhöht.
 
