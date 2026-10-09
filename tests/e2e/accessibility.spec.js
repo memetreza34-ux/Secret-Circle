@@ -96,6 +96,24 @@ test('all Word Imposter phases retain focus and accessible controls', async ({ p
   expect(await auditDocument(page)).toEqual([]);
 });
 
+test('Word Imposter secret handoff works with keyboard and fits a narrow viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.locator('#players').fill('Alex\nSam\nMika');
+  await page.locator('#start').click();
+  for (let index = 0; index < 3; index += 1) {
+    await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
+    await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
+  }
+  await page.getByRole('button', { name: 'Abstimmung starten' }).click();
+  await page.locator('#vote-options button').first().click();
+  await expect(page.locator('#vote-handoff-screen')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Ich bin bereit' })).toBeFocused();
+  expect(await auditDocument(page)).toEqual([]);
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#vote-screen')).toBeVisible();
+  await expect(page.locator('#vote-options button').first()).toBeFocused();
+});
+
 test('Party Hub navigation catalog data and custom-pack editor satisfy structural gates', async ({ page }) => {
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
