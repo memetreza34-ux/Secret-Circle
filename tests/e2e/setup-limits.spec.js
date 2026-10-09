@@ -11,6 +11,15 @@ test.beforeEach(async ({ page }) => {
   await page.locator('#advanced-settings > summary').click();
 });
 
+test('invalid or duplicate hub names cannot override Word Imposter setup', async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Alex', 'alex', 'Mika'], favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
+  await page.reload();
+  await expect(page.locator('#import-group-players')).toBeHidden();
+  await expect(page.locator('#players')).toHaveValue('Alex\nSam\nMika\nLina');
+});
+
 test('advanced settings are folded by default with a readable preset', async ({ page }) => {
   await page.locator('#advanced-settings > summary').click();
   await expect(page.locator('#advanced-settings')).not.toHaveAttribute('open', '');
