@@ -45,19 +45,24 @@ Lina</textarea>
 
       <div class="settings-list">
         <label class="setting" for="category"><span>Kategorie</span><select id="category"></select></label>
+        <details class="advanced-settings" id="advanced-settings">
+          <summary>Weitere Einstellungen <span id="settings-summary">1 Imposter · 2 Min · 3 Runden</span></summary>
+          <div class="advanced-settings-body">
         <div class="setting"><label for="imposters">Imposter</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Imposter">−</button><input id="imposters" type="number" min="1" max="6" value="1" inputmode="numeric" aria-describedby="imposters-help"><button type="button" data-step="1" aria-label="Mehr Imposter">+</button></div></div>
         <small id="imposters-help" class="setting-note" aria-live="polite"></small>
-        <div class="setting"><label for="duration">Rundenzeit<span class="sr-only"> in Minuten</span></label><div class="stepper"><button type="button" data-step="-1" aria-label="Kürzere Rundenzeit">−</button><span class="stepper-value"><input id="duration" type="number" min="1" max="10" value="3" inputmode="numeric"><span class="unit" aria-hidden="true">Min</span></span><button type="button" data-step="1" aria-label="Längere Rundenzeit">+</button></div></div>
-        <div class="setting"><label for="match-rounds">Runden</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Runden">−</button><input id="match-rounds" type="number" min="1" max="20" value="5" inputmode="numeric"><button type="button" data-step="1" aria-label="Mehr Runden">+</button></div></div>
+        <div class="setting"><label for="duration">Rundenzeit<span class="sr-only"> in Minuten</span></label><div class="stepper"><button type="button" data-step="-1" aria-label="Kürzere Rundenzeit">−</button><span class="stepper-value"><input id="duration" type="number" min="1" max="10" value="2" inputmode="numeric"><span class="unit" aria-hidden="true">Min</span></span><button type="button" data-step="1" aria-label="Längere Rundenzeit">+</button></div></div>
+        <div class="setting"><label for="match-rounds">Runden</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Runden">−</button><input id="match-rounds" type="number" min="1" max="20" value="3" inputmode="numeric"><button type="button" data-step="1" aria-label="Mehr Runden">+</button></div></div>
         <div class="setting setting-stack">
-          <label class="setting-switch" for="hint"><span id="hint-level-label">Hilfswort für Imposter</span><input id="hint" class="switch" type="checkbox" role="switch" checked aria-describedby="hint-level-note"></label>
-          <div id="hint-levels" class="segmented" role="radiogroup" aria-label="Stufe des Hilfsworts" aria-describedby="hint-level-note">
-            <label for="hint-easy"><input id="hint-easy" type="radio" name="hint-level" value="easy" checked><span>Einfach</span></label>
-            <label for="hint-medium"><input id="hint-medium" type="radio" name="hint-level" value="medium"><span>Mittel</span></label>
-            <label for="hint-hard"><input id="hint-hard" type="radio" name="hint-level" value="hard"><span>Schwer</span></label>
+          <label class="setting-switch" for="hint"><span id="hint-level-label">Imposter-Hilfe</span><input id="hint" class="switch" type="checkbox" role="switch" checked aria-describedby="hint-level-note"></label>
+          <div id="hint-levels" class="segmented" role="radiogroup" aria-label="Welche Hilfe sieht der Imposter?" aria-describedby="hint-level-note">
+            <label for="hint-easy"><input id="hint-easy" type="radio" name="hint-level" value="easy" checked><span>Hilfswort</span></label>
+            <label for="hint-medium"><input id="hint-medium" type="radio" name="hint-level" value="medium"><span>Kategorie</span></label>
+            <label for="hint-hard"><input id="hint-hard" type="radio" name="hint-level" value="hard"><span>Wortlänge</span></label>
           </div>
           <small id="hint-level-note" class="setting-caption" aria-live="polite">Imposter sieht ein Hilfswort zum Begriff.</small>
         </div>
+          </div>
+        </details>
       </div>
 
       <button id="start" type="button">Spiel starten</button>
@@ -94,10 +99,22 @@ Lina</textarea>
       <button class="secondary text-button" data-new-game type="button">Runde abbrechen</button>
     </section>
 
+    <section id="vote-handoff-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="vote-handoff-title">
+      <p class="eyebrow" id="vote-handoff-progress">Stimme gespeichert</p>
+      <h2 id="vote-handoff-title">Handy weitergeben</h2>
+      <p class="handoff">Gib das Gerät an <strong id="vote-next-player"></strong> weiter. Die letzte Stimme ist verborgen.</p>
+      <button id="continue-vote" type="button">Ich bin bereit</button>
+    </section>
+
     <section id="guess-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="guess-title">
-      <p class="eyebrow">Letzte Chance</p><h2 id="guess-title">Der Imposter wurde gefunden</h2><p><strong id="eliminated-player"></strong> darf jetzt den geheimen Begriff erraten.</p>
-      <label for="imposter-guess">Begriff eingeben<input id="imposter-guess" maxlength="60" autocomplete="off" enterkeyhint="done"></label>
-      <button id="submit-guess" type="button">Antwort prüfen</button>
+      <p class="eyebrow">Letzte Chance</p>
+      <h2 id="guess-title">Der Imposter wurde gefunden</h2>
+      <p><strong id="eliminated-player"></strong> sagt jetzt den vermuteten Begriff laut. Die Gruppe entscheidet gemeinsam.</p>
+      <p class="handoff">Hat der Imposter den Begriff richtig genannt?</p>
+      <div class="guess-actions">
+        <button id="guess-correct" type="button">Richtig</button>
+        <button id="guess-wrong" class="secondary" type="button">Falsch</button>
+      </div>
     </section>
 
     <section id="result-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="result-heading">
