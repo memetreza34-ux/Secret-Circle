@@ -60,7 +60,7 @@ Hinweis: Dieser Test ersetzt **nicht** das vollständige Durchspielen. Die vorha
 ## Konkrete nächste Wellen
 
 - **Welle A (hier begonnen):** alle 15 Einstiege per Chromium/WebKit prüfen; Word Imposter PR #22 separat abschließen.
-- **Welle B:** Wahrheit/Pflicht, Ich habe noch nie, Wer würde eher?, Entweder oder und Paranoia als echte 4–8-Personen-Gruppenabläufe.
+- **Welle B (automatisiert vorbereitet):** Wahrheit/Pflicht, Ich habe noch nie, Wer würde eher?, Entweder oder und Paranoia. In `tests/e2e/core15-social-ux.spec.js` werden Rundenwechsel, freiwilliges Überspringen, scorelose Spielregeln, A/B-Entscheidungen sowie Paranoia-Geheimhaltung über Reload geprüft. Ein echter 4–8-Personen-Gruppentest bleibt offen.
 - **Welle C:** Scharade, Tabu, Heiße Kartoffel, Wortkette und Nur falsche Antworten; Timer und Weitergabe.
 - **Welle D:** Vier Advanced-Modi inklusive Mafia, Rollenschutz und Abbruch/Resume.
 - **Abnahme:** reales Android + iPhone; je ein moderierter und ein unmoderierter Gruppentest pro Core-Spiel dokumentieren.
