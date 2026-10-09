@@ -2,6 +2,14 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v90 – Word Imposter: zügig starten und am Tisch entscheiden
+
+- Einfacher Einstieg: Kategorie bleibt sichtbar, selten genutzte Optionen sind hinter „Weitere Einstellungen“ einklappbar; neue Voreinstellung 3 Runden mit 2 Minuten. Bereits gespeicherte Einstellungen bleiben bestehen.
+- Die Imposter-Hilfe zeigt ihre Wirkung direkt: Hilfswort, Kategorie oder Wortlänge.
+- Nach jeder geheimen Stimme folgt eine Weitergabe-Ansicht mit „Ich bin bereit“. Auch beim Fortsetzen nach Neuladen bleibt die nächste Stimmabgabe zunächst verborgen.
+- Der erwischte Imposter sagt seine Antwort laut; die Gruppe bestätigt „Richtig“ oder „Falsch“ und der bestehende Punktemechanismus entscheidet weiter.
+- Engine- und Browser-Tests für den neuen Ablauf ergänzt; Offline-Cachegeneration auf v90 erhöht.
+
 ## v89 – „Zuletzt gespielt“ auch auf der Startseite
 
 - Startseite: Eine Reihe „Zuletzt gespielt“ steht über den anderen Reihen und sieht aus wie sie. Sie zeigt die zuletzt beendeten Spiele, jedes einmal, schon ab einem Spiel. „Alle ansehen“ führt zur Liste mit Namen und Datum im Profil.
