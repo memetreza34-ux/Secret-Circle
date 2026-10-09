@@ -11,11 +11,12 @@ async function revealAllCards(page, playerCount) {
 async function castVisibleVote(page, voter, preferredTarget) {
   await expect(page.locator('#voter-name')).toContainText(voter);
   const preferred = page.getByRole('button', { name: preferredTarget, exact: true });
-  if (await preferred.count()) {
-    await preferred.click();
-    return;
+  if (await preferred.count()) await preferred.click();
+  else await page.locator('#vote-options button').first().click();
+  if (await page.locator('#vote-handoff-screen').isVisible()) {
+    await expect(page.locator('#vote-handoff-progress')).toContainText('gespeichert');
+    await page.getByRole('button', { name: 'Ich bin bereit' }).click();
   }
-  await page.locator('#vote-options button').first().click();
 }
 
 async function resolveAllVotingRounds(page, players, firstRoundTargets) {
@@ -44,6 +45,21 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
+test('private vote handoff stays covered after reload and resume', async ({ page }) => {
+  await startBasicGame(page, ['Alex', 'Sam', 'Mika'], '1');
+  await revealAllCards(page, 3);
+  await page.getByRole('button', { name: 'Abstimmung starten' }).click();
+  await page.locator('#vote-options button').first().click();
+  await expect(page.locator('#vote-handoff-screen')).toBeVisible();
+  await expect(page.locator('#vote-screen')).toBeHidden();
+  await page.reload();
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await expect(page.locator('#vote-handoff-screen')).toBeVisible();
+  await page.getByRole('button', { name: 'Ich bin bereit' }).click();
+  await expect(page.locator('#vote-screen')).toBeVisible();
+  await expect(page.locator('#vote-progress')).toContainText('Stimme 2 von 3');
+});
+
 test('completes a full match round with voting and result screen', async ({ page }) => {
   const players = ['Alex', 'Sam', 'Mika', 'Lina'];
   await startBasicGame(page, players);
@@ -59,8 +75,7 @@ test('completes a full match round with voting and result screen', async ({ page
   });
 
   if (await page.locator('#guess-screen').isVisible()) {
-    await page.locator('#imposter-guess').fill('absichtlich falsch');
-    await page.getByRole('button', { name: 'Antwort prüfen' }).click();
+    await page.getByRole('button', { name: 'Falsch', exact: true }).click();
   }
 
   await expect(page.locator('#result-screen')).toBeVisible();
@@ -81,8 +96,7 @@ test('starts multiple match rounds, preserves scores and avoids repeated words',
     Lina: 'Alex'
   });
   if (await page.locator('#guess-screen').isVisible()) {
-    await page.locator('#imposter-guess').fill('absichtlich falsch');
-    await page.getByRole('button', { name: 'Antwort prüfen' }).click();
+    await page.getByRole('button', { name: 'Falsch', exact: true }).click();
   }
   const scoresBefore = await page.locator('#leaderboard .leader-row').allTextContents();
   await page.getByRole('button', { name: 'Runde 2 starten' }).click();
