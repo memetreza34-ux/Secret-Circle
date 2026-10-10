@@ -14,6 +14,7 @@ test('malicious-looking player names stay text through reveal and voting', async
   const maliciousPlayer = '<img src=x onerror=window.__x=4>';
   const players = [maliciousPlayer, 'Sam', 'Mika'];
   await page.locator('#players').fill(players.join('\n'));
+  await page.locator('#advanced-settings > summary').click();
   await page.locator('#match-rounds').fill('1');
   await page.locator('#start').click();
 

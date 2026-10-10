@@ -3,6 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function startDiscussion(page) {
   const players = ['Alex', 'Sam', 'Mika'];
   await page.locator('#players').fill(players.join('\n'));
+  await page.locator('#advanced-settings > summary').click();
   await page.locator('#duration').fill('1');
   await page.locator('#match-rounds').fill('1');
   await page.locator('#start').click();
