@@ -147,6 +147,10 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
   await page.getByRole('button', { name: 'Pflicht', exact: true }).focus();
   await page.keyboard.press('Tab');
   await expect(page.locator('#finish-hub-game')).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.getByRole('button', { name: 'Pflicht', exact: true })).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#finish-hub-game')).toBeFocused();
 });
 
 test('advanced play isolates setup and traps focus inside the active game', async ({ page }) => {
