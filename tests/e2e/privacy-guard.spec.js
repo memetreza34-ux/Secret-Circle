@@ -5,6 +5,7 @@ test.beforeEach(async ({ page }) => {
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
+  await page.locator('#advanced-settings > summary').click();
   await page.locator('#match-rounds').fill('1');
   await page.locator('#start').click();
 });

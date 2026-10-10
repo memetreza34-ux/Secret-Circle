@@ -117,11 +117,12 @@ def check():
     problems = []
     if meta.get('offlineCache', {}).get('production') != f'secret-circle-v{current}':
         problems.append('release-meta.json nennt eine andere Cachegeneration als sw.js.')
-    if recorded != core_hash(sw):
+    calculated = core_hash(sw)
+    if recorded != calculated:
         problems.append(
             'Offline-Core-Dateien haben sich geändert, die Cachegeneration aber nicht. '
             'Installierte Apps würden die Änderung nie bekommen. '
-            'Ausführen: python3 scripts/offline_core_lock.py --bump'
+            f'Ausführen: python3 scripts/offline_core_lock.py --bump (neuer coreHash: {calculated})'
         )
     if problems:
         raise SystemExit('\n'.join(problems))
