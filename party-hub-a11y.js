@@ -52,20 +52,15 @@
       return true;
     }
 
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-    if (event.shiftKey && (active === first || !overlay.contains(active))) {
-      event.preventDefault();
-      last.focus();
-      return true;
-    }
-    if (!event.shiftKey && (active === last || !overlay.contains(active))) {
-      event.preventDefault();
-      first.focus();
-      return true;
-    }
-    return false;
+    // Eine einheitliche Tab-Reihenfolge ist auch in WebKit erforderlich:
+    // Safari kann per .focus() aktivierte Buttons beim nativen Tab überspringen.
+    const currentIndex = focusable.indexOf(document.activeElement);
+    const nextIndex = event.shiftKey
+      ? (currentIndex <= 0 ? focusable.length - 1 : currentIndex - 1)
+      : (currentIndex < 0 || currentIndex === focusable.length - 1 ? 0 : currentIndex + 1);
+    event.preventDefault();
+    focusable[nextIndex].focus();
+    return true;
   }
 
   function focusVisibleViewHeading() {
