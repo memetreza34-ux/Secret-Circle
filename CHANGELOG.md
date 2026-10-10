@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v90 – Zuverlässige Dialog-Navigation unter Safari und WebKit
+
+- Hub-Spiel- und Spieldetaildialoge: Tab und Shift+Tab navigieren explizit zwischen den aktuell sichtbaren, aktivierten Bedienelementen, unabhängig von browserabhängiger Standard-Tab-Reihenfolge.
+- Accessibility-Contract und Playwright-Regressionstest für Vorwärts- und Rückwärtsnavigation aktualisiert.
+- Offline-Cachegeneration auf v90 erhöht. Die Core-Prüfsumme und vollständige CI-Abnahme bleiben bis zum verifizierten Berechnungsergebnis offen.
+
 ## v89 – „Zuletzt gespielt“ auch auf der Startseite
 
 - Startseite: Eine Reihe „Zuletzt gespielt“ steht über den anderen Reihen und sieht aus wie sie. Sie zeigt die zuletzt beendeten Spiele, jedes einmal, schon ab einem Spiel. „Alle ansehen“ führt zur Liste mit Namen und Datum im Profil.
