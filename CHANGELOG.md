@@ -6,7 +6,7 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
 - Hub-Spiel- und Spieldetaildialoge: Tab und Shift+Tab navigieren explizit zwischen den aktuell sichtbaren, aktivierten Bedienelementen, unabhängig von browserabhängiger Standard-Tab-Reihenfolge.
 - Accessibility-Contract und Playwright-Regressionstest für Vorwärts- und Rückwärtsnavigation aktualisiert.
-- Offline-Cachegeneration auf v90 erhöht. Die Core-Prüfsumme und vollständige CI-Abnahme bleiben bis zum verifizierten Berechnungsergebnis offen.
+- Offline-Cachegeneration v90 und SHA-256-Core-Prüfsumme synchronisiert; vollständige CI-/Browserabnahme erfolgt separat.
 
 ## v89 – „Zuletzt gespielt“ auch auf der Startseite
 
