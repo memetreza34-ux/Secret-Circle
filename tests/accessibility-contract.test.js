@@ -40,6 +40,8 @@ const quick = pages['quick-play.html'];
 assert.match(quick, /id="quick-pause"[^>]*aria-pressed="false"/);
 assert.match(quick, /id="quick-pause-overlay"[^>]*role="status"[^>]*aria-live="polite"/);
 assert.match(quick, /secondary-surface-a11y\.js/);
+assert.match(quick, /href="v2-theme\.css"/);
+assert.match(quick, /href="v2-play\.css"/);
 
 const creator = pages['creator.html'];
 assert.match(creator, /role="radiogroup"/);
@@ -48,27 +50,41 @@ assert.match(creator, /role="status" aria-live="polite"/);
 assert.match(creator, /id="creator-help"[^>]*role="dialog"[^>]*aria-modal="true"/);
 assert.match(creator, /secondary-surface-a11y\.js/);
 
-const partyCss = read('party.css');
-const extraCss = read('party-extra.css');
-const creatorCss = read('creator.css');
+const partyCss = read('v2-party-hub.css');
+const extraCss = partyCss;
+const v2CreatorCss = read('v2-creator.css');
+const v2ImposterCss = read('v2-imposter.css');
+const v2AdvancedCss = read('v2-advanced.css');
+const v2ThemeCss = read('v2-theme.css');
+const v2PlayCss = read('v2-play.css');
+const v2PartyPlayCss = read('v2-party-play.css');
 const searchSource = read('party-search-assist.js');
 const polishSource = read('party-hub-polish.js');
 const hubA11y = read('party-hub-a11y.js');
 const secondaryA11y = read('secondary-surface-a11y.js');
 
 assert.match(partyCss, /:focus-visible/);
-assert.match(partyCss, /outline:3px solid var\(--accent\)/);
+assert.match(partyCss, /outline:3px solid var\(--fg\)/);
 assert.match(partyCss, /button\{min-height:46px/);
 assert.match(partyCss, /\.hub-nav button\{min-height:44px/);
 assert.match(partyCss, /@media \(prefers-reduced-motion:reduce\)/);
 assert.match(extraCss, /@media\(prefers-reduced-motion:reduce\)/);
-assert.match(creatorCss, /@media\(prefers-reduced-motion:reduce\)/);
+for (const [name, source] of [['v2-creator.css', v2CreatorCss], ['v2-imposter.css', v2ImposterCss], ['v2-advanced.css', v2AdvancedCss]]) {
+  assert.match(source, /@media \(prefers-reduced-motion: reduce\)/, `${name}: reduzierte Bewegung fehlt`);
+  assert.match(source, /min-height: var\(--touch\)/, `${name}: Touch-Mindesthöhe fehlt`);
+}
+assert.match(v2ThemeCss, /:focus-visible\s*\{\s*outline:\s*3px solid var\(--fg\)/);
+assert.match(v2PlayCss, /\.quick-shell \.pill\s*\{\s*min-height:\s*48px/);
+assert.match(v2PlayCss, /\.quick-shell \.session-control-bar \.pill\s*\{[^}]*min-height:\s*var\(--touch\)/);
+assert.match(v2PlayCss, /@media \(prefers-reduced-motion: reduce\)/);
 
 for (const marker of ['aria-autocomplete', 'listbox', 'ArrowDown', 'ArrowUp', 'Enter', 'Escape']) {
   assert.match(searchSource, new RegExp(marker), `Search accessibility marker missing: ${marker}`);
 }
 
-assert.match(partyCss, /\.hub-session-controls \.ghost-button\{min-height:44px/);
+assert.match(v2PartyPlayCss, /#play-layer \.hub-session-controls \.ghost-button\s*\{[^}]*min-height:\s*44px/);
+assert.match(v2PartyPlayCss, /#play-layer :focus-visible\s*\{\s*outline:\s*3px solid var\(--fg\)/);
+assert.match(v2PartyPlayCss, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(extraCss, /\.favorite-button[^}]*min-height:44px/);
 assert.match(extraCss, /\.close-button[^}]*min-height:44px/);
 
@@ -79,8 +95,10 @@ assert.match(hubA11y, /node\.inert = Boolean\(overlay\)/);
 assert.match(hubA11y, /heading\.setAttribute\('tabindex', '-1'\)/);
 assert.match(hubA11y, /document\.addEventListener\('keydown', trapOverlayFocus, true\)/);
 assert.match(hubA11y, /event\.key !== 'Tab'/);
-assert.match(hubA11y, /last\.focus\(\)/);
-assert.match(hubA11y, /first\.focus\(\)/);
+assert.match(hubA11y, /const currentIndex = focusable\.indexOf\(document\.activeElement\)/);
+assert.match(hubA11y, /event\.shiftKey/);
+assert.match(hubA11y, /event\.preventDefault\(\)/);
+assert.match(hubA11y, /focusable\[nextIndex\]\.focus\(\)/);
 
 assert.match(secondaryA11y, /const VERSION = 1;/);
 assert.match(secondaryA11y, /#advanced-play-layer/);

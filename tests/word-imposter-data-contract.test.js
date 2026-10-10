@@ -18,21 +18,15 @@ assert.match(store, /Array\.isArray\(snapshot\.data\)/);
 assert.match(store, /maximumCustomCategories: MAX_CUSTOM_CATEGORIES/);
 assert.match(store, /maximumCustomEntries: MAX_CUSTOM_ENTRIES/);
 
-assert.match(app, /STORE\.maximumCustomCategories/);
-assert.match(app, /STORE\.maximumCustomEntries/);
-assert.match(app, /STORE\.maximumBackupBytes/);
+assert.doesNotMatch(app, /addCustomCategory|custom:/, 'Word Imposter bietet nur die eingebauten Kategorien an.');
+assert.doesNotMatch(app, /importBackup|exportBackup/, 'Word Imposter sichert nicht mehr selbst; das macht die zentrale Sicherung im Profil.');
 assert.match(app, /function nextPendingVoterIndex\(\)/);
 assert.match(app, /findIndex\(player => !hasVoteFor\(player\)\)/);
 assert.match(app, /voteIndex = game\.phase === 'voting' \? nextPendingVoterIndex\(\) : 0;/);
 assert.doesNotMatch(app, /voteIndex\s*=\s*Object\.keys\(game\.votes\s*\|\|\s*\{\}\)\.length/);
-assert.match(app, /file\.size > MAX_BACKUP_BYTES/);
-assert.match(app, /custom\.length >= MAX_CUSTOM_CATEGORIES/);
-assert.match(app, /rawRows\.length > MAX_CUSTOM_ENTRIES/);
+assert.match(read('backup-schema-registry.js'), /const MAX_FILE_BYTES = 1_500_000;/);
 
-assert.match(page, /bis zu 50 eigene Kategorien/);
-assert.match(page, /2–200 unterschiedliche Begriffe/);
-assert.match(page, /id="custom-words"[^>]*maxlength="25000"[^>]*aria-describedby="custom-words-help"/);
-assert.match(page, /höchstens 200 Zeilen/);
+assert.doesNotMatch(page, /id="custom-panel"|id="toggle-custom"/, 'Word Imposter legt keine eigenen Kategorien an.');
 
 console.log(JSON.stringify({
   wordImposterDataContract: 'PASS',
@@ -40,6 +34,6 @@ console.log(JSON.stringify({
   silentCategoryTruncationRejected: true,
   maximumCustomCategories: 50,
   maximumCustomEntries: 200,
-  backupUiUsesStoreByteLimit: true,
-  visibleCustomLimits: true
+  centralBackupByteLimit: true,
+  builtInCategoriesOnly: true
 }, null, 2));

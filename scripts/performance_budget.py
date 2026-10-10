@@ -8,6 +8,10 @@ ROOT = Path(__file__).resolve().parents[1]
 budgets = {
     'index.html': 60_000, 'party.html': 100_000, 'advanced.html': 35_000,
     'quick-play.html': 45_000, 'creator.html': 45_000, 'privacy.html': 32_000,
+    'v2-hub.html': 20_000, 'v2-hub.js': 50_000, 'v2-hub-packs.js': 6_000, 'v2-theme.css': 50_000,
+    'assets/images/word-imposter-chamaeleon.webp': 90_000,
+    'assets/images/wahrheit-oder-pflicht.webp': 90_000,
+    'assets/images/ich-habe-noch-nie.webp': 90_000,
     'runtime-guard.js': 22_000, 'setup-ux.js': 14_000, 'privacy-guard.js': 10_000,
     'wake-lock.js': 10_000, 'role-assignment.js': 14_000, 'app.js': 80_000,
     'game-engine.js': 60_000, 'data-store.js': 55_000, 'backup-schema-registry.js': 12_000,
@@ -31,10 +35,9 @@ budgets = {
     'party-advanced-preferences.js': 5_000, 'party-quick-modes.js': 78_000,
     'party-mega-modes.js': 80_000, 'party-viral-modes.js': 80_000,
     'party-created-modes.js': 78_000, 'quick-loader.js': 18_000,
-    'styles.css': 35_000, 'pwa.css': 40_000, 'pwa-update.css': 12_000,
-    'party.css': 55_000, 'party-extra.css': 25_000, 'party-night.css': 22_000,
-    'party-quick.css': 40_000, 'party-guide.css': 35_000, 'party-release.css': 12_000,
-    'party-search.css': 16_000, 'creator.css': 45_000, 'sw.js': 40_000,
+    'v2-update.css': 8_000, 'v2-party-hub.css': 48_000,
+    'v2-play.css': 20_000, 'v2-party-play.css': 15_000, 'v2-imposter.css': 24_000, 'v2-advanced.css': 20_000, 'v2-creator.css': 25_000,
+    'sw.js': 40_000,
     'manifest.webmanifest': 6_000, 'icon.svg': 25_000,
     'icon-192.png': 90_000, 'icon-512.png': 220_000
 }

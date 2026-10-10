@@ -164,7 +164,7 @@ checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
     'node_baseline': package.get('engines', {}).get('node') == '>=20',
     'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
-    'manifest_party_hub': manifest.get('name') == 'Secret Circle – Party Hub' and manifest.get('start_url') == './party.html',
+    'manifest_party_hub': manifest.get('name') == 'Secret Circle – Party Hub' and manifest.get('start_url') == './v2-hub.html',
     'standalone_pwa': manifest.get('display') == 'standalone' and manifest.get('scope') == './',
     'manifest_icon_contract_v42': (
         manifest_icons_by_src.get('icon-192.png', {}).get('sizes') == '192x192'
@@ -237,7 +237,7 @@ checks = {
     'anime_reference_cleanup_regression': 'concreteAnimeFanNamesRemoved: true' in content_test,
     'word_imposter_data_contract': all(marker in word_data_test for marker in (
         'MAX_CUSTOM_CATEGORIES = 50', 'MAX_CUSTOM_ENTRIES = 200', 'nextPendingVoterIndex',
-        'silentCategoryTruncationRejected', 'backupUiUsesStoreByteLimit'
+        'silentCategoryTruncationRejected', 'centralBackupByteLimit'
     )),
     'reference_content_audit_contract': all(marker in reference_audit for marker in (
         'SHIPPED_CONTENT_SOURCES', 'BLOCKED_LITERALS', 'REVIEW_REQUIRED_LITERALS',

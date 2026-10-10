@@ -110,6 +110,7 @@ const completed4 = finishRound(round4);
 assert.equal(E.isMatchComplete(completed4), true);
 assert.equal(E.leaderboard(completed4).length, 4);
 assert.equal(E.historyEntry(completed4).word, completed4.word);
+assert.deepEqual(E.historyEntry(completed4).players, completed4.players);
 assert.deepEqual(E.restoreGame(JSON.stringify(completed4)), completed4);
 
 assert.throws(() => E.restoreGame({ ...completed4, imposters: ['Niemand'] }), /Imposter/);
@@ -122,4 +123,32 @@ assert.throws(() => E.createGame({ ...options, imposterCount: 4 }), /Imposter-Za
 assert.throws(() => E.createGame({ ...options, roundSeconds: 20 }), /Rundenzeit/);
 assert.throws(() => E.createGame({ ...options, matchRounds: 0 }), /Match/);
 
-console.log(JSON.stringify({ ok: true, engineVersion: E.VERSION, deterministic: true, roles: true, persistence: true, deadlineTimer: true, backgroundResume: true, voting: true, finiteTieBreak: true, duplicateVoteProtection: true, scoring: true, matches: true, noRepeatedWords: true, validation: true, history: true }, null, 2));
+// Hilfswort: Einfach zeigt das Hilfswort, Mittel nur die Kategorie, Schwer nur die Länge des Begriffs; aus zeigt nichts.
+const groupedEntries = [['Router', 'Netzwerk', 'Technik'], ['Sensor', 'Messung', 'Technik'], ['Kabel', 'Verbindung', 'Technik']];
+const clueFor = level => {
+  const game = E.createGame({ ...options, entries: groupedEntries, category: 'Gemischt', hintLevel: level });
+  return { game, role: E.roleFor(game, game.imposters[0]) };
+};
+const easy = clueFor('easy');
+assert.equal(easy.role.value, easy.game.hint);
+assert.equal(easy.game.useHint, true);
+const medium = clueFor('medium');
+assert.equal(medium.role.value, 'Technik');
+assert.equal(medium.game.hintGroup, 'Technik');
+const hard = clueFor('hard');
+assert.equal(hard.role.value, `${[...hard.game.word].filter(c => /\p{L}/u.test(c)).length} Buchstaben`);
+assert.equal(hard.game.useHint, true);
+const off = clueFor('off');
+assert.equal(off.role.value, 'Kein Begriff');
+assert.equal(off.game.useHint, false);
+assert.equal(E.createGame({ ...options, useHint: false }).hintLevel, 'off');
+assert.equal(E.createGame({ ...options, hintLevel: 'unbekannt' }).hintLevel, 'easy');
+const legacyGame = { ...E.createGame({ ...options, useHint: false }) };
+delete legacyGame.hintLevel;
+delete legacyGame.hintGroup;
+assert.equal(E.roleFor(E.restoreGame(JSON.stringify(legacyGame)), legacyGame.imposters[0]).value, 'Kein Begriff');
+assert.throws(() => E.restoreGame({ ...medium.game, hintLevel: 'extrem' }), /Hilfswort-Stufe/);
+const mediumNext = E.nextRound(finishRound(medium.game), { entries: groupedEntries, seed: 'medium-2' });
+assert.equal(mediumNext.hintLevel, 'medium');
+
+console.log(JSON.stringify({ ok: true, engineVersion: E.VERSION, deterministic: true, roles: true, persistence: true, deadlineTimer: true, backgroundResume: true, voting: true, finiteTieBreak: true, duplicateVoteProtection: true, scoring: true, matches: true, noRepeatedWords: true, validation: true, history: true, hintLevels: true }, null, 2));

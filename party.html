@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#0A0B0F">
   <meta name="description" content="Secret Circle Party Hub – Kernspiele, sichere Übergaben, lokale Daten und eigene Spiele auf einem Gerät.">
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
@@ -16,9 +16,9 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="party.css">
-  <link rel="stylesheet" href="party-extra.css">
-  <link rel="stylesheet" href="party-night.css">
+  <link rel="stylesheet" href="v2-theme.css">
+  <link rel="stylesheet" href="v2-party-hub.css">
+  <link rel="stylesheet" href="v2-party-play.css">
 </head>
 <body>
   <a class="skip-link" href="#hub-main">Zum Inhalt springen</a>
@@ -30,7 +30,7 @@
           <span><strong>Secret Circle</strong><small>Party Hub</small></span>
         </a>
         <div class="header-actions">
-          <span id="hub-connection" class="connection">Online</span>
+          <span id="hub-connection" class="connection" hidden>Offline-Modus</span>
           <button id="hub-install-app" class="ghost-button" type="button" hidden>Installieren</button>
           <a class="ghost-button" href="index.html">Word Imposter direkt</a>
         </div>
@@ -174,8 +174,7 @@
     </main>
 
     <footer class="hub-footer">
-      <span>Secret Circle Party Hub · lokale Offline-PWA</span>
-      <div><a href="index.html">Word Imposter</a><a href="privacy.html">Datenschutz</a></div>
+      <div><a href="v2-hub.html">Alle Spiele</a><a href="index.html">Word Imposter</a><a href="privacy.html">Datenschutz</a></div>
     </footer>
   </div>
 

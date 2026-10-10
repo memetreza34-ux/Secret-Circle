@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**  
+Offline-Core: **`secret-circle-v90` / `secret-circle-v90-staging`**
 Produktstand: **55 Built-ins · 15 Core · 13 Extended · 27 Labs · Wave 1 10/10 source-implemented · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.
@@ -19,7 +19,7 @@ Vor finaler RC-Abnahme auf demselben unveränderten Commit:
 - [ ] Chromium E2E inklusive Spezialgates bis **HS60** + Wave-1-Verträge grün
 - [ ] Chromium / Firefox / WebKit auf demselben Commit grün
 
-Frisch untersuchter v64-Lauf: **Run #3608**, Run ID `33253663445`, Job `99103557030`, Head `2297868e1f65b45753294151a3b1f401a55f6288`, `steps: []`, `runner_id: 0`, leerer Runner-Name. Kein Repositorycode ausgeführt. **v50–v64 sind nicht Hosted-Runner-verifiziert.**
+Historisch (bis 29. August 2026) endeten die Actions-Läufe mit `steps: []`, `runner_id: 0`. Seit dem 5. September 2026 läuft der Hosted Runner real; letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`). Chromium und WebKit laufen dort; Firefox nur im manuellen Cross-Browser-Workflow, der noch nie gestartet wurde.
 
 ## 2. Hub / Word Imposter / Core
 

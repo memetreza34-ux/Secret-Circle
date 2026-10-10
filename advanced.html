@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#0A0B0F">
   <meta name="description" content="Secret Circle – erweiterte lokale Partyspiele.">
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
@@ -16,15 +16,14 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="party.css">
-  <link rel="stylesheet" href="party-extra.css">
+  <link rel="stylesheet" href="v2-theme.css">
+  <link rel="stylesheet" href="v2-advanced.css">
 </head>
 <body>
   <a class="skip-link" href="#advanced-main">Zum Spiel springen</a>
   <main id="advanced-main" class="advanced-shell">
     <header class="advanced-header">
-      <a class="brand" href="party.html"><span class="brand-mark" aria-hidden="true">SC</span><span><strong>Secret Circle</strong><small>Party Hub</small></span></a>
-      <a class="ghost-button" href="party.html">Zur Spieleübersicht</a>
+      <a class="back-link" href="v2-hub.html#spiele">← Alle Spiele</a>
     </header>
     <p id="advanced-status" class="hub-status" role="status" aria-live="polite"></p>
 
@@ -47,7 +46,7 @@
         <label for="advanced-pack">Kategorie<select id="advanced-pack"></select></label>
         <label for="advanced-length">Rundenlänge<select id="advanced-length"><option value="3">Kurz · 3 Runden</option><option value="5" selected>Klassisch · 5 Runden</option><option value="10">Marathon · 10 Runden</option><option value="20">Langer Abend · 20 Runden</option></select></label>
         <button id="advanced-start" type="button">Spiel starten</button>
-        <a class="ghost-button" href="party.html?view=players">Spielerliste ändern</a>
+        <a class="ghost-button" href="v2-hub.html#spieler">Spielerliste ändern</a>
       </aside>
     </section>
   </main>

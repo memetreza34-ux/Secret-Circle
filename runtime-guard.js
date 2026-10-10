@@ -3,11 +3,9 @@
 (function initialiseRuntimeGuard(root) {
   const VERSION = '1.0.0-beta.3';
   const UPDATE_RELOAD_KEY = 'secret-circle-update-reload';
-  const UPDATE_STYLE = 'pwa-update.css';
-  const PARTY_RELEASE_STYLE = 'party-release.css';
+  const UPDATE_STYLE = 'v2-update.css';
   const PARTY_RELEASE_SOURCE = 'party-release-structure.js';
   const PARTY_FILTER_SOURCE = 'party-filter-state.js';
-  const PARTY_SEARCH_STYLE = 'party-search.css';
   const PARTY_SEARCH_SOURCE = 'party-search-assist.js';
   const ACTIVE_SESSION_KEYS = [
     'secret-circle-active-v7',
@@ -50,6 +48,13 @@
 
   const storageFallbackActive = installStorageFallback();
 
+  /* Quick Play: Der Startknopf steht im HTML vor allen Skripten, den Klick
+     hängt aber erst die nachgeladene Engine an. Dieses Skript läuft als erstes
+     und sperrt ihn sofort; quick-loader.js gibt ihn frei, sobald die Engine
+     geladen ist. Beide liegen in derselben Cache-Generation des Service
+     Workers, anders als das HTML, das immer frisch kommt. */
+  root.document?.querySelector?.('#quick-setup #quick-start')?.setAttribute('disabled', '');
+
   let fatalMessageShown = false;
   let waitingWorker = null;
   let updateRequested = false;
@@ -57,7 +62,7 @@
   let updateBanner = null;
 
   function statusElement() {
-    return document.querySelector('#status, #hub-status, #advanced-status, #quick-status, #creator-status');
+    return document.querySelector('#status, #hub-status, #advanced-status, #quick-status, #creator-status, #app-status');
   }
 
   function showRuntimeError(message) {
@@ -107,7 +112,6 @@
 
   function loadPartySearchAssist() {
     if (!document.querySelector('#game-search')) return;
-    ensureStylesheet(PARTY_SEARCH_STYLE);
     loadScript(
       PARTY_SEARCH_SOURCE,
       'SecretCirclePartySearchAssist',
@@ -128,7 +132,6 @@
 
   function loadPartyReleaseStructure() {
     if (!document.querySelector('#game-grid')) return;
-    ensureStylesheet(PARTY_RELEASE_STYLE);
     loadScript(
       PARTY_RELEASE_SOURCE,
       'SecretCirclePartyReleaseStructure',
@@ -273,10 +276,8 @@
     version: VERSION,
     storageFallbackActive,
     updateStyle: UPDATE_STYLE,
-    partyReleaseStyle: PARTY_RELEASE_STYLE,
     partyReleaseSource: PARTY_RELEASE_SOURCE,
     partyFilterSource: PARTY_FILTER_SOURCE,
-    partySearchStyle: PARTY_SEARCH_STYLE,
     partySearchSource: PARTY_SEARCH_SOURCE,
     activeSessionKeys: Object.freeze([...ACTIVE_SESSION_KEYS]),
     hasActiveSession,

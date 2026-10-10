@@ -9,6 +9,30 @@
   const SAFE_CURRENT_MODES = new Set(['truth-dare', 'prompt', 'choice', 'hot-potato', 'word-chain']);
   const CONCEALED_CURRENT_MODES = new Set(['paranoia']);
   const RESTORABLE_CURRENT_MODES = new Set([...SAFE_CURRENT_MODES, ...CONCEALED_CURRENT_MODES]);
+  /* „Gemischt“ nimmt die Karten aller Kategorien eines Spiels zusammen – in fester
+     Reihenfolge, damit gespeicherte Positionen nach dem Neuladen gültig bleiben. */
+  const MIXED_PACK = 'Gemischt';
+
+  function packContent(catalog, gameId, pack) {
+    const gameContent = catalog?.content?.[gameId];
+    if (!gameContent || typeof gameContent !== 'object') return undefined;
+    if (pack !== MIXED_PACK || Object.prototype.hasOwnProperty.call(gameContent, MIXED_PACK)) return gameContent[pack];
+    const packs = Object.values(gameContent);
+    if (packs.length && packs.every(Array.isArray)) return packs.flat();
+    if (packs.length && packs.every(value => value && typeof value === 'object' && !Array.isArray(value))) {
+      const merged = {};
+      packs.forEach(value => Object.keys(value).forEach(key => {
+        if (Array.isArray(value[key])) merged[key] = (merged[key] || []).concat(value[key]);
+      }));
+      return merged;
+    }
+    return undefined;
+  }
+
+  function packChoices(catalog, gameId) {
+    const names = typeof catalog?.getPackNames === 'function' ? catalog.getPackNames(gameId) : [];
+    return names.length > 1 && !names.includes(MIXED_PACK) ? [MIXED_PACK, ...names] : names;
+  }
 
   function indexList(value, maximum = 500, maxExclusive = Number.POSITIVE_INFINITY) {
     if (!Array.isArray(value)) return [];
@@ -32,10 +56,10 @@
     if (game.mode === 'truth-dare') {
       const pool = current.pool;
       if (!['truth', 'dare'].includes(pool)) return null;
-      const items = catalog?.content?.['truth-dare']?.[pack]?.[pool];
+      const items = packContent(catalog, 'truth-dare', pack)?.[pool];
       return Array.isArray(items) ? { kind: 'truth-dare', pool, index, items } : null;
     }
-    const items = catalog?.content?.[game.id]?.[pack];
+    const items = packContent(catalog, game.id, pack);
     if (!Array.isArray(items)) return null;
     return { kind: game.mode, index, items };
   }
@@ -60,8 +84,8 @@
   }
 
   function normalizeResume(game, pack, source, catalog, maximum = 500) {
-    const truthDareContent = catalog?.content?.['truth-dare']?.[pack];
-    const genericContent = catalog?.content?.[game?.id]?.[pack];
+    const truthDareContent = packContent(catalog, 'truth-dare', pack);
+    const genericContent = packContent(catalog, game?.id, pack);
     return {
       used: indexList(source?.used, maximum, Array.isArray(genericContent) ? genericContent.length : Number.POSITIVE_INFINITY),
       usedByPool: truthDarePools(source?.usedByPool, truthDareContent, maximum),
@@ -119,6 +143,9 @@
     safeCurrentModes: SAFE_CURRENT_MODES,
     concealedCurrentModes: CONCEALED_CURRENT_MODES,
     restorableCurrentModes: RESTORABLE_CURRENT_MODES,
+    mixedPack: MIXED_PACK,
+    packContent,
+    packChoices,
     indexList,
     truthDarePools,
     normalizeCurrent,

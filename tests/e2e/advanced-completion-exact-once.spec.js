@@ -76,7 +76,7 @@ async function finishStoredSession(page, gameId) {
   await expect(page.locator('#advanced-start')).toHaveText('Abgeschlossene Session ansehen');
   await page.locator('#advanced-start').click();
   await expect(page.locator('#play-eyebrow')).toHaveText('Session abgeschlossen');
-  const navigation = page.waitForURL(/party\.html\?view=stats$/);
+  const navigation = page.waitForURL(/v2-hub\.html#profil$/);
   await page.getByRole('button', { name: 'Session speichern und beenden' }).click();
   await navigation;
 }
@@ -88,7 +88,7 @@ async function finishPendingMafiaRound(page) {
   await expect(page.locator('#play-eyebrow')).toHaveText('Mafia beendet');
   const finish = page.getByRole('button', { name: 'Session beenden' });
   await expect(finish).toBeVisible();
-  const navigation = page.waitForURL(/party\.html\?view=stats$/);
+  const navigation = page.waitForURL(/v2-hub\.html#profil$/);
   await finish.click();
   await navigation;
 }

@@ -1,5 +1,4 @@
 const { test, expect } = require('@playwright/test');
-const fs = require('node:fs/promises');
 
 async function revealAllCards(page, playerCount) {
   for (let index = 0; index < playerCount; index += 1) {
@@ -34,8 +33,8 @@ async function resolveAllVotingRounds(page, players, firstRoundTargets) {
 
 async function startBasicGame(page, players, rounds = '1') {
   await page.locator('#players').fill(players.join('\n'));
-  await page.locator('#match-rounds').selectOption(rounds);
-  await page.locator('#duration').selectOption('1');
+  await page.locator('#match-rounds').fill(rounds);
+  await page.locator('#duration').fill('1');
   await page.locator('#start').click();
 }
 
@@ -123,67 +122,32 @@ test('rejects invalid player setup without creating a game', async ({ page }) =>
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-active-v7'))).toBeNull();
 });
 
-test('creates a custom category and clears all local data', async ({ page }) => {
-  await page.getByRole('button', { name: 'Eigene Kategorien' }).click();
-  await page.locator('#custom-name').fill('Weltraum');
-  await page.locator('#custom-words').fill('Mond | Nacht\nMars | Planet');
-  await page.getByRole('button', { name: 'Kategorie speichern' }).click();
-  await expect(page.locator('#custom-list')).toContainText('Weltraum');
-
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
-  await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
-  await expect(page.locator('#status')).toContainText('Alle lokalen Secret-Circle-Daten wurden gelöscht');
-  const keys = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('secret-circle-')));
-  expect(keys).toEqual([]);
-});
-
-test('exports and restores a complete local backup', async ({ page }) => {
-  await page.getByRole('button', { name: 'Eigene Kategorien' }).click();
-  await page.locator('#custom-name').fill('Weltraum');
-  await page.locator('#custom-words').fill('Mond | Nacht\nMars | Planet');
-  await page.getByRole('button', { name: 'Kategorie speichern' }).click();
-
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Sicherung exportieren' }).click();
-  const download = await downloadPromise;
-  const downloadPath = await download.path();
-  const backupText = await fs.readFile(downloadPath, 'utf8');
-  const backup = JSON.parse(backupText);
-  expect(backup.format).toBe('secret-circle-backup');
-  expect(backup.version).toBe(1);
-  expect(backup.data.custom[0].name).toBe('Weltraum');
-
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'Alle lokalen Daten löschen' }).click();
-  await expect(page.locator('#custom-list')).not.toContainText('Weltraum');
-
-  page.once('dialog', dialog => dialog.accept());
-  await page.locator('#import-data').setInputFiles({
-    name: 'secret-circle-backup.json',
-    mimeType: 'application/json',
-    buffer: Buffer.from(backupText)
-  });
-  await expect(page.locator('#status')).toContainText('Sicherung erfolgreich importiert');
-  await expect(page.locator('#custom-list')).toContainText('Weltraum');
+test('setup offers only the built-in categories and no extra data tools', async ({ page }) => {
+  await expect(page.locator('#category option').first()).toHaveText('Gemischt');
+  expect(await page.locator('#category option').count()).toBeGreaterThan(3);
+  for (const name of ['Eigene Kategorien', 'Sicherung exportieren', 'Alle lokalen Daten löschen', 'Verlauf löschen']) {
+    await expect(page.getByRole('button', { name })).toHaveCount(0);
+  }
 });
 
 test('recovers safely from corrupted persisted data', async ({ page }) => {
   await page.evaluate(() => localStorage.setItem('secret-circle-custom-v7', '{broken-json'));
   await page.reload();
   await expect(page.locator('#setup-screen')).toBeVisible();
-  await expect(page.locator('#custom-list')).toContainText('Noch keine eigenen Kategorien');
   await expect(page.locator('#status')).toContainText('Lokale Daten wurden auf die neue App-Version aktualisiert');
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-custom-v7'))).toBeNull();
 });
 
 test('exposes privacy information and remains usable on mobile viewport', async ({ page, isMobile }) => {
-  const privacyLink = page.getByRole('link', { name: 'Datenschutz' });
+  /* Der Datenschutz-Link liegt im Profil der Startseite. */
+  await page.goto('/v2-hub.html#profil');
+  await page.getByRole('button', { name: 'Datenschutz' }).click();
+  const privacyLink = page.getByRole('link', { name: 'Vollständige Datenschutzhinweise' });
   await expect(privacyLink).toBeVisible();
   await privacyLink.click();
   await expect(page).toHaveURL(/privacy\.html$/);
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
-  await page.goBack();
+  await page.goto('/');
   if (isMobile) {
     await expect(page.locator('#setup-screen')).toBeVisible();
     await expect(page.locator('#start')).toBeVisible();

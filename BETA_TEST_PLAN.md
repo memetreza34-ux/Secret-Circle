@@ -2,7 +2,7 @@
 
 Stand: 29. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v64` / `secret-circle-v64-staging`**  
+Offline-Core: **`secret-circle-v90` / `secret-circle-v90-staging`**
 Built-ins: **55 · 15 Core / 13 Extended / 27 Labs**  
 Wave 1: **10/10 source-implemented, real evidence OPEN**
 
@@ -10,9 +10,9 @@ Wave 1: **10/10 source-implemented, real evidence OPEN**
 
 Finale RC-Beta erst auf demselben unveränderten Commit mit sichtbaren GitHub-Actions-Steps, Online-`npm ci`, `npm run ci` und Chromium/Firefox/WebKit.
 
-Aktueller Actions-Befund auf v64: **Run #3608**, Run ID `33253663445`, Job `99103557030`, Head `2297868e1f65b45753294151a3b1f401a55f6288`, `failure`, `steps: []`, `runner_id: 0`, leerer Runner-Name. Kein Repositorycode wurde ausgeführt. **v50–v64 sind nicht Hosted-Runner-verifiziert.**
+Historischer Actions-Befund auf v64 (bis 29. August 2026): **Run #3608**, `steps: []`, `runner_id: 0`, kein Repositorycode ausgeführt. Seit dem 5. September 2026 läuft der Hosted Runner real; letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`).
 
-Die reale RC-Beta beginnt deshalb erst, wenn ein Hosted Runner mindestens Checkout/Step 1 erreicht und die automatisierten Baselines auf dem Kandidaten tatsächlich laufen.
+Die reale RC-Beta beginnt erst, wenn die automatisierten Baselines auf dem eingefrorenen Kandidaten tatsächlich gelaufen sind.
 
 ## 2. Mindest-Testmatrix
 

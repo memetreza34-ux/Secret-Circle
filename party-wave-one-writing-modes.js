@@ -552,7 +552,7 @@
     $('#quick-start').addEventListener('click', startSession);
     $('#quick-resume').addEventListener('click', resumeSession);
     $('#quick-discard').addEventListener('click', discardActive);
-    const updateConnection = () => { $('#quick-connection').textContent = navigator.onLine ? 'Online' : 'Offline-Modus'; };
+    const updateConnection = () => { $('#quick-connection').hidden = navigator.onLine; };
     addEventListener('online', updateConnection);
     addEventListener('offline', updateConnection);
     updateConnection();

@@ -6,11 +6,14 @@ const path = require('node:path');
 const releaseMeta = require('../release-meta.json');
 const source = fs.readFileSync(path.resolve(__dirname, '..', 'sw.js'), 'utf8');
 
-assert.equal(releaseMeta.sourceGeneration, 'v64');
+assert.match(releaseMeta.sourceGeneration, /^v\d+$/);
+assert.equal(releaseMeta.offlineCache.production, `secret-circle-${releaseMeta.sourceGeneration}`);
 assert.match(source, new RegExp(`const CACHE='${releaseMeta.offlineCache.production}'`));
 assert.match(source, new RegExp(`const STAGING_CACHE='${releaseMeta.offlineCache.staging}'`));
 assert.match(source, /function stripSearch/);
 assert.match(source, /async function stageCore/);
+// Das Staging muss am HTTP-Cache vorbei laden, sonst übernimmt ein Update alte Dateien.
+assert.match(source, /staging\.addAll\(CORE\.map\(url => new Request\(url, \{ cache: 'reload' \}\)\)\)/);
 assert.match(source, /async function promoteStagedCore/);
 assert.match(source, /const active = await caches\.open\(CACHE\)/);
 assert.match(source, /const stagedUrls = new Set/);
@@ -30,7 +33,7 @@ for (const marker of [
   /party-wave-one-voting-catalog\.js/, /party-wave-one-voting-modes\.js/,
   /party-wave-one-bluff-catalog\.js/, /party-wave-one-bluff-modes\.js/,
   /party-wave-one-clue-catalog\.js/, /party-wave-one-clue-modes\.js/,
-  /icon\.svg/, /icon-192\.png/, /icon-512\.png/
+  /icon\.svg/, /icon-192\.png/, /icon-512\.png/, /v2-theme\.css/, /v2-play\.css/, /v2-party-play\.css/
 ]) assert.match(source, marker);
 assert.doesNotMatch(source, /session-ledger-legacy-guard\.js/);
 assert.doesNotMatch(source, /await caches\.delete\(CACHE\)/);

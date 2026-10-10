@@ -115,7 +115,7 @@ checks = {
     'word_data_test_in_syntax_gate': 'node --check tests/word-imposter-data-contract.test.js' in syntax,
     'word_data_contract': all(marker in word_data_test for marker in (
         'MAX_CUSTOM_CATEGORIES = 50', 'MAX_CUSTOM_ENTRIES = 200',
-        'nextPendingVoterIndex', 'silentCategoryTruncationRejected', 'backupUiUsesStoreByteLimit'
+        'nextPendingVoterIndex', 'silentCategoryTruncationRejected', 'centralBackupByteLimit'
     )),
     'pwa_head_test_contract': all(marker in pwa_head_test for marker in (
         'party.html', 'index.html', 'creator.html', 'advanced.html', 'quick-play.html',

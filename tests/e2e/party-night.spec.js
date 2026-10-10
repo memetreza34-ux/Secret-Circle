@@ -136,3 +136,11 @@ test('Party Night progress bar reflects handled stations without CSP violations'
   await expect.poll(fill).toBe(50);
   expect(violations).toEqual([]);
 });
+
+test('Party Night plans with the prepared example group before anything is saved', async ({ page }) => {
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await expect(page.locator('#party-night-player-count')).toHaveText('4');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+  await expect(page.locator('.party-night-step').first()).toBeVisible();
+});

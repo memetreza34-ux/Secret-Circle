@@ -222,7 +222,7 @@
     $('#quick-player-range').textContent=`${game.minPlayers}–${game.maxPlayers} Personen`; $('#quick-duration').textContent=`ca. ${game.duration} Minuten`; $('#quick-content-count').textContent=`${C.itemCount(game.id)} Karten`;
     C.getPackNames(game.id).forEach(name=>$('#quick-pack').add(new Option(`${name} (${C.getItems(game.id,name).length})`,name))); game.instructions.forEach(rule=>$('#quick-rules').append(element('li','',rule)));
     updateResume(); sessionControls.updateNextGame(C,game.id); $('#quick-start').addEventListener('click',startSession); $('#quick-resume').addEventListener('click',resumeSession); $('#quick-discard').addEventListener('click',discardActive);
-    const updateConnection=()=>{$('#quick-connection').textContent=navigator.onLine?'Online':'Offline-Modus';}; addEventListener('online',updateConnection); addEventListener('offline',updateConnection); updateConnection();
+    const updateConnection=()=>{$('#quick-connection').hidden = navigator.onLine;}; addEventListener('online',updateConnection); addEventListener('offline',updateConnection); updateConnection();
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>setStatus('Offline-Modus konnte nicht aktiviert werden.',true));
   }
 

@@ -12,7 +12,7 @@ const runtime = read('runtime-guard.js');
 const advancedRunner = read('party-advanced-runner.js');
 const hub = read('party-hub.js');
 const worker = read('sw.js');
-const styles = read('pwa-update.css');
+const styles = read('v2-update.css');
 /* sw.js formatiert 'install' inzwischen einzeilig — ein '\n' vor '});' zu
    verlangen ließ den Treffer bis zum nächsten mehrzeiligen Listener durchlaufen
    und damit den legitimen skipWaiting()-Aufruf im 'message'-Handler mit erfassen. */
@@ -27,7 +27,7 @@ assert.match(runtime, /if \(!updateRequested \|\| reloadHandled\) return/);
 assert.match(runtime, /registration\.waiting/);
 assert.match(runtime, /updatefound/);
 assert.match(runtime, /hasActiveSession/);
-assert.match(runtime, /pwa-update\.css/);
+assert.match(runtime, /v2-update\.css/);
 assert.match(runtime, /secret-circle-party-hub-active-v1/);
 assert.match(runtime, /secret-circle-party-active-v1/);
 assert.doesNotMatch(runtime, /secret-circle-party-advanced-active-v1/);

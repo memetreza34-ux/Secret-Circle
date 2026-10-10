@@ -321,7 +321,8 @@
         title: game.title,
         endedAt: new Date().toISOString(),
         rounds,
-        score: session.score
+        score: session.score,
+        players: normalizePlayers(nextHubState.players)
       });
       nextHubState.history = nextHubState.history.slice(0, MAX_HISTORY);
       nextHubState.recent = [game.id, ...(Array.isArray(nextHubState.recent) ? nextHubState.recent : []).filter(id => id !== game.id)].slice(0, 8);
@@ -345,7 +346,7 @@
       return false;
     }
     session = null;
-    window.location.href = 'party.html?view=stats';
+    window.location.href = 'v2-hub.html#profil';
     return true;
   }
 
@@ -442,11 +443,11 @@
   $('#advanced-exit').addEventListener('click', () => {
     if (!session) return;
     if (session.rounds === 0 && !window.confirm('Session wirklich verlassen? Der aktuelle Fortschritt bleibt zum Fortsetzen gespeichert.')) return;
-    window.location.href = 'party.html';
+    window.location.href = 'v2-hub.html';
   });
   window.addEventListener('pagehide', persistActive);
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && session) window.location.href = 'party.html';
+    if (event.key === 'Escape' && session) window.location.href = 'v2-hub.html';
   });
 
   renderSetup();

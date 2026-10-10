@@ -9,9 +9,6 @@ if (!STORE?.keys || !STORE?.loadAll) throw Error('Secret-Circle-Datenspeicher ko
 const WORDS = CONTENT.words;
 const LABELS = CONTENT.labels;
 const KEYS = STORE.keys;
-const MAX_CUSTOM_CATEGORIES = Number.isInteger(STORE.maximumCustomCategories) ? STORE.maximumCustomCategories : 50;
-const MAX_CUSTOM_ENTRIES = Number.isInteger(STORE.maximumCustomEntries) ? STORE.maximumCustomEntries : 200;
-const MAX_BACKUP_BYTES = Number.isInteger(STORE.maximumBackupBytes) ? STORE.maximumBackupBytes : 1_500_000;
 const persisted = STORE.loadAll(E);
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -21,7 +18,6 @@ let timer = null;
 let lastPersistedTimerSecond = null;
 let cardVisible = false;
 let installPrompt = null;
-let custom = persisted.custom;
 let history = persisted.history;
 let voteIndex = 0;
 
@@ -46,7 +42,11 @@ function screen(id) {
     /* Den Bereich nur fokussieren, wenn inzwischen nichts darin den Fokus
        übernommen hat: Die Abstimmung setzt den Fokus direkt auf den ersten
        Knopf, und der Rahmen darf ihn nicht wieder wegnehmen. */
-    if (target && !target.contains(document.activeElement)) target.focus?.();
+    if (target && !target.contains(document.activeElement)) {
+      /* Die Einrichtung ist länger als der Bildschirm; ohne preventScroll
+         springt die Seite beim Start unter Titel und Spielbild. */
+      target.focus?.({ preventScroll: id === 'setup-screen' });
+    }
   });
 }
 
@@ -70,20 +70,24 @@ function remove(key) {
   STORE.removeByKey(key);
 }
 
+/* Jeder Begriff trägt seine Kategorie mit; auf „Mittel“ sieht der Imposter nur sie. */
+function entriesWithGroup(id) {
+  return WORDS[id].map(entry => Array.isArray(entry) ? [entry[0], entry[1], LABELS[id]] : { ...entry, group: LABELS[id] });
+}
+
 function categoryEntries(id) {
-  if (id === 'all') return Object.values(WORDS).flat().concat(custom.flatMap(item => item.entries));
-  if (id.startsWith('custom:')) {
-    const item = custom.find(entry => entry.id === id.slice(7));
-    if (!item) throw Error('Eigene Kategorie wurde nicht gefunden.');
-    return item.entries;
-  }
+  if (id === 'all') return Object.keys(WORDS).flatMap(entriesWithGroup);
   if (!WORDS[id]) throw Error('Kategorie wurde nicht gefunden.');
-  return WORDS[id];
+  return entriesWithGroup(id);
+}
+
+function hintLevel() {
+  if ($('#hint') && !$('#hint').checked) return 'off';
+  return $('input[name="hint-level"]:checked')?.value || 'easy';
 }
 
 function categoryName(id) {
   if (id === 'all') return 'Gemischt';
-  if (id.startsWith('custom:')) return custom.find(item => item.id === id.slice(7))?.name || 'Eigene Kategorie';
   return LABELS[id] || id;
 }
 
@@ -91,20 +95,8 @@ function renderCategories() {
   const select = $('#category');
   const current = select.value;
   select.innerHTML = '<option value="all">Gemischt</option>'
-    + Object.keys(WORDS).map(id => `<option value="${esc(id)}">${esc(LABELS[id])}</option>`).join('')
-    + (custom.length
-      ? `<optgroup label="Eigene Kategorien">${custom.map(item => `<option value="custom:${esc(item.id)}">${esc(item.name)}</option>`).join('')}</optgroup>`
-      : '');
+    + Object.keys(WORDS).map(id => `<option value="${esc(id)}">${esc(LABELS[id])}</option>`).join('');
   if ([...select.options].some(option => option.value === current)) select.value = current;
-  renderCustomList();
-}
-
-function renderCustomList() {
-  $('#custom-list').innerHTML = custom.map(item => `
-    <div class="custom-row">
-      <div><strong>${esc(item.name)}</strong><span>${item.entries.length} Begriffe</span></div>
-      <button type="button" class="secondary compact" data-delete-category="${esc(item.id)}">Löschen</button>
-    </div>`).join('') || '<p class="muted">Noch keine eigenen Kategorien.</p>';
 }
 
 function setupValues() {
@@ -112,7 +104,8 @@ function setupValues() {
     players: $('#players').value,
     category: $('#category').value,
     imposterCount: Number($('#imposters').value),
-    useHint: $('#hint').checked,
+    hintLevel: hintLevel(),
+    useHint: hintLevel() !== 'off',
     roundSeconds: Number($('#duration').value) * 60,
     matchRounds: Number($('#match-rounds').value)
   };
@@ -123,7 +116,9 @@ function saveSettings() {
     players: $('#players').value,
     category: $('#category').value,
     imposterCount: $('#imposters').value,
-    useHint: $('#hint').checked,
+    hintLevel: hintLevel(),
+    hintStage: $('input[name="hint-level"]:checked')?.value || 'easy',
+    useHint: hintLevel() !== 'off',
     duration: $('#duration').value,
     matchRounds: $('#match-rounds').value
   });
@@ -134,7 +129,12 @@ function restoreSettings() {
   if (!settings) return;
   $('#players').value = settings.players || $('#players').value;
   $('#imposters').value = settings.imposterCount || '1';
-  $('#hint').checked = settings.useHint !== false;
+  const level = ['easy', 'medium', 'hard', 'off'].includes(settings.hintLevel) ? settings.hintLevel : (settings.useHint === false ? 'off' : 'easy');
+  $('#hint').checked = level !== 'off';
+  const stage = level === 'off' ? settings.hintStage : level;
+  const levelInput = $(`input[name="hint-level"][value="${['easy', 'medium', 'hard'].includes(stage) ? stage : 'easy'}"]`);
+  if (levelInput) levelInput.checked = true;
+  $('#hint').dispatchEvent(new Event('change', { bubbles: true }));
   $('#duration').value = settings.duration || '3';
   $('#match-rounds').value = settings.matchRounds || '5';
   renderCategories();
@@ -435,7 +435,6 @@ function renderResult() {
     .join('');
   $('#next-round').hidden = E.isMatchComplete(game);
   $('#next-round').textContent = `Runde ${game.currentRound + 1} starten`;
-  renderHistory();
 }
 
 function startNextRound() {
@@ -449,16 +448,6 @@ function startNextRound() {
   } catch (error) {
     setStatus(error.message, true);
   }
-}
-
-function renderHistory() {
-  const node = $('#history-list');
-  if (!node) return;
-  node.innerHTML = history.map(item => `
-    <article class="history-item">
-      <div><strong>${esc(item.word)}</strong><span>${esc(item.category)} · Runde ${item.round || 1}</span></div>
-      <span>${item.winner === 'innocents' ? 'Gruppe' : 'Imposter'}</span>
-    </article>`).join('') || '<p class="muted">Noch keine abgeschlossenen Runden.</p>';
 }
 
 function resumeGame() {
@@ -481,117 +470,13 @@ function newGame() {
   remove(KEYS.active);
   screen('setup-screen');
   updateResume();
-  renderHistory();
 }
 
-function addCustomCategory(event) {
-  event.preventDefault();
-  try {
-    if (custom.length >= MAX_CUSTOM_CATEGORIES) throw Error(`Es sind höchstens ${MAX_CUSTOM_CATEGORIES} eigene Kategorien möglich.`);
-    const name = $('#custom-name').value.trim();
-    const rawRows = $('#custom-words').value.split(/\n/).map(line => line.trim()).filter(Boolean);
-    if (rawRows.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
-    const entries = E.parseCustomEntries(rawRows.join('\n'));
-    if (entries.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
-    if (name.length < 2) throw Error('Bitte einen Kategorienamen eingeben.');
-    custom = [...custom, { id: makeId(), name: name.slice(0, 50), entries }];
-    if (!write(KEYS.custom, custom)) return;
-    event.currentTarget.reset();
-    renderCategories();
-    setStatus(`Kategorie „${name}“ gespeichert.`);
-  } catch (error) {
-    setStatus(error.message, true);
-  }
-}
-
-function deleteCategory(id) {
-  const item = custom.find(entry => entry.id === id);
-  if (!item || !confirm(`Kategorie „${item.name}“ löschen?`)) return;
-  custom = custom.filter(entry => entry.id !== id);
-  write(KEYS.custom, custom);
-  renderCategories();
-}
-
-function clearAllData() {
-  if (!confirm('Wirklich alle lokalen Secret-Circle-Daten löschen? Aktive Runde, Verlauf, Einstellungen und eigene Kategorien werden dauerhaft entfernt.')) return;
-  clearTimerLoop();
-  STORE.clearAll();
-  game = null;
-  custom = [];
-  history = [];
-  voteIndex = 0;
-  cardVisible = false;
-  lastPersistedTimerSecond = null;
-  $('#players').value = 'Alex\nSam\nMika\nLina';
-  $('#imposters').value = '1';
-  $('#duration').value = '3';
-  $('#match-rounds').value = '5';
-  $('#hint').checked = true;
-  renderCategories();
-  renderHistory();
-  updateResume();
-  screen('setup-screen');
-  setStatus('Alle lokalen Secret-Circle-Daten wurden gelöscht.');
-}
-
-function exportData() {
-  try {
-    const backup = STORE.exportBackup(E);
-    const blob = new Blob([backup], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `secret-circle-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    setStatus('Lokale Daten wurden als Sicherungsdatei exportiert.');
-  } catch (error) {
-    setStatus(error.message || 'Die Sicherung konnte nicht erstellt werden.', true);
-  }
-}
-
-function chooseImportFile() {
-  $('#import-data').click();
-}
-
-async function importData(event) {
-  const file = event.target.files?.[0];
-  event.target.value = '';
-  if (!file) return;
-  if (file.size > MAX_BACKUP_BYTES) {
-    setStatus('Die Sicherungsdatei ist größer als 1,5 MB.', true);
-    return;
-  }
-  if (!confirm('Die Sicherung ersetzt die aktuell gespeicherten lokalen Daten. Fortfahren?')) return;
-  try {
-    const result = STORE.importBackup(await file.text(), E);
-    if (!result.ok) throw Error(result.error);
-    clearTimerLoop();
-    game = null;
-    custom = result.data.custom;
-    history = result.data.history;
-    renderCategories();
-    renderHistory();
-    restoreSettings();
-    updateResume();
-    screen('setup-screen');
-    setStatus('Sicherung erfolgreich importiert.');
-  } catch (error) {
-    setStatus(error.message || 'Die Sicherung konnte nicht importiert werden.', true);
-  }
-}
-
-/* „offline bereit“ erst, wenn der Service Worker die Seite steuert und damit
-   der Offline-Core im Cache liegt. */
-function offlineReady() {
-  try { return Boolean(navigator.serviceWorker?.controller); } catch { return false; }
-}
-
+/* Der Hinweis erscheint nur ohne Netz; online ist er überflüssig. */
 function updateConnection() {
   const online = navigator.onLine;
-  $('#connection').textContent = online ? (offlineReady() ? 'Online · offline bereit' : 'Online') : 'Offline-Modus';
+  $('#connection').textContent = 'Offline-Modus';
+  $('#connection').hidden = online;
   $('#connection').classList.toggle('offline', !online);
 }
 
@@ -637,30 +522,7 @@ $('#submit-guess').addEventListener('click', submitGuess);
 $('#imposter-guess').addEventListener('keydown', event => { if (event.key === 'Enter') submitGuess(); });
 $('#next-round').addEventListener('click', startNextRound);
 $$('[data-new-game]').forEach(button => button.addEventListener('click', newGame));
-$('#custom-form').addEventListener('submit', addCustomCategory);
-$('#custom-list').addEventListener('click', event => {
-  const id = event.target.dataset.deleteCategory;
-  if (id) deleteCategory(id);
-});
-$('#toggle-custom').addEventListener('click', () => {
-  const panel = $('#custom-panel');
-  const open = panel.hidden;
-  panel.hidden = !open;
-  $('#toggle-custom').setAttribute('aria-expanded', String(open));
-  if (open) $('#custom-name').focus();
-});
 $('#install-app').addEventListener('click', installApp);
-$('#clear-history').addEventListener('click', () => {
-  if (confirm('Rundenverlauf löschen?')) {
-    history = [];
-    write(KEYS.history, history);
-    renderHistory();
-  }
-});
-$('#clear-all-data').addEventListener('click', clearAllData);
-$('#export-data').addEventListener('click', exportData);
-$('#import-data-trigger').addEventListener('click', chooseImportFile);
-$('#import-data').addEventListener('change', importData);
 
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && game?.phase === 'discussion' && game.timerRunning) syncTimerState({ persist: true, announce: true });
@@ -675,7 +537,6 @@ window.addEventListener('pagehide', () => {
 renderCategories();
 restoreSettings();
 updateResume();
-renderHistory();
 registerPwa();
 screen('setup-screen');
 

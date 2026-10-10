@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#7c3aed">
+  <meta name="theme-color" content="#0A0B0F">
   <meta name="description" content="Secret Circle – offline spielbares Imposter-Partyspiel.">
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
@@ -16,56 +16,61 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="pwa.css">
+  <link rel="stylesheet" href="v2-theme.css">
+  <link rel="stylesheet" href="v2-imposter.css">
 </head>
 <body>
   <a class="skip-link" href="#setup-screen">Zum Spiel springen</a>
   <main class="shell">
     <header>
-      <div class="topbar"><span id="connection" class="connection">Online</span><a class="button-link secondary-link" href="party.html">Alle Partyspiele</a><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
-      <p class="eyebrow">Offline Partyspiel</p><h1>Secret Circle</h1><p>Begriffe verteilen, Hinweise geben, abstimmen und Punkte sammeln.</p>
+      <div class="topbar"><a class="back-link" href="v2-hub.html">← Alle Spiele</a><span id="connection" class="connection" hidden>Offline-Modus</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
+      <div class="wi-brand"><img class="wi-art" src="assets/images/word-imposter-chamaeleon.webp" alt="" width="960" height="720"><h1>Word Imposter</h1><p class="wi-lede">Begriffe verteilen, Hinweise geben, abstimmen und Punkte sammeln.</p></div>
     </header>
     <p id="status" class="status" role="status" aria-live="polite"></p>
 
-    <section id="setup-screen" class="card" data-screen tabindex="-1" aria-labelledby="setup-title">
+    <section id="setup-screen" class="card setup-card" data-screen tabindex="-1" aria-labelledby="setup-title">
       <div id="resume-box" class="resume" hidden><div><strong>Aktive Runde fortsetzen</strong><span id="resume-text"></span></div><div><button id="resume" type="button">Fortsetzen</button><button id="discard-resume" class="secondary" type="button">Verwerfen</button></div></div>
-      <h2 id="setup-title">Spiel einrichten</h2>
-      <label for="players">Spielernamen</label>
-      <textarea id="players" rows="7" placeholder="Ein Name pro Zeile" aria-describedby="players-help">Alex
+      <h2 id="setup-title" class="sr-only">Spiel einrichten</h2>
+
+      <div class="players-field">
+        <div class="field-head"><span id="players-label" class="field-label">Spieler</span><small id="players-help" class="field-note" aria-live="polite"></small></div>
+        <ol id="player-list" class="player-list" aria-labelledby="players-label"></ol>
+        <button id="add-player" class="add-player" type="button">Spieler hinzufügen</button>
+        <!-- Datenfeld: Die Spielerliste schreibt hier hinein; app.js und die Prüfung lesen von hier. -->
+        <textarea id="players" class="data-field" tabindex="-1" aria-hidden="true" aria-label="Spielerliste">Alex
 Sam
 Mika
 Lina</textarea>
-      <small id="players-help" class="muted" aria-live="polite">Mindestens drei eindeutige Namen, ein Name pro Zeile.</small>
-      <div class="grid three">
-        <label for="category">Kategorie<select id="category"></select></label>
-        <label for="imposters">Imposter<input id="imposters" type="number" min="1" max="6" value="1" inputmode="numeric" aria-describedby="imposters-help"><small id="imposters-help" class="muted" aria-live="polite"></small></label>
-        <label for="duration">Rundenzeit<select id="duration"><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="3" selected>3 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option></select></label>
       </div>
-      <div class="grid three"><label for="match-rounds">Match-Runden<select id="match-rounds"><option value="1">1 Runde</option><option value="3">3 Runden</option><option value="5" selected>5 Runden</option><option value="10">10 Runden</option></select></label><label class="check" for="hint"><input id="hint" type="checkbox" checked><span>Hilfswort</span></label></div>
-      <div class="actions"><button id="start" type="button">Spiel starten</button><button id="toggle-custom" class="secondary" type="button" aria-expanded="false" aria-controls="custom-panel">Eigene Kategorien</button></div>
 
-      <details class="help-panel">
-        <summary>Spielregeln und Punkte</summary>
-        <div class="help-grid">
-          <section aria-labelledby="flow-help-title"><h3 id="flow-help-title">Ablauf</h3><ol><li>Jede Person sieht ihre geheime Karte allein.</li><li>Alle geben nacheinander einen kurzen Hinweis.</li><li>Danach stimmt jede Person geheim ab.</li><li>Ein gefundener Imposter darf den Begriff einmal erraten.</li></ol></section>
-          <section aria-labelledby="score-help-title"><h3 id="score-help-title">Punkte</h3><ul><li>Imposter gefunden und Begriff falsch geraten: jede unschuldige Person erhält 1 Punkt.</li><li>Unschuldige Person gewählt: jeder Imposter erhält 2 Punkte.</li><li>Imposter errät den Begriff oder die Stichwahl bleibt unentschieden: jeder Imposter erhält 2 Punkte.</li></ul></section>
+      <div class="settings-list">
+        <label class="setting" for="category"><span>Kategorie</span><select id="category"></select></label>
+        <div class="setting"><label for="imposters">Imposter</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Imposter">−</button><input id="imposters" type="number" min="1" max="6" value="1" inputmode="numeric" aria-describedby="imposters-help"><button type="button" data-step="1" aria-label="Mehr Imposter">+</button></div></div>
+        <small id="imposters-help" class="setting-note" aria-live="polite"></small>
+        <div class="setting"><label for="duration">Rundenzeit<span class="sr-only"> in Minuten</span></label><div class="stepper"><button type="button" data-step="-1" aria-label="Kürzere Rundenzeit">−</button><span class="stepper-value"><input id="duration" type="number" min="1" max="10" value="3" inputmode="numeric"><span class="unit" aria-hidden="true">Min</span></span><button type="button" data-step="1" aria-label="Längere Rundenzeit">+</button></div></div>
+        <div class="setting"><label for="match-rounds">Runden</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Runden">−</button><input id="match-rounds" type="number" min="1" max="20" value="5" inputmode="numeric"><button type="button" data-step="1" aria-label="Mehr Runden">+</button></div></div>
+        <div class="setting setting-stack">
+          <label class="setting-switch" for="hint"><span id="hint-level-label">Hilfswort für Imposter</span><input id="hint" class="switch" type="checkbox" role="switch" checked aria-describedby="hint-level-note"></label>
+          <div id="hint-levels" class="segmented" role="radiogroup" aria-label="Stufe des Hilfsworts" aria-describedby="hint-level-note">
+            <label for="hint-easy"><input id="hint-easy" type="radio" name="hint-level" value="easy" checked><span>Einfach</span></label>
+            <label for="hint-medium"><input id="hint-medium" type="radio" name="hint-level" value="medium"><span>Mittel</span></label>
+            <label for="hint-hard"><input id="hint-hard" type="radio" name="hint-level" value="hard"><span>Schwer</span></label>
+          </div>
+          <small id="hint-level-note" class="setting-caption" aria-live="polite">Imposter sieht ein Hilfswort zum Begriff.</small>
         </div>
-      </details>
+      </div>
 
-      <section id="custom-panel" class="subpanel" hidden aria-labelledby="custom-title"><h3 id="custom-title">Eigene Kategorie erstellen</h3><p class="muted">Du kannst bis zu 50 eigene Kategorien speichern. Jede Kategorie benötigt 2–200 unterschiedliche Begriffe.</p><form id="custom-form"><label for="custom-name">Name<input id="custom-name" maxlength="50" required placeholder="z. B. Anime"></label><label for="custom-words">Begriffe<textarea id="custom-words" rows="6" maxlength="25000" required aria-describedby="custom-words-help" placeholder="Begriff | Hilfswort&#10;Begriff | Hilfswort"></textarea></label><small id="custom-words-help" class="muted">Eine Zeile pro Begriff. Optional nach <strong>|</strong> ein Hilfswort ergänzen; höchstens 200 Zeilen.</small><button type="submit">Kategorie speichern</button></form><div id="custom-list"></div></section>
-      <section class="history" aria-labelledby="history-title"><div class="section-heading"><h3 id="history-title">Letzte Runden</h3><button id="clear-history" class="secondary compact" type="button">Verlauf löschen</button></div><div id="history-list"></div></section>
-      <section class="data-controls" aria-labelledby="data-title">
-        <h3 id="data-title">Lokale Daten</h3>
-        <p class="muted">Spielstände, Einstellungen und eigene Kategorien bleiben nur auf diesem Gerät. Sicherungen können als JSON-Datei exportiert und später wiederhergestellt werden.</p>
-        <div class="actions data-actions">
-          <button id="export-data" class="secondary" type="button">Sicherung exportieren</button>
-          <button id="import-data-trigger" class="secondary" type="button">Sicherung importieren</button>
-          <input id="import-data" type="file" accept="application/json,.json" aria-label="Secret-Circle-Sicherungsdatei auswählen" hidden>
-          <button id="clear-all-data" class="danger" type="button">Alle lokalen Daten löschen</button>
-          <a class="button-link secondary-link" href="privacy.html">Datenschutz ansehen</a>
-        </div>
-      </section>
+      <button id="start" type="button">Spiel starten</button>
+
+      <div class="setup-more">
+        <details class="help-panel">
+          <summary>Spielregeln und Punkte</summary>
+          <div class="help-grid">
+            <section aria-labelledby="flow-help-title"><h3 id="flow-help-title">Ablauf</h3><ol><li>Jede Person sieht ihre geheime Karte allein.</li><li>Alle geben nacheinander einen kurzen Hinweis.</li><li>Danach stimmt jede Person geheim ab.</li><li>Ein gefundener Imposter darf den Begriff einmal erraten.</li></ol></section>
+            <section aria-labelledby="score-help-title"><h3 id="score-help-title">Punkte</h3><ul><li>Imposter gefunden und Begriff falsch geraten: jede unschuldige Person erhält 1 Punkt.</li><li>Unschuldige Person gewählt: jeder Imposter erhält 2 Punkte.</li><li>Imposter errät den Begriff oder die Stichwahl bleibt unentschieden: jeder Imposter erhält 2 Punkte.</li></ul></section>
+          </div>
+        </details>
+      </div>
     </section>
 
     <section id="reveal-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="player-name">
@@ -101,7 +106,6 @@ Lina</textarea>
       <div class="actions"><button id="next-round" type="button">Nächste Runde</button><button class="secondary" data-new-game type="button">Neues Match</button></div>
     </section>
 
-    <footer class="app-footer">Secret Circle · Version 1.0.0-beta.3 · Lokale Offline-PWA</footer>
   </main>
   <script src="runtime-guard.js"></script>
   <script src="setup-ux.js"></script>

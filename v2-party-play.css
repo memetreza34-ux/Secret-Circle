@@ -1,0 +1,186 @@
+/* v2-Spielansicht im Party Hub; die alte Hub-Oberfläche bleibt bis Schritt 6 erhalten. */
+@font-face { font-family: 'Archivo Black'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/archivo-black-latin-400.woff2') format('woff2'); }
+@font-face { font-family: 'Archivo Black'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/archivo-black-latin-ext-400.woff2') format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+1E00-1E9F; }
+@font-face { font-family: Figtree; font-style: normal; font-weight: 400 800; font-display: swap; src: url('fonts/figtree-latin.woff2') format('woff2'); }
+@font-face { font-family: Figtree; font-style: normal; font-weight: 400 800; font-display: swap; src: url('fonts/figtree-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+1E00-1E9F; }
+
+html:has(#play-layer:not([hidden])),
+body:has(#play-layer:not([hidden])) { overflow: hidden; background: #0A0B0F; }
+
+#play-layer {
+  --fg: #EEF1F7;
+  --fg-dim: #AAB2C2;
+  --surface: #14161D;
+  --surface-2: #1D202A;
+  --line: #353B49;
+  --off-bg: #20232C;
+  --off-fg: #9CA4B4;
+  --signal: #FF4560;
+  --tint: #FF4560;
+  --ground: #0A0B0F;
+  --display: 'Archivo Black', Impact, sans-serif;
+  --body: Figtree, system-ui, sans-serif;
+  --touch: 44px;
+  --r-card: 16px;
+  --r-big: 22px;
+  --text: var(--fg);
+  --muted: var(--fg-dim);
+  --border: var(--line);
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 18px) max(16px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 28px) max(16px, env(safe-area-inset-left));
+  background: var(--ground);
+  color: var(--fg);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  backdrop-filter: none;
+}
+#play-layer[data-world='reden'] { --tint: #4DD9A0; }
+#play-layer[data-world='raten'] { --tint: #FFB020; }
+#play-layer[data-world='kreativ'] { --tint: #A78BFA; }
+#play-layer[data-world='wissen'] { --tint: #38BDF8; }
+#play-layer[data-world='schnell'] { --tint: #F472B6; }
+#play-layer :focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
+#play-layer button { touch-action: manipulation; box-shadow: none; filter: none; }
+#play-layer button:disabled { opacity: 1; cursor: default; background: var(--off-bg); color: var(--off-fg); border-color: var(--line); }
+
+#play-layer .play-topbar {
+  z-index: auto;
+  width: min(660px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
+#play-layer .play-topbar > div:last-child {
+  grid-row: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 24px;
+  text-align: left;
+}
+#play-layer #play-progress,
+#play-layer #play-score {
+  color: var(--fg-dim);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+#play-layer .hub-session-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  text-align: center;
+}
+#play-layer .hub-session-controls .ghost-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 8px;
+  border: 1px solid #ffffff36;
+  border-radius: 999px;
+  background: #0A0B0F80;
+  color: var(--fg);
+  font-size: .8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+#play-layer .hub-session-controls .ghost-button:hover { background: #0A0B0FBF; }
+#play-layer .hub-session-controls .hub-abort-button { color: #FFB4C0; border-color: #FFB4C080; }
+#play-layer .hub-session-controls .hub-abort-button:hover { background: #581326; }
+
+#play-layer .play-card {
+  width: min(660px, 100%);
+  min-height: min(560px, calc(100dvh - 170px));
+  margin: 0 auto;
+  padding: clamp(22px, 5vw, 40px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-big);
+  background: var(--surface);
+  box-shadow: none;
+  text-align: center;
+}
+#play-layer #play-pause-status { margin: 0 0 12px; padding: 12px; border: 1px solid var(--tint); border-radius: var(--r-card); color: var(--fg); background: var(--surface-2); font-weight: 800; }
+#play-layer #play-pause-status:empty { display: none; }
+#play-layer #play-eyebrow { margin: 0 0 10px; color: var(--tint); font-size: .78rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+#play-layer #play-title { margin: 0; color: var(--fg); font: 400 clamp(1.8rem, 6vw, 3.2rem)/1.05 var(--display); letter-spacing: 0; text-transform: uppercase; overflow-wrap: anywhere; }
+#play-layer #play-title:focus { outline: none; }
+#play-layer #play-player { margin: 13px 0 0; color: var(--fg-dim); font-size: .95rem; font-weight: 800; }
+#play-layer #play-player:empty { display: none; }
+#play-layer .play-content {
+  min-height: 150px;
+  margin: 24px 0 18px;
+  padding: clamp(20px, 5vw, 32px);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-big);
+  background: var(--surface-2);
+  color: var(--fg);
+  font: 400 clamp(1.25rem, 4vw, 2rem)/1.25 var(--display);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+#play-layer .play-content.random-result { font-size: clamp(2rem, 8vw, 4rem); }
+#play-layer .play-content .choice-grid { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+#play-layer .choice-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--surface); font: 700 1rem/1.35 var(--body); }
+#play-layer .taboo-word { display: block; font-size: clamp(1.7rem, 6vw, 3rem); }
+#play-layer .banned-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+#play-layer .banned-list span { padding: 6px 10px; border: 1px solid #FFB4C080; border-radius: 999px; background: #581326; color: #FFE3E8; font: 700 .82rem var(--body); }
+#play-layer .timer-display { color: var(--fg); font: 400 clamp(3rem, 13vw, 6rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+#play-layer .play-options,
+#play-layer .play-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; width: 100%; margin: 0; }
+#play-layer .play-options:empty,
+#play-layer .play-actions:empty { display: none; }
+#play-layer .play-options + .play-actions:not(:empty) { margin-top: 12px; }
+#play-layer .play-options button,
+#play-layer .play-actions button {
+  flex: 1 1 170px;
+  min-width: min(170px, 100%);
+  min-height: 52px;
+  padding: 12px 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--fg);
+  color: #08090C;
+  font: 800 .95rem/1.25 var(--body);
+  text-align: center;
+}
+#play-layer .play-options button.secondary,
+#play-layer .play-actions button.secondary { border-color: #ffffff40; background: var(--surface-2); color: var(--fg); }
+#play-layer .play-options button:hover,
+#play-layer .play-actions button:hover { filter: brightness(.91); }
+
+@media (max-width: 720px) {
+  #play-layer { gap: 12px; padding: calc(env(safe-area-inset-top) + 12px) max(12px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 20px) max(12px, env(safe-area-inset-left)); }
+  #play-layer .hub-session-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  #play-layer .play-card { min-height: 0; padding: 22px 18px; }
+  #play-layer .play-content { min-height: 130px; margin: 18px 0 16px; padding: 20px 14px; }
+  #play-layer .play-content .choice-grid { grid-template-columns: 1fr; }
+  #play-layer .play-options button,
+  #play-layer .play-actions button { width: 100%; min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #play-layer *, #play-layer *::before, #play-layer *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+@media (forced-colors: active) {
+  #play-layer .play-card, #play-layer .play-content, #play-layer .hub-session-controls .ghost-button { border: 2px solid CanvasText; }
+}
