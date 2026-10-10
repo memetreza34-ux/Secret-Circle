@@ -24,7 +24,14 @@ async function startSocialGame(page, gameId) {
   await page.locator('#start-selected-game').click();
   await expect(page.locator('#play-layer')).toBeVisible();
   await expect(page.locator('#play-title')).not.toBeEmpty();
-  await expect(page.locator('#hub-round-guide')).not.toBeEmpty();
+  await expect(page.locator('#play-content')).not.toBeEmpty();
+  // Nicht jede Social-Engine zeigt einen Rundenleitfaden: Wahrheit/Pflicht
+  // und Paranoia haben stattdessen den Freiwilligkeits-/Skip-Hinweis.
+  if (['truth-dare', 'paranoia'].includes(gameId)) {
+    await expect(page.locator('#hub-voluntary-play-note')).toContainText('freiwillig');
+  } else {
+    await expect(page.locator('#hub-round-guide')).not.toBeEmpty();
+  }
 }
 
 async function state(page) {
