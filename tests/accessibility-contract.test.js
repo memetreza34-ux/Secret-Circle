@@ -95,8 +95,10 @@ assert.match(hubA11y, /node\.inert = Boolean\(overlay\)/);
 assert.match(hubA11y, /heading\.setAttribute\('tabindex', '-1'\)/);
 assert.match(hubA11y, /document\.addEventListener\('keydown', trapOverlayFocus, true\)/);
 assert.match(hubA11y, /event\.key !== 'Tab'/);
-assert.match(hubA11y, /last\.focus\(\)/);
-assert.match(hubA11y, /first\.focus\(\)/);
+assert.match(hubA11y, /const currentIndex = focusable\.indexOf\(document\.activeElement\)/);
+assert.match(hubA11y, /event\.shiftKey/);
+assert.match(hubA11y, /event\.preventDefault\(\)/);
+assert.match(hubA11y, /focusable\[nextIndex\]\.focus\(\)/);
 
 assert.match(secondaryA11y, /const VERSION = 1;/);
 assert.match(secondaryA11y, /#advanced-play-layer/);
