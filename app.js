@@ -135,10 +135,44 @@ function restoreSettings() {
   const levelInput = $(`input[name="hint-level"][value="${['easy', 'medium', 'hard'].includes(stage) ? stage : 'easy'}"]`);
   if (levelInput) levelInput.checked = true;
   $('#hint').dispatchEvent(new Event('change', { bubbles: true }));
-  $('#duration').value = settings.duration || '3';
-  $('#match-rounds').value = settings.matchRounds || '5';
+  $('#duration').value = settings.duration || '2';
+  $('#match-rounds').value = settings.matchRounds || '3';
   renderCategories();
   if ([...$('#category').options].some(option => option.value === settings.category)) $('#category').value = settings.category;
+  updateAdvancedSummary();
+}
+
+/* Importiert die Party-Hub-Gruppe nur auf Wunsch; laufende Spiele bleiben unverändert. */
+function groupPlayers() {
+  try {
+    const hub = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    if (!hub || hub.version !== 1 || !Array.isArray(hub.players)) return [];
+    const names = hub.players.map(value => typeof value === 'string' ? value.normalize('NFKC').trim().replace(/\s+/g, ' ') : '');
+    if (names.length < E.MIN_PLAYERS || names.length > E.MAX_PLAYERS) return [];
+    if (names.some(name => !name || name.length > 30)) return [];
+    if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return [];
+    return names;
+  } catch { return []; }
+}
+function updateGroupImport() {
+  const button = $('#import-group-players');
+  const names = groupPlayers();
+  const current = $('#players').value.split(/\n|,/).map(name => name.trim().replace(/\s+/g, ' ')).filter(Boolean);
+  button.hidden = !names.length || (current.length === names.length && current.every((name, index) => name === names[index]));
+}
+function importGroupPlayers() {
+  const names = groupPlayers();
+  if (!names.length) return;
+  $('#players').value = names.join('\n');
+  $('#players').dispatchEvent(new Event('input', { bubbles: true }));
+  $('#group-import-note').textContent = names.length + ' Spieler aus deiner Gruppe übernommen.';
+  updateGroupImport();
+}
+
+function updateAdvancedSummary() {
+  const node = $('#settings-summary');
+  if (!node) return;
+  node.textContent = `${$('#imposters').value || '1'} Imposter · ${$('#duration').value || '2'} Min · ${$('#match-rounds').value || '3'} Runden`;
 }
 
 function saveGame() {
@@ -187,7 +221,7 @@ function showGame() {
   clearTimerLoop();
   if (game.phase === 'reveal') renderReveal();
   else if (game.phase === 'discussion') renderDiscussion();
-  else if (game.phase === 'voting' || game.phase === 'tie_break') renderVoting();
+  else if (game.phase === 'voting' || game.phase === 'tie_break') renderVoting({ requireHandoff: true });
   else if (game.phase === 'guess') renderGuess();
   else renderResult();
 }
@@ -340,11 +374,13 @@ function beginVoting() {
   renderVoting();
 }
 
-function renderVoting() {
+function renderVoting({ requireHandoff = false } = {}) {
   if (game.phase === 'tie_break') {
     game = E.startVoting(game);
     syncVoteIndex();
     saveGame();
+    // Vor einer Stichwahl erhält auch die erste Person eine verdeckte Übergabe.
+    requireHandoff = true;
   } else syncVoteIndex();
 
   if (voteIndex >= game.players.length) {
@@ -357,10 +393,19 @@ function renderVoting() {
     return;
   }
 
-  screen('vote-screen');
   const voter = game.players[voteIndex];
   const tie = game.voteLeaders.length > 0;
   const castCount = Object.keys(game.votes || {}).length;
+  if (requireHandoff && (castCount > 0 || tie)) {
+    $('#vote-next-player').textContent = voter;
+    $('#vote-handoff-progress').textContent = tie && castCount === 0
+      ? 'Stichwahl · Neue Abstimmung'
+      : `${tie ? 'Stichwahl · ' : ''}Stimme ${castCount} von ${game.players.length} gespeichert`;
+    screen('vote-handoff-screen');
+    $('#continue-vote').focus();
+    return;
+  }
+  screen('vote-screen');
   $('#vote-progress').textContent = `${tie ? 'Stichwahl · ' : ''}Stimme ${castCount + 1} von ${game.players.length}`;
   $('#voter-name').textContent = `${voter}, wen verdächtigst du?`;
   const candidates = (tie ? game.voteLeaders : game.players).filter(name => name !== voter);
@@ -379,7 +424,7 @@ function castVote(target) {
     syncVoteIndex();
     if (voteIndex < game.players.length) {
       saveGame();
-      renderVoting();
+      renderVoting({ requireHandoff: true });
       return;
     }
     game = E.resolveVote(game);
@@ -397,17 +442,15 @@ function castVote(target) {
 function renderGuess() {
   screen('guess-screen');
   $('#eliminated-player').textContent = game.eliminatedPlayer;
-  $('#imposter-guess').value = '';
-  $('#imposter-guess').focus();
+  $('#guess-correct').focus();
 }
 
-function submitGuess() {
+function judgeGuess(correct) {
   try {
-    game = E.submitImposterGuess(game, $('#imposter-guess').value);
+    game = E.confirmImposterAnswer(game, correct);
     completeRound();
   } catch (error) {
     setStatus(error.message, true);
-    $('#imposter-guess').focus();
   }
 }
 
@@ -469,6 +512,7 @@ function newGame() {
   game = null;
   remove(KEYS.active);
   screen('setup-screen');
+  updateGroupImport();
   updateResume();
 }
 
@@ -508,6 +552,8 @@ function registerPwa() {
 }
 
 $('#start').addEventListener('click', startGame);
+$('#import-group-players').addEventListener('click', importGroupPlayers);
+$('#players').addEventListener('input', updateGroupImport);
 $('#resume').addEventListener('click', resumeGame);
 $('#discard-resume').addEventListener('click', () => { remove(KEYS.active); updateResume(); });
 $('#show-card').addEventListener('click', revealCard);
@@ -518,8 +564,9 @@ $('#vote-options').addEventListener('click', event => {
   const target = event.target.dataset.voteTarget;
   if (target) castVote(target);
 });
-$('#submit-guess').addEventListener('click', submitGuess);
-$('#imposter-guess').addEventListener('keydown', event => { if (event.key === 'Enter') submitGuess(); });
+$('#continue-vote').addEventListener('click', () => renderVoting());
+$('#guess-correct').addEventListener('click', () => judgeGuess(true));
+$('#guess-wrong').addEventListener('click', () => judgeGuess(false));
 $('#next-round').addEventListener('click', startNextRound);
 $$('[data-new-game]').forEach(button => button.addEventListener('click', newGame));
 $('#install-app').addEventListener('click', installApp);
@@ -536,6 +583,9 @@ window.addEventListener('pagehide', () => {
 
 renderCategories();
 restoreSettings();
+updateGroupImport();
+updateAdvancedSummary();
+['input', 'change'].forEach(type => ['#imposters', '#duration', '#match-rounds'].forEach(selector => $(selector).addEventListener(type, updateAdvancedSummary)));
 updateResume();
 registerPwa();
 screen('setup-screen');

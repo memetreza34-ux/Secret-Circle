@@ -33,6 +33,7 @@ test('word imposter blocks invalid setup before start', async ({ page }) => {
   await expect(players).toHaveAttribute('aria-invalid', 'false');
   await expect(start).toBeEnabled();
 
+  await page.locator('#advanced-settings > summary').click();
   await imposters.fill('0');
   await expect(imposters).toHaveAttribute('aria-invalid', 'true');
   await expect(start).toBeDisabled();
