@@ -122,6 +122,7 @@ def check():
         problems.append(
             'Offline-Core-Dateien haben sich geändert, die Cachegeneration aber nicht. '
             'Installierte Apps würden die Änderung nie bekommen. '
+            f'Berechneter Core-Hash: {actual_core_hash}. '
             'Ausführen: python3 scripts/offline_core_lock.py --bump'
         )
     if problems:
