@@ -42,7 +42,7 @@ test('social Core packs have distinct working routes and no automatically assign
   for (const gameId of SOCIAL) {
     await startSocialGame(page, gameId);
     const active = await state(page);
-    expect(active.gameId).toBe(gameId);
+    expect(active.session.gameId).toBe(gameId);
     expect(active.session.rounds).toBe(0);
     expect(active.session.score).toBe(0);
     await expect(page.locator('#play-score')).toHaveText('');
