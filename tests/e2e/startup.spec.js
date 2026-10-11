@@ -15,7 +15,7 @@ test('all production modules load without startup or resource errors', async ({ 
     }
   });
 
-  const response = await page.goto('/');
+  const response = await page.goto('/word-imposter.html');
   expect(response?.ok()).toBe(true);
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 
@@ -73,4 +73,18 @@ test('every HTML-referenced local production asset returns successfully', async 
     expect(status, `${asset} did not load successfully`).toBeGreaterThanOrEqual(200);
     expect(status, `${asset} did not load successfully`).toBeLessThan(400);
   }
+});
+
+
+test('canonical root and index open the party hub while Word Imposter stays independently playable', async ({ page }) => {
+  for (const route of ['/', '/index.html', '/v2-hub.html']) {
+    const response = await page.goto(route);
+    expect(response?.ok()).toBe(true);
+    await expect(page.locator('[data-screen="home"]')).toBeVisible();
+    await expect(page.locator('#hero-title')).not.toBeEmpty();
+    await expect(page.locator('#players')).toHaveCount(0);
+  }
+  await page.goto('/word-imposter.html');
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
+  await expect(page.locator('#players')).toBeVisible();
 });

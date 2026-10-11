@@ -30,7 +30,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const production = names.filter(name => /^secret-circle-v\d+$/.test(name));
     const cache = await caches.open(production[0]);
     const expected = [
-      './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
+      './index.html', './v2-hub.html', './word-imposter.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
       './v2-theme.css', './v2-party-hub.css', './v2-update.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
       './app.js', './game-engine.js', './role-assignment.js', './word-packs.js', './data-store.js',
@@ -60,6 +60,10 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
   await page.goto('/');
+  await expect(page.locator('[data-screen="home"]')).toBeVisible();
+  await page.goto('/index.html');
+  await expect(page.locator('[data-screen="home"]')).toBeVisible();
+  await page.goto('/word-imposter.html');
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 });
 
@@ -168,7 +172,7 @@ test('Price Guess Viral Mode starts and resumes completely offline', async ({ pa
 });
 
 test('offline mode preserves a locally saved active Imposter game', async ({ page, context }) => {
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
@@ -187,12 +191,12 @@ test('connection badge stays hidden while online and appears only offline', asyn
   await page.goto('/party.html');
   await waitForWorker(page);
   await expect(page.locator('#hub-connection')).toBeHidden();
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await expect(page.locator('#connection')).toBeHidden();
   await page.goto('/quick-play.html?game=rapid-fire');
   await expect(page.locator('#quick-connection')).toBeHidden();
   await context.setOffline(true);
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await expect(page.locator('#connection')).toHaveText('Offline-Modus');
   await expect(page.locator('#connection')).toBeVisible();
   await page.goto('/party.html');

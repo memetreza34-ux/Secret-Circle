@@ -34,7 +34,7 @@ test('discussion requests a screen wake lock and releases it before voting', asy
     });
   });
 
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
@@ -58,7 +58,7 @@ test('wake lock remains an optional enhancement when the API is unavailable', as
       value: undefined
     });
   });
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
