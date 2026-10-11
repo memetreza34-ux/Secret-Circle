@@ -53,7 +53,7 @@ for (const id of expectedCore) {
 
   if (id === 'imposter') {
     assert.equal(game.mode, 'link');
-    assert.equal(game.href, 'index.html');
+    assert.equal(game.href, 'word-imposter.html');
     assert.deepEqual(game.packs, ['14 Kategorien', '168 Begriffe', 'Eigene Packs']);
     continue;
   }
