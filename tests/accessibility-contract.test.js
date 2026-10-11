@@ -8,6 +8,7 @@ const read = relative => fs.readFileSync(path.resolve(__dirname, '..', relative)
 
 const pages = {
   'index.html': read('index.html'),
+  'word-imposter.html': read('word-imposter.html'),
   'party.html': read('party.html'),
   'advanced.html': read('advanced.html'),
   'quick-play.html': read('quick-play.html'),

@@ -4,8 +4,8 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 
 ## Stand der Oberfläche
 
-- **Startseite:** `v2-hub.html` mit `v2-hub.js` und `v2-theme.css` – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.
-- **Spielabläufe (Engines, im v2-Design):** `party.html` (Hub-Spiele, gestartet über `party.html?play=<id>&pack=<name>&from=v2`), `quick-play.html`, `advanced.html`, `index.html` (Word Imposter), `creator.html`, `privacy.html`.
+- **Startseite:** `/`/`index.html` mit `v2-hub.js` und `v2-theme.css` (inhaltlich identisch zu `v2-hub.html` als Legacy-Alias) – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.
+- **Spielabläufe (Engines, im v2-Design):** `party.html` (Hub-Spiele, gestartet über `party.html?play=<id>&pack=<name>&from=v2`), `quick-play.html`, `advanced.html`, `word-imposter.html` (Word Imposter), `creator.html`, `privacy.html`.
 - **Daten:** Spielerliste und Verlauf liegen in `secret-circle-party-hub-v1`. v2 führt keinen eigenen Speicher. Alle Speicher-Keys und Backups regelt `backup-schema-registry.js`.
 - Details: `ARCHITECTURE.md` Abschnitt 4a.
 

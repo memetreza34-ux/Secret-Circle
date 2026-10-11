@@ -2,6 +2,13 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v92 – Kanonischer Party-Hub als Startseite
+
+- `/` und `index.html` öffnen jetzt dieselbe Party-Hub-Oberfläche wie `v2-hub.html`; bestehende v2-Hub-Links bleiben gültig.
+- Word Imposter erhält `word-imposter.html` als eigenen Spieleinstieg; bisherige lokale Spielstände bleiben erhalten und werden über das Profil angeboten.
+- Manifest-Startadresse auf `./` gesetzt, ohne die App-ID oder den Scope zu ändern; Offline-Core enthält den zusätzlichen Spieleinstieg.
+- Root-, Offline-, Word-Imposter- und PWA-Tests an das neue Routing angepasst.
+
 ## v91 – Word Imposter: schneller Einstieg und geheime Abstimmung
 
 - Erweiterte Einstellungen standardmäßig eingeklappt; klarer Spielstart mit Kategorie und Standardwerten.
