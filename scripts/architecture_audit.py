@@ -20,7 +20,7 @@ production_js = [
     'party-wave-one-writing-modes.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js',
     'quick-session-replacement-guard.js','quick-loader.js','sw.js'
 ]
-html_pages = ['index.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html']
+html_pages = ['index.html','v2-hub.html','word-imposter.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html']
 required_contract_files = [
     'manifest.webmanifest','icon.svg','icon-192.png','icon-512.png','assets/manifests/asset-provenance.json','tests/manifest-icons.test.js',
     'tests/accessibility-contract.test.js','scripts/asset_provenance_audit.py','scripts/media_inventory_audit.py','scripts/hub_a11y_contract_audit.py',

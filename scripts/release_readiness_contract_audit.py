@@ -118,7 +118,7 @@ checks = {
         'nextPendingVoterIndex', 'silentCategoryTruncationRejected', 'centralBackupByteLimit'
     )),
     'pwa_head_test_contract': all(marker in pwa_head_test for marker in (
-        'party.html', 'index.html', 'creator.html', 'advanced.html', 'quick-play.html',
+        'party.html', 'index.html', 'word-imposter.html', 'creator.html', 'advanced.html', 'quick-play.html',
         'apple-mobile-web-app-title', 'apple-mobile-web-app-status-bar-style',
         'icon-192\\.png', 'apple-touch-icon', 'manifest-src'
     )),

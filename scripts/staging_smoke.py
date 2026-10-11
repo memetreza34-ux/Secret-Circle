@@ -21,6 +21,8 @@ CORE_TEXT_PATHS = (
     'advanced.html?game=question-imposter',
     'quick-play.html?game=guess-the-price',
     'index.html',
+    'v2-hub.html',
+    'word-imposter.html',
     'privacy.html',
     'manifest.webmanifest',
     'sw.js',
@@ -40,6 +42,8 @@ INTERACTIVE_HTML_PATHS = (
     'advanced.html?game=question-imposter',
     'quick-play.html?game=guess-the-price',
     'index.html',
+    'v2-hub.html',
+    'word-imposter.html',
 )
 
 ICON_PATHS = ('icon.svg', 'icon-192.png', 'icon-512.png')
@@ -244,7 +248,7 @@ def main() -> int:
     manifest = json.loads(texts['manifest.webmanifest'])
     if manifest.get('name') != 'Secret Circle – Party Hub':
         raise RuntimeError('manifest.webmanifest: unerwarteter App-Name')
-    if manifest.get('start_url') != './v2-hub.html' or manifest.get('display') != 'standalone':
+    if manifest.get('start_url') != './' or manifest.get('display') != 'standalone':
         raise RuntimeError('manifest.webmanifest: start_url/display-Vertrag verletzt')
 
     icon_map = {entry.get('src'): entry for entry in manifest.get('icons', []) if isinstance(entry, dict)}
