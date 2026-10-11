@@ -10,6 +10,8 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 - kein Wave-1-Lab erweitert automatisch den Januar-Core
 
+**Startseite:** `/` oder `index.html` (Party-Hub); Word Imposter separat unter `word-imposter.html`. Der bestehende Pfad `v2-hub.html` bleibt als Alias erreichbar.
+
 Aktueller Offline-Core: **`secret-circle-v92` / `secret-circle-v92-staging`**
 Package: **`1.0.0-beta.3`**  
 Classic Content: **v4**  

@@ -27,7 +27,7 @@ Drei Spielillustrationen sind bereits eingebunden (Word Imposter, Wahrheit oder 
 
 - Die verbindliche technische Abschlussliste liegt in [Issue #24](https://github.com/memetreza34-ux/Secret-Circle/issues/24); vorhandene Release-Gates in `RELEASE_CHECKLIST.md`, `release-evidence.json` und `operator-release.json` bleiben maßgeblich.
 - Erst technische P0/P1-Defekte, Branch-Konflikte, Routing-/Offline-/Storage-Gates und Tests abschließen. Danach mit Codex ausschließlich Bildwelt, Animation, Typografie und visuelles Finishing durchführen; IDs, Storage-Keys, Geheimhaltung, Timer, Scoring, Session-Abschluss und Core-Routing dürfen dadurch nicht unbemerkt geändert werden.
-- Der Webroot `/` zeigt derzeit noch Word Imposter (`index.html`), während das PWA-Manifest `v2-hub.html` als Startseite nennt. Dies ist **nicht** stillschweigend gelöst: Die Routing-Migration braucht eine eigene geprüfte Änderung mit Direktlink-, Resume-, Offline- und Regressionstests.
+- Dieser Routing-Branch setzt `/` und `index.html` als kanonischen Party-Hub und `word-imposter.html` als separaten Spieleinstieg um. Das Manifest verwendet `start_url: ./`; `v2-hub.html` bleibt Alias. **Noch nicht release-abgenommen:** Ein Merge erfordert vollständige Chromium-/WebKit-CI, Offline-/Resume-Regressionen und echte PWA-Upgrade-Nachweise.
 - Nach jeder finalen Design-/Asset-Änderung müssen betroffene CI-/Offline-/Accessibility-/Medien- und Rechte-Gates erneut auf dem unveränderten Release-Kandidaten laufen. Es gibt bis dahin **keine** öffentliche GO-Freigabe.
 
 ## Regeln, die Prüfungen erzwingen

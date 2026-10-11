@@ -26,7 +26,7 @@ Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare En
 
 ## 4a. Oberfläche im Claude-Design (v2)
 
-`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. Alle Seiten laden nur noch v2-Stile: `v2-theme.css` plus je Seite `v2-play.css`, `v2-party-hub.css` und `v2-party-play.css`, `v2-advanced.css`, `v2-imposter.css` oder `v2-creator.css`. Der Update-Hinweis kommt aus `v2-update.css` (von `runtime-guard.js` nachgeladen).
+`/` beziehungsweise `index.html` ist die kanonische Startseite (Manifest `start_url: ./`); `v2-hub.html` bleibt ein identischer Alias. Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `word-imposter.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. Alle Seiten laden nur noch v2-Stile: `v2-theme.css` plus je Seite `v2-play.css`, `v2-party-hub.css` und `v2-party-play.css`, `v2-advanced.css`, `v2-imposter.css` oder `v2-creator.css`. Der Update-Hinweis kommt aus `v2-update.css` (von `runtime-guard.js` nachgeladen).
 
 ## 5. Hub- und Timergrenzen
 
@@ -125,7 +125,7 @@ Bei jeder Änderung einer Offline-Core-Datei: CORE prüfen → `python3 scripts/
 
 ## 19. PWA-Installationsmetadaten
 
-`party.html`, `index.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
+`party.html`, `index.html`, `word-imposter.html`, `creator.html`, `advanced.html` und `quick-play.html` besitzen denselben Installationsvertrag. Reale Homescreen-/Standalone-Abnahme bleibt Geräte-Evidence.
 
 ## 20. Accessibility als Definition of Done
 
