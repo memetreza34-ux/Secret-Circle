@@ -93,6 +93,26 @@ duplicateVote = E.castVote(duplicateVote, duplicateVote.players[0], duplicateVot
 assert.throws(() => E.castVote(duplicateVote, duplicateVote.players[0], duplicateVote.players[2]), /bereits abgestimmt/);
 assert.throws(() => E.castVote(E.startVoting(discussionGame('self-vote')), 'Alex', 'Alex'), /Ungültige Stimme/);
 
+// Ein laut ausgesprochener Begriff wird durch die Gruppe bewertet, ohne Schreibweisen zu vergleichen.
+let spoken = E.startVoting(discussionGame('spoken-judgement'));
+const suspect = spoken.imposters[0];
+for (const voter of spoken.players) {
+  const candidate = voter === suspect ? spoken.players.find(p => p !== suspect) : suspect;
+  spoken = E.castVote(spoken, voter, candidate);
+}
+spoken = E.resolveVote(spoken);
+assert.equal(spoken.phase, 'guess');
+const accepted = E.confirmImposterAnswer(spoken, true);
+assert.equal(accepted.phase, 'completed');
+assert.equal(accepted.winner, 'imposters');
+assert.equal(accepted.imposterGuess, null);
+assert.equal(E.restoreGame(JSON.stringify(accepted)).winner, 'imposters');
+const rejected = E.confirmImposterAnswer(spoken, false);
+assert.equal(rejected.phase, 'completed');
+assert.equal(rejected.winner, 'innocents');
+assert.throws(() => E.confirmImposterAnswer(spoken, 'ja'), /Richtig oder Falsch/);
+assert.throws(() => E.confirmImposterAnswer(accepted, true), /nicht raten/);
+
 const round1 = finishRound(E.createGame({ ...options, seed: 'rotation-1' }));
 const round2 = E.nextRound(round1, { ...options, seed: 'rotation-2' });
 assert.equal(round2.currentRound, 2);

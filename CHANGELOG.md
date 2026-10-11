@@ -2,6 +2,15 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v91 – Word Imposter: schneller Einstieg und geheime Abstimmung
+
+- Erweiterte Einstellungen standardmäßig eingeklappt; klarer Spielstart mit Kategorie und Standardwerten.
+- Geheime Abstimmungen inklusive Stichwahl und Wiederaufnahme mit Übergabeansicht.
+- Imposter spricht das Wort laut; die Gruppe bestätigt richtig/falsch. Alte gespeicherte Spiele bleiben kompatibel.
+- Bestehende Spieler des Party-Hubs können beim Einrichten importiert werden.
+- Engine-, Browser- und Accessibility-Tests aus PR #22 übernommen.
+- Neue Offline-Cachegeneration v91; Prüfsumme wird aus demselben Integrationsstand in CI ermittelt.
+
 ## v90 – Zuverlässige Dialog-Navigation unter Safari und WebKit
 
 - Hub-Spiel- und Spieldetaildialoge: Tab und Shift+Tab navigieren explizit zwischen den aktuell sichtbaren, aktivierten Bedienelementen, unabhängig von browserabhängiger Standard-Tab-Reihenfolge.

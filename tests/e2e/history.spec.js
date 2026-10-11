@@ -33,6 +33,9 @@ test('round completed without imposter guess is stored exactly once', async ({ p
       ? state.players.find(name => name !== voter && name !== state.innocent)
       : state.innocent;
     await page.getByRole('button', { name: target, exact: true }).click();
+    if (await page.locator('#vote-handoff-screen').isVisible()) {
+      await page.getByRole('button', { name: 'Ich bin bereit' }).click();
+    }
   }
 
   await expect(page.locator('#result-screen')).toBeVisible();

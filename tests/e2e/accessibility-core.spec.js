@@ -33,6 +33,7 @@ test('word imposter blocks invalid setup before start', async ({ page }) => {
   await expect(players).toHaveAttribute('aria-invalid', 'false');
   await expect(start).toBeEnabled();
 
+  await page.locator('#advanced-settings > summary').click();
   await imposters.fill('0');
   await expect(imposters).toHaveAttribute('aria-invalid', 'true');
   await expect(start).toBeDisabled();
@@ -144,13 +145,30 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
   await expect.poll(() => page.evaluate(() => document.querySelector('.hub-shell').inert)).toBe(true);
 
   /* exact, sonst trifft der Teilstring auch den Spieltitel "Wahrheit oder Pflicht". */
+  await page.evaluate(() => {
+    window.__hubFocusTrace = [];
+    document.addEventListener('focusin', event => {
+      window.__hubFocusTrace.push('focusin:' + (event.target.id || event.target.textContent?.trim().slice(0, 45)));
+    }, true);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Tab') {
+        window.__hubFocusTrace.push('Tab:' + event.shiftKey + ':' + (document.activeElement?.id || document.activeElement?.textContent?.trim().slice(0, 45)));
+      }
+    }, true);
+  });
   await page.getByRole('button', { name: 'Pflicht', exact: true }).focus();
   await page.keyboard.press('Tab');
   await expect(page.locator('#finish-hub-game')).toBeFocused();
   await page.keyboard.press('Shift+Tab');
   await expect(page.getByRole('button', { name: 'Pflicht', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
-  await expect(page.locator('#finish-hub-game')).toBeFocused();
+  const focusState = await page.evaluate(() => ({
+    active: document.activeElement?.id || document.activeElement?.textContent?.trim().slice(0, 45),
+    overlay: window.SecretCirclePartyHubA11y.activeOverlay()?.id,
+    focusable: window.SecretCirclePartyHubA11y.focusableWithin(document.querySelector('#play-layer')).map(node => node.id || node.textContent?.trim().slice(0, 45)),
+    trace: window.__hubFocusTrace
+  }));
+  expect(focusState.active, JSON.stringify(focusState)).toBe('finish-hub-game');
 });
 
 test('advanced play isolates setup and traps focus inside the active game', async ({ page }) => {

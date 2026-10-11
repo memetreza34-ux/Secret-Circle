@@ -323,10 +323,30 @@
   line-height: 1;
 }
 .shell .add-player:hover { border-color: var(--fg); background: none; color: var(--fg); }
+.shell .group-import { width: 100%; margin-top: 10px; padding: 11px 12px; min-height: var(--touch); border: 1px solid var(--line); border-radius: 12px; background: #ffffff0a; color: var(--fg); font-weight: 700; }
+#group-import-note:not(:empty) { display: block; margin-top: 8px; }
 .shell .add-player:disabled { border-style: dashed; box-shadow: none; }
 
 /* Einstellungen als Zeilen: Name links, Wert rechts */
 .settings-list { margin: 24px 0 22px; border-top: 1px solid var(--line); }
+/* Die Grundauswahl bleibt sichtbar; nur Optionen für erfahrene Runden sind einklappbar. */
+.advanced-settings { border-bottom: 1px solid var(--line); }
+.advanced-settings > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 60px; padding: 12px 0; cursor: pointer; font-weight: 800;
+  list-style: none;
+}
+.advanced-settings > summary::-webkit-details-marker { display: none; }
+.advanced-settings > summary::before {
+  content: '+'; font-size: 1.25rem; color: var(--fg-dim);
+}
+.advanced-settings[open] > summary::before { content: '−'; }
+.advanced-settings #settings-summary {
+  margin-left: auto; font-size: .76rem; font-weight: 600;
+  color: var(--fg-dim); text-align: right;
+}
+.advanced-settings-body { border-top: 1px solid var(--line); }
+.advanced-settings-body > .setting:last-child { border-bottom: 0; }
 .shell .setting {
   display: flex;
   align-items: center;
@@ -440,11 +460,16 @@
 
 #reveal-screen,
 #vote-screen,
+#vote-handoff-screen,
 #guess-screen,
 #result-screen > .eyebrow,
 #result-screen > h2 { text-align: center; }
 #reveal-screen h2,
-#vote-screen h2 { font-size: clamp(1.8rem, 8vw, 2.7rem); }
+#vote-screen h2,
+#vote-handoff-screen h2 { font-size: clamp(1.8rem, 8vw, 2.7rem); }
+#continue-vote { width: 100%; }
+.guess-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.guess-actions button { min-height: 58px; }
 
 .handoff {
   margin: 0 0 20px;
@@ -516,8 +541,7 @@
 }
 .shell .vote-option:hover { border-color: var(--fg); background: #0D0E13; color: var(--fg); }
 
-#guess-screen label { text-align: left; }
-#submit-guess { width: 100%; }
+#guess-screen > p:not(.eyebrow) { text-align: center; }
 
 .shell .result-word {
   margin: 18px 0 14px;

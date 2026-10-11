@@ -388,6 +388,17 @@
     return next;
   }
 
+  /* Gruppenentscheidung nach laut ausgesprochener Antwort.
+     Die frühere Texteingabe bleibt zur Rückwärtskompatibilität erhalten. */
+  function confirmImposterAnswer(game, correct) {
+    const next = restoreGame(game);
+    if (next.phase !== 'guess') throw Error('Der Imposter darf jetzt nicht raten.');
+    if (typeof correct !== 'boolean') throw Error('Die Gruppe muss Richtig oder Falsch wählen.');
+    next.imposterGuess = null;
+    finalizeRound(next, correct);
+    return next;
+  }
+
   function nextRound(game, options = {}) {
     const previous = restoreGame(game);
     if (previous.phase !== 'completed') throw Error('Die Runde ist noch nicht beendet.');
@@ -471,6 +482,7 @@
     castVote,
     resolveVote,
     submitImposterGuess,
+    confirmImposterAnswer,
     nextRound,
     isMatchComplete,
     leaderboard,
