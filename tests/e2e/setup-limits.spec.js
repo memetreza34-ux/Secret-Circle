@@ -5,7 +5,7 @@ function playerNames(count) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#advanced-settings > summary').click();

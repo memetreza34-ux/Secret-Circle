@@ -48,7 +48,7 @@ async function touchAudit(page) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 });
@@ -176,7 +176,7 @@ test('mobile layouts have large touch targets and no horizontal overflow', async
 
 test('reduced motion preference is respected across product pages', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  for (const path of ['/', '/party.html', '/advanced.html?game=question-imposter']) {
+  for (const path of ['/', '/word-imposter.html', '/party.html', '/advanced.html?game=question-imposter']) {
     await page.goto(path);
     const durations = await page.evaluate(() => {
       const target = document.querySelector('button');

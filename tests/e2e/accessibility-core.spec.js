@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 const corePages = [
   '/index.html',
+  '/word-imposter.html',
   '/party.html',
   '/advanced.html?game=two-truths',
   '/quick-play.html?game=wavelength',
@@ -20,7 +21,7 @@ for (const route of corePages) {
 }
 
 test('word imposter blocks invalid setup before start', async ({ page }) => {
-  await page.goto('/index.html');
+  await page.goto('/word-imposter.html');
   const players = page.locator('#players');
   const imposters = page.locator('#imposters');
   const start = page.locator('#start');
@@ -45,7 +46,7 @@ test('word imposter blocks invalid setup before start', async ({ page }) => {
 });
 
 test('word imposter setup reports duplicates and widens the imposter range for bigger groups', async ({ page }) => {
-  await page.goto('/index.html');
+  await page.goto('/word-imposter.html');
   const players = page.locator('#players');
   const start = page.locator('#start');
 
