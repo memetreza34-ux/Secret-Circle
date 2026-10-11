@@ -62,7 +62,7 @@ for (const { id, engine } of CORE) {
     await page.locator('#start-btn').click();
 
     if (engine === 'word') {
-      await expect(page).toHaveURL(/\/index\.html$/);
+      await expect(page).toHaveURL(/\/word-imposter\.html$/);
       await expect(page.locator('#setup-screen')).toBeVisible();
       await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeVisible();
     } else if (engine === 'advanced') {
