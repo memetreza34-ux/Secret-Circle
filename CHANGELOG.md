@@ -2,6 +2,15 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v92 – Spiel zuerst, Steuerung darunter; eine Spielerliste für alle
+
+- Hub-Spiele: Die Spielkarte steht oben, die Steuerung darunter. Reihenfolge: „Runde überspringen“ und „Pause“, danach „Beenden & speichern“ und „Abbrechen & verwerfen“. „Abbrechen“ steht damit nicht mehr neben „Pause“.
+- Die Zeile mit Runden und Punkten erscheint erst, wenn es etwas zu zählen gibt (kein „0 Runden“ mehr zu Beginn).
+- Tab-Reihenfolge folgt der neuen Anordnung; der Fokus bleibt im Spieldialog und springt am Ende an den Anfang zurück.
+- Eine Spielerliste für alle Spiele: Word Imposter übernimmt beim Öffnen die Gruppe, gültige Änderungen dort landen wieder in der Gruppe (andere Hub-Daten bleiben unverändert). Ungültige Gruppen (unter 3 Personen, doppelte oder zu lange Namen) werden nicht übernommen. Laufende Spiele behalten ihre Namen.
+- Startseite: Auch bei Word Imposter zeigt das Spieldetail die Spielerzahl und sperrt den Start bei zu wenigen Personen.
+- Neue Offline-Cachegeneration v92.
+
 ## v91 – Word Imposter: schneller Einstieg und geheime Abstimmung
 
 - Erweiterte Einstellungen standardmäßig eingeklappt; klarer Spielstart mit Kategorie und Standardwerten.

@@ -559,6 +559,7 @@
     clearNode($('#play-content')); clearNode($('#play-options')); clearNode($('#play-actions'));
     $('#play-progress').textContent = countLabel(session.rounds, 'Runde', 'Runden');
     $('#play-score').textContent = session.score ? countLabel(session.score, 'Punkt', 'Punkte') : '';
+    $('#play-layer .play-topbar').hidden = !session.rounds && !session.score;
   }
   function preparePlayCard() {
     resetPlayCard();

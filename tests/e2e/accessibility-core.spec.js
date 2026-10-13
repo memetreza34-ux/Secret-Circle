@@ -156,11 +156,16 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
       }
     }, true);
   });
+  /* Die Spielsteuerung steht unter der Karte: nach der letzten Antwort folgt sie direkt. */
   await page.getByRole('button', { name: 'Pflicht', exact: true }).focus();
   await page.keyboard.press('Tab');
-  await expect(page.locator('#finish-hub-game')).toBeFocused();
+  await expect(page.locator('#skip-hub-round')).toBeFocused();
+  /* Am Ende springt der Fokus zurück an den Anfang des Dialogs und wieder zurück. */
+  await page.locator('#abort-hub-game').focus();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Wahrheit', exact: true })).toBeFocused();
   await page.keyboard.press('Shift+Tab');
-  await expect(page.getByRole('button', { name: 'Pflicht', exact: true })).toBeFocused();
+  await expect(page.locator('#abort-hub-game')).toBeFocused();
   await page.keyboard.press('Tab');
   const focusState = await page.evaluate(() => ({
     active: document.activeElement?.id || document.activeElement?.textContent?.trim().slice(0, 45),
@@ -168,7 +173,7 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
     focusable: window.SecretCirclePartyHubA11y.focusableWithin(document.querySelector('#play-layer')).map(node => node.id || node.textContent?.trim().slice(0, 45)),
     trace: window.__hubFocusTrace
   }));
-  expect(focusState.active, JSON.stringify(focusState)).toBe('finish-hub-game');
+  expect(focusState.active, JSON.stringify(focusState)).toBe('Wahrheit');
 });
 
 test('advanced play isolates setup and traps focus inside the active game', async ({ page }) => {

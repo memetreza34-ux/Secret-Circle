@@ -256,10 +256,6 @@
     return null;
   }
 
-  /* Word Imposter führt eine eigene Spielerliste; alle anderen Spiele nutzen
-     die gemeinsame Gruppe des Hubs. */
-  function usesHubPlayers(g) { return g.href !== 'index.html'; }
-
   /* ── Kategorien der Hub-Spiele (v2-hub-packs.js) ─────────────────── */
 
   var PACKS = window.SecretCircleV2Packs;
@@ -701,11 +697,10 @@
       .concat(g.moods.slice(0, 1).map(function (m) { return MOOD_LABEL[m] || m; }))
       .forEach(function (t) { meta.appendChild(make('span', null, t)); });
 
-    var shared = usesHubPlayers(g);
+    /* Alle Spiele, auch Word Imposter, nutzen die gemeinsame Gruppe. */
     var count = players().length;
-    var short = shared && count < g.min;
-    var over = shared && count > g.max;
-    $('#players-row').hidden = !shared;
+    var short = count < g.min;
+    var over = count > g.max;
     var pc = $('#players-count');
     pc.textContent = count + '/' + g.max;
     pc.className = 'row-val' + (short || over ? ' warn' : '');
@@ -723,7 +718,6 @@
     note.className = 'dock-note' + (short || over ? ' warn' : '');
     if (short) note.textContent = g.min + ' Personen nötig — ' + (g.min - count) + ' fehlen noch';
     else if (over) note.textContent = 'Höchstens ' + g.max + ' Personen — ' + (count - g.max) + ' zu viel';
-    else if (!shared) note.textContent = 'Word Imposter richtet die Runde auf der nächsten Seite ein';
     else note.textContent = count + ' Personen' + (pack && packs.length > 1 ? ' · ' + pack.name : '');
   }
 
@@ -751,7 +745,7 @@
 
   function playerLimits() {
     var g = game();
-    return g && usesHubPlayers(g) ? { min: g.min, max: g.max, title: g.title, tint: '#EEF1F7' } : { min: 2, max: MAX_PLAYERS, title: '', tint: '#EEF1F7' };
+    return g ? { min: g.min, max: g.max, title: g.title, tint: '#EEF1F7' } : { min: 2, max: MAX_PLAYERS, title: '', tint: '#EEF1F7' };
   }
 
   function renderPlayers() {

@@ -99,20 +99,33 @@ test('imposter spoken answer is accepted by the group without a keyboard', async
   await expect(page.locator('#result-heading')).toHaveText('Die Imposter gewinnen');
 });
 
-test('optional group import keeps custom Word Imposter names unless clicked', async ({ page }) => {
+test('Word Imposter uses the shared group and writes valid edits back to it', async ({ page }) => {
   await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
     version: 1, players: ['Nora', 'Lea', 'Ben', 'Tariq'],
-    favorites: [], recent: [], presets: [], history: [], stats: {}
+    favorites: ['truth-dare'], recent: [], presets: [], history: [], stats: {}
   })));
   await page.reload();
-  await expect(page.locator('#players')).toHaveValue('Alex\nSam\nMika\nLina');
-  await page.getByRole('button', { name: 'Spieler aus meiner Gruppe übernehmen' }).click();
   await expect(page.locator('#players')).toHaveValue('Nora\nLea\nBen\nTariq');
   await expect(page.locator('#player-list input')).toHaveCount(4);
+  await expect(page.locator('#import-group-players')).toBeHidden();
+
+  /* Gültige Änderungen landen in der Gruppe, alle anderen Hub-Daten bleiben erhalten. */
+  await page.locator('#players').fill('Nora\nLea\nOle');
+  const shared = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')));
+  expect(shared.players).toEqual(['Nora', 'Lea', 'Ole']);
+  expect(shared.favorites).toEqual(['truth-dare']);
+
+  /* Ungültige Zwischenstände (zu wenige Namen, doppelte Namen) ändern die Gruppe nicht. */
+  await page.locator('#players').fill('Nora\nLea');
+  await page.locator('#players').fill('Nora\nnora\nLea');
+  const unchanged = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')));
+  expect(unchanged.players).toEqual(['Nora', 'Lea', 'Ole']);
+
+  await page.locator('#players').fill('Nora\nLea\nOle');
   await expect(page.locator('#start')).toBeEnabled();
   await page.locator('#start').click();
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
-  expect(saved.players).toEqual(['Nora', 'Lea', 'Ben', 'Tariq']);
+  expect(saved.players).toEqual(['Nora', 'Lea', 'Ole']);
 });
 
 test('completes a full match round with voting and result screen', async ({ page }) => {

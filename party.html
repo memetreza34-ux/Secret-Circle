@@ -193,12 +193,6 @@
 
   <section id="play-layer" class="play-layer" hidden aria-labelledby="play-title" aria-modal="true" role="dialog">
     <div class="play-topbar">
-      <div class="hub-session-controls" role="group" aria-label="Spielsteuerung">
-        <button id="finish-hub-game" class="ghost-button" type="button" disabled>Beenden &amp; speichern</button>
-        <button id="skip-hub-round" class="ghost-button" type="button" disabled>Runde überspringen</button>
-        <button id="pause-hub-game" class="ghost-button" type="button" aria-pressed="false" disabled>Pause</button>
-        <button id="abort-hub-game" class="ghost-button hub-abort-button" type="button" disabled>Abbrechen &amp; verwerfen</button>
-      </div>
       <div><span id="play-progress"></span><strong id="play-score"></strong></div>
     </div>
     <div class="play-card">
@@ -209,6 +203,12 @@
       <div id="play-content" class="play-content" aria-live="polite"></div>
       <div id="play-options" class="play-options"></div>
       <div id="play-actions" class="play-actions"></div>
+    </div>
+    <div class="hub-session-controls" role="group" aria-label="Spielsteuerung">
+      <button id="skip-hub-round" class="ghost-button" type="button" disabled>Runde überspringen</button>
+      <button id="pause-hub-game" class="ghost-button" type="button" aria-pressed="false" disabled>Pause</button>
+      <button id="finish-hub-game" class="ghost-button" type="button" disabled>Beenden &amp; speichern</button>
+      <button id="abort-hub-game" class="ghost-button hub-abort-button" type="button" disabled>Abbrechen &amp; verwerfen</button>
     </div>
   </section>
 

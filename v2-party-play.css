@@ -77,11 +77,14 @@ body:has(#play-layer:not([hidden])) { overflow: hidden; background: #0A0B0F; }
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
+/* Steuerung steht unter der Karte: oben das Spiel, darunter Überspringen/Pause, zuletzt Beenden und Abbrechen. */
 #play-layer .hub-session-controls {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
-  width: 100%;
+  width: min(660px, 100%);
+  margin: 0 auto;
+  flex-shrink: 0;
   text-align: center;
 }
 #play-layer .hub-session-controls .ghost-button {

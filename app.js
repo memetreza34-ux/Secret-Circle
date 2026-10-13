@@ -142,7 +142,7 @@ function restoreSettings() {
   updateAdvancedSummary();
 }
 
-/* Importiert die Party-Hub-Gruppe nur auf Wunsch; laufende Spiele bleiben unverändert. */
+/* Word Imposter nutzt dieselbe Gruppe wie alle anderen Spiele. Laufende Spiele behalten ihre eigenen Namen. */
 function groupPlayers() {
   try {
     const hub = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
@@ -159,6 +159,35 @@ function updateGroupImport() {
   const names = groupPlayers();
   const current = $('#players').value.split(/\n|,/).map(name => name.trim().replace(/\s+/g, ' ')).filter(Boolean);
   button.hidden = !names.length || (current.length === names.length && current.every((name, index) => name === names[index]));
+}
+function setupPlayers() {
+  return $('#players').value.split(/\n|,/).map(name => name.normalize('NFKC').trim().replace(/\s+/g, ' ')).filter(Boolean);
+}
+function sameNames(a, b) {
+  return a.length === b.length && a.every((name, index) => name === b[index]);
+}
+/* Beim Öffnen gilt die Gruppe; ungültige Gruppen (zu klein, doppelt, zu lang) bleiben außen vor. */
+function useGroupPlayers() {
+  const names = groupPlayers();
+  if (!names.length || sameNames(names, setupPlayers())) return;
+  $('#players').value = names.join('\n');
+  $('#players').dispatchEvent(new Event('input', { bubbles: true }));
+}
+/* Gültige Änderungen hier landen in der gemeinsamen Gruppe; alle anderen Hub-Daten bleiben unverändert. */
+function shareSetupPlayers() {
+  const names = setupPlayers();
+  if (names.length < E.MIN_PLAYERS || names.length > E.MAX_PLAYERS) return;
+  if (names.some(name => name.length > 30)) return;
+  if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return;
+  if (sameNames(names, groupPlayers())) return;
+  try {
+    const stored = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    const hub = stored && typeof stored === 'object' && !Array.isArray(stored) && stored.version === 1
+      ? stored
+      : { version: 1, players: [], favorites: [], recent: [], presets: [], history: [], stats: {} };
+    hub.players = names;
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify(hub));
+  } catch {}
 }
 function importGroupPlayers() {
   const names = groupPlayers();
@@ -553,7 +582,7 @@ function registerPwa() {
 
 $('#start').addEventListener('click', startGame);
 $('#import-group-players').addEventListener('click', importGroupPlayers);
-$('#players').addEventListener('input', updateGroupImport);
+$('#players').addEventListener('input', () => { shareSetupPlayers(); updateGroupImport(); });
 $('#resume').addEventListener('click', resumeGame);
 $('#discard-resume').addEventListener('click', () => { remove(KEYS.active); updateResume(); });
 $('#show-card').addEventListener('click', revealCard);
@@ -583,6 +612,7 @@ window.addEventListener('pagehide', () => {
 
 renderCategories();
 restoreSettings();
+useGroupPlayers();
 updateGroupImport();
 updateAdvancedSummary();
 ['input', 'change'].forEach(type => ['#imposters', '#duration', '#match-rounds'].forEach(selector => $(selector).addEventListener(type, updateAdvancedSummary)));
