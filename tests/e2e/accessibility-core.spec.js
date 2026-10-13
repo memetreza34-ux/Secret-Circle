@@ -156,8 +156,12 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
       }
     }, true);
   });
+  /* Die App setzt den Startfokus ein Bild später auf die erste Antwort. Erst danach
+     weiterarbeiten, sonst zieht dieser Fokus unter Last den eben gesetzten wieder weg. */
+  await expect(page.getByRole('button', { name: 'Wahrheit', exact: true })).toBeFocused();
   /* Die Spielsteuerung steht unter der Karte: nach der letzten Antwort folgt sie direkt. */
   await page.getByRole('button', { name: 'Pflicht', exact: true }).focus();
+  await expect(page.getByRole('button', { name: 'Pflicht', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.locator('#skip-hub-round')).toBeFocused();
   /* Am Ende springt der Fokus zurück an den Anfang des Dialogs und wieder zurück. */
