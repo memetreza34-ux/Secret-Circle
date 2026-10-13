@@ -454,3 +454,5 @@ label{color:var(--fg)}
 .skip-link{background:var(--fg);color:#000}
 .modal-card h2{line-height:1.05}
 @media (max-width:54rem){.filter-bar .filter-reset-button{grid-column:1/-1;width:100%}}
+/* Aus dem v2-Profil geöffnet: nur die gewählte Ansicht und ein Weg zurück. */
+.hub-back-link{display:inline-flex;align-items:center;min-height:44px;color:var(--fg-dim);font-weight:800;text-decoration:none}.hub-back-link:hover{color:var(--fg)}.hub-from-v2 .brand,.hub-from-v2 .header-actions,.hub-from-v2 .hub-nav{display:none}

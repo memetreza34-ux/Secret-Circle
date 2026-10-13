@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 - Eine Spielerliste für alle Spiele: Word Imposter übernimmt beim Öffnen die Gruppe, gültige Änderungen dort landen wieder in der Gruppe (andere Hub-Daten bleiben unverändert). Ungültige Gruppen (unter 3 Personen, doppelte oder zu lange Namen) werden nicht übernommen. Laufende Spiele behalten ihre Namen.
 - Startseite: Auch bei Word Imposter zeigt das Spieldetail die Spielerzahl und sperrt den Start bei zu wenigen Personen.
 - Profil: „Partyabend planen“ und „Eigenes Spiel erstellen“ sind vorerst ausgeblendet. Die Seiten selbst und bereits erstellte eigene Spiele bleiben erhalten.
+- Profil → „Daten und eigene Inhalte“: Die Seite zeigt nur noch die Datenansicht ohne die alte Hub-Navigation und hat oben „← Profil“ als Weg zurück.
 - Neue Offline-Cachegeneration v92.
 
 ## v91 – Word Imposter: schneller Einstieg und geheime Abstimmung

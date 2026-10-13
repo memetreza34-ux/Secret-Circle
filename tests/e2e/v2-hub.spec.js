@@ -204,3 +204,16 @@ test('"most played" appears only once there is real history', async ({ page }) =
   await expect(page.locator('#sections')).not.toContainText('Empfohlen');
   await expect(page.locator('#hero-title')).toHaveText('Scharade');
 });
+
+test('Profil: Daten und eigene Inhalte zeigen nur die Datenansicht und führen zurück ins Profil', async ({ page }) => {
+  await page.goto('/v2-hub.html#profil');
+  await expect(page.getByRole('link', { name: /Partyabend planen/ })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /Eigenes Spiel erstellen/ })).toHaveCount(0);
+  await page.getByRole('link', { name: /Daten und eigene Inhalte/ }).click();
+  await expect(page).toHaveURL(/party\.html\?view=settings&from=v2/);
+  await expect(page.locator('#settings-title')).toBeVisible();
+  await expect(page.locator('.hub-nav')).toBeHidden();
+  await page.getByRole('link', { name: '← Profil' }).click();
+  await expect(page).toHaveURL(/v2-hub\.html#profil$/);
+  await expect(page.locator('[data-screen="profile"]')).toBeVisible();
+});

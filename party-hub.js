@@ -35,6 +35,12 @@
     window.location.replace('v2-hub.html');
     return true;
   }
+  /* Aus dem v2-Profil geöffnet (z. B. „Daten und eigene Inhalte“): ohne die alte
+     Hub-Navigation, dafür mit einem Weg zurück ins Profil. */
+  if (returnToV2) {
+    document.body.classList.add('hub-from-v2');
+    $('#hub-back-v2').hidden = false;
+  }
   function clone(value) { return JSON.parse(JSON.stringify(value)); }
   function cleanText(value, maximum = 200) { return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, maximum); }
   function safeInteger(value, maximum = 1_000_000) {
