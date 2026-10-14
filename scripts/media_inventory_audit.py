@@ -14,6 +14,13 @@ IGNORED_DIRS = {
 }
 EXPECTED_CURRENT_MEDIA = {
     'icon.svg', 'icon-192.png', 'icon-512.png',
+    'assets/images/imposter.webp',
+    'assets/images/truth-dare.webp',
+    'assets/images/mafia.webp',
+    'docs/screenshots/bildvorschau-mafia-desktop-1280x800.webp',
+    'docs/screenshots/bildvorschau-mafia-handy-375x812.webp',
+    'docs/screenshots/bildvorschau-start-desktop-1280x800.webp',
+    'docs/screenshots/bildvorschau-start-handy-375x812.webp',
     'docs/screenshots/v2-party-spiel-handy-375x812.webp',
     'docs/screenshots/v2-party-spiel-desktop-1280x800.webp',
 }

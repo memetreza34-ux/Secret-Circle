@@ -1,5 +1,7 @@
 # Auftrag für Codex: Bildprobe mit drei Spielbildern
 
+**Nachtrag vom 14. Oktober 2026:** Arman hat nach den Stilproben den direkten Einbau einiger Bilder zur Ansicht in der App beauftragt. Die aktuelle Vorschau zeigt Word Imposter, Wahrheit oder Pflicht und Mafia. Als Stilreferenz dient die erste Mafia-Stadtplatzszene, nicht deren später vereinfachte Fassung. Die ursprünglichen Motive und der Ablauf unten dokumentieren den früheren Auftrag; Herkunft und tatsächlich verwendete Prompts der aktuellen Bilder stehen in `assets/manifests/asset-provenance.json`.
+
 **Auftraggeber:** Arman · **Datum:** 14. Oktober 2026 · **Status:** freigegeben als Probe – nur erzeugen und zeigen, **nicht** in die App einbauen.
 
 Dieser Auftrag ist eine bewusste Ausnahme von der Regel in `AGENTS.md`, nach der weitere Bilder erst nach der technischen Härtung kommen: Arman möchte jetzt eine Probe sehen, um die Bildwelt zu bestätigen.

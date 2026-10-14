@@ -1,5 +1,9 @@
 # Bildwelt für Secret Circle v2
 
+## Aktuelle App-Vorschau vom 14. Oktober 2026
+
+Arman bevorzugt die erste Mafia-Stadtplatzszene gegenüber der späteren Fassung mit vereinfachten Oberflächen. Sie dient als Stilreferenz für eine animierte 3D-Welt mit ausdrucksstarken, erwachsen auftretenden Figuren und zum Spiel passenden Orten, Kleidern und Handlungen. Word Imposter (Chamäleon blufft in einer Spielrunde), Wahrheit oder Pflicht (Maske ablegen und Mutprobe auf einer Bühne) und Mafia (heimliche Absprache, von einer Detektivin bemerkt) sind auf seine ausdrückliche Anweisung direkt in der App zu sehen. Die ganze Bildwelt ist damit noch nicht endgültig abgenommen. Die folgenden ursprünglichen Motivvorschläge bleiben Planungsgrundlage; die aktuellen Originalprompts stehen vollständig im Provenienzmanifest.
+
 Die Spielbilder teilen dieselbe sorgfältig gestaltete 3D-Bildsprache: prägnante Silhouetten, glaubwürdige Materialien, klare Mimik, gerichtetes Licht und eine lesbare Handlung. Jedes Spiel bekommt trotzdem eine eigene Figur oder Figurengruppe, Farbwelt, Umgebung und Requisiten.
 
 ## Motivregel

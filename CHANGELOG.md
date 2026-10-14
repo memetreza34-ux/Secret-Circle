@@ -2,6 +2,13 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v93 – Drei animierte Spielbilder als Vorschau in der App
+
+- Word Imposter, Wahrheit oder Pflicht und Mafia zeigen eigene Szenen aus derselben animierten Bildwelt in Kacheln, Startseitenbanner und Spieldetail.
+- Die erste Mafia-Szene mit heimlicher Absprache auf dem Stadtplatz ist die gewählte Stilvorlage; Kleidung, Mimik und Handlung der anderen Motive richten sich nach ihrem Spiel.
+- Lokale WebP-Dateien mit 800 × 600 Pixeln und maximal 35 KB, deutsche Alt-Texte und neue Offline-Cachegeneration v93.
+- Direkter Einbau als App-Vorschau auf Armans Anweisung vom 14. Oktober 2026; der frühere Auftrag „nur erzeugen und zeigen“ ist dafür ersetzt.
+
 ## v92 – Spiel zuerst, Steuerung darunter; eine Spielerliste für alle
 
 - Hub-Spiele: Die Spielkarte steht oben, die Steuerung darunter. Reihenfolge: „Runde überspringen“ und „Pause“, danach „Beenden & speichern“ und „Abbrechen & verwerfen“. „Abbrechen“ steht damit nicht mehr neben „Pause“.

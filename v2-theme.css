@@ -284,10 +284,9 @@ input[disabled] {
   background: #0D0E13;
 }
 .hero-art > .mark { width: 96px; height: 96px; }
-.hero-art.has-image { height: 180px; overflow: hidden; }
+.hero-art.has-image { height: auto; aspect-ratio: 8 / 5; overflow: hidden; }
 .hero-art > .mark.has-image { position: absolute; inset: 0; width: 100%; height: 100%; }
-/* Die Figuren stehen oben im Bild: beim Zuschneiden den oberen Teil zeigen, damit Köpfe nicht abgeschnitten werden. */
-.game-art-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+.game-art-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .hero-badge {
   position: absolute;
   z-index: 1;

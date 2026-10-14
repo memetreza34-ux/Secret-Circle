@@ -65,7 +65,19 @@ Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsb
 - PNG-Dimensionen
 - PWA-Manifest-Verknüpfung
 
-`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository genau die drei Icondateien und zwei dokumentierende PR-Screenshots der v2-Party-Spielansicht vorhanden sind. Die sechs Screenshots der früheren Spielbilder wurden mit ihnen entfernt. Die drei unten genannten Spielbilder wurden am 13. Oktober 2026 entfernt; neue entstehen nach `docs/BILDWELT_V2.md`. Die Screenshots liegen unter `docs/screenshots/` und gehören nicht zum Offline-Core. Jede weitere Medienänderung muss bewusst in den Vertrag aufgenommen werden.
+`scripts/media_inventory_audit.py` erzwingt die vollständige erlaubte Menge der App-Icons, lokalen Spielillustrationen und Dokumentationsscreenshots. Alle sind samt Herkunft und Prüfsumme im Provenienzmanifest erfasst. Dokumentationsscreenshots gehören nicht zum Offline-Core.
+
+## Aktuelle Spielbilder vom 14. Oktober 2026
+
+Auf Armans Anweisung zur Ansicht direkt eingebunden. Werkzeug: integriertes OpenAI `image_gen` in Codex; konkrete Modellkennung nicht ausgegeben. Originale projektseitige Stilreferenz: erste Mafia-Stadtplatzszene. WebP-Export lokal mit `cwebp`, 800 × 600 Pixel und höchstens 35 KB pro Bild.
+
+| Datei | SHA-256 |
+|---|---|
+| `assets/images/imposter.webp` | `15e7c9214042f5a21df56874e6a3d9057c9ea32b06ca08cdaf76aa146b082351` |
+| `assets/images/truth-dare.webp` | `67d7ff134733f73ae669258b22a37ae0102f42f118e20420991eca46c54fd0d6` |
+| `assets/images/mafia.webp` | `f261beca039c3e25641431959f0771c958ee9330d71cc6ad21019858b5cbff35` |
+
+Die vollständigen Originalprompts stehen im Provenienzmanifest. Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig. Die Sichtprüfung zeigt originale stilisierte Figuren ohne echte Personen, Marken oder Schrift. Ein finaler Ähnlichkeits- und Markenreview des Release Candidate bleibt offen; die App-Vorschau ist keine abschließende Design- oder Releaseabnahme.
 
 ## Spielbilder vom 4. Oktober 2026 (am 13. Oktober 2026 entfernt)
 

@@ -40,7 +40,8 @@ test('service worker caches the complete v30 core including Creator guidance and
       './party-night.js', './party-data-tools.js', './party-advanced.js', './party-advanced-runner.js',
       './party-advanced-preferences.js', './party-quick-modes.js', './party-mega-modes.js',
       './party-viral-modes.js', './party-created-modes.js', './quick-loader.js',
-      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
+      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png',
+      './assets/images/imposter.webp', './assets/images/truth-dare.webp', './assets/images/mafia.webp'
     ];
     const missing = [];
     for (const path of expected) if (!await cache.match(path)) missing.push(path);

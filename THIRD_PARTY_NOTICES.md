@@ -70,17 +70,17 @@ Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle 
 
 ## 6. Media-Inventar
 
-`scripts/media_inventory_audit.py` erwartet drei gebündelte Laufzeitmedien:
+Seit dem 14. Oktober 2026 umfasst die App neben den drei Icons drei lokale Spielillustrationen:
 
-1. `icon.svg`
-2. `icon-192.png`
-3. `icon-512.png`
+- `assets/images/imposter.webp`: Chamäleon blufft in einer Spielrunde.
+- `assets/images/truth-dare.webp`: Bühnenmagier legt seine Maske ab, eine Stuntfigur zeigt eine Mutprobe.
+- `assets/images/mafia.webp`: heimliche Absprache auf einem Stadtplatz, von einer Detektivin bemerkt.
 
-Am 13. Oktober 2026 wurden die drei bisherigen Spielbilder (`assets/images/word-imposter-chamaeleon.webp`, `assets/images/wahrheit-oder-pflicht.webp`, `assets/images/ich-habe-noch-nie.webp`) entfernt. Neue Spielbilder entstehen nach `docs/BILDWELT_V2.md` und werden einzeln in den Medienvertrag aufgenommen. Die entfernten Dateien liegen nur noch in der Git-Historie. Zur Herkunft der entfernten Bilder: Sie wurden am 4. Oktober 2026 mit dem integrierten OpenAI-Bildwerkzeug erzeugt und mit `cwebp` lokal als WebP exportiert. Das Chamäleon verwendet einen vom Nutzer bereitgestellten Splash-Screenshot nur als allgemeine Stilreferenz; keine fremde Figur, Marke oder Bilddatei ist im Ergebnis enthalten. Das zweite Bild verwendet das projektseitige Chamäleonbild als Stilreferenz. Das dritte Bild zeigt einen eigenständigen Elefantencharakter. Herkunft, Hashes und Rechtebasis stehen in `assets/manifests/asset-provenance.json`. Ein finaler visueller Ähnlichkeitsreview bleibt offen.
+Alle drei Bilder wurden mit dem integrierten OpenAI-Werkzeug `image_gen` auf Armans Anweisung erzeugt. Eine konkrete Modellkennung gibt das Werkzeug nicht aus. Die gewählte erste Mafia-Szene ist die Stilreferenz für die anderen beiden Motive; die Referenzen sind ebenfalls projektseitig erzeugte Bilder. Die Originalprompts, Erstellungsdaten, SHA-256-Werte und Rechtebasis stehen in `assets/manifests/asset-provenance.json`. Es wurden keine externen Bilddateien, echten Personen, Logos oder erkennbaren Franchise-Figuren eingebunden. Rechtebasis sind die projektseitigen Output-Rechte nach den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; die finale visuelle Releaseprüfung bleibt offen.
 
-Die sechs Screenshots dieser Spielansichten unter `docs/screenshots/` wurden mit den Bildern entfernt.
+Die Dateien sind 800 × 600 Pixel groß, jeweils höchstens 35 KB und mit `cwebp` exportiert. Sie gehören zum Offline-Core. Weitere WebP-Dateien unter `docs/screenshots/` dokumentieren die eigene App und werden im Medienvertrag samt Provenienz separat erfasst; sie gehören nicht zum Offline-Core. Die Bildvorschau ist keine öffentliche Releasefreigabe.
 
-Zwei weitere WebP-Dateien unter `docs/screenshots/` zeigen die eigene v2-Party-Spielansicht bei 375 × 812 und 1280 × 800. Sie wurden am 4. Oktober 2026 lokal mit Playwright aufgenommen und mit `cwebp` exportiert. Ihre Hashes und Herkunft stehen im Provenienzmanifest; sie sind reine PR-Dokumentation und gehören nicht zum Offline-Core. Der Audit inventarisiert damit insgesamt fünf Mediendateien: drei Icons und zwei Screenshots.
+Die früheren drei Bilder vom 4. Oktober wurden am 13. Oktober 2026 entfernt und bleiben nur in der Git-Historie erhalten.
 
 ## 7a. Gebündelte Schriften
 

@@ -38,20 +38,38 @@ test('start screen renders from the real catalog without invented claims', async
   expect(errors).toEqual([]);
 });
 
-/* Bis neue Spielbilder nach docs/BILDWELT_V2.md eingebunden sind, zeigt jedes Spiel sein Emblem.
-   Mit jedem neuen Bild kommt hier wieder eine Prüfung dazu, dass es lokal lädt und einen Alt-Text hat. */
-test('games without artwork show their emblem and keep the mobile banner title visible', async ({ page }) => {
+test('game artwork loads locally in cards, banner and details with readable mobile titles', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await seedHub(page);
   await openV2(page);
-  await expect(page.locator('#hero-art svg')).toBeVisible();
-  await expect(page.locator('#hero-art img')).toHaveCount(0);
+  const artwork = {
+    imposter: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen',
+    'truth-dare': 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt',
+    mafia: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt'
+  };
+  async function expectArtwork(image, id) {
+    await expect(image).toHaveAttribute('src', 'assets/images/' + id + '.webp');
+    await expect(image).toHaveAttribute('alt', artwork[id]);
+    await expect(image).toBeVisible();
+    await expect.poll(() => image.evaluate(el => el.complete && el.naturalWidth === 800 && el.naturalHeight === 600)).toBe(true);
+  }
+  await expectArtwork(page.locator('#hero-art img'), 'imposter');
   await expect(page.locator('#hero-title')).toBeVisible();
   const bannerBottom = await page.locator('.hero-art').evaluate(el => el.getBoundingClientRect().bottom);
   const titleTop = await page.locator('#hero-title').evaluate(el => el.getBoundingClientRect().top);
   expect(bannerBottom).toBeLessThanOrEqual(titleTop);
 
-  for (const id of ['imposter', 'truth-dare', 'never-have', 'most-likely']) {
+  await openV2(page, '#spiele');
+  for (const id of Object.keys(artwork)) {
+    const card = page.locator('#grid [data-game-id="' + id + '"]');
+    await card.scrollIntoViewIfNeeded();
+    await expectArtwork(card.locator('img'), id);
+  }
+  for (const id of Object.keys(artwork)) {
+    await openV2(page, '#spiel=' + id);
+    await expectArtwork(page.locator('#mode-emblem img'), id);
+  }
+  for (const id of ['never-have', 'most-likely']) {
     await openV2(page, '#spiel=' + id);
     await expect(page.locator('#mode-emblem svg')).toBeVisible();
     await expect(page.locator('#mode-emblem img')).toHaveCount(0);
