@@ -1,18 +1,27 @@
 # Auftrag für Codex: Bilder für alle Spiele
 
+## Aktueller Serienauftrag vom 14. Oktober 2026
+
+Arman hat nach den Bildweltvergleichen die runde 3D-Cartoonwelt des orangefarbenen Chamäleons und der türkisen Waschbärprobe als neue Grundlage gewählt. Dieser jüngste Auftrag ersetzt die früheren Vorgaben zur gezeichneten Bildwelt, zur kombinierten Bildprobe und zu 2–3 parallelen Varianten.
+
+**Jetzt genau ein Bild nach dem anderen:** Word Imposter zuerst, Entwurf zeigen, auf Armans konkrete Freigabe warten, danach beim passenden Spiel einbauen und prüfen, dann nächster Modus. Figuren, Gegenstände, Farben, passende Kleidung, Orte und Interaktionen sind frei wählbar. Es gibt keine Pflicht zu Tierfiguren oder gleichen Bildaufbauten.
+
+Der aktuelle Entwurf und die vollständige Liste aller 55 Modi stehen in [BILDWELT_FREIGABEN.md](BILDWELT_FREIGABEN.md). Die Medien-, Rechte-, Sicherheits- und Prüfregeln unten gelten weiter; ältere Bildanzahl- und Stilvorgaben gelten nur, soweit sie diesem Serienauftrag nicht widersprechen.
+
+
 **Auftraggeber:** Arman · **Datum:** 14. Oktober 2026 · **Status:** freigegeben.
 
-Dieser Auftrag ersetzt die frühere Bildprobe mit drei Bildern. Die Probe ist abgeschlossen: Word Imposter, Wahrheit oder Pflicht und Mafia sind in der App und gelten als Stilvorlage.
+Dieser Auftrag ersetzt die frühere Bildprobe mit drei Bildern. Die Probe ist abgeschlossen: Word Imposter, Wahrheit oder Pflicht und Mafia sind in der App. Nach Armans jüngster Auswahl vom 14. Oktober 2026 gilt ausschließlich das eingebaute Word-Imposter-Bild als Stilvorlage; diese Auswahl ersetzt die frühere kombinierte Referenz. Die ausgewählte Neufassung von Wahrheit oder Pflicht ist eingebaut.
 
 ## Ziel
 
-Für jedes Spiel ohne Bild ein Bild im Stil der drei Vorlagen erzeugen. Alle Regeln, der Stil-Block und die Motiv-Prompts für alle 55 Spiele stehen in [`docs/BILDWELT_V2.md`](BILDWELT_V2.md).
+Für jedes Spiel ohne Bild ein Bild im Stil des eingebauten Word-Imposter-Bilds erzeugen. Alle Regeln, der Stil-Block und die Motiv-Prompts für alle 55 Spiele stehen in [`docs/BILDWELT_V2.md`](BILDWELT_V2.md).
 
 Bilder dürfen jederzeit verbessert werden. Wird ein Bild neu gemacht, den Prompt in `BILDWELT_V2.md` mit anpassen, damit Datei und Bild zusammenpassen.
 
 ## So wird jedes Bild erzeugt
 
-1. Die drei Vorlagen anhängen: `assets/images/imposter.webp`, `assets/images/truth-dare.webp`, `assets/images/mafia.webp`.
+1. Ausschließlich `assets/images/imposter.webp` als Stilvorlage anhängen; keine weiteren Stilreferenzen beimischen.
 2. Prompt = Stil-Block aus `BILDWELT_V2.md` + Motiv-Prompt des Spiels.
 3. 2–3 Varianten erzeugen.
 4. Selbst prüfen, bevor Arman sie sieht:

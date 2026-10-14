@@ -2,6 +2,25 @@
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 
+## v96 – Freigegebenes Word-Imposter-Cartoonbild und Bildvergleich
+
+- Word Imposter zeigt das von Arman konkret freigegebene 3D-Cartoon-Chamäleon: leere Karte, gleiche Schlüssel-Hinweise bei den anderen und korrigierte Augen mit genau einer Pupille je Auge. Die lokale WebP-Datei hat 800 × 600 Pixel und 34.030 Bytes.
+- Wahrheit oder Pflicht zeigt standardmäßig Hutgeständnis und Besen-Luftgitarre; die alternative Masken-/Kissenszene lässt sich direkt unter dem Detailbild ansehen.
+- Die vorher vorbereiteten gezeichneten Wahrheit-oder-Pflicht-Proben bleiben zum Vergleich erreichbar; neue Bilder der gewählten 3D-Cartoonserie entstehen ab jetzt einzeln mit Freigabe vor jedem Einbau. Herkunft, Rechtebelege, Alt-Texte, Medienvertrag und Offline-Core aktualisiert.
+- Offline-Cachegeneration v96 liefert die neuen Bilder und die Bildauswahl an installierte Apps.
+
+## v95 – Ausgewähltes Elefantenbild für Ich habe noch nie
+
+- Von Arman ausgewähltes Motiv in Kacheln, Startseitenbanner und Spieldetail eingebunden: Elefant gibt mit erhobener Hand ein Erlebnis zu, die Mitspieler reagieren überrascht.
+- Lokale WebP-Datei mit 800 × 600 Pixeln und 33.908 Bytes; Medienvertrag, Rechtebelege, Alt-Text und Offline-Core sind ergänzt.
+- Neue Offline-Cachegeneration v95; Bildladen und Offline-Vollständigkeit bleiben durch Browserprüfungen abgesichert.
+
+## v94 – Neues Bild für Wahrheit oder Pflicht
+
+- Von Arman ausgewählte Neufassung direkt eingebunden: Magier legt verlegen seine Maske ab, Ziege erfüllt eine Balanceaufgabe mit drei Kissen.
+- Das bestehende Word-Imposter-Bild ist die einzige Stilvorlage der Neufassung. Herkunft, Prompt, Rechtebeleg und deutscher Alt-Text sind aktualisiert.
+- Lokale WebP-Datei mit 800 × 600 Pixeln und 33.946 Bytes; Offline-Cachegeneration v94 liefert den Bildwechsel auch an installierte Apps.
+
 ## v93 – Drei animierte Spielbilder als Vorschau in der App
 
 - Word Imposter, Wahrheit oder Pflicht und Mafia zeigen eigene Szenen aus derselben animierten Bildwelt in Kacheln, Startseitenbanner und Spieldetail.

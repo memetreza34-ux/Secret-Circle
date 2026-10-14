@@ -1,29 +1,35 @@
 # Bildwelt für Secret Circle v2
 
-**Stand: 14. Oktober 2026.** Diese Fassung ersetzt die frühere Bildwelt mit „dunklem, unscharfem Hintergrund und genau einem Motiv“. Maßgeblich sind jetzt die drei Bilder, die in der App zu sehen sind.
+**Aktuelle Seriengrundlage:** Arman hat die runde 3D-Cartoonwelt gewählt und das augenkorrigierte Word-Imposter-Bild konkret freigegeben. `assets/images/imposter.webp` ist jetzt die verbindliche visuelle Grundlage: plastische runde Formen, ausdrucksstarke Augen, freche Mimik, klare Kostümdetails und kräftige Farben. Jede Figur hat genau eine Pupille je Auge; keine doppelten Augen oder widersprüchlichen Blickrichtungen. Der frühere gezeichnete 2.5D-Neustart ist für neue Motive ersetzt. Alle 55 Modi werden einzeln erzeugt, gezeigt, freigegeben und erst danach eingebaut; Stand in [BILDWELT_FREIGABEN.md](BILDWELT_FREIGABEN.md).
+
+
+**Stand: 14. Oktober 2026.** Diese Fassung ersetzt die frühere Bildwelt mit „dunklem, unscharfem Hintergrund und genau einem Motiv“. Maßgeblich ist nach Armans jüngster Auswahl das Word-Imposter-Bild, das in der App zu sehen ist.
 
 ## Die Vorlage
 
-Die drei Bilder sind die Stilvorlage. Was dort zu sehen ist, gilt. Steht hier etwas anderes, gewinnt das Bild.
+Die alleinige Stilvorlage für neue Bilder ist `assets/images/imposter.webp` (Armans Auswahl vom 14. Oktober 2026). Die anderen eingebauten Bilder dokumentieren Spielmotive. Was im Chamäleonbild zu sehen ist, gilt. Steht hier etwas anderes, gewinnt dieses Bild.
 
 | Bild | Was es zeigt |
 |---|---|
-| `assets/images/imposter.webp` | Chamäleon blufft mit leerer Karte in einer Art-déco-Lounge, zwei Mitspieler halten dieselbe Schlüsselkarte. |
-| `assets/images/truth-dare.webp` | Bühnenmagier legt die Maske ab (Wahrheit), Waschbär-Stuntfigur macht einen Handstand (Pflicht). |
+| `assets/images/imposter.webp` | Freigegebenes 3D-Cartoon-Chamäleon blufft mit leerer Karte vor korallfarbenem Hintergrund, zwei Mitspieler halten gleiche Schlüsselkarten. |
+| `assets/images/truth-dare.webp` | Bühnenmagier legt verlegen die Maske ab (Wahrheit), Ziege balanciert drei Kissen (Pflicht). |
 | `assets/images/mafia.webp` | Kater flüstert einem Wiesel etwas zu, eine Detektivin bemerkt die Absprache, nächtlicher Stadtplatz. |
+| `assets/images/never-have.webp` | Elefant im orangefarbenen Pullover hebt verlegen die Hand, Flamingo und Mitspieler reagieren überrascht. |
 
-Bei jedem neuen Bild **alle drei Bilder als Referenz anhängen**. Die Originalprompts stehen in `assets/manifests/asset-provenance.json`.
+Bei jedem neuen Bild **nur `assets/images/imposter.webp` als Stilreferenz anhängen**; andere Stilvorlagen nicht beimischen. Die Originalprompts stehen in `assets/manifests/asset-provenance.json`.
 
 ## Was jedes Bild ausmacht
 
 - **Machart:** polierter 3D-Animationsfilm-Look. Nicht fotorealistisch, nicht flach, nicht babyhaft-niedlich.
 - **Figuren:** erwachsen wirkende Cartoon-Figuren, also vermenschlichte Tiere und stilisierte Menschen gemischt. Große, ausdrucksstarke Augen und Augenbrauen, klares Schauspiel.
 - **Kleidung:** passt zur Rolle (Spion im Trenchcoat, Magier in Weste, Schiedsrichterin mit Flaggen).
+- **Tierkörper (Armans Korrektur vom 14. Oktober 2026):** Tierfiguren behalten ihre erkennbare Körperform, Schnauze, Fell oder Stacheln und Pfoten. Kein menschlicher Körper mit aufgesetztem Tierkopf, keine menschlichen Hände oder Frisur beim Igel. Kleidung folgt der Tierform. Das neue Igelmotiv bleibt bis zu Armans Auswahl eine Vorschau.
 - **Ort:** ein ausgestalteter, farbiger Schauplatz – Lounge, Bühne, Stadtplatz. Kein leerer Hintergrund.
 - **Licht:** warmes, weiches Hauptlicht und eine farbige Akzentfarbe. Satte, aber kontrollierte Farben.
 - **Handlung:** Das Bild erklärt das Spiel durch das, was die Figuren gerade tun. Man soll den Spielmoment ohne Text verstehen.
 - **Aufbau:** höchstens drei Figuren, groß im Bild. Gesichter und die entscheidende Geste liegen in den mittleren 60 % des Bildes. Das Bild muss als Kachel (136 × 104 Pixel) und als breites Banner funktionieren.
 - **Eigenständig:** Jedes Spiel hat einen eigenen Ort, eine eigene Farbwelt und eigene Figuren. Kein Spiel wiederholt den Ort oder die Hauptfigur eines anderen.
+- **Motivfreiheit (Arman, 14. Oktober 2026):** Die gemeinsame Bildwelt bestimmt die Machart, nicht die Art des Motivs. Auch Kapitäne, Ärztinnen, Detektive, Astronautinnen, andere eigenständige Rollen oder reine Gegenstände dürfen vorkommen. Es gibt keine Pflicht zu Tierfiguren, Menschen oder einer Figurengruppe. Entscheidend sind der erkennbare Spielmoment und dieselbe animierte Form-, Material- und Lichtgestaltung wie beim Word-Imposter-Bild; alleinige Stilreferenz bleibt das eingebaute Word-Imposter-Bild. Die Motiv-Prompts dürfen dafür passend weiterentwickelt und hier aktualisiert werden.
 
 ## Was nie ins Bild darf
 
@@ -39,18 +45,17 @@ Diesen Block **unverändert** vor jeden Motiv-Prompt setzen. Englisch, weil Bild
 
 ```text
 Create ONE original finished landscape 4:3 illustration for the Secret Circle party game app.
-The three attached images (chameleon in a game lounge, theater stage with magician and raccoon,
-night town square with whispering cat, weasel and detective) are the exact STYLE REFERENCE:
+The attached Word Imposter image (chameleon in a game lounge) is the sole exact STYLE REFERENCE:
 same animated world, polished 3D animated-feature look, appealing adult cartoon characters
 (anthropomorphic animals and stylized humans), expressive eyes and eyebrows, clear acting,
 role-specific stylized clothing, a fully shaped colorful location, warm soft directional key light
-with one colored accent light, rich but controlled color. Same degree of detail as the references:
+with one colored accent light, rich but controlled color. Same degree of detail as this reference:
 not photorealistic, not a flat toon shader, not baby-like cute mascots.
 The image explains the game through action, facial expression, outfit and location.
 At most three characters, large in frame; main faces and the decisive gesture in the central 60%
 of the image so it reads as a small game tile and survives a wide banner crop.
 Every character anatomically coherent: exactly two arms and two hands, clearly separate limbs.
-Use a DIFFERENT location, palette and characters than the references.
+Use a DIFFERENT location, palette and characters than the reference.
 Original designs only, no existing franchise characters or near-copies of their outfits or colors.
 No words, letters, numbers, logos, brands, watermarks, phones, screens, UI, real people,
 alcohol, cups or glasses, cigarettes, weapons, blood, violence or gambling.
@@ -95,7 +100,7 @@ Jedes Spiel hat einen Spielmoment (was das Bild zeigen soll) und einen Motiv-Pro
 
 **Spielmoment:** Alle kennen denselben Begriff, nur der Imposter nicht – und er blufft.
 
-Bild bleibt. Der Originalprompt steht im Provenienzmanifest.
+Arman hat die augenkorrigierte neue 3D-Cartoonversion freigegeben. Das Bild ist eingebunden; Generierung und Korrekturprompt stehen vollständig im Provenienzmanifest.
 
 #### Zwei Wahrheiten, eine Lüge (`two-truths`)
 
@@ -192,31 +197,38 @@ glasses squints with deep suspicion. Emerald, burgundy and warm wood palette.
 
 ### Social & Klassiker
 
-#### Wahrheit oder Pflicht (`truth-dare`) – Bild bleibt vorerst
+#### Wahrheit oder Pflicht (`truth-dare`) – ausgewählte Neufassung eingebaut
 
 **Spielmoment:** Eine Person beantwortet ehrlich eine Frage, eine andere erfüllt eine harmlose Aufgabe.
 
-Das jetzige Bild bleibt. Falls es neu gemacht wird: Wahrheit und Pflicht deutlicher trennen, keinen Waschbär im Overall (zu nah an einer bekannten Figur).
+Am 14. Oktober 2026 hat Arman die Neufassung mit Magier und Ziege ausgewählt und den direkten Austausch beauftragt. Einzige Stilvorlage ist das bestehende Word-Imposter-Bild `assets/images/imposter.webp`; diese ausdrückliche Auswahl ersetzt für neue Bilder die frühere kombinierte Stilreferenz. Die vollständige tatsächlich verwendete Bildanweisung steht im Provenienzmanifest. Der folgende Motiv-Prompt beschreibt die ausgewählte Szene.
 
 ```text
-TRUTH OR DARE: A small game-show stage split into two lighting halves. On the left in cool blue
-light, an adult human woman with a short silver-streaked haircut and a velvet blazer places one hand
-on her heart and laughs while admitting an embarrassing truth, blushing. On the right in warm orange
-light, a lanky goat in a sparkly cape proudly balances a tall wobbly stack of cushions on its head,
-arms out for balance. A large glowing arrow on the floor between them has just stopped spinning.
-Cool blue and warm orange halves, dark stage with warm footlights.
+TRUTH OR DARE: An intimate art-deco party challenge stage, deep cobalt backdrop, burgundy
+curtain, warm footlights and polished wood floor. On the left an adult human stage magician in a
+midnight-teal velvet tailcoat and ivory shirt holds his removed ivory half-mask away from his face.
+His free hand rests on his heart; flushed cheeks and a sheepish smile show an honest embarrassing
+confession. On the right a lanky anthropomorphic goat in a burnt-orange sporty zip jacket, dark
+blue trousers and short satin stunt cape balances three crooked colorful cushions on his head,
+arms spread and knees bent, looking up with comical determination. A small physical brass spinner
+on the floor suggests the choice. Two original characters, expressive faces and clear gestures;
+truth is confession and revealing yourself, dare is a harmless action. Blue fill and warm apricot
+key light. No text, letters, numerals, logos, drinking vessels, weapons or existing characters.
 ```
 
-#### Ich habe noch nie (`never-have`)
+#### Ich habe noch nie (`never-have`) – ausgewähltes Bild eingebaut
 
 **Spielmoment:** Eine Aussage wird vorgelesen, und jemand wird ertappt, weil er es doch schon erlebt hat.
 
 ```text
-NEVER HAVE I EVER: A cozy living room with fairy lights, a big green sofa and knitted blankets. A
-round-cheeked elephant in a chunky orange sweater sheepishly raises one hand, caught, ears slightly
-pink. A small glowing memory bubble above its head shows a kite stuck in a tree. Next to it, a
-flamingo in a denim jacket gasps with delighted surprise, and a young adult human man with a beard
-laughs and points. Forest green and warm orange palette.
+NEVER HAVE I EVER: An inviting converted attic games room with a terracotta sloped wall,
+blue dusk skylight, petrol-blue sofa and oatmeal knitted blanket. At center an adult elephant in a
+burnt-orange sweater sheepishly raises one open hand beside his face, admitting he has experienced
+the statement; his other hand rests on his knee. Flushed ears, sideways glance, embarrassed smile.
+A flamingo in an indigo denim jacket and a stylized bearded human in an olive overshirt react with
+warm surprised laughter. Exactly three coherent characters. Faces and raised palm central and
+readable at small size. Warm amber key light, cool blue fill, same animated material quality as
+Word Imposter and the selected Truth or Dare image. No memory bubble, text or drinking vessels.
 ```
 
 #### Pass das Handy (`pass-the-phone`)
@@ -262,10 +274,12 @@ with a ponytail. Butter yellow, sky blue and warm wood palette.
 **Spielmoment:** Alle zeigen gleichzeitig auf dieselbe Person.
 
 ```text
-WHO IS MOST LIKELY: A colorful living room party with confetti in the air. In the center stands a
-surprised hedgehog in a sparkly party jacket, eyes wide, hand on its chest. From every side, hands,
-paws and one wing all point at it at exactly the same moment; at the edges we glimpse a laughing
-human woman, a grinning tiger and a gleeful parrot. Magenta, teal and gold palette.
+WHO IS MOST LIKELY: A colorful living room party with confetti in the air. Exactly three characters:
+in the center stands a surprised adult hedgehog in a sparkly party jacket, eyes wide, one hand on its
+chest and its other hand open in disbelief. A laughing human woman on the left and a grinning tiger
+on the right each point one clearly visible finger at the hedgehog at exactly the same moment.
+Only these three figures and their own anatomically coherent hands, no extra heads or floating
+pointing limbs. Main faces and pointing gestures grouped close together. Magenta, teal and gold palette.
 ```
 
 #### Entweder oder (`would-rather`)
@@ -468,7 +482,9 @@ in a raincoat, both concentrating. Indigo and firefly-yellow palette.
 HOT POTATO: A busy restaurant kitchen with red and white tiles and hanging copper pots. A steaming
 hot potato with a small round kitchen timer tied to it flies through the air mid-toss, motion trails
 behind it. A pig in a chef's apron has just thrown it with a panicked face, and a young adult human
-woman with a headband reaches out to catch it, eyes wide. Red, white and copper palette.
+woman with a headband reaches out to catch it, eyes wide. The timer face is completely free of
+writing and digits: only a plain red countdown wedge, one simple pointer and a few dots, no Arabic
+or Roman numerals and no letter-like dial markings. Red, white and copper palette.
 ```
 
 #### Wortkette (`word-chain`)
@@ -481,6 +497,20 @@ train of linked wagons winds around the track; each wagon carries a different ob
 umbrella, an anchor, a rabbit plush). A dachshund in a conductor's cap and a young adult human man
 with round glasses lean over the table, watching it with excitement. No letters. Warm wood, forest
 green and brass palette.
+```
+
+**Alternative Gegenstandsvariante für Wortkette:** gleicher Spielmoment, der Zug und seine verbundenen Ladungen stehen allein im Mittelpunkt.
+
+```text
+WORD CHAIN: A beautifully crafted miniature railway in a warmly lit attic workshop. Close, low
+three-quarter view of a winding toy train with clearly linked wagons, each carrying one big colorful
+object: a glossy red apple, a folded blue umbrella, a small brass anchor and a cream rabbit plush.
+The physical couplers visibly join every wagon into one continuous chain, leading the eye from one
+object to the next. The train and objects are the only subjects, no living characters or faces.
+Give the locomotive and props the same appealing sculpted 3D animated-world design as the three
+references. Keep the apple, umbrella and visible couplers large and near the center; restrained
+attic beams and a warm lamp frame the scene. No lettering or numbers anywhere. Forest green,
+warm red, polished brass and golden lamplight palette.
 ```
 
 #### Schnellfeuer (`rapid-fire`)

@@ -11,7 +11,7 @@ Main-Reconciliation: Draft #15
 **Phase:** Release-Härtung / Verifikation  
 **Öffentliche Freigabe:** **NO_GO**  
 **Package:** `1.0.0-beta.3`  
-**Offline-Core:** `secret-circle-v93` / `secret-circle-v93-staging`
+**Offline-Core:** `secret-circle-v96` / `secret-circle-v96-staging`
 **Built-ins:** 55 · 15 Core / 13 Extended / 27 Labs  
 **Wave 1:** 10/10 source-implemented; reale Evidence offen  
 **Core Source Review/Hardening:** 15/15 PREPARED  

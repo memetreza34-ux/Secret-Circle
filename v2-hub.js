@@ -3,14 +3,10 @@
    Gespielt wird in den geprüften Engines (party.html, quick-play.html,
    advanced.html, index.html); diese Seite wählt nur aus und übergibt.
    Spielerliste und Verlauf sind dieselben wie im Rest der App. */
-
 (function () {
   'use strict';
-
   var CAT = window.SecretCirclePartyCatalog || { games: [], content: {} };
-
   /* ── Die sechs Kategorien ─────────────────────────────────────────── */
-
   /* Bündelt die neun Gruppen des Katalogs zu sechs Farbwelten. */
   var BUCKETS = [
     { id: 'taeuschung', label: 'Täuschung', tint: '#FF4560', ground: '#43101d', groups: ['Täuschung & Bluff'] },
@@ -24,12 +20,11 @@
      Bildwelt, Prompts und Einbinden: docs/BILDWELT_V2.md. Ohne Eintrag zeigt das Spiel sein Emblem. */
   var GAME_ART = {
     imposter: { src: 'assets/images/imposter.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen' },
-    'truth-dare': { src: 'assets/images/truth-dare.webp', alt: 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt' },
+    'truth-dare': { src: 'assets/images/truth-dare.webp', alt: 'Magier zeigt sein geheimes Hutfach, während eine Ziege mit einem Besen Luftgitarre spielt' },
+    'never-have': { src: 'assets/images/never-have.webp', alt: 'Elefant hebt verlegen die Hand, weil er etwas schon erlebt hat; Flamingo und Mitspieler reagieren überrascht' },
     mafia: { src: 'assets/images/mafia.webp', alt: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt' }
   };
-
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */
-
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function screenEl(n) { return $('[data-screen="' + n + '"]'); }
@@ -51,6 +46,30 @@
     img.decoding = 'async';
     return img;
   }
+  function renderArtChoices(g, image) {
+    var previous = $('.mode-art-choices');
+    if (previous) previous.remove();
+    if (g.id !== 'truth-dare' || !image) return;
+    var choices = make('div', 'mode-art-choices');
+    choices.setAttribute('role', 'group');
+    choices.setAttribute('aria-label', 'Bild auswählen');
+    var scenes = [GAME_ART[g.id], { src: 'assets/images/truth-dare-alternative.webp', alt: 'Magier legt seine Maske ab, während eine Ziege drei Kissen auf dem Kopf balanciert' }];
+    scenes.forEach(function (art, index) {
+      var button = make('button', 'mode-art-choice');
+      button.type = 'button';
+      button.setAttribute('aria-label', index ? 'Szene mit Kissen' : 'Szene mit Besen');
+      button.setAttribute('aria-pressed', String(index === 0));
+      var thumbnail = make('img');
+      thumbnail.src = art.src; thumbnail.alt = ''; thumbnail.width = 64; thumbnail.height = 48;
+      button.appendChild(thumbnail);
+      button.addEventListener('click', function () {
+        image.src = art.src; image.alt = art.alt;
+        Array.prototype.forEach.call(choices.children, function (item) { item.setAttribute('aria-pressed', String(item === button)); });
+      });
+      choices.appendChild(button);
+    });
+    image.parentNode.parentNode.insertAdjacentElement('afterend', choices);
+  }
   function hash(s) {
     var h = 0;
     for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) & 0x7fffffff;
@@ -58,7 +77,6 @@
   }
   function deCompare(a, b) { return String(a).localeCompare(String(b), 'de'); }
   function fold(s) { return String(s || '').toLocaleLowerCase('de'); }
-
   /* Schriftgröße an die Zeichenzahl binden. Der cq-Container ist das Elternelement. */
   function fit(node, text, cap) {
     if (!node) return;
@@ -66,9 +84,7 @@
     node.style.setProperty('--n', Math.max(4, String(text || '').length));
     if (cap) node.style.setProperty('--cap', cap);
   }
-
   /* ── Bildsprache: Punkt, Kreis, Linie ─────────────────────────────── */
-
   function tag(name, attrs) {
     var s = '<' + name;
     for (var k in attrs) if (attrs[k] != null) s += ' ' + k + '="' + attrs[k] + '"';
@@ -77,7 +93,6 @@
   function wrapSVG(inner, box) {
     return '<svg viewBox="' + (box || '1 1 98 98') + '" width="100%" height="100%" aria-hidden="true" focusable="false" class="svg-block">' + inner + '</svg>';
   }
-
   function markSVG(game) {
     var h = hash(game.id);
     var tint = game.bucket.tint;
@@ -94,7 +109,6 @@
         fill: fill || soft, stroke: stroke || 'none', 'stroke-width': stroke ? 2 : 0
       }));
     }
-
     if (fam === 'taeuschung') {
       ring(30, soft, 1.8);
       var odd = h % n;
@@ -174,14 +188,11 @@
     }
     return wrapSVG(out.join(''));
   }
-
   function avatarSVG(i) {
     var b = BUCKETS[i % BUCKETS.length];
     return markSVG({ id: 'avatar-' + i, bucket: b });
   }
-
   /* ── Symbole ──────────────────────────────────────────────────────── */
-
   var G = {
     back: '<polyline points="14,5 8,12 14,19"/>',
     chev: '<polyline points="10,6 15,12 10,18" stroke="#7B8296"/>',
@@ -213,7 +224,6 @@
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.8) +
       '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + (G[name] || '') + '</svg>';
   }
-
   function seatRingSVG(total, active, tint) {
     var out = [tag('circle', { cx: 50, cy: 50, r: 40, fill: 'none', stroke: '#ffffff1f', 'stroke-width': 2 })];
     var n = Math.max(1, total);
@@ -228,15 +238,12 @@
     }
     return wrapSVG(out.join(''));
   }
-
   /* ── Spiele aus dem Katalog ───────────────────────────────────────── */
-
   /* Eigene Spiele aus dem Creator tragen frei gewählte Gruppen. */
   function bucketFor(group) {
     for (var i = 0; i < BUCKETS.length; i++) if (BUCKETS[i].groups.indexOf(group) >= 0) return BUCKETS[i];
     return BUCKETS[3];
   }
-
   var GAMES = (CAT.games || []).filter(function (g) { return g.status === 'playable'; }).map(function (g) {
     return {
       id: g.id,
@@ -254,26 +261,20 @@
       bucket: bucketFor(g.group)
     };
   });
-
   function gameById(id) {
     for (var i = 0; i < GAMES.length; i++) if (GAMES[i].id === id) return GAMES[i];
     return null;
   }
-
   /* ── Kategorien der Hub-Spiele (v2-hub-packs.js) ─────────────────── */
-
   var PACKS = window.SecretCircleV2Packs;
   function packsOf(g) { return PACKS ? PACKS.list(g) : []; }
   function chosenPack(g) { return PACKS ? PACKS.chosen(g) : null; }
-
   /* ── Gemeinsame Daten ─────────────────────────────────────────────── */
-
   var HUB_KEY = 'secret-circle-party-hub-v1';
   var IMPOSTER_HISTORY_KEY = 'secret-circle-history-v7';
   /* Dieselbe Beispielgruppe wie im Hub und in allen Spiel-Engines. */
   var DEFAULT_PLAYERS = ['Alex', 'Sam', 'Mika', 'Lina'];
   var MAX_PLAYERS = 20;
-
   function readJson(key) {
     try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
   }
@@ -692,6 +693,7 @@
     emblem.parentNode.classList.toggle('has-image', !!modeImage);
     if (modeImage) { clear(emblem); emblem.appendChild(modeImage); }
     else emblem.innerHTML = markSVG(g);
+    renderArtChoices(g, modeImage);
     fit($('#mode-title'), g.title, '2.2rem');
     $('#mode-sub').textContent = g.desc;
 
