@@ -17,7 +17,7 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 
 ## Bilder und andere Medien
 
-- **Bildwelt und Prompts:** `docs/BILDWELT_V2.md` legt Machart, Grenzen, Format (800 × 600 WebP, höchstens etwa 35 KB) und für jedes Spiel einen Motiv-Prompt fest. Word Imposter, Wahrheit oder Pflicht und Ich habe noch nie bekommen ebenfalls neue Bilder.
+- **Bildwelt und Prompts:** Die drei eingebauten Bilder (Word Imposter, Wahrheit oder Pflicht, Mafia) sind die Stilvorlage. `docs/BILDWELT_V2.md` beschreibt diesen Stil, Grenzen, Format (800 × 600 WebP, höchstens etwa 35 KB) und enthält für alle 55 Spiele einen Motiv-Prompt. Der Auftrag an Codex für alle Bilder steht in `docs/CODEX_AUFTRAG_BILDER.md`.
 - **Nur lokale Dateien.** Die Content-Security-Policy erlaubt Bilder nur von der eigenen Herkunft oder als `data:`-URL. Keine externen URLs, keine CDNs.
 - **Medienvertrag anpassen.** `scripts/media_inventory_audit.py` definiert in `EXPECTED_CURRENT_MEDIA` die vollständige erlaubte Menge: App-Icons, eingebundene lokale WebP-Spielbilder und zugehörige Dokumentationsscreenshots. Bei neuen Bildern den Medienvertrag und `assets/manifests/asset-provenance.json` (Werkzeug/Modell, Datum, Rechtegrundlage) gemeinsam aktualisieren. Auch `scripts/performance_budget.py`, die Offline-`CORE`-Liste in `sw.js`, `THIRD_PARTY_NOTICES.md` und `ASSET_RIGHTS_SIGNOFF.md` prüfen und passend ergänzen. Bei KI-generierten Bildern das Werkzeug nennen.
 - **Inhalt:** keine echten Personen, Marken, Logos oder erkennbaren Figuren aus Filmen, Serien, Anime oder Spielen (`CONTENT_AGE_POLICY.md`, `FAN_CONTENT_REVIEW.md`).
