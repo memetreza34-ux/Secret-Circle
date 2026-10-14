@@ -79,28 +79,31 @@ Die ersten drei Bilder wurden entfernt, damit alle Spiele aus einem Guss entsteh
 | Wahrheit oder Pflicht | Eine Figur beantwortet eine Frage; die andere führt eine Aufgabe aus. | Eulen-Detektivin und Waschbär-Stuntfigur | Kühle Frage-Seite, warme Aufgaben-Seite, unterschiedliche Handlungen |
 | Ich habe noch nie | Nach einer Aussage erinnert sich die Figur an ein eigenes Erlebnis und meldet sich ertappt. | Elefant mit erhobener Hand | Dunkles Grün, warmes Orange, Erinnerung als Charaktereigenschaft |
 
-**Word Imposter** (`imposter`):
+Erste Probe (14. Oktober 2026), Auftrag in [`CODEX_AUFTRAG_BILDER.md`](CODEX_AUFTRAG_BILDER.md): bewusst drei Bildarten – ein Tier, ein Gegenstand, eine Figur –, um zu prüfen, ob sie als eine Welt wirken. Erst nach der Abnahme folgen weitere Spiele.
+
+**Word Imposter** (`imposter`) – Tier:
 
 ```text
-A chameleon in a purple jacket holds up a blank card with a sly, slightly nervous smile, its skin
-subtly shifting color to blend in, while two paws at the edges of the frame hold up cards showing
-the same simple golden key symbol.
+A chameleon in a purple velvet jacket holds up a blank card with a sly, slightly nervous smile.
+Its skin is mid-way through shifting color to blend in with the warm background. At the left and right
+edges of the frame, two paws hold up cards that both show the same simple golden key symbol.
 ```
 
-**Wahrheit oder Pflicht** (`truth-dare`): Im früheren Bild stand ein roter Partybecher für Trinkspiele – der kommt nicht wieder vor. Der Overall mit Gurten soll nicht an eine bekannte Filmfigur erinnern – andere Kleidung wählen.
+**Wahrheit oder Pflicht** (`truth-dare`) – Gegenstand: Im früheren Bild stand ein roter Partybecher für Trinkspiele – so etwas kommt nicht wieder vor.
 
 ```text
-Split scene. Left, cool blue side: an owl detective in a teal coat holds a vintage microphone
-and thinks hard about an honest answer, a large glowing question mark shape behind her.
-Right, warm orange side: a raccoon acrobat in a simple striped sweater does a playful one-handed
-handstand while balancing a shiny red apple on one foot, a large glowing exclamation mark shape behind him.
+A large round game spinner stands on a small dark stage, caught mid-spin. One half glows cool blue
+with a big question mark shape, the other half glows warm orange with a big exclamation mark shape.
+A polished brass pointer at the top is about to land on the line between both halves. Spotlight from above.
 ```
 
-**Ich habe noch nie** (`never-have`): Gesicht in die Bildmitte; im früheren Bild war auf der kleinen Kachel nur die Hand zu sehen. Die menschlich wirkende Hand mit Fingernägeln vermeiden.
+**Ich habe noch nie** (`never-have`) – Figur: Gesicht in die Bildmitte; im früheren Bild war auf der kleinen Kachel nur die Hand zu sehen.
 
 ```text
-An elephant in a rust-orange jacket, caught remembering something embarrassing, sheepishly raises
-its trunk like a hand with a guilty smile, eyes glancing sideways; face centered in the frame.
+A small, friendly round robot with soft rubber hands and a glowing heart-shaped light on its chest
+raises one hand, caught remembering something embarrassing. It smiles sheepishly, eyes glancing sideways,
+while a tiny glowing thought cloud above its head shows a faint memory of a kite stuck in a tree.
+Face centered in the frame.
 ```
 
 ## Neue Motive
