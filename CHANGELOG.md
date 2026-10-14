@@ -11,7 +11,9 @@ Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
 - Startseite: Auch bei Word Imposter zeigt das Spieldetail die Spielerzahl und sperrt den Start bei zu wenigen Personen.
 - Profil: „Partyabend planen“ und „Eigenes Spiel erstellen“ sind vorerst ausgeblendet. Die Seiten selbst und bereits erstellte eigene Spiele bleiben erhalten.
 - „Daten und eigene Inhalte“ ist aus den Einstellungen verschwunden. Sichern und Löschen aller Daten erreicht man jetzt unter Profil → Datenschutz → „Daten sichern oder löschen“. Die Seite zeigt nur die Datenansicht ohne die alte Hub-Navigation und hat oben „← Profil“.
-- Word Imposter: „Kategorie“ öffnet eine eigene Seite mit allen Kategorien als große Zeilen (mit Anzahl der Begriffe) statt einer Aufklappliste. Auswahl, „← Zurück“ oder Escape schließen sie; der Fokus kehrt zur Zeile zurück.
+- Word Imposter: 1470 statt 168 Begriffe – jede der 14 Kategorien hat jetzt 105 Begriffe mit eigenem Hilfswort. Alle neuen Begriffe sind allgemeine Wörter ohne Marken, Franchise-Namen oder echte Personen.
+- Word Imposter: Eine neue Partie meidet die zuletzt gespielten Begriffe aus dem Verlauf (bis zu 20), bis die Kategorie durch ist. Kein neuer Speicher-Key.
+- Word Imposter: „Kategorie“ öffnet eine eigene Seite mit allen Kategorien als große Zeilen (mit „Über 100 Begriffe“ je Kategorie bzw. „Über 1400 Begriffe“ bei Gemischt) statt einer Aufklappliste. Auswahl, „← Zurück“ oder Escape schließen sie; der Fokus kehrt zur Zeile zurück.
 - Word Imposter: Das Zahlenfeld der Rundenzeit ist 44 px breit (vorher 30 px), passend zu den Mindestmaßen für Tippflächen.
 - Die drei bisherigen Spielbilder (Word Imposter, Wahrheit oder Pflicht, Ich habe noch nie) sind entfernt; alle Spiele zeigen ihr Emblem, bis neue Bilder nach `docs/BILDWELT_V2.md` entstehen. Der Offline-Kern wird dadurch rund 190 KB kleiner.
 - Neue Offline-Cachegeneration v92.

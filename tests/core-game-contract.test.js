@@ -33,7 +33,7 @@ assert.equal(catalog.games.length, 45);
 
 assert.ok(wordContent && typeof wordContent === 'object', 'Word Imposter content runtime must load.');
 assert.equal(Object.keys(wordContent.categories).length, 14, 'Word Imposter must expose 14 built-in categories.');
-assert.equal(Object.values(wordContent.categories).reduce((sum, category) => sum + category.entries.length, 0), 168, 'Word Imposter must expose 168 built-in words.');
+assert.ok(Object.values(wordContent.categories).reduce((sum, category) => sum + category.entries.length, 0) >= 1470, 'Word Imposter must expose at least 1470 built-in words.');
 
 for (const id of expectedCore) {
   const game = catalog.getGame(id);
@@ -54,7 +54,7 @@ for (const id of expectedCore) {
   if (id === 'imposter') {
     assert.equal(game.mode, 'link');
     assert.equal(game.href, 'index.html');
-    assert.deepEqual(game.packs, ['14 Kategorien', '168 Begriffe', 'Eigene Packs']);
+    assert.deepEqual(game.packs, ['14 Kategorien', 'Über 1400 Begriffe', 'Eigene Packs']);
     continue;
   }
 

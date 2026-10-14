@@ -105,6 +105,11 @@ function categoryCount(id) {
   if (id === 'all') return Object.values(WORDS).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
   return Array.isArray(WORDS[id]) ? WORDS[id].length : 0;
 }
+/* Große Mengen abgerundet und ehrlich: 105 → „Über 100 Begriffe“, 1470 → „Über 1400 Begriffe“. */
+function categoryCountLabel(count) {
+  const rounded = Math.floor(count / 100) * 100;
+  return rounded >= 100 && count > rounded ? `Über ${rounded} Begriffe` : `${count} Begriffe`;
+}
 function updateCategoryValue() {
   $('#category-value').textContent = $('#category').selectedOptions[0]?.textContent || 'Gemischt';
 }
@@ -123,7 +128,7 @@ function openCategories() {
     if (count) {
       const label = document.createElement('span');
       label.className = 'category-count';
-      label.textContent = `${count} Begriffe`;
+      label.textContent = categoryCountLabel(count);
       row.append(label);
     }
     row.addEventListener('click', () => {
@@ -139,10 +144,12 @@ function openCategories() {
 }
 function closeCategories() {
   if ($('#category-screen').hidden) return;
-  $('#category-screen').hidden = true;
+  /* Erst den Fokus zurückgeben, dann die Seite verstecken: So zeigt der Browser den
+     Fokusrahmen nur nach Tastaturbedienung, nicht nach einem Tipp. */
   $('.shell').inert = false;
   updateCategoryValue();
   $('#category-open').focus();
+  $('#category-screen').hidden = true;
 }
 
 function setupValues() {
@@ -273,11 +280,22 @@ function createRoundOptions(values) {
   };
 }
 
+/* Neue Partien meiden die zuletzt gespielten Begriffe aus dem Verlauf, bis die Kategorie durch ist. */
+function recentWords() {
+  const seen = new Set();
+  return history.map(item => String(item?.word ?? '').trim()).filter(word => {
+    const key = word.toLocaleLowerCase('de-DE');
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function startGame() {
   setStatus();
   try {
     const values = setupValues();
-    game = E.createGame(createRoundOptions(values));
+    game = E.createGame({ ...createRoundOptions(values), usedWords: recentWords() });
     cardVisible = false;
     voteIndex = 0;
     lastPersistedTimerSecond = null;

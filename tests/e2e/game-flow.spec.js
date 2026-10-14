@@ -235,3 +235,23 @@ test('exposes privacy information and remains usable on mobile viewport', async 
     await expect(page.locator('#start')).toBeVisible();
   }
 });
+
+test('a new match avoids words from the recent history', async ({ page }) => {
+  const recent = await page.evaluate(() => window.SecretCircleContent.words.tiere.slice(0, 20).map(entry => entry[0]));
+  const history = recent.map((word, index) => ({
+    id: `verlauf-${index}`, completedAt: new Date(2026, 9, 1, 12, index).toISOString(), category: 'Tiere',
+    playerCount: 4, players: ['Alex', 'Sam', 'Mika', 'Lina'], imposterCount: 1, word, imposters: ['Sam'], winner: 'innocents', round: 1
+  }));
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    await page.evaluate(value => {
+      localStorage.removeItem('secret-circle-active-v7');
+      localStorage.setItem('secret-circle-history-v7', JSON.stringify(value));
+    }, history);
+    await page.reload();
+    await page.locator('#category-open').click();
+    await page.locator('#category-screen').getByRole('button', { name: /^Tiere/ }).click();
+    await page.locator('#start').click();
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+    expect(recent).not.toContain(saved.word);
+  }
+});

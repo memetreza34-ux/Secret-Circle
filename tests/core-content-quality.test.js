@@ -192,7 +192,7 @@ let wordImposterWords = 0;
 const wordImposterTerms = [];
 for (const [categoryId, category] of wordCategories) {
   assertSafeText(category.label, `Word Imposter category label ${categoryId}`, { minimum: 2, maximum: 60 });
-  assert.ok(Array.isArray(category.entries) && category.entries.length === 12, `Word Imposter category must contain 12 entries: ${categoryId}`);
+  assert.ok(Array.isArray(category.entries) && category.entries.length >= 105, `Word Imposter category must contain at least 105 entries: ${categoryId}`);
   const words = [];
   for (const [index, entry] of category.entries.entries()) {
     assert.ok(Array.isArray(entry) && entry.length === 2, `Word Imposter entry malformed: ${categoryId} #${index + 1}`);
@@ -204,7 +204,7 @@ for (const [categoryId, category] of wordCategories) {
   }
   assertUniqueItems(words, `Word Imposter/${categoryId}`);
 }
-assert.equal(wordImposterWords, 168);
+assert.ok(wordImposterWords >= 1470, `Word Imposter must contain at least 1470 terms (has ${wordImposterWords}).`);
 for (const removed of ['Bluetooth', 'Oscar', 'Formel 1']) {
   assert.ok(!wordImposterTerms.includes(canonicalText(removed)), `Unnecessary concrete reference returned to Word Imposter core: ${removed}`);
 }

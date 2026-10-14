@@ -40,6 +40,8 @@ test('category opens its own page, applies the choice and returns focus', async 
   await expect(page.locator('#category-title')).toBeFocused();
   await expect(sheet.locator('.category-row')).toHaveCount(await page.locator('#category option').count());
   await expect(sheet.getByRole('button', { name: /^Gemischt/ })).toHaveAttribute('aria-pressed', 'true');
+  await expect(sheet.getByRole('button', { name: /^Gemischt/ })).toContainText('Über 1400 Begriffe');
+  await expect(sheet.getByRole('button', { name: /^Tiere/ })).toContainText('Über 100 Begriffe');
   expect(await page.evaluate(() => document.querySelector('.shell').inert)).toBe(true);
 
   await sheet.getByRole('button', { name: /^Tiere/ }).click();
@@ -47,6 +49,8 @@ test('category opens its own page, applies the choice and returns focus', async 
   await expect(page.locator('#category')).toHaveValue('tiere');
   await expect(page.locator('#category-value')).toHaveText('Tiere');
   await expect(page.locator('#category-open')).toBeFocused();
+  /* Nach einem Tipp kein Fokusrahmen; nach Tastaturbedienung (unten: Escape) schon. */
+  expect(await page.locator('#category-open').evaluate(node => node.matches(':focus-visible'))).toBe(false);
   expect(await page.evaluate(() => document.querySelector('.shell').inert)).toBe(false);
 
   /* Escape und „Zurück“ schließen ohne Änderung. */
@@ -54,6 +58,8 @@ test('category opens its own page, applies the choice and returns focus', async 
   await expect(sheet.getByRole('button', { name: /^Tiere/ })).toHaveAttribute('aria-pressed', 'true');
   await page.keyboard.press('Escape');
   await expect(sheet).toBeHidden();
+  await expect(page.locator('#category-open')).toBeFocused();
+  expect(await page.locator('#category-open').evaluate(node => node.matches(':focus-visible'))).toBe(true);
   await page.locator('#category-open').click();
   await page.locator('#category-back').click();
   await expect(sheet).toBeHidden();

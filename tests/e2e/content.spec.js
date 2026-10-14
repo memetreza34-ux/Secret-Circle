@@ -47,7 +47,7 @@ test('all built-in category packs satisfy content quality gates', async ({ page 
   expect(audit.issues).toEqual([]);
   expect(audit.categoryCount).toBe(14);
   expect(audit.labelCount).toBe(14);
-  expect(audit.totalTerms).toBe(168);
+  expect(audit.totalTerms).toBeGreaterThanOrEqual(1470);
   await expect(page.locator('#category option')).toHaveCount(15);
 });
 

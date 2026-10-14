@@ -17,7 +17,7 @@ Grundregel: Wenn eine konkrete Fremdreferenz keinen zwingenden Produktnutzen hat
 | `Oscar` | `Filmpreis` | konkreter Awardname unnötig |
 | `Formel 1` | `Motorsport` | konkrete Wettbewerbsbezeichnung unnötig |
 
-Die 14 Kategorien mit je 12 Einträgen bleiben erhalten. Regressionstests schützen die Ersetzungen.
+Die 14 Kategorien bleiben erhalten und haben seit Oktober 2026 je mindestens 105 Einträge (1470 insgesamt); die neuen Begriffe sind allgemeine Wörter ohne Marken, Franchise-Namen oder echte Personen. Regressionstests schützen die Ersetzungen.
 
 ## 3. `who-am-i`
 

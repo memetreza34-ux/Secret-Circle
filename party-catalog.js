@@ -22,7 +22,7 @@
       featured: true,
       description: 'Alle kennen denselben Begriff – außer den Impostern. Hinweise, Diskussion, geheime Wahl und Punkte.',
       instructions: ['Spieler und Kategorie wählen.', 'Geheime Karten nacheinander ansehen.', 'Hinweise geben und diskutieren.', 'Geheim abstimmen und den Begriff auflösen.'],
-      packs: ['14 Kategorien', '168 Begriffe', 'Eigene Packs']
+      packs: ['14 Kategorien', 'Über 1400 Begriffe', 'Eigene Packs']
     },
     {
       id: 'truth-dare',

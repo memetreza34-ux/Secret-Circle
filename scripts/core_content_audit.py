@@ -69,7 +69,7 @@ checks = {
     'reference_safe_ids_cover_anime_and_spectrum': "new Set(['anime-guess', 'wavelength'])" in test,
     'all_quantitative_targets_required': 'assert.deepEqual(editorialShortfalls, []' in test and 'quantitativeTargetsMet: true' in test,
     'truth_dare_12_plus_12': 'raw.truth.length >= 12' in test and 'raw.dare.length >= 12' in test,
-    'word_imposter_14x12': 'wordCategories.length, 14' in test and 'entries.length === 12' in test and 'wordImposterWords, 168' in test,
+    'word_imposter_14x105': 'wordCategories.length, 14' in test and 'category.entries.length >= 105' in test and 'wordImposterWords >= 1470' in test,
     'content_modules_offline': all(f"'./{asset}'" in sw for asset in ('party-expansion.js', 'party-mega-catalog.js', 'party-core-release-catalog.js', 'party-core-classic-content.js')),
     'content_modules_in_syntax_gate': all(marker in package.get('scripts', {}).get('check', '') for marker in ('node --check party-expansion.js', 'node --check party-mega-catalog.js', 'node --check party-core-release-catalog.js', 'node --check party-core-classic-content.js')),
     'content_tests_in_unit_gate': all(marker in package.get('scripts', {}).get('test', '') for marker in ('tests/core-content-quality.test.js', 'tests/party-mega-catalog.test.js')),
