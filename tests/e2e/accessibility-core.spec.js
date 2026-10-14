@@ -33,6 +33,7 @@ test('word imposter blocks invalid setup before start', async ({ page }) => {
   await expect(players).toHaveAttribute('aria-invalid', 'false');
   await expect(start).toBeEnabled();
 
+  await page.locator('#advanced-settings > summary').click();
   await imposters.fill('0');
   await expect(imposters).toHaveAttribute('aria-invalid', 'true');
   await expect(start).toBeDisabled();
@@ -43,7 +44,7 @@ test('word imposter blocks invalid setup before start', async ({ page }) => {
   await expect(start).toBeEnabled();
 });
 
-test('word imposter setup reports duplicates and a group-size recommendation', async ({ page }) => {
+test('word imposter setup reports duplicates and widens the imposter range for bigger groups', async ({ page }) => {
   await page.goto('/index.html');
   const players = page.locator('#players');
   const start = page.locator('#start');
@@ -53,7 +54,8 @@ test('word imposter setup reports duplicates and a group-size recommendation', a
   await expect(start).toBeDisabled();
 
   await players.fill('A\nB\nC\nD\nE\nF\nG\nH');
-  await expect(page.locator('#imposters-help')).toContainText('Empfehlung für 8 Personen: 2');
+  await expect(page.locator('#imposters')).toHaveAttribute('max', '6');
+  await expect(page.locator('#imposters-help')).toHaveText('');
   await expect(start).toBeEnabled();
 });
 
@@ -143,9 +145,39 @@ test('active hub game is modal and keeps focus out of the hidden hub', async ({ 
   await expect.poll(() => page.evaluate(() => document.querySelector('.hub-shell').inert)).toBe(true);
 
   /* exact, sonst trifft der Teilstring auch den Spieltitel "Wahrheit oder Pflicht". */
+  await page.evaluate(() => {
+    window.__hubFocusTrace = [];
+    document.addEventListener('focusin', event => {
+      window.__hubFocusTrace.push('focusin:' + (event.target.id || event.target.textContent?.trim().slice(0, 45)));
+    }, true);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Tab') {
+        window.__hubFocusTrace.push('Tab:' + event.shiftKey + ':' + (document.activeElement?.id || document.activeElement?.textContent?.trim().slice(0, 45)));
+      }
+    }, true);
+  });
+  /* Die App setzt den Startfokus ein Bild später auf die erste Antwort. Erst danach
+     weiterarbeiten, sonst zieht dieser Fokus unter Last den eben gesetzten wieder weg. */
+  await expect(page.getByRole('button', { name: 'Wahrheit', exact: true })).toBeFocused();
+  /* Die Spielsteuerung steht unter der Karte: nach der letzten Antwort folgt sie direkt. */
   await page.getByRole('button', { name: 'Pflicht', exact: true }).focus();
+  await expect(page.getByRole('button', { name: 'Pflicht', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
-  await expect(page.locator('#finish-hub-game')).toBeFocused();
+  await expect(page.locator('#skip-hub-round')).toBeFocused();
+  /* Am Ende springt der Fokus zurück an den Anfang des Dialogs und wieder zurück. */
+  await page.locator('#abort-hub-game').focus();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Wahrheit', exact: true })).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator('#abort-hub-game')).toBeFocused();
+  await page.keyboard.press('Tab');
+  const focusState = await page.evaluate(() => ({
+    active: document.activeElement?.id || document.activeElement?.textContent?.trim().slice(0, 45),
+    overlay: window.SecretCirclePartyHubA11y.activeOverlay()?.id,
+    focusable: window.SecretCirclePartyHubA11y.focusableWithin(document.querySelector('#play-layer')).map(node => node.id || node.textContent?.trim().slice(0, 45)),
+    trace: window.__hubFocusTrace
+  }));
+  expect(focusState.active, JSON.stringify(focusState)).toBe('Wahrheit');
 });
 
 test('advanced play isolates setup and traps focus inside the active game', async ({ page }) => {

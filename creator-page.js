@@ -403,7 +403,7 @@
       success.append(
         element('strong', '', 'Spiel gespeichert'),
         element('p', '', 'Teste es direkt mit deiner aktuellen Spielergruppe.'),
-        createLink(`party.html?game=${encodeURIComponent(game.id)}`, 'Im Party Hub testen')
+        createLink(`v2-hub.html#spiel=${encodeURIComponent(game.id)}`, 'Jetzt testen')
       );
       actions.prepend(success);
     } catch (error) {
@@ -438,7 +438,7 @@
       card.append(meta);
       const actions = element('div', 'created-game-actions');
       actions.append(
-        createLink(`party.html?game=${encodeURIComponent(game.id)}`, 'Testen'),
+        createLink(`v2-hub.html#spiel=${encodeURIComponent(game.id)}`, 'Testen'),
         creatorAction('Bearbeiten', () => loadGame(game.id)),
         creatorAction('Kopieren', () => duplicateGame(game.id), 'secondary'),
         creatorAction('Löschen', () => deleteGame(game.id), 'secondary')

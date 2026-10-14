@@ -38,7 +38,8 @@ checks = {
     'background_inert_contract': 'node.inert = Boolean(overlay)' in a11y and 'syncBackgroundInert' in a11y,
     'view_heading_focus_contract': "heading.setAttribute('tabindex', '-1')" in a11y and 'focusVisibleViewHeading' in a11y,
     'tab_focus_trap_contract': all(marker in a11y for marker in (
-        "event.key !== 'Tab'", 'trapOverlayFocus', 'first.focus()', 'last.focus()'
+        "event.key !== 'Tab'", 'trapOverlayFocus', 'focusable.indexOf(document.activeElement)',
+        'event.shiftKey', 'event.preventDefault()', 'focusable[nextIndex].focus()'
     )),
     'offline_a11y_layer': "'./party-hub-a11y.js'" in sw,
     'syntax_gate': 'node --check party-hub-a11y.js' in syntax_gate,

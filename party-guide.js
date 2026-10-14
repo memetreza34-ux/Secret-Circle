@@ -240,8 +240,7 @@
   function enhanceDetail() {
     const modal = $('#game-detail');
     if (!modal || modal.hidden) return;
-    const title = $('#detail-title')?.textContent;
-    const game = C.games.find(item => item.title === title);
+    const game = C.getGame(modal.dataset.gameId);
     if (!game) return;
     const card = modal.querySelector('.modal-card');
     let summary = card.querySelector('.detail-quick-guide');
@@ -274,10 +273,13 @@
     const fullRules = $('#detail-rules')?.closest('section');
     const covered = rules.length === game.instructions.length;
     if (fullRules && fullRules.hidden !== covered) fullRules.hidden = covered;
-    const start = $('#start-selected-game');
-    if (start && game.status === 'playable' && game.mode !== 'link' && start.textContent !== 'Jetzt spielen') {
-      start.textContent = 'Jetzt spielen';
-    }
+  }
+
+  /* Die Karte verschwindet auch dann, wenn der Speicher voll oder gesperrt ist;
+     sie erscheint dann beim nächsten Laden eben noch einmal. */
+  function closeOnboarding(panel) {
+    try { localStorage.setItem(ONBOARDING_KEY, 'done'); } catch {}
+    panel.remove();
   }
 
   function addOnboarding() {
@@ -294,10 +296,10 @@
     const actions = element('div', 'inline-actions');
     const start = element('button', '', 'Spiel empfehlen');
     start.type = 'button';
-    start.addEventListener('click', () => { localStorage.setItem(ONBOARDING_KEY, 'done'); panel.remove(); $('#quick-start')?.click(); });
+    start.addEventListener('click', () => { closeOnboarding(panel); $('#quick-start')?.click(); });
     const dismiss = element('button', 'secondary', 'Verstanden');
     dismiss.type = 'button';
-    dismiss.addEventListener('click', () => { localStorage.setItem(ONBOARDING_KEY, 'done'); panel.remove(); });
+    dismiss.addEventListener('click', () => closeOnboarding(panel));
     actions.append(start, dismiss);
     panel.append(text, actions);
     hero.insertAdjacentElement('beforebegin', panel);
@@ -331,7 +333,6 @@
       enhanceDetail();
     });
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
-    addEventListener('pagehide', () => observer.disconnect(), { once: true });
   }
 
   function initialize() {

@@ -90,8 +90,7 @@
 
     function normalizeSettings(value) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-      const durations = new Set(['1', '2', '3', '5', '10']);
-      const rounds = new Set(['1', '3', '5', '10']);
+      const wholeNumber = (raw, minimum, maximum) => /^\d{1,2}$/.test(String(raw)) && Number(raw) >= minimum && Number(raw) <= maximum;
       const imposterCount = String(value.imposterCount ?? '1');
       if (!/^([1-9]|1\d)$/.test(imposterCount)) return null;
       return {
@@ -99,8 +98,10 @@
         category: text(value.category || 'all', 100) || 'all',
         imposterCount,
         useHint: value.useHint !== false,
-        duration: durations.has(String(value.duration)) ? String(value.duration) : '3',
-        matchRounds: rounds.has(String(value.matchRounds)) ? String(value.matchRounds) : '5'
+        hintLevel: ['easy', 'medium', 'hard', 'off'].includes(value.hintLevel) ? value.hintLevel : (value.useHint === false ? 'off' : 'easy'),
+        hintStage: ['easy', 'medium', 'hard'].includes(value.hintStage) ? value.hintStage : 'easy',
+        duration: wholeNumber(value.duration, 1, 10) ? String(Number(value.duration)) : '3',
+        matchRounds: wholeNumber(value.matchRounds, 1, 20) ? String(Number(value.matchRounds)) : '5'
       };
     }
 
@@ -145,6 +146,7 @@
           completedAt: text(item.completedAt, 40),
           category,
           playerCount,
+          players: Array.isArray(item.players) ? item.players.map(name => text(name, 32)).filter(Boolean).slice(0, 20) : [],
           imposterCount,
           word,
           imposters,

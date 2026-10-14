@@ -290,7 +290,10 @@
     const store = createStore(storage);
     let activePlan = store.load();
 
-    const hubState = () => readJson(storage, HUB_KEY, { players: [], favorites: [], recent: [], history: [] });
+    /* Ohne gespeicherte Gruppe gilt dieselbe Beispielgruppe wie im Hub und in
+       allen Spiel-Engines; sonst meldete der Planer „0 Personen“, während der
+       Hub die vorbereitete Gruppe anzeigt. */
+    const hubState = () => readJson(storage, HUB_KEY, { players: ['Alex', 'Sam', 'Mika', 'Lina'], favorites: [], recent: [], history: [] });
     const preferences = () => readJson(storage, PREF_KEY, { ageLevel: 'all' });
     const playerCount = () => Array.isArray(hubState().players) ? hubState().players.length : 0;
 
@@ -513,7 +516,7 @@
     section.querySelector('#surprise-party-night').addEventListener('click', surprise);
     documentRef.addEventListener('click', event => {
       if (event.target.closest('[data-view-target="home"]')) rootRef.setTimeout(() => refresh(true), 0);
-      if (event.target.closest('#exit-game')) rootRef.setTimeout(() => refresh(true), 100);
+      if (event.target.closest('#finish-hub-game')) rootRef.setTimeout(() => refresh(true), 100);
     });
     rootRef.addEventListener('focus', () => refresh(true));
     rootRef.addEventListener('pageshow', () => refresh(true));

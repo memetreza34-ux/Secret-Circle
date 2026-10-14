@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#0A0B0F">
   <meta name="description" content="Secret Circle Party Hub – Kernspiele, sichere Übergaben, lokale Daten und eigene Spiele auf einem Gerät.">
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
@@ -16,21 +16,22 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="party.css">
-  <link rel="stylesheet" href="party-extra.css">
-  <link rel="stylesheet" href="party-night.css">
+  <link rel="stylesheet" href="v2-theme.css">
+  <link rel="stylesheet" href="v2-party-hub.css">
+  <link rel="stylesheet" href="v2-party-play.css">
 </head>
 <body>
   <a class="skip-link" href="#hub-main">Zum Inhalt springen</a>
   <div class="hub-shell">
     <header class="hub-header">
       <div class="brand-row">
+        <a id="hub-back-v2" class="hub-back-link" href="v2-hub.html#profil" hidden>← Profil</a>
         <a class="brand" href="party.html" aria-label="Secret Circle Party Hub Startseite">
           <span class="brand-mark" aria-hidden="true">SC</span>
           <span><strong>Secret Circle</strong><small>Party Hub</small></span>
         </a>
         <div class="header-actions">
-          <span id="hub-connection" class="connection">Online</span>
+          <span id="hub-connection" class="connection" hidden>Offline-Modus</span>
           <button id="hub-install-app" class="ghost-button" type="button" hidden>Installieren</button>
           <a class="ghost-button" href="index.html">Word Imposter direkt</a>
         </div>
@@ -174,8 +175,7 @@
     </main>
 
     <footer class="hub-footer">
-      <span>Secret Circle Party Hub · lokale Offline-PWA</span>
-      <div><a href="index.html">Word Imposter</a><a href="privacy.html">Datenschutz</a></div>
+      <div><a href="v2-hub.html">Alle Spiele</a><a href="index.html">Word Imposter</a><a href="privacy.html">Datenschutz</a></div>
     </footer>
   </div>
 
@@ -194,12 +194,6 @@
 
   <section id="play-layer" class="play-layer" hidden aria-labelledby="play-title" aria-modal="true" role="dialog">
     <div class="play-topbar">
-      <div class="hub-session-controls" role="group" aria-label="Spielsteuerung">
-        <button id="finish-hub-game" class="ghost-button" type="button" disabled>Beenden &amp; speichern</button>
-        <button id="skip-hub-round" class="ghost-button" type="button" disabled>Runde überspringen</button>
-        <button id="pause-hub-game" class="ghost-button" type="button" aria-pressed="false" disabled>Pause</button>
-        <button id="abort-hub-game" class="ghost-button hub-abort-button" type="button" disabled>Abbrechen &amp; verwerfen</button>
-      </div>
       <div><span id="play-progress"></span><strong id="play-score"></strong></div>
     </div>
     <div class="play-card">
@@ -210,6 +204,12 @@
       <div id="play-content" class="play-content" aria-live="polite"></div>
       <div id="play-options" class="play-options"></div>
       <div id="play-actions" class="play-actions"></div>
+    </div>
+    <div class="hub-session-controls" role="group" aria-label="Spielsteuerung">
+      <button id="skip-hub-round" class="ghost-button" type="button" disabled>Runde überspringen</button>
+      <button id="pause-hub-game" class="ghost-button" type="button" aria-pressed="false" disabled>Pause</button>
+      <button id="finish-hub-game" class="ghost-button" type="button" disabled>Beenden &amp; speichern</button>
+      <button id="abort-hub-game" class="ghost-button hub-abort-button" type="button" disabled>Abbrechen &amp; verwerfen</button>
     </div>
   </section>
 

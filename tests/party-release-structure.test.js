@@ -39,7 +39,8 @@ assert.equal(release.ageAllows({ age: 'all' }, 'family'), true);
 assert.equal(release.ageAllows({ age: 'teen' }, 'family'), false);
 
 // Central release metadata must describe the actual runtime catalog, not a stale documentation snapshot.
-assert.equal(releaseMeta.sourceGeneration, 'v64');
+assert.match(releaseMeta.sourceGeneration, /^v\d+$/);
+assert.equal(releaseMeta.offlineCache.production, `secret-circle-${releaseMeta.sourceGeneration}`);
 assert.equal(releaseMeta.packageVersion, packageMeta.version);
 assert.deepEqual(releaseMeta.builtIns, {
   total: catalog.games.length,
@@ -70,7 +71,7 @@ assert.deepEqual(operatorRelease.releaseContext, {
 assert.equal(operatorRelease.evidenceStatus, 'PREPARED');
 assert.equal(operatorRelease.operatorGate, 'BLOCKED');
 
-const runtime = read('runtime-guard.js'); const worker = read('sw.js'); const tierStyles = read('party-release.css'); const searchStyles = read('party-search.css');
+const runtime = read('runtime-guard.js'); const worker = read('sw.js'); const tierStyles = read('v2-party-hub.css'); const searchStyles = tierStyles;
 assert.match(runtime, /party-release-structure\.js/); assert.match(runtime, /party-filter-state\.js/); assert.match(runtime, /party-search-assist\.js/);
 assert.ok(runtime.indexOf('loadPartyReleaseStructure') < runtime.lastIndexOf('loadPartyFilterState'));
 assert.ok(runtime.indexOf('loadPartyFilterState') < runtime.lastIndexOf('loadPartySearchAssist'));

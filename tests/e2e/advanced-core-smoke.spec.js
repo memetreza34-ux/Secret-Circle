@@ -46,7 +46,7 @@ for (const gameId of GAMES) {
     expect(resumed.session.id).toBe(active.session.id);
 
     page.once('dialog', dialog => dialog.accept());
-    const navigation = page.waitForURL(/party\.html$/);
+    const navigation = page.waitForURL(/v2-hub\.html$/);
     await page.locator('#advanced-exit').click();
     await navigation;
 

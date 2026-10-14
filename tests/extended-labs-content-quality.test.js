@@ -1,7 +1,8 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const catalog = require('../party-routing.js');
+// Letzte Schicht der Katalogkette: enthält alle 55 Built-ins einschließlich Wave 1.
+const catalog = require('../party-wave-one-clue-catalog.js');
 const release = require('../party-release-structure.js');
 
 const allowedAges = new Set(['all', 'teen', 'adult']);
@@ -53,15 +54,15 @@ function flattenItems(value) {
 }
 
 const tierCounts = release.counts(catalog.games);
-assert.deepEqual(tierCounts, { core: 15, extended: 13, labs: 17 });
-assert.equal(catalog.games.length, 45);
-assert.equal(new Set(catalog.games.map(game => game.id)).size, 45);
+assert.deepEqual(tierCounts, { core: 15, extended: 13, labs: 27 });
+assert.equal(catalog.games.length, 55);
+assert.equal(new Set(catalog.games.map(game => game.id)).size, 55);
 
 const nonCoreGames = catalog.games.filter(game => release.tierFor(game) !== 'core');
 const extendedGames = nonCoreGames.filter(game => release.tierFor(game) === 'extended');
 const labGames = nonCoreGames.filter(game => release.tierFor(game) === 'labs');
 assert.equal(extendedGames.length, 13);
-assert.equal(labGames.length, 17);
+assert.equal(labGames.length, 27);
 assert.deepEqual(new Set(labGames.map(game => game.id)), new Set(release.labIds));
 
 const contentDriven = [];
@@ -122,7 +123,7 @@ for (const game of nonCoreGames) {
 }
 
 assert.deepEqual(new Set(contentless), new Set(['spin-bottle', 'dice-coin']));
-assert.equal(contentDriven.length, 28);
+assert.equal(contentDriven.length, 38);
 assert.ok(packsChecked >= 90, `Expected broad non-core pack coverage, got ${packsChecked}.`);
 assert.ok(itemsChecked >= 600, `Expected broad non-core item coverage, got ${itemsChecked}.`);
 

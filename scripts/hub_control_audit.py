@@ -15,7 +15,7 @@ def read(relative: str) -> str:
 hub = read('party-hub.js')
 timers = read('party-hub-timers.js')
 html = read('party.html')
-css = read('party.css')
+css = read('v2-party-play.css')
 package = json.loads(read('package.json'))
 static_test = read('tests/hub-control-contract.test.js')
 controls_e2e = read('tests/e2e/core-hub-controls.spec.js')
@@ -67,9 +67,9 @@ checks = {
         'banned: Array.isArray(value.banned)',
     )),
     'responsive_touch_controls': all(marker in css for marker in (
-        '.hub-session-controls', '.hub-abort-button', 'min-height:44px',
-        '.hub-session-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}',
-    )) and '.hub-session-controls{grid-template-columns:1fr}' not in css,
+        '.hub-session-controls', '.hub-abort-button', 'min-height: 44px',
+        '#play-layer .hub-session-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }',
+    )) and '#play-layer .hub-session-controls { grid-template-columns: 1fr' not in css,
     'static_contract': all(marker in static_test for marker in (
         'distinctFinishAndAbort', 'roundSkipWithoutPoint', 'focusManagement', 'timedTaboo',
     )),

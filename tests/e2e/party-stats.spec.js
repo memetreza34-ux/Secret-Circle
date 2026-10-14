@@ -23,7 +23,7 @@ test('history repairs cumulative play round and best-score statistics', async ({
   await page.reload();
   await page.getByRole('button', { name: 'Verlauf', exact: true }).click();
 
-  expect(await page.evaluate(() => window.SecretCirclePartyHubPlus?.version)).toBe(5);
+  expect(await page.evaluate(() => window.SecretCirclePartyHubPlus?.version)).toBe(6);
   await expect.poll(() => page.evaluate(() => {
     const stats = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).stats.charades;
     return `${stats.plays}:${stats.rounds}:${stats.best}`;
@@ -110,4 +110,20 @@ test('preference storage failure keeps the current filter usable and reports per
   await expect(page.locator('#hub-status')).toContainText('gilt nur bis zum Neuladen');
   await expect(page.locator('#settings-age-level')).toHaveValue('family');
   expect(await page.evaluate(() => localStorage.getItem('secret-circle-party-preferences-v1'))).toBeNull();
+});
+
+test('onboarding closes even when the preference cannot be stored', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = function setItem(key, value) {
+      if (key === 'secret-circle-party-onboarding-v1') throw new DOMException('simulierter Speicherfehler', 'QuotaExceededError');
+      return original.call(this, key, value);
+    };
+  });
+  await page.evaluate(() => localStorage.removeItem('secret-circle-party-onboarding-v1'));
+  await page.reload();
+  await expect(page.locator('#onboarding-card')).toBeVisible();
+  await page.getByRole('button', { name: 'Verstanden' }).click();
+  await expect(page.locator('#onboarding-card')).toHaveCount(0);
+  await expect(page.locator('#hub-status')).not.toHaveClass(/error/);
 });

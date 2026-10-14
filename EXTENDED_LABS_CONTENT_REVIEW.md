@@ -1,11 +1,11 @@
 # Secret Circle – Extended-/Labs-Content-Review
 
-Stand: 19. August 2026  
+Stand: 28. September 2026  
 Status: **AUTOMATED CONTRACT PREPARED / MANUAL SIGN-OFF OPEN**
 
 ## 1. Zweck
 
-Dieses Dokument ergänzt `CORE_CONTENT_REVIEW.md` für die **30 Nicht-Core-Spiele**: **13 Extended** und **17 Labs**.
+Dieses Dokument ergänzt `CORE_CONTENT_REVIEW.md` für die **40 Nicht-Core-Spiele**: **13 Extended** und **27 Labs** (davon 10 aus Expansion Wave 1).
 
 Es trennt drei Ebenen:
 
@@ -19,14 +19,13 @@ Ein vorhandener Test oder Audit bedeutet nicht automatisch, dass der Inhalt reda
 
 `tests/extended-labs-content-quality.test.js` prüft für alle Nicht-Core-Spiele:
 
-- Release-Tiers bleiben 15 Core / 13 Extended / 17 Labs
-- alle 45 IDs bleiben eindeutig
+- Release-Tiers bleiben 15 Core / 13 Extended / 27 Labs
+- alle 55 IDs bleiben eindeutig
 - Titel, Beschreibung und Regeln sind vorhanden
 - Alter, Spielergrenzen und Dauer sind plausibel strukturiert
 - Release-Games stehen technisch auf `playable`
 - Link-Modi führen nur auf lokale App-Seiten
-- beworbene Packs existieren im finalen Katalog
-- zusätzliche Content-Packs dürfen bewusst vorhanden sein
+- beworbene Packs und tatsächliche Content-Packs stimmen exakt überein (Namen und Reihenfolge)
 - Karten-/Set-Mindestmengen sind schema-aware
 - exakte normalisierte Duplikate innerhalb eines Packs werden abgelehnt
 - HTML-/Script-/Inline-Handler-Muster werden abgelehnt
@@ -38,7 +37,7 @@ Schema-Ausnahme: `letter-categories` benötigt mindestens **3 Sets je Pack**, we
 
 `scripts/extended_labs_content_audit.py` führt den Node-Vertrag eigenständig aus und validiert dessen JSON-Ergebnis.
 
-**Wichtig:** Wegen des aktuellen GitHub-Actions-Runnerproblems ist dieser Vertrag noch nicht als tatsächlich grün ausgeführt dokumentiert.
+Beide laufen seit dem 28. September 2026 in `npm test` bzw. `npm run validate` mit. Vorher prüfte der Test nur 45 Spiele und war in keinem Gate eingebunden; beim Einbinden fielen vier Spiele auf, deren beworbene Kategorien nicht zum Inhalt passten (`wavelength`, `draw-guess`, `sound-imitation`, `forehead-guess`). Die Metadaten sind korrigiert.
 
 ## 3. Extended – 13 Spiele
 
@@ -58,7 +57,7 @@ Schema-Ausnahme: `letter-categories` benötigt mindestens **3 Sets je Pack**, we
 | `scavenger-hunt` | Gegenstandssuche | Textsicherheit | sichere Umgebung, keine privaten/gefährlichen Gegenstände | PREPARED |
 | `caption-battle` | kreative Situationen | Packtiefe, Duplikate | keine beleidigenden/privaten Bildkontexte | PREPARED |
 
-## 4. Labs – 17 Spiele
+## 4. Labs – 27 Spiele
 
 | Spiel-ID | Inhaltstyp | Automatischer Fokus | Manueller Fokus | Status |
 |---|---|---|---|---|
@@ -79,10 +78,20 @@ Schema-Ausnahme: `letter-categories` benötigt mindestens **3 Sets je Pack**, we
 | `hot-seat` | Schnellfragen | Privacy-Prompt-Gate | Tempo darf Skip nicht erschweren | PREPARED |
 | `story-chain` | Geschichtenanfänge | Textsicherheit | Tonalität, Altersfit, Vielfalt | PREPARED |
 | `finish-the-sentence` | offene Satzanfänge | Privacy-Prompt-Gate | keine erzwungene intime Offenlegung | PREPARED |
+| `party-quiz` | Quizfragen mit Antwortoptionen | Struktur, Duplikate, Textsicherheit | Faktenstabilität, eindeutige richtige Antwort | PREPARED |
+| `fact-or-fake` | Aussagen mit Auflösung | Struktur, Textsicherheit | Erklärung korrekt und nicht veraltend | PREPARED |
+| `percent-guess` | Schätzfragen mit Zielwert | strukturierte Werte | Zielwert belastbar, Frage eindeutig | PREPARED |
+| `party-bracket` | Turnier mit acht Begriffen | Struktur, Duplikate | faire, harmlose Duelle | PREPARED |
+| `bluff-trivia` | Trivia mit richtiger Antwort | Struktur, Textsicherheit | Antwort eindeutig, gut bluffbar | PREPARED |
+| `fill-blank-battle` | Lückensätze | Textsicherheit, Duplikate | lädt nicht zu verletzenden Antworten ein | PREPARED |
+| `who-wrote-it` | offene Fragen | Privacy-Prompt-Gate | keine erzwungene persönliche Offenlegung | PREPARED |
+| `undercover-similar-word` | ähnliche Wortpaare | Struktur, Duplikate | Paare ähnlich, aber unterscheidbar | PREPARED |
+| `no-word-imposter` | Einzelbegriffe | Packtiefe, Duplikate | ohne Wort ratbar, nicht zu eindeutig | PREPARED |
+| `password-one-word` | Zielwörter | Packtiefe, Duplikate | mit einem Hinweiswort lösbar | PREPARED |
 
 ## 5. Manuelle Quellprüfung
 
-Vor `EXTENDED / LABS CONTENT PASS` wird jedes der 30 Spiele direkt im finalen Working-Branch-Katalog gelesen.
+Vor `EXTENDED / LABS CONTENT PASS` wird jedes der 40 Spiele direkt im finalen Working-Branch-Katalog gelesen.
 
 Je Spiel prüfen:
 
@@ -126,8 +135,8 @@ Erfassen:
 
 Vor `EXTENDED / LABS CONTENT PASS`:
 
-- [x] 13 Extended und 17 Labs explizit inventarisiert
-- [x] 30 Nicht-Core-Spiele besitzen einen eigenen automatischen Qualitätsvertrag
+- [x] 13 Extended und 27 Labs explizit inventarisiert
+- [x] 40 Nicht-Core-Spiele besitzen einen eigenen automatischen Qualitätsvertrag
 - [x] contentlose Utility-Modi explizit getrennt
 - [x] schema-aware Mindestmengen definiert
 - [x] Privacy-Offenlegungs-Prompt-Gate definiert
@@ -135,10 +144,10 @@ Vor `EXTENDED / LABS CONTENT PASS`:
 - [x] Duplikat-Gate definiert
 - [x] internes Routing-Gate definiert
 - [x] eigenständig ausführbarer `extended_labs_content_audit.py` vorbereitet
-- [ ] Node-Vertrag tatsächlich erfolgreich ausgeführt
-- [ ] Python-Audit tatsächlich erfolgreich ausgeführt
+- [x] Node-Vertrag tatsächlich erfolgreich ausgeführt (lokal am 28. September 2026; Teil von `npm test`)
+- [x] Python-Audit tatsächlich erfolgreich ausgeführt (lokal am 28. September 2026; Teil von `npm run validate`)
 - [ ] alle 13 Extended manuell semantisch gelesen
-- [ ] alle 17 Labs manuell semantisch gelesen
+- [ ] alle 27 Labs manuell semantisch gelesen
 - [ ] Alters-/Safety-Sign-off abgeschlossen
 - [ ] Reference-/Media-/Asset-Gates tatsächlich grün
 - [ ] reale Gruppenabnahme abgeschlossen

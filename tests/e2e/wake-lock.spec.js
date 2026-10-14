@@ -38,7 +38,8 @@ test('discussion requests a screen wake lock and releases it before voting', asy
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
-  await page.locator('#match-rounds').selectOption('1');
+  await page.locator('#advanced-settings > summary').click();
+  await page.locator('#match-rounds').fill('1');
   await page.locator('#start').click();
   await revealAll(page);
 

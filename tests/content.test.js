@@ -29,7 +29,7 @@ for (const id of categoryIds) {
   assert.equal(category.entries, entries);
   assert.ok(typeof label === 'string' && label.trim().length >= 2 && label.length <= 40);
   assert.ok(Array.isArray(entries));
-  assert.equal(entries.length, 12, `${label} should contain exactly 12 terms.`);
+  assert.ok(entries.length >= 105, `${label} should contain at least 105 terms (has ${entries.length}).`);
 
   const localTerms = new Set();
   for (const entry of entries) {
@@ -53,7 +53,7 @@ for (const id of categoryIds) {
   }
 }
 
-assert.equal(totalTerms, 168);
+assert.ok(totalTerms >= 1470, `Word Imposter should contain at least 1470 terms (has ${totalTerms}).`);
 const crossCategoryDuplicates = [...globalOccurrences.entries()]
   .filter(([, ids]) => ids.length > 1)
   .map(([word, ids]) => ({ word, categories: ids }));
@@ -70,7 +70,7 @@ console.log(JSON.stringify({
   contentVersion: content.version,
   categories: categoryIds.length,
   totalTerms,
-  termsPerCategory: 12,
+  minimumTermsPerCategory: 105,
   uniqueWithinCategories: true,
   safeTextOnlyContent: true,
   exactWordHintDuplicates: 0,

@@ -143,7 +143,7 @@ Extended/Labs mit stärkerem Fanbezug benötigen ein separates Review.
 | Question Imposter | **16 Paare** |
 | Location Spy | **16 Orte** |
 | Mafia | mindestens **3 eindeutige Rollen**, zusätzlich Balanceprüfung |
-| Word Imposter | **12 Begriffe je 14 Built-in-Kategorien** |
+| Word Imposter | **mindestens 105 Begriffe je 14 Built-in-Kategorien (1470 insgesamt)** |
 
 Nach drei Content-Wellen haben **alle 15 Kernspiele ihre definierten quantitativen Releaseziele erreicht**. Der Vertrag verlangt `editorialShortfalls = []`.
 
@@ -181,7 +181,7 @@ Ein Zielwort, genau drei eindeutige verbotene Wörter; Zielwort nicht selbst ver
 
 ### Location Spy / Mafia / Word Imposter
 
-Orte/Rollen/Begriffe innerhalb ihres vorgesehenen Scopes eindeutig; Mafia zusätzlich reale Balanceprüfung; Word Imposter 14 Kategorien × 12 Einträge.
+Orte/Rollen/Begriffe innerhalb ihres vorgesehenen Scopes eindeutig; Mafia zusätzlich reale Balanceprüfung; Word Imposter 14 Kategorien × mindestens 105 Einträge.
 
 ## 12. Duplikat- und Textregeln
 

@@ -62,6 +62,12 @@
     return hub;
   }
 
+  /* Wer mitgespielt hat, steht im Profil unter „Zuletzt gespielt“. */
+  function playerNames(value) {
+    if (!Array.isArray(value)) return [];
+    return value.map(name => String(name ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, 40)).filter(Boolean).slice(0, 20);
+  }
+
   function recordCompletion(hubValue, completion) {
     const hub = normalizeHub(hubValue);
     const id = clean(completion?.id, 160);
@@ -78,7 +84,7 @@
     const existing = hub.history.find(entry => entry?.id === id);
     if (existing) return Object.freeze({ hub, entry: clone(existing), recorded: false });
 
-    const entry = { id, gameId, title, endedAt: new Date(endedAt).toISOString(), rounds, score };
+    const entry = { id, gameId, title, endedAt: new Date(endedAt).toISOString(), rounds, score, players: playerNames(completion?.players ?? hub.players) };
     hub.history = [entry, ...hub.history.filter(item => item?.id !== id)].slice(0, MAX_HISTORY);
     hub.recent = [gameId, ...hub.recent.filter(item => item !== gameId)].slice(0, MAX_RECENT);
 
@@ -97,6 +103,7 @@
     maximumHistory: MAX_HISTORY,
     maximumRecent: MAX_RECENT,
     normalizeSessionId,
+    playerNames,
     legacySessionId,
     createSessionId,
     completionId,

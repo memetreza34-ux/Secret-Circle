@@ -65,7 +65,29 @@ Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsb
 - PNG-Dimensionen
 - PWA-Manifest-Verknüpfung
 
-`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository weiterhin exakt die drei inventarisierten Medien vorhanden sind. Eine zusätzliche Bild-/SVG-/Audio-/Videodatei muss bewusst in den Vertrag aufgenommen werden.
+`scripts/media_inventory_audit.py` erzwingt die vollständige erlaubte Menge der App-Icons, lokalen Spielillustrationen und Dokumentationsscreenshots. Alle sind samt Herkunft und Prüfsumme im Provenienzmanifest erfasst. Dokumentationsscreenshots gehören nicht zum Offline-Core.
+
+## Aktuelle Spielbilder vom 14. Oktober 2026
+
+Auf Armans Anweisung zur Ansicht direkt eingebunden. Werkzeug: integriertes OpenAI `image_gen` in Codex; konkrete Modellkennung nicht ausgegeben. Originale projektseitige Stilreferenz: erste Mafia-Stadtplatzszene. WebP-Export lokal mit `cwebp`, 800 × 600 Pixel und höchstens 35 KB pro Bild.
+
+| Datei | SHA-256 |
+|---|---|
+| `assets/images/imposter.webp` | `15e7c9214042f5a21df56874e6a3d9057c9ea32b06ca08cdaf76aa146b082351` |
+| `assets/images/truth-dare.webp` | `67d7ff134733f73ae669258b22a37ae0102f42f118e20420991eca46c54fd0d6` |
+| `assets/images/mafia.webp` | `f261beca039c3e25641431959f0771c958ee9330d71cc6ad21019858b5cbff35` |
+
+Die vollständigen Originalprompts stehen im Provenienzmanifest. Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig. Die Sichtprüfung zeigt originale stilisierte Figuren ohne echte Personen, Marken oder Schrift. Ein finaler Ähnlichkeits- und Markenreview des Release Candidate bleibt offen; die App-Vorschau ist keine abschließende Design- oder Releaseabnahme.
+
+## Spielbilder vom 4. Oktober 2026 (am 13. Oktober 2026 entfernt)
+
+| Datei | Werkzeug und Herkunft | SHA-256 |
+|---|---|---|
+| `assets/images/word-imposter-chamaeleon.webp` | OpenAI integriertes `image_gen`; Nutzer-Screenshot nur als allgemeine Stilreferenz; WebP mit `cwebp` | `6c5cbe0f92e4676fdeeefa41bb0aced520291152f001d48f4f31e13ef4a107e9` |
+| `assets/images/wahrheit-oder-pflicht.webp` | OpenAI integriertes `image_gen`; projektseitiges Chamäleonbild als Stilreferenz; WebP mit `cwebp` | `bad0722b64128ce81b0c3c75d292f2250b027616540882b3634433baa2f60e82` |
+| `assets/images/ich-habe-noch-nie.webp` | OpenAI integriertes `image_gen`; eigenständiger Elefantencharakter; WebP mit `cwebp` | `bfad5649a3574caf55e452e582568eae26183a7c210c991d7fcfe54463c17c44` |
+
+Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedingungen. Die Bilder enthalten nach dem direkten Motivvergleich keine fremden Logos oder erkennbaren geschützten Figuren. Ein finaler visueller Ähnlichkeits- und Markenreview des Release Candidate bleibt offen.
 
 ## Was damit geschlossen ist
 

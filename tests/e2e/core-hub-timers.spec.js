@@ -14,6 +14,9 @@ async function seedHub(page) {
       history: [],
       stats: {}
     }));
+    /* Jeder Durchlauf beginnt ohne gespeicherte Session; sonst fragt der Hub
+       vor dem Ersetzen nach. */
+    localStorage.removeItem('secret-circle-party-hub-active-v1');
   }, HUB_KEY);
   await page.reload();
 }

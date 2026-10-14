@@ -17,7 +17,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert. S
 
 | ID | Risiko | Bereich | Wahrscheinlichkeit | Auswirkung | Priorität | Gegenmaßnahme | Status / Nachweis |
 |---|---|---|---|---|---|---|---|
-| R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **OFFEN – wiederholt `steps: []`, `runner_id: 0`; Issue #7** |
+| R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **GESCHLOSSEN – Runner läuft seit 5. September 2026; letzter grüner Lauf `36292530012` (27. September 2026). Issue #7 auf GitHub noch offen** |
 | R-002 | Reproduzierbarer npm-Install ist auf echtem Runner nicht bestätigt | Build/Supply Chain | mittel | hoch | P1 | Lockfile v3 + `npm ci` + Runnernachweis | **CLOSED IN CODE / ONLINE VERIFICATION OPEN** |
 | R-003 | Branch Protection / Required Checks fehlen real | Git/Release | hoch | hoch | P1 | GitHub-Regel + funktionierenden Required Check aktivieren | **BLOCKED – main ungeschützt, Required Checks off** |
 | R-004 | Timer weichen auf echten OS-/Sperrbildschirmpfaden ab | Geräte/PWA | mittel | hoch | P1 | Android + iPhone real | offen |
@@ -59,7 +59,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert. S
 
 ## 3. Aktuelle Releaseblocker
 
-1. **R-001** – Actions/Hosted Runner
+1. **R-001** – erledigt (Runner läuft); offen sind Cross-Browser-Workflow und CI auf dem RC
 2. **R-002/R-032** – Online-`npm ci` + reale Audit-/CI-Ausführung
 3. **R-038** – PR #15 auf aktuellen Releasebranch synchronisieren
 4. **R-003** – Branch Protection + Required Checks

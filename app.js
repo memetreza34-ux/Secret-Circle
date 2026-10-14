@@ -9,9 +9,6 @@ if (!STORE?.keys || !STORE?.loadAll) throw Error('Secret-Circle-Datenspeicher ko
 const WORDS = CONTENT.words;
 const LABELS = CONTENT.labels;
 const KEYS = STORE.keys;
-const MAX_CUSTOM_CATEGORIES = Number.isInteger(STORE.maximumCustomCategories) ? STORE.maximumCustomCategories : 50;
-const MAX_CUSTOM_ENTRIES = Number.isInteger(STORE.maximumCustomEntries) ? STORE.maximumCustomEntries : 200;
-const MAX_BACKUP_BYTES = Number.isInteger(STORE.maximumBackupBytes) ? STORE.maximumBackupBytes : 1_500_000;
 const persisted = STORE.loadAll(E);
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -21,7 +18,6 @@ let timer = null;
 let lastPersistedTimerSecond = null;
 let cardVisible = false;
 let installPrompt = null;
-let custom = persisted.custom;
 let history = persisted.history;
 let voteIndex = 0;
 
@@ -46,7 +42,11 @@ function screen(id) {
     /* Den Bereich nur fokussieren, wenn inzwischen nichts darin den Fokus
        übernommen hat: Die Abstimmung setzt den Fokus direkt auf den ersten
        Knopf, und der Rahmen darf ihn nicht wieder wegnehmen. */
-    if (target && !target.contains(document.activeElement)) target.focus?.();
+    if (target && !target.contains(document.activeElement)) {
+      /* Die Einrichtung ist länger als der Bildschirm; ohne preventScroll
+         springt die Seite beim Start unter Titel und Spielbild. */
+      target.focus?.({ preventScroll: id === 'setup-screen' });
+    }
   });
 }
 
@@ -70,20 +70,24 @@ function remove(key) {
   STORE.removeByKey(key);
 }
 
+/* Jeder Begriff trägt seine Kategorie mit; auf „Mittel“ sieht der Imposter nur sie. */
+function entriesWithGroup(id) {
+  return WORDS[id].map(entry => Array.isArray(entry) ? [entry[0], entry[1], LABELS[id]] : { ...entry, group: LABELS[id] });
+}
+
 function categoryEntries(id) {
-  if (id === 'all') return Object.values(WORDS).flat().concat(custom.flatMap(item => item.entries));
-  if (id.startsWith('custom:')) {
-    const item = custom.find(entry => entry.id === id.slice(7));
-    if (!item) throw Error('Eigene Kategorie wurde nicht gefunden.');
-    return item.entries;
-  }
+  if (id === 'all') return Object.keys(WORDS).flatMap(entriesWithGroup);
   if (!WORDS[id]) throw Error('Kategorie wurde nicht gefunden.');
-  return WORDS[id];
+  return entriesWithGroup(id);
+}
+
+function hintLevel() {
+  if ($('#hint') && !$('#hint').checked) return 'off';
+  return $('input[name="hint-level"]:checked')?.value || 'easy';
 }
 
 function categoryName(id) {
   if (id === 'all') return 'Gemischt';
-  if (id.startsWith('custom:')) return custom.find(item => item.id === id.slice(7))?.name || 'Eigene Kategorie';
   return LABELS[id] || id;
 }
 
@@ -91,20 +95,61 @@ function renderCategories() {
   const select = $('#category');
   const current = select.value;
   select.innerHTML = '<option value="all">Gemischt</option>'
-    + Object.keys(WORDS).map(id => `<option value="${esc(id)}">${esc(LABELS[id])}</option>`).join('')
-    + (custom.length
-      ? `<optgroup label="Eigene Kategorien">${custom.map(item => `<option value="custom:${esc(item.id)}">${esc(item.name)}</option>`).join('')}</optgroup>`
-      : '');
+    + Object.keys(WORDS).map(id => `<option value="${esc(id)}">${esc(LABELS[id])}</option>`).join('');
   if ([...select.options].some(option => option.value === current)) select.value = current;
-  renderCustomList();
+  updateCategoryValue();
 }
 
-function renderCustomList() {
-  $('#custom-list').innerHTML = custom.map(item => `
-    <div class="custom-row">
-      <div><strong>${esc(item.name)}</strong><span>${item.entries.length} Begriffe</span></div>
-      <button type="button" class="secondary compact" data-delete-category="${esc(item.id)}">Löschen</button>
-    </div>`).join('') || '<p class="muted">Noch keine eigenen Kategorien.</p>';
+/* Kategorie als eigene Seite: #category bleibt das Datenfeld, die Seite schreibt hinein. */
+function categoryCount(id) {
+  if (id === 'all') return Object.values(WORDS).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
+  return Array.isArray(WORDS[id]) ? WORDS[id].length : 0;
+}
+/* Große Mengen abgerundet und ehrlich: 105 → „Über 100 Begriffe“, 1470 → „Über 1400 Begriffe“. */
+function categoryCountLabel(count) {
+  const rounded = Math.floor(count / 100) * 100;
+  return rounded >= 100 && count > rounded ? `Über ${rounded} Begriffe` : `${count} Begriffe`;
+}
+function updateCategoryValue() {
+  $('#category-value').textContent = $('#category').selectedOptions[0]?.textContent || 'Gemischt';
+}
+function openCategories() {
+  const select = $('#category');
+  $('#category-list').replaceChildren(...[...select.options].map(option => {
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'category-row';
+    row.setAttribute('aria-pressed', String(option.value === select.value));
+    const name = document.createElement('span');
+    name.className = 'category-name';
+    name.textContent = option.textContent;
+    row.append(name);
+    const count = categoryCount(option.value);
+    if (count) {
+      const label = document.createElement('span');
+      label.className = 'category-count';
+      label.textContent = categoryCountLabel(count);
+      row.append(label);
+    }
+    row.addEventListener('click', () => {
+      select.value = option.value;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      closeCategories();
+    });
+    return row;
+  }));
+  $('.shell').inert = true;
+  $('#category-screen').hidden = false;
+  $('#category-title').focus();
+}
+function closeCategories() {
+  if ($('#category-screen').hidden) return;
+  /* Erst den Fokus zurückgeben, dann die Seite verstecken: So zeigt der Browser den
+     Fokusrahmen nur nach Tastaturbedienung, nicht nach einem Tipp. */
+  $('.shell').inert = false;
+  updateCategoryValue();
+  $('#category-open').focus();
+  $('#category-screen').hidden = true;
 }
 
 function setupValues() {
@@ -112,7 +157,8 @@ function setupValues() {
     players: $('#players').value,
     category: $('#category').value,
     imposterCount: Number($('#imposters').value),
-    useHint: $('#hint').checked,
+    hintLevel: hintLevel(),
+    useHint: hintLevel() !== 'off',
     roundSeconds: Number($('#duration').value) * 60,
     matchRounds: Number($('#match-rounds').value)
   };
@@ -123,7 +169,9 @@ function saveSettings() {
     players: $('#players').value,
     category: $('#category').value,
     imposterCount: $('#imposters').value,
-    useHint: $('#hint').checked,
+    hintLevel: hintLevel(),
+    hintStage: $('input[name="hint-level"]:checked')?.value || 'easy',
+    useHint: hintLevel() !== 'off',
     duration: $('#duration').value,
     matchRounds: $('#match-rounds').value
   });
@@ -134,11 +182,80 @@ function restoreSettings() {
   if (!settings) return;
   $('#players').value = settings.players || $('#players').value;
   $('#imposters').value = settings.imposterCount || '1';
-  $('#hint').checked = settings.useHint !== false;
-  $('#duration').value = settings.duration || '3';
-  $('#match-rounds').value = settings.matchRounds || '5';
+  const level = ['easy', 'medium', 'hard', 'off'].includes(settings.hintLevel) ? settings.hintLevel : (settings.useHint === false ? 'off' : 'easy');
+  $('#hint').checked = level !== 'off';
+  const stage = level === 'off' ? settings.hintStage : level;
+  const levelInput = $(`input[name="hint-level"][value="${['easy', 'medium', 'hard'].includes(stage) ? stage : 'easy'}"]`);
+  if (levelInput) levelInput.checked = true;
+  $('#hint').dispatchEvent(new Event('change', { bubbles: true }));
+  $('#duration').value = settings.duration || '2';
+  $('#match-rounds').value = settings.matchRounds || '3';
   renderCategories();
   if ([...$('#category').options].some(option => option.value === settings.category)) $('#category').value = settings.category;
+  updateCategoryValue();
+  updateAdvancedSummary();
+}
+
+/* Word Imposter nutzt dieselbe Gruppe wie alle anderen Spiele. Laufende Spiele behalten ihre eigenen Namen. */
+function groupPlayers() {
+  try {
+    const hub = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    if (!hub || hub.version !== 1 || !Array.isArray(hub.players)) return [];
+    const names = hub.players.map(value => typeof value === 'string' ? value.normalize('NFKC').trim().replace(/\s+/g, ' ') : '');
+    if (names.length < E.MIN_PLAYERS || names.length > E.MAX_PLAYERS) return [];
+    if (names.some(name => !name || name.length > 30)) return [];
+    if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return [];
+    return names;
+  } catch { return []; }
+}
+function updateGroupImport() {
+  const button = $('#import-group-players');
+  const names = groupPlayers();
+  const current = $('#players').value.split(/\n|,/).map(name => name.trim().replace(/\s+/g, ' ')).filter(Boolean);
+  button.hidden = !names.length || (current.length === names.length && current.every((name, index) => name === names[index]));
+}
+function setupPlayers() {
+  return $('#players').value.split(/\n|,/).map(name => name.normalize('NFKC').trim().replace(/\s+/g, ' ')).filter(Boolean);
+}
+function sameNames(a, b) {
+  return a.length === b.length && a.every((name, index) => name === b[index]);
+}
+/* Beim Öffnen gilt die Gruppe; ungültige Gruppen (zu klein, doppelt, zu lang) bleiben außen vor. */
+function useGroupPlayers() {
+  const names = groupPlayers();
+  if (!names.length || sameNames(names, setupPlayers())) return;
+  $('#players').value = names.join('\n');
+  $('#players').dispatchEvent(new Event('input', { bubbles: true }));
+}
+/* Gültige Änderungen hier landen in der gemeinsamen Gruppe; alle anderen Hub-Daten bleiben unverändert. */
+function shareSetupPlayers() {
+  const names = setupPlayers();
+  if (names.length < E.MIN_PLAYERS || names.length > E.MAX_PLAYERS) return;
+  if (names.some(name => name.length > 30)) return;
+  if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return;
+  if (sameNames(names, groupPlayers())) return;
+  try {
+    const stored = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    const hub = stored && typeof stored === 'object' && !Array.isArray(stored) && stored.version === 1
+      ? stored
+      : { version: 1, players: [], favorites: [], recent: [], presets: [], history: [], stats: {} };
+    hub.players = names;
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify(hub));
+  } catch {}
+}
+function importGroupPlayers() {
+  const names = groupPlayers();
+  if (!names.length) return;
+  $('#players').value = names.join('\n');
+  $('#players').dispatchEvent(new Event('input', { bubbles: true }));
+  $('#group-import-note').textContent = names.length + ' Spieler aus deiner Gruppe übernommen.';
+  updateGroupImport();
+}
+
+function updateAdvancedSummary() {
+  const node = $('#settings-summary');
+  if (!node) return;
+  node.textContent = `${$('#imposters').value || '1'} Imposter · ${$('#duration').value || '2'} Min · ${$('#match-rounds').value || '3'} Runden`;
 }
 
 function saveGame() {
@@ -163,11 +280,22 @@ function createRoundOptions(values) {
   };
 }
 
+/* Neue Partien meiden die zuletzt gespielten Begriffe aus dem Verlauf, bis die Kategorie durch ist. */
+function recentWords() {
+  const seen = new Set();
+  return history.map(item => String(item?.word ?? '').trim()).filter(word => {
+    const key = word.toLocaleLowerCase('de-DE');
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function startGame() {
   setStatus();
   try {
     const values = setupValues();
-    game = E.createGame(createRoundOptions(values));
+    game = E.createGame({ ...createRoundOptions(values), usedWords: recentWords() });
     cardVisible = false;
     voteIndex = 0;
     lastPersistedTimerSecond = null;
@@ -187,7 +315,7 @@ function showGame() {
   clearTimerLoop();
   if (game.phase === 'reveal') renderReveal();
   else if (game.phase === 'discussion') renderDiscussion();
-  else if (game.phase === 'voting' || game.phase === 'tie_break') renderVoting();
+  else if (game.phase === 'voting' || game.phase === 'tie_break') renderVoting({ requireHandoff: true });
   else if (game.phase === 'guess') renderGuess();
   else renderResult();
 }
@@ -340,11 +468,13 @@ function beginVoting() {
   renderVoting();
 }
 
-function renderVoting() {
+function renderVoting({ requireHandoff = false } = {}) {
   if (game.phase === 'tie_break') {
     game = E.startVoting(game);
     syncVoteIndex();
     saveGame();
+    // Vor einer Stichwahl erhält auch die erste Person eine verdeckte Übergabe.
+    requireHandoff = true;
   } else syncVoteIndex();
 
   if (voteIndex >= game.players.length) {
@@ -357,10 +487,19 @@ function renderVoting() {
     return;
   }
 
-  screen('vote-screen');
   const voter = game.players[voteIndex];
   const tie = game.voteLeaders.length > 0;
   const castCount = Object.keys(game.votes || {}).length;
+  if (requireHandoff && (castCount > 0 || tie)) {
+    $('#vote-next-player').textContent = voter;
+    $('#vote-handoff-progress').textContent = tie && castCount === 0
+      ? 'Stichwahl · Neue Abstimmung'
+      : `${tie ? 'Stichwahl · ' : ''}Stimme ${castCount} von ${game.players.length} gespeichert`;
+    screen('vote-handoff-screen');
+    $('#continue-vote').focus();
+    return;
+  }
+  screen('vote-screen');
   $('#vote-progress').textContent = `${tie ? 'Stichwahl · ' : ''}Stimme ${castCount + 1} von ${game.players.length}`;
   $('#voter-name').textContent = `${voter}, wen verdächtigst du?`;
   const candidates = (tie ? game.voteLeaders : game.players).filter(name => name !== voter);
@@ -379,7 +518,7 @@ function castVote(target) {
     syncVoteIndex();
     if (voteIndex < game.players.length) {
       saveGame();
-      renderVoting();
+      renderVoting({ requireHandoff: true });
       return;
     }
     game = E.resolveVote(game);
@@ -397,17 +536,15 @@ function castVote(target) {
 function renderGuess() {
   screen('guess-screen');
   $('#eliminated-player').textContent = game.eliminatedPlayer;
-  $('#imposter-guess').value = '';
-  $('#imposter-guess').focus();
+  $('#guess-correct').focus();
 }
 
-function submitGuess() {
+function judgeGuess(correct) {
   try {
-    game = E.submitImposterGuess(game, $('#imposter-guess').value);
+    game = E.confirmImposterAnswer(game, correct);
     completeRound();
   } catch (error) {
     setStatus(error.message, true);
-    $('#imposter-guess').focus();
   }
 }
 
@@ -435,7 +572,6 @@ function renderResult() {
     .join('');
   $('#next-round').hidden = E.isMatchComplete(game);
   $('#next-round').textContent = `Runde ${game.currentRound + 1} starten`;
-  renderHistory();
 }
 
 function startNextRound() {
@@ -449,16 +585,6 @@ function startNextRound() {
   } catch (error) {
     setStatus(error.message, true);
   }
-}
-
-function renderHistory() {
-  const node = $('#history-list');
-  if (!node) return;
-  node.innerHTML = history.map(item => `
-    <article class="history-item">
-      <div><strong>${esc(item.word)}</strong><span>${esc(item.category)} · Runde ${item.round || 1}</span></div>
-      <span>${item.winner === 'innocents' ? 'Gruppe' : 'Imposter'}</span>
-    </article>`).join('') || '<p class="muted">Noch keine abgeschlossenen Runden.</p>';
 }
 
 function resumeGame() {
@@ -480,118 +606,15 @@ function newGame() {
   game = null;
   remove(KEYS.active);
   screen('setup-screen');
+  updateGroupImport();
   updateResume();
-  renderHistory();
 }
 
-function addCustomCategory(event) {
-  event.preventDefault();
-  try {
-    if (custom.length >= MAX_CUSTOM_CATEGORIES) throw Error(`Es sind höchstens ${MAX_CUSTOM_CATEGORIES} eigene Kategorien möglich.`);
-    const name = $('#custom-name').value.trim();
-    const rawRows = $('#custom-words').value.split(/\n/).map(line => line.trim()).filter(Boolean);
-    if (rawRows.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
-    const entries = E.parseCustomEntries(rawRows.join('\n'));
-    if (entries.length > MAX_CUSTOM_ENTRIES) throw Error(`Eine Kategorie darf höchstens ${MAX_CUSTOM_ENTRIES} Begriffe enthalten.`);
-    if (name.length < 2) throw Error('Bitte einen Kategorienamen eingeben.');
-    custom = [...custom, { id: makeId(), name: name.slice(0, 50), entries }];
-    if (!write(KEYS.custom, custom)) return;
-    event.currentTarget.reset();
-    renderCategories();
-    setStatus(`Kategorie „${name}“ gespeichert.`);
-  } catch (error) {
-    setStatus(error.message, true);
-  }
-}
-
-function deleteCategory(id) {
-  const item = custom.find(entry => entry.id === id);
-  if (!item || !confirm(`Kategorie „${item.name}“ löschen?`)) return;
-  custom = custom.filter(entry => entry.id !== id);
-  write(KEYS.custom, custom);
-  renderCategories();
-}
-
-function clearAllData() {
-  if (!confirm('Wirklich alle lokalen Secret-Circle-Daten löschen? Aktive Runde, Verlauf, Einstellungen und eigene Kategorien werden dauerhaft entfernt.')) return;
-  clearTimerLoop();
-  STORE.clearAll();
-  game = null;
-  custom = [];
-  history = [];
-  voteIndex = 0;
-  cardVisible = false;
-  lastPersistedTimerSecond = null;
-  $('#players').value = 'Alex\nSam\nMika\nLina';
-  $('#imposters').value = '1';
-  $('#duration').value = '3';
-  $('#match-rounds').value = '5';
-  $('#hint').checked = true;
-  renderCategories();
-  renderHistory();
-  updateResume();
-  screen('setup-screen');
-  setStatus('Alle lokalen Secret-Circle-Daten wurden gelöscht.');
-}
-
-function exportData() {
-  try {
-    const backup = STORE.exportBackup(E);
-    const blob = new Blob([backup], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `secret-circle-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    setStatus('Lokale Daten wurden als Sicherungsdatei exportiert.');
-  } catch (error) {
-    setStatus(error.message || 'Die Sicherung konnte nicht erstellt werden.', true);
-  }
-}
-
-function chooseImportFile() {
-  $('#import-data').click();
-}
-
-async function importData(event) {
-  const file = event.target.files?.[0];
-  event.target.value = '';
-  if (!file) return;
-  if (file.size > MAX_BACKUP_BYTES) {
-    setStatus('Die Sicherungsdatei ist größer als 1,5 MB.', true);
-    return;
-  }
-  if (!confirm('Die Sicherung ersetzt die aktuell gespeicherten lokalen Daten. Fortfahren?')) return;
-  try {
-    const result = STORE.importBackup(await file.text(), E);
-    if (!result.ok) throw Error(result.error);
-    clearTimerLoop();
-    game = null;
-    custom = result.data.custom;
-    history = result.data.history;
-    renderCategories();
-    renderHistory();
-    restoreSettings();
-    updateResume();
-    screen('setup-screen');
-    setStatus('Sicherung erfolgreich importiert.');
-  } catch (error) {
-    setStatus(error.message || 'Die Sicherung konnte nicht importiert werden.', true);
-  }
-}
-
-/* „offline bereit“ erst, wenn der Service Worker die Seite steuert und damit
-   der Offline-Core im Cache liegt. */
-function offlineReady() {
-  try { return Boolean(navigator.serviceWorker?.controller); } catch { return false; }
-}
-
+/* Der Hinweis erscheint nur ohne Netz; online ist er überflüssig. */
 function updateConnection() {
   const online = navigator.onLine;
-  $('#connection').textContent = online ? (offlineReady() ? 'Online · offline bereit' : 'Online') : 'Offline-Modus';
+  $('#connection').textContent = 'Offline-Modus';
+  $('#connection').hidden = online;
   $('#connection').classList.toggle('offline', !online);
 }
 
@@ -623,6 +646,12 @@ function registerPwa() {
 }
 
 $('#start').addEventListener('click', startGame);
+$('#category-open').addEventListener('click', openCategories);
+$('#category-back').addEventListener('click', closeCategories);
+$('#category').addEventListener('change', updateCategoryValue);
+document.addEventListener('keydown', event => { if (event.key === 'Escape') closeCategories(); });
+$('#import-group-players').addEventListener('click', importGroupPlayers);
+$('#players').addEventListener('input', () => { shareSetupPlayers(); updateGroupImport(); });
 $('#resume').addEventListener('click', resumeGame);
 $('#discard-resume').addEventListener('click', () => { remove(KEYS.active); updateResume(); });
 $('#show-card').addEventListener('click', revealCard);
@@ -633,34 +662,12 @@ $('#vote-options').addEventListener('click', event => {
   const target = event.target.dataset.voteTarget;
   if (target) castVote(target);
 });
-$('#submit-guess').addEventListener('click', submitGuess);
-$('#imposter-guess').addEventListener('keydown', event => { if (event.key === 'Enter') submitGuess(); });
+$('#continue-vote').addEventListener('click', () => renderVoting());
+$('#guess-correct').addEventListener('click', () => judgeGuess(true));
+$('#guess-wrong').addEventListener('click', () => judgeGuess(false));
 $('#next-round').addEventListener('click', startNextRound);
 $$('[data-new-game]').forEach(button => button.addEventListener('click', newGame));
-$('#custom-form').addEventListener('submit', addCustomCategory);
-$('#custom-list').addEventListener('click', event => {
-  const id = event.target.dataset.deleteCategory;
-  if (id) deleteCategory(id);
-});
-$('#toggle-custom').addEventListener('click', () => {
-  const panel = $('#custom-panel');
-  const open = panel.hidden;
-  panel.hidden = !open;
-  $('#toggle-custom').setAttribute('aria-expanded', String(open));
-  if (open) $('#custom-name').focus();
-});
 $('#install-app').addEventListener('click', installApp);
-$('#clear-history').addEventListener('click', () => {
-  if (confirm('Rundenverlauf löschen?')) {
-    history = [];
-    write(KEYS.history, history);
-    renderHistory();
-  }
-});
-$('#clear-all-data').addEventListener('click', clearAllData);
-$('#export-data').addEventListener('click', exportData);
-$('#import-data-trigger').addEventListener('click', chooseImportFile);
-$('#import-data').addEventListener('change', importData);
 
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && game?.phase === 'discussion' && game.timerRunning) syncTimerState({ persist: true, announce: true });
@@ -674,8 +681,11 @@ window.addEventListener('pagehide', () => {
 
 renderCategories();
 restoreSettings();
+useGroupPlayers();
+updateGroupImport();
+updateAdvancedSummary();
+['input', 'change'].forEach(type => ['#imposters', '#duration', '#match-rounds'].forEach(selector => $(selector).addEventListener(type, updateAdvancedSummary)));
 updateResume();
-renderHistory();
 registerPwa();
 screen('setup-screen');
 

@@ -31,7 +31,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const cache = await caches.open(production[0]);
     const expected = [
       './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
-      './styles.css', './pwa.css', './party.css', './party-extra.css', './party-night.css', './party-quick.css', './party-guide.css', './creator.css',
+      './v2-theme.css', './v2-party-hub.css', './v2-update.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
       './app.js', './game-engine.js', './role-assignment.js', './word-packs.js', './data-store.js',
       './party-catalog.js', './party-expansion.js', './party-trending-catalog.js', './party-mega-catalog.js',
@@ -40,7 +40,8 @@ test('service worker caches the complete v30 core including Creator guidance and
       './party-night.js', './party-data-tools.js', './party-advanced.js', './party-advanced-runner.js',
       './party-advanced-preferences.js', './party-quick-modes.js', './party-mega-modes.js',
       './party-viral-modes.js', './party-created-modes.js', './quick-loader.js',
-      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'
+      './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png',
+      './assets/images/imposter.webp', './assets/images/truth-dare.webp', './assets/images/mafia.webp'
     ];
     const missing = [];
     for (const path of expected) if (!await cache.match(path)) missing.push(path);
@@ -60,7 +61,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 });
 
 test('offline Party Hub can create a Party Night plan and run a prompt game', async ({ page, context }) => {
@@ -99,8 +100,8 @@ test('Creator can save launch and resume a custom game completely offline', asyn
   await page.locator('#creator-safe-confirm').check();
   await page.getByRole('button', { name: 'Spiel speichern' }).click();
   await page.locator('#created-games-list').getByRole('link', { name: 'Testen', exact: true }).click();
-  await expect(page.locator('#detail-title')).toHaveText('Offline Duell');
-  await page.getByRole('button', { name: 'Eigenes Spiel starten' }).click();
+  await expect(page.locator('#mode-title')).toHaveText('Offline Duell');
+  await page.locator('#start-btn').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=custom-game-/);
   await page.locator('#quick-rounds').selectOption('3');
   await page.locator('#quick-start').click();
@@ -183,23 +184,24 @@ test('offline mode preserves a locally saved active Imposter game', async ({ pag
   await expect(page.locator('#reveal-progress')).toContainText('Karte 2 von 3');
 });
 
-test('connection badge promises offline use only once the worker controls the page', async ({ page }) => {
+test('connection badge stays hidden while online and appears only offline', async ({ page, context }) => {
   await page.goto('/party.html');
   await waitForWorker(page);
-  await expect(page.locator('#hub-connection')).toHaveText('Online · offline bereit');
+  await expect(page.locator('#hub-connection')).toBeHidden();
   await page.goto('/');
-  await expect(page.locator('#connection')).toHaveText('Online · offline bereit');
-});
-
-test.describe('without a service worker', () => {
-  /* Privater Modus und In-App-Browser blockieren Service Worker. Dann darf die
-     App nicht behaupten, sie sei offline bereit. */
-  test.use({ serviceWorkers: 'block' });
-
-  test('connection badge stays at plain online', async ({ page }) => {
-    await page.goto('/party.html');
-    await expect(page.locator('#hub-connection')).toHaveText('Online');
-    await page.goto('/');
-    await expect(page.locator('#connection')).toHaveText('Online');
-  });
+  await expect(page.locator('#connection')).toBeHidden();
+  await page.goto('/quick-play.html?game=rapid-fire');
+  await expect(page.locator('#quick-connection')).toBeHidden();
+  await context.setOffline(true);
+  await page.goto('/');
+  await expect(page.locator('#connection')).toHaveText('Offline-Modus');
+  await expect(page.locator('#connection')).toBeVisible();
+  await page.goto('/party.html');
+  /* v2-party-hub.css blendet die Pille auf schmalen Bildschirmen ganz aus. */
+  await expect(page.locator('#hub-connection')).toHaveText('Offline-Modus');
+  await expect(page.locator('#hub-connection')).not.toHaveAttribute('hidden', '');
+  await page.goto('/quick-play.html?game=rapid-fire');
+  await expect(page.locator('#quick-connection')).toBeVisible();
+  await context.setOffline(false);
+  await expect(page.locator('#quick-connection')).toBeHidden();
 });

@@ -305,9 +305,9 @@ Die ausdrücklich bestätigte Funktion „Alle lokalen Daten löschen“ bleibt 
 
 **Auswirkung:** kritisch
 
-**Aktueller realer Blocker:** historisch letzter vollständig untersuchter App-Lauf ist Run #2787 auf v49 mit `steps: []`.
+**Stand:** Der frühere Runner-Ausfall (`steps: []`, v49 bis v64) ist seit dem 5. September 2026 behoben; letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026).
 
-**Gegenmaßnahme:** keine Freigabe ohne sichtbaren Checkout und echte Schritte. v50/v51 besitzen keinen Runner-PASS.
+**Gegenmaßnahme:** keine Freigabe ohne sichtbaren Checkout und echte Schritte auf dem eingefrorenen Release-Kandidaten.
 
 ### TM-14 – fremde Fan-/Markeninhalte erzeugen Rechts-/Trustproblem
 

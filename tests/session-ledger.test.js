@@ -35,6 +35,9 @@ assert.equal(first.hub.history.length, 1);
 assert.equal(first.hub.stats['custom-game-demo'].plays, 1);
 assert.equal(first.hub.stats['custom-game-demo'].rounds, 5);
 assert.equal(first.hub.stats['custom-game-demo'].best, 3);
+assert.deepEqual(first.hub.history[0].players, [], 'Ohne Spielerliste bleibt die Namensliste leer.');
+const withNames = Ledger.recordCompletion({ version: 1, players: ['Alex', ' Sam ', ''], history: [], recent: [], stats: {} }, { ...completion, id: 'completion-names' });
+assert.deepEqual(withNames.entry.players, ['Alex', 'Sam'], 'Der Verlauf merkt sich, wer mitgespielt hat.');
 
 const repeated = Ledger.recordCompletion(first.hub, completion);
 assert.equal(repeated.recorded, false, 'The same completion must not be recorded twice.');

@@ -9,7 +9,8 @@ test.beforeEach(async ({ page }) => {
 test('runtime version matches the visible production beta version', async ({ page }) => {
   const runtimeVersion = await page.evaluate(() => window.SecretCircleRuntime?.version);
   expect(runtimeVersion).toBe('1.0.0-beta.3');
-  await expect(page.locator('.app-footer')).toContainText('Version 1.0.0-beta.3');
+  await page.goto('/v2-hub.html#profil');
+  await expect(page.locator('#app-version')).toHaveText('Version 1.0.0-beta.3');
 });
 
 test('unexpected runtime errors produce a recoverable user message', async ({ page }) => {
@@ -42,11 +43,11 @@ test('all game engines Creator and guidance are available from cache v30', async
     const names = await caches.keys();
     const cache = await caches.open(names.find(name => /^secret-circle-v\d+$/.test(name)));
     const assets = [
-      'runtime-guard.js', 'party-night.js', 'party-night.css', 'quick-play.html',
+      'runtime-guard.js', 'party-night.js', 'v2-party-hub.css', 'quick-play.html',
       'party-trending-catalog.js', 'party-mega-catalog.js', 'party-viral-catalog.js',
       'party-quick-modes.js', 'party-mega-modes.js', 'party-viral-modes.js',
-      'party-created-modes.js', 'quick-loader.js', 'party-quick.css', 'creator.html',
-      'game-creator.js', 'creator-page.js', 'creator.css', 'party-guide.js', 'party-guide.css'
+      'party-created-modes.js', 'quick-loader.js', 'v2-play.css', 'v2-party-play.css', 'creator.html',
+      'game-creator.js', 'creator-page.js', 'v2-creator.css', 'party-guide.js', 'v2-update.css'
     ];
     const result = {};
     for (const asset of assets) result[asset] = Boolean(await cache.match(`./${asset}`));

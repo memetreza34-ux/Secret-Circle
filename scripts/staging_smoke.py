@@ -214,7 +214,7 @@ def assert_pwa_head_metadata(source: str, label: str) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Secret Circle HTTPS staging/production smoke test')
     parser.add_argument('base_url', help='Basis-URL, z. B. https://staging.example.com/')
-    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v64')
+    parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v65')
     parser.add_argument('--production', action='store_true', help='Strengere Production-Prüfungen aktivieren')
     return parser.parse_args()
 
@@ -244,7 +244,7 @@ def main() -> int:
     manifest = json.loads(texts['manifest.webmanifest'])
     if manifest.get('name') != 'Secret Circle – Party Hub':
         raise RuntimeError('manifest.webmanifest: unerwarteter App-Name')
-    if manifest.get('start_url') != './party.html' or manifest.get('display') != 'standalone':
+    if manifest.get('start_url') != './v2-hub.html' or manifest.get('display') != 'standalone':
         raise RuntimeError('manifest.webmanifest: start_url/display-Vertrag verletzt')
 
     icon_map = {entry.get('src'): entry for entry in manifest.get('icons', []) if isinstance(entry, dict)}

@@ -93,6 +93,26 @@ duplicateVote = E.castVote(duplicateVote, duplicateVote.players[0], duplicateVot
 assert.throws(() => E.castVote(duplicateVote, duplicateVote.players[0], duplicateVote.players[2]), /bereits abgestimmt/);
 assert.throws(() => E.castVote(E.startVoting(discussionGame('self-vote')), 'Alex', 'Alex'), /Ungültige Stimme/);
 
+// Ein laut ausgesprochener Begriff wird durch die Gruppe bewertet, ohne Schreibweisen zu vergleichen.
+let spoken = E.startVoting(discussionGame('spoken-judgement'));
+const suspect = spoken.imposters[0];
+for (const voter of spoken.players) {
+  const candidate = voter === suspect ? spoken.players.find(p => p !== suspect) : suspect;
+  spoken = E.castVote(spoken, voter, candidate);
+}
+spoken = E.resolveVote(spoken);
+assert.equal(spoken.phase, 'guess');
+const accepted = E.confirmImposterAnswer(spoken, true);
+assert.equal(accepted.phase, 'completed');
+assert.equal(accepted.winner, 'imposters');
+assert.equal(accepted.imposterGuess, null);
+assert.equal(E.restoreGame(JSON.stringify(accepted)).winner, 'imposters');
+const rejected = E.confirmImposterAnswer(spoken, false);
+assert.equal(rejected.phase, 'completed');
+assert.equal(rejected.winner, 'innocents');
+assert.throws(() => E.confirmImposterAnswer(spoken, 'ja'), /Richtig oder Falsch/);
+assert.throws(() => E.confirmImposterAnswer(accepted, true), /nicht raten/);
+
 const round1 = finishRound(E.createGame({ ...options, seed: 'rotation-1' }));
 const round2 = E.nextRound(round1, { ...options, seed: 'rotation-2' });
 assert.equal(round2.currentRound, 2);
@@ -110,6 +130,7 @@ const completed4 = finishRound(round4);
 assert.equal(E.isMatchComplete(completed4), true);
 assert.equal(E.leaderboard(completed4).length, 4);
 assert.equal(E.historyEntry(completed4).word, completed4.word);
+assert.deepEqual(E.historyEntry(completed4).players, completed4.players);
 assert.deepEqual(E.restoreGame(JSON.stringify(completed4)), completed4);
 
 assert.throws(() => E.restoreGame({ ...completed4, imposters: ['Niemand'] }), /Imposter/);
@@ -122,4 +143,32 @@ assert.throws(() => E.createGame({ ...options, imposterCount: 4 }), /Imposter-Za
 assert.throws(() => E.createGame({ ...options, roundSeconds: 20 }), /Rundenzeit/);
 assert.throws(() => E.createGame({ ...options, matchRounds: 0 }), /Match/);
 
-console.log(JSON.stringify({ ok: true, engineVersion: E.VERSION, deterministic: true, roles: true, persistence: true, deadlineTimer: true, backgroundResume: true, voting: true, finiteTieBreak: true, duplicateVoteProtection: true, scoring: true, matches: true, noRepeatedWords: true, validation: true, history: true }, null, 2));
+// Hilfswort: Einfach zeigt das Hilfswort, Mittel nur die Kategorie, Schwer nur die Länge des Begriffs; aus zeigt nichts.
+const groupedEntries = [['Router', 'Netzwerk', 'Technik'], ['Sensor', 'Messung', 'Technik'], ['Kabel', 'Verbindung', 'Technik']];
+const clueFor = level => {
+  const game = E.createGame({ ...options, entries: groupedEntries, category: 'Gemischt', hintLevel: level });
+  return { game, role: E.roleFor(game, game.imposters[0]) };
+};
+const easy = clueFor('easy');
+assert.equal(easy.role.value, easy.game.hint);
+assert.equal(easy.game.useHint, true);
+const medium = clueFor('medium');
+assert.equal(medium.role.value, 'Technik');
+assert.equal(medium.game.hintGroup, 'Technik');
+const hard = clueFor('hard');
+assert.equal(hard.role.value, `${[...hard.game.word].filter(c => /\p{L}/u.test(c)).length} Buchstaben`);
+assert.equal(hard.game.useHint, true);
+const off = clueFor('off');
+assert.equal(off.role.value, 'Kein Begriff');
+assert.equal(off.game.useHint, false);
+assert.equal(E.createGame({ ...options, useHint: false }).hintLevel, 'off');
+assert.equal(E.createGame({ ...options, hintLevel: 'unbekannt' }).hintLevel, 'easy');
+const legacyGame = { ...E.createGame({ ...options, useHint: false }) };
+delete legacyGame.hintLevel;
+delete legacyGame.hintGroup;
+assert.equal(E.roleFor(E.restoreGame(JSON.stringify(legacyGame)), legacyGame.imposters[0]).value, 'Kein Begriff');
+assert.throws(() => E.restoreGame({ ...medium.game, hintLevel: 'extrem' }), /Hilfswort-Stufe/);
+const mediumNext = E.nextRound(finishRound(medium.game), { entries: groupedEntries, seed: 'medium-2' });
+assert.equal(mediumNext.hintLevel, 'medium');
+
+console.log(JSON.stringify({ ok: true, engineVersion: E.VERSION, deterministic: true, roles: true, persistence: true, deadlineTimer: true, backgroundResume: true, voting: true, finiteTieBreak: true, duplicateVoteProtection: true, scoring: true, matches: true, noRepeatedWords: true, validation: true, history: true, hintLevels: true }, null, 2));

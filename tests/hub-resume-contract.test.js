@@ -15,6 +15,27 @@ const runtime = read('runtime-guard.js');
 const partyPage = read('party.html');
 const polish = read('party-hub-polish.js');
 
+// „Gemischt“ führt alle Kategorien eines Spiels in fester Reihenfolge zusammen.
+const mixedCatalog = {
+  getPackNames: id => Object.keys(mixedCatalog.content[id] || {}),
+  content: {
+    'never-have': { Alltag: ['a1', 'a2'], Digital: ['d1'] },
+    'truth-dare': { Locker: { truth: ['t1'], dare: ['x1'] }, Chaos: { truth: ['t2'], dare: ['x2', 'x3'] } },
+    solo: { Nur: ['n1'] }
+  }
+};
+assert.equal(RoundState.mixedPack, 'Gemischt');
+assert.deepEqual(RoundState.packChoices(mixedCatalog, 'never-have'), ['Gemischt', 'Alltag', 'Digital']);
+assert.deepEqual(RoundState.packChoices(mixedCatalog, 'solo'), ['Nur']);
+assert.deepEqual(RoundState.packContent(mixedCatalog, 'never-have', 'Gemischt'), ['a1', 'a2', 'd1']);
+assert.deepEqual(RoundState.packContent(mixedCatalog, 'never-have', 'Digital'), ['d1']);
+assert.deepEqual(RoundState.packContent(mixedCatalog, 'truth-dare', 'Gemischt'), { truth: ['t1', 't2'], dare: ['x1', 'x2', 'x3'] });
+const mixedResume = RoundState.normalizeResume({ id: 'never-have', mode: 'prompt' }, 'Gemischt', { used: [0, 2, 9], current: { kind: 'prompt', index: 2 } }, mixedCatalog);
+assert.deepEqual(mixedResume.used, [0, 2]);
+assert.deepEqual(mixedResume.current, { kind: 'prompt', index: 2 });
+assert.match(hub, /R\.packChoices\(C, game\.id\)/);
+assert.match(hub, /R\.packContent\(C, gameId, pack\)/);
+
 assert.match(hub, /ACTIVE_KEY = 'secret-circle-party-hub-active-v1'/);
 assert.match(hub, /ACTIVE_VERSION = 1/);
 assert.match(hub, /SecretCirclePartyHubRoundState/);
@@ -41,7 +62,7 @@ assert.match(hub, /timerGames\.renderStoredTimerSession\(\)/);
 assert.match(hub, /window\.addEventListener\('pagehide'/);
 assert.match(hub, /document\.addEventListener\('visibilitychange'/);
 assert.ok(partyPage.indexOf('party-hub-round-state.js') < partyPage.indexOf('party-hub.js'));
-assert.match(polish, /version: 17/);
+assert.match(polish, /version: 18/);
 assert.match(polish, /game\.id === 'paranoia'/);
 assert.match(polish, /!playOptions\?\.querySelector\('button'\)/);
 
@@ -152,5 +173,6 @@ console.log(JSON.stringify({
   staleUsedIndexesBounded: true,
   playerSnapshot: true,
   timerRestoration: ['charades', 'taboo', 'hot-potato', 'word-chain'],
-  pwaUpdateProtection: true
+  pwaUpdateProtection: true,
+  mixedCategory: true
 }, null, 2));

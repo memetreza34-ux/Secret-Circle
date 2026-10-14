@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const hub = fs.readFileSync(path.join(root, 'party-hub.js'), 'utf8');
 const timers = fs.readFileSync(path.join(root, 'party-hub-timers.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'party.html'), 'utf8');
-const css = fs.readFileSync(path.join(root, 'party.css'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'v2-party-play.css'), 'utf8');
 
 function functionBody(name) {
   return hub.match(new RegExp(`function ${name}\\([^)]*\\) \\{([\\s\\S]*?)\\n  \\}`, 'm'))?.[1] || '';
@@ -52,11 +52,11 @@ assert.match(timers, /banned: Array\.isArray\(value\.banned\)/);
 
 assert.match(css, /\.hub-session-controls/);
 assert.match(css, /\.hub-abort-button/);
-assert.match(css, /min-height:44px/);
+assert.match(css, /min-height:\s*44px/);
 /* Auf schmalen Geräten zwei Spalten statt vier Knöpfe untereinander: Sonst
    begann die Spielkarte erst nach rund 200 px Steuerung. */
-assert.match(css, /@media \(max-width:720px\)[^@]*\.hub-session-controls\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\);width:100%\}/);
-assert.doesNotMatch(css, /\.hub-session-controls\{grid-template-columns:1fr\}/);
+assert.match(css, /@media \(max-width: 720px\)[^@]*#play-layer \.hub-session-controls \{ display: grid; grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); width: 100%; \}/);
+assert.doesNotMatch(css, /#play-layer \.hub-session-controls\s*\{\s*grid-template-columns:\s*1fr/);
 
 console.log(JSON.stringify({
   hubControlContract: 'PASS',

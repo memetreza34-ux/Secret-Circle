@@ -98,6 +98,11 @@ jobs:
       - name: Install Playwright WebKit
         run: npx playwright install --with-deps webkit
 
+      # Schnelle Regression vor der kompletten WebKit-Suite: ein Fokusfehler
+      # darf nicht erst nach allen 600 Szenarien auffallen.
+      - name: Check dialog keyboard accessibility (WebKit desktop)
+        run: npx playwright test tests/e2e/accessibility-core.spec.js --project=webkit-desktop
+
       - name: Run browser end-to-end tests (Safari/iOS engine)
         run: npm run test:e2e -- --project=webkit-desktop --project=webkit-mobile
 
