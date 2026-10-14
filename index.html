@@ -24,7 +24,7 @@
   <main class="shell">
     <header>
       <div class="topbar"><a class="back-link" href="v2-hub.html">← Alle Spiele</a><span id="connection" class="connection" hidden>Offline-Modus</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
-      <div class="wi-brand"><img class="wi-art" src="assets/images/word-imposter-chamaeleon.webp" alt="" width="960" height="720"><h1>Word Imposter</h1><p class="wi-lede">Begriffe verteilen, Hinweise geben, abstimmen und Punkte sammeln.</p></div>
+      <div class="wi-brand"><h1>Word Imposter</h1><p class="wi-lede">Begriffe verteilen, Hinweise geben, abstimmen und Punkte sammeln.</p></div>
     </header>
     <p id="status" class="status" role="status" aria-live="polite"></p>
 
@@ -46,7 +46,9 @@ Lina</textarea>
       </div>
 
       <div class="settings-list">
-        <label class="setting" for="category"><span>Kategorie</span><select id="category"></select></label>
+        <button id="category-open" class="setting setting-link" type="button" aria-haspopup="dialog" aria-controls="category-screen"><span>Kategorie</span><span id="category-value" class="setting-value">Gemischt</span></button>
+        <!-- Datenfeld: Die Kategorie-Seite schreibt hier hinein; app.js liest und speichert von hier. -->
+        <select id="category" class="data-field" tabindex="-1" aria-hidden="true" aria-label="Kategorie"></select>
         <details class="advanced-settings" id="advanced-settings">
           <summary>Weitere Einstellungen <span id="settings-summary">1 Imposter · 2 Min · 3 Runden</span></summary>
           <div class="advanced-settings-body">
@@ -126,6 +128,13 @@ Lina</textarea>
     </section>
 
   </main>
+
+  <section id="category-screen" class="category-screen" role="dialog" aria-modal="true" aria-labelledby="category-title" hidden>
+    <button id="category-back" class="back-link" type="button">← Zurück</button>
+    <h2 id="category-title" tabindex="-1">Kategorie</h2>
+    <div id="category-list" class="category-list"></div>
+    <p class="field-note">„Gemischt“ nimmt Begriffe aus allen Kategorien.</p>
+  </section>
   <script src="runtime-guard.js"></script>
   <script src="setup-ux.js"></script>
   <script src="privacy-guard.js"></script>

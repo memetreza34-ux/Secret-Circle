@@ -23,12 +23,45 @@ test('invalid or duplicate hub names cannot override Word Imposter setup', async
 test('advanced settings are folded by default with a readable preset', async ({ page }) => {
   await page.locator('#advanced-settings > summary').click();
   await expect(page.locator('#advanced-settings')).not.toHaveAttribute('open', '');
-  await expect(page.locator('#category')).toBeVisible();
+  await expect(page.locator('#category-open')).toBeVisible();
   await expect(page.locator('#start')).toBeVisible();
   await expect(page.locator('#settings-summary')).toHaveText('1 Imposter · 2 Min · 3 Runden');
   await page.locator('#advanced-settings > summary').click();
   await page.getByRole('button', { name: 'Mehr Imposter' }).click();
   await expect(page.locator('#settings-summary')).toContainText('2 Imposter');
+});
+
+test('category opens its own page, applies the choice and returns focus', async ({ page }) => {
+  await page.locator('#advanced-settings > summary').click();
+  await expect(page.locator('#category-value')).toHaveText('Gemischt');
+  await page.locator('#category-open').click();
+  const sheet = page.locator('#category-screen');
+  await expect(sheet).toBeVisible();
+  await expect(page.locator('#category-title')).toBeFocused();
+  await expect(sheet.locator('.category-row')).toHaveCount(await page.locator('#category option').count());
+  await expect(sheet.getByRole('button', { name: /^Gemischt/ })).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.evaluate(() => document.querySelector('.shell').inert)).toBe(true);
+
+  await sheet.getByRole('button', { name: /^Tiere/ }).click();
+  await expect(sheet).toBeHidden();
+  await expect(page.locator('#category')).toHaveValue('tiere');
+  await expect(page.locator('#category-value')).toHaveText('Tiere');
+  await expect(page.locator('#category-open')).toBeFocused();
+  expect(await page.evaluate(() => document.querySelector('.shell').inert)).toBe(false);
+
+  /* Escape und „Zurück“ schließen ohne Änderung. */
+  await page.locator('#category-open').click();
+  await expect(sheet.getByRole('button', { name: /^Tiere/ })).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('Escape');
+  await expect(sheet).toBeHidden();
+  await page.locator('#category-open').click();
+  await page.locator('#category-back').click();
+  await expect(sheet).toBeHidden();
+  await expect(page.locator('#category')).toHaveValue('tiere');
+
+  await page.locator('#start').click();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-settings-v7')));
+  expect(saved.category).toBe('tiere');
 });
 
 test('setup explains live player count and valid imposter range', async ({ page }) => {

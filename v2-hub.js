@@ -20,11 +20,9 @@
     { id: 'wissen', label: 'Wissen & Schätzen', tint: '#38BDF8', ground: '#093548', groups: ['Wissen & Quiz', 'Schätzen & Tippen'] },
     { id: 'schnell', label: 'Schnell', tint: '#F472B6', ground: '#451234', groups: ['Schnell & Challenge', 'Werkzeuge'] }
   ];
-  var GAME_ART = {
-    imposter: { src: 'assets/images/word-imposter-chamaeleon.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Hinweisen' },
-    'truth-dare': { src: 'assets/images/wahrheit-oder-pflicht.webp', alt: 'Eule beantwortet eine Frage, Waschbär erfüllt eine Aufgabe im Handstand' },
-    'never-have': { src: 'assets/images/ich-habe-noch-nie.webp', alt: 'Elefant erinnert sich ertappt und hebt die Hand' }
-  };
+  /* Spielbilder: '<spiel-id>': { src: 'assets/images/<spiel-id>.webp', alt: '…' }.
+     Bildwelt, Prompts und Einbinden: docs/BILDWELT_V2.md. Ohne Eintrag zeigt das Spiel sein Emblem. */
+  var GAME_ART = {};
 
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */
 

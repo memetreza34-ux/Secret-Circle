@@ -65,9 +65,9 @@ Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsb
 - PNG-Dimensionen
 - PWA-Manifest-Verknüpfung
 
-`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository genau die drei Icondateien, die drei unten genannten Spielbilder und acht dokumentierende PR-Screenshots vorhanden sind (zwei der v2-Party-Spielansicht, sechs der Spielbilder). Die Screenshots liegen unter `docs/screenshots/` und gehören nicht zum Offline-Core. Jede weitere Medienänderung muss bewusst in den Vertrag aufgenommen werden.
+`scripts/media_inventory_audit.py` erzwingt zusätzlich, dass im Release-Repository genau die drei Icondateien und zwei dokumentierende PR-Screenshots der v2-Party-Spielansicht vorhanden sind. Die sechs Screenshots der früheren Spielbilder wurden mit ihnen entfernt. Die drei unten genannten Spielbilder wurden am 13. Oktober 2026 entfernt; neue entstehen nach `docs/BILDWELT_V2.md`. Die Screenshots liegen unter `docs/screenshots/` und gehören nicht zum Offline-Core. Jede weitere Medienänderung muss bewusst in den Vertrag aufgenommen werden.
 
-## Spielbilder vom 4. Oktober 2026
+## Spielbilder vom 4. Oktober 2026 (am 13. Oktober 2026 entfernt)
 
 | Datei | Werkzeug und Herkunft | SHA-256 |
 |---|---|---|

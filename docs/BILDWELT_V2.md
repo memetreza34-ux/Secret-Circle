@@ -45,8 +45,8 @@ Danach folgt der Motiv-Prompt aus der Tabelle unten.
 ## Technische Vorgaben
 
 - **Format:** WebP, **800 × 600** Pixel, Ziel **höchstens 35 KB** pro Bild (Qualität etwa 70–75). Erzeugen gern größer (z. B. 1600 × 1200) und dann verkleinern.
-- **Warum so klein:** Alle Bilder im Offline-Cache werden bei der Installation geladen. Das Gesamtbudget ist 3,2 MB (`scripts/performance_budget.py`), davon sind gut 1,3 MB belegt. 52 weitere Bilder passen nur mit etwa 35 KB pro Bild hinein. Reicht das Budget nicht, wird das vor dem Einbinden entschieden (Budget erhöhen oder Bilder außerhalb des Offline-Kerns laden) – nicht stillschweigend.
-- **Dateiname:** `assets/images/<spiel-id>.webp`, z. B. `assets/images/charades.webp`. Die drei vorhandenen Dateien behalten ihre Namen.
+- **Warum so klein:** Alle Bilder im Offline-Cache werden bei der Installation geladen. Das Gesamtbudget ist 3,2 MB (`scripts/performance_budget.py`), davon sind gut 1,1 MB belegt. Bilder für alle 55 Spiele passen nur mit etwa 35 KB pro Bild hinein. Reicht das Budget nicht, wird das vor dem Einbinden entschieden (Budget erhöhen oder Bilder außerhalb des Offline-Kerns laden) – nicht stillschweigend.
+- **Dateiname:** `assets/images/<spiel-id>.webp`, z. B. `assets/images/charades.webp`.
 - **Varianten:** pro Spiel 2–3 Varianten erzeugen, die beste auswählen; wir schauen sie gemeinsam an, bevor sie eingebunden werden.
 
 ## Einbinden (Medienvertrag)
@@ -59,19 +59,19 @@ Für jedes neue Bild gemeinsam aktualisieren:
 4. `scripts/performance_budget.py` → Budgeteintrag für die Datei.
 5. `sw.js` → Datei in die `CORE`-Liste, danach `python3 scripts/offline_core_lock.py --bump` und Eintrag in `CHANGELOG.md`.
 6. `THIRD_PARTY_NOTICES.md` und `ASSET_RIGHTS_SIGNOFF.md` ergänzen.
-7. Beim Ersetzen eines vorhandenen Bildes die alte Datei löschen und alle Einträge aus den Schritten 1–6 auf die neue Datei umstellen.
+7. In `tests/e2e/v2-hub.spec.js` prüfen, dass das Bild lokal lädt (`naturalWidth > 0`) und den Alt-Text trägt; der Emblem-Test gilt dann nur noch für Spiele ohne Bild.
 8. Alle vier Prüfungen laufen lassen (`npm run check`, `npm test`, `npm run validate`, `npm run test:e2e`).
 
 ## Reihenfolge
 
-1. **Die drei vorhandenen Bilder neu erzeugen**, damit sie zur gesamten Serie passen (Prompts unten). Die alten Dateien werden erst ersetzt, wenn die neuen abgenommen sind – bis dahin bleiben sie eingebunden.
+1. **Word Imposter, Wahrheit oder Pflicht und Ich habe noch nie** neu erzeugen (Prompts unten).
 2. **Die übrigen 12 Kernspiele** (Core 15): Wer würde eher?, Entweder oder, Paranoia, Scharade, Nicht sagen!, Heiße Kartoffel, Wortkette, Zwei Wahrheiten eine Lüge, Question Imposter, Location Spy, Mafia, Nur falsche Antworten.
 3. **Empfohlene Spiele der Startseite:** Spektrum-Tipp, Schnellfeuer, Stirn-Raten, Wer bin ich?, Anime-Archetypen, Blind Ranking, Finger runter, Höher oder tiefer.
 4. **Alle übrigen Spiele.**
 
-## Vorhandene Motive
+## Frühere Motive (am 13. Oktober 2026 entfernt)
 
-Die drei Bilder sind der Anfang der Bildwelt, aber nicht festgeschrieben: Sie dürfen ersetzt werden, damit alle Spiele aus einem Guss sind. Die Ideen dürfen bleiben, die Umsetzung richtet sich nach den Regeln oben.
+Die ersten drei Bilder wurden entfernt, damit alle Spiele aus einem Guss entstehen. Ihre Ideen dürfen bleiben, die Umsetzung richtet sich nach den Regeln oben. Die alten Dateien liegen nur noch in der Git-Historie.
 
 | Spiel | Sichtbare Idee | Figuren | Eigene Akzente |
 |---|---|---|---|
@@ -79,7 +79,7 @@ Die drei Bilder sind der Anfang der Bildwelt, aber nicht festgeschrieben: Sie d�
 | Wahrheit oder Pflicht | Eine Figur beantwortet eine Frage; die andere führt eine Aufgabe aus. | Eulen-Detektivin und Waschbär-Stuntfigur | Kühle Frage-Seite, warme Aufgaben-Seite, unterschiedliche Handlungen |
 | Ich habe noch nie | Nach einer Aussage erinnert sich die Figur an ein eigenes Erlebnis und meldet sich ertappt. | Elefant mit erhobener Hand | Dunkles Grün, warmes Orange, Erinnerung als Charaktereigenschaft |
 
-**Word Imposter** (`imposter`, ersetzt `word-imposter-chamaeleon.webp`):
+**Word Imposter** (`imposter`):
 
 ```text
 A chameleon in a purple jacket holds up a blank card with a sly, slightly nervous smile, its skin
@@ -87,7 +87,7 @@ subtly shifting color to blend in, while two paws at the edges of the frame hold
 the same simple golden key symbol.
 ```
 
-**Wahrheit oder Pflicht** (`truth-dare`, ersetzt `wahrheit-oder-pflicht.webp`): Der rote Partybecher auf dem Fuß des Waschbären steht für Trinkspiele und kommt weg. Der Overall mit Gurten soll nicht an eine bekannte Filmfigur erinnern – andere Kleidung wählen.
+**Wahrheit oder Pflicht** (`truth-dare`): Im früheren Bild stand ein roter Partybecher für Trinkspiele – der kommt nicht wieder vor. Der Overall mit Gurten soll nicht an eine bekannte Filmfigur erinnern – andere Kleidung wählen.
 
 ```text
 Split scene. Left, cool blue side: an owl detective in a teal coat holds a vintage microphone
@@ -96,7 +96,7 @@ Right, warm orange side: a raccoon acrobat in a simple striped sweater does a pl
 handstand while balancing a shiny red apple on one foot, a large glowing exclamation mark shape behind him.
 ```
 
-**Ich habe noch nie** (`never-have`, ersetzt `ich-habe-noch-nie.webp`): Gesicht in die Bildmitte; auf der kleinen Kachel ist bisher nur die Hand zu sehen. Die menschlich wirkende Hand mit Fingernägeln vermeiden.
+**Ich habe noch nie** (`never-have`): Gesicht in die Bildmitte; im früheren Bild war auf der kleinen Kachel nur die Hand zu sehen. Die menschlich wirkende Hand mit Fingernägeln vermeiden.
 
 ```text
 An elephant in a rust-orange jacket, caught remembering something embarrassing, sheepishly raises

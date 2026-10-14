@@ -200,6 +200,7 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
   transition: opacity .15s ease, background-color .15s ease;
 }
 .pill.wide { width: 100%; }
+.pill.wide + .pill.wide { margin-top: 10px; }
 .pill svg { width: 20px; height: 20px; }
 
 /* Genau eine pro Bildschirm: die Hauptaktion. */

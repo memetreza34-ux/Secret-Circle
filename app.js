@@ -97,6 +97,52 @@ function renderCategories() {
   select.innerHTML = '<option value="all">Gemischt</option>'
     + Object.keys(WORDS).map(id => `<option value="${esc(id)}">${esc(LABELS[id])}</option>`).join('');
   if ([...select.options].some(option => option.value === current)) select.value = current;
+  updateCategoryValue();
+}
+
+/* Kategorie als eigene Seite: #category bleibt das Datenfeld, die Seite schreibt hinein. */
+function categoryCount(id) {
+  if (id === 'all') return Object.values(WORDS).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
+  return Array.isArray(WORDS[id]) ? WORDS[id].length : 0;
+}
+function updateCategoryValue() {
+  $('#category-value').textContent = $('#category').selectedOptions[0]?.textContent || 'Gemischt';
+}
+function openCategories() {
+  const select = $('#category');
+  $('#category-list').replaceChildren(...[...select.options].map(option => {
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'category-row';
+    row.setAttribute('aria-pressed', String(option.value === select.value));
+    const name = document.createElement('span');
+    name.className = 'category-name';
+    name.textContent = option.textContent;
+    row.append(name);
+    const count = categoryCount(option.value);
+    if (count) {
+      const label = document.createElement('span');
+      label.className = 'category-count';
+      label.textContent = `${count} Begriffe`;
+      row.append(label);
+    }
+    row.addEventListener('click', () => {
+      select.value = option.value;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      closeCategories();
+    });
+    return row;
+  }));
+  $('.shell').inert = true;
+  $('#category-screen').hidden = false;
+  $('#category-title').focus();
+}
+function closeCategories() {
+  if ($('#category-screen').hidden) return;
+  $('#category-screen').hidden = true;
+  $('.shell').inert = false;
+  updateCategoryValue();
+  $('#category-open').focus();
 }
 
 function setupValues() {
@@ -139,6 +185,7 @@ function restoreSettings() {
   $('#match-rounds').value = settings.matchRounds || '3';
   renderCategories();
   if ([...$('#category').options].some(option => option.value === settings.category)) $('#category').value = settings.category;
+  updateCategoryValue();
   updateAdvancedSummary();
 }
 
@@ -581,6 +628,10 @@ function registerPwa() {
 }
 
 $('#start').addEventListener('click', startGame);
+$('#category-open').addEventListener('click', openCategories);
+$('#category-back').addEventListener('click', closeCategories);
+$('#category').addEventListener('change', updateCategoryValue);
+document.addEventListener('keydown', event => { if (event.key === 'Escape') closeCategories(); });
 $('#import-group-players').addEventListener('click', importGroupPlayers);
 $('#players').addEventListener('input', () => { shareSetupPlayers(); updateGroupImport(); });
 $('#resume').addEventListener('click', resumeGame);

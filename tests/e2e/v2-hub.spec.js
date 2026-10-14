@@ -38,32 +38,24 @@ test('start screen renders from the real catalog without invented claims', async
   expect(errors).toEqual([]);
 });
 
-test('game artwork loads locally and leaves the mobile banner title visible', async ({ page }) => {
+/* Bis neue Spielbilder nach docs/BILDWELT_V2.md eingebunden sind, zeigt jedes Spiel sein Emblem.
+   Mit jedem neuen Bild kommt hier wieder eine Prüfung dazu, dass es lokal lädt und einen Alt-Text hat. */
+test('games without artwork show their emblem and keep the mobile banner title visible', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await seedHub(page);
   await openV2(page);
-  const heroImage = page.locator('#hero-art img');
-  await expect(heroImage).toHaveAttribute('src', 'assets/images/word-imposter-chamaeleon.webp');
-  await expect.poll(() => heroImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+  await expect(page.locator('#hero-art svg')).toBeVisible();
+  await expect(page.locator('#hero-art img')).toHaveCount(0);
   await expect(page.locator('#hero-title')).toBeVisible();
   const bannerBottom = await page.locator('.hero-art').evaluate(el => el.getBoundingClientRect().bottom);
   const titleTop = await page.locator('#hero-title').evaluate(el => el.getBoundingClientRect().top);
   expect(bannerBottom).toBeLessThanOrEqual(titleTop);
 
-  await openV2(page, '#spiel=truth-dare');
-  const modeImage = page.locator('#mode-emblem img');
-  await expect(modeImage).toHaveAttribute('src', 'assets/images/wahrheit-oder-pflicht.webp');
-  await expect(modeImage).toHaveAttribute('alt', /Eule beantwortet eine Frage/);
-  await expect.poll(() => modeImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
-
-  await openV2(page, '#spiel=never-have');
-  const memoryImage = page.locator('#mode-emblem img');
-  await expect(memoryImage).toHaveAttribute('src', 'assets/images/ich-habe-noch-nie.webp');
-  await expect(memoryImage).toHaveAttribute('alt', /Elefant erinnert sich/);
-  await expect.poll(() => memoryImage.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
-
-  await openV2(page, '#spiel=most-likely');
-  await expect(page.locator('#mode-emblem svg')).toBeVisible();
+  for (const id of ['imposter', 'truth-dare', 'never-have', 'most-likely']) {
+    await openV2(page, '#spiel=' + id);
+    await expect(page.locator('#mode-emblem svg')).toBeVisible();
+    await expect(page.locator('#mode-emblem img')).toHaveCount(0);
+  }
 });
 
 test('games screen lists all 55 games in six non-empty colour worlds', async ({ page }) => {
@@ -205,11 +197,13 @@ test('"most played" appears only once there is real history', async ({ page }) =
   await expect(page.locator('#hero-title')).toHaveText('Scharade');
 });
 
-test('Profil: Daten und eigene Inhalte zeigen nur die Datenansicht und führen zurück ins Profil', async ({ page }) => {
+test('Datenschutz: Daten sichern oder löschen zeigt nur die Datenansicht und führt zurück ins Profil', async ({ page }) => {
   await page.goto('/v2-hub.html#profil');
   await expect(page.getByRole('link', { name: /Partyabend planen/ })).toHaveCount(0);
   await expect(page.getByRole('link', { name: /Eigenes Spiel erstellen/ })).toHaveCount(0);
-  await page.getByRole('link', { name: /Daten und eigene Inhalte/ }).click();
+  await expect(page.getByRole('link', { name: /Daten und eigene Inhalte/ })).toHaveCount(0);
+  await page.locator('[data-screen="profile"] [data-open="profile-privacy"]').click();
+  await page.getByRole('link', { name: 'Daten sichern oder löschen' }).click();
   await expect(page).toHaveURL(/party\.html\?view=settings&from=v2/);
   await expect(page.locator('#settings-title')).toBeVisible();
   await expect(page.locator('.hub-nav')).toBeHidden();

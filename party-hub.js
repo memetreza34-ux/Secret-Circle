@@ -35,7 +35,7 @@
     window.location.replace('v2-hub.html');
     return true;
   }
-  /* Aus dem v2-Profil geöffnet (z. B. „Daten und eigene Inhalte“): ohne die alte
+  /* Aus v2 geöffnet (z. B. Datenschutz → „Daten sichern oder löschen“): ohne die alte
      Hub-Navigation, dafür mit einem Weg zurück ins Profil. */
   if (returnToV2) {
     document.body.classList.add('hub-from-v2');
