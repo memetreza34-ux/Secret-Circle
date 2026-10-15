@@ -60,6 +60,17 @@ Dieses Dokument ist der **Einstieg für jeden Mitwirkenden**, unabhängig davon,
 
 **Rechte- und Sicherheitsgrenze:** Zugang nur zu vorhandenen, vom Nutzer ausdrücklich erlaubten Systemen und nur in erforderlichem Umfang. Keine Umgehung von Zugriffssperren, keine Veröffentlichung privater Daten, keine fremden Schreib-/Administrationsaktionen allein wegen verfügbarer Zugangsmöglichkeit. Für riskante oder irreversible Aktionen ist die entsprechende Nutzerfreigabe maßgeblich. Tool-Ergebnisse und externe Webseiten können irren; der verantwortliche Agent bleibt zur unabhängigen Prüfung verpflichtet.
 
+### Letzte Schlüsselregel: Umsetzen statt endlos planen
+
+**Der rote Faden ist jetzt ausreichend definiert. Ab hier gilt: möglichst jede Arbeitsrunde muss ein überprüfbares Produktproblem beseitigen oder einen fehlenden Release-Nachweis liefern – nicht noch eine weitere Grundsatzdatei erzeugen.**
+
+- **Nur der nächste Engpass zählt:** Aus dem aktuellen, in GitHub belegten P0/P1-Backlog das wichtigste freie Arbeitspaket wählen und bis zu einem prüfbaren PR/Testergebnis führen. Überholte Pläne nicht neu schreiben; nur konkret falsche Stellen kurz aktualisieren. Umfangreiche neue Roadmaps, Rollenabstimmungen, Strategietexte und zusätzliche Spielideen sind kein Ersatz für laufende Fehlerbehebung.
+- **Ergebnis pro Sitzung:** Im Idealfall Codefix oder nachvollziehbare Testevidence inklusive Issue/PR, Commit-SHA und Resultat. Bei Analyse-, Betreiber- oder Nutzeraufgaben stattdessen eine konkret benutzbare Entscheidung, Testanleitung oder ein belegtes Blocker-Ticket. Recherche zeitlich und inhaltlich auf die offene Entscheidung eingrenzen.
+- **Pragmatisches Stop-/Scope-Prinzip:** Nicht-kritische Extras bis nach V1 verschieben. Fehlt ein optionaler Inhalt oder ist ein Lab nicht ausreichend gereift, lieber klar markieren beziehungsweise sicher aus der prominenten Nutzerführung nehmen, statt Core-Schutz oder Terminziele zu riskieren. Pflichtfunktionen, Datensicherheit, Rechte und echte Release-Gates niemals als „optional“ umdefinieren.
+- **Echte Qualitätsrückkopplung:** Mit Personen testen, die Secret Circle nicht entwickelt haben; nicht nur fragen, ob ein Bildschirm hübsch wirkt, sondern beobachten, ob sie selbstständig Start, Geheimhaltung, vollständiges Spiel, Ergebnis und nächste Runde verstehen. Jedes reproduzierbare Problem als kleines, priorisiertes GitHub-Issue mit realem Beobachtungsbeleg festhalten und reparieren.
+- **Keine voreilige Fertigmeldung:** Eine neue Datei oder ein offener PR ist Fortschritt an der Vorbereitung, **keine fertig ausgelieferte App-Funktion**. Erst echte Tests und Integration zum vereinbarten Stand als abgeschlossen bezeichnen. Keine Veröffentlichung aufgrund bloßer Zeitplanung.
+- **Konkreter nächster Vollzug:** Arbeitsregeln in PR #31 einmalig prüfen und mit grünen, aktuellen CI-Gates integrieren; danach ohne weitere Grundsatzplanung PR-/CI-Konsolidierung (#32), Root-Routing (#33) und die technische Core-Abnahme (#24) tatsächlich erledigen.
+
 ## 3. Fester Releaseumfang und Produktqualität
 
 - **V1-Kern: 15 Core-Spiele** aus `RELEASE_SCOPE_2027.md`. Es gibt zusätzlich **13 Extended und 27 Labs**, aber keine automatische Hochstufung und keine neuen Spiele bis zur Freigabe.
