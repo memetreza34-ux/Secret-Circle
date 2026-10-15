@@ -72,7 +72,7 @@ test('browser history return keeps an exposed Word Imposter card concealed', asy
   await expect(page.locator('#secret')).toBeVisible();
   await expect(page.locator('#role')).not.toBeEmpty();
 
-  await page.locator('.back-link').click();
+  await page.getByRole('link', { name: 'Alle Spiele' }).click();
   await expect(page).toHaveURL(/\/v2-hub\.html$/);
   await expect(page.locator('[data-screen="home"]')).toBeVisible();
   await page.goBack();
