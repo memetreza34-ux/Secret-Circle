@@ -205,3 +205,18 @@ test('connection badge stays hidden while online and appears only offline', asyn
   await context.setOffline(false);
   await expect(page.locator('#quick-connection')).toBeHidden();
 });
+
+
+test('canonical root and Word Imposter remain independent offline entry points', async ({ page, context }) => {
+  await page.goto('/');
+  await waitForWorker(page);
+  await context.setOffline(true);
+  for (const path of ['/', '/index.html', '/v2-hub.html']) {
+    const response = await page.goto(path);
+    expect(response?.ok(), path).toBe(true);
+    await expect(page.locator('[data-screen="home"]')).toBeVisible();
+  }
+  const imposter = await page.goto('/word-imposter.html');
+  expect(imposter?.ok()).toBe(true);
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
+});

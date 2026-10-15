@@ -12,8 +12,8 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 
 ## Stand der Oberfläche
 
-- **Startseite:** `v2-hub.html` mit `v2-hub.js` und `v2-theme.css` – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.
-- **Spielabläufe (Engines, im v2-Design):** `party.html` (Hub-Spiele, gestartet über `party.html?play=<id>&pack=<name>&from=v2`), `quick-play.html`, `advanced.html`, `index.html` (Word Imposter), `creator.html`, `privacy.html`.
+- **Startseite:** `/` und `index.html` (identisch zu `v2-hub.html` als Legacy-Alias) mit `v2-hub.js` und `v2-theme.css` – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.
+- **Spielabläufe (Engines, im v2-Design):** `party.html` (Hub-Spiele, gestartet über `party.html?play=<id>&pack=<name>&from=v2`), `quick-play.html`, `advanced.html`, `word-imposter.html` (Word Imposter), `creator.html`, `privacy.html`.
 - **Daten:** Spielerliste und Verlauf liegen in `secret-circle-party-hub-v1`. v2 führt keinen eigenen Speicher. Alle Speicher-Keys und Backups regelt `backup-schema-registry.js`.
 - Details: `ARCHITECTURE.md` Abschnitt 4a.
 
@@ -36,7 +36,7 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 
 - Die verbindliche technische Abschlussliste liegt in [Issue #24](https://github.com/memetreza34-ux/Secret-Circle/issues/24); vorhandene Release-Gates in `RELEASE_CHECKLIST.md`, `release-evidence.json` und `operator-release.json` bleiben maßgeblich.
 - Erst technische P0/P1-Defekte, Branch-Konflikte, Routing-/Offline-/Storage-Gates und Tests abschließen. Danach mit Codex ausschließlich Bildwelt, Animation, Typografie und visuelles Finishing durchführen; IDs, Storage-Keys, Geheimhaltung, Timer, Scoring, Session-Abschluss und Core-Routing dürfen dadurch nicht unbemerkt geändert werden.
-- Der Webroot `/` zeigt derzeit noch Word Imposter (`index.html`), während das PWA-Manifest `v2-hub.html` als Startseite nennt. Dies ist **nicht** stillschweigend gelöst: Die Routing-Migration braucht eine eigene geprüfte Änderung mit Direktlink-, Resume-, Offline- und Regressionstests.
+- Der P0-Routing-Branch setzt `/` und `index.html` als kanonischen Party-Hub und `word-imposter.html` als eigenen Spieleinstieg um; `v2-hub.html` bleibt ein identischer Legacy-Alias. **Noch keine Releasefreigabe:** Browser-CI, Offline-Update und reale Geräte-/Sessionprüfungen müssen unabhängig nachgewiesen werden.
 - Nach jeder finalen Design-/Asset-Änderung müssen betroffene CI-/Offline-/Accessibility-/Medien- und Rechte-Gates erneut auf dem unveränderten Release-Kandidaten laufen. Es gibt bis dahin **keine** öffentliche GO-Freigabe.
 
 ## Regeln, die Prüfungen erzwingen

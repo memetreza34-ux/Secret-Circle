@@ -1,5 +1,7 @@
 # Secret Circle Party Hub
 
+**Startadresse:** `/` bzw. `index.html` ist der Party-Hub. Das bisherige `v2-hub.html` bleibt als identische Legacy-Adresse erreichbar; Word Imposter startet separat über `word-imposter.html`.
+
 Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere Übergaben, belastbare Wiederaufnahme, lokale Datenkontrolle, Accessibility und nachvollziehbare Release-Gates.
 
 ## Aktueller Stand
