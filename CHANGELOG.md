@@ -1,4 +1,11 @@
-## P0-Routing – 15. Oktober 2026 (geplant, PR noch nicht integriert)
+## v96 – Beschädigte Deep-Links sicher behandeln (15. Oktober 2026)
+
+- Der Party-Hub fängt ungültige Prozent-Kodierungen im URL-Fragment ab und zeigt die Startseite statt beim Initialisieren mit URIError auszusteigen.
+- Browserregression für direkte Einstiege über `/`, `index.html`, `v2-hub.html` sowie fehlerhafte Hashwechsel ergänzt.
+- Offline-Cachegeneration v95 → v96; Core-Prüfsumme nach unverändertem Sperralgorithmus aktualisiert.
+- **Nachweise offen:** CI auf dem PR-Head, echte Geräte, installierte PWA-Upgrades und Gruppenabnahme; Release bleibt NO_GO.
+
+## P0-Routing – 15. Oktober 2026 (PR #34 in main integriert; finale Geräte-/Releaseabnahme offen)
 
 - Kanonischer Einstieg: `/` und `index.html` zeigen den Party-Hub; `v2-hub.html` bleibt Legacy-Alias.
 - Word Imposter ist separat auf `word-imposter.html` erreichbar; die lokalen Speicher-Keys werden nicht verändert.
