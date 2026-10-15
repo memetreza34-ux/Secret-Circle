@@ -110,9 +110,10 @@ Workflow:
 - Name: `Secret Circle Cross-Browser Smoke`
 - Datei: `.github/workflows/cross-browser.yml`
 - Job: `smoke`
-- Trigger aktuell: `workflow_dispatch`
+- Trigger: `pull_request` (automatisch für neue Codeänderungen) und `workflow_dispatch` (manueller Retest)
+- Browser-Matrix: Chromium, Firefox und WebKit mit Desktop- und mobilen Playwright-Projekten
 
-Cross-Browser ist für den RC zwingend. Aktuell darf `Secret Circle Cross-Browser Smoke / smoke` **nicht** als dauerhaft erforderlicher PR-Check aktiviert werden, weil der Job nur manuell (`workflow_dispatch`) läuft. Vor Release muss Chromium/Firefox/WebKit auf dem **exakten unveränderten RC-Commit** grün dokumentiert sein.
+Cross-Browser ist für den RC zwingend. `Secret Circle Cross-Browser Smoke / smoke` **ist derzeit kein dauerhaft erforderlicher PR-Check**: `main` besitzt noch keine aktivierte Branch Protection/Required-Checks. Der automatisierte PR-Lauf liefert zusätzliche reale CI-Evidence, ersetzt jedoch nicht die Aktivierung und Verifikation des GitHub-Branchschutzes. Vor Release muss Chromium/Firefox/WebKit auf dem **exakten unveränderten RC-Commit** grün dokumentiert sein.
 
 ## 7. Reproduzierbarer Installationsvertrag
 

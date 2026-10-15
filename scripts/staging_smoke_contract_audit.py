@@ -109,7 +109,7 @@ checks = {
     'manifest_and_icon_dimensions': all(marker in smoke for marker in ('192x192', '512x512', 'PNG-Signatur/IHDR')),
     'deployed_pwa_head_contract': all(marker in smoke for marker in (
         'party.html', 'creator.html', 'advanced.html?game=question-imposter',
-        'quick-play.html?game=guess-the-price', 'index.html', 'pwa_head_metadata_contract'
+        'quick-play.html?game=guess-the-price', 'index.html', 'v2-hub.html', 'word-imposter.html', 'pwa_head_metadata_contract'
     )),
     'response_csp_contract': all(marker in smoke for marker in (
         "default-src 'self'", "script-src 'self'", "object-src 'none'",
@@ -124,7 +124,7 @@ checks = {
     )),
     'hosting_documents_security_headers': all(marker in hosting for marker in hosting_security_markers),
     'local_pwa_head_test_matches_scope': all(marker in pwa_head_test for marker in (
-        'party.html', 'creator.html', 'advanced.html', 'quick-play.html', 'index.html'
+        'party.html', 'creator.html', 'advanced.html', 'quick-play.html', 'index.html', 'v2-hub.html', 'word-imposter.html'
     )),
     'privacy_source_gate': all(marker in smoke for marker in ('Was ist das Seltsamste in deiner Kamerarolle?', 'Lies die letzte Nachricht auf deinem Handy')),
     'reference_source_gate': all(marker in smoke for marker in ('Anime-Archetypen erraten', 'Spektrum-Tipp', 'Löwenkönig')),

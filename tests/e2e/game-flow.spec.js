@@ -41,7 +41,7 @@ async function startBasicGame(page, players, rounds = '1') {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 });
@@ -229,7 +229,7 @@ test('exposes privacy information and remains usable on mobile viewport', async 
   await privacyLink.click();
   await expect(page).toHaveURL(/privacy\.html$/);
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   if (isMobile) {
     await expect(page.locator('#setup-screen')).toBeVisible();
     await expect(page.locator('#start')).toBeVisible();

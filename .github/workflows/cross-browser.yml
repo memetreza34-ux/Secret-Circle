@@ -1,10 +1,15 @@
 name: Secret Circle Cross-Browser Smoke
 
 on:
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: secret-circle-cross-browser-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   CI: true

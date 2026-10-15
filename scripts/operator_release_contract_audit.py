@@ -20,7 +20,7 @@ REQUIRED_FILES = [
     'sw.js',
 ]
 PUBLIC_ENTRY_PAGES = [
-    'index.html',
+    'index.html', 'word-imposter.html',
     'party.html',
     'advanced.html',
     'quick-play.html',

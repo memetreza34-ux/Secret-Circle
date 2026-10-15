@@ -30,7 +30,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const production = names.filter(name => /^secret-circle-v\d+$/.test(name));
     const cache = await caches.open(production[0]);
     const expected = [
-      './index.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
+      './index.html', './v2-hub.html', './word-imposter.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
       './v2-theme.css', './v2-party-hub.css', './v2-update.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
       './app.js', './game-engine.js', './role-assignment.js', './word-packs.js', './data-store.js',
@@ -60,7 +60,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await expect(page.getByRole('heading', { name: 'Eigenes Spiel erstellen' })).toBeVisible();
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 });
 
@@ -169,7 +169,7 @@ test('Price Guess Viral Mode starts and resumes completely offline', async ({ pa
 });
 
 test('offline mode preserves a locally saved active Imposter game', async ({ page, context }) => {
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator('#players').fill('Alex\nSam\nMika');
@@ -188,12 +188,12 @@ test('connection badge stays hidden while online and appears only offline', asyn
   await page.goto('/party.html');
   await waitForWorker(page);
   await expect(page.locator('#hub-connection')).toBeHidden();
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await expect(page.locator('#connection')).toBeHidden();
   await page.goto('/quick-play.html?game=rapid-fire');
   await expect(page.locator('#quick-connection')).toBeHidden();
   await context.setOffline(true);
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await expect(page.locator('#connection')).toHaveText('Offline-Modus');
   await expect(page.locator('#connection')).toBeVisible();
   await page.goto('/party.html');
@@ -204,4 +204,79 @@ test('connection badge stays hidden while online and appears only offline', asyn
   await expect(page.locator('#quick-connection')).toBeVisible();
   await context.setOffline(false);
   await expect(page.locator('#quick-connection')).toBeHidden();
+});
+
+
+test('canonical root and Word Imposter remain independent offline entry points', async ({ page, context }) => {
+  await page.goto('/');
+  await waitForWorker(page);
+  await context.setOffline(true);
+  for (const path of ['/', '/index.html', '/v2-hub.html']) {
+    const response = await page.goto(path);
+    expect(response?.ok(), path).toBe(true);
+    await expect(page.locator('[data-screen="home"]')).toBeVisible();
+  }
+  const imposter = await page.goto('/word-imposter.html');
+  expect(imposter?.ok()).toBe(true);
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
+});
+
+
+/* Browser-level migration smoke, not a substitute for upgrading a real installed
+   v93 PWA: an old cache may contain the former index.html Word Imposter entry.
+   Installing the current worker must replace the cache without touching user
+   data, while both new entry points work offline. */
+test('legacy v93 offline cache is discarded but group data and offline routes survive', async ({ page, context }) => {
+  // Plain JSON has no app scripts and therefore cannot pre-register the new SW.
+  await page.goto('/package.json');
+  const seeded = await page.evaluate(async () => {
+    if (await navigator.serviceWorker.getRegistration()) {
+      throw new Error('The fresh test context unexpectedly has a service worker.');
+    }
+    const group = {
+      version: 1,
+      players: ['Alex', 'Sam', 'Mika'],
+      favorites: [], recent: [], presets: [], history: [], stats: {}
+    };
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify(group));
+
+    const old = await caches.open('secret-circle-v93');
+    await old.put('./index.html', new Response('<!doctype html><title>Word Imposter – old root</title>', {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    }));
+    return {
+      oldCacheExists: (await caches.keys()).includes('secret-circle-v93'),
+      savedPlayers: JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players
+    };
+  });
+  expect(seeded.oldCacheExists).toBe(true);
+  expect(seeded.savedPlayers).toEqual(['Alex', 'Sam', 'Mika']);
+
+  await page.goto('/');
+  await waitForWorker(page);
+
+  const migrated = await page.evaluate(async () => {
+    const names = await caches.keys();
+    const activeNames = names.filter(name => /^secret-circle-v\d+$/.test(name));
+    const cache = await caches.open(activeNames[0]);
+    const group = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
+    return {
+      names,
+      activeNames,
+      players: group.players,
+      hubCached: Boolean(await cache.match('./index.html')),
+      imposterCached: Boolean(await cache.match('./word-imposter.html'))
+    };
+  });
+  expect(migrated.names).not.toContain('secret-circle-v93');
+  expect(migrated.activeNames).toHaveLength(1);
+  expect(migrated.players).toEqual(['Alex', 'Sam', 'Mika']);
+  expect(migrated.hubCached).toBe(true);
+  expect(migrated.imposterCached).toBe(true);
+
+  await context.setOffline(true);
+  await page.goto('/');
+  await expect(page.locator('[data-screen="home"]')).toBeVisible();
+  await page.goto('/word-imposter.html');
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 });

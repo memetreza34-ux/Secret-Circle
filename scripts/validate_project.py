@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 read=lambda relative:(ROOT/relative).read_text(encoding='utf-8')
 
 required=[
- 'index.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html','sw.js','manifest.webmanifest','package.json','package-lock.json','release-evidence.json',
+ 'index.html','word-imposter.html','v2-hub.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html','sw.js','manifest.webmanifest','package.json','package-lock.json','release-evidence.json',
  'runtime-guard.js','privacy-guard.js','word-imposter-resume-guard.js','backup-schema-registry.js','party-data-tools.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js',
  'party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js',
  'party-wave-one-modes.js','party-wave-one-imposter-modes.js','party-wave-one-writing-modes.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js',
@@ -60,7 +60,9 @@ quick=audit_html('quick-play.html',['runtime-guard.js',*catalog_chain,'party-cus
 advanced=audit_html('advanced.html',['runtime-guard.js','party-catalog.js','party-expansion.js','party-routing.js','party-advanced.js','advanced-resume-guard.js','secondary-surface-a11y.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js'])
 creator=audit_html('creator.html',['runtime-guard.js','game-creator.js','secondary-surface-a11y.js','creator-page.js'])
 audit_html('privacy.html',[])
-index=audit_html('index.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js','word-imposter-resume-guard.js','app.js'])
+index=audit_html('index.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','v2-hub-packs.js','v2-hub.js'])
+if index != read('v2-hub.html'): raise SystemExit('Canonical root and v2-hub.html must expose the same home screen.')
+word=audit_html('word-imposter.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js','word-imposter-resume-guard.js','app.js'])
 
 for marker in ('Euer Party-Hub · privat · lokal','Persönliche Inhalte sind freiwillig','party-wave-one-clue-catalog.js','pause-hub-game','skip-hub-round'):
     if marker not in party: raise SystemExit(f'Party Hub release marker missing: {marker}')
@@ -68,7 +70,7 @@ for marker in ('party-wave-one-catalog.js','party-wave-one-writing-catalog.js','
     if marker not in quick: raise SystemExit(f'Quick page is missing final catalog layer: {marker}')
 if 'secondary-surface-a11y.js' not in quick or 'secondary-surface-a11y.js' not in advanced or 'secondary-surface-a11y.js' not in creator: raise SystemExit('Secondary accessibility layer is not loaded on all required surfaces.')
 if 'advanced-resume-guard.js' not in advanced or 'advanced-privacy-guard.js' not in advanced: raise SystemExit('Advanced resume/privacy guards are missing from advanced.html runtime order.')
-if 'word-imposter-resume-guard.js' not in index: raise SystemExit('Word Imposter resume guard is missing from index.html runtime order.')
+if 'word-imposter-resume-guard.js' not in word: raise SystemExit('Word Imposter resume guard is missing from word-imposter.html runtime order.')
 
 loader=read('quick-loader.js')
 for marker in ("WAVE_ONE_VOTING_SOURCE = 'party-wave-one-voting-modes.js'","WAVE_ONE_BLUFF_SOURCE = 'party-wave-one-bluff-modes.js'","WAVE_ONE_CLUE_SOURCE = 'party-wave-one-clue-modes.js'",'catalog.waveOneVotingGameIds?.includes(gameId)','catalog.waveOneBluffGameIds?.includes(gameId)','catalog.waveOneClueGameIds?.includes(gameId)','version: 11'):

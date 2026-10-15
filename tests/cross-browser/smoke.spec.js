@@ -14,12 +14,19 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
-test('loads Imposter setup content and privacy without browser errors', async ({ page }) => {
+test('canonical Hub aliases, dedicated Word Imposter and privacy load without browser errors', async ({ page }) => {
   const errors = captureErrors(page);
-  await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
+  for (const route of ['/', '/index.html', '/v2-hub.html']) {
+    await page.goto(route);
+    await expect(page.locator('[data-screen="home"]')).toBeVisible();
+    await expect(page.locator('#hero-title')).not.toBeEmpty();
+  }
+  await page.goto('/word-imposter.html');
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
   await expect(page.locator('#category option')).toHaveCount(15);
-  await page.getByRole('link', { name: 'Datenschutz ansehen' }).click();
+
+  await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
   expect(errors).toEqual([]);
 });
@@ -63,9 +70,11 @@ test('loads the 55-game Hub and all four external engine families', async ({ pag
 });
 
 test('starts a three-player Imposter game and protects the secret card', async ({ page }) => {
+  await page.goto('/word-imposter.html');
   await page.locator('#players').fill('Alex\nSam\nMika');
+  await page.locator('#advanced-settings > summary').click();
   await page.locator('#imposters').fill('1');
-  await page.locator('#match-rounds').selectOption('1');
+  await page.locator('#match-rounds').fill('1');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
   await expect(page.locator('#secret')).toBeHidden();
   await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
@@ -75,6 +84,7 @@ test('starts a three-player Imposter game and protects the secret card', async (
 });
 
 test('persists and restores an interrupted Imposter game', async ({ page }) => {
+  await page.goto('/word-imposter.html');
   await page.locator('#players').fill('Alex\nSam\nMika');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
   await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();

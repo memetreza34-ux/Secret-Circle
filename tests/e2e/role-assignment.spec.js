@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 test('browser role assignment is deterministic and independent from reveal order', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   const result = await page.evaluate(() => {
     const E = window.SecretCircleEngine;
     const Roles = window.SecretCircleRoleAssignment;

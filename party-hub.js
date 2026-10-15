@@ -446,7 +446,7 @@
     if (C.viralGameIds?.includes(game.id)) return 'Viral Mode öffnen';
     if (C.megaGameIds?.includes(game.id)) return 'Trend Mode öffnen';
     if (game.href?.startsWith('quick-play.html')) return 'Quick Mode öffnen';
-    if (game.href === 'index.html') return 'Word Imposter öffnen';
+    if (game.href === 'word-imposter.html') return 'Word Imposter öffnen';
     return 'Spiel öffnen';
   }
   function packCount(gameId, pack) {

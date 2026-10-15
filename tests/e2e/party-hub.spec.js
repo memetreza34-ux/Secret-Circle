@@ -140,7 +140,7 @@ test('planned catalog filter is empty because all visible games are playable', a
 
 test('party hub links back to the production word imposter flow', async ({ page }) => {
   await page.getByRole('link', { name: 'Word Imposter direkt' }).click();
-  await expect(page).toHaveURL(/\/index\.html$/);
+  await expect(page).toHaveURL(/\/word-imposter\.html$/);
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
   await expect(page.locator('#start')).toBeVisible();
 });
