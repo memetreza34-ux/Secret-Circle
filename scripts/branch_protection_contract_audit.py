@@ -53,7 +53,9 @@ checks = {
     'cross_workflow_name_stable': 'name: Secret Circle Cross-Browser Smoke' in cross,
     'cross_job_smoke_stable': '\n  smoke:\n' in cross,
     'cross_runs_on_pr_and_manual_dispatch': 'workflow_dispatch:' in cross and 'pull_request:' in cross and '\n  push:' not in cross,
-    'cross_not_documented_as_permanent_required_check': 'ist derzeit **kein dauerhaft erforderlicher PR-Check**' in contract,
+    # Der Vertragsinhalt zählt, nicht die Position der Markdown-Fettschrift.
+    # Die Negation muss erhalten bleiben; ein dauerhaftes Required-Check-Claim ist kein PASS.
+    'cross_not_documented_as_permanent_required_check': 'ist derzeit kein dauerhaft erforderlicher PR-Check' in re.sub(r'[*_`]', '', contract),
     'cross_still_release_gate': 'exakten unveränderten RC-Commit' in contract and 'Cross-Browser' in checklist,
     'zero_step_jobs_not_accepted': 'Kein Merge bei `steps: []`.' in contract and 'steps: []' in troubleshooting,
     'lockfile_now_present': lock.get('lockfileVersion') == 3 and lock.get('name') == package.get('name'),
