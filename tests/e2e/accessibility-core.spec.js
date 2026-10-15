@@ -135,6 +135,12 @@ test('hub detail modal isolates background and traps keyboard focus', async ({ p
 
 test('active hub game is modal and keeps focus out of the hidden hub', async ({ page }) => {
   await page.goto('/party.html?view=games');
+  // Eine bewusst eingerichtete Gruppe ist Vorbedingung dieser Fokusprüfung.
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Alex', 'Sam', 'Mika', 'Lina'],
+    favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
+  await page.reload();
   await expect.poll(() => page.evaluate(() => Boolean(window.SecretCirclePartyHubA11y))).toBe(true);
 
   await page.locator('#game-grid [data-open-game="truth-dare"]').first().click();
