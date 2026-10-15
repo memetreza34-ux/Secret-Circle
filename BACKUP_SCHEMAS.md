@@ -2,7 +2,7 @@
 
 Stand: 28. August 2026  
 Vertragsregister: `backup-schema-registry.js` Version 2  
-Aktueller Offline-Core: **`secret-circle-v93` / `secret-circle-v93-staging`**
+Aktueller Offline-Core: **`secret-circle-v94` / `secret-circle-v94-staging`**
 
 ## Gemeinsame Regeln
 
