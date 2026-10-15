@@ -979,7 +979,11 @@
   /* Einsprung per Adresse, z. B. aus einem Spiel zurück: #spiele, #profil,
      #spieler oder #spiel=<id>. */
   function initialScreen() {
-    var target = decodeURIComponent((window.location.hash || '').slice(1));
+    // Geteilte oder beschädigte Links dürfen den kompletten Hub nicht blockieren.
+    // decodeURIComponent wirft bei unvollständigen %-Sequenzen einen URIError.
+    var target;
+    try { target = decodeURIComponent((window.location.hash || '').slice(1)); }
+    catch (_) { target = ''; }
     if (target === 'spiele') return show('games', { reset: true });
     if (target === 'profil') return show('profile', { reset: true });
     if (target === 'spieler') return show('players', { reset: true });
