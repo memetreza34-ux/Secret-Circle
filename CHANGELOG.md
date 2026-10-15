@@ -1,3 +1,12 @@
+## v97 – Echte Gruppe bei der ersten Partie (15. Oktober 2026)
+
+- Neue Installationen zeigen keine erfundene, spielbereite Gruppe mehr: 0 echte Personen, Startseiten-Schaltfläche „Spieler einrichten“ und gesperrte Spiele bis zur Gruppeneinrichtung.
+- Die gemeinsame Lobby, Smart Party Night und Word Imposter beginnen ohne Beispielnamen. Bereits gespeicherte Gruppen, Presets, Backups und laufende Sessions bleiben unverändert.
+- Direkte v2-Spiel-URLs mit zu wenigen Spielern führen zur Spielereinrichtung, statt einen stillen Fehlstart auszulösen.
+- Bestehende Tests erhalten ihre ausdrücklichen Testgruppen; E2E-Regressionen für Erststart, gespeicherte Altgruppe, Spielstart und Planer ergänzt.
+- Offline-Cachegeneration v96 → v97 und Core-Prüfsumme synchronisiert. Abhängigkeit: PR #35 (v96) vorher integrieren.
+- Externe Gruppen-/Gerätetests und finaler Release-Signoff bleiben offen; **NO_GO**.
+
 ## v96 – Beschädigte Deep-Links sicher behandeln (15. Oktober 2026)
 
 - Der Party-Hub fängt ungültige Prozent-Kodierungen im URL-Fragment ab und zeigt die Startseite statt beim Initialisieren mit URIError auszusteigen.
