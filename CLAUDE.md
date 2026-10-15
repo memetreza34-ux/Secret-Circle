@@ -1,6 +1,6 @@
 # Claude Code – Secret Circle
 
-Vor jeder Arbeit **`AGENTS.md`** sowie **`docs/AI_TEAM_WORKFLOW.md`** lesen. Falls Angaben abweichen, keine bestehenden Sicherheits-, Gameplay-, Release- oder Datenverträge abschwächen; Widersprüche zuerst im PR dokumentieren.
+Vor jeder Arbeit **`docs/PROJEKT_KOMPASS.md`**, **`AGENTS.md`** sowie **`docs/AI_TEAM_WORKFLOW.md`** lesen. Die Auswahl des nächsten Arbeitspakets folgt dem aktuellen echten Releaseblocker, nicht einer alten Branch- oder PR-Beschreibung. Falls Angaben abweichen, keine bestehenden Sicherheits-, Gameplay-, Release- oder Datenverträge abschwächen; Widersprüche zuerst im PR dokumentieren.
 
 **Aufgabenteilung:** Claude Code ist der technische Owner (Funktionen, Bugs, Tests, Security, PWA/Offline, echte UI-Implementierung). Codex übernimmt nach expliziter Freigabe Bildkonzepte/Asset-Pipeline; Claude soll keine neue Bildproduktion starten. ChatGPT plant und reviewed, Arman genehmigt.
 
