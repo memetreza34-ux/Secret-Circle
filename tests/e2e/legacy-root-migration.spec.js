@@ -66,17 +66,17 @@ test('browser history return keeps an exposed Word Imposter card concealed', asy
   await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
-  await page.locator('#players').fill('Alex\\nSam\\nMika');
+  await page.locator('#players').fill('Alex\nSam\nMika');
   await page.locator('#start').click();
   await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
   await expect(page.locator('#secret')).toBeVisible();
   await expect(page.locator('#role')).not.toBeEmpty();
 
   await page.locator('.back-link').click();
-  await expect(page).toHaveURL(/\\/v2-hub\\.html$/);
+  await expect(page).toHaveURL(/\/v2-hub\.html$/);
   await expect(page.locator('[data-screen="home"]')).toBeVisible();
   await page.goBack();
-  await expect(page).toHaveURL(/\\/word-imposter\\.html$/);
+  await expect(page).toHaveURL(/\/word-imposter\.html$/);
   await expect(page.locator('#secret')).toBeHidden();
   await expect(page.locator('#role')).toBeEmpty();
   await expect(page.locator('#word')).toBeEmpty();
