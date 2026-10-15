@@ -229,3 +229,21 @@ test('Datenschutz: Daten sichern oder löschen zeigt nur die Datenansicht und f�
   await expect(page).toHaveURL(/v2-hub\.html#profil$/);
   await expect(page.locator('[data-screen="profile"]')).toBeVisible();
 });
+
+test('kaputte URL-Fragmente blockieren weder den Hub-Start noch spätere Navigation', async ({ page }) => {
+  const errors = captureErrors(page);
+
+  for (const route of ['/index.html#spiel=%E0%A4%A', '/v2-hub.html#%', '/#spiel=%FF']) {
+    const response = await page.goto(route);
+    expect(response?.ok(), route).toBe(true);
+    await expect(page.locator('[data-screen="home"]')).toBeVisible();
+    await expect(page.locator('#hero-play')).toBeEnabled();
+  }
+
+  await page.goto('/#spiele');
+  await expect(page.locator('[data-screen="games"]')).toBeVisible();
+  await page.evaluate(() => { window.location.hash = '#spiel=%'; });
+  await expect(page.locator('[data-screen="home"]')).toBeVisible();
+  await expect(page.locator('#hero-play')).toBeEnabled();
+  expect(errors).toEqual([]);
+});
