@@ -21,7 +21,7 @@
   const hubTimer = S.createController({ windowRef: window });
   const defaults = {
     version: 1,
-    players: ['Alex', 'Sam', 'Mika', 'Lina'],
+    players: [],
     favorites: [], recent: [], presets: [], history: [], stats: {}
   };
   let state = loadState();
@@ -845,6 +845,11 @@
     const params = new URLSearchParams(window.location.search);
     const game = C.getGame(params.get('play'));
     if (!game || game.status !== 'playable' || game.mode === 'link') return;
+    /* Direkter v2-Spieleinstieg ohne Gruppe führt zur Einrichtung. */
+    if (returnToV2 && (state.players.length < game.minPlayers || state.players.length > game.maxPlayers)) {
+      window.location.replace('v2-hub.html#spieler');
+      return;
+    }
     /* Ein Neuladen soll den Spielstand fortsetzen, nicht erneut starten. */
     window.history.replaceState(null, '', returnToV2 ? 'party.html?from=v2' : 'party.html');
     openDetail(game.id);

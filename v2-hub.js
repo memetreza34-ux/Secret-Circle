@@ -270,8 +270,7 @@
 
   var HUB_KEY = 'secret-circle-party-hub-v1';
   var IMPOSTER_HISTORY_KEY = 'secret-circle-history-v7';
-  /* Dieselbe Beispielgruppe wie im Hub und in allen Spiel-Engines. */
-  var DEFAULT_PLAYERS = ['Alex', 'Sam', 'Mika', 'Lina'];
+  /* Echte Spieler kommen nur aus der gemeinsamen gespeicherten Gruppe. */
   var MAX_PLAYERS = 20;
 
   function readJson(key) {
@@ -299,7 +298,7 @@
 
   function players() {
     var hub = readHub();
-    return hub ? cleanPlayers(hub.players) : DEFAULT_PLAYERS.slice();
+    return hub ? cleanPlayers(hub.players) : [];
   }
 
   function savePlayers(list) {
@@ -557,7 +556,8 @@
       h2.textContent = hero.title;
     }
     $('#hero-text').textContent = hero.desc;
-    $('#hero-play').onclick = function () { openGame(hero.id); };
+    $('#hero-play').textContent = players().length ? 'Spielen' : 'Spieler einrichten';
+    $('#hero-play').onclick = function () { if (players().length) openGame(hero.id); else show('players', { reset: true }); };
 
     /* Trefferfläche 44px, tastaturbedienbar — nicht der 6px-Punkt selbst. */
     var dots = $('.dots', screenEl('home'));
