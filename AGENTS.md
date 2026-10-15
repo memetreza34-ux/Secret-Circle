@@ -2,6 +2,8 @@
 
 **Verbindlicher Projektkompass für alle Agenten:** Vor jeder Aufgabe `docs/PROJEKT_KOMPASS.md` lesen. ChatGPT übernimmt die unabhängige Produkt-/Qualitätsberatung und priorisiert nach echten Releaseblockern; Claude Code die technische Umsetzung, Codex den freigegebenen Design-/Asset-Pass. Alle arbeiten nach derselben belegbaren Definition of Done, unabhängig davon, wer die Aufgabe ausführt. Im Konflikt gelten die strengeren vorhandenen Sicherheits-, Daten-, Spiel- und Releaseverträge.
 
+**MCP-/Tool-first-Arbeitsregel:** Vor jeder Aufgabe alle im jeweiligen Kontext **tatsächlich verfügbaren und autorisierten** MCP-Server, Skills, Plugins, Browser-/Webquellen und Testwerkzeuge auf Eignung prüfen; relevante Werkzeuge gezielt kombinieren. Anleitung/Schema und aktuelle offizielle Dokumentation vor Nutzung lesen, Wissenslücken durch seriöse Recherche schließen, Resultate praktisch testen. Keine pauschale Datenfreigabe, keine erfundenen Toolzugriffe oder ungefragte externe Aktionen. Details: `docs/PROJEKT_KOMPASS.md` Abschnitt „Verbindliche MCP-/Tool-first-Regel“.
+
 Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und ein Gerät. Vanilla JavaScript, HTML und CSS, kein Build-Schritt, keine Runtime-Abhängigkeiten. Oberfläche und Texte sind deutsch; Commit-Nachrichten ebenfalls.
 
 ## Stand der Oberfläche
