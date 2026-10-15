@@ -1,7 +1,7 @@
 /* Secret Circle — Oberfläche im Claude-Design (v2)
    Vanilla JS, kein Build. Alle Spieldaten kommen aus window.SecretCirclePartyCatalog.
    Gespielt wird in den geprüften Engines (party.html, quick-play.html,
-   advanced.html, index.html); diese Seite wählt nur aus und übergibt.
+   advanced.html, word-imposter.html); diese Seite wählt nur aus und übergibt.
    Spielerliste und Verlauf sind dieselben wie im Rest der App. */
 
 (function () {
@@ -476,7 +476,7 @@
     { key: 'secret-circle-party-mega-active-v1', id: function (v) { return v && v.gameId; }, href: function (id) { return 'quick-play.html?game=' + encodeURIComponent(id); } },
     { key: 'secret-circle-party-viral-active-v1', id: function (v) { return v && v.gameId; }, href: function (id) { return 'quick-play.html?game=' + encodeURIComponent(id); } },
     { key: 'secret-circle-party-created-active-v1', id: function (v) { return v && v.gameId; }, href: function (id) { return 'quick-play.html?game=' + encodeURIComponent(id); } },
-    { key: 'secret-circle-active-v7', id: function (v) { return v ? 'imposter' : null; }, href: function () { return 'index.html'; } }
+    { key: 'secret-circle-active-v7', id: function (v) { return v ? 'imposter' : null; }, href: function () { return 'word-imposter.html'; } }
   ];
 
   function activeSessions() {

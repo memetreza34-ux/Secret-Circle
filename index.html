@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0A0B0F">
-  <meta name="description" content="Secret Circle – offline spielbares Imposter-Partyspiel.">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Secret Circle – offline spielbare Partyspiele für eine Gruppe und ein Gerät.">
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,133 +18,288 @@
   <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="v2-theme.css">
-  <link rel="stylesheet" href="v2-imposter.css">
 </head>
 <body>
-  <a class="skip-link" href="#setup-screen">Zum Spiel springen</a>
-  <main class="shell">
-    <header>
-      <div class="topbar"><a class="back-link" href="v2-hub.html">← Alle Spiele</a><span id="connection" class="connection" hidden>Offline-Modus</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
-      <div class="wi-brand"><h1>Word Imposter</h1><p class="wi-lede">Begriffe verteilen, Hinweise geben, abstimmen und Punkte sammeln.</p></div>
-    </header>
-    <p id="status" class="status" role="status" aria-live="polite"></p>
+  <p class="sr-only" id="live" role="status" aria-live="polite"></p>
 
-    <section id="setup-screen" class="card setup-card" data-screen tabindex="-1" aria-labelledby="setup-title">
-      <div id="resume-box" class="resume" hidden><div><strong>Aktive Runde fortsetzen</strong><span id="resume-text"></span></div><div><button id="resume" type="button">Fortsetzen</button><button id="discard-resume" class="secondary" type="button">Verwerfen</button></div></div>
-      <h2 id="setup-title" class="sr-only">Spiel einrichten</h2>
+  <div id="app">
+    <p class="app-status" id="app-status" role="status" aria-live="polite"></p>
 
-      <div class="players-field">
-        <div class="field-head"><span id="players-label" class="field-label">Spieler</span><small id="players-help" class="field-note" aria-live="polite"></small></div>
-        <ol id="player-list" class="player-list" aria-labelledby="players-label"></ol>
-        <button id="add-player" class="add-player" type="button">Spieler hinzufügen</button>
-        <button id="import-group-players" class="group-import" type="button" hidden>Spieler aus meiner Gruppe übernehmen</button>
-        <small id="group-import-note" class="field-note" role="status" aria-live="polite"></small>
-        <!-- Datenfeld: Die Spielerliste schreibt hier hinein; app.js und die Prüfung lesen von hier. -->
-        <textarea id="players" class="data-field" tabindex="-1" aria-hidden="true" aria-label="Spielerliste">Alex
-Sam
-Mika
-Lina</textarea>
+    <!-- ─────────── START ─────────── -->
+    <section class="screen" data-screen="home">
+      <div class="inner appbar">
+        <span class="wordmark">Secret Circle</span>
+        <button class="icon-btn" type="button" aria-label="Suchen" data-tab="games" data-icon="search"></button>
+        <button class="icon-btn" type="button" aria-label="Profil" data-tab="profile" data-icon="user"></button>
       </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Start</h1>
 
-      <div class="settings-list">
-        <button id="category-open" class="setting setting-link" type="button" aria-haspopup="dialog" aria-controls="category-screen"><span>Kategorie</span><span id="category-value" class="setting-value">Gemischt</span></button>
-        <!-- Datenfeld: Die Kategorie-Seite schreibt hier hinein; app.js liest und speichert von hier. -->
-        <select id="category" class="data-field" tabindex="-1" aria-hidden="true" aria-label="Kategorie"></select>
-        <details class="advanced-settings" id="advanced-settings">
-          <summary>Weitere Einstellungen <span id="settings-summary">1 Imposter · 2 Min · 3 Runden</span></summary>
-          <div class="advanced-settings-body">
-        <div class="setting"><label for="imposters">Imposter</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Imposter">−</button><input id="imposters" type="number" min="1" max="6" value="1" inputmode="numeric" aria-describedby="imposters-help"><button type="button" data-step="1" aria-label="Mehr Imposter">+</button></div></div>
-        <small id="imposters-help" class="setting-note" aria-live="polite"></small>
-        <div class="setting"><label for="duration">Rundenzeit<span class="sr-only"> in Minuten</span></label><div class="stepper"><button type="button" data-step="-1" aria-label="Kürzere Rundenzeit">−</button><span class="stepper-value"><input id="duration" type="number" min="1" max="10" value="2" inputmode="numeric"><span class="unit" aria-hidden="true">Min</span></span><button type="button" data-step="1" aria-label="Längere Rundenzeit">+</button></div></div>
-        <div class="setting"><label for="match-rounds">Runden</label><div class="stepper"><button type="button" data-step="-1" aria-label="Weniger Runden">−</button><input id="match-rounds" type="number" min="1" max="20" value="3" inputmode="numeric"><button type="button" data-step="1" aria-label="Mehr Runden">+</button></div></div>
-        <div class="setting setting-stack">
-          <label class="setting-switch" for="hint"><span id="hint-level-label">Imposter-Hilfe</span><input id="hint" class="switch" type="checkbox" role="switch" checked aria-describedby="hint-level-note"></label>
-          <div id="hint-levels" class="segmented" role="radiogroup" aria-label="Welche Hilfe sieht der Imposter?" aria-describedby="hint-level-note">
-            <label for="hint-easy"><input id="hint-easy" type="radio" name="hint-level" value="easy" checked><span>Hilfswort</span></label>
-            <label for="hint-medium"><input id="hint-medium" type="radio" name="hint-level" value="medium"><span>Kategorie</span></label>
-            <label for="hint-hard"><input id="hint-hard" type="radio" name="hint-level" value="hard"><span>Wortlänge</span></label>
-          </div>
-          <small id="hint-level-note" class="setting-caption" aria-live="polite">Imposter sieht ein Hilfswort zum Begriff.</small>
+          <article class="hero">
+            <div class="hero-art">
+              <span class="hero-badge" id="hero-badge">Empfehlung</span>
+              <div class="mark" id="hero-art"></div>
+            </div>
+            <div class="hero-pad">
+              <h2 id="hero-title"></h2>
+              <p id="hero-text"></p>
+              <button class="pill pill-primary" type="button" id="hero-play" data-icon-before="play">Spielen</button>
+              <div class="dots"></div>
+            </div>
+          </article>
+
+          <div id="sections"></div>
         </div>
+      </div>
+      <nav class="tabbar" aria-label="Bereiche"></nav>
+    </section>
+
+    <!-- ─────────── ALLE SPIELE ─────────── -->
+    <section class="screen" data-screen="games" hidden>
+      <div class="inner appbar">
+        <span class="wordmark">Spiele</span>
+        <span class="count-badge" id="grid-count"></span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Alle Spiele</h1>
+          <label class="sr-only" for="q">Spiel suchen</label>
+          <input class="search" id="q" type="search" placeholder="Spiele finden…" autocomplete="off">
+          <div class="filters scroll" id="filters" role="group" aria-label="Nach Kategorie filtern"></div>
+          <div class="grid" id="grid"></div>
+          <p class="empty" id="grid-empty" hidden>Kein Spiel gefunden. Anderen Suchbegriff probieren.</p>
+        </div>
+      </div>
+      <nav class="tabbar" aria-label="Bereiche"></nav>
+    </section>
+
+    <!-- ─────────── MODUS ─────────── -->
+    <section class="screen" data-screen="mode" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+      </div>
+      <div class="body scroll" id="mode-body">
+        <div class="inner">
+          <div class="mode-head">
+            <div class="mode-emblem"><div class="mark" id="mode-emblem"></div></div>
+            <div class="fit">
+              <h1 class="fit-text" id="mode-title" tabindex="-1" data-head></h1>
+            </div>
+            <p class="mode-sub" id="mode-sub"></p>
           </div>
-        </details>
-      </div>
 
-      <button id="start" type="button">Spiel starten</button>
+          <div class="meta" id="mode-meta"></div>
 
-      <div class="setup-more">
-        <details class="help-panel">
-          <summary>Spielregeln und Punkte</summary>
-          <div class="help-grid">
-            <section aria-labelledby="flow-help-title"><h3 id="flow-help-title">Ablauf</h3><ol><li>Jede Person sieht ihre geheime Karte allein.</li><li>Alle geben nacheinander einen kurzen Hinweis.</li><li>Danach stimmt jede Person geheim ab.</li><li>Ein gefundener Imposter darf den Begriff einmal erraten.</li></ol></section>
-            <section aria-labelledby="score-help-title"><h3 id="score-help-title">Punkte</h3><ul><li>Imposter gefunden und Begriff falsch geraten: jede unschuldige Person erhält 1 Punkt.</li><li>Unschuldige Person gewählt: jeder Imposter erhält 2 Punkte.</li><li>Imposter errät den Begriff oder die Stichwahl bleibt unentschieden: jeder Imposter erhält 2 Punkte.</li></ul></section>
+          <div class="rows">
+            <div class="row">
+              <span class="row-ico" data-icon="tv"></span>
+              <span class="row-main">Wie es geht</span>
+              <button class="row-action" type="button" id="howto-btn">Ansehen</button>
+            </div>
+            <button class="row" type="button" data-open="players" id="players-row">
+              <span class="row-ico" data-icon="users"></span>
+              <span class="row-main">Spieler</span>
+              <span class="row-val" id="players-count"></span>
+              <span class="row-chev" data-icon="chev"></span>
+            </button>
+            <button class="row" type="button" data-open="packs" id="pack-row">
+              <span class="row-ico" data-icon="dice"></span>
+              <span class="row-main">Kategorie</span>
+              <span class="row-val" id="pack-value"></span>
+              <span class="row-chev" data-icon="chev"></span>
+            </button>
           </div>
-        </details>
+
+          <ol class="steps" id="mode-steps"></ol>
+        </div>
+      </div>
+      <div class="dock">
+        <p class="dock-note" id="start-note"></p>
+        <button class="pill pill-primary wide" type="button" id="start-btn">Spiel starten</button>
       </div>
     </section>
 
-    <section id="reveal-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="player-name">
-      <p id="reveal-progress" class="eyebrow"></p><h2 id="player-name"></h2><p id="handoff-note" class="handoff"></p>
-      <button id="show-card" class="card-button" type="button" aria-describedby="handoff-note">Geheime Karte anzeigen</button>
-      <div id="secret" class="secret" hidden aria-live="polite"><p id="role"></p><strong id="word"></strong><small id="hint-text"></small></div>
-      <button id="next-player" type="button" hidden>Karte schließen und weitergeben</button>
-      <button class="secondary text-button" data-new-game type="button">Runde abbrechen</button>
-    </section>
-
-    <section id="round-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="round-title">
-      <p class="eyebrow">Diskussionsrunde <span id="round-number"></span></p><h2 id="round-title">Wer kennt den Begriff nicht?</h2><p><strong id="round-category"></strong> · <span id="round-players"></span></p>
-      <div class="timer"><span id="time" aria-live="off" aria-label="Verbleibende Zeit">03:00</span><button id="timer-toggle" class="secondary" type="button">Timer starten</button></div>
-      <ol class="rules"><li>Eine Person beginnt mit einem kurzen Hinweis.</li><li>Der Begriff darf nicht direkt genannt werden.</li><li>Danach stimmen alle Personen geheim ab.</li></ol>
-      <div class="actions"><button id="start-vote" type="button">Abstimmung starten</button><button class="secondary" data-new-game type="button">Runde abbrechen</button></div>
-    </section>
-
-    <section id="vote-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="voter-name">
-      <p id="vote-progress" class="eyebrow"></p><h2 id="voter-name"></h2><p class="handoff">Nur diese Person darf abstimmen. Danach Gerät weitergeben.</p>
-      <div id="vote-options" class="vote-grid" role="group" aria-label="Abstimmungsoptionen"></div>
-      <button class="secondary text-button" data-new-game type="button">Runde abbrechen</button>
-    </section>
-
-    <section id="vote-handoff-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="vote-handoff-title">
-      <p class="eyebrow" id="vote-handoff-progress">Stimme gespeichert</p>
-      <h2 id="vote-handoff-title">Handy weitergeben</h2>
-      <p class="handoff">Gib das Gerät an <strong id="vote-next-player"></strong> weiter. Die letzte Stimme ist verborgen.</p>
-      <button id="continue-vote" type="button">Ich bin bereit</button>
-    </section>
-
-    <section id="guess-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="guess-title">
-      <p class="eyebrow">Letzte Chance</p>
-      <h2 id="guess-title">Der Imposter wurde gefunden</h2>
-      <p><strong id="eliminated-player"></strong> sagt jetzt den vermuteten Begriff laut. Die Gruppe entscheidet gemeinsam.</p>
-      <p class="handoff">Hat der Imposter den Begriff richtig genannt?</p>
-      <div class="guess-actions">
-        <button id="guess-correct" type="button">Richtig</button>
-        <button id="guess-wrong" class="secondary" type="button">Falsch</button>
+    <!-- ─────────── SPIELER ─────────── -->
+    <section class="screen" data-screen="players" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Spieler</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <div class="counter">
+            <h1 tabindex="-1" data-head>Am Start</h1>
+            <span class="count-badge" id="player-badge"></span>
+          </div>
+          <div class="rows" id="player-list"></div>
+          <p class="hint-line" id="player-hint"></p>
+          <div id="seat-preview"></div>
+        </div>
+      </div>
+      <div class="dock">
+        <form class="add-row" id="player-form">
+          <label class="sr-only" for="player-input">Neuer Spieler</label>
+          <input id="player-input" type="text" maxlength="32" autocomplete="off" autocapitalize="words"
+                 enterkeyhint="done" placeholder="Neuer Spieler">
+          <button class="add-btn" type="submit" id="player-add" aria-label="Person hinzufügen" data-icon="plus"></button>
+        </form>
       </div>
     </section>
 
-    <section id="result-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="result-heading">
-      <p class="eyebrow">Auflösung</p><h2 id="result-heading">Der Begriff war</h2><div id="result-word" class="result-word"></div><p id="result-meta"></p><h3>Imposter</h3><ul id="result-imposters" class="imposter-list"></ul>
-      <h3>Punktestand</h3><div id="leaderboard" class="leaderboard"></div>
-      <div class="actions"><button id="next-round" type="button">Nächste Runde</button><button class="secondary" data-new-game type="button">Neues Match</button></div>
+    <!-- ─────────── KATEGORIE ─────────── -->
+    <section class="screen" data-screen="packs" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Kategorie</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Kategorie wählen</h1>
+          <div class="rows" id="pack-list"></div>
+          <p class="lede-dim">„Gemischt“ nimmt Karten aus allen Kategorien.</p>
+        </div>
+      </div>
     </section>
 
-  </main>
+    <!-- ─────────── WIE ES GEHT ─────────── -->
+    <section class="screen" data-screen="howto" data-tint hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Wie es geht</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <div class="fit howto-fit">
+            <h1 class="fit-text" id="howto-title" tabindex="-1" data-head></h1>
+          </div>
+          <p class="mode-sub howto-sub" id="howto-sub"></p>
+          <ol class="steps" id="howto-steps"></ol>
+        </div>
+      </div>
+    </section>
 
-  <section id="category-screen" class="category-screen" role="dialog" aria-modal="true" aria-labelledby="category-title" hidden>
-    <button id="category-back" class="back-link" type="button">← Zurück</button>
-    <h2 id="category-title" tabindex="-1">Kategorie</h2>
-    <div id="category-list" class="category-list"></div>
-    <p class="field-note">„Gemischt“ nimmt Begriffe aus allen Kategorien.</p>
-  </section>
+    <!-- ─────────── PROFIL ─────────── -->
+    <section class="screen" data-screen="profile" hidden>
+      <div class="inner appbar"><span class="wordmark">Profil</span></div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Profil</h1>
+          <div class="profile-head">
+            <div class="avatar"><div class="mark" id="profile-avatar"></div></div>
+            <div>
+              <h2 id="profile-name">Eure Runde</h2>
+              <p id="profile-since"></p>
+            </div>
+          </div>
+
+          <div class="stats" id="profile-stats"></div>
+
+          <div id="resume-slot"></div>
+
+          <section class="sec">
+            <div class="sec-head"><h3>Zuletzt gespielt</h3></div>
+            <div class="rows" id="profile-recent"></div>
+            <p class="empty" id="recent-empty" hidden>Noch nichts gespielt. Such dir auf der Startseite etwas aus.</p>
+          </section>
+
+          <section class="sec">
+            <div class="sec-head"><h3>Einstellungen</h3></div>
+            <div class="setting-rows">
+              <button class="row" type="button" data-open="players">
+                <span class="row-ico" data-icon="users"></span>
+                <span class="row-main">Spieler<small>Gilt für alle Spiele</small></span>
+                <span class="row-val" id="settings-players"></span>
+                <span class="row-chev" data-icon="chev"></span>
+              </button>
+              <button class="row" type="button" data-open="profile-privacy">
+                <span class="row-ico" data-icon="shield"></span>
+                <span class="row-main">Datenschutz</span>
+                <span class="row-chev" data-icon="chev"></span>
+              </button>
+              <button class="row" type="button" data-open="profile-help">
+                <span class="row-ico" data-icon="help"></span>
+                <span class="row-main">Hilfe</span>
+                <span class="row-chev" data-icon="chev"></span>
+              </button>
+            </div>
+          </section>
+          <p class="app-version" id="app-version"></p>
+        </div>
+      </div>
+      <nav class="tabbar" aria-label="Bereiche"></nav>
+    </section>
+
+    <!-- ─────────── PROFIL: DATENSCHUTZ ─────────── -->
+    <section class="screen" data-screen="profile-privacy" hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Datenschutz</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Datenschutz</h1>
+          <div class="text-block">
+            <p>Kein Konto, keine Cloud.</p>
+            <p>Secret Circle sammelt nichts. Es gibt keine Anmeldung, keine Analyse, keine Werbung und keine Übertragung an Dritte.</p>
+          </div>
+          <div class="text-block">
+            <p>Was gespeichert wird</p>
+            <p>Die Namen eurer Gruppe, der Verlauf abgeschlossener Spiele, laufende Spielstände, eigene Kategorien und Spiele sowie Einstellungen. Alles liegt im lokalen Speicher dieses Browsers.</p>
+          </div>
+          <div class="text-block">
+            <p>Wie du es wieder loswirst</p>
+            <p>Über „Daten sichern oder löschen“ sicherst du alles als Datei oder löschst es vollständig. Das Löschen wirkt sofort und lässt sich nicht rückgängig machen.</p>
+          </div>
+          <a class="pill pill-primary wide" href="party.html?view=settings&amp;from=v2">Daten sichern oder löschen</a>
+          <a class="pill pill-quiet wide" href="privacy.html">Vollständige Datenschutzhinweise</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── PROFIL: HILFE ─────────── -->
+    <section class="screen" data-screen="profile-help" hidden>
+      <div class="inner appbar">
+        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
+        <span class="appbar-title">Hilfe</span>
+      </div>
+      <div class="body scroll">
+        <div class="inner">
+          <h1 class="sr-only" tabindex="-1" data-head>Hilfe</h1>
+          <div class="text-block">
+            <p>Ein Handy reicht</p>
+            <p>Secret Circle wird herumgereicht. Wer dran ist, steht groß auf dem Bildschirm. Gib das Gerät erst weiter, wenn geheime Inhalte wieder verdeckt sind.</p>
+          </div>
+          <div class="text-block">
+            <p>Vor dem Start</p>
+            <p>Trag unter „Spieler“ eure Gruppe ein. Die Liste gilt für alle Spiele, auch für Word Imposter. Zu wenige oder zu viele Personen blockieren den Start — die Zahl wird dann rot.</p>
+          </div>
+          <div class="text-block">
+            <p>Ein Spiel läuft weiter</p>
+            <p>Schließt du die App mitten im Spiel, steht der Spielstand beim nächsten Öffnen oben auf der Startseite. Fortgesetzt wird erst nach einer Prüfung; geheime Inhalte öffnen sich dabei nicht von selbst.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <script src="runtime-guard.js"></script>
-  <script src="setup-ux.js"></script>
-  <script src="privacy-guard.js"></script>
-  <script src="wake-lock.js"></script>
-  <script src="game-engine.js"></script>
-  <script src="role-assignment.js"></script>
-  <script src="word-packs.js"></script>
-  <script src="data-store.js"></script>
-  <script src="word-imposter-resume-guard.js"></script>
-  <script src="app.js"></script>
+  <script src="party-catalog.js"></script>
+  <script src="party-expansion.js"></script>
+  <script src="party-trending-catalog.js"></script>
+  <script src="party-mega-catalog.js"></script>
+  <script src="party-viral-catalog.js"></script>
+  <script src="party-core-release-catalog.js"></script>
+  <script src="party-core-classic-content.js"></script>
+  <script src="party-routing.js"></script>
+  <script src="party-wave-one-catalog.js"></script>
+  <script src="party-wave-one-imposter-catalog.js"></script>
+  <script src="party-wave-one-writing-catalog.js"></script>
+  <script src="party-wave-one-voting-catalog.js"></script>
+  <script src="party-wave-one-bluff-catalog.js"></script>
+  <script src="party-wave-one-clue-catalog.js"></script>
+  <script src="party-custom-packs.js"></script>
+  <script src="v2-hub-packs.js"></script>
+  <script src="v2-hub.js"></script>
 </body>
 </html>
