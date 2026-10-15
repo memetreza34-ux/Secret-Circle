@@ -2,6 +2,8 @@
 
 Stand: 14. Oktober 2026 · **Arbeitsvereinbarung, keine Release-Freigabe** · Öffentlicher Release: **NO_GO**.
 
+**Verbindlicher roter Faden:** `docs/PROJEKT_KOMPASS.md` bündelt Release-Reihenfolge, Prioritätsentscheidungen, unabhängige Beraterrolle, Recherche-, Qualitäts- und Übergaberegeln für alle Mitwirkenden. Dieses Dokument beschreibt dazu die detaillierte KI-Teamarbeit. Bei abweichenden veralteten Prioritäten erst den aktuellen `main`-Stand und die im Kompass verlinkten aktuellen Issues vergleichen.
+
 Dieses Dokument ergänzt `AGENTS.md`, Issue [#24](https://github.com/memetreza34-ux/Secret-Circle/issues/24) und die bisherigen Release-Gates. Es ändert weder den Umfang der Januar-2027-PWA noch laufende Arbeiten. Bei Konflikten zu Produkt-/Sicherheitsverträgen gelten die strengeren vorhandenen Regeln; Widersprüche sind vor einer Änderung sichtbar zu klären.
 
 ## 1. Klare Zuständigkeiten
