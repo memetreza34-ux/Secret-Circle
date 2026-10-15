@@ -9,7 +9,7 @@ budgets = {
     'assets/images/imposter.webp': 35_000,
     'assets/images/truth-dare.webp': 35_000,
     'assets/images/mafia.webp': 35_000,
-    'index.html': 60_000, 'party.html': 100_000, 'advanced.html': 35_000,
+    'index.html': 60_000, 'word-imposter.html': 30_000, 'party.html': 100_000, 'advanced.html': 35_000,
     'quick-play.html': 45_000, 'creator.html': 45_000, 'privacy.html': 32_000,
     'v2-hub.html': 20_000, 'v2-hub.js': 50_000, 'v2-hub-packs.js': 6_000, 'v2-theme.css': 50_000,
     'runtime-guard.js': 22_000, 'setup-ux.js': 14_000, 'privacy-guard.js': 10_000,

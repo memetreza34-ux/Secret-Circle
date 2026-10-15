@@ -7,7 +7,7 @@ const path = require('node:path');
 const read = relative => fs.readFileSync(path.resolve(__dirname, '..', relative), 'utf8');
 const app = read('app.js');
 const store = read('data-store.js');
-const page = read('index.html');
+const page = read('word-imposter.html');
 
 assert.match(store, /const MAX_CUSTOM_CATEGORIES = 50;/);
 assert.match(store, /const MAX_CUSTOM_ENTRIES = 200;/);
