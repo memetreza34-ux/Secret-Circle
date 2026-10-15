@@ -2,7 +2,7 @@
 
 - Kanonischer Einstieg: `/` und `index.html` zeigen den Party-Hub; `v2-hub.html` bleibt Legacy-Alias.
 - Word Imposter ist separat auf `word-imposter.html` erreichbar; die lokalen Speicher-Keys werden nicht verändert.
-- Manifeststart `./`, alle betroffenen Katalog-/Direktlinks und Browser-Verträge aktualisiert; Offline-Core-Generation v93 → v94.
+- Manifeststart `./`, alle betroffenen Katalog-/Direktlinks und Browser-Verträge aktualisiert; Offline-Core-Generation v93 → v95. Version v94 wurde nur im unveröffentlichten PR erprobt.
 - Browser-/Offline-/Geräte-/Upgrade-Abnahmen: bis zu tatsächlich erfolgreichen Nachweisen OFFEN; kein Release-GO.
 
 # Changelog
