@@ -1,3 +1,11 @@
+## v98 – Schnellstart schützt den V1-Kernfokus (16. Oktober 2026)
+
+- Schnellstart wählt ausschließlich passende Spiele aus den 15 eingefrorenen Kernspielen; experimentelle Labs und Erweiterungen bleiben im Katalog verfügbar, werden aber nicht zufällig empfohlen.
+- Die im Hub gewählte Altersstufe (insbesondere „Nur familienfreundlich“) gilt ebenfalls für die Schnellstart-Auswahl.
+- Fehlt die Release-Einstufung beim Laden, wird statt einer nicht abgesicherten Zufallsauswahl der Katalog gezeigt.
+- Neue Browserregressionstests prüfen 20 Zufallsauswahlen, Spielerlimits und fehlende Einstufung.
+- Offline-Cache v97 → v98. Release-Gates und echte Geräte-/Gruppentests bleiben offen: **NO_GO**.
+
 ## v97 – Echte Gruppe bei der ersten Partie (15. Oktober 2026)
 
 - Neue Installationen zeigen keine erfundene, spielbereite Gruppe mehr: 0 echte Personen, Startseiten-Schaltfläche „Spieler einrichten“ und gesperrte Spiele bis zur Gruppeneinrichtung.

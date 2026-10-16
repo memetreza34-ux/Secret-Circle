@@ -743,7 +743,18 @@
     $('#hub-status')?.insertAdjacentElement('afterend', card);
   }
   function quickStart() {
-    const playable = C.games.filter(game => game.status === 'playable' && game.mode !== 'utility' && state.players.length >= game.minPlayers && state.players.length <= game.maxPlayers);
+    /* Die erste Version empfiehlt bewusst nur die 15 geprüften Kernspiele.
+       Labs und Erweiterungen bleiben über den Katalog erreichbar. */
+    const release = window.SecretCirclePartyReleaseStructure;
+    if (!release?.tierFor || !release?.ageAllows) {
+      showView('games');
+      setStatus('Kernspiel-Auswahl wird geladen. Bitte wähle ein Spiel aus dem Katalog.', true);
+      return;
+    }
+    const ageLevel = $('#age-filter')?.value || 'all';
+    const playable = C.games.filter(game => game.status === 'playable' && release.tierFor(game) === 'core'
+      && release.ageAllows(game, ageLevel)
+      && state.players.length >= game.minPlayers && state.players.length <= game.maxPlayers);
     const game = randomItem(playable);
     if (game) openDetail(game.id);
     else { showView('players'); setStatus('Speichere zuerst eine passende Gruppe.', true); }
