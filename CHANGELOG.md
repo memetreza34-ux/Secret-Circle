@@ -1,3 +1,11 @@
+## v99 – Altersstufe wirkt auch in der kanonischen Startseite (16. Oktober 2026)
+
+- Der V2-Hub übernimmt die gespeicherte Altersstufe aus den gemeinsamen Party-Einstellungen. Der Familienmodus filtert Empfehlungen, Hero, Katalog und Suche.
+- Direkte V2-Links zu Spielen anderer Altersstufen zeigen weiterhin das Spieldetail, sperren jedoch den Start und erklären, wo die Einstellung angepasst werden kann.
+- Ohne Präferenz bleibt das bisherige Verhalten unverändert. Spieler, Favoriten, Presets und Sessions werden nicht verändert.
+- Browserregressionen für Startseite, Familienmodus, Suchfilter, Deep-Links, Legacy-Alias und Rückkehr zu „Alle Inhalte“ ergänzt.
+- Offline-Cache v98 → v99. Realgeräte, Datenschutz-/Betreiberangaben und Freigabe bleiben offen: **NO_GO**.
+
 ## v98 – Schnellstart schützt den V1-Kernfokus (16. Oktober 2026)
 
 - Schnellstart wählt ausschließlich passende Spiele aus den 15 eingefrorenen Kernspielen; experimentelle Labs und Erweiterungen bleiben im Katalog verfügbar, werden aber nicht zufällig empfohlen.
