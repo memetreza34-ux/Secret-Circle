@@ -15,6 +15,8 @@ test('malformed local JSON is discarded without breaking startup', async ({ page
   await page.reload();
 
   await expect(page.locator('#setup-screen')).toBeVisible();
+  await expect(page.locator('#start')).toBeDisabled();
+  await page.locator('#players').fill('Aylin\nBen\nCem');
   await expect(page.locator('#start')).toBeEnabled();
   await expect(page.locator('#resume-box')).toBeHidden();
 });

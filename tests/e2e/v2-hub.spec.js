@@ -145,6 +145,8 @@ test('a linked game opens its own engine page', async ({ page }) => {
   await seedHub(page);
   await openV2(page, '#spiel=wavelength');
   await expect(page.locator('#pack-row')).toBeHidden();
+  const updateNotice = page.locator('.pwa-update-banner:visible');
+  if (await updateNotice.count()) await updateNotice.getByRole('button', { name: 'Später' }).click();
   await page.locator('#start-btn').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=wavelength$/);
   await expect(page.getByRole('heading', { name: 'Spektrum-Tipp' })).toBeVisible();

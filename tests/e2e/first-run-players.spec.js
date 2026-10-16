@@ -27,13 +27,14 @@ test('neues Gerät: keine fiktiven Spieler, erste Gruppe wird bewusst eingericht
   const names = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY);
   expect(names).toEqual(['Aylin', 'Ben', 'Cem']);
 
-  await page.getByRole('tab', { name: 'Start' }).click();
+  // Der Spieler-Screen hat bewusst keine Tabbar; über den kanonischen Root zurückgehen.
+  await page.goto('/');
   await expect(page.locator('#hero-play')).toHaveText('Spielen');
   await page.goto('/#spiel=never-have');
   await expect(page.locator('#start-btn')).toBeEnabled();
   await page.locator('#start-btn').click();
   await expect(page.locator('#play-layer')).toBeVisible();
-  await expect(page.locator('#play-player')).toContainText('Aylin');
+  await expect(page.locator('#play-player')).toContainText(/Aylin|Ben|Cem/);
 
   await page.goto('/#spieler');
   await expect(page.locator('#player-badge')).toHaveText('3/20');

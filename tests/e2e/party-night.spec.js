@@ -137,9 +137,17 @@ test('Party Night progress bar reflects handled stations without CSP violations'
   expect(violations).toEqual([]);
 });
 
-test('Party Night plans with the prepared example group before anything is saved', async ({ page }) => {
+test('Party Night requires a consciously saved group before its first plan', async ({ page }) => {
   await page.evaluate(() => localStorage.clear());
   await page.reload();
+  await expect(page.locator('#party-night-player-count')).toHaveText('0');
+  await page.getByRole('button', { name: 'Plan erstellen' }).click();
+  await expect(page.locator('#party-night-status')).toContainText('Speichere zuerst mindestens zwei Personen');
+  await expect(page.locator('.party-night-step')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Spieler', exact: true }).click();
+  await page.locator('#hub-players').fill('Aylin\nBen\nCem\nDaria');
+  await page.getByRole('button', { name: 'Spieler speichern' }).click();
+  await page.getByRole('button', { name: 'Start', exact: true }).click();
   await expect(page.locator('#party-night-player-count')).toHaveText('4');
   await page.getByRole('button', { name: 'Plan erstellen' }).click();
   await expect(page.locator('.party-night-step').first()).toBeVisible();

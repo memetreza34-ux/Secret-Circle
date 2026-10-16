@@ -8,6 +8,8 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
+  // Alle bisherigen Setup-Tests starten mit einer bewusst angelegten Testgruppe.
+  await page.locator('#players').fill('Alex\nSam\nMika\nLina');
   await page.locator('#advanced-settings > summary').click();
 });
 
@@ -17,7 +19,8 @@ test('invalid or duplicate hub names cannot override Word Imposter setup', async
   })));
   await page.reload();
   await expect(page.locator('#import-group-players')).toBeHidden();
-  await expect(page.locator('#players')).toHaveValue('Alex\nSam\nMika\nLina');
+  await expect(page.locator('#players')).toHaveValue('');
+  await expect(page.locator('#start')).toBeDisabled();
 });
 
 test('advanced settings are folded by default with a readable preset', async ({ page }) => {
