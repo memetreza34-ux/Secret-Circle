@@ -18,9 +18,9 @@
 | Altersfilter im V2-Root, Katalog, Empfehlungen und Direktlinks | PR [#39](https://github.com/memetreza34-ux/Secret-Circle/pull/39), gemergt; Commit `bf5de72b9d6677a38120b57d911b2ebbead56746` |
 | **55 von 55 Spiele bis zur ersten aktiven Szene automatisch gestartet** | PR [#40](https://github.com/memetreza34-ux/Secret-Circle/pull/40), gemergt; Merge `e1befbe1f22bed9d45a143320c2615f0bd699a7d`. E2E-Datei `tests/e2e/all-55-game-launch.spec.js`; [CI #38886549437](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/38886549437) Chromium-Validierung und WebKit bestanden; [Cross-Browser #38886549438](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/38886549438) bestanden; finaler PR-Head `907ce6a5def625af8a79ced13be1812e0eff5c4e`. **Das ist kein Beweis für abgeschlossene Runden oder 55 echte Geräteprüfungen.** |
 | PWA-Generation | `v99`, `secret-circle-v99` / `secret-circle-v99-staging`; Core-Prüfsumme in `release-meta.json`. Keine neue Version für reine Markdown-Änderungen nötig. |
-| Nach-Merge-CI für #40 | [Run #38898973994](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/38898973994) bei Erstellung dieses Dokuments **noch in Ausführung**; Ergebnis neu prüfen, nicht voraussetzen. |
+| Nach-Merge-CI für #40 | [Run #38898973994](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/38898973994) inzwischen **erfolgreich** (`validate` und `e2e-webkit` auf `e1befbe`, 16.10.2026). Für neue Commits immer neu prüfen. |
 
-**Nicht abgeschlossen:** 55 spieltypische Ergebnisse/Replay, Privacy-Risiko in allen geheimen Runden, reale Gruppenabnahme und echte Geräte, PWA-Offline-Upgrade von alten Installationen, Hosting/HTTPS/Betreiber- und Rechtefreigabe, Schutz von `main` (bei Übergabe `protected:false`). **Keine erfundenen PASS-Häkchen.**
+**Nicht abgeschlossen:** 55 spieltypische Ergebnisse/Replay, Privacy-Risiko in allen geheimen Runden, reale Gruppenabnahme und echte Geräte, PWA-Offline-Upgrade von alten Installationen, Hosting/HTTPS/Betreiber- und Rechtefreigabe, Schutz von `main` war bei Übergabe `protected:false`; **seit 16.10.2026 aktiv** (Pflicht-Checks `validate`, `e2e-webkit`, `smoke`, siehe `BRANCH_PROTECTION.md`). **Keine erfundenen PASS-Häkchen.**
 
 ## 3. Aufteilung – eine Datei/ein Verantwortlicher zur Zeit
 
@@ -52,7 +52,7 @@
 
 ### Produktinhaber = echte Abnahme und Betriebsentscheidung
 
-[Issue #43](https://github.com/memetreza34-ux/Secret-Circle/issues/43), zusätzlich [#8](https://github.com/memetreza34-ux/Secret-Circle/issues/8) und [#14](https://github.com/memetreza34-ux/Secret-Circle/issues/14): 55 reale Partyrunden in einer Gruppe protokollieren, iPhone Safari/Home-Screen-PWA + Android Chrome/installierte PWA, altes Cache-Update/Offline/Resume, Bewertung der Bildwelt, Hosting/HTTPS, Kontakt-, Betreiber-, Datenschutz-, Rechte- und Supportfreigaben. Geheime persönliche Daten niemals in öffentlichen Issues veröffentlichen. Branch Protection unter Repository-Einstellungen setzen.
+[Issue #43](https://github.com/memetreza34-ux/Secret-Circle/issues/43), zusätzlich [#8](https://github.com/memetreza34-ux/Secret-Circle/issues/8) und [#14](https://github.com/memetreza34-ux/Secret-Circle/issues/14): 55 reale Partyrunden in einer Gruppe protokollieren, iPhone Safari/Home-Screen-PWA + Android Chrome/installierte PWA, altes Cache-Update/Offline/Resume, Bewertung der Bildwelt, Hosting/HTTPS, Kontakt-, Betreiber-, Datenschutz-, Rechte- und Supportfreigaben. Geheime persönliche Daten niemals in öffentlichen Issues veröffentlichen. Branch Protection ist seit 16.10.2026 aktiv.
 
 ### ChatGPT = Code-Review-/Release-Gate (Arbeit aus diesem Chat beendet)
 

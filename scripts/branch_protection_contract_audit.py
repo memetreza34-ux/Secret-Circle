@@ -38,6 +38,9 @@ doc_status_match = re.search(r'Evidence-Status:\s*\*\*(OPEN|PASS)\*\*', contract
 doc_status = doc_status_match.group(1) if doc_status_match else None
 allowed_gate_statuses = {'OPEN', 'BLOCKED', 'PASS', 'FAIL'}
 expected_doc_status = 'PASS' if branch_gate_status == 'PASS' else 'OPEN'
+plain_contract = re.sub(r'[*_`]', '', contract)
+branch_contexts = (branch_gate.get('evidence') or {}).get('requiredStatusCheckContexts') or []
+cross_documented_required = 'ist seit 16. Oktober 2026 ein Pflicht-Check für Pull Requests auf main' in plain_contract
 
 checks = {
     'contract_has_explicit_evidence_status': doc_status in {'OPEN', 'PASS'},
@@ -54,8 +57,10 @@ checks = {
     'cross_job_smoke_stable': '\n  smoke:\n' in cross,
     'cross_runs_on_pr_and_manual_dispatch': 'workflow_dispatch:' in cross and 'pull_request:' in cross and '\n  push:' not in cross,
     # Der Vertragsinhalt zählt, nicht die Position der Markdown-Fettschrift.
-    # Die Negation muss erhalten bleiben; ein dauerhaftes Required-Check-Claim ist kein PASS.
-    'cross_not_documented_as_permanent_required_check': 'ist derzeit kein dauerhaft erforderlicher PR-Check' in re.sub(r'[*_`]', '', contract),
+    # Ein Pflicht-Check-Claim muss durch die geprüfte GitHub-Einstellung in
+    # release-evidence.json gedeckt sein und ist nie ein Cross-Browser-Release-PASS.
+    'cross_required_check_matches_evidence': cross_documented_required == ('smoke' in branch_contexts),
+    'cross_required_check_not_rc_pass': 'ersetzt aber keinen Cross-Browser-Release-PASS' in plain_contract,
     'cross_still_release_gate': 'exakten unveränderten RC-Commit' in contract and 'Cross-Browser' in checklist,
     'zero_step_jobs_not_accepted': 'Kein Merge bei `steps: []`.' in contract and 'steps: []' in troubleshooting,
     'lockfile_now_present': lock.get('lockfileVersion') == 3 and lock.get('name') == package.get('name'),
@@ -77,7 +82,7 @@ print(json.dumps({
     'branch_protection_contract_audit': 'PASS',
     'required_pr_check': 'Secret Circle CI / validate',
     'cross_browser_required_for_rc': True,
-    'cross_browser_permanent_pr_required_check': False,
+    'cross_browser_permanent_pr_required_check': cross_documented_required and 'smoke' in branch_contexts,
     'lockfile_present': True,
     'npm_ci_active': True,
     'online_npm_ci_verified': ci_verified,

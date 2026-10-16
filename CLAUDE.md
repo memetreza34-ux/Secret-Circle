@@ -8,8 +8,8 @@ Vor jeder Arbeit **`docs/PROJEKT_KOMPASS.md`**, **`AGENTS.md`** sowie **`docs/AI
 
 **Aufgabenteilung:** Claude Code ist der technische Owner (Funktionen, Bugs, Tests, Security, PWA/Offline, echte UI-Implementierung). Codex übernimmt nach expliziter Freigabe Bildkonzepte/Asset-Pipeline; Claude soll keine neue Bildproduktion starten. ChatGPT plant und reviewed, Arman genehmigt.
 
-**Arbeitsregel:** branch/PR statt `main`; kleine P0/P1-Aufgaben aus Issue #24. PR #30 ist trotz Titel **nicht nur Dokumentation**: auch Assets, `sw.js`, `v2-hub.js`, CSS, Audits und E2E betroffen. Nicht blind mergen, tatsächlich geänderte Dateien und CI-Head prüfen.
+**Arbeitsregel:** branch/PR statt `main` – seit 16.10.2026 durch Branch-Schutz erzwungen (Pflicht-Checks `validate`, `e2e-webkit`, `smoke`; Branch muss aktuell sein; gilt auch für Admins). Kleine P0/P1-Aufgaben aus Issue #41 und #24. Die alten PRs #30 und #13 sind geschlossen; ihre Branches bleiben als Archiv und werden nie blind übernommen. Tatsächlich geänderte Dateien und CI-Head immer prüfen.
 
-**Sofortauftrag:** Zuerst PR-/CI-Konsolidierung, dann kanonisches Root-/PWA-Routing als eigener, regressionsgetesteter PR, danach Core-/Cross-Browser-/Geräte-Testgates. Keine neuen Spielmodi, keine ungefragten Billing-/Tracking-/Backend-Erweiterungen.
+**Sofortauftrag:** PR-/CI-Konsolidierung (#32) und Root-/PWA-Routing (#34, #35) sind erledigt. Jetzt Issue #41: **alle 55 Spiele** (15 Core / 13 Extended / 27 Labs) automatisiert bis Ergebnis und Replay prüfen und echte Defekte mit Regressionstest beheben; Übergabe in `docs/UEBERGABE_55_SPIELE_2026-10-16.md`. Danach Cross-Browser-/Geräte-Testgates. Keine neuen Spielmodi, keine ungefragten Billing-/Tracking-/Backend-Erweiterungen.
 
 **Definition of Done:** Alle berührten Verträge und Release-Gates nach `AGENTS.md` prüfen; SHA, Befehle, Ergebnisse, Grenzen und offene reale Testnachweise angeben. Release bleibt **NO_GO**, bis echte Evidence vollständig ist. Jede technische Änderung in fünf kurzen Lernpunkten für Arman erklären.
