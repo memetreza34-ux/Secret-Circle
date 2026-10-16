@@ -214,6 +214,8 @@ test('quick mode recovers focus when a phase replaces the clicked control', asyn
   await expect(page.locator('#quick-play')).toBeVisible();
   await expect(page.locator('#quick-pause')).toBeFocused();
 
+  await page.getByRole('button', { name: 'Ziel anzeigen' }).click();
+  await expect(page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' })).toBeFocused();
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
   await expect(page.locator('#quick-content input[type="range"]')).toBeVisible();
   await expect(page.locator('#quick-content input[type="range"]')).toBeFocused();

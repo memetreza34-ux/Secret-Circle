@@ -7,6 +7,10 @@
 
   const VERSION = 5;
   const TICK_MS = 250;
+  /* So lange bleiben die Ergebnis-Aktionen nach Session-Ende gesperrt. Ein
+     Doppeltipp auf die letzte Spielaktion traf auf dem Handy sonst direkt
+     „Wiederholen“ und startete ungewollt eine neue Session. */
+  const RESULT_ARM_MS = 600;
   const TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1';
   const TIMER_STORE_VERSION = 1;
   const TIMER_FAMILIES = Object.freeze(['quick', 'mega', 'viral', 'created']);
@@ -148,6 +152,8 @@
     const now = typeof options.now === 'function' ? options.now : () => Date.now();
     const setIntervalFn = typeof options.setIntervalFn === 'function' ? options.setIntervalFn : (callback, delay) => setInterval(callback, delay);
     const clearIntervalFn = typeof options.clearIntervalFn === 'function' ? options.clearIntervalFn : id => clearInterval(id);
+    const setTimeoutFn = typeof options.setTimeoutFn === 'function' ? options.setTimeoutFn : (callback, delay) => setTimeout(callback, delay);
+    const clearTimeoutFn = typeof options.clearTimeoutFn === 'function' ? options.clearTimeoutFn : id => clearTimeout(id);
     const confirmFn = typeof options.confirmFn === 'function' ? options.confirmFn : message => windowRef?.confirm ? windowRef.confirm(message) : true;
     const reloadFn = typeof options.reloadFn === 'function' ? options.reloadFn : () => windowRef?.location?.reload?.();
     const timerFamily = familyForGame(options.catalog, options.gameId);
@@ -163,6 +169,7 @@
     let remainingMs = 0;
     let lastTickAt = 0;
     let preservePersistedOnNextStop = false;
+    let resultArmTimer = null;
 
     const query = selector => documentRef?.querySelector?.(selector) || null;
 
@@ -337,11 +344,25 @@
 
     function togglePause() { return setPaused(!paused); }
 
+    function armResultActions() {
+      if (!query('#quick-result .inline-actions')) return false;
+      if (resultArmTimer !== null) clearTimeoutFn(resultArmTimer);
+      setInert('#quick-result .inline-actions', true);
+      /* Den Fokus übernimmt währenddessen secondary-surface-a11y.js: Er geht
+         auf die Ergebnis-Überschrift, weil „Wiederholen“ noch gesperrt ist. */
+      resultArmTimer = setTimeoutFn(() => {
+        resultArmTimer = null;
+        setInert('#quick-result .inline-actions', false);
+      }, RESULT_ARM_MS);
+      return true;
+    }
+
     function setSessionActive(value) {
       sessionActive = Boolean(value);
       if (!sessionActive) {
         setPaused(false);
         stopTimer();
+        armResultActions();
       }
       syncActiveUi();
       return sessionActive;
@@ -407,6 +428,7 @@
   return Object.freeze({
     version: VERSION,
     tickMilliseconds: TICK_MS,
+    resultArmMilliseconds: RESULT_ARM_MS,
     timerStoreKey: TIMER_STORE_KEY,
     timerStoreVersion: TIMER_STORE_VERSION,
     timerFamilies: TIMER_FAMILIES,

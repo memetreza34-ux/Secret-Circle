@@ -68,6 +68,9 @@ test('Quick Mode setup and active round retain accessible labels and keyboard fo
   await expect(page.locator('#quick-start')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#quick-play')).toBeVisible();
+  await page.getByRole('button', { name: 'Ziel anzeigen' }).focus();
+  await expect(page.getByRole('button', { name: 'Ziel anzeigen' })).toBeFocused();
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).focus();
   await expect(page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' })).toBeFocused();
   await page.keyboard.press('Enter');

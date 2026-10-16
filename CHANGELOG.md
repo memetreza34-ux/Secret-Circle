@@ -1,3 +1,11 @@
+## v100 – Quick-Spiele: Geheimnisse bleiben bei Übergabe und Neuladen verdeckt (16. Oktober 2026)
+
+- Spektrum-Tipp zeigt den geheimen Zielwert erst nach „Ziel anzeigen“. Bisher stand er sofort beim Rundenstart da, sodass ihn sah, wer die vorige Runde weitergetippt hatte.
+- Fortsetzen nach Neuladen deckt offene Geheimnisse wieder zu: die offene Karte bei Zeichnen & Raten, Geräusche, Melodie summen und Stirnraten sowie das offene Spektrum-Ziel. Karte und Ziel bleiben dieselben; Neuladen zieht nichts neu und ändert keine Punkte.
+- Nach Session-Ende sind die Ergebnis-Aktionen 0,6 Sekunden gesperrt. Ein Doppeltipp auf die letzte Spielaktion startete auf dem Handy sonst sofort „Wiederholen“ und blendete das Ergebnis aus. Gilt für alle Engines, die die gemeinsame Spielsteuerung nutzen (Quick, Trend, eigene Spiele).
+- Neuer Browsertest spielt alle 10 Quick-Spiele drei Runden bis zum Ergebnis, prüft genau einen Verlaufseintrag pro Session und spielt über Neustart und „Wiederholen“ zwei weitere Sessions vollständig. Dazu Regressionstests für die drei Fehler.
+- Offline-Cache v99 → v100. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v99 – Altersstufe wirkt auch in der kanonischen Startseite (16. Oktober 2026)
 
 - Der V2-Hub übernimmt die gespeicherte Altersstufe aus den gemeinsamen Party-Einstellungen. Der Familienmodus filtert Empfehlungen, Hero, Katalog und Suche.
