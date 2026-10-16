@@ -386,9 +386,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -399,9 +399,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -412,9 +412,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -425,9 +425,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -438,9 +438,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -451,9 +451,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -464,9 +464,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -477,9 +477,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -490,9 +490,9 @@
       "engine": "mega",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },

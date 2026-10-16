@@ -1,3 +1,10 @@
+## v101 – Trend-Spiele: Geheimnisse nach Neuladen wieder verdeckt (16. Oktober 2026)
+
+- Fortsetzen nach Neuladen zeigte bei „Wer bin ich?“, „Anime-Archetypen erraten“ und „Geheime Mission“ eine offen gezeigte Identität bzw. Mission sofort wieder an. Jetzt wieder verdeckt; der Inhalt bleibt derselbe, Neuladen zieht nichts neu.
+- Neuer Browsertest spielt alle 9 Trend-Spiele drei Runden bis zum Ergebnis, prüft genau einen Verlaufseintrag pro Session und spielt über Neustart und „Wiederholen“ zwei weitere Sessions vollständig. Der Doppeltipp-Schutz aus v100 ist auch hier abgesichert.
+- 55er-Matrix: Ende + Wiederholen jetzt 19/55.
+- Offline-Cache v100 → v101. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v100 – Quick-Spiele: Geheimnisse bleiben bei Übergabe und Neuladen verdeckt (16. Oktober 2026)
 
 - Spektrum-Tipp zeigt den geheimen Zielwert erst nach „Ziel anzeigen“. Bisher stand er sofort beim Rundenstart da, sodass ihn sah, wer die vorige Runde weitergetippt hatte.

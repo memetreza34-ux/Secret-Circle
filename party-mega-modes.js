@@ -572,8 +572,19 @@
     if (active) $('#quick-resume-text').textContent = `${game.title} · Runde ${active.round} von ${active.targetRounds}`;
   }
 
+  /* Nach Neuladen oder Rückkehr weiß niemand, wer das Gerät hält. Eine offen
+     gezeigte Identität oder Mission wird deshalb wieder zugedeckt; der Inhalt
+     bleibt derselbe, damit sich durch Neuladen nichts neu ziehen lässt. */
+  function concealSecretsForResume() {
+    if (!active?.current || active.phase !== 'card') return;
+    if (!['who-am-i', 'anime-guess', 'secret-mission'].includes(gameId)) return;
+    active.phase = 'ready';
+    saveActive();
+  }
+
   function resumeSession() {
     if (!active) return;
+    concealSecretsForResume();
     sessionControls.setSessionActive(true);
     $('#quick-setup').hidden = true;
     $('#quick-result').hidden = true;
