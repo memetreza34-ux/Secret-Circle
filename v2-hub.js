@@ -8,7 +8,6 @@
   'use strict';
 
   var CAT = window.SecretCirclePartyCatalog || { games: [], content: {} };
-
   /* ── Die sechs Kategorien ─────────────────────────────────────────── */
 
   /* Bündelt die neun Gruppen des Katalogs zu sechs Farbwelten. */
@@ -27,7 +26,6 @@
     'truth-dare': { src: 'assets/images/truth-dare.webp', alt: 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt' },
     mafia: { src: 'assets/images/mafia.webp', alt: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt' }
   };
-
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -66,7 +64,6 @@
     node.style.setProperty('--n', Math.max(4, String(text || '').length));
     if (cap) node.style.setProperty('--cap', cap);
   }
-
   /* ── Bildsprache: Punkt, Kreis, Linie ─────────────────────────────── */
 
   function tag(name, attrs) {
@@ -179,7 +176,6 @@
     var b = BUCKETS[i % BUCKETS.length];
     return markSVG({ id: 'avatar-' + i, bucket: b });
   }
-
   /* ── Symbole ──────────────────────────────────────────────────────── */
 
   var G = {
@@ -228,7 +224,6 @@
     }
     return wrapSVG(out.join(''));
   }
-
   /* ── Spiele aus dem Katalog ───────────────────────────────────────── */
 
   /* Eigene Spiele aus dem Creator tragen frei gewählte Gruppen. */
@@ -245,6 +240,7 @@
       min: g.minPlayers || 2,
       max: g.maxPlayers || 20,
       dur: g.duration || 10,
+      age: g.age,
       feat: !!g.featured,
       desc: g.description || '',
       steps: g.instructions || [],
@@ -259,23 +255,29 @@
     for (var i = 0; i < GAMES.length; i++) if (GAMES[i].id === id) return GAMES[i];
     return null;
   }
-
   /* ── Kategorien der Hub-Spiele (v2-hub-packs.js) ─────────────────── */
 
   var PACKS = window.SecretCircleV2Packs;
   function packsOf(g) { return PACKS ? PACKS.list(g) : []; }
   function chosenPack(g) { return PACKS ? PACKS.chosen(g) : null; }
-
   /* ── Gemeinsame Daten ─────────────────────────────────────────────── */
 
   var HUB_KEY = 'secret-circle-party-hub-v1';
   var IMPOSTER_HISTORY_KEY = 'secret-circle-history-v7';
+  var PREF_KEY = 'secret-circle-party-preferences-v1';
   /* Echte Spieler kommen nur aus der gemeinsamen gespeicherten Gruppe. */
   var MAX_PLAYERS = 20;
 
   function readJson(key) {
     try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
   }
+
+  function ageAllowed(g) {
+    var pref = readJson(PREF_KEY);
+    var level = pref && pref.version === 1 ? pref.ageLevel : 'all';
+    return level === 'family' ? g.age === 'all' : level === 'teen' ? g.age === 'all' || g.age === 'teen' : true;
+  }
+  function ageGames() { return GAMES.filter(ageAllowed); }
 
   function readHub() {
     var hub = readJson(HUB_KEY);
@@ -317,12 +319,10 @@
     var node = $('#app-status');
     if (node) node.textContent = message || '';
   }
-
   /* ── Zustand der Oberfläche ───────────────────────────────────────── */
 
   var currentId = null;
   function game() { return gameById(currentId); }
-
   /* ── Router ───────────────────────────────────────────────────────── */
 
   var NAV = [];
@@ -358,7 +358,6 @@
     CURRENT = null;
     show(p, { back: true });
   }
-
   /* ── Symbole und Tabs einsetzen ───────────────────────────────────── */
 
   function paintIcons(root) {
@@ -388,7 +387,6 @@
       });
     });
   }
-
   /* ── Kachel ───────────────────────────────────────────────────────── */
 
   function gameCard(g, rank) {
@@ -425,7 +423,6 @@
     currentId = id;
     show('mode');
   }
-
   /* ── Echte Spielstände ────────────────────────────────────────────── */
 
   /* Abgeschlossene Sessions aller Spiele landen im Hub-Verlauf, Word Imposter
@@ -513,10 +510,10 @@
   /* „Meistgespielt“ nur mit echtem Verlauf; sonst die Empfehlungen des Katalogs. */
   function mostPlayed() {
     var counts = playCounts();
-    return GAMES.filter(function (g) { return counts[g.id]; })
+    return ageGames().filter(function (g) { return counts[g.id]; })
       .sort(function (a, b) { return counts[b.id] - counts[a.id] || deCompare(a.title, b.title); });
   }
-  function featured() { return GAMES.filter(function (g) { return g.feat; }); }
+  function featured() { return ageGames().filter(function (g) { return g.feat; }); }
 
   var SECTIONS = [
     { title: 'Zuletzt gespielt', icon: 'play', min: 1, more: 'profile', pick: recentGames },
@@ -534,7 +531,7 @@
 
   function renderHome() {
     var heroes = heroGames();
-    if (!heroes.list.length) heroes.list = GAMES.slice(0, 3);
+    if (!heroes.list.length) heroes.list = ageGames().slice(0, 3);
     if (heroIdx >= heroes.list.length) heroIdx = 0;
     var hero = heroes.list[heroIdx];
 
@@ -575,7 +572,7 @@
     var host = $('#sections');
     clear(host);
     SECTIONS.forEach(function (def) {
-      var list = def.pick(GAMES);
+      var list = def.pick(ageGames()).filter(ageAllowed);
       /* Ein Streifen mit ein oder zwei Karten sieht kaputt aus; „Zuletzt gespielt“ zeigt echte Spiele ab einem. */
       if (list.length < (def.min || 3)) return;
       var sec = make('section', 'sec');
@@ -623,7 +620,7 @@
 
   function visibleGames() {
     var q = fold(query).trim();
-    var list = GAMES.filter(function (g) {
+    var list = ageGames().filter(function (g) {
       if (filterId !== 'alle' && g.bucket.id !== filterId) return false;
       if (!q) return true;
       return fold(g.title).indexOf(q) >= 0 || fold(g.desc).indexOf(q) >= 0;
@@ -634,8 +631,9 @@
   function renderGames() {
     var chips = $('#filters');
     clear(chips);
-    var defs = [{ id: 'alle', label: 'Alle ' + GAMES.length, tint: null }].concat(BUCKETS.map(function (b) {
-      return { id: b.id, label: b.label + ' ' + GAMES.filter(function (g) { return g.bucket.id === b.id; }).length, tint: b.tint };
+    var allowed = ageGames();
+    var defs = [{ id: 'alle', label: 'Alle ' + allowed.length, tint: null }].concat(BUCKETS.map(function (b) {
+      return { id: b.id, label: b.label + ' ' + allowed.filter(function (g) { return g.bucket.id === b.id; }).length, tint: b.tint };
     }));
     defs.forEach(function (d) {
       var c = make('button', 'chip');
@@ -656,7 +654,7 @@
     clear(grid);
     list.forEach(function (g) { grid.appendChild(gameCard(g)); });
     $('#grid-empty').hidden = list.length > 0;
-    $('#grid-count').textContent = list.length === GAMES.length ? String(GAMES.length) : list.length + '/' + GAMES.length;
+    $('#grid-count').textContent = list.length === allowed.length ? String(allowed.length) : list.length + '/' + allowed.length;
   }
 
   /* ── MODUS ────────────────────────────────────────────────────────── */
@@ -705,6 +703,7 @@
     var count = players().length;
     var short = count < g.min;
     var over = count > g.max;
+    var restricted = !ageAllowed(g);
     var pc = $('#players-count');
     pc.textContent = count + '/' + g.max;
     pc.className = 'row-val' + (short || over ? ' warn' : '');
@@ -718,9 +717,10 @@
 
     var btn = $('#start-btn');
     var note = $('#start-note');
-    btn.disabled = short || over;
-    note.className = 'dock-note' + (short || over ? ' warn' : '');
-    if (short) note.textContent = g.min + ' Personen nötig — ' + (g.min - count) + ' fehlen noch';
+    btn.disabled = short || over || restricted;
+    note.className = 'dock-note' + (short || over || restricted ? ' warn' : '');
+    if (restricted) note.textContent = 'Dieses Spiel passt nicht zur gewählten Altersstufe. Ändere sie unter Daten & Einstellungen.';
+    else if (short) note.textContent = g.min + ' Personen nötig — ' + (g.min - count) + ' fehlen noch';
     else if (over) note.textContent = 'Höchstens ' + g.max + ' Personen — ' + (count - g.max) + ' zu viel';
     else note.textContent = count + ' Personen' + (pack && packs.length > 1 ? ' · ' + pack.name : '');
   }
