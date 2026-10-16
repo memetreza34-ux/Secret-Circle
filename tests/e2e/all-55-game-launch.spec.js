@@ -57,9 +57,24 @@ test.describe('55/55 – reale Startwege und erste aktive Szene', () => {
         await expect(page.locator('#quick-start')).toBeEnabled();
         await page.locator('#quick-start').click();
         await expect(page.locator('#quick-play')).toBeVisible();
-        const snapshot = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-quick-active-v1')));
-        expect(snapshot?.gameId).toBe(game.id);
+        /* Quick/Trend, Mega und Viral verwenden bewusst unterschiedliche
+           aktive Storage-Keys. Den tatsächlichen geladenen Runner prüfen,
+           statt alle Spieltypen fälschlich als Quick-Engine anzusehen. */
+        const active = await page.evaluate(() => {
+          const source = [...document.scripts].find(script => script.dataset.gameEngine)?.getAttribute('src') || '';
+          const key = source === 'party-mega-modes.js' ? 'secret-circle-party-mega-active-v1'
+            : source === 'party-viral-modes.js' ? 'secret-circle-party-viral-active-v1'
+              : 'secret-circle-party-quick-active-v1';
+          const raw = localStorage.getItem(key);
+          return { source, key, value: raw ? JSON.parse(raw) : null };
+        });
+        expect(active.source, `Fehlender Quick-Runner für ${game.id}`).toMatch(/^party-(quick|mega|viral|wave-one(?:-[a-z]+)?)-modes\\.js$/);
+        expect(active.value?.gameId, `Spiel ${game.id}, Runner ${active.source}, Storage-Key ${active.key}`).toBe(game.id);
       } else if (pathname.endsWith('/advanced.html')) {
+        /* Der Knopf existiert schon im HTML. Auf einem ausgelasteten
+           CI-Runner muss die Engine die Gruppe vorher wirklich initialisiert
+           und den Klickhandler installiert haben. */
+        await expect(page.locator('#advanced-player-help')).toContainText(`${amount} Personen sind bereit.`);
         await expect(page.locator('#advanced-start')).toBeEnabled();
         await page.locator('#advanced-start').click();
         await expect(page.locator('#advanced-play-layer')).toBeVisible();
