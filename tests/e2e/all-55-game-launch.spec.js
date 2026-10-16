@@ -68,7 +68,7 @@ test.describe('55/55 – reale Startwege und erste aktive Szene', () => {
           const raw = localStorage.getItem(key);
           return { source, key, value: raw ? JSON.parse(raw) : null };
         });
-        expect(active.source, `Fehlender Quick-Runner für ${game.id}`).toMatch(/^party-(quick|mega|viral|wave-one(?:-[a-z]+)?)-modes\\.js$/);
+        expect(active.source, `Fehlender Quick-Runner für ${game.id}`).toMatch(/^party-(quick|mega|viral|wave-one(?:-[a-z]+)?)-modes\.js$/);
         expect(active.value?.gameId, `Spiel ${game.id}, Runner ${active.source}, Storage-Key ${active.key}`).toBe(game.id);
       } else if (pathname.endsWith('/advanced.html')) {
         /* Der Knopf existiert schon im HTML. Auf einem ausgelasteten
