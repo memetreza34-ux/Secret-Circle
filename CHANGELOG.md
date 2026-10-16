@@ -1,3 +1,11 @@
+## v103 – Word Imposter: kein Hilfswort verrät mehr den Begriff (16. Oktober 2026)
+
+- 28 von 1.470 Hilfswörtern waren ein Teil des geheimen Begriffs oder umgekehrt (z. B. „Fußball“ → „Ball“, „Nashorn“ → „Horn“, „Föhn“ → „Föhnen“). Der Imposter sieht das Hilfswort in der Standardeinstellung und kannte damit praktisch den Begriff. Alle 28 durch passende Begriffe ohne Wortteil ersetzt (z. B. „Stadion“, „Savanne“, „Warmluft“).
+- Der Inhaltstest verbietet das jetzt dauerhaft (Groß-/Kleinschreibung, Umlaute und ß werden gleich behandelt).
+- Neuer Browsertest: Je ein Spiel aus Quick, Trend, Viral, Wave-One und Hub über zehn Runden; keine Karte kommt doppelt, solange die Kategorie unbenutzte Karten hat.
+- Inhalts-Audit über alle 210 Kategorien ohne weitere Funde (fast gleiche Einträge, doppelte Karten zwischen Kategorien, Tabu, Undercover-Paare, Quiz, Prozent, Bracket).
+- Offline-Cache v102 → v103. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v102 – Hub-Spiele: Karte nach Neuladen verdeckt, Rundenzähler bei Flaschendrehen und Würfel (16. Oktober 2026)
 
 - Fortsetzen nach Neuladen in einer laufenden Scharade- oder Tabu-Runde zeigte die geheime Karte sofort. Jetzt wird sie genauso verdeckt wie bei einem App-Wechsel („Geheime Karte wieder anzeigen“); Karte und Restzeit bleiben unverändert, der Timer bleibt pausiert.
