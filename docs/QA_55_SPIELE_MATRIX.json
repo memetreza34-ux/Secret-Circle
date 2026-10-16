@@ -503,9 +503,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -516,9 +516,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -529,9 +529,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -542,9 +542,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -555,9 +555,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -568,9 +568,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -581,9 +581,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -594,9 +594,9 @@
       "engine": "viral",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
