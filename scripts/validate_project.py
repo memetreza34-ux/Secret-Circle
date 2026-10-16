@@ -13,7 +13,7 @@ required=[
  'runtime-guard.js','privacy-guard.js','word-imposter-resume-guard.js','backup-schema-registry.js','party-data-tools.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js',
  'party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js',
  'party-wave-one-modes.js','party-wave-one-imposter-modes.js','party-wave-one-writing-modes.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js',
- 'session-ledger.js','party-session-controls.js','party-hub-timers.js','party-hub-round-state.js','party-hub.js','party-hub-polish.js','party-hub-resume-guard.js','party-hub-a11y.js',
+ 'session-ledger.js','party-session-controls.js','party-hub-timers.js','card-memory.js','party-hub-round-state.js','party-hub.js','party-hub-polish.js','party-hub-resume-guard.js','party-hub-a11y.js',
  'advanced-resume-guard.js','advanced-privacy-guard.js','secondary-surface-a11y.js','tests/core-content-quality.test.js','tests/backup-schema-registry.test.js','tests/service-worker.test.js',
  'tests/word-imposter-data-contract.test.js','tests/party-hub-resume-guard.test.js','tests/party-wave-one-catalog.test.js','tests/party-wave-one-imposter-catalog.test.js','tests/party-wave-one-writing-catalog.test.js',
  'tests/party-wave-one-voting-catalog.test.js','tests/party-wave-one-bluff-catalog.test.js','tests/party-wave-one-clue-catalog.test.js','tests/e2e/wave-one-quiz.spec.js','tests/e2e/wave-one-imposter.spec.js',
@@ -55,9 +55,9 @@ def audit_html(relative,expected_scripts):
     return source
 
 catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js']
-party=audit_html('party.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','session-ledger.js','party-session-controls.js','party-hub-timers.js','party-hub-round-state.js','party-hub.js','party-hub-plus.js','party-hub-polish.js','party-night.js','backup-schema-registry.js','party-data-tools.js'])
-quick=audit_html('quick-play.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','secondary-surface-a11y.js','quick-loader.js'])
-advanced=audit_html('advanced.html',['runtime-guard.js','party-catalog.js','party-expansion.js','party-routing.js','party-advanced.js','advanced-resume-guard.js','secondary-surface-a11y.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js'])
+party=audit_html('party.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','session-ledger.js','party-session-controls.js','party-hub-timers.js','card-memory.js','party-hub-round-state.js','party-hub.js','party-hub-plus.js','party-hub-polish.js','party-night.js','backup-schema-registry.js','party-data-tools.js'])
+quick=audit_html('quick-play.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','secondary-surface-a11y.js','card-memory.js','quick-loader.js'])
+advanced=audit_html('advanced.html',['runtime-guard.js','party-catalog.js','party-expansion.js','party-routing.js','party-advanced.js','advanced-resume-guard.js','secondary-surface-a11y.js','card-memory.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js'])
 creator=audit_html('creator.html',['runtime-guard.js','game-creator.js','secondary-surface-a11y.js','creator-page.js'])
 audit_html('privacy.html',[])
 index=audit_html('index.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','v2-hub-packs.js','v2-hub.js'])

@@ -44,6 +44,8 @@ Advanced trennt `party-advanced.js`, `advanced-resume-guard.js`, `party-advanced
 
 `secret-circle-party-quick-timers-v1` speichert ausschließlich technische Timer-Metadaten. Snapshots werden nur bei passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer konsumiert.
 
+`card-memory.js` (seit v104) ist das gemeinsame Kartengedächtnis aller Engines außer Word Imposter, das eigene `usedWords` hat. Unter den in einer Session noch freien Karten wählt es bevorzugt solche, die in diesem Spiel und dieser Kategorie zuletzt nicht dran waren; sind alle gesehen, zufällig aus der älter gesehenen Hälfte. Speicher `secret-circle-card-memory-v1` enthält nur Prüfsummen, ist kein Backup-Eigentum und fällt ohne Speicher auf die bisherige Zufallswahl zurück. Wiederholungen innerhalb einer Session verhindert weiterhin jede Engine selbst.
+
 ## 9. Quick-Family BFCache Resume – v58
 
 Bei `pageshow.persisted` führt ein passender Snapshot kontrolliert in den normalen Resume-Pfad; stale/fremde Snapshots werden gelöscht.
@@ -117,7 +119,7 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v103` / `secret-circle-v103-staging`**.
+Aktueller Offline-Core: **`secret-circle-v104` / `secret-circle-v104-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
