@@ -22,8 +22,8 @@
       "engine": "word-imposter",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -204,8 +204,8 @@
       "engine": "advanced",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -217,8 +217,8 @@
       "engine": "advanced",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -230,8 +230,8 @@
       "engine": "advanced",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -243,8 +243,8 @@
       "engine": "advanced",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
