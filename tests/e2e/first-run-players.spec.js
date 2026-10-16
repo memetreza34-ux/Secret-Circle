@@ -34,7 +34,11 @@ test('neues Gerät: keine fiktiven Spieler, erste Gruppe wird bewusst eingericht
   await expect(page.locator('#start-btn')).toBeEnabled();
   await page.locator('#start-btn').click();
   await expect(page.locator('#play-layer')).toBeVisible();
-  await expect(page.locator('#play-player')).toContainText(/Aylin|Ben|Cem/);
+  // „Ich hab noch nie“ ist ein Gruppenspiel ohne aktiven Einzelspieler.
+  // Der Spielstand muss dennoch die tatsächlich eingerichteten Personen nutzen.
+  const active = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-active-v1')));
+  expect(active.session.gameId).toBe('never-have');
+  expect(active.session.players).toEqual(['Aylin', 'Ben', 'Cem']);
 
   await page.goto('/#spieler');
   await expect(page.locator('#player-badge')).toHaveText('3/20');
