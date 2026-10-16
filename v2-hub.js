@@ -979,7 +979,9 @@
   /* Einsprung per Adresse, z. B. aus einem Spiel zurück: #spiele, #profil,
      #spieler oder #spiel=<id>. */
   function initialScreen() {
-    var target = decodeURIComponent((window.location.hash || '').slice(1));
+    var target;
+    try { target = decodeURIComponent((window.location.hash || '').slice(1)); }
+    catch (_) { target = ''; } // Beschädigte Links dürfen den Hub nicht blockieren.
     if (target === 'spiele') return show('games', { reset: true });
     if (target === 'profil') return show('profile', { reset: true });
     if (target === 'spieler') return show('players', { reset: true });
