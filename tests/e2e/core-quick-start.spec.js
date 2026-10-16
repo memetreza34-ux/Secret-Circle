@@ -67,3 +67,23 @@ test('fehlende Einstufung darf nie experimentelle Spiele zufällig empfehlen', a
   await expect(page.locator('#view-games')).toBeVisible();
   await expect(page.locator('#hub-status')).toContainText('Kernspiel-Auswahl wird geladen');
 });
+
+test('Familienmodus: Schnellstart zeigt keine Spiele ab 12', async ({ page }) => {
+  await prepareGroup(page, ['Aylin', 'Ben', 'Cem', 'Daria']);
+  await page.locator('[data-view-target="settings"]').first().click();
+  await page.locator('#settings-age-level').selectOption('family');
+  await expect(page.locator('#age-filter')).toHaveValue('family');
+  await page.locator('[data-view-target="home"]').first().click();
+
+  for (let attempt = 0; attempt < 15; attempt += 1) {
+    await page.locator('#quick-start').click();
+    await expect(page.locator('#game-detail')).toBeVisible();
+    const choice = await page.locator('#game-detail').evaluate(dialog => {
+      const game = window.SecretCirclePartyCatalog.getGame(dialog.dataset.gameId);
+      return { id: game.id, age: game.age, tier: window.SecretCirclePartyReleaseStructure.tierFor(game) };
+    });
+    expect(choice.age, `Familienmodus wählte ${choice.id}`).toBe('all');
+    expect(choice.tier).toBe('core');
+    await page.locator('#close-detail').click();
+  }
+});
