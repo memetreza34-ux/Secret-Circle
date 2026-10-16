@@ -2,6 +2,11 @@ const { test, expect } = require('@playwright/test');
 
 test('Hub-Spielansicht nutzt v2-Stil und bleibt auf Handy und Desktop bedienbar', async ({ page }) => {
   await page.goto('/party.html');
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Alex', 'Sam', 'Mika', 'Lina'],
+    favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
+  await page.reload();
   await page.locator('[data-open-game="never-have"]:visible').first().click();
   await page.getByRole('button', { name: 'Jetzt spielen' }).click();
 

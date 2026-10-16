@@ -9,6 +9,11 @@ test.beforeEach(async ({ page }) => {
     localStorage.removeItem('secret-circle-party-quick-active-v1');
     localStorage.removeItem('secret-circle-party-mega-active-v1');
     localStorage.removeItem('secret-circle-party-viral-active-v1');
+    // Diese bestehenden Tests nutzen bewusst eine eingerichtete Testgruppe.
+    localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+      version: 1, players: ['Alex', 'Sam', 'Mika', 'Lina'],
+      favorites: [], recent: [], presets: [], history: [], stats: {}
+    }));
   });
   await page.reload();
 });

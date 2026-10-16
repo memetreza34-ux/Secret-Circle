@@ -23,6 +23,8 @@ test('canonical Hub aliases, dedicated Word Imposter and privacy load without br
   }
   await page.goto('/word-imposter.html');
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeDisabled();
+  await page.locator('#players').fill('Alex\nSam\nMika');
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
   await expect(page.locator('#category option')).toHaveCount(15);
 
@@ -45,6 +47,10 @@ async function openFromCatalog(page, query, gameId, startLabel) {
 
 test('loads the 55-game Hub and all four external engine families', async ({ page }) => {
   const errors = captureErrors(page);
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Alex', 'Sam', 'Mika', 'Lina'],
+    favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
   await expect(page.locator('#playable-count')).toHaveText('55');

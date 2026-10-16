@@ -248,6 +248,7 @@ test('a new match avoids words from the recent history', async ({ page }) => {
       localStorage.setItem('secret-circle-history-v7', JSON.stringify(value));
     }, history);
     await page.reload();
+    await page.locator('#players').fill('Alex\nSam\nMika\nLina');
     await page.locator('#category-open').click();
     await page.locator('#category-screen').getByRole('button', { name: /^Tiere/ }).click();
     await page.locator('#start').click();

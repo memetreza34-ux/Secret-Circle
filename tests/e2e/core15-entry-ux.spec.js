@@ -59,6 +59,9 @@ for (const { id, engine } of CORE) {
     await expect(page.locator('#mode-sub')).not.toBeEmpty();
     await expect(page.locator('#mode-steps li').first()).toBeVisible();
     await expect(page.locator('#start-btn')).toBeEnabled();
+    // Bei einem Offline-Update kann der Banner den unteren Startknopf verdecken.
+    const updateNotice = page.locator('.pwa-update-banner:visible');
+    if (await updateNotice.count()) await updateNotice.getByRole('button', { name: 'Später' }).click();
     await page.locator('#start-btn').click();
 
     if (engine === 'word') {

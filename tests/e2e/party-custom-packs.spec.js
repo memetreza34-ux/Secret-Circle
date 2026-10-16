@@ -14,6 +14,11 @@ async function clearSecretCircleData(page) {
 test.beforeEach(async ({ page }) => {
   await page.goto('/party.html');
   await clearSecretCircleData(page);
+  // Der Editor bleibt unabhängig; für die später geprüften Spielstarts gilt eine Testgruppe.
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Alex', 'Sam', 'Mika', 'Lina'],
+    favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
   await page.reload();
 });
 
