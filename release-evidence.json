@@ -20,15 +20,15 @@
       "evidence": {
         "note": "Die Pipeline läuft und besteht alle Tore auf main. PASS erfordert laut Vertrag einen eingefrorenen Release-Kandidaten.",
         "lastGreenRun": {
-          "runId": 36292530012,
-          "jobId": 108545231919,
+          "runId": 38898973994,
+          "jobId": 116966235558,
           "job": "validate",
           "conclusion": "success",
-          "head": "0d157baf34af42e00dadd52393a4ac8edbcdf5e9",
+          "head": "e1befbe1f22bed9d45a143320c2615f0bd699a7d",
           "branch": "main",
           "steps": 16,
           "successfulSteps": 16,
-          "finishedAt": "2026-09-27T04:00:47Z",
+          "finishedAt": "2026-10-16T12:27:21Z",
           "repositoryCodeExecuted": true,
           "gatesRun": [
             "npm run check",
@@ -38,14 +38,14 @@
           ]
         },
         "lastGreenWebkitJob": {
-          "runId": 36292530012,
-          "jobId": 108545232015,
+          "runId": 38898973994,
+          "jobId": 116966235258,
           "job": "e2e-webkit",
           "conclusion": "success",
-          "head": "0d157baf34af42e00dadd52393a4ac8edbcdf5e9",
-          "steps": 12,
-          "successfulSteps": 12,
-          "finishedAt": "2026-09-27T04:13:47Z",
+          "head": "e1befbe1f22bed9d45a143320c2615f0bd699a7d",
+          "steps": 13,
+          "successfulSteps": 13,
+          "finishedAt": "2026-10-16T12:36:03Z",
           "gatesRun": [
             "npm run test:e2e (Desktop Safari + iPhone 14)"
           ]
@@ -56,24 +56,43 @@
       "status": "OPEN",
       "commit": null,
       "evidence": {
-        "reason": "Der manuell zu startende Workflow .github/workflows/cross-browser.yml wurde noch nie ausgeführt. Der Hosted Runner läuft seit dem 5. September 2026; WebKit (Desktop Safari, iPhone 14) läuft zusätzlich im CI-Job e2e-webkit.",
-        "workflow": ".github/workflows/cross-browser.yml"
+        "reason": "Der Workflow .github/workflows/cross-browser.yml läuft automatisch bei jedem Pull Request (Chromium, Firefox, WebKit) und ist seit 16.10.2026 Pflicht-Check für main. Es gibt noch keinen Lauf auf einem eingefrorenen Release-Kandidaten.",
+        "workflow": ".github/workflows/cross-browser.yml",
+        "lastGreenRun": {
+          "runId": 38886549438,
+          "jobId": 116925578485,
+          "job": "smoke",
+          "conclusion": "success",
+          "head": "907ce6a5def625af8a79ced13be1812e0eff5c4e",
+          "branch": "qa/all-55-game-launch-smoke",
+          "steps": 12,
+          "successfulSteps": 12,
+          "finishedAt": "2026-10-16T10:21:50Z"
+        }
       }
     },
     "branchProtection": {
-      "status": "BLOCKED",
+      "status": "OPEN",
       "commit": null,
       "evidence": {
+        "note": "Branch-Schutz ist seit 16.10.2026 auf main real aktiv (GitHub-API geprüft). PASS erst nach erneuter Prüfung auf dem eingefrorenen Release-Kandidaten.",
         "checkedBranch": "main",
-        "checkedHead": "d347c7138bae18325c288632222917ad618e6547",
-        "protected": false,
-        "protectionEnabled": false,
-        "requiredStatusCheckEnforcement": "off",
-        "requiredStatusCheckContexts": [],
-        "reconciliationCandidatePullRequest": 15,
-        "reconciliationCandidateExpectedChangedFiles": 9,
-        "reconciliationCandidateRequiresLiveCompareBeforeMerge": true,
-        "reconciliationMergedIntoReleaseBranch": false
+        "checkedHead": "0e0567f08df963f7d149730fdfbe0da33396ea58",
+        "checkedAt": "2026-10-16T14:57Z",
+        "protected": true,
+        "enforceAdmins": true,
+        "requiredStatusCheckEnforcement": "everyone",
+        "requiredStatusCheckContexts": [
+          "validate",
+          "e2e-webkit",
+          "smoke"
+        ],
+        "requireBranchUpToDate": true,
+        "pullRequestRequired": true,
+        "requiredApprovingReviewCount": 0,
+        "conversationResolutionRequired": true,
+        "forcePushesAllowed": false,
+        "deletionsAllowed": false
       }
     },
     "stagingHttpSmoke": {
@@ -179,13 +198,12 @@
     }
   },
   "knownBlockers": [
-    "Cross-browser release evidence is still open: CI runs Chromium (desktop, Pixel 7) and WebKit (desktop Safari, iPhone 14) on main; the dedicated cross-browser workflow has never been run and no run exists on a frozen RC",
-    "main branch protection is currently disabled and has no required status checks",
-    "Draft PR #15 is the controlled main/release reconciliation candidate and must show behind_by=0 plus exactly the expected 9 changed paths in a fresh GitHub compare immediately before review/merge",
+    "Cross-browser release evidence is still open: the Cross-Browser Smoke workflow (Chromium, Firefox, WebKit) runs on every pull request and is a required check for main, but no run exists on a frozen RC",
     "The old icon rights blocker is resolved, but final asset/third-party PASS still requires the audits and online dependency integrity on the immutable RC plus the final manual visual/trademark review",
     "No real hosting provider or distinct HTTPS staging/production origins have been selected yet",
     "operator-release.json remains PREPARED/BLOCKED with no final operator identity, support/security contacts or completed incident drills",
-    "real-device, accessibility and group evidence is not final"
+    "real-device, accessibility and group evidence is not final",
+    "All 55 built-in games must be released (decision 2026-10-16): only launch-to-first-round automation exists for 55/55 (PR #40); end/result/replay evidence for every game is open (Issue #41)"
   ],
-  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. BLOCKED means a known prerequisite is currently absent; OPEN means the gate can in principle be executed but has not yet received acceptable final RC evidence. No gate may become PASS until it is bound to one immutable release candidate commit. Mutable PR #15 head/behind values are intentionally not stored as durable truth; GitHub compare is the live source immediately before review/merge. The replacement icon set has documented verified-own provenance, but that source-level fact does not by itself complete the overall assetsThirdParty gate. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached."
+  "notes": "This file is an evidence template. PREPARED/OPEN/BLOCKED values are not release passes. BLOCKED means a known prerequisite is currently absent; OPEN means the gate can in principle be executed but has not yet received acceptable final RC evidence. No gate may become PASS until it is bound to one immutable release candidate commit. Mutable PR head/behind values are intentionally not stored as durable truth; GitHub compare is the live source immediately before review/merge. The replacement icon set has documented verified-own provenance, but that source-level fact does not by itself complete the overall assetsThirdParty gate. legalPrivacy and supportIncident may only become PASS when operator-release.json is FINAL/READY and its real-world evidence is attached."
 }
