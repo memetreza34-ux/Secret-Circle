@@ -68,16 +68,15 @@ Nach neuen Release-Hardening-Commits muss PR #15 erneut gegen den aktuellen Rele
 
 PR #15 bleibt Draft und wird ohne funktionierende CI nicht gemergt.
 
-## Branch Protection – BLOCKED
+## Branch Protection – OPEN (aktiv seit 16. Oktober 2026)
 
-Für `main` wurde zuletzt real bestätigt:
+Für `main` am 16. Oktober 2026 über die GitHub-API aktiviert und erneut abgefragt:
 
-- `protected: false`
-- Protection nicht aktiv
-- Required-Check-Enforcement `off`
-- keine Required-Check-Kontexte
+- `protected: true`, gilt auch für Admins
+- Pflicht-Checks `validate`, `e2e-webkit` und `smoke`, Branch muss aktuell sein
+- nur per Pull Request, kein Force-Push, kein Löschen
 
-Branch Protection soll erst mit einem tatsächlich funktionierenden `Secret Circle CI / validate` Required Check aktiviert und als PASS gewertet werden.
+`PASS` erst nach erneuter Prüfung auf dem eingefrorenen Release-Kandidaten (siehe `BRANCH_PROTECTION.md`).
 
 ## Hosting – PREPARED / real BLOCKED
 

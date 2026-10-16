@@ -19,7 +19,7 @@ Ein Risiko gilt erst geschlossen, wenn ein überprüfbarer Nachweis existiert. S
 |---|---|---|---|---|---|---|---|
 | R-001 | GitHub Actions startet keinen belastbaren Repository-Job | CI/Release | hoch | kritisch | P0 | echten Checkout + `npm run ci` dokumentieren | **GESCHLOSSEN – Runner läuft seit 5. September 2026; letzter grüner Lauf `36292530012` (27. September 2026). Issue #7 auf GitHub noch offen** |
 | R-002 | Reproduzierbarer npm-Install ist auf echtem Runner nicht bestätigt | Build/Supply Chain | mittel | hoch | P1 | Lockfile v3 + `npm ci` + Runnernachweis | **CLOSED IN CODE / ONLINE VERIFICATION OPEN** |
-| R-003 | Branch Protection / Required Checks fehlen real | Git/Release | hoch | hoch | P1 | GitHub-Regel + funktionierenden Required Check aktivieren | **BLOCKED – main ungeschützt, Required Checks off** |
+| R-003 | Branch Protection / Required Checks fehlen real | Git/Release | hoch | hoch | P1 | GitHub-Regel + funktionierenden Required Check aktivieren | **OPEN – seit 16.10.2026 aktiv (Pflicht-Checks validate, e2e-webkit, smoke); PASS erst auf eingefrorenem RC** |
 | R-004 | Timer weichen auf echten OS-/Sperrbildschirmpfaden ab | Geräte/PWA | mittel | hoch | P1 | Android + iPhone real | offen |
 | R-005 | PWA-Upgrade beschädigt Offline-Core/lokale Session | PWA/Daten | mittel | kritisch | P1 | zwei Altversionen → RC + Rollback real | vorbereitet; real offen |
 | R-006 | Private Rollen/Fragen werden beim Resume sichtbar | Privacy/Gameplay | niedrig-mittel | hoch | P1 | E2E + reale Übergaben | technisch gehärtet; real offen |
