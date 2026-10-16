@@ -1,5 +1,7 @@
 # Secret Circle – KI-Team-Workflow für den Solo-Gründer
 
+**Update 16.10.2026 – aktuelle Übergabe:** [UEBERGABE_55_SPIELE_2026-10-16.md](UEBERGABE_55_SPIELE_2026-10-16.md) enthält den verbindlichen Umfang **aller 55 Spiele**, die gemergten Nachweise bis PR #40, die fertigen Aufträge [Claude #41](https://github.com/memetreza34-ux/Secret-Circle/issues/41), [Codex #42](https://github.com/memetreza34-ux/Secret-Circle/issues/42) und [Betreiber/Gruppe #43](https://github.com/memetreza34-ux/Secret-Circle/issues/43), die nicht überlappenden Bearbeitungsbereiche und direkt verwendbare Agenten-Starttexte. Ältere „15 Core zuerst“-Passagen unterhalb werden als frühere Prioritäten gelesen und schränken die 55-Spiele-Releaseentscheidung nicht ein. Release weiterhin `NO_GO`.
+
 Stand: 14. Oktober 2026 · **Arbeitsvereinbarung, keine Release-Freigabe** · Öffentlicher Release: **NO_GO**.
 
 **Verbindlicher roter Faden:** `docs/PROJEKT_KOMPASS.md` bündelt Release-Reihenfolge, Prioritätsentscheidungen, unabhängige Beraterrolle, Recherche-, Qualitäts- und Übergaberegeln für alle Mitwirkenden. Dieses Dokument beschreibt dazu die detaillierte KI-Teamarbeit. Bei abweichenden veralteten Prioritäten erst den aktuellen `main`-Stand und die im Kompass verlinkten aktuellen Issues vergleichen.

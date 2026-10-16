@@ -1,5 +1,7 @@
 # Secret Circle – Projektkompass und verbindlicher roter Faden
 
+**Verbindliche Ergänzung vom 16. Oktober 2026: [55-Spiele-Übergabe an Claude Code und Codex](UEBERGABE_55_SPIELE_2026-10-16.md).** Für Version 1 gehören **alle 55 vorhandenen Spiele** zum abzunehmenden Umfang (15 Core, 13 Extended, 27 Labs); keine auf 15 begrenzte Veröffentlichung. Der 55er-Start-Sweep aus [PR #40](https://github.com/memetreza34-ux/Secret-Circle/pull/40) ist gemergt; Ergebnis-/Replay- und reale Gerätetests stehen noch aus. Die Übergabe dokumentiert aktuelle Owner, Aufgaben #41/#42/#43 und die Grenze zwischen vorhandenem Testbeleg und `NO_GO`. Ältere, widersprechende „Core zuerst“-Passagen unten beschreiben nur die frühere Reihenfolge, nicht eine neue Scope-Reduktion.
+
 **Stand: 15. Oktober 2026. Ziel: Secret Circle mit der kürzesten sicheren Route in hoher Qualität veröffentlichen.**  
 **Produkt:** deutsche Offline-first-Partyspiel-PWA für eine Gruppe und ein Gerät. **Releaseentscheidung: NO_GO.**
 
