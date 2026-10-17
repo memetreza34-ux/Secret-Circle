@@ -148,9 +148,14 @@ test('Anime Trend Mode starts and resumes completely offline', async ({ page, co
   await expect(page.getByRole('heading', { name: 'Anime-Archetypen erraten' })).toBeVisible();
   await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
-  await expect(page.locator('.challenge-card')).not.toHaveText('');
+  const figure = (await page.locator('.challenge-card').textContent()).trim();
+  expect(figure).not.toBe('');
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  /* v101: Nach dem Neuladen ist die Figur wieder verdeckt und erscheint erst erneut auf Wunsch. */
+  await expect(page.locator('.challenge-card')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
+  await expect(page.locator('.challenge-card')).toHaveText(figure);
   await expect(page.getByRole('button', { name: 'Figur verbergen und 60 Sekunden starten' })).toBeVisible();
 });
 
