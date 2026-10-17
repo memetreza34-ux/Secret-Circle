@@ -49,7 +49,7 @@ Mechaniken, die über die schnelle Quick-Seite laufen, verwenden zusätzlich den
 
 Diese 13 Built-ins bleiben spielbar, sichtbar und sind vollständig abzunehmen; die Tier-Reihenfolge darf die 55-Spiel-Fertigstellung nicht verkürzen. Eigene Creator-Spiele werden ebenfalls als Erweiterungen eingeordnet, zählen jedoch nicht als zusätzliche Built-ins in die 55.
 
-Die aktuelle eingebaute Erweiterungsmenge wird aus dem Release-Katalog minus Core minus Labs abgeleitet und muss seit v64 unverändert (aktuell v105) **exakt 13** ergeben.
+Die aktuelle eingebaute Erweiterungsmenge wird aus dem Release-Katalog minus Core minus Labs abgeleitet und muss seit v64 unverändert (aktuell v106) **exakt 13** ergeben.
 
 **Aktueller 55/55-Gate:** Jede der 13 Erweiterungen benötigt vor öffentlicher V1-Freigabe einen funktionalen Test vom Setup bis zum Abschluss und Replay, die relevanten Privacy-/PWA-Prüfungen und einen echten Gruppentest. Fehlende Pflichtbelege oder P0/P1-Fehler blockieren ein öffentliches GO.
 
@@ -90,7 +90,7 @@ Expansion Wave 1 – quellsseitig 10/10 implementiert:
 - `no-word-imposter`
 - `password-one-word`
 
-Damit ergeben sich seit v64 unverändert (aktuell v105): **27 Labs**.
+Damit ergeben sich seit v64 unverändert (aktuell v106): **27 Labs**.
 
 Wave 1 verwendet gemeinsame Enginefamilien für Quiz, Imposter, Writing, Estimation/Voting, Bluff und Clue. `quick-loader.js` v11 routet diese Familien; `party-release-structure.js` v5 hält alle zehn Wave-1-Modi ausdrücklich in Labs.
 
@@ -100,7 +100,7 @@ Labs dürfen ohne Belege nicht als releaseabgenommen dargestellt werden. **Eine 
 
 ## Referenz-/Content-Sicherheit
 
-Der aktuelle Stand (v105) enthält automatisierte Referenz-/Source-Audits über ausgelieferte Contentquellen einschließlich der Wave-1-Kataloge. Diese Audits reduzieren offensichtliche Marken-/Franchise-/Referenzrisiken, ersetzen aber **keine manuelle Visual-, Marketing-, Asset- oder Rechtsabnahme**.
+Der aktuelle Stand (v106) enthält automatisierte Referenz-/Source-Audits über ausgelieferte Contentquellen einschließlich der Wave-1-Kataloge. Diese Audits reduzieren offensichtliche Marken-/Franchise-/Referenzrisiken, ersetzen aber **keine manuelle Visual-, Marketing-, Asset- oder Rechtsabnahme**.
 
 Root-`icon.svg` bleibt bis belegter Herkunft oder Ersatz ein Release-Blocker.
 
@@ -119,9 +119,9 @@ Selbst erstellte Spiele sind keine eigenen Kernspiele. Sie werden im Hub als Erw
 
 ## Aktueller technischer Release-Stand
 
-- Source-Generation: **v105** (`release-meta.json`, Stand 16.10.2026)
-- Offline-Cache: **`secret-circle-v105`**
-- Staging-Cache: **`secret-circle-v105-staging`**
+- Source-Generation: **v106** (`release-meta.json`, Stand 16.10.2026)
+- Offline-Cache: **`secret-circle-v106`**
+- Staging-Cache: **`secret-circle-v106-staging`**
 - Built-ins: **55**
 - Core: **15**
 - Extended: **13**
