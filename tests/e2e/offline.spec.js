@@ -132,6 +132,7 @@ test('classic Wavelength Quick Mode starts and resumes offline', async ({ page, 
   await context.setOffline(true);
   await page.goto('/quick-play.html?game=wavelength');
   await page.locator('#quick-start').click();
+  await page.getByRole('button', { name: 'Ziel anzeigen' }).click();
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
