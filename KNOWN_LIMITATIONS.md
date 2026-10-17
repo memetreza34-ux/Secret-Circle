@@ -1,6 +1,6 @@
 # Bekannte Einschränkungen
 
-Stand: 29. August 2026 – `1.0.0-beta.3`, **55 Built-ins · 15 Core / 13 Extended / 27 Labs**, Wave 1 **10/10 quellsseitig implementiert**, Offline-Core **`secret-circle-v108` / `secret-circle-v108-staging`**.
+Stand: 29. August 2026 – `1.0.0-beta.3`, **55 Built-ins · 15 Core / 13 Extended / 27 Labs**, Wave 1 **10/10 quellsseitig implementiert**, Offline-Core **`secret-circle-v109` / `secret-circle-v109-staging`**.
 
 Öffentliche Freigabe: **NO_GO**. Quellsseitige Implementierung oder vorhandene Tests ersetzen keine reale Release-Evidence.
 
@@ -94,8 +94,8 @@ Die App muss einmal vollständig online geladen werden. Service Worker und Insta
 
 Aktueller Service Worker:
 
-- Production: `secret-circle-v108`
-- Staging: `secret-circle-v108-staging`
+- Production: `secret-circle-v109`
+- Staging: `secret-circle-v109-staging`
 
 Der kontrollierte Updatepfad ist vorbereitet, aber noch nicht als reale **Altversion → v64/RC → Rollback**-Evidence auf Android, iPhone und iPad dokumentiert. Ein Rollback/Hotfix muss eine neue Cachegeneration verwenden.
 
