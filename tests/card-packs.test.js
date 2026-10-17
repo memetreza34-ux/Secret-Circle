@@ -12,7 +12,6 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const classic = require('../party-core-classic-content.js');
-const release = require('../party-core-release-catalog.js');
 const catalog = require('../party-wave-one-clue-catalog.js');
 
 const files = [...classic.cardPackFiles];
@@ -23,8 +22,15 @@ assert.deepEqual([...files].sort(), onDisk, 'jede party-cards-*.js steht in CARD
 const packs = files.map(file => require(`../${file}`));
 const ids = packs.map(pack => pack.id);
 assert.equal(new Set(ids).size, ids.length, 'Kartenpaket-IDs sind eindeutig');
-assert.deepEqual([...classic.cardPackIds], ids, 'alle Kartenpakete wurden in der Reihenfolge der Liste angewendet');
-assert.deepEqual([...catalog.cardPackIds], ids, 'der vollständige Katalog trägt die Kartenpakete weiter');
+/* Pakete ohne Stufe hängt party-core-classic-content.js an, Pakete mit
+   stage 'wave-one' die letzte Katalogebene. */
+for (const pack of packs) assert.ok(pack.stage === undefined || pack.stage === 'wave-one', `${pack.id}: unbekannte Stufe ${pack.stage}`);
+const coreIds = packs.filter(pack => pack.stage === undefined).map(pack => pack.id);
+const lateIds = packs.filter(pack => pack.stage === 'wave-one').map(pack => pack.id);
+assert.deepEqual([...classic.cardPackIds], coreIds, 'alle Kern-Kartenpakete wurden in der Reihenfolge der Liste angewendet');
+assert.deepEqual([...catalog.cardPackIds], coreIds, 'der vollständige Katalog trägt die Kartenpakete weiter');
+assert.deepEqual(classic.lateCardPacks.map(pack => pack.id), lateIds, 'Wave-1-Pakete werden an die letzte Ebene weitergereicht');
+assert.deepEqual([...catalog.lateCardPackIds], lateIds, 'die letzte Katalogebene hat alle Wave-1-Pakete angewendet');
 
 const sw = read('sw.js');
 for (const page of ['index.html', 'v2-hub.html', 'party.html', 'quick-play.html']) {
@@ -63,48 +69,72 @@ const FORMAT = {
   'most-likely': item => /^Wer würde eher .+\?$/.test(item),
   paranoia: item => /^(?:Wer|Wem|Wen|Von wem) .+\?$/.test(item),
   taboo: item => item.banned.length === 3 && !item.banned.some(word => word.toLocaleLowerCase('de-DE') === item.word.toLocaleLowerCase('de-DE')),
-  'word-chain': item => /^\p{Lu}$/u.test(item)
+  'word-chain': item => /^\p{Lu}$/u.test(item),
+  'fill-blank-battle': item => / …$/.test(item),
+  'who-wrote-it': item => /\?$/.test(item),
+  'undercover-similar-word': item => item.civilian !== item.undercover
 };
 const disclosure = [/letzte\s+(?:private\s+)?nachricht/i, /kamerarolle/i, /passwort/i, /(?:deine|private)\s+adresse/i, /private[nr]?\s+chats?/i, /handynummer|telefonnummer/i];
+
+/* Prüft neue Karten einer Kategorie: Format wie die vorhandenen, Spielregeln,
+   sichere Texte. Danach die ganze Kategorie: keine Dubletten, keine Fast-Doppler. */
+function checkNewItems(context, gameId, items, reference) {
+  for (const item of items) {
+    assert.equal(shape(item), reference, `${context}: Format passt nicht zu den vorhandenen Karten: ${JSON.stringify(item)}`);
+    if (FORMAT[gameId]) assert.ok(FORMAT[gameId](item), `${context}: Kartenformat des Spiels verletzt: ${JSON.stringify(item)}`);
+    for (const text of (Array.isArray(item) ? item : typeof item === 'object' ? Object.values(item).flat() : [item]).filter(value => typeof value === 'string')) {
+      const normalized = text.normalize('NFKC').trim();
+      assert.ok(normalized.length >= 1 && normalized.length <= 280, `${context}: Textlänge ${normalized.length}`);
+      assert.doesNotMatch(normalized, /<|>|\bon\w+\s*=/i, `${context}: Markup in ${normalized}`);
+      for (const pattern of disclosure) assert.doesNotMatch(normalized, pattern, `${context}: private Angabe in ${normalized}`);
+    }
+  }
+}
+
+function checkDistinct(context, flatFinal) {
+  const keys = flatFinal.map(item => JSON.stringify(item).normalize('NFKC').toLocaleLowerCase('de-DE').replace(/\s+/g, ' '));
+  assert.equal(new Set(keys).size, keys.length, `${context}: keine Dubletten nach dem Anhängen`);
+  /* Fast-Doppler: drei oder mehr gemeinsame Inhaltswörter und mindestens 80 % Überschneidung. */
+  const texts = flatFinal.map(leadText);
+  for (let a = 0; a < texts.length; a += 1) {
+    for (let b = a + 1; b < texts.length; b += 1) {
+      const A = words(texts[a]);
+      const B = words(texts[b]);
+      if (!A.size || !B.size) continue;
+      const shared = [...A].filter(word => B.has(word)).length;
+      assert.ok(!(shared >= 3 && shared / Math.min(A.size, B.size) >= 0.8), `${context}: Fast-Doppler „${texts[a]}“ ~ „${texts[b]}“`);
+    }
+  }
+}
 
 let added = 0;
 for (const pack of packs) {
   for (const [gameId, packsByName] of Object.entries(pack.additions)) {
     assert.ok(catalog.getGame(gameId), `${pack.id}: Spiel ${gameId} existiert`);
     for (const [packName, extra] of Object.entries(packsByName)) {
-      const before = release.content[gameId]?.[packName] ?? null;
       const finalItems = catalog.content[gameId][packName];
-      const baseItems = Array.isArray(before) ? before : Object.values(before || {}).flat();
+      const flatFinal = Array.isArray(finalItems) ? finalItems : Object.values(finalItems).flat();
       const extraItems = Array.isArray(extra) ? extra : Object.values(extra).flat();
       const context = `${pack.id}: ${gameId}/${packName}`;
       assert.ok(extraItems.length > 0, `${context} enthält Karten`);
-      const reference = shape(baseItems[0]);
-      for (const item of extraItems) {
-        assert.equal(shape(item), reference, `${context}: Format passt nicht zu den vorhandenen Karten: ${JSON.stringify(item)}`);
-        if (FORMAT[gameId]) assert.ok(FORMAT[gameId](item), `${context}: Kartenformat des Spiels verletzt: ${JSON.stringify(item)}`);
-        for (const text of (Array.isArray(item) ? item : typeof item === 'object' ? Object.values(item).flat() : [item]).filter(value => typeof value === 'string')) {
-          const normalized = text.normalize('NFKC').trim();
-          assert.ok(normalized.length >= 1 && normalized.length <= 280, `${context}: Textlänge ${normalized.length}`);
-          assert.doesNotMatch(normalized, /<|>|\bon\w+\s*=/i, `${context}: Markup in ${normalized}`);
-          for (const pattern of disclosure) assert.doesNotMatch(normalized, pattern, `${context}: private Angabe in ${normalized}`);
-        }
-      }
-      const flatFinal = Array.isArray(finalItems) ? finalItems : Object.values(finalItems).flat();
-      const keys = flatFinal.map(item => JSON.stringify(item).normalize('NFKC').toLocaleLowerCase('de-DE').replace(/\s+/g, ' '));
-      assert.equal(new Set(keys).size, keys.length, `${context}: keine Dubletten nach dem Anhängen`);
-      /* Fast-Doppler: drei oder mehr gemeinsame Inhaltswörter und mindestens 80 % Überschneidung. */
-      const texts = flatFinal.map(leadText);
-      for (let a = 0; a < texts.length; a += 1) {
-        for (let b = a + 1; b < texts.length; b += 1) {
-          const A = words(texts[a]);
-          const B = words(texts[b]);
-          if (!A.size || !B.size) continue;
-          const shared = [...A].filter(word => B.has(word)).length;
-          assert.ok(!(shared >= 3 && shared / Math.min(A.size, B.size) >= 0.8), `${context}: Fast-Doppler „${texts[a]}“ ~ „${texts[b]}“`);
-        }
-      }
+      /* Zusatzkarten stehen hinten; die erste Karte stammt also aus dem Basiskatalog. */
+      checkNewItems(context, gameId, extraItems, shape(flatFinal[0]));
+      checkDistinct(context, flatFinal);
       added += extraItems.length;
     }
+  }
+}
+
+/* Advanced-Spiele: advanced.html lädt keine party-cards-*.js, ihre Zusatzkarten
+   stehen deshalb in party-expansion.js (cardAdditions). Dieselben Regeln gelten. */
+const ADVANCED_TARGET = 50;
+for (const gameId of ['two-truths', 'question-imposter', 'location-spy']) {
+  for (const packName of catalog.getPackNames(gameId)) {
+    const items = catalog.content[gameId][packName];
+    const context = `party-expansion: ${gameId}/${packName}`;
+    assert.equal(items.length, ADVANCED_TARGET, `${context}: ${ADVANCED_TARGET} Karten`);
+    checkNewItems(context, gameId, items, shape(items[0]));
+    checkDistinct(context, items);
   }
 }
 
