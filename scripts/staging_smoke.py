@@ -33,6 +33,8 @@ CORE_TEXT_PATHS = (
     'party-viral-catalog.js',
     'party-core-release-catalog.js',
     'party-cards-viral-1.js',
+    'party-cards-viral-2.js',
+    'party-cards-viral-3.js',
     'party-core-classic-content.js',
     'party-routing.js',
 )

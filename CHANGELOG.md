@@ -1,3 +1,11 @@
+## v107 – Mehr Karten, Paket 2: fünf Viral-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Zwei neue Datendateien: `party-cards-viral-2.js` (Finger runter, Hear Me Out) und `party-cards-viral-3.js` (Hot Seat, Satz beenden, Preis schätzen). Jede Kategorie hat jetzt **50** statt 8 Karten (+1.260). Preise bei „Preis schätzen“ sind Spielwerte, keine echten Marktpreise.
+- Alle Texte ohne Marken, ohne echte Personen, ohne private Angaben, ohne Alkoholbezug; Fast-Doppler wurden vor dem Einbau umgeschrieben.
+- Paket 1 nachgebessert: Antwortoption „Memory“ (Markenname) heißt jetzt „Paare suchen“.
+- `tests/card-packs.test.js` prüft zusätzlich das Kartenformat je Spiel (z. B. „Finger runter, wenn du …“, Satzanfänge enden mit „…“, Preise sind ganze Zahlen > 0) und ignoriert feste Satzanfänge beim Fast-Doppler-Vergleich.
+- Offline-Cache v106 → v107. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v106 – Kartenpakete: Platz für 50 Karten je Kategorie (17. Oktober 2026)
 
 - Neue Karten liegen in reinen Datendateien `party-cards-*.js`. `party-core-classic-content.js` bleibt die letzte Inhaltsebene und hängt die Pakete hinten an: Gespeicherte Sessions verweisen weiter auf dieselben Karten. Unbekannte Spiele oder Kategorien brechen ab, exakte Dubletten werden übersprungen.

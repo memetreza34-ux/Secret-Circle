@@ -187,7 +187,7 @@
         ['Wie helfe ich, wenn Freunde umziehen?', 'Kisten tragen', 'Ein Einweihungsgeschenk bringen', 'Pizza bestellen'],
         ['Wie viel schreibe ich in Gruppenchats?', 'Sehr viel', 'Ab und zu', 'Fast nichts, ich lese nur'],
         ['Welches gemeinsame Hobby würde ich vorschlagen?', 'Sport', 'Einen Kochkurs', 'Zusammen Musik machen'],
-        ['Welches Spiel-Duell gewinne ich gegen Freunde?', 'Schach', 'Memory', 'Ein Würfelspiel'],
+        ['Welches Spiel-Duell gewinne ich gegen Freunde?', 'Schach', 'Paare suchen', 'Ein Würfelspiel'],
         ['Wie feiere ich Silvester am liebsten?', 'Mit einer großen Party', 'In kleiner Runde', 'Ich schlafe früh'],
         ['Was mache ich, wenn ich zu früh zu einer Party komme?', 'Beim Aufbau helfen', 'Draußen warten', 'Einfach reingehen'],
         ['Wie sage ich nein zu einer Einladung?', 'Ehrlich', 'Mit einer Ausrede', 'Ich sage selten nein'],
