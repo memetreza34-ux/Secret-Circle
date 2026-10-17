@@ -72,7 +72,9 @@ const FORMAT = {
   'word-chain': item => /^\p{Lu}$/u.test(item),
   'fill-blank-battle': item => / …$/.test(item),
   'who-wrote-it': item => /\?$/.test(item),
-  'undercover-similar-word': item => item.civilian !== item.undercover
+  'undercover-similar-word': item => item.civilian !== item.undercover,
+  /* Party Bracket braucht genau acht verschiedene Einträge für Viertelfinale bis Finale. */
+  'party-bracket': item => item.title.trim().length >= 4 && item.entries.length === 8 && new Set(item.entries.map(entry => entry.toLocaleLowerCase('de-DE'))).size === 8 && item.entries.every(entry => entry.trim().length >= 2)
 };
 const disclosure = [/letzte\s+(?:private\s+)?nachricht/i, /kamerarolle/i, /passwort/i, /(?:deine|private)\s+adresse/i, /private[nr]?\s+chats?/i, /handynummer|telefonnummer/i];
 

@@ -1,3 +1,9 @@
+## v113 – Mehr Karten, Paket 5b-2: Party Bracket auf 50 je Kategorie (17. Oktober 2026)
+
+- Neue Datendatei `party-cards-wave-2.js` (späte Stufe `wave-one`): **Party Bracket** von 8 auf **50** Brackets in Snacks, Reise & Freizeit und Superkräfte (+126 Brackets mit je 8 Einträgen).
+- Jedes Bracket hat einen eigenen Titel (keine Titel doppelt) und genau acht verschiedene Einträge, wie es das Turnier vom Viertelfinale bis zum Finale braucht. `tests/card-packs.test.js` prüft das jetzt als Formatregel.
+- Offline-Cache v112 → v113. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v112 – Mehr Karten, Paket 5b-1: Advanced- und Wave-One-Spiele auf 50 je Kategorie (17. Oktober 2026)
 
 - **Advanced-Spiele** (+306): **Zwei Wahrheiten, eine Lüge**, **Question Imposter** und **Location Spy** von 16 auf **50** je Kategorie. Die Karten stehen in `party-expansion.js` (`cardAdditions`), weil `advanced.html` nur diese Katalogebene lädt.
