@@ -1,3 +1,11 @@
+## v112 – Mehr Karten, Paket 5b-1: Advanced- und Wave-One-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- **Advanced-Spiele** (+306): **Zwei Wahrheiten, eine Lüge**, **Question Imposter** und **Location Spy** von 16 auf **50** je Kategorie. Die Karten stehen in `party-expansion.js` (`cardAdditions`), weil `advanced.html` nur diese Katalogebene lädt.
+- **Wave-One-Spiele** (+606) in `party-cards-wave-1.js`: **Undercover – ähnliches Wort**, **Imposter ohne Wort**, **Satzduell**, **Wer hat das geschrieben?** (8 → 50) und **Ein-Wort-Hinweis** (16 → 50).
+- Neu: späte Kartenpakete. Pakete mit `stage: 'wave-one'` reicht `party-core-classic-content.js` weiter, die letzte Katalogebene `party-wave-one-clue-catalog.js` hängt sie mit derselben geprüften Funktion an. Unbekannte Spiele oder Kategorien brechen weiterhin ab.
+- `tests/card-packs.test.js` prüft späte Pakete und die Advanced-Zusatzkarten mit denselben Regeln (Format, sichere Texte, keine Dubletten, keine Fast-Doppler); neue Formatregeln für Satzduell, Wer hat das geschrieben? und Undercover. `tests/party-wave-one-clue-catalog.test.js` erwartet 150 statt 48 Ein-Wort-Hinweise.
+- Offline-Cache v111 → v112. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v111 – Mehr Karten, Paket 5a: elf Hub-Spiele auf 50 je Kategorie (17. Oktober 2026)
 
 - Drei neue Datendateien (+1.249 Karten), je unter 1.000 Zeilen: `party-cards-hub-1.js` (**Wahrheit oder Pflicht**: je Kategorie 50 Wahrheiten und 50 Pflichten statt 12 und 12), `party-cards-hub-2.js` (**Ich habe noch nie**, **Wer würde eher?**, **Entweder oder** von 24 auf 50, **Hot Takes** von 8 auf 50) und `party-cards-hub-3.js` (**Nur falsche Antworten**, **Paranoia**, **Scharade**, **Nicht sagen!**, **Heiße Kartoffel** auf 50).

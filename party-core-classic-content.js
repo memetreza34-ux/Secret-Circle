@@ -2,7 +2,7 @@
   /* Zusatzkarten in reinen Datendateien. Dieselbe Liste und Reihenfolge laden
      die Seiten per <script> vor dieser Datei; dort registrieren sich die
      Dateien in root.SecretCircleCardPacks. */
-  const CARD_PACK_FILES = ['party-cards-viral-1.js', 'party-cards-viral-2.js', 'party-cards-viral-3.js', 'party-cards-mega-1.js', 'party-cards-mega-2.js', 'party-cards-mega-3.js', 'party-cards-quick-1.js', 'party-cards-quick-2.js', 'party-cards-quick-3.js', 'party-cards-hub-1.js', 'party-cards-hub-2.js', 'party-cards-hub-3.js'];
+  const CARD_PACK_FILES = ['party-cards-viral-1.js', 'party-cards-viral-2.js', 'party-cards-viral-3.js', 'party-cards-mega-1.js', 'party-cards-mega-2.js', 'party-cards-mega-3.js', 'party-cards-quick-1.js', 'party-cards-quick-2.js', 'party-cards-quick-3.js', 'party-cards-hub-1.js', 'party-cards-hub-2.js', 'party-cards-hub-3.js', 'party-cards-wave-1.js'];
   const isModule = typeof module === 'object' && module.exports;
   const base = isModule
     ? require('./party-core-release-catalog.js')
@@ -254,13 +254,16 @@
     return Object.values(value).flatMap(flattenItems);
   }
 
-  const content = replaceEditorialText(mergeContent(base.content, additions));
-  for (const [gameId, packs] of Object.entries(referenceSafeContent)) content[gameId] = packs;
+  const releaseContent = replaceEditorialText(mergeContent(base.content, additions));
+  for (const [gameId, packs] of Object.entries(referenceSafeContent)) releaseContent[gameId] = packs;
 
   /* Zusatzkarten werden hinten angehängt: Gespeicherte Sessions verweisen über
      Indizes auf Karten und bleiben so gültig. Unbekannte Spiele, Kategorien oder
      Formate brechen ab wie die übrigen Content-Ebenen; exakte Dubletten werden
-     übersprungen. */
+     übersprungen. Pakete mit stage 'wave-one' gelten Spielen, die erst nach
+     dieser Ebene entstehen; die letzte Katalogebene wendet sie mit derselben
+     Funktion an (party-wave-one-clue-catalog.js). */
+  const LATE_STAGE = 'wave-one';
   function cardKey(item) {
     return JSON.stringify(item).normalize('NFKC').toLocaleLowerCase('de-DE').replace(/\s+/g, ' ');
   }
@@ -288,21 +291,34 @@
     throw new Error(`Unvereinbares Kartenformat: ${context}`);
   }
 
-  const cardPackIds = [];
-  for (const pack of Array.isArray(cardPacks) ? cardPacks : []) {
-    if (!pack || typeof pack.id !== 'string' || !pack.additions || typeof pack.additions !== 'object' || cardPackIds.includes(pack.id)) continue;
-    for (const [gameId, packs] of Object.entries(pack.additions)) {
-      const current = content[gameId];
-      if (!current || typeof current !== 'object' || Array.isArray(current)) throw new Error(`Kartenpaket ${pack.id}: unbekanntes Spiel ${gameId}`);
-      const merged = { ...current };
-      for (const [packName, extra] of Object.entries(packs)) {
-        if (!(packName in current)) throw new Error(`Kartenpaket ${pack.id}: unbekannte Kategorie ${gameId}/${packName}`);
-        merged[packName] = appendUnique(current[packName], extra, `${gameId}/${packName}`);
+  function applyCardPacks(sourceContent, packs) {
+    const next = { ...sourceContent };
+    const ids = [];
+    for (const pack of Array.isArray(packs) ? packs : []) {
+      if (!pack || typeof pack.id !== 'string' || !pack.additions || typeof pack.additions !== 'object' || ids.includes(pack.id)) continue;
+      for (const [gameId, packsByName] of Object.entries(pack.additions)) {
+        const current = next[gameId];
+        if (!current || typeof current !== 'object' || Array.isArray(current)) throw new Error(`Kartenpaket ${pack.id}: unbekanntes Spiel ${gameId}`);
+        const merged = { ...current };
+        for (const [packName, extra] of Object.entries(packsByName)) {
+          if (!(packName in current)) throw new Error(`Kartenpaket ${pack.id}: unbekannte Kategorie ${gameId}/${packName}`);
+          merged[packName] = appendUnique(current[packName], extra, `${gameId}/${packName}`);
+        }
+        next[gameId] = merged;
       }
-      content[gameId] = merged;
+      ids.push(pack.id);
     }
-    cardPackIds.push(pack.id);
+    return { content: next, ids };
   }
+
+  const packList = Array.isArray(cardPacks) ? cardPacks : [];
+  for (const pack of packList) {
+    if (pack && pack.stage !== undefined && pack.stage !== LATE_STAGE) throw new Error(`Kartenpaket ${pack.id}: unbekannte Stufe ${pack.stage}`);
+  }
+  const lateCardPacks = Object.freeze(packList.filter(pack => pack && pack.stage === LATE_STAGE));
+  const applied = applyCardPacks(releaseContent, packList.filter(pack => pack && pack.stage !== LATE_STAGE));
+  const content = applied.content;
+  const cardPackIds = applied.ids;
 
   const games = Object.freeze(base.games.map(game => {
     const override = referenceSafeGameOverrides[game.id];
@@ -340,6 +356,8 @@
     coreClassicContentVersion: VERSION,
     cardPackFiles: Object.freeze([...(Array.isArray(cardPackFiles) ? cardPackFiles : [])]),
     cardPackIds: Object.freeze(cardPackIds),
+    lateCardPacks,
+    applyCardPacks,
     coreClassicContentGames: Object.freeze(Object.keys(additions)),
     editorialReplacementCount: Object.keys(editorialReplacements).length,
     referenceSafeGameIds: Object.freeze(Object.keys(referenceSafeGameOverrides)),
