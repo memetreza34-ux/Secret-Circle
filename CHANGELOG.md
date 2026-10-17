@@ -1,3 +1,9 @@
+## v105 – Mehr Karten, Paket 1: „Wer kennt mich am besten?“ und „Story Chain“ (17. Oktober 2026)
+
+- Beide Spiele hatten nur 6 Karten je Kategorie. Jetzt 20 in allen 12 Kategorien: 84 neue Fragen mit je drei Antwortoptionen und 84 neue Geschichtsanfänge, alle familienfreundlich, ohne Marken, ohne private Angaben.
+- Inhalts-Audit (keine fast gleichen Einträge, keine Dopplungen zwischen Kategorien) und die bestehenden Inhaltstests sind grün. Stil von Arman per Gegenlesen freigegeben.
+- Offline-Cache v104 → v105. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v104 – Kartengedächtnis: neue Sessions beginnen nicht mit bekannten Karten (16. Oktober 2026)
 
 - Neues gemeinsames Modul `card-memory.js`: Unter den in einer Session noch freien Karten wählen alle Engines (Quick, Trend, Viral, Wave-One, Hub, Advanced, eigene Spiele) bevorzugt solche, die in diesem Spiel und dieser Kategorie zuletzt nicht dran waren. Sind alle schon gesehen, kommt eine zufällige aus der älter gesehenen Hälfte. Word Imposter behält sein eigenes Wortgedächtnis.
