@@ -19,7 +19,7 @@ budgets = {
     'word-packs.js': 40_000, 'party-catalog.js': 85_000, 'party-expansion.js': 45_000,
     'party-trending-catalog.js': 70_000, 'party-mega-catalog.js': 90_000,
     'party-viral-catalog.js': 90_000, 'party-core-release-catalog.js': 65_000,
-    'party-core-classic-content.js': 45_000, 'party-routing.js': 20_000,
+    'party-core-classic-content.js': 45_000, 'party-cards-viral-1.js': 90_000, 'party-routing.js': 20_000,
     'party-wave-one-catalog.js': 40_000, 'party-wave-one-imposter-catalog.js': 8_000,
     'party-wave-one-writing-catalog.js': 35_000, 'party-wave-one-voting-catalog.js': 40_000,
     'party-wave-one-bluff-catalog.js': 30_000, 'party-wave-one-clue-catalog.js': 25_000,

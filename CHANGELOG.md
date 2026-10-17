@@ -1,3 +1,10 @@
+## v106 – Kartenpakete: Platz für 50 Karten je Kategorie (17. Oktober 2026)
+
+- Neue Karten liegen in reinen Datendateien `party-cards-*.js`. `party-core-classic-content.js` bleibt die letzte Inhaltsebene und hängt die Pakete hinten an: Gespeicherte Sessions verweisen weiter auf dieselben Karten. Unbekannte Spiele oder Kategorien brechen ab, exakte Dubletten werden übersprungen.
+- Datenschutz- und Referenz-Audit prüfen jede `party-cards-*.js` automatisch mit, auch künftige Dateien. Neuer Test `tests/card-packs.test.js`: jede Datei geladen, offline und auf allen Katalogseiten eingebunden, Format passt zur Kategorie, sichere Texte, keine Dubletten, keine Fast-Doppler.
+- Erstes Paket `party-cards-viral-1.js`: „Wer kennt mich am besten?“ und „Story Chain“ von 20 auf **50** Karten je Kategorie (+360).
+- Offline-Cache v105 → v106. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v105 – Mehr Karten, Paket 1: „Wer kennt mich am besten?“ und „Story Chain“ (17. Oktober 2026)
 
 - Beide Spiele hatten nur 6 Karten je Kategorie. Jetzt 20 in allen 12 Kategorien: 84 neue Fragen mit je drei Antwortoptionen und 84 neue Geschichtsanfänge, alle familienfreundlich, ohne Marken, ohne private Angaben.

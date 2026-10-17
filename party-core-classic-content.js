@@ -1,11 +1,17 @@
 (function (root, factory) {
-  const base = typeof module === 'object' && module.exports
+  /* Zusatzkarten in reinen Datendateien. Dieselbe Liste und Reihenfolge laden
+     die Seiten per <script> vor dieser Datei; dort registrieren sich die
+     Dateien in root.SecretCircleCardPacks. */
+  const CARD_PACK_FILES = ['party-cards-viral-1.js'];
+  const isModule = typeof module === 'object' && module.exports;
+  const base = isModule
     ? require('./party-core-release-catalog.js')
     : root.SecretCirclePartyCatalog;
-  const api = factory(base);
+  const cardPacks = isModule ? CARD_PACK_FILES.map(file => require(`./${file}`)) : (root.SecretCircleCardPacks || []);
+  const api = factory(base, cardPacks, CARD_PACK_FILES);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.SecretCirclePartyCatalog = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function createClassicCoreContent(base) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function createClassicCoreContent(base, cardPacks, cardPackFiles) {
   'use strict';
   if (!base) throw new Error('Core-Release-Katalog für klassische Inhalte fehlt.');
 
@@ -251,6 +257,53 @@
   const content = replaceEditorialText(mergeContent(base.content, additions));
   for (const [gameId, packs] of Object.entries(referenceSafeContent)) content[gameId] = packs;
 
+  /* Zusatzkarten werden hinten angehängt: Gespeicherte Sessions verweisen über
+     Indizes auf Karten und bleiben so gültig. Unbekannte Spiele, Kategorien oder
+     Formate brechen ab wie die übrigen Content-Ebenen; exakte Dubletten werden
+     übersprungen. */
+  function cardKey(item) {
+    return JSON.stringify(item).normalize('NFKC').toLocaleLowerCase('de-DE').replace(/\s+/g, ' ');
+  }
+
+  function appendUnique(baseValue, extraValue, context) {
+    if (Array.isArray(baseValue) && Array.isArray(extraValue)) {
+      const seen = new Set(baseValue.map(cardKey));
+      const added = [];
+      for (const item of extraValue) {
+        const key = cardKey(item);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        added.push(item);
+      }
+      return [...baseValue, ...added];
+    }
+    if (baseValue && extraValue && typeof baseValue === 'object' && typeof extraValue === 'object' && !Array.isArray(baseValue) && !Array.isArray(extraValue)) {
+      const merged = { ...baseValue };
+      for (const [key, value] of Object.entries(extraValue)) {
+        if (!(key in baseValue)) throw new Error(`Unbekannter Kartenbereich: ${context}/${key}`);
+        merged[key] = appendUnique(baseValue[key], value, `${context}/${key}`);
+      }
+      return merged;
+    }
+    throw new Error(`Unvereinbares Kartenformat: ${context}`);
+  }
+
+  const cardPackIds = [];
+  for (const pack of Array.isArray(cardPacks) ? cardPacks : []) {
+    if (!pack || typeof pack.id !== 'string' || !pack.additions || typeof pack.additions !== 'object' || cardPackIds.includes(pack.id)) continue;
+    for (const [gameId, packs] of Object.entries(pack.additions)) {
+      const current = content[gameId];
+      if (!current || typeof current !== 'object' || Array.isArray(current)) throw new Error(`Kartenpaket ${pack.id}: unbekanntes Spiel ${gameId}`);
+      const merged = { ...current };
+      for (const [packName, extra] of Object.entries(packs)) {
+        if (!(packName in current)) throw new Error(`Kartenpaket ${pack.id}: unbekannte Kategorie ${gameId}/${packName}`);
+        merged[packName] = appendUnique(current[packName], extra, `${gameId}/${packName}`);
+      }
+      content[gameId] = merged;
+    }
+    cardPackIds.push(pack.id);
+  }
+
   const games = Object.freeze(base.games.map(game => {
     const override = referenceSafeGameOverrides[game.id];
     return override ? Object.freeze({ ...game, ...override }) : game;
@@ -285,6 +338,8 @@
     getItems,
     itemCount,
     coreClassicContentVersion: VERSION,
+    cardPackFiles: Object.freeze([...(Array.isArray(cardPackFiles) ? cardPackFiles : [])]),
+    cardPackIds: Object.freeze(cardPackIds),
     coreClassicContentGames: Object.freeze(Object.keys(additions)),
     editorialReplacementCount: Object.keys(editorialReplacements).length,
     referenceSafeGameIds: Object.freeze(Object.keys(referenceSafeGameOverrides)),
