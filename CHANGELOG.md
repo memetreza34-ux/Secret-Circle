@@ -1,3 +1,11 @@
+## v102 – Hub-Spiele: Karte nach Neuladen verdeckt, Rundenzähler bei Flaschendrehen und Würfel (16. Oktober 2026)
+
+- Fortsetzen nach Neuladen in einer laufenden Scharade- oder Tabu-Runde zeigte die geheime Karte sofort. Jetzt wird sie genauso verdeckt wie bei einem App-Wechsel („Geheime Karte wieder anzeigen“); Karte und Restzeit bleiben unverändert, der Timer bleibt pausiert.
+- Flaschendrehen und Würfel & Münze zählten jede Aktion intern als Runde, die Anzeige blieb aber auf „0 Runden“ und die Zählerleiste versteckt. Die Anzeige folgt jetzt jeder Aktion.
+- Neuer Browsertest spielt alle 13 Hub-Spiele über den echten Weg der Startseite drei Runden bis „Beenden & speichern“, Timer-Runden laufen mit Test-Uhr wirklich ab; danach eine zweite Session vollständig. Genau ein Verlaufseintrag pro Session.
+- 55er-Matrix: Ende + Wiederholen jetzt 50/55.
+- Offline-Cache v101 → v102. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v101 – Trend-Spiele: Geheimnisse nach Neuladen wieder verdeckt (16. Oktober 2026)
 
 - Fortsetzen nach Neuladen zeigte bei „Wer bin ich?“, „Anime-Archetypen erraten“ und „Geheime Mission“ eine offen gezeigte Identität bzw. Mission sofort wieder an. Jetzt wieder verdeckt; der Inhalt bleibt derselbe, Neuladen zieht nichts neu.

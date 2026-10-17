@@ -35,8 +35,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -48,8 +48,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -61,8 +61,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -74,8 +74,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -87,8 +87,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -100,8 +100,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -113,8 +113,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -126,8 +126,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -139,8 +139,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -152,8 +152,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -165,8 +165,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -178,8 +178,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
@@ -191,8 +191,8 @@
       "engine": "hub",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
         "coverage": null
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
