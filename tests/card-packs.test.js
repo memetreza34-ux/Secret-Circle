@@ -52,7 +52,8 @@ const FORMAT = {
   'put-a-finger-down': item => /^Finger runter, wenn du .+[.!]$/.test(item),
   'finish-the-sentence': item => / …$/.test(item),
   'hot-seat': item => /[?.]$/.test(item) && item.length <= 70,
-  'guess-the-price': item => typeof item[0] === 'string' && Number.isInteger(item[1]) && item[1] > 0
+  'guess-the-price': item => typeof item[0] === 'string' && Number.isInteger(item[1]) && item[1] > 0,
+  'emoji-quiz': item => !/\p{L}/u.test(item[0]) && /\p{L}/u.test(item[1])
 };
 const disclosure = [/letzte\s+(?:private\s+)?nachricht/i, /kamerarolle/i, /passwort/i, /(?:deine|private)\s+adresse/i, /private[nr]?\s+chats?/i, /handynummer|telefonnummer/i];
 

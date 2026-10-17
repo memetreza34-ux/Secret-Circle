@@ -2,7 +2,7 @@
   /* Zusatzkarten in reinen Datendateien. Dieselbe Liste und Reihenfolge laden
      die Seiten per <script> vor dieser Datei; dort registrieren sich die
      Dateien in root.SecretCircleCardPacks. */
-  const CARD_PACK_FILES = ['party-cards-viral-1.js', 'party-cards-viral-2.js', 'party-cards-viral-3.js'];
+  const CARD_PACK_FILES = ['party-cards-viral-1.js', 'party-cards-viral-2.js', 'party-cards-viral-3.js', 'party-cards-mega-1.js', 'party-cards-mega-2.js'];
   const isModule = typeof module === 'object' && module.exports;
   const base = isModule
     ? require('./party-core-release-catalog.js')

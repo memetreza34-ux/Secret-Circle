@@ -163,10 +163,11 @@ assert.ok(animeGame);
 assert.equal(animeGame.title, 'Anime-Archetypen erraten');
 assert.equal(animeGame.group, 'Wissen & Quiz');
 assert.deepEqual(animeGame.packs, ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']);
-assert.equal(catalog.itemCount('anime-guess'), 40);
+/* v108: 10 geprüfte Archetypen aus dem Release-Katalog plus 40 aus party-cards-mega-1.js je Kategorie. */
+assert.equal(catalog.itemCount('anime-guess'), 200);
 for (const pack of animeGame.packs) {
   const items = catalog.getItems('anime-guess', pack);
-  assert.equal(items.length, 10, `Reference-safe anime pack must contain 10 archetypes: ${pack}`);
+  assert.equal(items.length, 50, `Reference-safe anime pack must contain 50 archetypes: ${pack}`);
   assertUniqueItems(items, `anime-guess/${pack}`);
 }
 const finalAnimeTerms = collectStrings(catalog.content['anime-guess']).map(canonicalText);

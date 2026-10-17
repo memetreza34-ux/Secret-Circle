@@ -1,3 +1,11 @@
+## v108 – Mehr Karten, Paket 3a: fünf Trend-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Neue Datendateien `party-cards-mega-1.js` und `party-cards-mega-2.js` (je unter 1.000 Zeilen, zusammen +1.212 Karten): **Wer bin ich?** (8 Kategorien), **Anime-Archetypen erraten** (4), **Blind Ranking** (6) und **Tier List Battle** (6) von 10 auf **50**, **Emoji Quiz** (6) von 8 auf **50**.
+- Anime-Archetypen bleiben referenzsicher: nur allgemeine Figurentypen, keine Serien, Figurennamen oder Marken. Der Vertrag in `tests/core-content-quality.test.js` verlangt jetzt genau 50 statt 10 Archetypen je Kategorie; die Sperrliste konkreter Fan-Referenzen bleibt unverändert.
+- „Wer bin ich? – Geschichte“ nennt nur bekannte historische Personen (Wissenschaft, Kunst, Entdeckungen); Emoji nutzen höchstens Unicode 12 (2019) und keine Flaggen.
+- `tests/card-packs.test.js` prüft zusätzlich: Emoji-Hinweise enthalten keine Buchstaben, die Lösung schon.
+- Offline-Cache v107 → v108. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v107 – Mehr Karten, Paket 2: fünf Viral-Spiele auf 50 je Kategorie (17. Oktober 2026)
 
 - Zwei neue Datendateien: `party-cards-viral-2.js` (Finger runter, Hear Me Out) und `party-cards-viral-3.js` (Hot Seat, Satz beenden, Preis schätzen). Jede Kategorie hat jetzt **50** statt 8 Karten (+1.260). Preise bei „Preis schätzen“ sind Spielwerte, keine echten Marktpreise.
