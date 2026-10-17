@@ -1,3 +1,12 @@
+## v104 – Kartengedächtnis: neue Sessions beginnen nicht mit bekannten Karten (16. Oktober 2026)
+
+- Neues gemeinsames Modul `card-memory.js`: Unter den in einer Session noch freien Karten wählen alle Engines (Quick, Trend, Viral, Wave-One, Hub, Advanced, eigene Spiele) bevorzugt solche, die in diesem Spiel und dieser Kategorie zuletzt nicht dran waren. Sind alle schon gesehen, kommt eine zufällige aus der älter gesehenen Hälfte. Word Imposter behält sein eigenes Wortgedächtnis.
+- Gegenprobe im Browser: ohne Modul hatten 4 von 5 zweiten Sessions bekannte Karten, mit Modul 0 von 5.
+- Speicher `secret-circle-card-memory-v1` enthält nur Prüfsummen, keine Kartentexte, Namen oder Eingaben; höchstens 150 Bereiche mit je 150 Einträgen. Kein Teil von Sicherungen (wie das Onboarding), „Alle Daten löschen“ entfernt ihn. Fehlt oder klemmt der Speicher, bleibt es bei der bisherigen Zufallswahl.
+- Datenschutzseite, `BACKUP_SCHEMAS.md` und `ARCHITECTURE.md` beschreiben den Speicher; der 17-Key-Backupvertrag bleibt unverändert.
+- Tests: Unit-Test für Auswahl, Rotation, Begrenzung, kaputten Speicher und „keine Texte“; Browsertest mit zwei Sessions je Engine-Familie ohne gemeinsame Karte.
+- Offline-Cache v103 → v104. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v103 – Word Imposter: kein Hilfswort verrät mehr den Begriff (16. Oktober 2026)
 
 - 28 von 1.470 Hilfswörtern waren ein Teil des geheimen Begriffs oder umgekehrt (z. B. „Fußball“ → „Ball“, „Nashorn“ → „Horn“, „Föhn“ → „Föhnen“). Der Imposter sieht das Hilfswort in der Standardeinstellung und kannte damit praktisch den Begriff. Alle 28 durch passende Begriffe ohne Wortteil ersetzt (z. B. „Stadion“, „Savanne“, „Warmluft“).

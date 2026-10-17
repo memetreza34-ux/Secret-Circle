@@ -49,7 +49,8 @@
       randomInt,
       randomItem,
       getSession,
-      renderPlayRound
+      renderPlayRound,
+      cardChooser
     } = deps || {};
     const R = window.SecretCirclePartyHubRoundState;
 
@@ -197,7 +198,7 @@
 
     function renderHotPotatoStart() {
       const current = session();
-      const selected = R.ensureCurrent(current, 'hot-potato', contentItems('hot-potato', current.pack), randomInt);
+      const selected = R.ensureCurrent(current, 'hot-potato', contentItems('hot-potato', current.pack), randomInt, null, cardChooser?.());
       const prompt = selected?.value || '';
       $('#play-content').textContent = prompt || 'Keine Aufgabe verfügbar.';
       $('#play-player').textContent = `${currentPlayer()} beginnt mit dem Gerät`;
@@ -239,7 +240,7 @@
 
     function renderWordChainStart() {
       const current = session();
-      const selected = R.ensureCurrent(current, 'word-chain', contentItems('word-chain', current.pack), randomInt);
+      const selected = R.ensureCurrent(current, 'word-chain', contentItems('word-chain', current.pack), randomInt, null, cardChooser?.());
       const letter = selected?.value || 'A';
       $('#play-content').textContent = `Kategorie: ${current.pack} · Startbuchstabe: ${letter}`;
       $('#play-player').textContent = `${currentPlayer()} beginnt`;
