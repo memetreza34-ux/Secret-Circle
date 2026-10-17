@@ -1,3 +1,11 @@
+## v111 – Mehr Karten, Paket 5a: elf Hub-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Drei neue Datendateien (+1.249 Karten), je unter 1.000 Zeilen: `party-cards-hub-1.js` (**Wahrheit oder Pflicht**: je Kategorie 50 Wahrheiten und 50 Pflichten statt 12 und 12), `party-cards-hub-2.js` (**Ich habe noch nie**, **Wer würde eher?**, **Entweder oder** von 24 auf 50, **Hot Takes** von 8 auf 50) und `party-cards-hub-3.js` (**Nur falsche Antworten**, **Paranoia**, **Scharade**, **Nicht sagen!**, **Heiße Kartoffel** auf 50).
+- **Wortkette** besteht aus Startbuchstaben; 50 je Kategorie gibt das Alphabet nicht her. Jede Kategorie hat jetzt alle gut spielbaren Buchstaben (22–23 statt 10).
+- Pflichten bleiben sicher: keine privaten Daten, keine Nachrichten an Dritte, keine riskanten Aufgaben, kein Körperkontakt. Ein Scharade-Begriff („Frieren“) stand auf der Referenz-Sperrliste und heißt jetzt „Bibbern“.
+- Verträge: `tests/core-content-quality.test.js` und `tests/party-routing.test.js` erwarten jetzt 400 statt 96 Wahrheit-oder-Pflicht-Karten (je Kategorie 50 + 50). `tests/card-packs.test.js`: Formatregeln für Ich habe noch nie, Wer würde eher?, Paranoia, Nicht sagen! und Wortkette; feste Satzanfänge dieser Spiele und „… und gib weiter.“ zählen beim Fast-Doppler-Vergleich nicht mit.
+- Offline-Cache v110 → v111. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v110 – Mehr Karten, Paket 4: zehn Quick-Spiele auf 50 je Kategorie (17. Oktober 2026)
 
 - Drei neue Datendateien (+1.476 Karten), je unter 1.000 Zeilen: `party-cards-quick-1.js` (**Spektrum-Tipp**, **Zeichnen & Raten**, **Schnellfeuer**, **Geräusche erraten**), `party-cards-quick-2.js` (**Stirn-Raten**, alle 10 Kategorien) und `party-cards-quick-3.js` (**Buchstaben-Kategorien**, **Nicht lachen!**, **Melodie summen**, **Gegenstandsjagd**, **Caption Battle**).
