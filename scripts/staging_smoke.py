@@ -46,6 +46,8 @@ CORE_TEXT_PATHS = (
     'party-cards-hub-3.js',
     'party-cards-wave-1.js',
     'party-cards-wave-2.js',
+    'party-cards-wave-3.js',
+    'party-cards-viral-4.js',
     'party-core-classic-content.js',
     'party-routing.js',
 )

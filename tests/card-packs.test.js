@@ -48,10 +48,11 @@ for (const file of files) {
 
 const shape = item => Array.isArray(item) ? `array:${item.length}:${item.map(value => typeof value).join(',')}`
   : item && typeof item === 'object' ? `object:${Object.keys(item).sort().join(',')}` : typeof item;
-const STOP = new Set(('der die das ein eine einen einem einer und oder ich du er sie es wir ihr mit mich mir mein meine meinen am im in an auf zu zum zur von vom bei für ist sind war wird würde würdest hat habe hätte noch nur nicht kein keine was wie wer wo wann welche welcher welches welchen den dem des als so sehr auch aus über plötzlich jeden jede jeder immer schon man sich liebsten gern gerne einmal mache machen esse verbringe passt besten mag würden möchte soll darf kann lieber eher meistens wenn hast bist dass dich dir dein deine deinen').split(' '));
+const STOP = new Set(('der die das ein eine einen einem einer und oder ich du er sie es wir ihr mit mich mir mein meine meinen am im in an auf zu zum zur von vom bei für ist sind war wird würde würdest hat habe hätte noch nur nicht kein keine was wie wer wo wann welche welcher welches welchen den dem des als so sehr auch aus über plötzlich jeden jede jeder immer schon man sich liebsten gern gerne einmal mache machen esse verbringe passt besten mag würden möchte soll darf kann lieber eher meistens wenn hast bist dass dich dir dein deine deinen eines').split(' '));
+/* Zahlen sind bei Zahlenspielen der eigentliche Inhalt und zählen deshalb immer mit. */
 /* Feste Satzanfänge eines Spiels zählen nicht als gemeinsamer Inhalt. */
-const TEMPLATE = /^(?:Finger runter, wenn du |Gib das Handy an die Person,? |Bringe (?:jemanden|die Gruppe|das Team|zwei Personen|drei Personen|alle) dazu, |Sorge dafür, dass (?:jemand|die Gruppe|zwei Personen|drei Personen|alle) |(?:Die|Eine) Person |Jemand |Nenne (?:zwei|drei|fünf|sechs|sieben) |Ich habe noch nie |Wer würde (?:eher|am ehesten) )/;
-const words = text => new Set(String(text).toLocaleLowerCase('de-DE').replace(/[^a-zäöüß0-9 ]/g, ' ').split(/\s+/).filter(word => word.length > 2 && !STOP.has(word)));
+const TEMPLATE = /^(?:Finger runter, wenn du |Gib das Handy an die Person,? |Bringe (?:jemanden|die Gruppe|das Team|zwei Personen|drei Personen|alle) dazu, |Sorge dafür, dass (?:jemand|die Gruppe|zwei Personen|drei Personen|alle) |(?:Die|Eine) Person |Jemand |Nenne (?:zwei|drei|fünf|sechs|sieben) |Ich habe noch nie |Wer würde (?:eher|am ehesten) |Wie viel Prozent )/;
+const words = text => new Set(String(text).toLocaleLowerCase('de-DE').replace(/[^a-zäöüß0-9 ]/g, ' ').split(/\s+/).filter(word => (word.length > 2 || /^\d+$/.test(word)) && !STOP.has(word)));
 const leadText = item => (Array.isArray(item) ? item[0] : item && typeof item === 'object' ? (item.question || item.statement || item.word || item.civilian || item.title || item.main || JSON.stringify(item)) : String(item)).replace(TEMPLATE, '').replace(/ und gib weiter\.$/, '');
 /* Spielregeln für das Kartenformat, damit neue Karten wie die vorhandenen funktionieren. */
 const FORMAT = {
@@ -73,6 +74,12 @@ const FORMAT = {
   'fill-blank-battle': item => / …$/.test(item),
   'who-wrote-it': item => /\?$/.test(item),
   'undercover-similar-word': item => item.civilian !== item.undercover,
+  /* Wissensspiele: Antworten müssen zur Frage passen (Index, Wahrheitswert, Zahl). */
+  'party-quiz': item => item.options.length === 4 && new Set(item.options.map(option => option.toLocaleLowerCase('de-DE'))).size === 4 && Number.isInteger(item.answer) && item.answer >= 0 && item.answer < 4 && item.explanation.length >= 8,
+  'fact-or-fake': item => typeof item.fact === 'boolean' && item.explanation.length >= 8,
+  'percent-guess': item => Number.isInteger(item.answer) && item.answer >= 0 && item.answer <= 100 && item.explanation.length >= 8,
+  'bluff-trivia': item => item.answer.trim().length >= 1 && item.explanation.length >= 8,
+  'higher-lower': item => typeof item[0] === 'string' && Number.isInteger(item[1]) && item[1] >= 0,
   /* Party Bracket braucht genau acht verschiedene Einträge für Viertelfinale bis Finale. */
   'party-bracket': item => item.title.trim().length >= 4 && item.entries.length === 8 && new Set(item.entries.map(entry => entry.toLocaleLowerCase('de-DE'))).size === 8 && item.entries.every(entry => entry.trim().length >= 2)
 };

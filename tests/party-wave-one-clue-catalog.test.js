@@ -14,7 +14,7 @@ assert.equal(game.age, 'all');
 assert.ok(catalog.quickGameIds.includes('password-one-word'));
 /* v112: 16 Grundkarten plus 34 aus party-cards-wave-1.js je Kategorie. */
 assert.equal(catalog.itemCount('password-one-word'), 150);
-assert.deepEqual([...catalog.lateCardPackIds], ['wave-1', 'wave-2']);
+assert.deepEqual([...catalog.lateCardPackIds], ['wave-1', 'wave-2', 'wave-3']);
 for (const item of catalog.getItems('password-one-word')) {
   assert.equal(typeof item, 'string');
   assert.ok(item.trim().length >= 2);

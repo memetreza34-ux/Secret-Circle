@@ -1,3 +1,10 @@
+## v114 – Mehr Karten, Paket 6: Wissensspiele auf 30 je Kategorie mit Faktenprüfung (17. Oktober 2026)
+
+- `party-cards-wave-3.js` (späte Stufe `wave-one`, +264): **Party Quiz**, **Fakt oder Fake**, **Prozent schätzen** und **Bluff Trivia** von 8 auf **30** je Kategorie. `party-cards-viral-4.js` (+132): **Höher oder tiefer** von 8 auf **30** in allen sechs Kategorien.
+- Faktenprüfung: Prozentwerte und ableitbare Zahlen (Zeit, Maße, Geometrie) rechnet der Generator aus der Frage nach; alle übrigen Karten nutzen nur stabiles Lehrbuch- und Begriffswissen (keine Rekorde, Preise, Einwohnerzahlen). Zehn heiklere Fakten sind zusätzlich per Websuche gegengeprüft (u. a. Venus heißer als Merkur, Delfin-Halbhirnschlaf, sieben Halswirbel bei Giraffen, neun Nachbarländer Deutschlands, 52 weiße und 36 schwarze Klaviertasten, Halbmarathon 21,0975 km, SMS 160 Zeichen, Kegeln mit neun Kegeln, Schlangen ohne Lider, Seepferdchen-Männchen tragen aus). Fakt oder Fake ist je Kategorie genau zur Hälfte wahr und falsch; Antwortpositionen im Quiz sind gemischt.
+- `tests/card-packs.test.js`: Formatregeln für alle fünf Wissensspiele; Zahlen zählen beim Fast-Doppler-Vergleich jetzt immer als Inhalt, „Wie viel Prozent …“ als fester Satzanfang.
+- Offline-Cache v113 → v114. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v113 – Mehr Karten, Paket 5b-2: Party Bracket auf 50 je Kategorie (17. Oktober 2026)
 
 - Neue Datendatei `party-cards-wave-2.js` (späte Stufe `wave-one`): **Party Bracket** von 8 auf **50** Brackets in Snacks, Reise & Freizeit und Superkräfte (+126 Brackets mit je 8 Einträgen).
