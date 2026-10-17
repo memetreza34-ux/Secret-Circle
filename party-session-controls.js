@@ -353,6 +353,9 @@
       resultArmTimer = setTimeoutFn(() => {
         resultArmTimer = null;
         setInert('#quick-result .inline-actions', false);
+        /* Ein zweiter Tipp kann den Fokus verlieren (WebKit): zurück zur Überschrift. */
+        const active = documentRef?.activeElement;
+        if (!query('#quick-result')?.hidden && (!active || active === documentRef.body)) query('#quick-result-title')?.focus?.({ preventScroll: true });
       }, RESULT_ARM_MS);
       return true;
     }
