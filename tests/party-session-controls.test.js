@@ -430,6 +430,32 @@ assert.equal(armTimeouts.size, 1, 'erneutes Beenden startet die Sperre neu statt
 assert.equal(resultActions.inert, false);
 assert.equal(resultActions.getAttribute('aria-disabled'), null);
 
+// Hat ein zweiter Tipp während der Sperre den Fokus auf den Hintergrund geworfen,
+// geht er danach zurück auf die Ergebnis-Überschrift; sonst bleibt er, wo er ist.
+for (const focusLost of [true, false]) {
+  const title = { ...node(), focused: 0, focus() { this.focused += 1; } };
+  const focusNodes = { ...createNodes(), '#quick-result': node(), '#quick-result .inline-actions': node(), '#quick-result-title': title };
+  const focusDocument = createDocument(focusNodes);
+  focusDocument.body = node();
+  focusDocument.activeElement = focusLost ? focusDocument.body : focusNodes['#quick-result .inline-actions'];
+  let pending = null;
+  const focusController = Controls.createController({
+    documentRef: focusDocument,
+    windowRef: createWindow(createStorage()),
+    storageRef: createStorage(),
+    catalog,
+    gameId: 'one',
+    setIntervalFn() { return 1; },
+    clearIntervalFn() {},
+    setTimeoutFn(callback) { pending = callback; return 1; },
+    clearTimeoutFn() { pending = null; }
+  });
+  focusController.setSessionActive(true);
+  focusController.setSessionActive(false);
+  pending();
+  assert.equal(title.focused, focusLost ? 1 : 0, `Fokus nach der Sperre (verloren: ${focusLost})`);
+}
+
 console.log(JSON.stringify({
   resultActionsArmedAfterEnd: true,
   ok: true,
