@@ -607,9 +607,9 @@
       "engine": "wave-one-quiz",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -620,9 +620,9 @@
       "engine": "wave-one-quiz",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -633,9 +633,9 @@
       "engine": "wave-one-imposter",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -646,9 +646,9 @@
       "engine": "wave-one-imposter",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -659,9 +659,9 @@
       "engine": "wave-one-writing",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -672,9 +672,9 @@
       "engine": "wave-one-writing",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -685,9 +685,9 @@
       "engine": "wave-one-voting",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -698,9 +698,9 @@
       "engine": "wave-one-voting",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -711,9 +711,9 @@
       "engine": "wave-one-bluff",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     },
@@ -724,9 +724,9 @@
       "engine": "wave-one-clue",
       "launchSweep": "PASS",
       "endReplay": {
-        "status": "NOT_RUN",
-        "spec": null,
-        "coverage": null
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
       },
       "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
     }
