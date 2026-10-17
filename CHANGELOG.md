@@ -1,3 +1,11 @@
+## v109 – Mehr Karten, Paket 3b: vier Trend-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Neue Datendatei `party-cards-mega-3.js` (+840 Karten): **Geld-Challenge**, **Pass das Handy**, **Red oder Green Flag** und **Geheime Mission** von 8 auf **50** in allen 20 Kategorien.
+- Geld-Challenges bleiben rein hypothetisch und harmlos (keine Mutproben mit Risiko, keine echten Zahlungen). Red/Green Flags halten Rot und Grün etwa ausgewogen; Datenschutz-Themen sind als Warnzeichen formuliert (z. B. Standort öffentlich teilen, fremde Konten verlangen).
+- Geheime Missionen sind unauffällig, freundlich und ohne Körperkontakt außer Händeschütteln oder Abklatschen.
+- `tests/card-packs.test.js`: Feste Satzanfänge weiterer Spiele („Gib das Handy an die Person …“, „Bringe jemanden dazu, …“, „Sorge dafür, dass jemand …“, „Die Person …“) zählen beim Fast-Doppler-Vergleich nicht mit. Die Schwelle bleibt 3 Wörter / 80 %.
+- Offline-Cache v108 → v109. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v108 – Mehr Karten, Paket 3a: fünf Trend-Spiele auf 50 je Kategorie (17. Oktober 2026)
 
 - Neue Datendateien `party-cards-mega-1.js` und `party-cards-mega-2.js` (je unter 1.000 Zeilen, zusammen +1.212 Karten): **Wer bin ich?** (8 Kategorien), **Anime-Archetypen erraten** (4), **Blind Ranking** (6) und **Tier List Battle** (6) von 10 auf **50**, **Emoji Quiz** (6) von 8 auf **50**.

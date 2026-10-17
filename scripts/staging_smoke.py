@@ -37,6 +37,7 @@ CORE_TEXT_PATHS = (
     'party-cards-viral-3.js',
     'party-cards-mega-1.js',
     'party-cards-mega-2.js',
+    'party-cards-mega-3.js',
     'party-core-classic-content.js',
     'party-routing.js',
 )

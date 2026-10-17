@@ -44,7 +44,7 @@ const shape = item => Array.isArray(item) ? `array:${item.length}:${item.map(val
   : item && typeof item === 'object' ? `object:${Object.keys(item).sort().join(',')}` : typeof item;
 const STOP = new Set(('der die das ein eine einen einem einer und oder ich du er sie es wir ihr mit mich mir mein meine meinen am im in an auf zu zum zur von vom bei für ist sind war wird würde würdest hat habe hätte noch nur nicht kein keine was wie wer wo wann welche welcher welches welchen den dem des als so sehr auch aus über plötzlich jeden jede jeder immer schon man sich liebsten gern gerne einmal mache machen esse verbringe passt besten mag würden möchte soll darf kann lieber eher meistens wenn hast bist dass dich dir dein deine deinen').split(' '));
 /* Feste Satzanfänge eines Spiels zählen nicht als gemeinsamer Inhalt. */
-const TEMPLATE = /^Finger runter, wenn du /;
+const TEMPLATE = /^(?:Finger runter, wenn du |Gib das Handy an die Person,? |Bringe (?:jemanden|die Gruppe|das Team|zwei Personen|drei Personen|alle) dazu, |Sorge dafür, dass (?:jemand|die Gruppe|zwei Personen|drei Personen|alle) |(?:Die|Eine) Person |Jemand )/;
 const words = text => new Set(String(text).toLocaleLowerCase('de-DE').replace(/[^a-zäöüß0-9 ]/g, ' ').split(/\s+/).filter(word => word.length > 2 && !STOP.has(word)));
 const leadText = item => (Array.isArray(item) ? item[0] : item && typeof item === 'object' ? (item.question || item.statement || item.word || item.civilian || item.title || item.main || JSON.stringify(item)) : String(item)).replace(TEMPLATE, '');
 /* Spielregeln für das Kartenformat, damit neue Karten wie die vorhandenen funktionieren. */
