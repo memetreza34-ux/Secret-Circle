@@ -1,3 +1,11 @@
+## v110 – Mehr Karten, Paket 4: zehn Quick-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Drei neue Datendateien (+1.476 Karten), je unter 1.000 Zeilen: `party-cards-quick-1.js` (**Spektrum-Tipp**, **Zeichnen & Raten**, **Schnellfeuer**, **Geräusche erraten**), `party-cards-quick-2.js` (**Stirn-Raten**, alle 10 Kategorien) und `party-cards-quick-3.js` (**Buchstaben-Kategorien**, **Nicht lachen!**, **Melodie summen**, **Gegenstandsjagd**, **Caption Battle**).
+- Stirn-Raten teilt bewusst sechs Kategorien mit „Wer bin ich?“. Diese sechs bekommen dieselben neuen Karten wie dort (eine Ausnahme: „Zauberer“ steht bei Stirn-Raten schon in Popkultur und heißt in Märchen & Mythen „Wassermann“).
+- Spektrum-Tipp bleibt referenzsicher (nur allgemeine Gegensatzpaare), Melodie summen nennt nur Musikarten, Anlässe und Filmszenen, keine Liedtitel.
+- `tests/card-packs.test.js`: Formatregeln für Schnellfeuer (Anzahl und Sekunden als ganze Zahlen, mehr Sekunden als Antworten), Spektrum (zwei verschiedene Pole), Buchstaben-Kategorien (fünf verschiedene Kategorien) und Melodie summen (keine Titel in Anführungszeichen). „Nenne drei/fünf/sechs/sieben …“ zählt als fester Satzanfang.
+- Offline-Cache v109 → v110. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
 ## v109 – Mehr Karten, Paket 3b: vier Trend-Spiele auf 50 je Kategorie (17. Oktober 2026)
 
 - Neue Datendatei `party-cards-mega-3.js` (+840 Karten): **Geld-Challenge**, **Pass das Handy**, **Red oder Green Flag** und **Geheime Mission** von 8 auf **50** in allen 20 Kategorien.
