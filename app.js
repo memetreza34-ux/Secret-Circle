@@ -275,6 +275,7 @@ function createRoundOptions(values) {
   return {
     ...values,
     entries: categoryEntries(values.category),
+    chooseWordIndex: window.SecretCircleCardMemory?.chooseWord,
     category: categoryName(values.category),
     seed: makeId()
   };

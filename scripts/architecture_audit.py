@@ -8,7 +8,7 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 violations = []
 
 production_js = [
-    'runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js',
+    'runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','word-packs-extra.js','card-memory.js','data-store.js',
     'word-imposter-resume-guard.js','app.js','backup-schema-registry.js','session-ledger.js','party-session-controls.js','party-catalog.js',
     'party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-cards-viral-1.js','party-cards-viral-2.js','party-cards-viral-3.js','party-cards-mega-1.js','party-cards-mega-2.js','party-cards-mega-3.js','party-cards-quick-1.js','party-cards-quick-2.js','party-cards-quick-3.js','party-cards-hub-1.js','party-cards-hub-2.js','party-cards-hub-3.js','party-cards-wave-1.js','party-cards-wave-2.js','party-cards-wave-3.js','party-cards-viral-4.js','party-core-classic-content.js',
     'party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js',

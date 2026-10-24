@@ -199,7 +199,7 @@ test.describe('Resume-Schutz ohne Cache', () => {
     await expect(resume).toHaveAttribute('aria-busy', 'true');
     await expect(resumeButton).toBeDisabled();
     await expect(discardButton).toBeDisabled();
-    expect(typeof releaseGuard).toBe('function');
+    await expect.poll(() => typeof releaseGuard).toBe('function');
 
     releaseGuard();
 

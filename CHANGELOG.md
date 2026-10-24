@@ -1,3 +1,9 @@
+## v119 – Größerer Word-Imposter-Wortschatz und dauerhaftes Wortgedächtnis (24. Oktober 2026)
+
+- 1.159 geprüfte Zusatzbegriffe: 2.629 Kategorieeinträge / 2.609 verschiedene Wörter in 14 Kategorien. Kostenloser lokaler Wortbestand mit OpenThesaurus-Quellenhinweis, bearbeitbarer Auswahl und LGPL-Text.
+- Eigenes Wortgedächtnis unabhängig von den 20 Ergebniseinträgen: Kategorien und Gemischt teilen Wortprüfsummen. Ungespielte Begriffe zuerst, anschließend älteste passende Wörter; nach Möglichkeit abwechselnde Hilfswortthemen.
+- Keine externen Laufzeitabfragen. Gesperrter/gelöschter Speicher fällt auf die bestehende Zufallsauswahl zurück; Offline-Core aktualisiert.
+
 ## v116 – Claudes Entwicklungsstand und Bildfreigaben zusammengeführt (23. Oktober 2026)
 
 - Technischen Stand v114 mit allen Kartenpaketen und Routing-/QA-Änderungen übernommen; vorhandene freigegebene Bildänderungen und Bildvergleich erhalten.

@@ -107,6 +107,17 @@ Core-, Extended-/Labs-, Privacy- und Reference-Audits bleiben Bestandteil des Re
 
 Ein finaler manueller Fan-/Marken-/Franchise-/Marketing-/Visualreview bleibt vor GO erforderlich.
 
+### Word-Imposter-Zusatzwortschatz (24. Oktober 2026)
+
+`word-packs-extra.js` ergänzt die unveränderten 1.470 Grundbegriffe um 1.159 ausgewählte Begriffe (gesamt 2.629 Kategorieeinträge). 445 Zusatzbegriffe wurden gegen den OpenThesaurus-Textdump vom 23.10.2026 abgeglichen; 714 wurden eigenständig ergänzt. Der Import übernimmt keine ungefilterten Synonymgruppen und keine Wörterbuchdefinitionen. Kategorien, Auswahl und Hilfswörter wurden für dieses Spiel erstellt; enge Synonyme zu vorhandenen Wörtern wurden bei der Auswahl aussortiert. Eine vollständige semantische Dublettenfreiheit wird nicht behauptet.
+
+- Quelle: https://www.openthesaurus.de/about/download (Daniel Naber und Mitwirkende).
+- Gewählte Lizenz des separat gehaltenen Zusatzpakets: LGPL-2.1-or-later, einschließlich unserer Datenbearbeitung und des Paket-Wrappers; keine Änderung der Lizenz des restlichen App-Codes.
+- Lizenztext: `assets/licenses/openthesaurus-LGPL-2.1.txt`.
+- Bearbeitbare Auswahl: `assets/words/word-imposter-extra.tsv`; reproduzierbar mit `python3 scripts/build_word_pack.py`.
+- Herkunft, Download-Prüfsumme, Änderungen und Abgleichlisten: `assets/words/word-imposter-source.json`.
+- Hinweis und Downloadlinks sind in `privacy.html` erreichbar; Dateien werden offline mitgeliefert. Kein API-Schlüssel, keine laufenden Dienstkosten, keine Netzwerkabfrage im Spiel.
+
 ## 9. Hosting / ausgelieferte Dateien
 
 `scripts/staging_smoke.py` prüft später die tatsächlich ausgelieferten HTTPS-Ressourcen, Manifest-/PNG-Verträge, Cachegeneration, Privacy-/Reference-Source-Verträge und Security-Header. Das ergänzt lokale Audits, ersetzt aber keine reale PWA-/Geräteprüfung.
