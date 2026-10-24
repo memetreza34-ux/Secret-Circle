@@ -1,0 +1,734 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-16",
+  "issue": "https://github.com/memetreza34-ux/Secret-Circle/issues/41",
+  "statusValues": [
+    "NOT_RUN",
+    "PASS",
+    "FAIL",
+    "BLOCKED_REAL_DEVICE"
+  ],
+  "meaning": {
+    "launchSweep": "Automatischer Start bis zur ersten aktiven Szene (tests/e2e/all-55-game-launch.spec.js, PR #40, CI 38886549437 auf 907ce6a5def625af8a79ced13be1812e0eff5c4e).",
+    "endReplay": "Automatisch von der Einrichtung über echte Runden bis Ergebnis und Wiederholen gespielt, mit genau einem Verlaufseintrag pro Session. PASS nur mit Spec-Datei, die das Spiel tatsächlich abdeckt; das prüft tests/qa-55-matrix.test.js.",
+    "realDeviceAndGroup": "Echte Geräte (iPhone/Android/PWA) und echte Gruppe. Kann nur Arman mit Testpersonen belegen (Issue #43); bis dahin BLOCKED_REAL_DEVICE."
+  },
+  "notes": "NOT_RUN heißt nicht kaputt: Für viele Spiele gibt es Einzeltests, aber noch keinen einheitlichen Nachweis bis Ergebnis und Wiederholen. Release bleibt NO_GO.",
+  "games": [
+    {
+      "id": "imposter",
+      "title": "Word Imposter",
+      "tier": "core",
+      "engine": "word-imposter",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "truth-dare",
+      "title": "Wahrheit oder Pflicht",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "never-have",
+      "title": "Ich habe noch nie",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "most-likely",
+      "title": "Wer würde eher?",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "would-rather",
+      "title": "Entweder oder",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "hot-takes",
+      "title": "Hot Takes",
+      "tier": "extended",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "wrong-answers",
+      "title": "Nur falsche Antworten",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "paranoia",
+      "title": "Paranoia",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "charades",
+      "title": "Scharade",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "taboo",
+      "title": "Nicht sagen!",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "hot-potato",
+      "title": "Heiße Kartoffel",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "word-chain",
+      "title": "Wortkette",
+      "tier": "core",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "spin-bottle",
+      "title": "Flaschendrehen",
+      "tier": "extended",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "dice-coin",
+      "title": "Würfel & Münze",
+      "tier": "extended",
+      "engine": "hub",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/hub-games-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "two-truths",
+      "title": "Zwei Wahrheiten, eine Lüge",
+      "tier": "core",
+      "engine": "advanced",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "question-imposter",
+      "title": "Question Imposter",
+      "tier": "core",
+      "engine": "advanced",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "location-spy",
+      "title": "Location Spy",
+      "tier": "core",
+      "engine": "advanced",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "mafia",
+      "title": "Mafia",
+      "tier": "core",
+      "engine": "advanced",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/advanced-imposter-complete.spec.js",
+        "coverage": null
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "wavelength",
+      "title": "Spektrum-Tipp",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "draw-guess",
+      "title": "Zeichnen & Raten",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "rapid-fire",
+      "title": "Schnellfeuer",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "sound-imitation",
+      "title": "Geräusche erraten",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "forehead-guess",
+      "title": "Stirn-Raten",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "letter-categories",
+      "title": "Buchstaben-Kategorien",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "dont-laugh",
+      "title": "Nicht lachen!",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "hum-song",
+      "title": "Melodie summen",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "scavenger-hunt",
+      "title": "Gegenstandsjagd",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "caption-battle",
+      "title": "Caption Battle",
+      "tier": "extended",
+      "engine": "quick",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/quick-modes-complete.spec.js",
+        "coverage": "catalog.trendingGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "who-am-i",
+      "title": "Wer bin ich?",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "anime-guess",
+      "title": "Anime-Archetypen erraten",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "money-challenge",
+      "title": "Geld-Challenge",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "blind-ranking",
+      "title": "Blind Ranking",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "emoji-quiz",
+      "title": "Emoji Quiz",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "pass-the-phone",
+      "title": "Pass das Handy",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "red-green-flag",
+      "title": "Red Flag oder Green Flag",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "secret-mission",
+      "title": "Geheime Mission",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "tier-list",
+      "title": "Tier List Battle",
+      "tier": "labs",
+      "engine": "mega",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/mega-modes-complete.spec.js",
+        "coverage": "catalog.megaGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "put-a-finger-down",
+      "title": "Finger runter",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "guess-the-price",
+      "title": "Preis schätzen",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "higher-lower",
+      "title": "Höher oder tiefer",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "know-me-best",
+      "title": "Wer kennt mich am besten?",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "hear-me-out",
+      "title": "Hear Me Out",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "hot-seat",
+      "title": "Hot Seat",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "story-chain",
+      "title": "Story Chain",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "finish-the-sentence",
+      "title": "Satz beenden",
+      "tier": "labs",
+      "engine": "viral",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/viral-modes-complete.spec.js",
+        "coverage": "catalog.viralGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "party-quiz",
+      "title": "Party Quiz",
+      "tier": "labs",
+      "engine": "wave-one-quiz",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "fact-or-fake",
+      "title": "Fake oder Fakt",
+      "tier": "labs",
+      "engine": "wave-one-quiz",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "undercover-similar-word",
+      "title": "Undercover – ähnliches Wort",
+      "tier": "labs",
+      "engine": "wave-one-imposter",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "no-word-imposter",
+      "title": "Imposter ohne Wort",
+      "tier": "labs",
+      "engine": "wave-one-imposter",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "fill-blank-battle",
+      "title": "Satzduell",
+      "tier": "labs",
+      "engine": "wave-one-writing",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "who-wrote-it",
+      "title": "Wer hat das geschrieben?",
+      "tier": "labs",
+      "engine": "wave-one-writing",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "percent-guess",
+      "title": "Prozent schätzen",
+      "tier": "labs",
+      "engine": "wave-one-voting",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "party-bracket",
+      "title": "Party Bracket",
+      "tier": "labs",
+      "engine": "wave-one-voting",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "bluff-trivia",
+      "title": "Bluff Trivia",
+      "tier": "labs",
+      "engine": "wave-one-bluff",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    },
+    {
+      "id": "password-one-word",
+      "title": "Ein-Wort-Hinweis",
+      "tier": "labs",
+      "engine": "wave-one-clue",
+      "launchSweep": "PASS",
+      "endReplay": {
+        "status": "PASS",
+        "spec": "tests/e2e/wave-one-complete.spec.js",
+        "coverage": "catalog.waveOneGameIds"
+      },
+      "realDeviceAndGroup": "BLOCKED_REAL_DEVICE"
+    }
+  ]
+}

@@ -41,7 +41,7 @@ test('jedes Spiel im Katalog lässt sich öffnen und starten', async ({ page }) 
     }
 
     await page.goto('/' + game.href);
-    if (game.href.startsWith('index')) {
+    if (game.href === 'word-imposter.html') {
       await page.locator('#players').fill(PLAYERS.join('\n'));
       await page.locator('#start').click({ timeout: STEP });
       await expect(page.locator('#reveal-screen'), game.id).toBeVisible({ timeout: STEP });

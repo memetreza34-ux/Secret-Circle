@@ -1,7 +1,7 @@
 # Secret Circle – Branch Protection, PR-Stack und Required Checks
 
-Stand: 29. August 2026  
-Status: **BLOCKED – `main` ist real ungeschützt (geprüft am 28. September 2026); der Hosted Runner läuft seit dem 5. September 2026**  
+Stand: 16. Oktober 2026  
+Status: **OPEN – Branch-Schutz auf `main` ist seit 16. Oktober 2026 real aktiv; PASS erst nach erneuter Prüfung auf dem eingefrorenen Release-Kandidaten**  
 Evidence-Status: **OPEN**
 
 Maschinenlesbare Freigabequelle: `release-evidence.json → gates.branchProtection`.  
@@ -9,21 +9,25 @@ Aktueller Arbeitsstand: `release-meta.json`.
 
 ## 1. Real verifizierter GitHub-Status
 
-Der GitHub-Branch-Endpunkt für `main` liefert aktuell:
+Am 16. Oktober 2026 (14:57 UTC) über die GitHub-API aktiviert und danach über den Branch-Endpunkt erneut abgefragt:
 
-- `protected: false`
-- `protection.enabled: false`
-- Required-Check-Enforcement: `off`
-- Required-Check-Kontexte: leer
-- aktueller `main`-Head: `d347c7138bae18325c288632222917ad618e6547`
+- `protected: true`, Required-Check-Enforcement: `everyone` (gilt auch für Admins)
+- Pflicht-Checks: `validate` und `e2e-webkit` (`Secret Circle CI`) sowie `smoke` (`Secret Circle Cross-Browser Smoke`)
+- Branch muss vor dem Merge auf aktuellem `main`-Stand sein (`strict: true`)
+- Änderungen nur per Pull Request; 0 Pflicht-Freigaben, weil der Solo-Inhaber eigene PRs nicht selbst freigeben kann
+- offene Review-Diskussionen müssen vor dem Merge aufgelöst sein
+- Force-Push und Löschen von `main` gesperrt
+- geprüfter `main`-Head: `0e0567f08df963f7d149730fdfbe0da33396ea58`
 
-Damit ist Branch Protection nicht nur unbewiesen, sondern **nachweislich nicht aktiv**. Das Release-Gate bleibt `BLOCKED`.
+Das Gate steht damit auf `OPEN` statt `BLOCKED`. `PASS` erst, wenn die Einstellung auf dem eingefrorenen Release-Kandidaten erneut abgefragt wurde (siehe Abschnitt 11).
 
-Die vollständige Protection-Detail-API war über die Integration zuvor nicht zugänglich; der Branch-Endpunkt selbst liefert jedoch eindeutig `protected: false` und deaktivierte Protection.
+Historisch: Vom 29. August bis 16. Oktober 2026 lieferte der Endpunkt `protected: false` ohne Pflicht-Checks.
 
-## 2. Aktuelle PR-/Branch-Kette
+## 2. Historische PR-/Branch-Kette (Stand 29. August 2026, überholt)
 
-Der aktive Release-Stack bleibt:
+**Überholt:** PR #15 wurde am 15. Oktober 2026 und PR #13 am 16. Oktober 2026 geschlossen; die Konsolidierung lief über PR #32. Neue Arbeit geht über kurze Branches direkt gegen `main`. Der Rest dieses Abschnitts und Abschnitt 3 sind Archiv.
+
+Der damalige Release-Stack war:
 
 ```text
 main
@@ -90,7 +94,7 @@ Historische Beispiele (bis 29. August 2026):
 
 Damit ist auch der isolierte Main-Sync nicht repositoryseitig ausgeführt worden. Seit dem 5. September 2026 führt der Hosted Runner alle Schritte real aus; letzter grüner Lauf auf `main`: Run `36292530012` (27. September 2026, Head `0d157ba`, Jobs `validate` und `e2e-webkit`).
 
-## 5. Warum Required Check noch nicht aktiviert wird
+## 5. Aktivierungsreihenfolge (abgeschlossen am 16. Oktober 2026)
 
 Die gewünschte finale Regel verlangt `Secret Circle CI / validate` als Required Check. Bis zum 5. September 2026 startete der Hosted Runner keinen einzigen Workflow-Step.
 
@@ -99,9 +103,9 @@ Würde jetzt ein dauerhaft erforderlicher CI-Check aktiviert, wäre `main` zwar 
 1. Hosted-Runner-/Actions-/Billing-/Policy-Blocker beheben. – erledigt am 5. September 2026
 2. mindestens einen echten CI-Lauf mit Checkout und Repositoryschritten erhalten. – erledigt
 3. `Secret Circle CI / validate` erfolgreich ausführen. – erledigt, zuletzt Run `36292530012`
-4. danach Branch Protection + Required Check verbindlich aktivieren und erneut verifizieren.
+4. danach Branch Protection + Required Check verbindlich aktivieren und erneut verifizieren. – erledigt am 16. Oktober 2026 (Abschnitt 1)
 
-Bis dahin darf niemand direkt in `main` releaserelevante Änderungen einspielen.
+Seit dem 16. Oktober 2026 erzwingt GitHub, dass niemand direkt in `main` einspielt.
 
 ## 6. Cross-Browser ist Release-Gate
 
@@ -110,9 +114,10 @@ Workflow:
 - Name: `Secret Circle Cross-Browser Smoke`
 - Datei: `.github/workflows/cross-browser.yml`
 - Job: `smoke`
-- Trigger aktuell: `workflow_dispatch`
+- Trigger: `pull_request` (automatisch für neue Codeänderungen) und `workflow_dispatch` (manueller Retest)
+- Browser-Matrix: Chromium, Firefox und WebKit mit Desktop- und mobilen Playwright-Projekten
 
-Cross-Browser ist für den RC zwingend. Aktuell darf `Secret Circle Cross-Browser Smoke / smoke` **nicht** als dauerhaft erforderlicher PR-Check aktiviert werden, weil der Job nur manuell (`workflow_dispatch`) läuft. Vor Release muss Chromium/Firefox/WebKit auf dem **exakten unveränderten RC-Commit** grün dokumentiert sein.
+Cross-Browser ist für den RC zwingend. `Secret Circle Cross-Browser Smoke / smoke` **ist seit 16. Oktober 2026 ein Pflicht-Check für Pull Requests auf `main`** (siehe Abschnitt 1 und `release-evidence.json → gates.branchProtection`). Ein grüner PR-Lauf ist zusätzliche reale CI-Evidence, **ersetzt aber keinen Cross-Browser-Release-PASS**: Vor Release muss Chromium/Firefox/WebKit auf dem **exakten unveränderten RC-Commit** grün dokumentiert sein.
 
 ## 7. Reproduzierbarer Installationsvertrag
 
@@ -165,15 +170,15 @@ PR #13 beziehungsweise ein daraus abgeleiteter finaler RC darf erst Richtung sta
 
 ```text
 Protected branch: main
-Protection verified at: 2026-08-29 current state = disabled
-Current main reconciled into release stack: candidate prepared in Draft PR #15, not merged
-Main reconciliation candidate: 8ccb43d8920d94f385cb5172440b5a0b63fb468c
-Pull requests required: currently not enforced by branch protection
-Required check contexts: currently none
-Force pushes blocked: not confirmed/enforced by current protection state
-Branch deletion blocked: not confirmed/enforced by current protection state
-Review conversation resolution required: not confirmed/enforced
-Admin/bypass rules reviewed: open
+Protection verified at: 2026-10-16T14:57Z current state = enabled (head 0e0567f08df963f7d149730fdfbe0da33396ea58)
+Current main reconciled into release stack: superseded – PR #13/#15 closed, consolidation via PR #32
+Main reconciliation candidate: not applicable
+Pull requests required: enforced (0 required approvals, solo owner)
+Required check contexts: validate, e2e-webkit, smoke (strict, enforced for admins)
+Force pushes blocked: enforced
+Branch deletion blocked: enforced
+Review conversation resolution required: enforced
+Admin/bypass rules reviewed: enforce_admins = true, no bypass list
 Successful npm ci run: open
 Successful CI run: open
 Successful RC cross-browser run: open
@@ -188,16 +193,16 @@ Final evidence reference: open
 - [x] aktueller realer Branchstatus geprüft: `main protected = false`
 - [x] kontrollierter Main-Reconciliation-Kandidat in Draft PR #15 erstellt
 - [x] Kandidat ist gegen `main` `behind_by = 0`
-- [ ] PR #15 geprüft und in den aktiven Releasepfad übernommen
+- [x] PR #15 entfällt: geschlossen am 15. Oktober 2026, Konsolidierung über PR #32
 - [x] Hosted Runner führt echte Steps aus (seit 5. September 2026)
 - [ ] Online-`npm ci` grün
-- [ ] `Secret Circle CI / validate` grün
-- [ ] Branch Protection auf `main` real aktiviert
-- [ ] PR-Pflicht bestätigt
-- [ ] Required Check bestätigt
-- [ ] Force-Push-/Löschregeln bestätigt
-- [ ] Review-/Bypass-Regeln geprüft
+- [x] `Secret Circle CI / validate` grün (main-Run `38898973994`, 16. Oktober 2026)
+- [x] Branch Protection auf `main` real aktiviert (16. Oktober 2026)
+- [x] PR-Pflicht bestätigt
+- [x] Required Check bestätigt
+- [x] Force-Push-/Löschregeln bestätigt
+- [x] Review-/Bypass-Regeln geprüft
 - [ ] RC-Cross-Browser-Lauf grün
 - [ ] `release-evidence.json.gates.branchProtection = PASS` mit finaler RC-Evidence
 
-**Aktuell: BLOCKED / RELEASE NO_GO.**
+**Aktuell: OPEN / RELEASE NO_GO.** Offen: Online-`npm ci`, RC-Cross-Browser-Lauf und erneute Prüfung auf dem eingefrorenen RC.

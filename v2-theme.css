@@ -1480,3 +1480,7 @@ a.resume-main { display: block; }
 a.resume-go { display: inline-flex; align-items: center; }
 a.row:hover { background: #ffffff08; color: var(--fg); }
 .text-block + .pill { margin-top: 8px; }
+
+/* Tastatur-Navigation: Hauptinhalt auf jeder Hub-Einstiegsadresse erreichbar. */
+.skip-link { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 12px; z-index: 1000; padding: 12px 16px; border: 2px solid currentColor; border-radius: 10px; background: #0A0B0F; color: var(--fg); transform: translateY(-160%); }
+.skip-link:focus-visible { transform: none; }

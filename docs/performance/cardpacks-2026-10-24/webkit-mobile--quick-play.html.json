@@ -1,0 +1,432 @@
+{
+  "project": "webkit-mobile",
+  "browser": "webkit",
+  "browserVersion": "26.0",
+  "throttled": false,
+  "warmCacheMode": "service worker activation awaited; actual control recorded in summary",
+  "page": "quick-play.html",
+  "runs": 5,
+  "measuredAt": "2026-10-24T03:45:50.485Z",
+  "targets": [
+    {
+      "label": "main",
+      "url": "http://127.0.0.1:4191"
+    },
+    {
+      "label": "v114",
+      "url": "http://127.0.0.1:4192"
+    }
+  ],
+  "summary": {
+    "main": {
+      "cold": {
+        "htmlResponseEndMs": 0,
+        "dclMs": 26.000000000000004,
+        "loadMs": 39,
+        "uiVisibleMs": 53,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 28,
+        "servedByServiceWorker": 0,
+        "networkBytes": 152515,
+        "serverBodyBytes": 144390,
+        "serverRequests": 28,
+        "cardRequests": 0,
+        "cardNetworkBytes": 0
+      },
+      "warm": {
+        "htmlResponseEndMs": 1,
+        "dclMs": 16,
+        "loadMs": 48,
+        "uiVisibleMs": 49,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 28,
+        "servedByServiceWorker": 28,
+        "networkBytes": 2181,
+        "serverBodyBytes": 1857,
+        "serverRequests": 1,
+        "cardRequests": 0,
+        "cardNetworkBytes": 0
+      },
+      "warmControlledByServiceWorker": true,
+      "cardParseMs": null,
+      "cardParseFiles": null,
+      "offlineCore": null
+    },
+    "v114": {
+      "cold": {
+        "htmlResponseEndMs": 0,
+        "dclMs": 50,
+        "loadMs": 77,
+        "uiVisibleMs": 80,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 45,
+        "servedByServiceWorker": 0,
+        "networkBytes": 305538,
+        "serverBodyBytes": 292405,
+        "serverRequests": 45,
+        "cardRequests": 16,
+        "cardNetworkBytes": 138662
+      },
+      "warm": {
+        "htmlResponseEndMs": 1,
+        "dclMs": 45,
+        "loadMs": 71.00000000000001,
+        "uiVisibleMs": 72.00000000000001,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 45,
+        "servedByServiceWorker": 45,
+        "networkBytes": 2262,
+        "serverBodyBytes": 1938,
+        "serverRequests": 1,
+        "cardRequests": 16,
+        "cardNetworkBytes": 0
+      },
+      "warmControlledByServiceWorker": true,
+      "cardParseMs": null,
+      "cardParseFiles": null,
+      "offlineCore": null
+    }
+  },
+  "raw": {
+    "main": [
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 28,
+          "loadMs": 39,
+          "uiVisibleMs": 53,
+          "controlled": false,
+          "requests": 28,
+          "servedByServiceWorker": 0,
+          "networkBytes": 152515,
+          "serverBodyBytes": 146174,
+          "serverRequests": 29,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 16,
+          "loadMs": 48,
+          "uiVisibleMs": 49,
+          "controlled": true,
+          "requests": 28,
+          "servedByServiceWorker": 28,
+          "networkBytes": 2181,
+          "serverBodyBytes": 1857,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 27,
+          "loadMs": 54,
+          "uiVisibleMs": 55,
+          "controlled": false,
+          "requests": 28,
+          "servedByServiceWorker": 0,
+          "networkBytes": 152515,
+          "serverBodyBytes": 144390,
+          "serverRequests": 28,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 23,
+          "loadMs": 50,
+          "uiVisibleMs": 51.00000000000001,
+          "controlled": true,
+          "requests": 28,
+          "servedByServiceWorker": 28,
+          "networkBytes": 2181,
+          "serverBodyBytes": 1857,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 26.000000000000004,
+          "loadMs": 37,
+          "uiVisibleMs": 52.00000000000001,
+          "controlled": false,
+          "requests": 28,
+          "servedByServiceWorker": 0,
+          "networkBytes": 152515,
+          "serverBodyBytes": 144390,
+          "serverRequests": 28,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 15,
+          "loadMs": 31,
+          "uiVisibleMs": 46,
+          "controlled": true,
+          "requests": 28,
+          "servedByServiceWorker": 28,
+          "networkBytes": 2181,
+          "serverBodyBytes": 1857,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 26.000000000000004,
+          "loadMs": 53,
+          "uiVisibleMs": 58,
+          "controlled": false,
+          "requests": 28,
+          "servedByServiceWorker": 0,
+          "networkBytes": 152515,
+          "serverBodyBytes": 144390,
+          "serverRequests": 28,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 16,
+          "loadMs": 33,
+          "uiVisibleMs": 47,
+          "controlled": true,
+          "requests": 28,
+          "servedByServiceWorker": 28,
+          "networkBytes": 2181,
+          "serverBodyBytes": 1857,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 26.000000000000004,
+          "loadMs": 37,
+          "uiVisibleMs": 52.00000000000001,
+          "controlled": false,
+          "requests": 28,
+          "servedByServiceWorker": 0,
+          "networkBytes": 152515,
+          "serverBodyBytes": 144390,
+          "serverRequests": 28,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 15,
+          "loadMs": 48,
+          "uiVisibleMs": 49,
+          "controlled": true,
+          "requests": 28,
+          "servedByServiceWorker": 28,
+          "networkBytes": 2181,
+          "serverBodyBytes": 1857,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      }
+    ],
+    "v114": [
+      {
+        "cold": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 52.00000000000001,
+          "loadMs": 79,
+          "uiVisibleMs": 80,
+          "controlled": false,
+          "requests": 45,
+          "servedByServiceWorker": 0,
+          "networkBytes": 305538,
+          "serverBodyBytes": 292405,
+          "serverRequests": 45,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 37,
+          "loadMs": 54,
+          "uiVisibleMs": 70,
+          "controlled": true,
+          "requests": 45,
+          "servedByServiceWorker": 45,
+          "networkBytes": 2262,
+          "serverBodyBytes": 1938,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 42,
+          "loadMs": 77,
+          "uiVisibleMs": 78,
+          "controlled": false,
+          "requests": 45,
+          "servedByServiceWorker": 0,
+          "networkBytes": 305538,
+          "serverBodyBytes": 292405,
+          "serverRequests": 45,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 46,
+          "loadMs": 71.00000000000001,
+          "uiVisibleMs": 72.00000000000001,
+          "controlled": true,
+          "requests": 45,
+          "servedByServiceWorker": 45,
+          "networkBytes": 2262,
+          "serverBodyBytes": 1938,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 50,
+          "loadMs": 77,
+          "uiVisibleMs": 92,
+          "controlled": false,
+          "requests": 45,
+          "servedByServiceWorker": 0,
+          "networkBytes": 305538,
+          "serverBodyBytes": 292405,
+          "serverRequests": 45,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 46,
+          "loadMs": 72.00000000000001,
+          "uiVisibleMs": 72.00000000000001,
+          "controlled": true,
+          "requests": 45,
+          "servedByServiceWorker": 45,
+          "networkBytes": 2262,
+          "serverBodyBytes": 1938,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 51.00000000000001,
+          "loadMs": 79,
+          "uiVisibleMs": 86,
+          "controlled": false,
+          "requests": 45,
+          "servedByServiceWorker": 0,
+          "networkBytes": 305538,
+          "serverBodyBytes": 292405,
+          "serverRequests": 45,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 38,
+          "loadMs": 55,
+          "uiVisibleMs": 70,
+          "controlled": true,
+          "requests": 45,
+          "servedByServiceWorker": 45,
+          "networkBytes": 2262,
+          "serverBodyBytes": 1938,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 50,
+          "loadMs": 61,
+          "uiVisibleMs": 76,
+          "controlled": false,
+          "requests": 45,
+          "servedByServiceWorker": 0,
+          "networkBytes": 305538,
+          "serverBodyBytes": 292405,
+          "serverRequests": 45,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 45,
+          "loadMs": 72.00000000000001,
+          "uiVisibleMs": 72.00000000000001,
+          "controlled": true,
+          "requests": 45,
+          "servedByServiceWorker": 45,
+          "networkBytes": 2262,
+          "serverBodyBytes": 1938,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": null
+      }
+    ]
+  }
+}

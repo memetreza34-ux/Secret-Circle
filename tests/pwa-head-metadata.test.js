@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const pages = ['v2-hub.html', 'party.html', 'index.html', 'creator.html', 'advanced.html', 'quick-play.html'];
+const pages = ['v2-hub.html', 'party.html', 'index.html', 'word-imposter.html', 'creator.html', 'advanced.html', 'quick-play.html'];
 
 for (const page of pages) {
   const source = fs.readFileSync(path.join(ROOT, page), 'utf8');
@@ -32,3 +32,9 @@ console.log(JSON.stringify({
   iosHomeScreenMetadata: true,
   rasterAndVectorIconsLinked: true
 }, null, 2));
+
+assert.equal(
+  fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'),
+  fs.readFileSync(path.join(ROOT, 'v2-hub.html'), 'utf8'),
+  'Root entry and legacy v2-hub.html alias must stay synchronized.'
+);

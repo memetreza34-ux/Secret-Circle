@@ -34,7 +34,7 @@ test('the 15 Core entry cases match the actual published catalog', async ({ page
   for (const { id, engine } of CORE) {
     const matches = catalog.filter(game => game.id === id);
     expect(matches, `Core title missing or duplicated: ${id}`).toHaveLength(1);
-    if (engine === 'word') expect(matches[0].href).toBe('index.html');
+    if (engine === 'word') expect(matches[0].href).toBe('word-imposter.html');
     else if (engine === 'advanced') expect(matches[0].href).toBe(`advanced.html?game=${id}`);
     else expect(matches[0].mode).not.toBe('link');
   }
@@ -59,10 +59,13 @@ for (const { id, engine } of CORE) {
     await expect(page.locator('#mode-sub')).not.toBeEmpty();
     await expect(page.locator('#mode-steps li').first()).toBeVisible();
     await expect(page.locator('#start-btn')).toBeEnabled();
+    // Bei einem Offline-Update kann der Banner den unteren Startknopf verdecken.
+    const updateNotice = page.locator('.pwa-update-banner:visible');
+    if (await updateNotice.count()) await updateNotice.getByRole('button', { name: 'Später' }).click();
     await page.locator('#start-btn').click();
 
     if (engine === 'word') {
-      await expect(page).toHaveURL(/\/index\.html$/);
+      await expect(page).toHaveURL(/\/word-imposter\.html$/);
       await expect(page.locator('#setup-screen')).toBeVisible();
       await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeVisible();
     } else if (engine === 'advanced') {

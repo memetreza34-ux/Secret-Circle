@@ -1,7 +1,7 @@
 /* Secret Circle — Oberfläche im Claude-Design (v2)
    Vanilla JS, kein Build. Alle Spieldaten kommen aus window.SecretCirclePartyCatalog.
    Gespielt wird in den geprüften Engines (party.html, quick-play.html,
-   advanced.html, index.html); diese Seite wählt nur aus und übergibt.
+   advanced.html, word-imposter.html); diese Seite wählt nur aus und übergibt.
    Spielerliste und Verlauf sind dieselben wie im Rest der App. */
 (function () {
   'use strict';
@@ -252,6 +252,7 @@
       min: g.minPlayers || 2,
       max: g.maxPlayers || 20,
       dur: g.duration || 10,
+      age: g.age,
       feat: !!g.featured,
       desc: g.description || '',
       steps: g.instructions || [],
@@ -272,18 +273,22 @@
   /* ── Gemeinsame Daten ─────────────────────────────────────────────── */
   var HUB_KEY = 'secret-circle-party-hub-v1';
   var IMPOSTER_HISTORY_KEY = 'secret-circle-history-v7';
-  /* Dieselbe Beispielgruppe wie im Hub und in allen Spiel-Engines. */
-  var DEFAULT_PLAYERS = ['Alex', 'Sam', 'Mika', 'Lina'];
+  var PREF_KEY = 'secret-circle-party-preferences-v1';
+  /* Echte Spieler kommen nur aus der gemeinsamen gespeicherten Gruppe. */
   var MAX_PLAYERS = 20;
   function readJson(key) {
     try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
   }
-
+  function ageAllowed(g) {
+    var pref = readJson(PREF_KEY);
+    var level = pref && pref.version === 1 ? pref.ageLevel : 'all';
+    return level === 'family' ? g.age === 'all' : level === 'teen' ? g.age === 'all' || g.age === 'teen' : true;
+  }
+  function ageGames() { return GAMES.filter(ageAllowed); }
   function readHub() {
     var hub = readJson(HUB_KEY);
     return hub && typeof hub === 'object' && !Array.isArray(hub) && hub.version === 1 ? hub : null;
   }
-
   /* Dieselben Regeln wie party-hub.js: eindeutig, höchstens 32 Zeichen, höchstens 20 Personen. */
   function cleanPlayers(list) {
     var out = [];
@@ -297,12 +302,10 @@
     });
     return out;
   }
-
   function players() {
     var hub = readHub();
-    return hub ? cleanPlayers(hub.players) : DEFAULT_PLAYERS.slice();
+    return hub ? cleanPlayers(hub.players) : [];
   }
-
   function savePlayers(list) {
     var hub = readHub() || { version: 1, players: [], favorites: [], recent: [], presets: [], history: [], stats: {} };
     hub.players = cleanPlayers(list);
@@ -314,19 +317,14 @@
       return false;
     }
   }
-
   function setStatus(message) {
     var node = $('#app-status');
     if (node) node.textContent = message || '';
   }
-
   /* ── Zustand der Oberfläche ───────────────────────────────────────── */
-
   var currentId = null;
   function game() { return gameById(currentId); }
-
   /* ── Router ───────────────────────────────────────────────────────── */
-
   var NAV = [];
   var CURRENT = 'home';
   var TABS = [
@@ -334,13 +332,10 @@
     { id: 'games', label: 'Spiele', icon: 'grid' },
     { id: 'profile', label: 'Profil', icon: 'user' }
   ];
-
   function announce(msg) {
     var l = $('#live');
     if (l) l.textContent = msg;
   }
-
-
   function show(name, opts) {
     opts = opts || {};
     if (!opts.back && !opts.replace && CURRENT !== name) NAV.push(CURRENT);
@@ -360,9 +355,7 @@
     CURRENT = null;
     show(p, { back: true });
   }
-
   /* ── Symbole und Tabs einsetzen ───────────────────────────────────── */
-
   function paintIcons(root) {
     $$('[data-icon]', root || document).forEach(function (n) {
       if (n.dataset.iconDone) return;
@@ -375,7 +368,6 @@
       n.dataset.iconDone = '1';
     });
   }
-
   function renderTabs() {
     $$('.tabbar').forEach(function (nav) {
       clear(nav);
@@ -390,9 +382,7 @@
       });
     });
   }
-
   /* ── Kachel ───────────────────────────────────────────────────────── */
-
   function gameCard(g, rank) {
     var b = make('button', 'gcard');
     b.type = 'button';
@@ -421,15 +411,12 @@
     b.addEventListener('click', function () { openGame(g.id); });
     return b;
   }
-
   function openGame(id) {
     if (!gameById(id)) return;
     currentId = id;
     show('mode');
   }
-
   /* ── Echte Spielstände ────────────────────────────────────────────── */
-
   /* Abgeschlossene Sessions aller Spiele landen im Hub-Verlauf, Word Imposter
      führt einen eigenen. Neueste zuerst. */
   function hubHistory() {
@@ -442,7 +429,6 @@
     var list = readJson(IMPOSTER_HISTORY_KEY);
     return Array.isArray(list) ? list : [];
   }
-
   /* Beendete Spiele aller Engines, neueste zuerst. */
   function recentEntries() {
     return hubHistory().map(function (h) { return { id: h.gameId, at: h.endedAt, names: h.players }; })
@@ -459,7 +445,6 @@
       return true;
     }).map(function (e) { return gameById(e.id); }).slice(0, 10);
   }
-
   /* Häufigkeit je Spiel aus dem echten Verlauf. */
   function playCounts() {
     var counts = {};
@@ -477,7 +462,7 @@
     { key: 'secret-circle-party-mega-active-v1', id: function (v) { return v && v.gameId; }, href: function (id) { return 'quick-play.html?game=' + encodeURIComponent(id); } },
     { key: 'secret-circle-party-viral-active-v1', id: function (v) { return v && v.gameId; }, href: function (id) { return 'quick-play.html?game=' + encodeURIComponent(id); } },
     { key: 'secret-circle-party-created-active-v1', id: function (v) { return v && v.gameId; }, href: function (id) { return 'quick-play.html?game=' + encodeURIComponent(id); } },
-    { key: 'secret-circle-active-v7', id: function (v) { return v ? 'imposter' : null; }, href: function () { return 'index.html'; } }
+    { key: 'secret-circle-active-v7', id: function (v) { return v ? 'imposter' : null; }, href: function () { return 'word-imposter.html'; } }
   ];
 
   function activeSessions() {
@@ -515,10 +500,10 @@
   /* „Meistgespielt“ nur mit echtem Verlauf; sonst die Empfehlungen des Katalogs. */
   function mostPlayed() {
     var counts = playCounts();
-    return GAMES.filter(function (g) { return counts[g.id]; })
+    return ageGames().filter(function (g) { return counts[g.id]; })
       .sort(function (a, b) { return counts[b.id] - counts[a.id] || deCompare(a.title, b.title); });
   }
-  function featured() { return GAMES.filter(function (g) { return g.feat; }); }
+  function featured() { return ageGames().filter(function (g) { return g.feat; }); }
 
   var SECTIONS = [
     { title: 'Zuletzt gespielt', icon: 'play', min: 1, more: 'profile', pick: recentGames },
@@ -536,7 +521,7 @@
 
   function renderHome() {
     var heroes = heroGames();
-    if (!heroes.list.length) heroes.list = GAMES.slice(0, 3);
+    if (!heroes.list.length) heroes.list = ageGames().slice(0, 3);
     if (heroIdx >= heroes.list.length) heroIdx = 0;
     var hero = heroes.list[heroIdx];
 
@@ -558,7 +543,8 @@
       h2.textContent = hero.title;
     }
     $('#hero-text').textContent = hero.desc;
-    $('#hero-play').onclick = function () { openGame(hero.id); };
+    $('#hero-play').textContent = players().length ? 'Spielen' : 'Spieler einrichten';
+    $('#hero-play').onclick = function () { if (players().length) openGame(hero.id); else show('players', { reset: true }); };
 
     /* Trefferfläche 44px, tastaturbedienbar — nicht der 6px-Punkt selbst. */
     var dots = $('.dots', screenEl('home'));
@@ -576,7 +562,7 @@
     var host = $('#sections');
     clear(host);
     SECTIONS.forEach(function (def) {
-      var list = def.pick(GAMES);
+      var list = def.pick(ageGames()).filter(ageAllowed);
       /* Ein Streifen mit ein oder zwei Karten sieht kaputt aus; „Zuletzt gespielt“ zeigt echte Spiele ab einem. */
       if (list.length < (def.min || 3)) return;
       var sec = make('section', 'sec');
@@ -624,7 +610,7 @@
 
   function visibleGames() {
     var q = fold(query).trim();
-    var list = GAMES.filter(function (g) {
+    var list = ageGames().filter(function (g) {
       if (filterId !== 'alle' && g.bucket.id !== filterId) return false;
       if (!q) return true;
       return fold(g.title).indexOf(q) >= 0 || fold(g.desc).indexOf(q) >= 0;
@@ -635,8 +621,9 @@
   function renderGames() {
     var chips = $('#filters');
     clear(chips);
-    var defs = [{ id: 'alle', label: 'Alle ' + GAMES.length, tint: null }].concat(BUCKETS.map(function (b) {
-      return { id: b.id, label: b.label + ' ' + GAMES.filter(function (g) { return g.bucket.id === b.id; }).length, tint: b.tint };
+    var allowed = ageGames();
+    var defs = [{ id: 'alle', label: 'Alle ' + allowed.length, tint: null }].concat(BUCKETS.map(function (b) {
+      return { id: b.id, label: b.label + ' ' + allowed.filter(function (g) { return g.bucket.id === b.id; }).length, tint: b.tint };
     }));
     defs.forEach(function (d) {
       var c = make('button', 'chip');
@@ -657,7 +644,7 @@
     clear(grid);
     list.forEach(function (g) { grid.appendChild(gameCard(g)); });
     $('#grid-empty').hidden = list.length > 0;
-    $('#grid-count').textContent = list.length === GAMES.length ? String(GAMES.length) : list.length + '/' + GAMES.length;
+    $('#grid-count').textContent = list.length === allowed.length ? String(allowed.length) : list.length + '/' + allowed.length;
   }
 
   /* ── MODUS ────────────────────────────────────────────────────────── */
@@ -707,6 +694,7 @@
     var count = players().length;
     var short = count < g.min;
     var over = count > g.max;
+    var restricted = !ageAllowed(g);
     var pc = $('#players-count');
     pc.textContent = count + '/' + g.max;
     pc.className = 'row-val' + (short || over ? ' warn' : '');
@@ -720,9 +708,10 @@
 
     var btn = $('#start-btn');
     var note = $('#start-note');
-    btn.disabled = short || over;
-    note.className = 'dock-note' + (short || over ? ' warn' : '');
-    if (short) note.textContent = g.min + ' Personen nötig — ' + (g.min - count) + ' fehlen noch';
+    btn.disabled = short || over || restricted;
+    note.className = 'dock-note' + (short || over || restricted ? ' warn' : '');
+    if (restricted) note.textContent = 'Dieses Spiel passt nicht zur gewählten Altersstufe. Ändere sie unter Daten & Einstellungen.';
+    else if (short) note.textContent = g.min + ' Personen nötig — ' + (g.min - count) + ' fehlen noch';
     else if (over) note.textContent = 'Höchstens ' + g.max + ' Personen — ' + (count - g.max) + ' zu viel';
     else note.textContent = count + ' Personen' + (pack && packs.length > 1 ? ' · ' + pack.name : '');
   }
@@ -981,7 +970,9 @@
   /* Einsprung per Adresse, z. B. aus einem Spiel zurück: #spiele, #profil,
      #spieler oder #spiel=<id>. */
   function initialScreen() {
-    var target = decodeURIComponent((window.location.hash || '').slice(1));
+    var target;
+    try { target = decodeURIComponent((window.location.hash || '').slice(1)); }
+    catch (_) { target = ''; } // Beschädigte Links dürfen den Hub nicht blockieren.
     if (target === 'spiele') return show('games', { reset: true });
     if (target === 'profil') return show('profile', { reset: true });
     if (target === 'spieler') return show('players', { reset: true });

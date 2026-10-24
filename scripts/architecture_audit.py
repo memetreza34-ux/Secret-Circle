@@ -10,7 +10,7 @@ violations = []
 production_js = [
     'runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js',
     'word-imposter-resume-guard.js','app.js','backup-schema-registry.js','session-ledger.js','party-session-controls.js','party-catalog.js',
-    'party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js',
+    'party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-cards-viral-1.js','party-cards-viral-2.js','party-cards-viral-3.js','party-cards-mega-1.js','party-cards-mega-2.js','party-cards-mega-3.js','party-cards-quick-1.js','party-cards-quick-2.js','party-cards-quick-3.js','party-cards-hub-1.js','party-cards-hub-2.js','party-cards-hub-3.js','party-cards-wave-1.js','party-cards-wave-2.js','party-cards-wave-3.js','party-cards-viral-4.js','party-core-classic-content.js',
     'party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js',
     'party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js','party-release-structure.js','party-filter-state.js','party-search-assist.js',
     'game-creator.js','creator-page.js','party-custom-packs.js','party-hub-timers.js','party-hub-resume-guard.js','party-hub-round-state.js',
@@ -20,7 +20,7 @@ production_js = [
     'party-wave-one-writing-modes.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js',
     'quick-session-replacement-guard.js','quick-loader.js','sw.js'
 ]
-html_pages = ['index.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html']
+html_pages = ['index.html','v2-hub.html','word-imposter.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html']
 required_contract_files = [
     'manifest.webmanifest','icon.svg','icon-192.png','icon-512.png','assets/manifests/asset-provenance.json','tests/manifest-icons.test.js',
     'tests/accessibility-contract.test.js','scripts/asset_provenance_audit.py','scripts/media_inventory_audit.py','scripts/hub_a11y_contract_audit.py',
@@ -62,7 +62,7 @@ for relative in html_pages:
     if "script-src 'self'" not in source or "object-src 'none'" not in source: violations.append(f'Strict CSP contract missing in {relative}.')
 
 party_page=read('party.html'); quick_play=read('quick-play.html'); advanced_page=read('advanced.html'); creator_page=read('creator.html')
-catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js']
+catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-cards-viral-1.js','party-cards-viral-2.js','party-cards-viral-3.js','party-cards-mega-1.js','party-cards-mega-2.js','party-cards-mega-3.js','party-cards-quick-1.js','party-cards-quick-2.js','party-cards-quick-3.js','party-cards-hub-1.js','party-cards-hub-2.js','party-cards-hub-3.js','party-cards-wave-1.js','party-cards-wave-2.js','party-cards-wave-3.js','party-cards-viral-4.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js']
 
 def check_order(source,names,context):
     positions=[]

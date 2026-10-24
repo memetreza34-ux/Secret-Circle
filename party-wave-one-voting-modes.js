@@ -236,11 +236,17 @@
     return Math.floor(Math.random() * maximum);
   }
 
+  /* Unter den freien Karten bevorzugt die, die in den letzten Sessions nicht dran waren. */
+  function chooseCard(items, available) {
+    const remembered = window.SecretCircleCardMemory?.choose?.({ gameId, pack: active.pack }, items, available, randomInt);
+    return Number.isInteger(remembered) ? remembered : available[randomInt(available.length)];
+  }
+
   function pickCardIndex(items) {
     if (!items.length) return null;
     if (active.used.length >= items.length) active.used = [];
     const available = items.map((_, index) => index).filter(index => !active.used.includes(index));
-    const cardIndex = available[randomInt(available.length)];
+    const cardIndex = chooseCard(items, available);
     active.used.push(cardIndex);
     return cardIndex;
   }

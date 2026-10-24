@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 const corePages = [
-  '/index.html',
+  '/word-imposter.html',
   '/party.html',
   '/advanced.html?game=two-truths',
   '/quick-play.html?game=wavelength',
@@ -20,7 +20,7 @@ for (const route of corePages) {
 }
 
 test('word imposter blocks invalid setup before start', async ({ page }) => {
-  await page.goto('/index.html');
+  await page.goto('/word-imposter.html');
   const players = page.locator('#players');
   const imposters = page.locator('#imposters');
   const start = page.locator('#start');
@@ -45,7 +45,7 @@ test('word imposter blocks invalid setup before start', async ({ page }) => {
 });
 
 test('word imposter setup reports duplicates and widens the imposter range for bigger groups', async ({ page }) => {
-  await page.goto('/index.html');
+  await page.goto('/word-imposter.html');
   const players = page.locator('#players');
   const start = page.locator('#start');
 
@@ -135,6 +135,12 @@ test('hub detail modal isolates background and traps keyboard focus', async ({ p
 
 test('active hub game is modal and keeps focus out of the hidden hub', async ({ page }) => {
   await page.goto('/party.html?view=games');
+  // Eine bewusst eingerichtete Gruppe ist Vorbedingung dieser Fokusprüfung.
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Alex', 'Sam', 'Mika', 'Lina'],
+    favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
+  await page.reload();
   await expect.poll(() => page.evaluate(() => Boolean(window.SecretCirclePartyHubA11y))).toBe(true);
 
   await page.locator('#game-grid [data-open-game="truth-dare"]').first().click();
@@ -208,6 +214,8 @@ test('quick mode recovers focus when a phase replaces the clicked control', asyn
   await expect(page.locator('#quick-play')).toBeVisible();
   await expect(page.locator('#quick-pause')).toBeFocused();
 
+  await page.getByRole('button', { name: 'Ziel anzeigen' }).click();
+  await expect(page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' })).toBeFocused();
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
   await expect(page.locator('#quick-content input[type="range"]')).toBeVisible();
   await expect(page.locator('#quick-content input[type="range"]')).toBeFocused();

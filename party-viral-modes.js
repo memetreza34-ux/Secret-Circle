@@ -176,23 +176,29 @@
     return C.getItems(gameId, active.pack);
   }
 
+  /* Unter den freien Karten bevorzugt die, die in den letzten Sessions nicht dran waren. */
+  function chooseCard(items, available) {
+    const remembered = window.SecretCircleCardMemory?.choose?.({ gameId, pack: active.pack }, items, available, randomInt);
+    return Number.isInteger(remembered) ? remembered : available[randomInt(available.length)];
+  }
+
   function pickUnused(items) {
     if (!items.length) return null;
     if (active.used.length >= items.length) active.used = [];
     const available = items.map((_, index) => index).filter(index => !active.used.includes(index));
-    const index = available[randomInt(available.length)];
+    const index = chooseCard(items, available);
     active.used.push(index);
     saveActive();
     return clone(items[index]);
   }
 
   function pickDistinct(items, count) {
-    const available = items.map((item, index) => ({ item, index }));
+    const available = items.map((_, index) => index);
     const result = [];
     while (available.length && result.length < count) {
-      const position = randomInt(available.length);
-      const [chosen] = available.splice(position, 1);
-      result.push(clone(chosen.item));
+      const index = chooseCard(items, available);
+      available.splice(available.indexOf(index), 1);
+      result.push(clone(items[index]));
     }
     return result;
   }

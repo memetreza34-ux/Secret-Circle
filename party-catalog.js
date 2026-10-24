@@ -13,7 +13,7 @@
       group: 'Täuschung & Bluff',
       status: 'playable',
       mode: 'link',
-      href: 'index.html',
+      href: 'word-imposter.html',
       minPlayers: 3,
       maxPlayers: 20,
       duration: 15,

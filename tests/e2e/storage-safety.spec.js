@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/word-imposter.html');
   await page.evaluate(() => localStorage.clear());
 });
 
@@ -15,6 +15,8 @@ test('malformed local JSON is discarded without breaking startup', async ({ page
   await page.reload();
 
   await expect(page.locator('#setup-screen')).toBeVisible();
+  await expect(page.locator('#start')).toBeDisabled();
+  await page.locator('#players').fill('Aylin\nBen\nCem');
   await expect(page.locator('#start')).toBeEnabled();
   await expect(page.locator('#resume-box')).toBeHidden();
 });

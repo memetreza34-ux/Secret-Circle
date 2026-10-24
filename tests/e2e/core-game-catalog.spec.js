@@ -67,7 +67,7 @@ test('assembled browser catalog keeps all 15 January core games valid', async ({
 
     if (game.id === 'imposter') {
       expect(game.mode).toBe('link');
-      expect(game.href).toBe('index.html');
+      expect(game.href).toBe('word-imposter.html');
     } else if (ADVANCED.has(game.id)) {
       expect(game.mode).toBe('link');
       expect(game.advancedMode).toBe(game.id);

@@ -26,7 +26,7 @@ Wave 1 verwendet mehrere kleine Katalog-Layer, aber **sechs wiederverwendbare En
 
 ## 4a. Oberfläche im Claude-Design (v2)
 
-`v2-hub.html` ist die Startseite (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. Alle Seiten laden nur noch v2-Stile: `v2-theme.css` plus je Seite `v2-play.css`, `v2-party-hub.css` und `v2-party-play.css`, `v2-advanced.css`, `v2-imposter.css` oder `v2-creator.css`. Der Update-Hinweis kommt aus `v2-update.css` (von `runtime-guard.js` nachgeladen).
+`/` und `index.html` sind die Startseite; `v2-hub.html` bleibt derselbe Legacy-Einstieg (Manifest `start_url`). Sie zeigt Katalog, Spieldetail, gemeinsame Spielerliste und Profil im Design aus Claude Design, spielt aber selbst nichts: „Spiel starten“ übergibt an die geprüften Engines. Verlinkte Spiele öffnen ihre Seite (`quick-play.html`, `advanced.html`, `index.html`), Hub-Spiele starten über `party.html?play=<id>&pack=<name>&from=v2` und kehren nach Beenden oder Abbrechen zu v2 zurück. Spielerliste und Verlauf kommen aus `secret-circle-party-hub-v1`; v2 führt keinen eigenen Speicher. „Meistgespielt“ erscheint nur mit echtem Verlauf, sonst „Empfehlung“. Alle Seiten laden nur noch v2-Stile: `v2-theme.css` plus je Seite `v2-play.css`, `v2-party-hub.css` und `v2-party-play.css`, `v2-advanced.css`, `v2-imposter.css` oder `v2-creator.css`. Der Update-Hinweis kommt aus `v2-update.css` (von `runtime-guard.js` nachgeladen).
 
 ## 5. Hub- und Timergrenzen
 
@@ -43,6 +43,12 @@ Advanced trennt `party-advanced.js`, `advanced-resume-guard.js`, `party-advanced
 ## 8. Quick-Family Timer Resume – v57
 
 `secret-circle-party-quick-timers-v1` speichert ausschließlich technische Timer-Metadaten. Snapshots werden nur bei passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer konsumiert.
+
+**Kartenpakete (seit v106):** Zusatzkarten liegen als reine Daten in `party-cards-*.js` (je unter 90 KB) und registrieren sich in `SecretCircleCardPacks`. `party-core-classic-content.js` listet sie in `CARD_PACK_FILES`, lädt sie in Node per `require` und hängt sie als letzte Inhaltsebene hinten an; Seiten laden sie per `<script>` direkt davor. Für Wave-One- und Advanced-Spiele siehe „Späte Kartenpakete“.
+
+**Späte Kartenpakete (seit v112):** Pakete mit `stage: 'wave-one'` gelten Spielen, die erst nach `party-core-classic-content.js` entstehen (Wave-1-Kataloge). Die Kern-Ebene reicht sie unverändert als `lateCardPacks` weiter; `party-wave-one-clue-catalog.js` hängt sie als letzte Katalogebene mit derselben Funktion `applyCardPacks` an (unbekannte Spiele oder Kategorien brechen ab, exakte Dubletten werden übersprungen). Advanced-Spiele (Zwei Wahrheiten, Question Imposter, Location Spy) bekommen ihre Zusatzkarten in `party-expansion.js` (`cardAdditions`), weil `advanced.html` nur diese Katalogebene lädt. `tests/card-packs.test.js` prüft beide Wege mit denselben Regeln.
+
+`card-memory.js` (seit v104) ist das gemeinsame Kartengedächtnis aller Engines außer Word Imposter, das eigene `usedWords` hat. Unter den in einer Session noch freien Karten wählt es bevorzugt solche, die in diesem Spiel und dieser Kategorie zuletzt nicht dran waren; sind alle gesehen, zufällig aus der älter gesehenen Hälfte. Speicher `secret-circle-card-memory-v1` enthält nur Prüfsummen, ist kein Backup-Eigentum und fällt ohne Speicher auf die bisherige Zufallswahl zurück. Wiederholungen innerhalb einer Session verhindert weiterhin jede Engine selbst.
 
 ## 9. Quick-Family BFCache Resume – v58
 
@@ -117,7 +123,7 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v96` / `secret-circle-v96-staging`**.
+Aktueller Offline-Core: **`secret-circle-v116` / `secret-circle-v116-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 

@@ -8,19 +8,39 @@ function captureErrors(page) {
   return errors;
 }
 
+/* Firefox lädt Icons erst nach dem load-Ereignis. Wer sofort weiternavigiert,
+   bricht diese Anfragen selbst ab („request failed“). Vor jedem Seitenwechsel
+   und vor der Fehlerprüfung warten wir daher, bis das Netz ruhig ist; echte
+   Fehler bleiben so sichtbar. */
+async function settle(page) {
+  await page.waitForLoadState('networkidle');
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 });
 
-test('loads Imposter setup content and privacy without browser errors', async ({ page }) => {
+test('canonical Hub aliases, dedicated Word Imposter and privacy load without browser errors', async ({ page }) => {
   const errors = captureErrors(page);
-  await expect(page.getByRole('heading', { name: 'Secret Circle' })).toBeVisible();
+  for (const route of ['/', '/index.html', '/v2-hub.html']) {
+    await page.goto(route);
+    await expect(page.locator('[data-screen="home"]')).toBeVisible();
+    await expect(page.locator('#hero-title')).not.toBeEmpty();
+    await settle(page);
+  }
+  await page.goto('/word-imposter.html');
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeDisabled();
+  await page.locator('#players').fill('Alex\nSam\nMika');
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
   await expect(page.locator('#category option')).toHaveCount(15);
-  await page.getByRole('link', { name: 'Datenschutz ansehen' }).click();
+  await settle(page);
+
+  await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
+  await settle(page);
   expect(errors).toEqual([]);
 });
 
@@ -28,16 +48,23 @@ test('loads Imposter setup content and privacy without browser errors', async ({
    Suchfeld kann auf schmalen Bildschirmen über den Karten liegen; ein Mensch
    schließt sie zuerst. */
 async function openFromCatalog(page, query, gameId, startLabel) {
+  await settle(page);
   await page.goto('/party.html');
+  await settle(page);
   await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill(query);
   await page.locator('#game-search').press('Escape');
   await page.locator(`#game-grid [data-open-game="${gameId}"]`).click();
   await page.getByRole('button', { name: startLabel }).click();
+  await page.waitForLoadState('load');
 }
 
 test('loads the 55-game Hub and all four external engine families', async ({ page }) => {
   const errors = captureErrors(page);
+  await page.evaluate(() => localStorage.setItem('secret-circle-party-hub-v1', JSON.stringify({
+    version: 1, players: ['Alex', 'Sam', 'Mika', 'Lina'],
+    favorites: [], recent: [], presets: [], history: [], stats: {}
+  })));
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
   await expect(page.locator('#playable-count')).toHaveText('55');
@@ -59,13 +86,16 @@ test('loads the 55-game Hub and all four external engine families', async ({ pag
 
   await openFromCatalog(page, 'Preis schätzen', 'guess-the-price', 'Viral Mode öffnen');
   await expect(page.getByRole('heading', { name: 'Preis schätzen' })).toBeVisible();
+  await settle(page);
   expect(errors).toEqual([]);
 });
 
 test('starts a three-player Imposter game and protects the secret card', async ({ page }) => {
+  await page.goto('/word-imposter.html');
   await page.locator('#players').fill('Alex\nSam\nMika');
+  await page.locator('#advanced-settings > summary').click();
   await page.locator('#imposters').fill('1');
-  await page.locator('#match-rounds').selectOption('1');
+  await page.locator('#match-rounds').fill('1');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
   await expect(page.locator('#secret')).toBeHidden();
   await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
@@ -75,6 +105,7 @@ test('starts a three-player Imposter game and protects the secret card', async (
 });
 
 test('persists and restores an interrupted Imposter game', async ({ page }) => {
+  await page.goto('/word-imposter.html');
   await page.locator('#players').fill('Alex\nSam\nMika');
   await page.getByRole('button', { name: 'Spiel starten' }).click();
   await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();

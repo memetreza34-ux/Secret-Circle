@@ -15,7 +15,7 @@ test('all production modules load without startup or resource errors', async ({ 
     }
   });
 
-  const response = await page.goto('/');
+  const response = await page.goto('/word-imposter.html');
   expect(response?.ok()).toBe(true);
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 
@@ -73,4 +73,20 @@ test('every HTML-referenced local production asset returns successfully', async 
     expect(status, `${asset} did not load successfully`).toBeGreaterThanOrEqual(200);
     expect(status, `${asset} did not load successfully`).toBeLessThan(400);
   }
+});
+
+// P0: Der Browser-Root und der ältere v2-Link müssen dieselbe Hub-Startseite laden.
+test('root, index and legacy v2 alias all open the Party Hub; Word Imposter stays playable', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  for (const route of ['/', '/index.html', '/v2-hub.html']) {
+    const response = await page.goto(route);
+    expect(response?.ok(), route).toBe(true);
+    await expect(page.locator('[data-screen="home"]')).toBeVisible();
+    await expect(page.locator('script[src="v2-hub.js"]')).toHaveCount(1);
+    expect(await page.locator('script[src="app.js"]').count(), route).toBe(0);
+  }
+  await page.goto('/word-imposter.html');
+  await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
+  expect(errors).toEqual([]);
 });

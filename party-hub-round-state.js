@@ -93,18 +93,23 @@
     };
   }
 
-  function select(items, used, randomInt) {
+  /* `choose(items, available)` darf einen der freien Indizes vorschlagen
+     (Kartengedächtnis über Sessions); sonst bleibt es bei der Zufallswahl. */
+  function select(items, used, randomInt, choose = null) {
     if (!Array.isArray(items) || !items.length || !Array.isArray(used)) return null;
     if (used.length >= items.length) used.splice(0, used.length);
     const available = items.map((_, index) => index).filter(index => !used.includes(index));
     if (!available.length) return null;
+    const proposed = typeof choose === 'function' ? choose(items, available) : undefined;
     const offset = typeof randomInt === 'function' ? randomInt(available.length) : 0;
-    const index = available[Math.max(0, Math.min(available.length - 1, Number(offset) || 0))];
+    const index = Number.isInteger(proposed) && available.includes(proposed)
+      ? proposed
+      : available[Math.max(0, Math.min(available.length - 1, Number(offset) || 0))];
     used.push(index);
     return { index, value: items[index] };
   }
 
-  function ensureCurrent(session, kind, items, randomInt, pool = null) {
+  function ensureCurrent(session, kind, items, randomInt, pool = null, choose = null) {
     if (!session || !Array.isArray(items)) return null;
     const existing = session.current;
     if (existing?.kind === kind && existing.pool === (pool || undefined) && Number.isInteger(existing.index) && existing.index >= 0 && existing.index < items.length) {
@@ -113,7 +118,7 @@
     const used = pool
       ? ((session.usedByPool ||= { truth: [], dare: [] })[pool] ||= [])
       : (session.used ||= []);
-    const selected = select(items, used, randomInt);
+    const selected = select(items, used, randomInt, choose);
     session.current = selected
       ? (pool ? { kind, pool, index: selected.index } : { kind, index: selected.index })
       : null;

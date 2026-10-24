@@ -5,7 +5,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_FILES = [
-    'index.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html',
+    'index.html', 'v2-hub.html', 'word-imposter.html', 'party.html', 'advanced.html', 'quick-play.html', 'creator.html',
     'privacy.html', 'manifest.webmanifest'
 ]
 
