@@ -17,6 +17,9 @@
   const STORAGE_KEY = 'secret-circle-card-memory-v1';
   const MAX_SCOPES = 150;
   const MAX_SEEN_PER_SCOPE = 150;
+  const MAX_WORDS = 16000;
+  const WORD_SCOPE = { gameId: 'word-imposter', pack: 'alle' };
+  const limitFor = key => key === scopeKey(WORD_SCOPE) ? MAX_WORDS : MAX_SEEN_PER_SCOPE;
 
   function fingerprint(item) {
     const text = typeof item === 'string' ? item : JSON.stringify(item ?? '');
@@ -49,7 +52,7 @@
         if (key.length > 230 || !entry || !Array.isArray(entry.seen)) continue;
         scopes[key] = {
           at: Number.isFinite(entry.at) ? entry.at : 0,
-          seen: entry.seen.filter(print => typeof print === 'string' && print.length <= 16).slice(-MAX_SEEN_PER_SCOPE)
+          seen: entry.seen.filter(print => typeof print === 'string' && print.length <= 16).slice(-limitFor(key))
         };
       }
       return { version: VERSION, scopes };
@@ -60,7 +63,12 @@
 
   function write(storage, store) {
     try {
-      const newest = Object.entries(store.scopes).sort((a, b) => b[1].at - a[1].at).slice(0, MAX_SCOPES);
+      const wordKey = scopeKey(WORD_SCOPE);
+      const wordEntry = store.scopes[wordKey];
+      const recent = Object.entries(store.scopes).filter(([key]) => key !== wordKey).sort((a, b) => b[1].at - a[1].at);
+      const newest = wordEntry
+        ? [[wordKey, wordEntry], ...recent.slice(0, MAX_SCOPES - 1)]
+        : recent.slice(0, MAX_SCOPES);
       storage?.setItem?.(STORAGE_KEY, JSON.stringify({ version: VERSION, scopes: Object.fromEntries(newest) }));
       return true;
     } catch {
@@ -98,11 +106,35 @@
       chosen = pool[boundedRandom(randomInt, pool.length)];
     }
     const print = prints.get(chosen);
-    entry.seen = [...entry.seen.filter(value => value !== print), print].slice(-MAX_SEEN_PER_SCOPE);
+    entry.seen = [...entry.seen.filter(value => value !== print), print].slice(-limitFor(key));
     entry.at = typeof options.now === 'function' ? options.now() : Date.now();
     store.scopes[key] = entry;
     write(storage, store);
     return chosen;
+  }
+
+  function chooseWord(entries, available, randomInt, options = {}) {
+    if (!Array.isArray(entries) || !Array.isArray(available)) return undefined;
+    available = available.filter(index => Number.isInteger(index) && index >= 0 && index < entries.length);
+    if (!available.length) return undefined;
+    const words = entries.map(entry => String(Array.isArray(entry) ? entry[0] : entry.word).trim().normalize('NFKC').toLocaleLowerCase('de-DE'));
+    const hints = entries.map(entry => String(Array.isArray(entry) ? entry[1] : entry.hint).trim().toLocaleLowerCase('de-DE'));
+    const seen = read(resolveStorage(options.storage)).scopes[scopeKey(WORD_SCOPE)]?.seen || [];
+    const known = new Set(seen);
+    const fresh = available.filter(index => !known.has(fingerprint(words[index])));
+    // Erst ungespielte Wörter, danach innerhalb dieser Auswahl andere Themen.
+    let candidates = fresh.length ? fresh : available;
+    if (!fresh.length && seen.length) {
+      const rank = new Map(seen.map((print, index) => [print, index]));
+      candidates = [...available].sort((a, b) => rank.get(fingerprint(words[a])) - rank.get(fingerprint(words[b]))).slice(0, 1);
+    }
+    if (fresh.length) {
+      const recent = new Set(seen.slice(-3));
+      const recentHints = new Set(words.flatMap((word, index) => recent.has(fingerprint(word)) ? [hints[index]] : []));
+      const varied = fresh.filter(index => !recentHints.has(hints[index]));
+      if (varied.length) candidates = varied;
+    }
+    return choose(WORD_SCOPE, words, candidates, randomInt, options);
   }
 
   return Object.freeze({
@@ -113,6 +145,8 @@
     fingerprint,
     scopeKey,
     read,
-    choose
+    choose,
+    chooseWord,
+    maximumWords: MAX_WORDS
   });
 });

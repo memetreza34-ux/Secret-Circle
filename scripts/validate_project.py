@@ -62,7 +62,7 @@ creator=audit_html('creator.html',['runtime-guard.js','game-creator.js','seconda
 audit_html('privacy.html',[])
 index=audit_html('index.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','v2-hub-packs.js','v2-hub.js'])
 if index != read('v2-hub.html'): raise SystemExit('Canonical root and v2-hub.html must expose the same home screen.')
-word=audit_html('word-imposter.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js','word-imposter-resume-guard.js','app.js'])
+word=audit_html('word-imposter.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','word-packs-extra.js','card-memory.js','data-store.js','word-imposter-resume-guard.js','app.js'])
 
 for marker in ('Euer Party-Hub · privat · lokal','Persönliche Inhalte sind freiwillig','party-wave-one-clue-catalog.js','pause-hub-game','skip-hub-round'):
     if marker not in party: raise SystemExit(f'Party Hub release marker missing: {marker}')
