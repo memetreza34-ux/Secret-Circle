@@ -1,0 +1,565 @@
+{
+  "project": "webkit-mobile",
+  "browser": "webkit",
+  "browserVersion": "26.0",
+  "throttled": false,
+  "warmCacheMode": "service worker activation awaited; actual control recorded in summary",
+  "page": "index.html",
+  "runs": 5,
+  "measuredAt": "2026-10-24T03:45:30.974Z",
+  "targets": [
+    {
+      "label": "main",
+      "url": "http://127.0.0.1:4191"
+    },
+    {
+      "label": "v114",
+      "url": "http://127.0.0.1:4192"
+    }
+  ],
+  "summary": {
+    "main": {
+      "cold": {
+        "htmlResponseEndMs": 0,
+        "dclMs": 52.00000000000001,
+        "loadMs": 54,
+        "uiVisibleMs": 75,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 26,
+        "servedByServiceWorker": 0,
+        "networkBytes": 246940,
+        "serverBodyBytes": 239534,
+        "serverRequests": 26,
+        "cardRequests": 0,
+        "cardNetworkBytes": 0
+      },
+      "warm": {
+        "htmlResponseEndMs": 1,
+        "dclMs": 42,
+        "loadMs": 45,
+        "uiVisibleMs": 65,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 26,
+        "servedByServiceWorker": 26,
+        "networkBytes": 3545,
+        "serverBodyBytes": 3221,
+        "serverRequests": 1,
+        "cardRequests": 0,
+        "cardNetworkBytes": 0
+      },
+      "warmControlledByServiceWorker": true,
+      "cardParseMs": null,
+      "cardParseFiles": 0,
+      "offlineCore": {
+        "files": 91,
+        "bytes": 548632,
+        "cardBytes": 0
+      }
+    },
+    "v114": {
+      "cold": {
+        "htmlResponseEndMs": 0,
+        "dclMs": 69,
+        "loadMs": 72.00000000000001,
+        "uiVisibleMs": 92,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 42,
+        "servedByServiceWorker": 0,
+        "networkBytes": 396642,
+        "serverBodyBytes": 384522,
+        "serverRequests": 42,
+        "cardRequests": 16,
+        "cardNetworkBytes": 138662
+      },
+      "warm": {
+        "htmlResponseEndMs": 1,
+        "dclMs": 64,
+        "loadMs": 66,
+        "uiVisibleMs": 88,
+        "cardEvaluateMs": null,
+        "cardBackgroundParseMs": null,
+        "classicContentEvaluateMs": null,
+        "clueCatalogEvaluateMs": null,
+        "allScriptsEvaluateMs": null,
+        "requests": 42,
+        "servedByServiceWorker": 42,
+        "networkBytes": 3619,
+        "serverBodyBytes": 3295,
+        "serverRequests": 1,
+        "cardRequests": 16,
+        "cardNetworkBytes": 0
+      },
+      "warmControlledByServiceWorker": true,
+      "cardParseMs": 4,
+      "cardParseFiles": 16,
+      "offlineCore": {
+        "files": 108,
+        "bytes": 699038,
+        "cardBytes": 133950
+      }
+    }
+  },
+  "raw": {
+    "main": [
+      {
+        "cold": {
+          "htmlResponseEndMs": 3,
+          "dclMs": 90,
+          "loadMs": 92,
+          "uiVisibleMs": 117,
+          "controlled": false,
+          "requests": 26,
+          "servedByServiceWorker": 0,
+          "networkBytes": 246940,
+          "serverBodyBytes": 239534,
+          "serverRequests": 26,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 3,
+          "dclMs": 44,
+          "loadMs": 49,
+          "uiVisibleMs": 70,
+          "controlled": true,
+          "requests": 26,
+          "servedByServiceWorker": 26,
+          "networkBytes": 3545,
+          "serverBodyBytes": 3221,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 0,
+          "totalMs": null,
+          "perFile": {}
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 66,
+          "loadMs": 68,
+          "uiVisibleMs": 88,
+          "controlled": false,
+          "requests": 26,
+          "servedByServiceWorker": 0,
+          "networkBytes": 246940,
+          "serverBodyBytes": 239534,
+          "serverRequests": 26,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 41,
+          "loadMs": 53,
+          "uiVisibleMs": 48,
+          "controlled": true,
+          "requests": 26,
+          "servedByServiceWorker": 26,
+          "networkBytes": 3545,
+          "serverBodyBytes": 3221,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 0,
+          "totalMs": null,
+          "perFile": {}
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 46,
+          "loadMs": 48,
+          "uiVisibleMs": 68,
+          "controlled": false,
+          "requests": 26,
+          "servedByServiceWorker": 0,
+          "networkBytes": 246940,
+          "serverBodyBytes": 239534,
+          "serverRequests": 26,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 42,
+          "loadMs": 44,
+          "uiVisibleMs": 64,
+          "controlled": true,
+          "requests": 26,
+          "servedByServiceWorker": 26,
+          "networkBytes": 3545,
+          "serverBodyBytes": 3221,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 0,
+          "totalMs": null,
+          "perFile": {}
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 52.00000000000001,
+          "loadMs": 54,
+          "uiVisibleMs": 75,
+          "controlled": false,
+          "requests": 26,
+          "servedByServiceWorker": 0,
+          "networkBytes": 246940,
+          "serverBodyBytes": 239534,
+          "serverRequests": 26,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 43,
+          "loadMs": 45,
+          "uiVisibleMs": 66,
+          "controlled": true,
+          "requests": 26,
+          "servedByServiceWorker": 26,
+          "networkBytes": 3545,
+          "serverBodyBytes": 3221,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 0,
+          "totalMs": null,
+          "perFile": {}
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 45,
+          "loadMs": 48,
+          "uiVisibleMs": 68,
+          "controlled": false,
+          "requests": 26,
+          "servedByServiceWorker": 0,
+          "networkBytes": 246940,
+          "serverBodyBytes": 239534,
+          "serverRequests": 26,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 42,
+          "loadMs": 44,
+          "uiVisibleMs": 65,
+          "controlled": true,
+          "requests": 26,
+          "servedByServiceWorker": 26,
+          "networkBytes": 3545,
+          "serverBodyBytes": 3221,
+          "serverRequests": 1,
+          "cardRequests": 0,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 0,
+          "totalMs": null,
+          "perFile": {}
+        }
+      }
+    ],
+    "v114": [
+      {
+        "cold": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 70,
+          "loadMs": 82,
+          "uiVisibleMs": 78,
+          "controlled": false,
+          "requests": 42,
+          "servedByServiceWorker": 0,
+          "networkBytes": 396642,
+          "serverBodyBytes": 384522,
+          "serverRequests": 42,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 64,
+          "loadMs": 66,
+          "uiVisibleMs": 88,
+          "controlled": true,
+          "requests": 42,
+          "servedByServiceWorker": 42,
+          "networkBytes": 3619,
+          "serverBodyBytes": 3295,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 16,
+          "totalMs": 5,
+          "perFile": {
+            "party-cards-viral-1.js": 2.0000000000000018,
+            "party-cards-viral-2.js": 0,
+            "party-cards-viral-3.js": 0,
+            "party-cards-mega-1.js": 0,
+            "party-cards-mega-2.js": 0,
+            "party-cards-mega-3.js": 0.9999999999999982,
+            "party-cards-quick-1.js": 0,
+            "party-cards-quick-2.js": 0,
+            "party-cards-quick-3.js": 1,
+            "party-cards-hub-1.js": 0,
+            "party-cards-hub-2.js": 0,
+            "party-cards-hub-3.js": 0,
+            "party-cards-wave-1.js": 0,
+            "party-cards-wave-2.js": 1,
+            "party-cards-wave-3.js": 0,
+            "party-cards-viral-4.js": 0
+          }
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 71.00000000000001,
+          "loadMs": 73,
+          "uiVisibleMs": 94,
+          "controlled": false,
+          "requests": 42,
+          "servedByServiceWorker": 0,
+          "networkBytes": 396642,
+          "serverBodyBytes": 384522,
+          "serverRequests": 42,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 65,
+          "loadMs": 68,
+          "uiVisibleMs": 88,
+          "controlled": true,
+          "requests": 42,
+          "servedByServiceWorker": 42,
+          "networkBytes": 3619,
+          "serverBodyBytes": 3295,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 16,
+          "totalMs": 4,
+          "perFile": {
+            "party-cards-viral-1.js": 1,
+            "party-cards-viral-2.js": 0,
+            "party-cards-viral-3.js": 0,
+            "party-cards-mega-1.js": 0,
+            "party-cards-mega-2.js": 1,
+            "party-cards-mega-3.js": 0,
+            "party-cards-quick-1.js": 0,
+            "party-cards-quick-2.js": 0,
+            "party-cards-quick-3.js": 1.0000000000000018,
+            "party-cards-hub-1.js": 0,
+            "party-cards-hub-2.js": 0,
+            "party-cards-hub-3.js": 0,
+            "party-cards-wave-1.js": 0,
+            "party-cards-wave-2.js": 0.9999999999999982,
+            "party-cards-wave-3.js": 0,
+            "party-cards-viral-4.js": 0
+          }
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 69,
+          "loadMs": 72.00000000000001,
+          "uiVisibleMs": 92,
+          "controlled": false,
+          "requests": 42,
+          "servedByServiceWorker": 0,
+          "networkBytes": 396642,
+          "serverBodyBytes": 384522,
+          "serverRequests": 42,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 64,
+          "loadMs": 66,
+          "uiVisibleMs": 87.00000000000001,
+          "controlled": true,
+          "requests": 42,
+          "servedByServiceWorker": 42,
+          "networkBytes": 3619,
+          "serverBodyBytes": 3295,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 16,
+          "totalMs": 4,
+          "perFile": {
+            "party-cards-viral-1.js": 0,
+            "party-cards-viral-2.js": 0,
+            "party-cards-viral-3.js": 1,
+            "party-cards-mega-1.js": 0,
+            "party-cards-mega-2.js": 0,
+            "party-cards-mega-3.js": 0,
+            "party-cards-quick-1.js": 1,
+            "party-cards-quick-2.js": 0,
+            "party-cards-quick-3.js": 0,
+            "party-cards-hub-1.js": 0,
+            "party-cards-hub-2.js": 0,
+            "party-cards-hub-3.js": 0,
+            "party-cards-wave-1.js": 1.0000000000000018,
+            "party-cards-wave-2.js": 0,
+            "party-cards-wave-3.js": 0,
+            "party-cards-viral-4.js": 0
+          }
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 69,
+          "loadMs": 71.00000000000001,
+          "uiVisibleMs": 92,
+          "controlled": false,
+          "requests": 42,
+          "servedByServiceWorker": 0,
+          "networkBytes": 396642,
+          "serverBodyBytes": 384522,
+          "serverRequests": 42,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 66,
+          "loadMs": 68,
+          "uiVisibleMs": 88,
+          "controlled": true,
+          "requests": 42,
+          "servedByServiceWorker": 42,
+          "networkBytes": 3619,
+          "serverBodyBytes": 3295,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 16,
+          "totalMs": 4,
+          "perFile": {
+            "party-cards-viral-1.js": 1,
+            "party-cards-viral-2.js": 0,
+            "party-cards-viral-3.js": 0,
+            "party-cards-mega-1.js": 1.0000000000000018,
+            "party-cards-mega-2.js": 0,
+            "party-cards-mega-3.js": 0,
+            "party-cards-quick-1.js": 0.9999999999999982,
+            "party-cards-quick-2.js": 0,
+            "party-cards-quick-3.js": 0,
+            "party-cards-hub-1.js": 0,
+            "party-cards-hub-2.js": 0,
+            "party-cards-hub-3.js": 0,
+            "party-cards-wave-1.js": 1,
+            "party-cards-wave-2.js": 0,
+            "party-cards-wave-3.js": 0,
+            "party-cards-viral-4.js": 0
+          }
+        }
+      },
+      {
+        "cold": {
+          "htmlResponseEndMs": 0,
+          "dclMs": 69,
+          "loadMs": 71.00000000000001,
+          "uiVisibleMs": 93,
+          "controlled": false,
+          "requests": 42,
+          "servedByServiceWorker": 0,
+          "networkBytes": 396642,
+          "serverBodyBytes": 384522,
+          "serverRequests": 42,
+          "cardRequests": 16,
+          "cardNetworkBytes": 138662
+        },
+        "warm": {
+          "htmlResponseEndMs": 1,
+          "dclMs": 64,
+          "loadMs": 66,
+          "uiVisibleMs": 87.00000000000001,
+          "controlled": true,
+          "requests": 42,
+          "servedByServiceWorker": 42,
+          "networkBytes": 3619,
+          "serverBodyBytes": 3295,
+          "serverRequests": 1,
+          "cardRequests": 16,
+          "cardNetworkBytes": 0
+        },
+        "serviceWorker": true,
+        "cardParse": {
+          "files": 16,
+          "totalMs": 3.9999999999999982,
+          "perFile": {
+            "party-cards-viral-1.js": 0.9999999999999982,
+            "party-cards-viral-2.js": 0,
+            "party-cards-viral-3.js": 0,
+            "party-cards-mega-1.js": 0,
+            "party-cards-mega-2.js": 1,
+            "party-cards-mega-3.js": 0,
+            "party-cards-quick-1.js": 0,
+            "party-cards-quick-2.js": 0,
+            "party-cards-quick-3.js": 1,
+            "party-cards-hub-1.js": 0,
+            "party-cards-hub-2.js": 0,
+            "party-cards-hub-3.js": 0,
+            "party-cards-wave-1.js": 0,
+            "party-cards-wave-2.js": 1,
+            "party-cards-wave-3.js": 0,
+            "party-cards-viral-4.js": 0
+          }
+        }
+      }
+    ]
+  }
+}
