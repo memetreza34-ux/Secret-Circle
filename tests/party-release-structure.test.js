@@ -13,14 +13,14 @@ function read(file) { return fs.readFileSync(path.resolve(__dirname, '..', file)
 
 assert.equal(release.version, 5);
 assert.equal(release.coreIds.length, 15);
-assert.equal(release.labIds.length, 27);
+assert.equal(release.labIds.length, 30);
 assert.equal(new Set(release.coreIds).size, release.coreIds.length);
 assert.equal(new Set(release.labIds).size, release.labIds.length);
 assert.equal(release.coreIds.some(id => release.labIds.includes(id)), false);
 
 const summary = release.counts(catalog.games);
-assert.equal(catalog.games.length, 55);
-assert.deepEqual(summary, { core: 15, extended: 13, labs: 27 });
+assert.equal(catalog.games.length, 58);
+assert.deepEqual(summary, { core: 15, extended: 13, labs: 30 });
 for (const id of release.coreIds) {
   const game = catalog.getGame(id); assert.ok(game, `Core game missing: ${id}`); assert.equal(game.status, 'playable'); assert.equal(release.tierFor(game), 'core');
 }

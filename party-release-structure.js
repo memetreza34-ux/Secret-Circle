@@ -21,7 +21,7 @@
     'hear-me-out', 'hot-seat', 'story-chain', 'finish-the-sentence',
     'party-quiz', 'fact-or-fake', 'undercover-similar-word', 'no-word-imposter',
     'fill-blank-battle', 'who-wrote-it', 'percent-guess', 'party-bracket',
-    'bluff-trivia', 'password-one-word'
+    'bluff-trivia', 'password-one-word', 'drawing-telephone', 'three-rounds', 'packing-suitcase'
   ]);
   const CORE = new Set(CORE_IDS);
   const LABS = new Set(LAB_IDS);

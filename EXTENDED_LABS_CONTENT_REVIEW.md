@@ -5,7 +5,7 @@ Status: **AUTOMATED CONTRACT PREPARED / MANUAL SIGN-OFF OPEN**
 
 ## 1. Zweck
 
-Dieses Dokument ergänzt `CORE_CONTENT_REVIEW.md` für die **40 Nicht-Core-Spiele**: **13 Extended** und **27 Labs** (davon 10 aus Expansion Wave 1).
+Dieses Dokument ergänzt `CORE_CONTENT_REVIEW.md` für die **43 Nicht-Core-Spiele**: **13 Extended** und **30 Labs** (davon 10 aus Expansion Wave 1).
 
 Es trennt drei Ebenen:
 
@@ -19,8 +19,8 @@ Ein vorhandener Test oder Audit bedeutet nicht automatisch, dass der Inhalt reda
 
 `tests/extended-labs-content-quality.test.js` prüft für alle Nicht-Core-Spiele:
 
-- Release-Tiers bleiben 15 Core / 13 Extended / 27 Labs
-- alle 55 IDs bleiben eindeutig
+- Release-Tiers bleiben 15 Core / 13 Extended / 30 Labs
+- alle 58 IDs bleiben eindeutig
 - Titel, Beschreibung und Regeln sind vorhanden
 - Alter, Spielergrenzen und Dauer sind plausibel strukturiert
 - Release-Games stehen technisch auf `playable`
@@ -57,7 +57,16 @@ Beide laufen seit dem 28. September 2026 in `npm test` bzw. `npm run validate` m
 | `scavenger-hunt` | Gegenstandssuche | Textsicherheit | sichere Umgebung, keine privaten/gefährlichen Gegenstände | PREPARED |
 | `caption-battle` | kreative Situationen | Packtiefe, Duplikate | keine beleidigenden/privaten Bildkontexte | PREPARED |
 
-## 4. Labs – 27 Spiele
+## 4. Labs – 30 Spiele
+
+Ergänzung vom 25.10.2026 auf ausdrücklichen Nutzerauftrag: `drawing-telephone`, `three-rounds` und `packing-suitcase`. Die drei zusätzlichen Spiele verwenden lokale, eigene Texte und dieselben automatischen Inhaltsverträge. Gruppen-/Geräteabnahme und unabhängiges Review bleiben offen.
+
+| Ergänzung | Inhalt | Manuelle Abnahme |
+| --- | --- | --- |
+| Stille Post mit Zeichnungen | 48 eigene Zeichensätze in vier Kategorien; freiwillige Textalternative | OPEN |
+| Drei-Runden-Begrifferaten | 80 generische Begriffe in vier Kategorien, derselbe Stapel in drei Phasen | OPEN |
+| Ich packe meinen Koffer | 32 Themenbeispiele in vier Kategorien; eigene Ergänzungen bleiben lokal | OPEN |
+
 
 | Spiel-ID | Inhaltstyp | Automatischer Fokus | Manueller Fokus | Status |
 |---|---|---|---|---|
@@ -91,7 +100,7 @@ Beide laufen seit dem 28. September 2026 in `npm test` bzw. `npm run validate` m
 
 ## 5. Manuelle Quellprüfung
 
-Vor `EXTENDED / LABS CONTENT PASS` wird jedes der 40 Spiele direkt im finalen Working-Branch-Katalog gelesen.
+Vor `EXTENDED / LABS CONTENT PASS` wird jedes der 43 Spiele direkt im finalen Working-Branch-Katalog gelesen.
 
 Je Spiel prüfen:
 
@@ -135,8 +144,8 @@ Erfassen:
 
 Vor `EXTENDED / LABS CONTENT PASS`:
 
-- [x] 13 Extended und 27 Labs explizit inventarisiert
-- [x] 40 Nicht-Core-Spiele besitzen einen eigenen automatischen Qualitätsvertrag
+- [x] 13 Extended und 30 Labs explizit inventarisiert
+- [x] 43 Nicht-Core-Spiele besitzen einen eigenen automatischen Qualitätsvertrag
 - [x] contentlose Utility-Modi explizit getrennt
 - [x] schema-aware Mindestmengen definiert
 - [x] Privacy-Offenlegungs-Prompt-Gate definiert
@@ -147,7 +156,7 @@ Vor `EXTENDED / LABS CONTENT PASS`:
 - [x] Node-Vertrag tatsächlich erfolgreich ausgeführt (lokal am 28. September 2026; Teil von `npm test`)
 - [x] Python-Audit tatsächlich erfolgreich ausgeführt (lokal am 28. September 2026; Teil von `npm run validate`)
 - [ ] alle 13 Extended manuell semantisch gelesen
-- [ ] alle 27 Labs manuell semantisch gelesen
+- [ ] alle 30 Labs manuell semantisch gelesen
 - [ ] Alters-/Safety-Sign-off abgeschlossen
 - [ ] Reference-/Media-/Asset-Gates tatsächlich grün
 - [ ] reale Gruppenabnahme abgeschlossen

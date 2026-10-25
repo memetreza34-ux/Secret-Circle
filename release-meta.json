@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-16",
-  "sourceGeneration": "v99",
+  "updatedAt": "2026-10-25",
+  "sourceGeneration": "v101",
   "packageVersion": "1.0.0-beta.3",
   "offlineCache": {
-    "production": "secret-circle-v99",
-    "staging": "secret-circle-v99-staging",
-    "coreHash": "08f7cb7dd20128e22b44404e3f185c1bd1b734ab72d7eb439db89f89e421f7c2"
+    "production": "secret-circle-v101",
+    "staging": "secret-circle-v101-staging",
+    "coreHash": "3867f951edefb2bdabebf4d5004cd07c7890f00a9df49f2279ea7ea19131c00f"
   },
   "builtIns": {
-    "total": 55,
+    "total": 58,
     "core": 15,
     "extended": 13,
-    "labs": 27
+    "labs": 30
   },
   "waveOne": {
     "planned": 10,

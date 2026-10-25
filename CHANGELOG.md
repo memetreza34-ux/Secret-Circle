@@ -1,3 +1,10 @@
+## v101 – Drei Partyklassiker (25. Oktober 2026)
+
+- Stille Post mit Zeichnungen: private Bild-/Textketten, begrenzte Zeichnungen und gemeinsame Auflösung.
+- Drei-Runden-Begrifferaten: gleicher Stapel beim Erklären, Ein-Wort-Hinweis und Pantomime, zwei Teams und pausierbare 60-Sekunden-Züge.
+- Ich packe meinen Koffer: verdecktes Wiederholen, Gruppenprüfung und wachsende Liste.
+- Katalog auf 58 Spiele erweitert; bestehende Speicher-, Backup- und Ergebnisverträge bleiben erhalten. Neue Dateien im Offline-Kerncache, Generation v99 → v101.
+
 ## v99 – Altersstufe wirkt auch in der kanonischen Startseite (16. Oktober 2026)
 
 - Der V2-Hub übernimmt die gespeicherte Altersstufe aus den gemeinsamen Party-Einstellungen. Der Familienmodus filtert Empfehlungen, Hero, Katalog und Suche.

@@ -184,6 +184,36 @@
       "derivedFrom": null,
       "dimensions": "375x812",
       "notes": "Startseite bzw. Mafia-Spieldetail; nicht im Offline-Core."
+    },
+    {
+      "path": "docs/screenshots/klassiker-zeichnen-desktop.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2; WebP-Export mit cwebp",
+      "source": "Lokaler Browser-Test der eigenen App vom 2026-10-25; Zeichenspiel auf Desktop bzw. Handy-Viewport 375×812, vollständige Seite.",
+      "createdAt": "2026-10-25",
+      "sha256": "308a1a98cfa7a43710d24585dbcc2dfeb9f398e4effc67b64875847675725303",
+      "license": "Projektseitiger Screenshot der eigenen App; keine fremden Bildinhalte",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "1440x1719",
+      "notes": "PR-Dokumentation; kein Laufzeit-Asset und nicht im Offline-Core."
+    },
+    {
+      "path": "docs/screenshots/klassiker-zeichnen-handy.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2; WebP-Export mit cwebp",
+      "source": "Lokaler Browser-Test der eigenen App vom 2026-10-25; Zeichenspiel auf Desktop bzw. Handy-Viewport 375×812, vollständige Seite.",
+      "createdAt": "2026-10-25",
+      "sha256": "f52ff86ab8478f030563d4c66d58f67862c976c0aaa37fc4a1170b3ba088d7cb",
+      "license": "Projektseitiger Screenshot der eigenen App; keine fremden Bildinhalte",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "375x1645",
+      "notes": "PR-Dokumentation; kein Laufzeit-Asset und nicht im Offline-Core."
     }
   ]
 }

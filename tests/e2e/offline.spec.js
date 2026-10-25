@@ -54,7 +54,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await context.setOffline(true);
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('55');
+  await expect(page.locator('#playable-count')).toHaveText('58');
   await expect(page.getByRole('heading', { name: 'In drei Schritten zur ersten Runde' })).toBeVisible();
   await page.goto('/creator.html');
   await expect(page.getByRole('heading', { name: 'Eigenes Spiel erstellen' })).toBeVisible();

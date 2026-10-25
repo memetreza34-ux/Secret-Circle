@@ -76,16 +76,16 @@ test('game artwork loads locally in cards, banner and details with readable mobi
   }
 });
 
-test('games screen lists all 55 games in six non-empty colour worlds', async ({ page }) => {
+test('games screen lists all 58 games in six non-empty colour worlds', async ({ page }) => {
   await seedHub(page);
   await openV2(page, '#spiele');
-  await expect(page.locator('#grid .gcard')).toHaveCount(55);
+  await expect(page.locator('#grid .gcard')).toHaveCount(58);
   const chips = await page.locator('#filters .chip').allTextContents();
-  expect(chips[0]).toBe('Alle 55');
+  expect(chips[0]).toBe('Alle 58');
   const counts = chips.slice(1).map(text => Number(text.match(/(\d+)$/)[1]));
   expect(counts).toHaveLength(6);
   expect(counts.every(count => count > 0)).toBe(true);
-  expect(counts.reduce((sum, count) => sum + count, 0)).toBe(55);
+  expect(counts.reduce((sum, count) => sum + count, 0)).toBe(58);
 
   await page.locator('#q').fill('Spektrum');
   await expect(page.locator('#grid .gcard')).toHaveCount(1);

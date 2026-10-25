@@ -137,3 +137,5 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
 
 Der frühere **Icon-Rechteblocker ist geschlossen**, das übergeordnete Asset-/Third-Party-Gate bleibt bis zu den realen Ausführungs- und Finalreview-Nachweisen **BLOCKED**. Der öffentliche Release bleibt **NO_GO**.
+
+Die beiden `docs/screenshots/klassiker-zeichnen-*.webp` sind am 25.10.2026 mit Playwright erzeugte Screenshots der eigenen App (WebP-Export mit cwebp). Sie dienen ausschließlich der PR-Dokumentation.

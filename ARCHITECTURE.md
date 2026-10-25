@@ -117,7 +117,7 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v99` / `secret-circle-v99-staging`**.
+Aktueller Offline-Core: **`secret-circle-v101` / `secret-circle-v101-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
@@ -152,3 +152,9 @@ Kein Force-Push auf stabile Release-Basen. Rollback/Hotfix erhält nach Offline-
 ## 25. Releaseentscheidung
 
 Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Security, Offline, Accessibility, Tests und Dokumentation zusammenpassen **und reale Gates tatsächlich ausgeführt wurden**. `release-evidence.json` ist die finale Quelle; `GO` erst bei belegten PASS-Gates auf demselben unveränderten RC.
+
+## Drei zusätzliche Partyklassiker – 25. Oktober 2026
+
+Auf ausdrücklichen Nutzerauftrag ergänzt `party-classic-catalog.js` den Katalog um `drawing-telephone`, `three-rounds` und `packing-suitcase` (58 Titel, 15 Core / 13 Extended / 30 Labs). Die Schicht steht zwischen Bluff- und Clue-Katalog. `quick-loader.js` lädt den abgegrenzten Klassiker-Runner vor der allgemeinen Mega-Engine.
+
+`party-classic-model.js` prüft die Zustände, `party-classic-drawing.js` zeichnet begrenzte Vektordaten (100 Striche / 600 Punkte). Textalternativen halten Zeichnen mit Tastatur bedienbar. Keine neuen Speicher-Keys: bestehende Mega-Familie, Backup-Registry, SessionControls und SessionLedger. Private Schritte werden vor Geräteübergabe, Fokusverlust und Reload verdeckt; drei Begrifferatephasen verwenden denselben Stapel und behalten die Timer-Restzeit. Ergebnisbuchungen verwenden stabile Completion-IDs. Gruppen-/Geräteabnahme und Release-GO bleiben offen.

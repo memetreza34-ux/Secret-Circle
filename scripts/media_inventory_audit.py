@@ -13,6 +13,8 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/screenshots/klassiker-zeichnen-desktop.webp',
+    'docs/screenshots/klassiker-zeichnen-handy.webp',
     'icon.svg', 'icon-192.png', 'icon-512.png',
     'assets/images/imposter.webp',
     'assets/images/truth-dare.webp',

@@ -11,8 +11,9 @@ read=lambda relative:(ROOT/relative).read_text(encoding='utf-8')
 required=[
  'index.html','word-imposter.html','v2-hub.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html','sw.js','manifest.webmanifest','package.json','package-lock.json','release-evidence.json',
  'runtime-guard.js','privacy-guard.js','word-imposter-resume-guard.js','backup-schema-registry.js','party-data-tools.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js',
- 'party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js',
+ 'party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js',
  'party-wave-one-modes.js','party-wave-one-imposter-modes.js','party-wave-one-writing-modes.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js',
+ 'party-classic-model.js','party-classic-drawing.js','party-classic-modes.js','v2-classics.css',
  'session-ledger.js','party-session-controls.js','party-hub-timers.js','party-hub-round-state.js','party-hub.js','party-hub-polish.js','party-hub-resume-guard.js','party-hub-a11y.js',
  'advanced-resume-guard.js','advanced-privacy-guard.js','secondary-surface-a11y.js','tests/core-content-quality.test.js','tests/backup-schema-registry.test.js','tests/service-worker.test.js',
  'tests/word-imposter-data-contract.test.js','tests/party-hub-resume-guard.test.js','tests/party-wave-one-catalog.test.js','tests/party-wave-one-imposter-catalog.test.js','tests/party-wave-one-writing-catalog.test.js',
@@ -54,7 +55,7 @@ def audit_html(relative,expected_scripts):
         if directive not in audit.csp: raise SystemExit(f'CSP directive missing in {relative}: {directive}')
     return source
 
-catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js']
+catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js']
 party=audit_html('party.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','session-ledger.js','party-session-controls.js','party-hub-timers.js','party-hub-round-state.js','party-hub.js','party-hub-plus.js','party-hub-polish.js','party-night.js','backup-schema-registry.js','party-data-tools.js'])
 quick=audit_html('quick-play.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','secondary-surface-a11y.js','quick-loader.js'])
 advanced=audit_html('advanced.html',['runtime-guard.js','party-catalog.js','party-expansion.js','party-routing.js','party-advanced.js','advanced-resume-guard.js','secondary-surface-a11y.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js'])
@@ -64,9 +65,9 @@ index=audit_html('index.html',['runtime-guard.js',*catalog_chain,'party-custom-p
 if index != read('v2-hub.html'): raise SystemExit('Canonical root and v2-hub.html must expose the same home screen.')
 word=audit_html('word-imposter.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js','word-imposter-resume-guard.js','app.js'])
 
-for marker in ('Euer Party-Hub · privat · lokal','Persönliche Inhalte sind freiwillig','party-wave-one-clue-catalog.js','pause-hub-game','skip-hub-round'):
+for marker in ('Euer Party-Hub · privat · lokal','Persönliche Inhalte sind freiwillig','party-classic-catalog.js','party-wave-one-clue-catalog.js','pause-hub-game','skip-hub-round'):
     if marker not in party: raise SystemExit(f'Party Hub release marker missing: {marker}')
-for marker in ('party-wave-one-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js'):
+for marker in ('party-wave-one-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js'):
     if marker not in quick: raise SystemExit(f'Quick page is missing final catalog layer: {marker}')
 if 'secondary-surface-a11y.js' not in quick or 'secondary-surface-a11y.js' not in advanced or 'secondary-surface-a11y.js' not in creator: raise SystemExit('Secondary accessibility layer is not loaded on all required surfaces.')
 if 'advanced-resume-guard.js' not in advanced or 'advanced-privacy-guard.js' not in advanced: raise SystemExit('Advanced resume/privacy guards are missing from advanced.html runtime order.')
@@ -110,7 +111,7 @@ if lock.get('packages',{}).get('',{}).get('devDependencies')!=package.get('devDe
 
 for marker in ('tests/party-wave-one-voting-catalog.test.js','tests/party-wave-one-bluff-catalog.test.js','tests/party-wave-one-clue-catalog.test.js','tests/party-release-structure.test.js'):
     if marker not in package.get('scripts',{}).get('test',''): raise SystemExit(f'Unit gate missing: {marker}')
-for marker in ('party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js','quick-loader.js'):
+for marker in ('party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js','quick-loader.js'):
     if f'node --check {marker}' not in package.get('scripts',{}).get('check',''): raise SystemExit(f'Syntax gate missing: {marker}')
 if 'node --check tests/e2e/wave-one-remaining.spec.js' not in package.get('scripts',{}).get('check',''): raise SystemExit('Final Wave 1 browser contract missing from syntax gate.')
 for marker in ('scripts/architecture_audit.py','scripts/wave_one_quiz_audit.py','scripts/wave_one_imposter_audit.py','scripts/wave_one_writing_audit.py','scripts/wave_one_remaining_audit.py','scripts/foundation_contract_audit.py','scripts/lockfile_contract_audit.py','scripts/branch_protection_contract_audit.py','scripts/staging_smoke_contract_audit.py','scripts/hub_a11y_contract_audit.py','scripts/secondary_surface_a11y_contract_audit.py','scripts/privacy_content_audit.py','scripts/reference_content_audit.py','scripts/asset_provenance_audit.py','scripts/operator_release_contract_audit.py','scripts/release_evidence_audit.py','scripts/release_readiness_contract_audit.py','scripts/performance_budget.py','scripts/release_audit.py'):

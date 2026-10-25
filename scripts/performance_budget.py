@@ -6,6 +6,8 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 budgets = {
+    'party-classic-catalog.js': 18_000, 'party-classic-model.js': 18_000,
+    'party-classic-drawing.js': 10_000, 'party-classic-modes.js': 45_000, 'v2-classics.css': 6_000,
     'assets/images/imposter.webp': 35_000,
     'assets/images/truth-dare.webp': 35_000,
     'assets/images/mafia.webp': 35_000,

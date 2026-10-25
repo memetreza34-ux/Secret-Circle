@@ -6,9 +6,9 @@ const catalog = require('../../party-wave-one-clue-catalog.js');
 const builtIns = catalog.games.filter(game => game.status === 'playable');
 const playerNames = Array.from({ length: 20 }, (_, index) => 'Testperson ' + (index + 1));
 
-test('Release-Katalog enthält genau 55 eindeutige spielbare Titel', async ({ page }) => {
-  expect(builtIns).toHaveLength(55);
-  expect(new Set(builtIns.map(game => game.id)).size).toBe(55);
+test('Release-Katalog enthält genau 58 eindeutige spielbare Titel', async ({ page }) => {
+  expect(builtIns).toHaveLength(58);
+  expect(new Set(builtIns.map(game => game.id)).size).toBe(58);
   await page.goto('/');
   const actual = await page.evaluate(() => (window.SecretCirclePartyCatalog?.games || [])
     .filter(game => game.status === 'playable').map(game => game.id));
@@ -18,8 +18,8 @@ test('Release-Katalog enthält genau 55 eindeutige spielbare Titel', async ({ pa
 /* Schneller vollständiger Titel-Sweep (Chromium Desktop). Die vorhandene
    Cross-Browser-Suite prüft die gemeinsamen Engines separat in Firefox,
    WebKit und Mobilansichten. Dieser Sweep ist ausdrücklich KEIN
-   Ergebnis-/Privacy-/Gruppentest und keine 55/55-Releasefreigabe. */
-test.describe('55/55 – reale Startwege und erste aktive Szene', () => {
+   Ergebnis-/Privacy-/Gruppentest und keine 58/58-Releasefreigabe. */
+test.describe('58/58 – reale Startwege und erste aktive Szene', () => {
   test.skip(({ browserName, isMobile }) => browserName !== 'chromium' || isMobile,
     'Der vollständige Titel-Sweep läuft in Chromium Desktop; mobile und Cross-Browser-Engine-Tests laufen separat.');
 
@@ -62,13 +62,13 @@ test.describe('55/55 – reale Startwege und erste aktive Szene', () => {
            statt alle Spieltypen fälschlich als Quick-Engine anzusehen. */
         const active = await page.evaluate(() => {
           const source = [...document.scripts].find(script => script.dataset.gameEngine)?.getAttribute('src') || '';
-          const key = source === 'party-mega-modes.js' ? 'secret-circle-party-mega-active-v1'
+          const key = ['party-mega-modes.js', 'party-classic-modes.js'].includes(source) ? 'secret-circle-party-mega-active-v1'
             : source === 'party-viral-modes.js' ? 'secret-circle-party-viral-active-v1'
               : 'secret-circle-party-quick-active-v1';
           const raw = localStorage.getItem(key);
           return { source, key, value: raw ? JSON.parse(raw) : null };
         });
-        expect(active.source, `Fehlender Quick-Runner für ${game.id}`).toMatch(/^party-(quick|mega|viral|wave-one(?:-[a-z]+)?)-modes\.js$/);
+        expect(active.source, `Fehlender Quick-Runner für ${game.id}`).toMatch(/^party-(quick|mega|viral|classic|wave-one(?:-[a-z]+)?)-modes\.js$/);
         expect(active.value?.gameId, `Spiel ${game.id}, Runner ${active.source}, Storage-Key ${active.key}`).toBe(game.id);
       } else if (pathname.endsWith('/advanced.html')) {
         /* Der Knopf existiert schon im HTML. Auf einem ausgelasteten
