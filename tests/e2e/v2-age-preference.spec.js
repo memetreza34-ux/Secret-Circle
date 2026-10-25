@@ -39,7 +39,7 @@ test('Familienmodus filtert die kanonische Startseite, Empfehlungen und alle sec
   const allowed = await page.evaluate(() => window.SecretCirclePartyCatalog.games
     .filter(game => game.status === 'playable' && game.age === 'all').length);
   expect(allowed).toBeGreaterThan(5);
-  expect(allowed).toBeLessThan(55);
+  expect(allowed).toBeLessThan(58);
   await expect(page.locator('#grid .gcard')).toHaveCount(allowed);
   await expect(page.locator('#filters .chip').first()).toHaveText('Alle ' + allowed);
   await expect(page.locator('#grid [data-game-id="truth-dare"]')).toHaveCount(0);
@@ -75,15 +75,15 @@ test('Direktlink zu einem nicht passenden Spiel sperrt Start, ohne Gruppe oder E
   expect(saved.favorites).toEqual(['truth-dare']);
 });
 
-test('V2-Legacyalias übernimmt die gespeicherte Familienauswahl; ohne Präferenz bleiben alle 55 sichtbar', async ({ page }) => {
+test('V2-Legacyalias übernimmt die gespeicherte Familienauswahl; ohne Präferenz bleiben alle 58 sichtbar', async ({ page }) => {
   await configure(page, 'family');
   await page.goto('/v2-hub.html#spiel=truth-dare');
   await expect(page.locator('#start-btn')).toBeDisabled();
   await page.goto('/v2-hub.html#spiele');
   const restrictedCount = await page.locator('#grid .gcard').count();
-  expect(restrictedCount).toBeLessThan(55);
+  expect(restrictedCount).toBeLessThan(58);
   await page.evaluate(key => localStorage.removeItem(key), PREF_KEY);
   await page.reload();
-  await expect(page.locator('#grid .gcard')).toHaveCount(55);
-  await expect(page.locator('#filters .chip').first()).toHaveText('Alle 55');
+  await expect(page.locator('#grid .gcard')).toHaveCount(58);
+  await expect(page.locator('#filters .chip').first()).toHaveText('Alle 58');
 });

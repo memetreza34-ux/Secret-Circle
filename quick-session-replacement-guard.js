@@ -1,13 +1,13 @@
 'use strict';
 
 (function exposeQuickSessionReplacementGuard(root, factory) {
-  const api = factory();
+  const api = factory(root);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else {
     root.SecretCircleQuickSessionReplacementGuard = api;
     api.install(root, root.document);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function createQuickSessionReplacementGuard() {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function createQuickSessionReplacementGuard(root) {
   const VERSION = 2;
   const FAILURE_MARKER = 'secret-circle-quick-replacement-failure-v1';
   const TIMER_STORE_KEY = 'secret-circle-party-quick-timers-v1';
@@ -146,6 +146,11 @@
 
   function privacySensitiveResumeValid(catalog, gameId, value) {
     if (!plausibleSnapshot(value) || value.gameId !== gameId) return false;
+    if (catalog.classicGameIds?.includes(gameId)) {
+      const model = typeof module === 'object' && module.exports ? require('./party-classic-model.js') : root.SecretCircleClassicModel;
+      return ['ready', 'card'].includes(value.phase) && value.players.length >= catalog.getGame(gameId).minPlayers
+        && catalog.getPackNames(gameId).includes(value.pack) && Boolean(model?.valid(gameId, value.current, value.players, catalog.getItems(gameId, value.pack)));
+    }
     if (gameId === 'wavelength') return validWavelength(value);
     if (PRIVATE_QUICK_GAMES.has(gameId)) return validPrivateQuickGuess(value);
     if (gameId === 'who-am-i' || gameId === 'anime-guess') return validIdentityResume(value);

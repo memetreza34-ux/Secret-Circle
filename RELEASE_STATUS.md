@@ -11,8 +11,8 @@ Main-Reconciliation: Draft #15
 **Phase:** Release-Härtung / Verifikation  
 **Öffentliche Freigabe:** **NO_GO**  
 **Package:** `1.0.0-beta.3`  
-**Offline-Core:** `secret-circle-v99` / `secret-circle-v99-staging`
-**Built-ins:** 55 · 15 Core / 13 Extended / 27 Labs  
+**Offline-Core:** `secret-circle-v101` / `secret-circle-v101-staging`
+**Built-ins:** 58 · 15 Core / 13 Extended / 30 Labs
 **Wave 1:** 10/10 source-implemented; reale Evidence offen  
 **Core Source Review/Hardening:** 15/15 PREPARED  
 **CI:** auf `main` grün inkl. Browser-Tests (Run `36292530012`, 27. September 2026) · **Cross-Browser-Workflow:** noch nie ausgeführt  

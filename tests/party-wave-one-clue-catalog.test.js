@@ -6,7 +6,7 @@ const catalog = require('../party-wave-one-clue-catalog.js');
 assert.equal(catalog.version, 7);
 assert.deepEqual(catalog.waveOneClueGameIds, ['password-one-word']);
 assert.equal(catalog.waveOneGameIds.length, 10);
-assert.equal(catalog.games.length, 55);
+assert.equal(catalog.games.length, 58);
 const game = catalog.getGame('password-one-word');
 assert.ok(game);
 assert.equal(game.status, 'playable');

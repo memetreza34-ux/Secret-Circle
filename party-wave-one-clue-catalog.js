@@ -1,6 +1,6 @@
 (function (root, factory) {
   const base = typeof module === 'object' && module.exports
-    ? require('./party-wave-one-bluff-catalog.js')
+    ? require('./party-classic-catalog.js')
     : root.SecretCirclePartyCatalog;
   const api = factory(base);
   if (typeof module === 'object' && module.exports) module.exports = api;

@@ -10,13 +10,13 @@ async function seedHub(page, players = ['Alex', 'Sam', 'Mika', 'Lina']) {
   }, players);
 }
 
-test('Party Hub exposes 55 playable games and Viral Mode actions', async ({ page }) => {
+test('Party Hub exposes 58 playable games and Viral Mode actions', async ({ page }) => {
   await seedHub(page);
   await page.goto('/party.html');
-  await expect(page.locator('#playable-count')).toHaveText('55');
+  await expect(page.locator('#playable-count')).toHaveText('58');
   await page.getByRole('button', { name: 'Spiele', exact: true }).click();
-  await expect(page.locator('#result-count')).toHaveText('55');
-  await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(55);
+  await expect(page.locator('#result-count')).toHaveText('58');
+  await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(58);
   await page.locator('#game-search').fill('Finger runter');
   await page.locator('[data-open-game="put-a-finger-down"]:visible').click();
   await expect(page.getByRole('button', { name: 'Viral Mode öffnen' })).toBeVisible();

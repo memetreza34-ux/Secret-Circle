@@ -1,5 +1,8 @@
 # Secret Circle – Releaseumfang Januar 2027
 
+
+**Ergänzung vom 25.10.2026 auf ausdrücklichen Auftrag von Arman:** Drei weitere Klassiker werden als Labs ergänzt: Stille Post mit Zeichnungen, Drei-Runden-Begrifferaten und Ich packe meinen Koffer. Der aktuelle Arbeitsstand umfasst damit **58 Built-ins / 15 Core / 13 Extended / 30 Labs**. Die nachstehenden 55er-Zahlen beschreiben die Entscheidung vom 16.10.; historische Testnachweise decken die drei Ergänzungen nicht ab. Dieselben Funktions-, Privacy-, Offline- und Gruppenanforderungen gelten auch für sie. Kein Release-GO durch diese Ergänzung.
+
 Stand: 16. Oktober 2026 (55-Spiele-Entscheidung; historische Stufen bleiben bestehen)
 
 **Verbindliche Entscheidung vom 16.10.2026:** Die erste gewünschte öffentliche Version soll **alle 55 vorhandenen Built-ins** enthalten, aufgeteilt in 15 Core / 13 Extended / 27 Labs. Diese Bezeichnungen sind Reifestufen und Arbeitsprioritäten, **keine Freigabeausnahmen**. Vor öffentlicher Freigabe müssen **alle 55 individuell** von Setup über echte Runde, Ergebnis und Replay sowie mit realen Gruppen nachweisbar geprüft sein. Kein Spiel streichen, automatisch als bestanden deklarieren oder aus dem Katalog ausblenden, nur weil es als Extended/Lab kategorisiert ist. Siehe [verbindliche KI-Übergabe](docs/UEBERGABE_55_SPIELE_2026-10-16.md). **Release: NO_GO**, bis alle Pflichtbelege vorliegen.
@@ -120,8 +123,8 @@ Selbst erstellte Spiele sind keine eigenen Kernspiele. Sie werden im Hub als Erw
 ## Aktueller technischer Release-Stand
 
 - Source-Generation: **v99** (`release-meta.json`, Stand 16.10.2026)
-- Offline-Cache: **`secret-circle-v99`**
-- Staging-Cache: **`secret-circle-v99-staging`**
+- Offline-Cache: **`secret-circle-v101`**
+- Staging-Cache: **`secret-circle-v101-staging`**
 - Built-ins: **55**
 - Core: **15**
 - Extended: **13**

@@ -21,7 +21,7 @@ test('jedes Spiel im Katalog lässt sich öffnen und starten', async ({ page }) 
 
   const games = await page.evaluate(() => window.SecretCirclePartyCatalog.games
     .map(game => ({ id: game.id, href: game.href || null })));
-  expect(games.length).toBeGreaterThanOrEqual(55);
+  expect(games.length).toBeGreaterThanOrEqual(58);
 
   for (const game of games) {
     /* Vor jedem Spiel die gespeicherten Sessions leeren: Sonst fragt der

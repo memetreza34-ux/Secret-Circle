@@ -113,3 +113,7 @@ Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedin
 ## Release-Regel
 
 Der frühere **Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete `assetsThirdParty`-Gate bleibt trotzdem `BLOCKED`, bis die realen Runner-/Installationsnachweise und der finale manuelle Review auf dem unveränderten Release Candidate abgeschlossen sind.
+
+## Ergänzung 25.10.2026 – Klassiker-Ansicht
+
+Zwei eigene Browser-Screenshots unter `docs/screenshots/klassiker-zeichnen-*.webp`, samt Prüfsummen und Abmessungen im Provenienzmanifest. Nur Dokumentation; keine neuen Spielillustrationen und keine zusätzlichen Offline-Medien.

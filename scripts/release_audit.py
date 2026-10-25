@@ -107,7 +107,7 @@ core_ids_match = re.search(r'const CORE_IDS = Object\.freeze\(\[(.*?)\]\);', rel
 lab_ids_match = re.search(r'const LAB_IDS = Object\.freeze\(\[(.*?)\]\);', release_structure, re.S)
 core_count = len(re.findall(r"'[^']+'", core_ids_match.group(1))) if core_ids_match else 0
 lab_count = len(re.findall(r"'[^']+'", lab_ids_match.group(1))) if lab_ids_match else 0
-extended_count = 55 - core_count - lab_count
+extended_count = 58 - core_count - lab_count
 
 unit_gate = package.get('scripts', {}).get('test', '')
 syntax_gate = package.get('scripts', {}).get('check', '')
@@ -187,7 +187,7 @@ checks = {
     'visible_update_prompt': all(marker in runtime for marker in ('Neue Secret-Circle-Version bereit', 'Jetzt aktualisieren', 'Später', 'hasActiveSession')),
     'pwa_icons_offline': all(f"'./{asset}'" in sw for asset in ('icon.svg', 'icon-192.png', 'icon-512.png')),
     'pwa_icons_in_service_worker_test': all(marker in service_worker_test for marker in ('icon\\.svg', 'icon-192\\.png', 'icon-512\\.png', 'rasterPwaIconsOffline: true')),
-    'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 27),
+    'release_tier_counts': (core_count, extended_count, lab_count) == (15, 13, 30),
     'party_catalog_order': ordered(party, catalog_chain),
     'quick_catalog_order': ordered(quick, catalog_chain),
     'hub_timer_order': ordered(party, ('party-session-controls.js', 'party-hub-timers.js', 'party-hub.js')),
