@@ -1,5 +1,7 @@
 ## v121 – Gemeinsamer Inhaltsstand und Wiederholungsschutz (25. Oktober 2026)
 
+- 26. Oktober: Wiederholbarer Browser-Updatecheck für echte v99-/v119-Installationen mit kontrolliertem Installationsabbruch, Datenerhalt und bytegenauem Zielcache. Testwerkzeuge und Nachweise betreffen keine Offline-Core-Datei; Cachegeneration bleibt v121.
+
 - Vorbereitete Kartenpakete und 2.609 verschiedene Word-Imposter-Wörter mit den drei zusätzlichen Klassikern zusammengeführt: 58 Modi.
 - Gemeinsames begrenztes Inhaltsgedächtnis über Kategorien und Spiele hinweg, weiterhin nur lokale Prüfsummen. Ungespielte zulässige Inhalte zuerst, danach älteste passende Inhalte. Erkannte ähnliche Themen werden nach Möglichkeit voneinander getrennt.
 - Stille Post mit Zeichnungen und Drei-Runden-Begrifferaten verwenden dasselbe Gedächtnis. Neue Bildketten und neue Stapel wechseln; der Stapel bleibt innerhalb der drei Ratephasen identisch.
