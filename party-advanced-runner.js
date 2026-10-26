@@ -150,7 +150,8 @@
     if (!Array.isArray(items) || !items.length) return null;
     if (session.used.length >= items.length) session.used = [];
     const available = items.map((_, index) => index).filter(index => !session.used.includes(index));
-    const selected = available[randomInt(available.length)];
+    const remembered = window.SecretCircleCardMemory?.choose?.({ gameId: game.id, pack: session.pack }, items, available, randomInt);
+    const selected = Number.isInteger(remembered) ? remembered : available[randomInt(available.length)];
     session.used.push(selected);
     persistActive();
     return items[selected];

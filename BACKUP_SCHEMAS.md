@@ -2,7 +2,7 @@
 
 Stand: 28. August 2026  
 Vertragsregister: `backup-schema-registry.js` Version 2  
-Aktueller Offline-Core: **`secret-circle-v99` / `secret-circle-v99-staging`**
+Aktueller Offline-Core: **`secret-circle-v121` / `secret-circle-v121-staging`**
 
 ## Gemeinsame Regeln
 
@@ -51,6 +51,13 @@ Der Complete-Restore verwaltet **nur die 17 aktuell registrierten exakten Storag
 - `secret-circle-party-catalog-filters-v1`
 
 Wildcard-Verträge wie `secret-circle-party-<name>-v<version>` sind absichtlich **nicht** Restore-Eigentum. Eine zukünftige Version wie `secret-circle-party-hub-v2` oder `secret-circle-settings-v8` muss von einem heutigen Restore unangetastet bleiben.
+
+### Nicht gesicherte Komfortdaten
+
+Zwei lokale Schlüssel sind bewusst **kein** Restore-Eigentum und nicht in der 17-Key-Allowlist. Ein Restore lässt sie unangetastet, „Alle Daten löschen“ entfernt sie über das `secret-circle-`-Präfix mit:
+
+- `secret-circle-party-onboarding-v1`: ob die Kurzanleitung schon gezeigt wurde.
+- `secret-circle-card-memory-v1` (seit v104, `card-memory.js`): Prüfsummen der zuletzt gezogenen Karten je Spiel, Kategorie und Pool, damit neue Sessions nicht mit denselben Karten beginnen. Keine Kartentexte, keine Namen, keine Eingaben; höchstens 150 Bereiche mit je 150 Prüfsummen. Ein kaputter oder blockierter Speicher führt nur zur bisherigen Zufallswahl.
 
 ### Quick-Timer-Metadaten seit v57
 
@@ -150,3 +157,4 @@ Neue Backupversion nur bei struktureller/semantischer Änderung des **Dateiforma
 - [ ] PWA-Update/Backup zusammen geprüft
 
 Code-/Contracttests sind vorbereitet, echter Runner/Browsernachweis bleibt offen.
+Das Kartengedächtnis enthält zusätzlich einen begrenzten gemeinsamen Bereich `shared` (bis 16.000 Inhaltsprüfsummen und vier Themenprüfsummen). Alte v1-Einträge ohne diesen optionalen Bereich bleiben lesbar. Weiterhin Komfortdaten außerhalb des Backupformats; keine Klartexte, Namen oder öffentlichen Abfragen.

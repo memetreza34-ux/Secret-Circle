@@ -1,8 +1,15 @@
 # Secret Circle Party Hub – Manueller Testplan Januar 2027
 
+## Wiederholbarer Browser-Updatecheck
+
+`npm run test:upgrade` installiert die echten Offline-Stände v99 und v119 aus ihrer Git-Historie und aktualisiert auf die Offline-Dateien des aktuellen HEAD. Benötigt die vollständige Historie beider Altstände sowie den zu Playwright passenden Chromium-Browser. Prüft Desktop und 375 × 812, jeweils erfolgreiche sowie unterbrochene Installation, unveränderte Nutzerdaten, verdecktes Fortsetzen und Offline-Start der neuen Inhalte. Ressourcen werden bytegenau mit dem Ziel-Commit verglichen. HTTP-Dateien sind absichtlich eine Stunde cachebar, damit der Cache-Wechsel keine alten Dateien übernehmen darf.
+
+Ausgabe mit Commit-SHAs, Browser-Version, Ergebnissen, Traces und Screenshots: `.cache/pwa-upgrade/`. `PLAYWRIGHT_BROWSERS_PATH` kann einen separaten Browsercache wählen; `SC_UPGRADE_GIT` bei Bedarf ein vorhandenes Git-Programm. Das ist ein automatisierter Chromium-Browsernachweis, keine echte iPhone-/Android-PWA-Abnahme und kein Produktions-Rollback-Nachweis. Lokale uncommittete App-Änderungen werden nicht exportiert; maßgeblich ist ausdrücklich HEAD.
+
+
 Stand: 29. August 2026  
 Status: **PREPARED – reale Durchführung offen**  
-Offline-Core: **`secret-circle-v99` / `secret-circle-v99-staging`**
+Offline-Core: **`secret-circle-v121` / `secret-circle-v121-staging`**
 Produktstand: **55 Built-ins · 15 Core · 13 Extended · 27 Labs · Wave 1 10/10 source-implemented · lokaler Game Creator**
 
 Vorhandener Code oder vorhandene Tests sind **kein manueller PASS**.

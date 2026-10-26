@@ -47,7 +47,7 @@ for marker in (
 release=read('party-release-structure.js')
 for game_id in ('percent-guess','party-bracket','bluff-trivia','password-one-word'):
     if f"'{game_id}'" not in release: violations.append(f'Final Wave 1 game not classified as Labs: {game_id}')
-if 'const VERSION = 5;' not in release: violations.append('Release structure must be Version 5 for 27 Labs')
+if 'const VERSION = 5;' not in release: violations.append('Release structure must be Version 5 for 30 Labs')
 
 for page_name in ('party.html','quick-play.html'):
     source=read(page_name)

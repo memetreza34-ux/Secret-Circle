@@ -106,7 +106,12 @@ for (const pack of catalog.getPackNames('truth-dare')) {
   assertUniqueItems([...raw.truth, ...raw.dare], `truth-dare/${pack}`);
   assert.equal(catalog.getItems('truth-dare', pack).length, raw.truth.length + raw.dare.length);
 }
-assert.equal(catalog.itemCount('truth-dare'), 96);
+/* v111: je Kategorie 50 Wahrheiten und 50 Pflichten. */
+assert.equal(catalog.itemCount('truth-dare'), 400);
+for (const pack of catalog.getPackNames('truth-dare')) {
+  assert.equal(catalog.content['truth-dare'][pack].truth.length, 50, `Truth list: ${pack}`);
+  assert.equal(catalog.content['truth-dare'][pack].dare.length, 50, `Dare list: ${pack}`);
+}
 
 const finalCoreText = collectStrings(Object.fromEntries(expectedCore.filter(id => id !== 'imposter').map(id => [id, catalog.content[id]]))).map(canonicalText);
 assert.ok(!finalCoreText.includes(canonicalText('Was ist das Seltsamste in deiner Kamerarolle?')), 'Core content must not prompt users to inspect private camera-roll material.');
@@ -163,10 +168,11 @@ assert.ok(animeGame);
 assert.equal(animeGame.title, 'Anime-Archetypen erraten');
 assert.equal(animeGame.group, 'Wissen & Quiz');
 assert.deepEqual(animeGame.packs, ['Action & Abenteuer', 'Magie & Mystery', 'Fantasy & Alltag', 'Sport & Games']);
-assert.equal(catalog.itemCount('anime-guess'), 40);
+/* v108: 10 geprüfte Archetypen aus dem Release-Katalog plus 40 aus party-cards-mega-1.js je Kategorie. */
+assert.equal(catalog.itemCount('anime-guess'), 200);
 for (const pack of animeGame.packs) {
   const items = catalog.getItems('anime-guess', pack);
-  assert.equal(items.length, 10, `Reference-safe anime pack must contain 10 archetypes: ${pack}`);
+  assert.equal(items.length, 50, `Reference-safe anime pack must contain 50 archetypes: ${pack}`);
   assertUniqueItems(items, `anime-guess/${pack}`);
 }
 const finalAnimeTerms = collectStrings(catalog.content['anime-guess']).map(canonicalText);
@@ -224,7 +230,7 @@ console.log(JSON.stringify({
   editorialReplacementCount: classicContent.editorialReplacementCount,
   referenceSafeRemovedConcreteNames: classicContent.referenceSafeRemovedConcreteNames,
   wordImposterCategories: wordCategories.length, wordImposterWords,
-  routedCoreItemsExcludingWordImposter: routedCoreItems, truthDareCards: 96,
+  routedCoreItemsExcludingWordImposter: routedCoreItems, truthDareCards: 400,
   structuredContentValidated: ['truth-dare', 'would-rather', 'taboo', 'question-imposter', 'location-spy', 'mafia', 'word-chain'],
   markupRejected: true, exactNormalizedDuplicatesRejected: true, editorialDepthShortfalls: editorialShortfalls.length
 }, null, 2));

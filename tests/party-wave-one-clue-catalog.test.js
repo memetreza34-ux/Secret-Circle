@@ -6,13 +6,15 @@ const catalog = require('../party-wave-one-clue-catalog.js');
 assert.equal(catalog.version, 7);
 assert.deepEqual(catalog.waveOneClueGameIds, ['password-one-word']);
 assert.equal(catalog.waveOneGameIds.length, 10);
-assert.equal(catalog.games.length, 55);
+assert.equal(catalog.games.length, 58);
 const game = catalog.getGame('password-one-word');
 assert.ok(game);
 assert.equal(game.status, 'playable');
 assert.equal(game.age, 'all');
 assert.ok(catalog.quickGameIds.includes('password-one-word'));
-assert.equal(catalog.itemCount('password-one-word'), 48);
+/* v112: 16 Grundkarten plus 34 aus party-cards-wave-1.js je Kategorie. */
+assert.equal(catalog.itemCount('password-one-word'), 150);
+assert.deepEqual([...catalog.lateCardPackIds], ['wave-1', 'wave-2', 'wave-3']);
 for (const item of catalog.getItems('password-one-word')) {
   assert.equal(typeof item, 'string');
   assert.ok(item.trim().length >= 2);

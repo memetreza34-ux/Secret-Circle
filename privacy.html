@@ -61,6 +61,9 @@
       <p>Ein-Wort-Hinweis persistiert das geheime Zielwort nicht als freien Text, sondern nur über den Kartenindex. Das Zielwort erscheint ausschließlich nach einer bewussten Reveal-Aktion und wird bei Fokusverlust wieder verdeckt. Der eingegebene Hinweis ist auf ein einzelnes anderes Wort begrenzt.</p>
       <p>Wave 1 umfasst damit 10 Labs. Die neuen v64-Modi verwenden weiterhin den bestehenden Quick-Family-Active-Key; v64 führt keinen neuen lokalen Storage-Key und keine externe Datenübertragung ein.</p>
 
+      <h2>Kartengedächtnis – v104</h2>
+      <p>Damit ein neues Spiel nicht sofort mit bereits gespielten Karten beginnt, merkt sich die App lokal unter <code>secret-circle-card-memory-v1</code>, welche Karten je Spiel und Kategorie zuletzt gezogen wurden. Gespeichert werden nur kurze Prüfsummen, keine Kartentexte, keine Namen und keine Eingaben. Der Speicher ist begrenzt, wird nicht übertragen, ist kein Teil von Sicherungen und wird mit „Alle Daten löschen“ entfernt.</p>
+
       <h2>Smart Party Night</h2>
       <p>Gruppengröße, Zeitbudget, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden lokal verarbeitet. Dafür wird kein Empfehlungs- oder Analyseserver verwendet.</p>
 
@@ -74,7 +77,7 @@
       <p>Spieldaten werden nicht an einen eigenen Secret-Circle-Spielserver übertragen.</p>
 
       <h2>Offline-Modus</h2>
-      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v99</code>.</p>
+      <p>Der Service Worker speichert die für den Offlinebetrieb vorgesehenen statischen Dateien lokal. Der aktuelle Entwicklungs-Offline-Core ist <code>secret-circle-v121</code>.</p>
       <p>v64 enthält alle bisherigen Resume-/Privacy-/Accessibility-/Backup-/Advanced-Schutzmodule sowie <code>party-session-controls.js</code> Version 5, <code>quick-session-replacement-guard.js</code> Version 2, <code>quick-loader.js</code> Version 11 und alle sechs Wave-1-Runnerfamilien. Updates werden vorbereitet und erst nach bewusster Aktivierung übernommen.</p>
 
       <h2>Daten löschen</h2>
@@ -86,6 +89,11 @@
       <h2>Analyse, Werbung und externe Inhalte</h2>
       <p>Secret Circle verwendet im aktuellen V1-Scope keine Analyse-, Werbe- oder Tracking-SDKs und lädt keine externen Spielskripte oder Webfonts zur Laufzeit.</p>
 
+      <h2>Wortschatz und Wortgedächtnis</h2>
+      <p>Word Imposter ergänzt seinen lokalen Wortschatz aus einer geprüften Auswahl von OpenThesaurus und eigenen Ergänzungen. Beim Spielen gibt es keine Abfragen an externe Wörterdienste. Auswahl und neue Hilfswörter: Secret Circle / Codex; Wortquelle: Daniel Naber und die Mitwirkenden von <a href="assets/words/word-imposter-source.json">OpenThesaurus</a> (www.openthesaurus.de).</p>
+      <p>Das Zusatzpaket steht unter <a href="assets/licenses/openthesaurus-LGPL-2.1.txt">LGPL 2.1 oder neuer</a>. Die <a href="assets/words/word-imposter-extra.tsv" download>bearbeitbare Wortauswahl</a> und der <a href="assets/words/word-imposter-source.json">Quellen- und Änderungsnachweis</a> werden mitgeliefert.</p>
+      <p>Das lokale Kartengedächtnis merkt sich für Word Imposter bis zu 16.000 Wortprüfsummen, auch über neue Partien und Kategorienwechsel hinweg. Es enthält keine Spielernamen oder lesbaren geheimen Wörter und ist nicht Teil der Sicherung. „Alle Daten löschen“ entfernt es. Ohne verfügbaren lokalen Speicher oder nach einer Löschung kann die App frühere Wörter nicht berücksichtigen.</p>
+
       <h2>Vor öffentlicher Veröffentlichung</h2>
       <p>Diese Seite ist noch keine finale Production-Datenschutzerklärung. Betreiber, öffentliche Kontaktmöglichkeit, Hostinganbieter und die konkrete Hosting-/Logverarbeitung werden erst nach ihrer realen Festlegung veröffentlicht.</p>
 
@@ -94,6 +102,7 @@
         <a class="button-link secondary-link" href="creator.html">Eigene Spiele verwalten</a>
       </div>
     </article>
+  <section aria-labelledby="content-memory-note"><h2 id="content-memory-note">Abwechslung bei Spielinhalten</h2><p>Die App merkt sich lokal begrenzte Prüfsummen gezogener Karten und Wörter über Spiele und Kategorien hinweg. Erkannte ähnliche Themen werden nach Möglichkeit abgewechselt. Die gewählten Kategorien und Altersstufen bleiben maßgeblich. Nach Verbrauch des passenden Vorrats können ältere Inhalte erneut erscheinen. Dieses Komfortgedächtnis enthält keine lesbaren Kartentexte oder Spielernamen und kann bei gelöschtem oder blockiertem Speicher fehlen.</p></section>
   </main>
 </body>
 </html>

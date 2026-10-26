@@ -69,13 +69,19 @@ Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsb
 
 ## Aktuelle Spielbilder vom 14. Oktober 2026
 
-Auf Armans Anweisung zur Ansicht direkt eingebunden. Werkzeug: integriertes OpenAI `image_gen` in Codex; konkrete Modellkennung nicht ausgegeben. Originale projektseitige Stilreferenz: erste Mafia-Stadtplatzszene. WebP-Export lokal mit `cwebp`, 800 × 600 Pixel und höchstens 35 KB pro Bild.
+Auf Armans Anweisung zur Ansicht direkt eingebunden. Werkzeug: integriertes OpenAI `image_gen` in Codex; konkrete Modellkennung nicht ausgegeben. Die älteren Mafia- und Elefantenmotive stammen aus der früheren 3D-Bildprobe; die drei neuen gezeichneten Motive und ihre Referenzen sind nachfolgend separat dokumentiert. WebP-Export lokal mit `cwebp`, 800 × 600 Pixel und höchstens 35 KB pro Bild.
 
 | Datei | SHA-256 |
 |---|---|
-| `assets/images/imposter.webp` | `15e7c9214042f5a21df56874e6a3d9057c9ea32b06ca08cdaf76aa146b082351` |
-| `assets/images/truth-dare.webp` | `67d7ff134733f73ae669258b22a37ae0102f42f118e20420991eca46c54fd0d6` |
+| `assets/images/imposter.webp` | `3c16a4fdc8d9250388a9925ec3800ee8f00073decd3a59c9fa267f116e185f31` |
+| `assets/images/truth-dare.webp` | `c25a30f9a06d90337361265e0b44d43ed400de2e36a35df4f173bdb32d70bb04` |
+| `assets/images/truth-dare-alternative.webp` | `a0464338bfbd5923ee6c706b936b9ebad6805d9946cf4087b14e44ca86b2e458` |
 | `assets/images/mafia.webp` | `f261beca039c3e25641431959f0771c958ee9330d71cc6ad21019858b5cbff35` |
+| `assets/images/never-have.webp` | `89dde2f12254de8f6e44b6d791638e97193630d55fb1dbb56044d246a1f89482` |
+
+Am 14. Oktober 2026 hat Arman den Einbau der drei neuen gezeichneten Richtungsproben beauftragt. `imposter.webp` wurde danach auf Armans konkrete Freigabe der augenkorrigierten Version ersetzt: runde 3D-Cartoonfigur mit leerer Karte zwischen gleichen Schlüssel-Hinweisen, ausschließlich projektseitige Cartoonreferenzen. Die Generierung und die lokale Augen-Korrektur mit imagegen sind gemeinsam im Provenienzmanifest dokumentiert. `truth-dare.webp` zeigt das Hutgeständnis und die Besenaufgabe. Die Masken-/Kissenszene bleibt als `truth-dare-alternative.webp` im Spieldetail auswählbar. Beide Wahrheit-Szenen verwenden ausschließlich projektseitig generierte Referenzen aus dieser neuen Bildwelt. Die ältere Mafia-Szene ist für diese drei Dateien keine Stilvorlage mehr.
+
+Das neue Bild `never-have.webp` wurde von Arman ausgewählt und zum Einbau freigegeben. Projektseitige Stilvorlagen: Word Imposter und die ausgewählte Neufassung von Wahrheit oder Pflicht. Es zeigt einen verlegen zustimmenden Elefanten mit zwei reagierenden Mitspielern.
 
 Die vollständigen Originalprompts stehen im Provenienzmanifest. Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig. Die Sichtprüfung zeigt originale stilisierte Figuren ohne echte Personen, Marken oder Schrift. Ein finaler Ähnlichkeits- und Markenreview des Release Candidate bleibt offen; die App-Vorschau ist keine abschließende Design- oder Releaseabnahme.
 
@@ -113,3 +119,7 @@ Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedin
 ## Release-Regel
 
 Der frühere **Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete `assetsThirdParty`-Gate bleibt trotzdem `BLOCKED`, bis die realen Runner-/Installationsnachweise und der finale manuelle Review auf dem unveränderten Release Candidate abgeschlossen sind.
+
+## Ergänzung 25.10.2026 – Klassiker-Ansicht
+
+Zwei eigene Browser-Screenshots unter `docs/screenshots/klassiker-zeichnen-*.webp`, samt Prüfsummen und Abmessungen im Provenienzmanifest. Nur Dokumentation; keine neuen Spielillustrationen und keine zusätzlichen Offline-Medien.

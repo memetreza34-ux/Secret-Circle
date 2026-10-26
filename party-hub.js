@@ -547,8 +547,12 @@
     $('#quick-start')?.focus?.();
     return true;
   }
+  /* Kartengedächtnis über Sessions: bevorzugt Karten, die zuletzt nicht dran waren. */
+  function cardChooser(pool = null) {
+    return (items, available) => window.SecretCircleCardMemory?.choose?.({ gameId: session.gameId, pack: session.pack, pool }, items, available, randomInt);
+  }
   function pickUnused(items) {
-    const selected = R.select(items, session.used, randomInt);
+    const selected = R.select(items, session.used, randomInt, cardChooser());
     if (selected) persistActiveSession();
     return selected?.value ?? null;
   }
@@ -563,6 +567,11 @@
     $('#play-eyebrow').textContent = ''; $('#play-title').textContent = ''; $('#play-player').textContent = '';
     $('#play-content').className = 'play-content';
     clearNode($('#play-content')); clearNode($('#play-options')); clearNode($('#play-actions'));
+    updatePlayProgress();
+  }
+  /* Auch ohne neues Rendern aktualisieren: Flaschendrehen und Würfel zählen
+     jede Aktion als Runde, ohne die Karte neu aufzubauen. */
+  function updatePlayProgress() {
     $('#play-progress').textContent = countLabel(session.rounds, 'Runde', 'Runden');
     $('#play-score').textContent = session.score ? countLabel(session.score, 'Punkt', 'Punkte') : '';
     $('#play-layer .play-topbar').hidden = !session.rounds && !session.score;
@@ -597,7 +606,7 @@
   const timerGames = T.createTimerGames({
     controls: S, hubTimer, $, makeElement, clearNode, cleanText, safeInteger, contentItems, pickUnused,
     persistActiveSession, currentPlayer, actionButton, nextSimpleRound, syncHubPauseUi, focusPlayPrimary,
-    setHubPaused, setStatus, preparePlayCard, randomInt, randomItem, getSession: () => session, renderPlayRound
+    setHubPaused, setStatus, preparePlayCard, randomInt, randomItem, getSession: () => session, renderPlayRound, cardChooser
   });
   function skipHubRound() {
     if (!session || hubTimer.isPaused()) return false;
@@ -629,7 +638,7 @@
   }
   function revealTruthDare(type) {
     const items = R.packContent(C, 'truth-dare', session.pack)?.[type] || [];
-    const selected = R.ensureCurrent(session, 'truth-dare', items, randomInt, type);
+    const selected = R.ensureCurrent(session, 'truth-dare', items, randomInt, type, cardChooser(type));
     clearNode($('#play-options'));
     $('#play-eyebrow').textContent = type === 'truth' ? `${session.pack} · Wahrheit` : `${session.pack} · Pflicht`;
     $('#play-content').textContent = selected?.value || 'Keine Karte verfügbar.';
@@ -637,14 +646,14 @@
     persistActiveSession(); focusPlayPrimary();
   }
   function renderPromptGame() {
-    const selected = R.ensureCurrent(session, 'prompt', contentItems(session.gameId, session.pack), randomInt);
+    const selected = R.ensureCurrent(session, 'prompt', contentItems(session.gameId, session.pack), randomInt, null, cardChooser());
     if (session.gameId === 'wrong-answers') $('#play-player').textContent = `${currentPlayer()} beginnt`;
     $('#play-content').textContent = selected?.value || 'Keine Karte verfügbar.';
     $('#play-actions').append(actionButton('Nächste Karte', nextSimpleRound));
     persistActiveSession();
   }
   function renderChoiceGame() {
-    const selected = R.ensureCurrent(session, 'choice', contentItems(session.gameId, session.pack), randomInt);
+    const selected = R.ensureCurrent(session, 'choice', contentItems(session.gameId, session.pack), randomInt, null, cardChooser());
     const pair = selected?.value;
     const grid = makeElement('div', 'choice-grid');
     grid.append(makeElement('div', 'choice-card', pair?.[0] || 'Option A'), makeElement('div', 'choice-card', pair?.[1] || 'Option B'));
@@ -657,7 +666,7 @@
     $('#play-content').textContent = 'Gerät so halten, dass niemand mitlesen kann.';
     const resolved = session.current?.kind === 'paranoia' && session.current.phase === 'resolved';
     $('#play-options').append(actionButton(resolved ? 'Rundenergebnis anzeigen' : 'Geheime Frage anzeigen', () => {
-      const selected = R.ensureCurrent(session, 'paranoia', contentItems('paranoia', session.pack), randomInt);
+      const selected = R.ensureCurrent(session, 'paranoia', contentItems('paranoia', session.pack), randomInt, null, cardChooser());
       const question = selected?.value || 'Keine Frage verfügbar.';
       clearNode($('#play-options'));
       if (session.current?.kind === 'paranoia' && session.current.phase === 'resolved') {
@@ -685,7 +694,7 @@
       const player = randomItem(sessionPlayers());
       $('#play-content').textContent = player || 'Keine Person gespeichert.';
       $('#play-content').classList.add('random-result');
-      session.rounds += 1; persistActiveSession(); navigator.vibrate?.(80);
+      session.rounds += 1; updatePlayProgress(); persistActiveSession(); navigator.vibrate?.(80);
     }), actionButton('Neu wählen', renderPlayRound, 'secondary'));
     persistActiveSession();
   }
@@ -702,7 +711,7 @@
   function showUtilityResult(value) {
     $('#play-content').textContent = value;
     $('#play-content').classList.add('random-result');
-    session.rounds += 1; persistActiveSession(); navigator.vibrate?.(60);
+    session.rounds += 1; updatePlayProgress(); persistActiveSession(); navigator.vibrate?.(60);
   }
   function offerHubResume(active) {
     $('#hub-resume-session')?.remove();

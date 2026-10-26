@@ -20,6 +20,7 @@
 
   function selectSource(catalog, gameId) {
     if (!catalog || !gameId) return null;
+    if (catalog.classicGameIds?.includes(gameId)) return 'party-classic-modes.js';
     if (catalog.createdGameIds?.includes(gameId)) return 'party-created-modes.js';
     if (catalog.viralGameIds?.includes(gameId)) return 'party-viral-modes.js';
     if (catalog.megaGameIds?.includes(gameId)) return 'party-mega-modes.js';
@@ -39,6 +40,7 @@
     const plan = [];
     if (!ledgerReady) plan.push(LEDGER_SOURCE);
     if (!controlsReady) plan.push(CONTROLS_SOURCE);
+    if (catalog.classicGameIds?.includes(gameId)) plan.push('party-classic-model.js', 'party-classic-drawing.js');
     if (!replacementGuardReady) plan.push(REPLACEMENT_GUARD_SOURCE);
     plan.push(source);
     return plan;

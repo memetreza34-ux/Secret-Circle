@@ -41,7 +41,7 @@ test('service worker caches the complete v30 core including Creator guidance and
       './party-advanced-preferences.js', './party-quick-modes.js', './party-mega-modes.js',
       './party-viral-modes.js', './party-created-modes.js', './quick-loader.js',
       './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png',
-      './assets/images/imposter.webp', './assets/images/truth-dare.webp', './assets/images/mafia.webp'
+      './assets/images/imposter.webp', './assets/images/truth-dare.webp', './assets/images/truth-dare-alternative.webp', './assets/images/mafia.webp', './assets/images/never-have.webp'
     ];
     const missing = [];
     for (const path of expected) if (!await cache.match(path)) missing.push(path);
@@ -54,7 +54,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await context.setOffline(true);
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('55');
+  await expect(page.locator('#playable-count')).toHaveText('58');
   await expect(page.getByRole('heading', { name: 'In drei Schritten zur ersten Runde' })).toBeVisible();
   await page.goto('/creator.html');
   await expect(page.getByRole('heading', { name: 'Eigenes Spiel erstellen' })).toBeVisible();
@@ -132,6 +132,7 @@ test('classic Wavelength Quick Mode starts and resumes offline', async ({ page, 
   await context.setOffline(true);
   await page.goto('/quick-play.html?game=wavelength');
   await page.locator('#quick-start').click();
+  await page.getByRole('button', { name: 'Ziel anzeigen' }).click();
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
@@ -147,9 +148,14 @@ test('Anime Trend Mode starts and resumes completely offline', async ({ page, co
   await expect(page.getByRole('heading', { name: 'Anime-Archetypen erraten' })).toBeVisible();
   await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
-  await expect(page.locator('.challenge-card')).not.toHaveText('');
+  const figure = (await page.locator('.challenge-card').textContent()).trim();
+  expect(figure).not.toBe('');
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  /* v101: Nach dem Neuladen ist die Figur wieder verdeckt und erscheint erst erneut auf Wunsch. */
+  await expect(page.locator('.challenge-card')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
+  await expect(page.locator('.challenge-card')).toHaveText(figure);
   await expect(page.getByRole('button', { name: 'Figur verbergen und 60 Sekunden starten' })).toBeVisible();
 });
 

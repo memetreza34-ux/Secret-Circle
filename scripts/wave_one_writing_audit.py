@@ -38,7 +38,7 @@ for marker in ('Wave 1 writing private entry conceals on blur without losing the
     if marker not in e2e: violations.append(f'Wave 1 writing browser marker missing: {marker}')
 for marker in ('waveOneWritingEngineRoutedBeforeWaveFallback: true','loaderVersion: loader.version'):
     if marker not in loader_test: violations.append(f'Wave 1 writing loader-test marker missing: {marker}')
-for marker in ('catalog.games.length, 55','labs: 27'):
+for marker in ('catalog.games.length, 58','labs: 30'):
     if marker not in release_test: violations.append(f'Final release-count marker missing while preserving writing contract: {marker}')
 if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({'wave_one_writing_audit':'PASS','implemented_labs':['fill-blank-battle','who-wrote-it'],'shared_writing_runner':True,'private_entry_concealment':True,'anonymous_vote_and_guess':True,'answer_max_length':140,'quick_family_resume_and_replacement':True,'adult_content':False,'pwa_cache':f"secret-circle-v{cache.group(1)}"},ensure_ascii=False,indent=2))

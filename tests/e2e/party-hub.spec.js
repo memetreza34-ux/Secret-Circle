@@ -18,19 +18,19 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
-test('party hub exposes a clear 55-game playable catalog', async ({ page }) => {
+test('party hub exposes a clear 58-game playable catalog', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
-  await expect(page.locator('#playable-count')).toHaveText('55');
+  await expect(page.locator('#playable-count')).toHaveText('58');
   await expect(page.locator('#planned-count')).toHaveText('0');
   await expect(page.locator('#content-count')).not.toHaveText('0');
 
   await page.getByRole('button', { name: 'Alle Spiele ansehen' }).click();
   await expect(page.getByRole('heading', { name: 'Kernspiele, Erweiterungen & Labs' })).toBeVisible();
-  await expect(page.locator('#result-count')).toHaveText('55');
-  await expect(page.locator('#game-grid .game-card')).toHaveCount(55);
+  await expect(page.locator('#result-count')).toHaveText('58');
+  await expect(page.locator('#game-grid .game-card')).toHaveCount(58);
 
   await page.locator('#status-filter').selectOption('playable');
-  await expect(page.locator('#result-count')).toHaveText('55');
+  await expect(page.locator('#result-count')).toHaveText('58');
   await page.locator('#game-search').fill('Scharade');
   await expect(page.locator('#result-count')).toHaveText('1');
   await expect(page.getByRole('heading', { name: 'Scharade' })).toBeVisible();

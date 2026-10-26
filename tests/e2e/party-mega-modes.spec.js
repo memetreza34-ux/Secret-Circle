@@ -11,13 +11,13 @@ async function seedHub(page, players = ['Alex', 'Sam', 'Mika', 'Lina']) {
   }, players);
 }
 
-test('Party Hub exposes 55 playable games and dedicated Trend Mode actions', async ({ page }) => {
+test('Party Hub exposes 58 playable games and dedicated Trend Mode actions', async ({ page }) => {
   await seedHub(page);
   await page.goto('/party.html');
-  await expect(page.locator('#playable-count')).toHaveText('55');
+  await expect(page.locator('#playable-count')).toHaveText('58');
   await page.getByRole('button', { name: 'Spiele', exact: true }).click();
-  await expect(page.locator('#result-count')).toHaveText('55');
-  await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(55);
+  await expect(page.locator('#result-count')).toHaveText('58');
+  await expect(page.locator('#game-grid .game-card.playable')).toHaveCount(58);
   await page.locator('#game-search').fill('Anime-Archetypen');
   /* Die Kategorie gibt es auch bei Stirn-Raten. Mit zwei Treffern liegt die
      Vorschlagsliste auf schmalen Bildschirmen über den Karten; erst schließen. */

@@ -1,0 +1,46 @@
+{
+  "main": "a8bd77711f2e9e93eef4ab58b9566b5a3fcd7d5d",
+  "v114": "82aad9a62721fdf6cf8c340445d7430603123eac",
+  "measurements": {
+    "chromium-mobile--index.html.json": {
+      "sha256": "59ed4217d945ebae878b501e23c85215147aecb5eaa1744a474daaff9a0b4ff5",
+      "measuredAt": "2026-10-23T18:47:41.320Z",
+      "runs": 5
+    },
+    "chromium-mobile--party.html.json": {
+      "sha256": "b8752c61f65b31cc617aba54721c967421edceaeb8d3ef83ea8980f42fd78e79",
+      "measuredAt": "2026-10-23T18:48:47.247Z",
+      "runs": 5
+    },
+    "chromium-mobile--quick-play.html.json": {
+      "sha256": "bf1402638b2a20a90434496bfc9435874e86076b0ba6fdd528bb208e6898d6d6",
+      "measuredAt": "2026-10-23T18:48:58.967Z",
+      "runs": 5
+    },
+    "chromium-mobile--v2-hub.html.json": {
+      "sha256": "b4aa6c5284a72ea8c92337dbd4309821e562e36d5974ea39bf6e0ef3760c5751",
+      "measuredAt": "2026-10-23T18:48:33.796Z",
+      "runs": 5
+    },
+    "webkit-mobile--index.html.json": {
+      "sha256": "74d7b2b025427449dba502db34e56c70ee5e323e8ba21e974c5976b43e236c61",
+      "measuredAt": "2026-10-24T03:45:30.974Z",
+      "runs": 5
+    },
+    "webkit-mobile--party.html.json": {
+      "sha256": "5ef4f07d9341c8b2222c0bbcabe3f1eb690a92d85cd26b3030bbb0aba03d565d",
+      "measuredAt": "2026-10-24T03:45:44.702Z",
+      "runs": 5
+    },
+    "webkit-mobile--quick-play.html.json": {
+      "sha256": "46473bc67fcbb3b680869c155945e6f1985e5fb044982a11583605eb2fe2bd03",
+      "measuredAt": "2026-10-24T03:45:50.485Z",
+      "runs": 5
+    },
+    "webkit-mobile--v2-hub.html.json": {
+      "sha256": "da2b4da74baf8f0f1200fa0cdded01e0e2c16befe238faf749b85ba5ff3e689c",
+      "measuredAt": "2026-10-24T03:45:37.328Z",
+      "runs": 5
+    }
+  }
+}

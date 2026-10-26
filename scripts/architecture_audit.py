@@ -8,16 +8,17 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 violations = []
 
 production_js = [
-    'runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js',
+    'runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','word-packs-extra.js','card-memory.js','data-store.js',
     'word-imposter-resume-guard.js','app.js','backup-schema-registry.js','session-ledger.js','party-session-controls.js','party-catalog.js',
-    'party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js',
+    'party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-cards-viral-1.js','party-cards-viral-2.js','party-cards-viral-3.js','party-cards-mega-1.js','party-cards-mega-2.js','party-cards-mega-3.js','party-cards-quick-1.js','party-cards-quick-2.js','party-cards-quick-3.js','party-cards-hub-1.js','party-cards-hub-2.js','party-cards-hub-3.js','party-cards-wave-1.js','party-cards-wave-2.js','party-cards-wave-3.js','party-cards-viral-4.js','party-core-classic-content.js',
     'party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js',
-    'party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js','party-release-structure.js','party-filter-state.js','party-search-assist.js',
+    'party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js','party-release-structure.js','party-filter-state.js','party-search-assist.js',
     'game-creator.js','creator-page.js','party-custom-packs.js','party-hub-timers.js','party-hub-resume-guard.js','party-hub-round-state.js',
     'party-hub.js','party-hub-plus.js','party-hub-polish.js','party-hub-a11y.js','secondary-surface-a11y.js','party-guide.js','party-night.js','party-data-tools.js',
     'party-advanced.js','advanced-resume-guard.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js',
     'party-quick-modes.js','party-mega-modes.js','party-viral-modes.js','party-created-modes.js','party-wave-one-modes.js','party-wave-one-imposter-modes.js',
     'party-wave-one-writing-modes.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js',
+    'party-classic-model.js','party-classic-drawing.js','party-classic-modes.js',
     'quick-session-replacement-guard.js','quick-loader.js','sw.js'
 ]
 html_pages = ['index.html','v2-hub.html','word-imposter.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html']
@@ -62,7 +63,7 @@ for relative in html_pages:
     if "script-src 'self'" not in source or "object-src 'none'" not in source: violations.append(f'Strict CSP contract missing in {relative}.')
 
 party_page=read('party.html'); quick_play=read('quick-play.html'); advanced_page=read('advanced.html'); creator_page=read('creator.html')
-catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js']
+catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-cards-viral-1.js','party-cards-viral-2.js','party-cards-viral-3.js','party-cards-mega-1.js','party-cards-mega-2.js','party-cards-mega-3.js','party-cards-quick-1.js','party-cards-quick-2.js','party-cards-quick-3.js','party-cards-hub-1.js','party-cards-hub-2.js','party-cards-hub-3.js','party-cards-wave-1.js','party-cards-wave-2.js','party-cards-wave-3.js','party-cards-viral-4.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js']
 
 def check_order(source,names,context):
     positions=[]
@@ -96,6 +97,9 @@ contracts={
  'party-wave-one-writing-catalog.js':["id: 'fill-blank-battle'","id: 'who-wrote-it'",'waveOneWritingGameIds','version: 4'],
  'party-wave-one-voting-catalog.js':["id: 'percent-guess'","id: 'party-bracket'",'waveOneVotingGameIds','version: 5'],
  'party-wave-one-bluff-catalog.js':["id: 'bluff-trivia'",'waveOneBluffGameIds','version: 6'],
+ 'party-classic-catalog.js':['classicGameIds', 'drawing-telephone', 'three-rounds', 'packing-suitcase'],
+ 'party-classic-model.js':['function validDrawing(', 'function nextPhase(', 'function judge('],
+ 'party-classic-modes.js':['function conceal()', 'function rememberTimer()', "L.completionId('mega', gameId, active.sessionId)"],
  'party-wave-one-clue-catalog.js':["id: 'password-one-word'",'waveOneClueGameIds','version: 7'],
  'party-wave-one-modes.js':["L.completionId('wave1', game.id, active.sessionId)","gameId === 'party-quiz'","gameId === 'fact-or-fake'"],
  'party-wave-one-imposter-modes.js':["L.completionId('wave1-imposter', game.id, active.sessionId)",'function concealPrivate()','function resolveVotes()','function submitGuess()'],
@@ -137,7 +141,7 @@ for forbidden in ('session-ledger-legacy-guard.js','SecretCircleLegacySessionGua
         if forbidden in read(relative): violations.append(f'Obsolete legacy guard reference in {relative}: {forbidden}')
 
 syntax_gate=package.get('scripts',{}).get('check',''); unit_gate=package.get('scripts',{}).get('test',''); validate_gate=package.get('scripts',{}).get('validate','')
-for module in ('party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-wave-one-clue-catalog.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js','quick-loader.js'):
+for module in ('party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js','quick-loader.js'):
     if f'node --check {module}' not in syntax_gate: violations.append(f'Production module missing from syntax gate: {module}')
 for test in ('tests/party-wave-one-voting-catalog.test.js','tests/party-wave-one-bluff-catalog.test.js','tests/party-wave-one-clue-catalog.test.js','tests/quick-loader.test.js','tests/party-release-structure.test.js'):
     if test not in unit_gate: violations.append(f'Critical final Wave 1 test missing from npm test: {test}')
@@ -163,7 +167,7 @@ if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 print(json.dumps({
  'architecture_audit':'PASS','production_modules':len(production_js),'html_pages':len(html_pages),'runtime_dependencies':0,
  'module_line_limit':1000,'module_size_limit_bytes':100000,'pwa_cache':cache.group(1) if cache else None,'catalog_chain':catalog_chain,
- 'built_in_games':55,'release_tiers':{'core':15,'extended':13,'labs':27},'quick_loader_version':11,'session_controls_version':5,
+ 'built_in_games':58,'release_tiers':{'core':15,'extended':13,'labs':30},'quick_loader_version':11,'session_controls_version':5,
  'wave_one_complete':10,'wave_one_audits':['quiz','imposter','writing','remaining'],'wave_one_shared_engine_families':6,
  'wave_one_private_handoff_concealment':True,'wave_one_private_entry_concealment':True,'wave_one_derived_result_resume':True,
  'wave_one_adult_content':False,'hub_accessibility_layer_audited':True,'reference_content_audit_required':True,

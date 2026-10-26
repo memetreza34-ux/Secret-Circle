@@ -199,7 +199,7 @@ test.describe('Resume-Schutz ohne Cache', () => {
     await expect(resume).toHaveAttribute('aria-busy', 'true');
     await expect(resumeButton).toBeDisabled();
     await expect(discardButton).toBeDisabled();
-    expect(typeof releaseGuard).toBe('function');
+    await expect.poll(() => typeof releaseGuard).toBe('function');
 
     releaseGuard();
 
@@ -247,8 +247,11 @@ test.describe('Resume-Schutz ohne Cache', () => {
 
     await pause.click();
     await expect(pause).toHaveText('Pause');
-    await page.waitForTimeout(1200);
-    expect(clockSeconds(await timer.textContent())).toBeLessThan(frozen);
+    /* Der Timer tickt alle 250 ms. Liegt die Restzeit knapp an einer
+       Sekundengrenze, erscheint die nächste Sekunde erst mit dem folgenden
+       Tick; eine feste Wartezeit von 1,2 s verpasste das gelegentlich, obwohl
+       der Timer nachweislich lief. Deshalb bis zu 3 s auf das Absinken warten. */
+    await expect.poll(async () => clockSeconds(await timer.textContent()), { timeout: 3000 }).toBeLessThan(frozen);
   });
 
   test('Hot Potato restores a hidden random remainder without exposing a countdown', async ({ page }) => {

@@ -13,10 +13,14 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/screenshots/klassiker-zeichnen-desktop.webp',
+    'docs/screenshots/klassiker-zeichnen-handy.webp',
     'icon.svg', 'icon-192.png', 'icon-512.png',
     'assets/images/imposter.webp',
     'assets/images/truth-dare.webp',
+    'assets/images/truth-dare-alternative.webp',
     'assets/images/mafia.webp',
+    'assets/images/never-have.webp',
     'docs/screenshots/bildvorschau-mafia-desktop-1280x800.webp',
     'docs/screenshots/bildvorschau-mafia-handy-375x812.webp',
     'docs/screenshots/bildvorschau-start-desktop-1280x800.webp',

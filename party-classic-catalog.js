@@ -1,0 +1,58 @@
+(function (root, factory) {
+  const base = typeof module === 'object' && module.exports ? require('./party-wave-one-bluff-catalog.js') : root.SecretCirclePartyCatalog;
+  const api = factory(base);
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.SecretCirclePartyCatalog = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (base) {
+  'use strict';
+  const words = {
+    Alltag: ['Regenschirm', 'Zahnbürste', 'Kühlschrank', 'Schlüssel', 'Rucksack', 'Fahrrad', 'Wecker', 'Staubsauger', 'Taschenlampe', 'Wäschekorb', 'Gießkanne', 'Fernbedienung', 'Kopfhörer', 'Briefkasten', 'Schaukel', 'Leiter', 'Spiegel', 'Kissen', 'Bügeleisen', 'Teppich'],
+    Tiere: ['Pinguin', 'Elefant', 'Giraffe', 'Krokodil', 'Eichhörnchen', 'Delfin', 'Känguru', 'Flamingo', 'Schildkröte', 'Igel', 'Schmetterling', 'Krake', 'Schnecke', 'Papagei', 'Nilpferd', 'Kamel', 'Ameise', 'Biber', 'Seehund', 'Pfau'],
+    Berufe: ['Feuerwehrmann', 'Köchin', 'Astronaut', 'Gärtnerin', 'Zahnarzt', 'Bäckerin', 'Detektiv', 'Friseurin', 'Zauberer', 'Briefträgerin', 'Pilot', 'Lehrerin', 'Schornsteinfeger', 'Fotografin', 'Schiedsrichter', 'Dirigentin', 'Taucher', 'Tierärztin', 'Busfahrer', 'Tischlerin'],
+    Unterwegs: ['Leuchtturm', 'Heißluftballon', 'Campingzelt', 'Wasserfall', 'Sandburg', 'Riesenrad', 'Segelboot', 'Bergbahn', 'Hängebrücke', 'Schlitten', 'Karussell', 'U-Boot', 'Wohnmobil', 'Rolltreppe', 'Schloss', 'Windmühle', 'Baumhaus', 'Hängematte', 'Rakete', 'Achterbahn']
+  };
+  const drawings = {
+    Alltag: ['Ein Regenschirm im Sturm', 'Eine Katze im Wäschekorb', 'Ein Roboter beim Abwasch', 'Ein Fahrrad mit plattem Reifen', 'Ein Hund mit Sonnenbrille', 'Ein Kühlschrank voller Schuhe', 'Ein schlafender Wecker', 'Ein tanzender Staubsauger', 'Ein Rucksack mit Flügeln', 'Ein Bett auf Rädern', 'Eine Gießkanne im Regen', 'Ein Briefkasten mit Zähnen'],
+    Tiere: ['Ein Pinguin auf Rollschuhen', 'Ein Elefant auf einem Fahrrad', 'Eine Giraffe unter einem Schirm', 'Ein Igel mit Luftballon', 'Ein Krokodil beim Zähneputzen', 'Ein Frosch auf einem Trampolin', 'Ein Papagei als Koch', 'Eine Schnecke mit Anhänger', 'Eine Schildkröte beim Wettrennen', 'Ein Bär mit einer Eistüte', 'Ein Wal in einer Badewanne', 'Ein Oktopus mit acht Handschuhen'],
+    Berufe: ['Ein Astronaut beim Gärtnern', 'Eine Köchin im Weltraum', 'Ein Detektiv mit Lupe', 'Ein Zauberer mit leerem Hut', 'Eine Feuerwehrfrau auf einer Leiter', 'Ein Friseur schneidet einen Baum', 'Eine Pilotin im Papierflieger', 'Ein Bäcker mit Riesentorte', 'Eine Taucherin im Swimmingpool', 'Ein Fotograf auf einem Kamel', 'Ein Maler malt einen Regenbogen', 'Eine Ärztin untersucht einen Teddybären'],
+    Unterwegs: ['Ein Boot auf einem Berg', 'Eine Rakete mit Fahrradklingel', 'Ein Leuchtturm im Wald', 'Ein Zelt auf einer Wolke', 'Eine Sandburg mit Zugbrücke', 'Ein Schlitten am Strand', 'Eine Achterbahn aus Nudeln', 'Ein Koffer mit Beinen', 'Eine Brücke zwischen zwei Bäumen', 'Ein Heißluftballon als Teekanne', 'Ein Baumhaus unter Wasser', 'Ein Auto auf einer Hängematte']
+  };
+  const moreWords = {
+    Alltag: 'Kaffeetasse|Kugelschreiber|Brotdose|Türklingel|Geschirrspüler|Waschmaschine|Duschkopf|Seifenspender|Einkaufskorb|Mülleimer|Toaster|Wasserkocher|Dosenöffner|Salatschüssel|Schneidebrett|Backblech|Schürze|Nähmaschine|Wollknäuel|Besen|Kehrschaufel|Blumentopf|Wäscheklammer|Buchstütze|Kalender|Lesebrille|Sparschwein|Wärmflasche|Korkenzieher|Ventilator|Kleiderbügel|Schnürsenkel|Zollstock|Klebeband|Bilderrahmen|Spielwürfel|Kreisel|Gummistiefel|Vogelhaus|Schubkarre',
+    Tiere: 'Hund|Katze|Pferd|Zebra|Löwe|Tiger|Fuchs|Wolf|Bär|Panda|Koala|Lama|Alpaka|Nashorn|Kuh|Schaf|Ziege|Schwein|Huhn|Ente|Gans|Storch|Adler|Eule|Specht|Möwe|Kolibri|Fledermaus|Frosch|Chamäleon|Schlange|Wal|Hai|Qualle|Seestern|Walross|Otter|Maulwurf|Regenwurm|Marienkäfer',
+    Berufe: 'Feuerwehrfrau|Bauer|Bauarbeiterin|Kapitän|Flugbegleiterin|Kellner|Schneiderin|Maler|Maurerin|Dachdecker|Kranführerin|Mechaniker|Elektrikerin|Schornsteinfegerin|Metzger|Konditorin|Fischer|Försterin|Imker|Reinigungskraft|Goldschmiedin|Uhrmacher|Glaserin|Töpfer|Gärtner|Archäologin|Bibliothekar|Schauspielerin|Tänzer|Sängerin|Geiger|Clown|Bademeisterin|Hundetrainer|Hebamme|Apotheker|Physiotherapeutin|Tierpfleger|Paketbotin|Lokführer',
+    Unterwegs: 'Flughafen|Bahnhof|Straßenbahn|Reisebus|Fähre|Kajak|Kanu|Tretboot|Windsurfbrett|Fahrradhelm|Skateboard|Roller|Einrad|Seilbahn|Gipfelkreuz|Wanderstock|Kompass|Fernglas|Schlafsack|Isomatte|Lagerfeuer|Höhle|Wüste|Oase|Vulkan|Gletscher|Strandkorb|Sonnenschirm|Picknickkorb|Schatzkarte|Museum|Planetarium|Zirkuszelt|Rathaus|Marktplatz|Springbrunnen|Ampel|Zebrastreifen|Parkbank|Bushaltestelle'
+  };
+  const moreDrawings = {
+    Alltag: ['Ein Toaster schießt eine Brotscheibe hoch', 'Eine Zahnbürste mit Superheldenumhang', 'Ein Briefträger auf einem Einrad', 'Ein Kaktus mit Wintermütze', 'Ein Schneemann vor einem Ventilator', 'Eine Tasse mit riesigem Henkel', 'Ein Sofa auf einem Skateboard', 'Ein Paar Schuhe an einer Wäscheleine', 'Ein Goldfisch vor dem Fernseher', 'Eine Zimmerpflanze mit Sonnenbrille', 'Eine Socke auf Schatzsuche', 'Ein Staubwedel als Mikrofon', 'Eine Lampe im Schlafanzug', 'Ein Schneebesen dirigiert ein Orchester', 'Eine Türklingel mit Boxhandschuh', 'Ein Wecker in einer Hängematte'],
+    Tiere: ['Ein Hund jongliert mit Knochen', 'Eine Katze schläft in einer Teekanne', 'Ein Flamingo mit Gummistiefeln', 'Ein Kamel trägt einen Sonnenschirm', 'Ein Biber baut eine Sandburg', 'Ein Pinguin verkauft Eis', 'Eine Maus steuert einen Bagger', 'Ein Löwe unter einem Haartrockner', 'Ein Fuchs angelt einen Stiefel', 'Ein Wal pustet Seifenblasen', 'Eine Biene mit einer winzigen Gießkanne', 'Ein Oktopus spielt Schlagzeug', 'Eine Eule liest eine riesige Zeitung', 'Ein Känguru mit einem Einkaufskorb', 'Ein Huhn brütet einen Fußball aus', 'Eine Robbe auf einem Schaukelpferd'],
+    Berufe: ['Ein Bäcker schläft auf einem Mehlsack', 'Eine Gärtnerin schneidet eine Wolke', 'Ein Kapitän steuert eine Badewanne', 'Eine Kellnerin serviert einen Schneeball', 'Ein Musiker spielt eine Karotte', 'Eine Feuerwehrfrau gießt eine Blume', 'Ein Fotograf fotografiert seinen Schatten', 'Eine Malerin bemalt einen Regenschirm', 'Ein Clown repariert sein Einrad', 'Eine Ärztin hört einen Roboter ab', 'Ein Imker mit einem Honigeimer', 'Eine Archäologin findet einen Löffel', 'Ein Schneider näht einen Drachen', 'Eine Tierpflegerin wiegt eine Giraffe', 'Ein Briefträger mit einem riesigen Paket', 'Eine Zauberin zieht eine Leiter aus dem Hut'],
+    Unterwegs: ['Ein Zug fährt durch einen Käse', 'Ein Segelboot mit einem Blatt als Segel', 'Ein Wohnmobil auf Skiern', 'Eine Bushaltestelle auf dem Mond', 'Ein Reisekoffer im Liegestuhl', 'Ein Leuchtturm mit einer Taschenlampe', 'Ein Radfahrer vor einer Riesenschnecke', 'Eine Wolke auf einer Rolltreppe', 'Ein Schloss mit einer Wasserrutsche', 'Eine Seilbahn zwischen zwei Kakteen', 'Ein Fallschirm aus einem Regenschirm', 'Ein U-Boot in einem Aquarium', 'Ein Zirkuszelt auf einem Floß', 'Eine Rakete an einer Tankstelle', 'Eine Parkbank auf einem Berggipfel', 'Ein Karussell mit fliegenden Teetassen']
+  };
+  for (const name of Object.keys(words)) words[name].push(...moreWords[name].split('|'));
+  for (const name of Object.keys(drawings)) drawings[name].push(...moreDrawings[name]);
+  const luggage = {
+    Urlaub: ['Sonnencreme', 'Badehose', 'Reisepass', 'Handtuch', 'Buch', 'Sonnenbrille', 'Kamera', 'Zahnbürste'],
+    Picknick: ['Decke', 'Brot', 'Apfel', 'Wasserflasche', 'Korb', 'Serviette', 'Becher', 'Frisbee'],
+    Weltall: ['Raumanzug', 'Funkgerät', 'Sternenkarte', 'Werkzeug', 'Proviant', 'Helm', 'Sauerstoff', 'Taschenlampe'],
+    Alltag: ['Schlüssel', 'Geldbeutel', 'Regenschirm', 'Notizbuch', 'Kugelschreiber', 'Brotdose', 'Ladekabel', 'Kopfhörer']
+  };
+  const definitions = [
+    ['drawing-telephone', 'Stille Post mit Zeichnungen', '✏️', 3, 'Aus einem Satz wird ein Bild, daraus wieder ein Satz. Am Ende seht ihr, wie sich die Idee verändert hat.', ['Kategorie und Anzahl der Bildketten wählen.', 'Handy einzeln weitergeben und die Vorlage nur privat ansehen.', 'Abwechselnd zeichnen und das letzte Bild beschreiben.', 'Die fertige Kette gemeinsam aufdecken. Es gibt keine Gewinner.'], drawings],
+    ['three-rounds', 'Drei-Runden-Begrifferaten', '🎭', 4, 'Zwei Teams erraten denselben Stapel dreimal: frei erklären, mit genau einem Wort und schließlich nur pantomimisch.', ['Begriffe pro Stapel wählen; Namen werden abwechselnd Team A und B zugeteilt.', 'Pro Teamzug 60 Sekunden: Nur die erklärende Person sieht die Karte.', 'Alle Begriffe zuerst frei erklären, dann mit einem Wort, zuletzt ohne Sprache darstellen.', 'Jeder Treffer zählt einen Teampunkt. Übersprungene Wörter bleiben im Stapel.'], words],
+    ['packing-suitcase', 'Ich packe meinen Koffer', '🧳', 2, 'Merkt euch eine immer längere Liste. Wiederhole alles in der richtigen Reihenfolge und ergänze einen eigenen Gegenstand.', ['Thema und Anzahl der Spielzüge wählen.', 'Aktive Person wiederholt die Liste laut aus dem Gedächtnis und ergänzt etwas.', 'Gerät zur Gruppe geben, erst dann die Liste zur Prüfung aufdecken.', 'Die Gruppe bestätigt die Reihenfolge. Nur ein korrekter Zug verlängert die Liste und zählt einen Punkt.'], luggage]
+  ];
+  const added = definitions.map(([id, title, icon, minPlayers, description, instructions, packs]) => Object.freeze({
+    id, title, icon, minPlayers, maxPlayers: 20, duration: id === 'three-rounds' ? 20 : 15,
+    group: 'Social & Klassiker', moods: ['funny', 'friendly', 'competitive'], age: 'all', status: 'playable', mode: 'link',
+    href: `quick-play.html?game=${id}`, description, instructions: Object.freeze(instructions), packs: Object.freeze(Object.keys(packs)), featured: false
+  }));
+  const classicGameIds = Object.freeze(added.map(game => game.id));
+  const games = Object.freeze([...base.games, ...added]);
+  const content = Object.freeze({ ...base.content, ...Object.fromEntries(definitions.map(([id, , , , , , packs]) => [id, packs])) });
+  const getGame = id => games.find(game => game.id === id) || null;
+  const getPackNames = id => content[id] ? Object.keys(content[id]) : [];
+  const getItems = (id, pack) => pack && Array.isArray(content[id]?.[pack]) ? content[id][pack] : Object.values(content[id] || {}).flat();
+  return Object.freeze({ ...base, games, content, getGame, getPackNames, getItems, itemCount: id => getItems(id).length,
+    classicGameIds });
+});
