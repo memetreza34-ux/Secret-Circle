@@ -21,6 +21,7 @@
   const PRIVATE_QUICK_GAMES = new Set(['draw-guess', 'sound-imitation', 'hum-song', 'forehead-guess']);
 
   function familyForGame(catalog, gameId) {
+    if (catalog?.classicGameIds?.includes(gameId)) return 'mega';
     if (!catalog || !gameId) return null;
     if (catalog.createdGameIds?.includes(gameId)) return 'created';
     if (catalog.viralGameIds?.includes(gameId)) return 'viral';

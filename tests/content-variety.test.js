@@ -1,0 +1,37 @@
+'use strict';
+const assert = require('node:assert/strict');
+const M = require('../card-memory.js');
+const data = new Map();
+const storage = { getItem: k => data.get(k) ?? null, setItem: (k, v) => data.set(k, v) };
+const scope = { gameId: 'test', pack: 'Alltag' };
+const choose = (where, items, available = items.map((_, i) => i)) => M.choose(where, items, available, () => 0, { storage });
+assert.equal(choose(scope, ['Regenschirm', 'Sonnenhut']), 0);
+assert.equal(choose({ gameId: 'anderes-spiel', pack: 'Reise' }, [' REGENSCHIRM ', 'Koffer']), 1, 'Spiel- und Kategorienwechsel machen denselben Inhalt nicht neu');
+assert.equal(choose(scope, ['Sonnenhut', 'Regenschirm']), 0, 'ungespielte zulässige Karte vor jeder Wiederholung');
+assert.equal(choose(scope, ['Regenschirm', 'Sonnenhut', 'Koffer']), 0, 'nach Verbrauch älteste passende Karte');
+assert.equal(choose(scope, ['Verboten', 'Erlaubt'], [1]), 1, 'globale Auswahl überschreitet nie die freigegebenen Einstellungen');
+assert.equal(choose(scope, [{ question: 'Wie geht es dir?', answer: 'A' }]), 0);
+assert.equal(choose({ gameId: 'quiz', pack: 'Neu' }, [{ answer: 'B', question: ' WIE geht es dir? ' }, { question: 'Was magst du?' }]), 1, 'Frageidentität hängt nicht von Feldreihenfolge, Großschreibung oder Antwort ab');
+assert.equal(choose(scope, ['Pinguin']), 0);
+assert.equal(M.chooseWord([['PINGUIN', 'Vogel'], ['Neues Wort', 'Hinweis']], [0, 1], () => 0, { storage }), 1, 'Word Imposter erkennt Begriffe aus anderen Spielen');
+assert.equal(M.chooseWord([['Leuchtturm', 'Küste']], [0], () => 0, { storage }), 0);
+assert.equal(choose(scope, ['Leuchtturm', 'Baumhaus']), 1, 'andere Spiele erkennen Wörter aus Word Imposter');
+const different = new Map(), otherStorage = { getItem: k => different.get(k) ?? null, setItem: (k, v) => different.set(k, v) };
+const foods = ['Pizza', 'Spaghetti', 'Apfel', 'Kaffeetasse', 'Hammer'];
+const picked = Array.from({ length: foods.length }, () => M.choose(scope, foods, [0, 1, 2, 3, 4], () => 0, { storage: otherStorage }));
+assert.equal(picked[0], 0); assert.notEqual(picked[1], 1, 'Pasta-Thema folgt nicht direkt auf Pizza, solange Alternativen frei sind');
+assert.equal(new Set(picked).size, foods.length, 'Themenabwechslung verbraucht alle freien Inhalte vor einer Wiederholung');
+const many = Array.from({ length: 550 }, (_, i) => `Karte Nummer ${i}`), all = many.map((_, i) => i);
+const rounds = new Set();
+for (let i = 0; i < many.length; i++) {
+  delete require.cache[require.resolve('../card-memory.js')];
+  const Reloaded = require('../card-memory.js');
+  const index = Reloaded.choose({ gameId: i % 2 ? 'Modus A' : 'Modus B', pack: i % 3 ? 'Thema A' : 'Thema B' }, many, all, () => 0, { storage });
+  assert.ok(!rounds.has(index), 'auch jenseits von 150 Karten und nach simuliertem Neustart keine Wiederholung'); rounds.add(index);
+}
+const raw = data.get(M.storageKey);
+for (const text of ['Regenschirm', 'Sonnenhut', 'Pinguin', 'Karte Nummer', 'Wie geht es dir']) assert.ok(!raw.includes(text), 'nur Prüfsummen im Gedächtnis');
+const before = JSON.parse(raw);before.shared = { seen: [null, 9, 'zu langer beliebiger Klartext'], topics: 'kaputt' }; data.set(M.storageKey, JSON.stringify(before));
+assert.doesNotThrow(() => choose(scope, ['A', 'B']));
+assert.ok(M.read(storage).shared.seen.length <= M.maximumShared);
+console.log(JSON.stringify({ ok: true, restartCycles: 550, sharedAcrossGamesAndCategories: true, themeVariety: true, eligibleOnly: true }));

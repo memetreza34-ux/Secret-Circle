@@ -1,9 +1,144 @@
+## v121 – Gemeinsamer Inhaltsstand und Wiederholungsschutz (25. Oktober 2026)
+
+- Vorbereitete Kartenpakete und 2.609 verschiedene Word-Imposter-Wörter mit den drei zusätzlichen Klassikern zusammengeführt: 58 Modi.
+- Gemeinsames begrenztes Inhaltsgedächtnis über Kategorien und Spiele hinweg, weiterhin nur lokale Prüfsummen. Ungespielte zulässige Inhalte zuerst, danach älteste passende Inhalte. Erkannte ähnliche Themen werden nach Möglichkeit voneinander getrennt.
+- Stille Post mit Zeichnungen und Drei-Runden-Begrifferaten verwenden dasselbe Gedächtnis. Neue Bildketten und neue Stapel wechseln; der Stapel bleibt innerhalb der drei Ratephasen identisch.
+- Zeichenvorlagen auf 112 und Begriffe für die drei Ratephasen auf 240 erweitert; eigener Text beim Koffer bleibt frei wählbar.
+- Kein unbegrenzter Vorrat und keine unbegrenzte Speicherzusage: 16.000 gemeinsame Inhaltsprüfsummen plus geschützter Wortbereich, ältere Komfortdaten bleiben lesbar. Offline-Cache v119 → v121.
+
 ## v101 – Drei Partyklassiker (25. Oktober 2026)
 
 - Stille Post mit Zeichnungen: private Bild-/Textketten, begrenzte Zeichnungen und gemeinsame Auflösung.
 - Drei-Runden-Begrifferaten: gleicher Stapel beim Erklären, Ein-Wort-Hinweis und Pantomime, zwei Teams und pausierbare 60-Sekunden-Züge.
 - Ich packe meinen Koffer: verdecktes Wiederholen, Gruppenprüfung und wachsende Liste.
 - Katalog auf 58 Spiele erweitert; bestehende Speicher-, Backup- und Ergebnisverträge bleiben erhalten. Neue Dateien im Offline-Kerncache, Generation v99 → v101.
+
+## v119 – Größerer Word-Imposter-Wortschatz und dauerhaftes Wortgedächtnis (24. Oktober 2026)
+
+- 1.159 geprüfte Zusatzbegriffe: 2.629 Kategorieeinträge / 2.609 verschiedene Wörter in 14 Kategorien. Kostenloser lokaler Wortbestand mit OpenThesaurus-Quellenhinweis, bearbeitbarer Auswahl und LGPL-Text.
+- Eigenes Wortgedächtnis unabhängig von den 20 Ergebniseinträgen: Kategorien und Gemischt teilen Wortprüfsummen. Ungespielte Begriffe zuerst, anschließend älteste passende Wörter; nach Möglichkeit abwechselnde Hilfswortthemen.
+- Keine externen Laufzeitabfragen. Gesperrter/gelöschter Speicher fällt auf die bestehende Zufallsauswahl zurück; Offline-Core aktualisiert.
+
+## v116 – Claudes Entwicklungsstand und Bildfreigaben zusammengeführt (23. Oktober 2026)
+
+- Technischen Stand v114 mit allen Kartenpaketen und Routing-/QA-Änderungen übernommen; vorhandene freigegebene Bildänderungen und Bildvergleich erhalten.
+- Offline-Dateiliste beider Stände zusammengeführt und Prüfsumme erneuert.
+- Begonnene opt-in Handy-Ladezeitmessung übernommen; keine Spielinhalte, Spielregeln oder Performance-Grenzen dafür geändert.
+
+## v114 – Mehr Karten, Paket 6: Wissensspiele auf 30 je Kategorie mit Faktenprüfung (17. Oktober 2026)
+
+- `party-cards-wave-3.js` (späte Stufe `wave-one`, +264): **Party Quiz**, **Fakt oder Fake**, **Prozent schätzen** und **Bluff Trivia** von 8 auf **30** je Kategorie. `party-cards-viral-4.js` (+132): **Höher oder tiefer** von 8 auf **30** in allen sechs Kategorien.
+- Faktenprüfung: Prozentwerte und ableitbare Zahlen (Zeit, Maße, Geometrie) rechnet der Generator aus der Frage nach; alle übrigen Karten nutzen nur stabiles Lehrbuch- und Begriffswissen (keine Rekorde, Preise, Einwohnerzahlen). Zehn heiklere Fakten sind zusätzlich per Websuche gegengeprüft (u. a. Venus heißer als Merkur, Delfin-Halbhirnschlaf, sieben Halswirbel bei Giraffen, neun Nachbarländer Deutschlands, 52 weiße und 36 schwarze Klaviertasten, Halbmarathon 21,0975 km, SMS 160 Zeichen, Kegeln mit neun Kegeln, Schlangen ohne Lider, Seepferdchen-Männchen tragen aus). Fakt oder Fake ist je Kategorie genau zur Hälfte wahr und falsch; Antwortpositionen im Quiz sind gemischt.
+- `tests/card-packs.test.js`: Formatregeln für alle fünf Wissensspiele; Zahlen zählen beim Fast-Doppler-Vergleich jetzt immer als Inhalt, „Wie viel Prozent …“ als fester Satzanfang.
+- Offline-Cache v113 → v114. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v113 – Mehr Karten, Paket 5b-2: Party Bracket auf 50 je Kategorie (17. Oktober 2026)
+
+- Neue Datendatei `party-cards-wave-2.js` (späte Stufe `wave-one`): **Party Bracket** von 8 auf **50** Brackets in Snacks, Reise & Freizeit und Superkräfte (+126 Brackets mit je 8 Einträgen).
+- Jedes Bracket hat einen eigenen Titel (keine Titel doppelt) und genau acht verschiedene Einträge, wie es das Turnier vom Viertelfinale bis zum Finale braucht. `tests/card-packs.test.js` prüft das jetzt als Formatregel.
+- Offline-Cache v112 → v113. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v112 – Mehr Karten, Paket 5b-1: Advanced- und Wave-One-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- **Advanced-Spiele** (+306): **Zwei Wahrheiten, eine Lüge**, **Question Imposter** und **Location Spy** von 16 auf **50** je Kategorie. Die Karten stehen in `party-expansion.js` (`cardAdditions`), weil `advanced.html` nur diese Katalogebene lädt.
+- **Wave-One-Spiele** (+606) in `party-cards-wave-1.js`: **Undercover – ähnliches Wort**, **Imposter ohne Wort**, **Satzduell**, **Wer hat das geschrieben?** (8 → 50) und **Ein-Wort-Hinweis** (16 → 50).
+- Neu: späte Kartenpakete. Pakete mit `stage: 'wave-one'` reicht `party-core-classic-content.js` weiter, die letzte Katalogebene `party-wave-one-clue-catalog.js` hängt sie mit derselben geprüften Funktion an. Unbekannte Spiele oder Kategorien brechen weiterhin ab.
+- `tests/card-packs.test.js` prüft späte Pakete und die Advanced-Zusatzkarten mit denselben Regeln (Format, sichere Texte, keine Dubletten, keine Fast-Doppler); neue Formatregeln für Satzduell, Wer hat das geschrieben? und Undercover. `tests/party-wave-one-clue-catalog.test.js` erwartet 150 statt 48 Ein-Wort-Hinweise.
+- Offline-Cache v111 → v112. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v111 – Mehr Karten, Paket 5a: elf Hub-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Drei neue Datendateien (+1.249 Karten), je unter 1.000 Zeilen: `party-cards-hub-1.js` (**Wahrheit oder Pflicht**: je Kategorie 50 Wahrheiten und 50 Pflichten statt 12 und 12), `party-cards-hub-2.js` (**Ich habe noch nie**, **Wer würde eher?**, **Entweder oder** von 24 auf 50, **Hot Takes** von 8 auf 50) und `party-cards-hub-3.js` (**Nur falsche Antworten**, **Paranoia**, **Scharade**, **Nicht sagen!**, **Heiße Kartoffel** auf 50).
+- **Wortkette** besteht aus Startbuchstaben; 50 je Kategorie gibt das Alphabet nicht her. Jede Kategorie hat jetzt alle gut spielbaren Buchstaben (22–23 statt 10).
+- Pflichten bleiben sicher: keine privaten Daten, keine Nachrichten an Dritte, keine riskanten Aufgaben, kein Körperkontakt. Ein Scharade-Begriff („Frieren“) stand auf der Referenz-Sperrliste und heißt jetzt „Bibbern“.
+- Verträge: `tests/core-content-quality.test.js` und `tests/party-routing.test.js` erwarten jetzt 400 statt 96 Wahrheit-oder-Pflicht-Karten (je Kategorie 50 + 50). `tests/card-packs.test.js`: Formatregeln für Ich habe noch nie, Wer würde eher?, Paranoia, Nicht sagen! und Wortkette; feste Satzanfänge dieser Spiele und „… und gib weiter.“ zählen beim Fast-Doppler-Vergleich nicht mit.
+- Offline-Cache v110 → v111. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v110 – Mehr Karten, Paket 4: zehn Quick-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Drei neue Datendateien (+1.476 Karten), je unter 1.000 Zeilen: `party-cards-quick-1.js` (**Spektrum-Tipp**, **Zeichnen & Raten**, **Schnellfeuer**, **Geräusche erraten**), `party-cards-quick-2.js` (**Stirn-Raten**, alle 10 Kategorien) und `party-cards-quick-3.js` (**Buchstaben-Kategorien**, **Nicht lachen!**, **Melodie summen**, **Gegenstandsjagd**, **Caption Battle**).
+- Stirn-Raten teilt bewusst sechs Kategorien mit „Wer bin ich?“. Diese sechs bekommen dieselben neuen Karten wie dort (eine Ausnahme: „Zauberer“ steht bei Stirn-Raten schon in Popkultur und heißt in Märchen & Mythen „Wassermann“).
+- Spektrum-Tipp bleibt referenzsicher (nur allgemeine Gegensatzpaare), Melodie summen nennt nur Musikarten, Anlässe und Filmszenen, keine Liedtitel.
+- `tests/card-packs.test.js`: Formatregeln für Schnellfeuer (Anzahl und Sekunden als ganze Zahlen, mehr Sekunden als Antworten), Spektrum (zwei verschiedene Pole), Buchstaben-Kategorien (fünf verschiedene Kategorien) und Melodie summen (keine Titel in Anführungszeichen). „Nenne drei/fünf/sechs/sieben …“ zählt als fester Satzanfang.
+- Offline-Cache v109 → v110. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v109 – Mehr Karten, Paket 3b: vier Trend-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Neue Datendatei `party-cards-mega-3.js` (+840 Karten): **Geld-Challenge**, **Pass das Handy**, **Red oder Green Flag** und **Geheime Mission** von 8 auf **50** in allen 20 Kategorien.
+- Geld-Challenges bleiben rein hypothetisch und harmlos (keine Mutproben mit Risiko, keine echten Zahlungen). Red/Green Flags halten Rot und Grün etwa ausgewogen; Datenschutz-Themen sind als Warnzeichen formuliert (z. B. Standort öffentlich teilen, fremde Konten verlangen).
+- Geheime Missionen sind unauffällig, freundlich und ohne Körperkontakt außer Händeschütteln oder Abklatschen.
+- `tests/card-packs.test.js`: Feste Satzanfänge weiterer Spiele („Gib das Handy an die Person …“, „Bringe jemanden dazu, …“, „Sorge dafür, dass jemand …“, „Die Person …“) zählen beim Fast-Doppler-Vergleich nicht mit. Die Schwelle bleibt 3 Wörter / 80 %.
+- Offline-Cache v108 → v109. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v108 – Mehr Karten, Paket 3a: fünf Trend-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Neue Datendateien `party-cards-mega-1.js` und `party-cards-mega-2.js` (je unter 1.000 Zeilen, zusammen +1.212 Karten): **Wer bin ich?** (8 Kategorien), **Anime-Archetypen erraten** (4), **Blind Ranking** (6) und **Tier List Battle** (6) von 10 auf **50**, **Emoji Quiz** (6) von 8 auf **50**.
+- Anime-Archetypen bleiben referenzsicher: nur allgemeine Figurentypen, keine Serien, Figurennamen oder Marken. Der Vertrag in `tests/core-content-quality.test.js` verlangt jetzt genau 50 statt 10 Archetypen je Kategorie; die Sperrliste konkreter Fan-Referenzen bleibt unverändert.
+- „Wer bin ich? – Geschichte“ nennt nur bekannte historische Personen (Wissenschaft, Kunst, Entdeckungen); Emoji nutzen höchstens Unicode 12 (2019) und keine Flaggen.
+- `tests/card-packs.test.js` prüft zusätzlich: Emoji-Hinweise enthalten keine Buchstaben, die Lösung schon.
+- Offline-Cache v107 → v108. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v107 – Mehr Karten, Paket 2: fünf Viral-Spiele auf 50 je Kategorie (17. Oktober 2026)
+
+- Zwei neue Datendateien: `party-cards-viral-2.js` (Finger runter, Hear Me Out) und `party-cards-viral-3.js` (Hot Seat, Satz beenden, Preis schätzen). Jede Kategorie hat jetzt **50** statt 8 Karten (+1.260). Preise bei „Preis schätzen“ sind Spielwerte, keine echten Marktpreise.
+- Alle Texte ohne Marken, ohne echte Personen, ohne private Angaben, ohne Alkoholbezug; Fast-Doppler wurden vor dem Einbau umgeschrieben.
+- Paket 1 nachgebessert: Antwortoption „Memory“ (Markenname) heißt jetzt „Paare suchen“.
+- `tests/card-packs.test.js` prüft zusätzlich das Kartenformat je Spiel (z. B. „Finger runter, wenn du …“, Satzanfänge enden mit „…“, Preise sind ganze Zahlen > 0) und ignoriert feste Satzanfänge beim Fast-Doppler-Vergleich.
+- Offline-Cache v106 → v107. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v106 – Kartenpakete: Platz für 50 Karten je Kategorie (17. Oktober 2026)
+
+- Neue Karten liegen in reinen Datendateien `party-cards-*.js`. `party-core-classic-content.js` bleibt die letzte Inhaltsebene und hängt die Pakete hinten an: Gespeicherte Sessions verweisen weiter auf dieselben Karten. Unbekannte Spiele oder Kategorien brechen ab, exakte Dubletten werden übersprungen.
+- Datenschutz- und Referenz-Audit prüfen jede `party-cards-*.js` automatisch mit, auch künftige Dateien. Neuer Test `tests/card-packs.test.js`: jede Datei geladen, offline und auf allen Katalogseiten eingebunden, Format passt zur Kategorie, sichere Texte, keine Dubletten, keine Fast-Doppler.
+- Erstes Paket `party-cards-viral-1.js`: „Wer kennt mich am besten?“ und „Story Chain“ von 20 auf **50** Karten je Kategorie (+360).
+- Offline-Cache v105 → v106. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v105 – Mehr Karten, Paket 1: „Wer kennt mich am besten?“ und „Story Chain“ (17. Oktober 2026)
+
+- Beide Spiele hatten nur 6 Karten je Kategorie. Jetzt 20 in allen 12 Kategorien: 84 neue Fragen mit je drei Antwortoptionen und 84 neue Geschichtsanfänge, alle familienfreundlich, ohne Marken, ohne private Angaben.
+- Inhalts-Audit (keine fast gleichen Einträge, keine Dopplungen zwischen Kategorien) und die bestehenden Inhaltstests sind grün. Stil von Arman per Gegenlesen freigegeben.
+- Offline-Cache v104 → v105. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v104 – Kartengedächtnis: neue Sessions beginnen nicht mit bekannten Karten (16. Oktober 2026)
+
+- Neues gemeinsames Modul `card-memory.js`: Unter den in einer Session noch freien Karten wählen alle Engines (Quick, Trend, Viral, Wave-One, Hub, Advanced, eigene Spiele) bevorzugt solche, die in diesem Spiel und dieser Kategorie zuletzt nicht dran waren. Sind alle schon gesehen, kommt eine zufällige aus der älter gesehenen Hälfte. Word Imposter behält sein eigenes Wortgedächtnis.
+- Gegenprobe im Browser: ohne Modul hatten 4 von 5 zweiten Sessions bekannte Karten, mit Modul 0 von 5.
+- Speicher `secret-circle-card-memory-v1` enthält nur Prüfsummen, keine Kartentexte, Namen oder Eingaben; höchstens 150 Bereiche mit je 150 Einträgen. Kein Teil von Sicherungen (wie das Onboarding), „Alle Daten löschen“ entfernt ihn. Fehlt oder klemmt der Speicher, bleibt es bei der bisherigen Zufallswahl.
+- Datenschutzseite, `BACKUP_SCHEMAS.md` und `ARCHITECTURE.md` beschreiben den Speicher; der 17-Key-Backupvertrag bleibt unverändert.
+- Tests: Unit-Test für Auswahl, Rotation, Begrenzung, kaputten Speicher und „keine Texte“; Browsertest mit zwei Sessions je Engine-Familie ohne gemeinsame Karte.
+- Offline-Cache v103 → v104. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v103 – Word Imposter: kein Hilfswort verrät mehr den Begriff (16. Oktober 2026)
+
+- 28 von 1.470 Hilfswörtern waren ein Teil des geheimen Begriffs oder umgekehrt (z. B. „Fußball“ → „Ball“, „Nashorn“ → „Horn“, „Föhn“ → „Föhnen“). Der Imposter sieht das Hilfswort in der Standardeinstellung und kannte damit praktisch den Begriff. Alle 28 durch passende Begriffe ohne Wortteil ersetzt (z. B. „Stadion“, „Savanne“, „Warmluft“).
+- Der Inhaltstest verbietet das jetzt dauerhaft (Groß-/Kleinschreibung, Umlaute und ß werden gleich behandelt).
+- Neuer Browsertest: Je ein Spiel aus Quick, Trend, Viral, Wave-One und Hub über zehn Runden; keine Karte kommt doppelt, solange die Kategorie unbenutzte Karten hat.
+- Inhalts-Audit über alle 210 Kategorien ohne weitere Funde (fast gleiche Einträge, doppelte Karten zwischen Kategorien, Tabu, Undercover-Paare, Quiz, Prozent, Bracket).
+- Offline-Cache v102 → v103. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v102 – Hub-Spiele: Karte nach Neuladen verdeckt, Rundenzähler bei Flaschendrehen und Würfel (16. Oktober 2026)
+
+- Fortsetzen nach Neuladen in einer laufenden Scharade- oder Tabu-Runde zeigte die geheime Karte sofort. Jetzt wird sie genauso verdeckt wie bei einem App-Wechsel („Geheime Karte wieder anzeigen“); Karte und Restzeit bleiben unverändert, der Timer bleibt pausiert.
+- Flaschendrehen und Würfel & Münze zählten jede Aktion intern als Runde, die Anzeige blieb aber auf „0 Runden“ und die Zählerleiste versteckt. Die Anzeige folgt jetzt jeder Aktion.
+- Neuer Browsertest spielt alle 13 Hub-Spiele über den echten Weg der Startseite drei Runden bis „Beenden & speichern“, Timer-Runden laufen mit Test-Uhr wirklich ab; danach eine zweite Session vollständig. Genau ein Verlaufseintrag pro Session.
+- 55er-Matrix: Ende + Wiederholen jetzt 50/55.
+- Offline-Cache v101 → v102. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v101 – Trend-Spiele: Geheimnisse nach Neuladen wieder verdeckt (16. Oktober 2026)
+
+- Fortsetzen nach Neuladen zeigte bei „Wer bin ich?“, „Anime-Archetypen erraten“ und „Geheime Mission“ eine offen gezeigte Identität bzw. Mission sofort wieder an. Jetzt wieder verdeckt; der Inhalt bleibt derselbe, Neuladen zieht nichts neu.
+- Neuer Browsertest spielt alle 9 Trend-Spiele drei Runden bis zum Ergebnis, prüft genau einen Verlaufseintrag pro Session und spielt über Neustart und „Wiederholen“ zwei weitere Sessions vollständig. Der Doppeltipp-Schutz aus v100 ist auch hier abgesichert.
+- 55er-Matrix: Ende + Wiederholen jetzt 19/55.
+- Offline-Cache v100 → v101. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
+
+## v100 – Quick-Spiele: Geheimnisse bleiben bei Übergabe und Neuladen verdeckt (16. Oktober 2026)
+
+- Spektrum-Tipp zeigt den geheimen Zielwert erst nach „Ziel anzeigen“. Bisher stand er sofort beim Rundenstart da, sodass ihn sah, wer die vorige Runde weitergetippt hatte.
+- Fortsetzen nach Neuladen deckt offene Geheimnisse wieder zu: die offene Karte bei Zeichnen & Raten, Geräusche, Melodie summen und Stirnraten sowie das offene Spektrum-Ziel. Karte und Ziel bleiben dieselben; Neuladen zieht nichts neu und ändert keine Punkte.
+- Nach Session-Ende sind die Ergebnis-Aktionen 0,6 Sekunden gesperrt. Ein Doppeltipp auf die letzte Spielaktion startete auf dem Handy sonst sofort „Wiederholen“ und blendete das Ergebnis aus. Gilt für alle Engines, die die gemeinsame Spielsteuerung nutzen (Quick, Trend, eigene Spiele).
+- Hat ein zweiter Tipp während dieser Sperre den Fokus auf den Seitenhintergrund geworfen (WebKit), geht er danach zurück auf die Ergebnis-Überschrift. Tastatur und Screenreader bleiben so im Ergebnis.
+- Neuer Browsertest spielt alle 10 Quick-Spiele drei Runden bis zum Ergebnis, prüft genau einen Verlaufseintrag pro Session und spielt über Neustart und „Wiederholen“ zwei weitere Sessions vollständig. Dazu Regressionstests für die drei Fehler.
+- Offline-Cache v99 → v100. Realgeräte, Gruppentests und Freigabe bleiben offen: **NO_GO**.
 
 ## v99 – Altersstufe wirkt auch in der kanonischen Startseite (16. Oktober 2026)
 
@@ -47,6 +182,25 @@
 # Changelog
 
 Alle nennenswerten Änderungen an Secret Circle werden hier dokumentiert.
+
+## v96 – Freigegebenes Word-Imposter-Cartoonbild und Bildvergleich
+
+- Word Imposter zeigt das von Arman konkret freigegebene 3D-Cartoon-Chamäleon: leere Karte, gleiche Schlüssel-Hinweise bei den anderen und korrigierte Augen mit genau einer Pupille je Auge. Die lokale WebP-Datei hat 800 × 600 Pixel und 34.030 Bytes.
+- Wahrheit oder Pflicht zeigt standardmäßig Hutgeständnis und Besen-Luftgitarre; die alternative Masken-/Kissenszene lässt sich direkt unter dem Detailbild ansehen.
+- Die vorher vorbereiteten gezeichneten Wahrheit-oder-Pflicht-Proben bleiben zum Vergleich erreichbar; neue Bilder der gewählten 3D-Cartoonserie entstehen ab jetzt einzeln mit Freigabe vor jedem Einbau. Herkunft, Rechtebelege, Alt-Texte, Medienvertrag und Offline-Core aktualisiert.
+- Offline-Cachegeneration v96 liefert die neuen Bilder und die Bildauswahl an installierte Apps.
+
+## v95 – Ausgewähltes Elefantenbild für Ich habe noch nie
+
+- Von Arman ausgewähltes Motiv in Kacheln, Startseitenbanner und Spieldetail eingebunden: Elefant gibt mit erhobener Hand ein Erlebnis zu, die Mitspieler reagieren überrascht.
+- Lokale WebP-Datei mit 800 × 600 Pixeln und 33.908 Bytes; Medienvertrag, Rechtebelege, Alt-Text und Offline-Core sind ergänzt.
+- Neue Offline-Cachegeneration v95; Bildladen und Offline-Vollständigkeit bleiben durch Browserprüfungen abgesichert.
+
+## v94 – Neues Bild für Wahrheit oder Pflicht
+
+- Von Arman ausgewählte Neufassung direkt eingebunden: Magier legt verlegen seine Maske ab, Ziege erfüllt eine Balanceaufgabe mit drei Kissen.
+- Das bestehende Word-Imposter-Bild ist die einzige Stilvorlage der Neufassung. Herkunft, Prompt, Rechtebeleg und deutscher Alt-Text sind aktualisiert.
+- Lokale WebP-Datei mit 800 × 600 Pixeln und 33.946 Bytes; Offline-Cachegeneration v94 liefert den Bildwechsel auch an installierte Apps.
 
 ## v93 – Drei animierte Spielbilder als Vorschau in der App
 

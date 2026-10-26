@@ -12,6 +12,13 @@ SHIPPED_CONTENT_SOURCES = [
     'party-wave-one-bluff-catalog.js', 'party-wave-one-clue-catalog.js',
 ]
 
+# Zusatzkarten (party-cards-*.js) werden automatisch mitgeprüft, auch künftige Dateien.
+CARD_PACK_SOURCES = sorted(path.name for path in ROOT.glob('party-cards-*.js'))
+if not CARD_PACK_SOURCES:
+    raise SystemExit('Keine Kartenpaket-Dateien gefunden; party-cards-*.js muss mitgeprüft werden.')
+SHIPPED_CONTENT_SOURCES = [*SHIPPED_CONTENT_SOURCES, *CARD_PACK_SOURCES]
+
+
 BLOCKED_LITERALS = [
     'Bluetooth', 'Oscar', 'Formel 1', 'Chrome', 'Wellenlänge', 'Löwenkönig',
     'Ringe im olympischen Symbol', 'Bahnen eines olympischen 400-Meter-Stadions häufig',

@@ -33,7 +33,8 @@ for (const id of advancedIds) {
 
 for (const id of ['two-truths', 'question-imposter', 'location-spy']) {
   for (const pack of expanded.getPackNames(id)) {
-    assert.equal(expanded.getItems(id, pack).length, 16, `${id}/${pack} must keep release wave-1 depth.`);
+    /* v112: 16 Karten aus Release-Welle 1 plus 34 aus cardAdditions (Kartenpaket 5b). */
+    assert.equal(expanded.getItems(id, pack).length, 50, `${id}/${pack} must keep 50 cards per category.`);
   }
 }
 for (const pack of expanded.getPackNames('taboo')) {
@@ -61,7 +62,7 @@ for (const pair of expanded.getItems('question-imposter')) {
 
 for (const pack of expanded.getPackNames('location-spy')) {
   const locations = expanded.getItems('location-spy', pack);
-  assert.equal(locations.length, 16);
+  assert.equal(locations.length, 50);
   assert.equal(new Set(locations.map(value => value.toLocaleLowerCase('de-DE'))).size, locations.length);
 }
 

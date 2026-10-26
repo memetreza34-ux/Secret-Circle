@@ -24,7 +24,14 @@
   });
 
   const games = Object.freeze([...base.games, game]);
-  const content = Object.freeze({ ...base.content, 'password-one-word': contentAdded });
+  /* Kartenpakete für Wave-1-Spiele (stage 'wave-one') hängt erst diese letzte
+     Katalogebene an, weil die Spiele nach party-core-classic-content.js entstehen. */
+  const contentBeforeCards = { ...base.content, 'password-one-word': contentAdded };
+  const lateCards = typeof base.applyCardPacks === 'function'
+    ? base.applyCardPacks(contentBeforeCards, base.lateCardPacks || [])
+    : { content: contentBeforeCards, ids: [] };
+  const content = Object.freeze(lateCards.content);
+  const lateCardPackIds = Object.freeze(lateCards.ids);
   const waveOneClueGameIds = Object.freeze(['password-one-word']);
   const waveOneGameIds = Object.freeze([...(base.waveOneGameIds || []), ...waveOneClueGameIds]);
   const quickGameIds = Object.freeze([...(base.quickGameIds || []), ...waveOneClueGameIds]);
@@ -39,5 +46,5 @@
   }
   function itemCount(id) { return getItems(id).length; }
 
-  return Object.freeze({ ...base, version: 7, games, content, getGame, getPackNames, getItems, itemCount, waveOneClueGameIds, waveOneGameIds, quickGameIds });
+  return Object.freeze({ ...base, version: 7, games, content, getGame, getPackNames, getItems, itemCount, waveOneClueGameIds, waveOneGameIds, quickGameIds, lateCardPackIds });
 });

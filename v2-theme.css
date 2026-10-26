@@ -541,6 +541,11 @@ input[disabled] {
 .mode-emblem .mark { width: 74px; height: 74px; }
 .mode-emblem.has-image { width: min(100%, 360px); height: auto; aspect-ratio: 4 / 3; overflow: hidden; }
 .mode-emblem.has-image .mark { width: 100%; height: 100%; }
+.mode-art-choices { display: flex; justify-content: center; gap: 10px; margin: -4px auto 16px; }
+.mode-art-choice { padding: 3px; border: 2px solid transparent; border-radius: 10px; background: var(--surface); cursor: pointer; }
+.mode-art-choice img { display: block; width: 64px; height: 48px; object-fit: cover; border-radius: 5px; }
+.mode-art-choice[aria-pressed="true"] { border-color: var(--fg); }
+.mode-art-choice:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 
 .fit { container-type: inline-size; display: block; width: 100%; }
 .fit > .fit-text {

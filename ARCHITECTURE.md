@@ -44,6 +44,12 @@ Advanced trennt `party-advanced.js`, `advanced-resume-guard.js`, `party-advanced
 
 `secret-circle-party-quick-timers-v1` speichert ausschließlich technische Timer-Metadaten. Snapshots werden nur bei passender Game-ID, Session-ID, Runde, Phase und Ausgangsdauer konsumiert.
 
+**Kartenpakete (seit v106):** Zusatzkarten liegen als reine Daten in `party-cards-*.js` (je unter 90 KB) und registrieren sich in `SecretCircleCardPacks`. `party-core-classic-content.js` listet sie in `CARD_PACK_FILES`, lädt sie in Node per `require` und hängt sie als letzte Inhaltsebene hinten an; Seiten laden sie per `<script>` direkt davor. Für Wave-One- und Advanced-Spiele siehe „Späte Kartenpakete“.
+
+**Späte Kartenpakete (seit v112):** Pakete mit `stage: 'wave-one'` gelten Spielen, die erst nach `party-core-classic-content.js` entstehen (Wave-1-Kataloge). Die Kern-Ebene reicht sie unverändert als `lateCardPacks` weiter; `party-wave-one-clue-catalog.js` hängt sie als letzte Katalogebene mit derselben Funktion `applyCardPacks` an (unbekannte Spiele oder Kategorien brechen ab, exakte Dubletten werden übersprungen). Advanced-Spiele (Zwei Wahrheiten, Question Imposter, Location Spy) bekommen ihre Zusatzkarten in `party-expansion.js` (`cardAdditions`), weil `advanced.html` nur diese Katalogebene lädt. `tests/card-packs.test.js` prüft beide Wege mit denselben Regeln.
+
+`card-memory.js` (seit v104) ist das gemeinsame Kartengedächtnis aller Engines außer Word Imposter, das eigene `usedWords` hat. Unter den in einer Session noch freien Karten wählt es bevorzugt solche, die in diesem Spiel und dieser Kategorie zuletzt nicht dran waren; sind alle gesehen, zufällig aus der älter gesehenen Hälfte. Speicher `secret-circle-card-memory-v1` enthält nur Prüfsummen, ist kein Backup-Eigentum und fällt ohne Speicher auf die bisherige Zufallswahl zurück. Wiederholungen innerhalb einer Session verhindert weiterhin jede Engine selbst.
+
 ## 9. Quick-Family BFCache Resume – v58
 
 Bei `pageshow.persisted` führt ein passender Snapshot kontrolliert in den normalen Resume-Pfad; stale/fremde Snapshots werden gelöscht.
@@ -117,7 +123,7 @@ Kritische Datenoperationen validieren zuerst, sichern den alten Zustand und roll
 
 ## 18. Offline- und Updatevertrag
 
-Aktueller Offline-Core: **`secret-circle-v101` / `secret-circle-v101-staging`**.
+Aktueller Offline-Core: **`secret-circle-v121` / `secret-circle-v121-staging`**.
 
 Jüngere Linie: v51 Backup → v52 Safe Current → v53 Paranoia → v54 Pre-Timer → v55 Advanced Integrity → v56 Quick Replacement → v57 Timer Resume → v58 BFCache → v59 Background Pause → v60 Hidden Snapshot → v61 Quiz → v62 Imposter → v63 Writing → **v64 Wave 1 Complete**.
 
@@ -158,3 +164,11 @@ Eine Funktion ist erst releasefähig, wenn Code, Datenverhalten, Privacy/Securit
 Auf ausdrücklichen Nutzerauftrag ergänzt `party-classic-catalog.js` den Katalog um `drawing-telephone`, `three-rounds` und `packing-suitcase` (58 Titel, 15 Core / 13 Extended / 30 Labs). Die Schicht steht zwischen Bluff- und Clue-Katalog. `quick-loader.js` lädt den abgegrenzten Klassiker-Runner vor der allgemeinen Mega-Engine.
 
 `party-classic-model.js` prüft die Zustände, `party-classic-drawing.js` zeichnet begrenzte Vektordaten (100 Striche / 600 Punkte). Textalternativen halten Zeichnen mit Tastatur bedienbar. Keine neuen Speicher-Keys: bestehende Mega-Familie, Backup-Registry, SessionControls und SessionLedger. Private Schritte werden vor Geräteübergabe, Fokusverlust und Reload verdeckt; drei Begrifferatephasen verwenden denselben Stapel und behalten die Timer-Restzeit. Ergebnisbuchungen verwenden stabile Completion-IDs. Gruppen-/Geräteabnahme und Release-GO bleiben offen.
+
+## Gemeinsame Inhaltsidentität – v121
+
+`card-memory.js` ergänzt das bestehende v1-Komfortformat um den optionalen Bereich `shared`: bis zu 16.000 normalisierte, aus zwei Hashes zusammengesetzte Inhaltsprüfsummen und vier Themenprüfsummen. Zeichenketten werden nach NFKC, Leerraum und Groß-/Kleinschreibung normalisiert; Fragenobjekte erhalten ihre Identität aus dem Fragetext. Die bisherigen Spiel-/Pack-/Pool-Bereiche und der geschützte Word-Imposter-Bereich bleiben lesbar. Backups, aktive Sessions und Spielverlauf behalten ihr bestehendes Format.
+
+Die Auswahl erhält weiterhin ausschließlich freigegebene `available`-Indizes. Gemeinsam und lokal ungespielte Inhalte haben Vorrang. Innerhalb dieser Auswahl helfen begrenzte redaktionelle Themenregeln gegen enge Folgen ähnlicher Motive. Unbekannte Themen sind erlaubt; das ist keine vollständige semantische Erkennung. Nach Verbrauch wählt die Rotation den ältesten passenden Inhalt. Kleine Vorräte, Speichergrenzen oder gelöschte Komfortdaten erlauben spätere Wiederholungen.
+
+Die drei Klassiker besitzen eigene `classicGameIds` und einen eigenen Runner. Ihre Speicher-/Timer-/Ersetzungsfamilie bleibt `mega`; sie werden nicht als Spiele der Mega-Engine ausgegeben. Neue Stapel und Bildketten verwenden das gemeinsame Gedächtnis. Fortsetzen und neue Ratephasen verändern bestehende Karten/Stapel nicht.

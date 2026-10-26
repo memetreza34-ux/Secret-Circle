@@ -16,6 +16,13 @@ SHIPPED_CONTENT_SOURCES = [
     'party-core-classic-content.js',
 ]
 
+# Zusatzkarten (party-cards-*.js) werden automatisch mitgeprüft, auch künftige Dateien.
+CARD_PACK_SOURCES = sorted(path.name for path in ROOT.glob('party-cards-*.js'))
+if not CARD_PACK_SOURCES:
+    raise SystemExit('Keine Kartenpaket-Dateien gefunden; party-cards-*.js muss mitgeprüft werden.')
+SHIPPED_CONTENT_SOURCES = [*SHIPPED_CONTENT_SOURCES, *CARD_PACK_SOURCES]
+
+
 # These are not generic topic words. They are concrete prompt patterns that would
 # turn private device/account data into required party-game material.
 BLOCKED_PROMPT_FRAGMENTS = [

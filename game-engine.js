@@ -133,7 +133,11 @@
       availableEntries = entries;
     }
     const wordRandom = createRng(`${seed}|word-choice-v2`);
-    const selected = availableEntries[Math.floor(wordRandom() * availableEntries.length)];
+    const available = availableEntries.map((_, index) => index);
+    const chosen = typeof options.chooseWordIndex === 'function'
+      ? options.chooseWordIndex(availableEntries, available, maximum => Math.floor(wordRandom() * maximum))
+      : undefined;
+    const selected = availableEntries[available.includes(chosen) ? chosen : Math.floor(wordRandom() * availableEntries.length)];
     usedWords = [...usedWords, selected.word];
     const createdAt = new Date().toISOString();
 

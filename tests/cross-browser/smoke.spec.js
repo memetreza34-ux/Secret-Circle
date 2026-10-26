@@ -8,6 +8,14 @@ function captureErrors(page) {
   return errors;
 }
 
+/* Firefox lädt Icons erst nach dem load-Ereignis. Wer sofort weiternavigiert,
+   bricht diese Anfragen selbst ab („request failed“). Vor jedem Seitenwechsel
+   und vor der Fehlerprüfung warten wir daher, bis das Netz ruhig ist; echte
+   Fehler bleiben so sichtbar. */
+async function settle(page) {
+  await page.waitForLoadState('networkidle');
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => localStorage.clear());
@@ -20,6 +28,7 @@ test('canonical Hub aliases, dedicated Word Imposter and privacy load without br
     await page.goto(route);
     await expect(page.locator('[data-screen="home"]')).toBeVisible();
     await expect(page.locator('#hero-title')).not.toBeEmpty();
+    await settle(page);
   }
   await page.goto('/word-imposter.html');
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
@@ -27,9 +36,11 @@ test('canonical Hub aliases, dedicated Word Imposter and privacy load without br
   await page.locator('#players').fill('Alex\nSam\nMika');
   await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeEnabled();
   await expect(page.locator('#category option')).toHaveCount(15);
+  await settle(page);
 
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
+  await settle(page);
   expect(errors).toEqual([]);
 });
 
@@ -37,12 +48,15 @@ test('canonical Hub aliases, dedicated Word Imposter and privacy load without br
    Suchfeld kann auf schmalen Bildschirmen über den Karten liegen; ein Mensch
    schließt sie zuerst. */
 async function openFromCatalog(page, query, gameId, startLabel) {
+  await settle(page);
   await page.goto('/party.html');
+  await settle(page);
   await page.getByRole('button', { name: 'Spiele', exact: true }).click();
   await page.locator('#game-search').fill(query);
   await page.locator('#game-search').press('Escape');
   await page.locator(`#game-grid [data-open-game="${gameId}"]`).click();
   await page.getByRole('button', { name: startLabel }).click();
+  await page.waitForLoadState('load');
 }
 
 test('loads the 58-game Hub and all four external engine families', async ({ page }) => {
@@ -72,6 +86,7 @@ test('loads the 58-game Hub and all four external engine families', async ({ pag
 
   await openFromCatalog(page, 'Preis schätzen', 'guess-the-price', 'Viral Mode öffnen');
   await expect(page.getByRole('heading', { name: 'Preis schätzen' })).toBeVisible();
+  await settle(page);
   expect(errors).toEqual([]);
 });
 

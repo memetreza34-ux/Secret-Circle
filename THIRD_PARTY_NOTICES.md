@@ -70,13 +70,15 @@ Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle 
 
 ## 6. Media-Inventar
 
-Seit dem 14. Oktober 2026 umfasst die App neben den drei Icons drei lokale Spielillustrationen:
+Seit dem 14. Oktober 2026 umfasst die App neben den drei Icons fünf lokale Spielillustrationen:
 
-- `assets/images/imposter.webp`: Chamäleon blufft in einer Spielrunde.
-- `assets/images/truth-dare.webp`: Bühnenmagier legt seine Maske ab, eine Stuntfigur zeigt eine Mutprobe.
+- `assets/images/imposter.webp`: freigegebenes rundes 3D-Cartoon-Chamäleon blufft mit leerer Karte zwischen gleichen Schlüsselkarten; doppelte Pupille gezielt korrigiert.
+- `assets/images/truth-dare.webp`: Magier enthüllt sein geheimes Hutfach, erwachsene Ziege spielt aufgabenbedingt mit einem Besen Luftgitarre.
+- `assets/images/truth-dare-alternative.webp`: alternative gezeichnete Szene mit Maske und Kissen, im Spieldetail auswählbar.
 - `assets/images/mafia.webp`: heimliche Absprache auf einem Stadtplatz, von einer Detektivin bemerkt.
+- `assets/images/never-have.webp`: Elefant hebt verlegen die Hand, Flamingo und Mitspieler reagieren überrascht.
 
-Alle drei Bilder wurden mit dem integrierten OpenAI-Werkzeug `image_gen` auf Armans Anweisung erzeugt. Eine konkrete Modellkennung gibt das Werkzeug nicht aus. Die gewählte erste Mafia-Szene ist die Stilreferenz für die anderen beiden Motive; die Referenzen sind ebenfalls projektseitig erzeugte Bilder. Die Originalprompts, Erstellungsdaten, SHA-256-Werte und Rechtebasis stehen in `assets/manifests/asset-provenance.json`. Es wurden keine externen Bilddateien, echten Personen, Logos oder erkennbaren Franchise-Figuren eingebunden. Rechtebasis sind die projektseitigen Output-Rechte nach den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; die finale visuelle Releaseprüfung bleibt offen.
+Alle fünf Bilder wurden mit dem integrierten OpenAI-Werkzeug `image_gen` auf Armans Anweisung erzeugt. Eine konkrete Modellkennung gibt das Werkzeug nicht aus. Die drei neuen gezeichneten Richtungsproben wurden auf Armans Wunsch direkt in die App aufgenommen: Word Imposter zunächst als gezeichnete Probe, danach zwei Wahrheit-oder-Pflicht-Szenen mit projektseitigen Referenzen. Arman hat anschließend die runde 3D-Cartoonwelt als Seriengrundlage gewählt und die augenkorrigierte Word-Imposter-Version konkret freigegeben; diese aktuelle Datei nutzt ausschließlich eigene Cartoonreferenzen. Die älteren Wahrheit-oder-Pflicht-Proben warten noch auf ihre Ersetzung im neuen Serienablauf. Mafia und Ich habe noch nie bleiben ältere 3D-Motive. Die Originalprompts, Erstellungsdaten, SHA-256-Werte und Rechtebasis stehen in `assets/manifests/asset-provenance.json`. Es wurden keine externen Bilddateien, echten Personen, Logos oder erkennbaren Franchise-Figuren eingebunden. Rechtebasis sind die projektseitigen Output-Rechte nach den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; die finale visuelle Releaseprüfung bleibt offen.
 
 Die Dateien sind 800 × 600 Pixel groß, jeweils höchstens 35 KB und mit `cwebp` exportiert. Sie gehören zum Offline-Core. Weitere WebP-Dateien unter `docs/screenshots/` dokumentieren die eigene App und werden im Medienvertrag samt Provenienz separat erfasst; sie gehören nicht zum Offline-Core. Die Bildvorschau ist keine öffentliche Releasefreigabe.
 
@@ -104,6 +106,17 @@ Unicode-Emoji werden nur als Zeichen verwendet. Secret Circle bündelt keine Emo
 Core-, Extended-/Labs-, Privacy- und Reference-Audits bleiben Bestandteil des Releasepfads. Generische Ersatzbegriffe werden weiter bevorzugt, wo konkrete Marken-/Franchise-Referenzen für die Spielmechanik nicht erforderlich sind.
 
 Ein finaler manueller Fan-/Marken-/Franchise-/Marketing-/Visualreview bleibt vor GO erforderlich.
+
+### Word-Imposter-Zusatzwortschatz (24. Oktober 2026)
+
+`word-packs-extra.js` ergänzt die unveränderten 1.470 Grundbegriffe um 1.159 ausgewählte Begriffe (gesamt 2.629 Kategorieeinträge). 445 Zusatzbegriffe wurden gegen den OpenThesaurus-Textdump vom 23.10.2026 abgeglichen; 714 wurden eigenständig ergänzt. Der Import übernimmt keine ungefilterten Synonymgruppen und keine Wörterbuchdefinitionen. Kategorien, Auswahl und Hilfswörter wurden für dieses Spiel erstellt; enge Synonyme zu vorhandenen Wörtern wurden bei der Auswahl aussortiert. Eine vollständige semantische Dublettenfreiheit wird nicht behauptet.
+
+- Quelle: https://www.openthesaurus.de/about/download (Daniel Naber und Mitwirkende).
+- Gewählte Lizenz des separat gehaltenen Zusatzpakets: LGPL-2.1-or-later, einschließlich unserer Datenbearbeitung und des Paket-Wrappers; keine Änderung der Lizenz des restlichen App-Codes.
+- Lizenztext: `assets/licenses/openthesaurus-LGPL-2.1.txt`.
+- Bearbeitbare Auswahl: `assets/words/word-imposter-extra.tsv`; reproduzierbar mit `python3 scripts/build_word_pack.py`.
+- Herkunft, Download-Prüfsumme, Änderungen und Abgleichlisten: `assets/words/word-imposter-source.json`.
+- Hinweis und Downloadlinks sind in `privacy.html` erreichbar; Dateien werden offline mitgeliefert. Kein API-Schlüssel, keine laufenden Dienstkosten, keine Netzwerkabfrage im Spiel.
 
 ## 9. Hosting / ausgelieferte Dateien
 

@@ -51,10 +51,22 @@
   function seed() {
     const available = items().map((_, i) => i).filter(i => !active.used.includes(i));
     if (!available.length) { active.used = []; return seed(); }
-    const index = available[randomInt(available.length)]; active.used.push(index);
+    const picked = window.SecretCircleCardMemory?.choose({ gameId, pack: active.pack }, items(), available, randomInt);
+    const index = Number.isInteger(picked) ? picked : available[randomInt(available.length)]; active.used.push(index);
     return [items()[index]];
   }
-  function initial(size) { return M.create(gameId, gameId === 'drawing-telephone' ? seed() : items(), size, randomInt); }
+  function initial(size) {
+    let pool = gameId === 'drawing-telephone' ? seed() : items();
+    if (gameId === 'three-rounds') {
+      const free = pool.map((_, i) => i), selected = [];
+      while (selected.length < size && free.length) {
+        const picked = window.SecretCircleCardMemory?.choose({ gameId, pack: active.pack }, pool, free, randomInt);
+        const index = Number.isInteger(picked) ? picked : free[randomInt(free.length)]; selected.push(pool[index]); free.splice(free.indexOf(index), 1);
+      }
+      pool = selected;
+    }
+    return M.create(gameId, pool, size, randomInt);
+  }
   function rememberTimer() {
     if (active?.current?.kind === 'three-rounds' && controls.remainingMilliseconds() > 0) active.current.remainingMs = Math.max(1, Math.ceil(controls.remainingMilliseconds()));
   }

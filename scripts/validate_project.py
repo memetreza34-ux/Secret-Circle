@@ -10,11 +10,11 @@ read=lambda relative:(ROOT/relative).read_text(encoding='utf-8')
 
 required=[
  'index.html','word-imposter.html','v2-hub.html','party.html','advanced.html','quick-play.html','creator.html','privacy.html','sw.js','manifest.webmanifest','package.json','package-lock.json','release-evidence.json',
- 'runtime-guard.js','privacy-guard.js','word-imposter-resume-guard.js','backup-schema-registry.js','party-data-tools.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js',
+ 'runtime-guard.js','privacy-guard.js','word-imposter-resume-guard.js','backup-schema-registry.js','party-data-tools.js','party-core-release-catalog.js','party-cards-viral-1.js','party-cards-viral-2.js','party-cards-viral-3.js','party-cards-mega-1.js','party-cards-mega-2.js','party-cards-mega-3.js','party-cards-quick-1.js','party-cards-quick-2.js','party-cards-quick-3.js','party-cards-hub-1.js','party-cards-hub-2.js','party-cards-hub-3.js','party-cards-wave-1.js','party-cards-wave-2.js','party-cards-wave-3.js','party-cards-viral-4.js','party-core-classic-content.js','party-routing.js',
  'party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js',
  'party-wave-one-modes.js','party-wave-one-imposter-modes.js','party-wave-one-writing-modes.js','party-wave-one-voting-modes.js','party-wave-one-bluff-modes.js','party-wave-one-clue-modes.js',
+ 'session-ledger.js','party-session-controls.js','party-hub-timers.js','card-memory.js','party-hub-round-state.js','party-hub.js','party-hub-polish.js','party-hub-resume-guard.js','party-hub-a11y.js',
  'party-classic-model.js','party-classic-drawing.js','party-classic-modes.js','v2-classics.css',
- 'session-ledger.js','party-session-controls.js','party-hub-timers.js','party-hub-round-state.js','party-hub.js','party-hub-polish.js','party-hub-resume-guard.js','party-hub-a11y.js',
  'advanced-resume-guard.js','advanced-privacy-guard.js','secondary-surface-a11y.js','tests/core-content-quality.test.js','tests/backup-schema-registry.test.js','tests/service-worker.test.js',
  'tests/word-imposter-data-contract.test.js','tests/party-hub-resume-guard.test.js','tests/party-wave-one-catalog.test.js','tests/party-wave-one-imposter-catalog.test.js','tests/party-wave-one-writing-catalog.test.js',
  'tests/party-wave-one-voting-catalog.test.js','tests/party-wave-one-bluff-catalog.test.js','tests/party-wave-one-clue-catalog.test.js','tests/e2e/wave-one-quiz.spec.js','tests/e2e/wave-one-imposter.spec.js',
@@ -55,15 +55,15 @@ def audit_html(relative,expected_scripts):
         if directive not in audit.csp: raise SystemExit(f'CSP directive missing in {relative}: {directive}')
     return source
 
-catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js']
-party=audit_html('party.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','session-ledger.js','party-session-controls.js','party-hub-timers.js','party-hub-round-state.js','party-hub.js','party-hub-plus.js','party-hub-polish.js','party-night.js','backup-schema-registry.js','party-data-tools.js'])
-quick=audit_html('quick-play.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','secondary-surface-a11y.js','quick-loader.js'])
-advanced=audit_html('advanced.html',['runtime-guard.js','party-catalog.js','party-expansion.js','party-routing.js','party-advanced.js','advanced-resume-guard.js','secondary-surface-a11y.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js'])
+catalog_chain=['party-catalog.js','party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-cards-viral-1.js','party-cards-viral-2.js','party-cards-viral-3.js','party-cards-mega-1.js','party-cards-mega-2.js','party-cards-mega-3.js','party-cards-quick-1.js','party-cards-quick-2.js','party-cards-quick-3.js','party-cards-hub-1.js','party-cards-hub-2.js','party-cards-hub-3.js','party-cards-wave-1.js','party-cards-wave-2.js','party-cards-wave-3.js','party-cards-viral-4.js','party-core-classic-content.js','party-routing.js','party-wave-one-catalog.js','party-wave-one-imposter-catalog.js','party-wave-one-writing-catalog.js','party-wave-one-voting-catalog.js','party-wave-one-bluff-catalog.js','party-classic-catalog.js','party-wave-one-clue-catalog.js']
+party=audit_html('party.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','session-ledger.js','party-session-controls.js','party-hub-timers.js','card-memory.js','party-hub-round-state.js','party-hub.js','party-hub-plus.js','party-hub-polish.js','party-night.js','backup-schema-registry.js','party-data-tools.js'])
+quick=audit_html('quick-play.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','secondary-surface-a11y.js','card-memory.js','quick-loader.js'])
+advanced=audit_html('advanced.html',['runtime-guard.js','party-catalog.js','party-expansion.js','party-routing.js','party-advanced.js','advanced-resume-guard.js','secondary-surface-a11y.js','card-memory.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js'])
 creator=audit_html('creator.html',['runtime-guard.js','game-creator.js','secondary-surface-a11y.js','creator-page.js'])
 audit_html('privacy.html',[])
 index=audit_html('index.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','v2-hub-packs.js','v2-hub.js'])
 if index != read('v2-hub.html'): raise SystemExit('Canonical root and v2-hub.html must expose the same home screen.')
-word=audit_html('word-imposter.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js','word-imposter-resume-guard.js','app.js'])
+word=audit_html('word-imposter.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','word-packs-extra.js','card-memory.js','data-store.js','word-imposter-resume-guard.js','app.js'])
 
 for marker in ('Euer Party-Hub · privat · lokal','Persönliche Inhalte sind freiwillig','party-classic-catalog.js','party-wave-one-clue-catalog.js','pause-hub-game','skip-hub-round'):
     if marker not in party: raise SystemExit(f'Party Hub release marker missing: {marker}')

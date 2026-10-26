@@ -44,7 +44,8 @@ test('game artwork loads locally in cards, banner and details with readable mobi
   await openV2(page);
   const artwork = {
     imposter: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen',
-    'truth-dare': 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt',
+    'truth-dare': 'Magier zeigt sein geheimes Hutfach, während eine Ziege mit einem Besen Luftgitarre spielt',
+    'never-have': 'Elefant hebt verlegen die Hand, weil er etwas schon erlebt hat; Flamingo und Mitspieler reagieren überrascht',
     mafia: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt'
   };
   async function expectArtwork(image, id) {
@@ -69,11 +70,39 @@ test('game artwork loads locally in cards, banner and details with readable mobi
     await openV2(page, '#spiel=' + id);
     await expectArtwork(page.locator('#mode-emblem img'), id);
   }
-  for (const id of ['never-have', 'most-likely']) {
+  for (const id of ['most-likely', 'would-rather']) {
     await openV2(page, '#spiel=' + id);
     await expect(page.locator('#mode-emblem svg')).toBeVisible();
     await expect(page.locator('#mode-emblem img')).toHaveCount(0);
   }
+});
+
+test('truth or dare image choices switch only the current detail image', async ({ page }) => {
+  await seedHub(page);
+  await openV2(page, '#spiel=truth-dare');
+  const choices = page.getByRole('group', { name: 'Bild auswählen' });
+  const broom = choices.getByRole('button', { name: 'Szene mit Besen' });
+  const cushions = choices.getByRole('button', { name: 'Szene mit Kissen' });
+  const image = page.locator('#mode-emblem img');
+  await expect(broom).toHaveAttribute('aria-pressed', 'true');
+  await expect(cushions).toHaveAttribute('aria-pressed', 'false');
+  await cushions.focus();
+  await page.keyboard.press('Enter');
+  await expect(cushions).toHaveAttribute('aria-pressed', 'true');
+  await expect(broom).toHaveAttribute('aria-pressed', 'false');
+  await expect(image).toHaveAttribute('src', 'assets/images/truth-dare-alternative.webp');
+  await expect(image).toHaveAttribute('alt', 'Magier legt seine Maske ab, während eine Ziege drei Kissen auf dem Kopf balanciert');
+  await expect.poll(() => image.evaluate(el => el.complete && el.naturalWidth === 800 && el.naturalHeight === 600)).toBe(true);
+  await broom.click();
+  await expect(image).toHaveAttribute('src', 'assets/images/truth-dare.webp');
+  await expect(broom).toHaveAttribute('aria-pressed', 'true');
+  await cushions.click();
+  await page.evaluate(() => { window.location.hash = 'spiel=imposter'; });
+  await expect(image).toHaveAttribute('src', 'assets/images/imposter.webp');
+  await expect(choices).toHaveCount(0);
+  await page.evaluate(() => { window.location.hash = 'spiel=truth-dare'; });
+  await expect(image).toHaveAttribute('src', 'assets/images/truth-dare.webp');
+  await expect(broom).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('games screen lists all 58 games in six non-empty colour worlds', async ({ page }) => {

@@ -12,7 +12,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 - kein Wave-1-Lab erweitert automatisch den Januar-Core
 
-Aktueller Offline-Core: **`secret-circle-v101` / `secret-circle-v101-staging`**
+Aktueller Offline-Core: **`secret-circle-v121` / `secret-circle-v121-staging`**
 Package: **`1.0.0-beta.3`**  
 Classic Content: **v4**  
 Core Source Review/Hardening: **15/15 PREPARED**  
@@ -75,7 +75,7 @@ Gemeinsame Verträge:
 - `party-release-structure.js` v5 klassifiziert alle zehn Wave-1-Modi als Labs
 - Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie Prozent/Bracket/Bluff/Clue
 - `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10 und v64
-- offline in `secret-circle-v101`
+- offline in `secret-circle-v121`
 
 Langfristige Planung: `APP_SPIELMODI_UND_THEMEN_ANLEITUNG.md` + `GAME_LIBRARY_BACKLOG.json`.
 
@@ -168,3 +168,11 @@ Draft-PR #15 bleibt der kontrollierte Main/Reconciliation-Kandidat und muss vor 
 **Feature-Scope für den Januar-Core nicht weiter aufblasen. Schwerpunkt ist jetzt reale Verifikation und Release-Evidence.**
 
 **Aktuell: NO_GO. PR #13 und PR #15 bleiben Draft.**
+
+## Inhaltsvorrat und Abwechslung (Arbeitsstand 25.10.2026)
+
+- 2.629 Word-Imposter-Kategorieeinträge / 2.609 verschiedene Wörter in 14 Kategorien; lokale Zusatzdateien mit Quellen- und Lizenznachweis.
+- 7.525 Zusatzkarten aus den vorbereiteten Kartenpaketen, dazu 112 Zeichenvorlagen und 240 Begriffe für die neuen Klassiker.
+- Gemeinsames Gedächtnis für bis zu 16.000 Inhaltsprüfsummen plus geschützter Wortbereich: ungespielte zulässige Inhalte zuerst, danach älteste passende Inhalte. Erkannte ähnliche Themen werden nach Möglichkeit abgewechselt.
+- Kategorie, Altersstufe, Auswahlpool und Spielregeln bleiben maßgeblich; Drei-Runden-Begrifferaten verwendet innerhalb einer Partie absichtlich denselben Stapel.
+- Keine Laufzeit-API und keine unbegrenzte Wiederholungsfreiheit. Gelöschter, voller oder blockierter Speicher kann die Erinnerung einschränken. Reale Gruppen-/Geräteabnahme bleibt offen.
