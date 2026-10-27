@@ -1,3 +1,8 @@
+## v125 – Imposter-Karte deutlich kennzeichnen (27. Oktober 2026)
+
+- Die aufgedeckte Imposter-Karte ist rot mit weißer Schrift. Verdeckte Karten bleiben neutral; beim Schließen oder automatischen Verdecken verschwindet auch die Rollenmarkierung.
+- Offline-Core v124 → v125.
+
 ## v124 – Ruhigere Kategorieauswahl (27. Oktober 2026)
 
 - In Word Imposter zeigt die Kategorieauswahl nur noch Namen und Auswahlmarkierung; die Begriffsanzahl entfällt. Wortbestand und Auswahlregeln bleiben unverändert.

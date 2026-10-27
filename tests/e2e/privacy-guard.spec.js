@@ -60,16 +60,37 @@ test('concealed card can be reopened with its secret restored and the round cont
 });
 
 test('normal card handoff removes the previous secret from the DOM', async ({ page }) => {
-  await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
-  await expect(page.locator('#word')).not.toHaveText('');
+  const state = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+  const secret = page.locator('#secret');
+  for (const [index, player] of state.revealOrder.entries()) {
+    await expect(secret).toBeHidden();
+    await expect(secret).not.toHaveCSS('background-color', 'rgb(168, 24, 50)');
+    await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
+    await expect(page.locator('#word')).not.toHaveText('');
+    if (state.imposters.includes(player)) {
+      await expect(secret).toHaveCSS('background-color', 'rgb(168, 24, 50)');
+      await expect(page.locator('#role')).toHaveText('Du bist Imposter');
+      await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+      await expect(secret).toBeHidden();
+      await expect(secret).not.toHaveCSS('background-color', 'rgb(168, 24, 50)');
+      await expect(page.locator('.role-imposter')).toHaveCount(0);
+      await page.getByRole('button', { name: 'Geheime Karte anzeigen' }).click();
+      await expect(secret).toHaveCSS('background-color', 'rgb(168, 24, 50)');
+    } else {
+      await expect(secret).not.toHaveCSS('background-color', 'rgb(168, 24, 50)');
+    }
 
-  await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
+    await page.getByRole('button', { name: 'Karte schließen und weitergeben' }).click();
 
-  await expect(page.locator('#secret')).toBeHidden();
-  await expect(page.locator('#role')).toHaveText('');
-  await expect(page.locator('#word')).toHaveText('');
-  await expect(page.locator('#hint-text')).toHaveText('');
-  await expect(page.locator('#reveal-progress')).toContainText('Karte 2 von 3');
+    await expect(secret).toBeHidden();
+    await expect(page.locator('#role')).toHaveText('');
+    await expect(page.locator('#word')).toHaveText('');
+    await expect(page.locator('#hint-text')).toHaveText('');
+    await expect(page.locator('.role-imposter')).toHaveCount(0);
+    if (index < state.revealOrder.length - 1) {
+      await expect(page.locator('#reveal-progress')).toContainText(`Karte ${index + 2} von 3`);
+    }
+  }
 });
 
 test('privacy guard exposes a frozen runtime contract', async ({ page }) => {

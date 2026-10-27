@@ -465,7 +465,7 @@
   text-align: center;
 }
 
-/* Verdeckte Karte: dunkle Rückseite, erst nach dem Tippen weiß. */
+/* Verdeckte Karte bleibt unabhängig von der Rolle neutral. */
 .shell .card-button {
   width: 100%;
   min-height: 220px;
@@ -494,6 +494,9 @@
 /* Lange Begriffe trennen statt mitten im Wort umzubrechen. */
 .secret strong { max-width: 100%; font: 400 clamp(1.7rem, 8.5vw, 3.2rem)/1.05 var(--display); text-transform: uppercase; overflow-wrap: break-word; hyphens: auto; }
 .secret small { max-width: 32ch; font-size: .9rem; opacity: .7; }
+.secret:not([hidden]):has(.role-imposter) { background: #A81832; color: #fff; }
+.secret:has(.role-imposter) p,
+.secret:has(.role-imposter) small { opacity: 1; }
 #next-player { width: 100%; }
 
 #round-screen > p:not(.eyebrow) { color: var(--fg-dim); }

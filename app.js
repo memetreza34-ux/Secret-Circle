@@ -323,7 +323,10 @@ function revealCard() {
   const player = game.revealOrder[game.revealIndex];
   const role = E.roleFor(game, player);
   cardVisible = true;
-  $('#role').textContent = role.label;
+  const roleLabel = document.createElement('span');
+  roleLabel.textContent = role.label;
+  if (role.isImposter) roleLabel.className = 'role-imposter';
+  $('#role').replaceChildren(roleLabel);
   $('#word').textContent = role.value;
   $('#hint-text').textContent = role.instruction;
   $('#secret').hidden = false;

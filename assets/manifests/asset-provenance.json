@@ -276,6 +276,36 @@
       "derivedFrom": null,
       "dimensions": "1280x900",
       "notes": "Nur PR-Dokumentation, nicht im Offline-Core. Das bereits eingebundene KI-generierte Chamäleonmotiv wurde unverändert verwendet."
+    },
+    {
+      "path": "docs/screenshots/word-imposter-rot-handy.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2; WebP-Export mit Pillow",
+      "source": "Lokaler Screenshot der eigenen roten Imposter-Karte, synthetische Testnamen, 27. Oktober 2026.",
+      "createdAt": "2026-10-27",
+      "sha256": "5670c2bf0b2f8b809a90f1e823966b3c1afd97a7192ed53f6ba6dcd0c5905322",
+      "license": "Screenshot der eigenen App; bestehendes freigegebenes Spielmotiv gemäß dessen Provenienzeintrag.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "375x812",
+      "notes": "Nur PR-Dokumentation, nicht im Offline-Core. Bestehendes KI-generiertes Chamäleonmotiv unverändert."
+    },
+    {
+      "path": "docs/screenshots/word-imposter-rot-desktop.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2; WebP-Export mit Pillow",
+      "source": "Lokaler Screenshot der eigenen roten Imposter-Karte, synthetische Testnamen, 27. Oktober 2026.",
+      "createdAt": "2026-10-27",
+      "sha256": "4013d95f000f12630750c442fc65d17e49f52ba7ff8959c1fc7f90e09d799fd9",
+      "license": "Screenshot der eigenen App; bestehendes freigegebenes Spielmotiv gemäß dessen Provenienzeintrag.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "1280x900",
+      "notes": "Nur PR-Dokumentation, nicht im Offline-Core. Bestehendes KI-generiertes Chamäleonmotiv unverändert."
     }
   ]
 }

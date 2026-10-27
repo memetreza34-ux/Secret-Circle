@@ -127,3 +127,5 @@ Zwei eigene Browser-Screenshots unter `docs/screenshots/klassiker-zeichnen-*.web
 ### Word-Imposter-Schnellstart – 26. Oktober 2026
 
 Zwei eigene UI-Screenshots unter `docs/screenshots/word-schnellstart-*.webp` dokumentieren Handy (375 × 812) und Desktop (1280 × 900). Synthetische Testnamen; bestehendes freigegebenes Chamäleonmotiv unverändert, keine neue Illustration. Prüfsummen und Abmessungen stehen im Provenienzmanifest. Nur PR-Dokumentation, kein zusätzlicher Offline-Download.
+
+Zwei ergänzende UI-Screenshots unter `docs/screenshots/word-imposter-rot-*.webp` dokumentieren die rote Imposter-Karte in denselben Auflösungen (27. Oktober 2026). Dieselbe Herkunft und Nutzung als PR-Dokumentation; keine neue Spielillustration und kein zusätzlicher Offline-Download.

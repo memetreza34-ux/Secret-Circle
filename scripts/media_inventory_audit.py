@@ -13,6 +13,8 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/screenshots/word-imposter-rot-handy.webp',
+    'docs/screenshots/word-imposter-rot-desktop.webp',
     'docs/screenshots/klassiker-zeichnen-desktop.webp',
     'docs/screenshots/word-schnellstart-handy.webp',
     'docs/screenshots/word-schnellstart-desktop.webp',
