@@ -39,6 +39,7 @@ test.describe('58/58 – reale Startwege und erste aktive Szene', () => {
       }, { players: playerNames.slice(0, amount) });
 
       await page.goto('/#spiel=' + encodeURIComponent(game.id));
+      if (game.id !== 'imposter') {
       await expect(page.locator('[data-screen="mode"]')).toBeVisible();
       await expect(page.locator('#mode-title')).toHaveText(game.title);
       await expect(page.locator('#mode-steps li').first()).toBeVisible();
@@ -46,6 +47,13 @@ test.describe('58/58 – reale Startwege und erste aktive Szene', () => {
       const banner = page.locator('.pwa-update-banner:visible');
       if (await banner.count()) await banner.getByRole('button', { name: 'Später' }).click();
       await page.locator('#start-btn').click();
+
+      } else {
+        await expect(page).toHaveURL(/word-imposter\.html\?from=v2$/);
+        await expect(page.getByRole('heading', { name: game.title, exact: true })).toBeVisible();
+        await page.getByText('Spielregeln und Punkte', { exact: true }).click();
+        await expect(page.locator('.help-grid li').first()).toBeVisible();
+      }
 
       const pathname = new URL(page.url()).pathname;
       if (pathname.endsWith('/party.html')) {

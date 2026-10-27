@@ -67,8 +67,14 @@ test('game artwork loads locally in cards, banner and details with readable mobi
     await expectArtwork(card.locator('img'), id);
   }
   for (const id of Object.keys(artwork)) {
-    await openV2(page, '#spiel=' + id);
-    await expectArtwork(page.locator('#mode-emblem img'), id);
+    if (id === 'imposter') {
+      await page.goto('/v2-hub.html#spiel=imposter');
+      await expect(page).toHaveURL(/word-imposter\.html\?from=v2$/);
+      await expectArtwork(page.locator('.wi-art'), id);
+    } else {
+      await openV2(page, '#spiel=' + id);
+      await expectArtwork(page.locator('#mode-emblem img'), id);
+    }
   }
   for (const id of ['most-likely', 'would-rather']) {
     await openV2(page, '#spiel=' + id);
@@ -98,9 +104,10 @@ test('truth or dare image choices switch only the current detail image', async (
   await expect(broom).toHaveAttribute('aria-pressed', 'true');
   await cushions.click();
   await page.evaluate(() => { window.location.hash = 'spiel=imposter'; });
-  await expect(image).toHaveAttribute('src', 'assets/images/imposter.webp');
+  await expect(page).toHaveURL(/word-imposter\.html\?from=v2$/);
+  await expect(page.locator('.wi-art')).toHaveAttribute('src', 'assets/images/imposter.webp');
   await expect(choices).toHaveCount(0);
-  await page.evaluate(() => { window.location.hash = 'spiel=truth-dare'; });
+  await openV2(page, '#spiel=truth-dare');
   await expect(image).toHaveAttribute('src', 'assets/images/truth-dare.webp');
   await expect(broom).toHaveAttribute('aria-pressed', 'true');
 });

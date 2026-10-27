@@ -73,7 +73,7 @@
     avatar.className = 'avatar';
     avatar.setAttribute('aria-hidden', 'true');
     input.value = name;
-    input.maxLength = 30;
+    input.maxLength = 32;
     input.autocomplete = 'off';
     input.enterKeyHint = 'next';
     input.placeholder = 'Name';
@@ -180,7 +180,8 @@
     }
 
     const imposterCount = Number(impostersField.value);
-    const validPlayers = duplicateCount === 0 && uniqueCount >= 3 && uniqueCount <= 20;
+    const longName = names.some(name => name.length > 32);
+    const validPlayers = !longName && duplicateCount === 0 && uniqueCount >= 3 && uniqueCount <= 20;
     const validImposters = Number.isInteger(imposterCount) && imposterCount >= 1 && imposterCount <= maximumImposters;
 
     playersField.setAttribute('aria-invalid', String(!validPlayers));
@@ -190,7 +191,9 @@
       startButton.setAttribute('aria-disabled', String(startButton.disabled));
     }
 
-    if (duplicateCount > 0) {
+    if (longName) {
+      playersHelp.textContent = 'Namen dürfen höchstens 32 Zeichen haben.';
+    } else if (duplicateCount > 0) {
       playersHelp.textContent = `${uniqueCount} eindeutige Personen erkannt. ${duplicateCount} doppelter Name muss korrigiert werden.`;
     } else if (uniqueCount < 3) {
       playersHelp.textContent = `${uniqueCount} von mindestens 3 Personen erkannt.`;

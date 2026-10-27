@@ -14,6 +14,8 @@ IGNORED_DIRS = {
 }
 EXPECTED_CURRENT_MEDIA = {
     'docs/screenshots/klassiker-zeichnen-desktop.webp',
+    'docs/screenshots/word-schnellstart-handy.webp',
+    'docs/screenshots/word-schnellstart-desktop.webp',
     'docs/screenshots/klassiker-zeichnen-handy.webp',
     'icon.svg', 'icon-192.png', 'icon-512.png',
     'assets/images/imposter.webp',

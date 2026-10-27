@@ -1,3 +1,11 @@
+## v123 – Word Imposter einmal einrichten und direkt starten (26. Oktober 2026)
+
+- Word Imposter führt aus Katalog, Empfehlung und altem Detail-Link direkt in eine gemeinsame Einrichtung; die zusätzliche Spielinfo-/Spieler-Runde entfällt.
+- Kompakter Kopf mit bestehendem Spielmotiv, direkt änderbare Namen, Kategorie, eingeklappte Zusatzoptionen und ständig erreichbarer Startknopf.
+- Auch unvollständige gemeinsame Gruppen können direkt ergänzt werden; gelöschte Namen bleiben gelöscht. Die Startgrenzen und unabhängigen Namen laufender Partien bleiben erhalten.
+- Vor dem Ersetzen einer gespeicherten Partie ist eine ausdrückliche Entscheidung nötig; Ablehnen verändert weder Spielstand noch Wortgedächtnis.
+- Offline-Core v121 → v123; zwei eigene Dokumentationsscreenshots mit Provenienz, kein neues Spielmotiv.
+
 ## v121 – Gemeinsamer Inhaltsstand und Wiederholungsschutz (25. Oktober 2026)
 
 - 26. Oktober: Wiederholbarer Browser-Updatecheck für echte v99-/v119-Installationen mit kontrolliertem Installationsabbruch, Datenerhalt und bytegenauem Zielcache. Testwerkzeuge und Nachweise betreffen keine Offline-Core-Datei; Cachegeneration bleibt v121.

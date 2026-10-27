@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-14",
+  "updatedAt": "2026-10-26",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -246,6 +246,36 @@
       "derivedFrom": null,
       "dimensions": "375x1645",
       "notes": "PR-Dokumentation; kein Laufzeit-Asset und nicht im Offline-Core."
+    },
+    {
+      "path": "docs/screenshots/word-schnellstart-handy.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2; WebP-Export mit cwebp",
+      "source": "Lokaler Screenshot der eigenen Word-Imposter-Einrichtung, synthetische Testnamen, 26. Oktober 2026.",
+      "createdAt": "2026-10-26",
+      "sha256": "7f37f2e68b145d36b584953d573b498aead5137a6e5045b8c323fdd1c8f48a65",
+      "license": "Screenshot der eigenen App; bestehendes freigegebenes Spielmotiv gemäß dessen Provenienzeintrag.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "375x812",
+      "notes": "Nur PR-Dokumentation, nicht im Offline-Core. Das bereits eingebundene KI-generierte Chamäleonmotiv wurde unverändert verwendet."
+    },
+    {
+      "path": "docs/screenshots/word-schnellstart-desktop.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright Chromium 1.54.2; WebP-Export mit cwebp",
+      "source": "Lokaler Screenshot der eigenen Word-Imposter-Einrichtung, synthetische Testnamen, 26. Oktober 2026.",
+      "createdAt": "2026-10-26",
+      "sha256": "9d6215bc46c93eb4bbc74cf59e2e46c2437c9d15f1cc74284764440989ec9e27",
+      "license": "Screenshot der eigenen App; bestehendes freigegebenes Spielmotiv gemäß dessen Provenienzeintrag.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "1280x900",
+      "notes": "Nur PR-Dokumentation, nicht im Offline-Core. Das bereits eingebundene KI-generierte Chamäleonmotiv wurde unverändert verwendet."
     }
   ]
 }

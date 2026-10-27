@@ -123,3 +123,7 @@ Der frühere **Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeord
 ## Ergänzung 25.10.2026 – Klassiker-Ansicht
 
 Zwei eigene Browser-Screenshots unter `docs/screenshots/klassiker-zeichnen-*.webp`, samt Prüfsummen und Abmessungen im Provenienzmanifest. Nur Dokumentation; keine neuen Spielillustrationen und keine zusätzlichen Offline-Medien.
+
+### Word-Imposter-Schnellstart – 26. Oktober 2026
+
+Zwei eigene UI-Screenshots unter `docs/screenshots/word-schnellstart-*.webp` dokumentieren Handy (375 × 812) und Desktop (1280 × 900). Synthetische Testnamen; bestehendes freigegebenes Chamäleonmotiv unverändert, keine neue Illustration. Prüfsummen und Abmessungen stehen im Provenienzmanifest. Nur PR-Dokumentation, kein zusätzlicher Offline-Download.
