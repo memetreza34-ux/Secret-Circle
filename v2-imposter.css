@@ -595,4 +595,3 @@
 .category-row[aria-pressed="true"] { border-color: var(--fg); color: var(--fg); }
 .category-row[aria-pressed="true"]::before { border-color: var(--fg); background: var(--fg); box-shadow: inset 0 0 0 4px var(--surface); }
 .category-name { flex: 1; }
-.category-count { color: var(--fg-dim); font-size: .82rem; font-weight: 600; font-variant-numeric: tabular-nums; }

@@ -101,15 +101,6 @@ function renderCategories() {
 }
 
 /* Kategorie als eigene Seite: #category bleibt das Datenfeld, die Seite schreibt hinein. */
-function categoryCount(id) {
-  if (id === 'all') return Object.values(WORDS).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
-  return Array.isArray(WORDS[id]) ? WORDS[id].length : 0;
-}
-/* Große Mengen abgerundet und ehrlich: 105 → „Über 100 Begriffe“, 1470 → „Über 1400 Begriffe“. */
-function categoryCountLabel(count) {
-  const rounded = Math.floor(count / 100) * 100;
-  return rounded >= 100 && count > rounded ? `Über ${rounded} Begriffe` : `${count} Begriffe`;
-}
 function updateCategoryValue() {
   $('#category-value').textContent = $('#category').selectedOptions[0]?.textContent || 'Gemischt';
 }
@@ -124,13 +115,6 @@ function openCategories() {
     name.className = 'category-name';
     name.textContent = option.textContent;
     row.append(name);
-    const count = categoryCount(option.value);
-    if (count) {
-      const label = document.createElement('span');
-      label.className = 'category-count';
-      label.textContent = categoryCountLabel(count);
-      row.append(label);
-    }
     row.addEventListener('click', () => {
       select.value = option.value;
       select.dispatchEvent(new Event('change', { bubbles: true }));

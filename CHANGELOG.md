@@ -1,3 +1,8 @@
+## v124 – Ruhigere Kategorieauswahl (27. Oktober 2026)
+
+- In Word Imposter zeigt die Kategorieauswahl nur noch Namen und Auswahlmarkierung; die Begriffsanzahl entfällt. Wortbestand und Auswahlregeln bleiben unverändert.
+- Offline-Core v123 → v124.
+
 ## v123 – Word Imposter einmal einrichten und direkt starten (26. Oktober 2026)
 
 - Word Imposter führt aus Katalog, Empfehlung und altem Detail-Link direkt in eine gemeinsame Einrichtung; die zusätzliche Spielinfo-/Spieler-Runde entfällt.

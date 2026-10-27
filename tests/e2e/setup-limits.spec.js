@@ -43,8 +43,8 @@ test('category opens its own page, applies the choice and returns focus', async 
   await expect(page.locator('#category-title')).toBeFocused();
   await expect(sheet.locator('.category-row')).toHaveCount(await page.locator('#category option').count());
   await expect(sheet.getByRole('button', { name: /^Gemischt/ })).toHaveAttribute('aria-pressed', 'true');
-  await expect(sheet.getByRole('button', { name: /^Gemischt/ })).toContainText('Über 2600 Begriffe');
-  await expect(sheet.getByRole('button', { name: /^Tiere/ })).toContainText('Über 100 Begriffe');
+  await expect(sheet.getByRole('button', { name: 'Gemischt', exact: true })).toHaveText('Gemischt');
+  await expect(sheet.getByRole('button', { name: 'Tiere', exact: true })).toHaveText('Tiere');
   expect(await page.evaluate(() => document.querySelector('.shell').inert)).toBe(true);
 
   await sheet.getByRole('button', { name: /^Tiere/ }).click();
