@@ -21,7 +21,6 @@
   padding: calc(var(--safe-top) + 14px) 0 calc(var(--safe-bot) + 40px);
 }
 
-/* ── Kopf ────────────────────────────────────────────────────────────── */
 
 .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 .back-link {
@@ -48,13 +47,14 @@
 }
 .connection.offline { color: var(--signal); }
 
-.wi-brand { margin-bottom: 18px; }
+.wi-brand { display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 14px; margin-bottom: 18px; }
+.wi-art { width: 88px; height: 88px; object-fit: cover; border-radius: 18px; }
 .wi-brand h1 {
   margin: 4px 0 0;
-  font: 400 clamp(2.1rem, 9vw, 3.4rem)/1 var(--display);
+  font: 400 clamp(1.55rem, 6vw, 2.1rem)/1 var(--display);
   text-transform: uppercase;
 }
-.wi-lede { margin: 10px 0 0; color: var(--fg-dim); text-wrap: pretty; }
+.wi-lede { margin: 6px 0 0; color: var(--fg-dim); text-wrap: pretty; }
 /* Während der Runde zählt der Platz: Einleitung nur auf der Einrichtung. */
 .shell:has(#setup-screen[hidden]) .wi-lede { display: none; }
 
@@ -67,11 +67,11 @@
   text-transform: uppercase;
 }
 .status { min-height: 1.4em; margin: 0 0 12px; color: var(--ok); font-weight: 700; text-align: center; }
+.status:empty { min-height: 0; margin: 0; }
 .status.error { color: var(--signal); }
 .muted { color: var(--fg-dim); font-size: .86rem; }
 .error { color: var(--signal); }
 
-/* ── Flächen ─────────────────────────────────────────────────────────── */
 
 .card {
   padding: clamp(20px, 5vw, 30px);
@@ -93,7 +93,6 @@
 .card p { line-height: 1.55; }
 .card > .eyebrow { margin-bottom: 8px; color: var(--signal); }
 
-/* ── Formular ────────────────────────────────────────────────────────── */
 
 .shell label { display: grid; gap: 8px; margin: 14px 0; font-size: .88rem; font-weight: 700; }
 .shell textarea,
@@ -121,7 +120,6 @@
 .shell textarea:hover,
 .shell select:hover,
 .shell input:hover { border-color: #ffffff3d; }
-/* ── Knöpfe ──────────────────────────────────────────────────────────── */
 
 .shell button,
 .button-link {
@@ -159,7 +157,6 @@
 .actions > * { flex: 1 1 200px; }
 .text-button { width: 100%; margin-top: 12px; }
 
-/* ── Einrichtung ─────────────────────────────────────────────────────── */
 
 .shell .resume {
   display: grid;
@@ -240,7 +237,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 54px;
+  min-height: 48px;
   padding: 0 4px 0 10px;
   border: 1px solid transparent;
   border-radius: 16px;
@@ -252,8 +249,8 @@
   display: grid;
   place-items: center;
   flex: none;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   color: #0A0B0F;
   font-size: .95rem;
@@ -286,7 +283,7 @@
 .shell .player-list button:hover { background: #ffffff12; color: var(--fg); }
 .shell .add-player {
   width: 100%;
-  min-height: 54px;
+  min-height: 48px;
   justify-content: flex-start;
   gap: 12px;
   padding: 0 14px 0 10px;
@@ -300,8 +297,8 @@
   content: '+';
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: var(--fg);
   color: #0A0B0F;
@@ -315,7 +312,7 @@
 .shell .add-player:disabled { border-style: dashed; box-shadow: none; }
 
 /* Einstellungen als Zeilen: Name links, Wert rechts */
-.settings-list { margin: 24px 0 22px; border-top: 1px solid var(--line); }
+.settings-list { margin: 18px 0 0; border-top: 1px solid var(--line); }
 /* Die Grundauswahl bleibt sichtbar; nur Optionen für erfahrene Runden sind einklappbar. */
 .advanced-settings { border-bottom: 1px solid var(--line); }
 .advanced-settings > summary {
@@ -439,11 +436,12 @@
 .segmented input:focus-visible + span { outline: 3px solid var(--fg); outline-offset: 2px; }
 .setting-caption { color: var(--fg-dim); font-size: .84rem; font-weight: 600; }
 
+#setup-screen { padding: 0 0 100px; border: 0; background: none; }
+.setup-dock { position: fixed; inset: auto 16px 0; z-index: 20; max-width: 640px; margin: auto; padding: 12px 0 calc(var(--safe-bot) + 14px); border-top: 1px solid var(--line); background: var(--bg); }
 #start { width: 100%; min-height: 56px; font-size: 1.05rem; }
-.setup-more { margin-top: 14px; }
+.setup-more { margin-top: 0; }
 .setup-more .help-panel { margin-top: 0; border-bottom: 0; }
 
-/* ── Runde ───────────────────────────────────────────────────────────── */
 
 #reveal-screen,
 #vote-screen,
@@ -467,7 +465,7 @@
   text-align: center;
 }
 
-/* Verdeckte Karte: dunkle Rückseite, erst nach dem Tippen weiß. */
+/* Verdeckte Karte bleibt unabhängig von der Rolle neutral. */
 .shell .card-button {
   width: 100%;
   min-height: 220px;
@@ -496,6 +494,9 @@
 /* Lange Begriffe trennen statt mitten im Wort umzubrechen. */
 .secret strong { max-width: 100%; font: 400 clamp(1.7rem, 8.5vw, 3.2rem)/1.05 var(--display); text-transform: uppercase; overflow-wrap: break-word; hyphens: auto; }
 .secret small { max-width: 32ch; font-size: .9rem; opacity: .7; }
+.secret:not([hidden]):has(.role-imposter) { background: #A81832; color: #fff; }
+.secret:has(.role-imposter) p,
+.secret:has(.role-imposter) small { opacity: 1; }
 #next-player { width: 100%; }
 
 #round-screen > p:not(.eyebrow) { color: var(--fg-dim); }
@@ -555,14 +556,12 @@
 .shell #next-round[hidden] + .secondary { border-color: transparent; background: var(--fg); color: #000; }
 
 
-/* ── Datenschutzseite ────────────────────────────────────────────────── */
 
 .legal-shell { width: min(760px, calc(100% - 32px)); }
 .legal-card h1 { margin: 6px 0 18px; font: 400 clamp(1.9rem, 7vw, 3rem)/1.05 var(--display); text-transform: uppercase; }
 .legal-card h2 { margin: 30px 0 8px; font-size: clamp(1.1rem, 4.5vw, 1.35rem); }
 .legal-card p { color: #ffffffc7; line-height: 1.7; }
 
-/* ── Anpassungen ─────────────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
   .help-grid { grid-template-columns: 1fr; }
@@ -599,4 +598,3 @@
 .category-row[aria-pressed="true"] { border-color: var(--fg); color: var(--fg); }
 .category-row[aria-pressed="true"]::before { border-color: var(--fg); background: var(--fg); box-shadow: inset 0 0 0 4px var(--surface); }
 .category-name { flex: 1; }
-.category-count { color: var(--fg-dim); font-size: .82rem; font-weight: 600; font-variant-numeric: tabular-nums; }

@@ -101,15 +101,6 @@ function renderCategories() {
 }
 
 /* Kategorie als eigene Seite: #category bleibt das Datenfeld, die Seite schreibt hinein. */
-function categoryCount(id) {
-  if (id === 'all') return Object.values(WORDS).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
-  return Array.isArray(WORDS[id]) ? WORDS[id].length : 0;
-}
-/* Große Mengen abgerundet und ehrlich: 105 → „Über 100 Begriffe“, 1470 → „Über 1400 Begriffe“. */
-function categoryCountLabel(count) {
-  const rounded = Math.floor(count / 100) * 100;
-  return rounded >= 100 && count > rounded ? `Über ${rounded} Begriffe` : `${count} Begriffe`;
-}
 function updateCategoryValue() {
   $('#category-value').textContent = $('#category').selectedOptions[0]?.textContent || 'Gemischt';
 }
@@ -124,13 +115,6 @@ function openCategories() {
     name.className = 'category-name';
     name.textContent = option.textContent;
     row.append(name);
-    const count = categoryCount(option.value);
-    if (count) {
-      const label = document.createElement('span');
-      label.className = 'category-count';
-      label.textContent = categoryCountLabel(count);
-      row.append(label);
-    }
     row.addEventListener('click', () => {
       select.value = option.value;
       select.dispatchEvent(new Event('change', { bubbles: true }));
@@ -200,17 +184,16 @@ function restoreSettings() {
 function groupPlayers() {
   try {
     const hub = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
-    if (!hub || hub.version !== 1 || !Array.isArray(hub.players)) return [];
+    if (!hub || hub.version !== 1 || !Array.isArray(hub.players)) return null;
     const names = hub.players.map(value => typeof value === 'string' ? value.normalize('NFKC').trim().replace(/\s+/g, ' ') : '');
-    if (names.length < E.MIN_PLAYERS || names.length > E.MAX_PLAYERS) return [];
-    if (names.some(name => !name || name.length > 30)) return [];
-    if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return [];
+    if (names.length > E.MAX_PLAYERS || names.some(name => !name || name.length > 32)) return null;
+    if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return null;
     return names;
-  } catch { return []; }
+  } catch { return null; }
 }
 function updateGroupImport() {
   const button = $('#import-group-players');
-  const names = groupPlayers();
+  const names = groupPlayers() || [];
   const current = $('#players').value.split(/\n|,/).map(name => name.trim().replace(/\s+/g, ' ')).filter(Boolean);
   button.hidden = !names.length || (current.length === names.length && current.every((name, index) => name === names[index]));
 }
@@ -220,20 +203,20 @@ function setupPlayers() {
 function sameNames(a, b) {
   return a.length === b.length && a.every((name, index) => name === b[index]);
 }
-/* Beim Öffnen gilt die Gruppe; ungültige Gruppen (zu klein, doppelt, zu lang) bleiben außen vor. */
+/* Auch unvollständige Gruppen lassen sich hier ergänzen; leere Listen bleiben leer. */
 function useGroupPlayers() {
   const names = groupPlayers();
-  if (!names.length || sameNames(names, setupPlayers())) return;
+  if (!names || sameNames(names, setupPlayers())) return;
   $('#players').value = names.join('\n');
   $('#players').dispatchEvent(new Event('input', { bubbles: true }));
 }
 /* Gültige Änderungen hier landen in der gemeinsamen Gruppe; alle anderen Hub-Daten bleiben unverändert. */
 function shareSetupPlayers() {
   const names = setupPlayers();
-  if (names.length < E.MIN_PLAYERS || names.length > E.MAX_PLAYERS) return;
-  if (names.some(name => name.length > 30)) return;
+  if (names.length > E.MAX_PLAYERS) return;
+  if (names.some(name => name.length > 32)) return;
   if (new Set(names.map(name => name.toLocaleLowerCase('de-DE'))).size !== names.length) return;
-  if (sameNames(names, groupPlayers())) return;
+  if (sameNames(names, groupPlayers() || [])) return;
   try {
     const stored = JSON.parse(localStorage.getItem('secret-circle-party-hub-v1'));
     const hub = stored && typeof stored === 'object' && !Array.isArray(stored) && stored.version === 1
@@ -245,7 +228,7 @@ function shareSetupPlayers() {
 }
 function importGroupPlayers() {
   const names = groupPlayers();
-  if (!names.length) return;
+  if (!names?.length) return;
   $('#players').value = names.join('\n');
   $('#players').dispatchEvent(new Event('input', { bubbles: true }));
   $('#group-import-note').textContent = names.length + ' Spieler aus deiner Gruppe übernommen.';
@@ -296,10 +279,13 @@ function startGame() {
   setStatus();
   try {
     const values = setupValues();
+    const saved = read(KEYS.active, null);
+    if (saved && saved.phase !== 'completed' && !confirm('Eine Partie ist noch gespeichert. Verwerfen und neues Spiel starten?')) return;
     game = E.createGame({ ...createRoundOptions(values), usedWords: recentWords() });
     cardVisible = false;
     voteIndex = 0;
     lastPersistedTimerSecond = null;
+    shareSetupPlayers();
     saveSettings();
     saveGame();
     showGame();
@@ -337,7 +323,10 @@ function revealCard() {
   const player = game.revealOrder[game.revealIndex];
   const role = E.roleFor(game, player);
   cardVisible = true;
-  $('#role').textContent = role.label;
+  const roleLabel = document.createElement('span');
+  roleLabel.textContent = role.label;
+  if (role.isImposter) roleLabel.className = 'role-imposter';
+  $('#role').replaceChildren(roleLabel);
   $('#word').textContent = role.value;
   $('#hint-text').textContent = role.instruction;
   $('#secret').hidden = false;

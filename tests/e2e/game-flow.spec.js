@@ -115,11 +115,14 @@ test('Word Imposter uses the shared group and writes valid edits back to it', as
   expect(shared.players).toEqual(['Nora', 'Lea', 'Ole']);
   expect(shared.favorites).toEqual(['truth-dare']);
 
-  /* Ungültige Zwischenstände (zu wenige Namen, doppelte Namen) ändern die Gruppe nicht. */
+  /* Unvollständige Gruppen bleiben bearbeitbar; doppelte Namen dürfen sie nicht überschreiben. */
   await page.locator('#players').fill('Nora\nLea');
+  await expect(page.locator('#start')).toBeDisabled();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')).players)).toEqual(['Nora', 'Lea']);
   await page.locator('#players').fill('Nora\nnora\nLea');
   const unchanged = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-party-hub-v1')));
-  expect(unchanged.players).toEqual(['Nora', 'Lea', 'Ole']);
+  expect(unchanged.players).toEqual(['Nora', 'Lea']);
+  expect(unchanged.favorites).toEqual(['truth-dare']);
 
   await page.locator('#players').fill('Nora\nLea\nOle');
   await expect(page.locator('#start')).toBeEnabled();

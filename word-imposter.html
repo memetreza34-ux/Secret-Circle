@@ -23,8 +23,8 @@
   <a class="skip-link" href="#setup-screen">Zum Spiel springen</a>
   <main class="shell">
     <header>
-      <div class="topbar"><a class="back-link" href="v2-hub.html">← Alle Spiele</a><span id="connection" class="connection" hidden>Offline-Modus</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
-      <div class="wi-brand"><h1>Word Imposter</h1><p class="wi-lede">Begriffe verteilen, Hinweise geben, abstimmen und Punkte sammeln.</p></div>
+      <div class="topbar"><a class="back-link" href="v2-hub.html#spiele">← Alle Spiele</a><span id="connection" class="connection" hidden>Offline-Modus</span><button id="install-app" class="secondary compact" type="button" hidden>App installieren</button></div>
+      <div class="wi-brand"><img class="wi-art" src="assets/images/imposter.webp" width="88" height="88" alt="Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen"><div><h1>Word Imposter</h1><p class="wi-lede">Findet heraus, wer euren Begriff nicht kennt.</p></div></div>
     </header>
     <p id="status" class="status" role="status" aria-live="polite"></p>
 
@@ -66,8 +66,6 @@
         </details>
       </div>
 
-      <button id="start" type="button">Spiel starten</button>
-
       <div class="setup-more">
         <details class="help-panel">
           <summary>Spielregeln und Punkte</summary>
@@ -77,6 +75,7 @@
           </div>
         </details>
       </div>
+      <div class="setup-dock"><button id="start" type="button">Spiel starten</button></div>
     </section>
 
     <section id="reveal-screen" class="card" data-screen hidden tabindex="-1" aria-labelledby="player-name">

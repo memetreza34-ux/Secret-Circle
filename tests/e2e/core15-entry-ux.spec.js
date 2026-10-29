@@ -54,6 +54,17 @@ for (const { id, engine } of CORE) {
     }, [HUB_KEY, PLAYERS]);
 
     await page.goto(`/v2-hub.html#spiel=${id}`);
+    if (engine === 'word') {
+      await expect(page).toHaveURL(/\/word-imposter\.html\?from=v2$/);
+      await expect(page.locator('#setup-screen')).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
+      await page.getByText('Spielregeln und Punkte', { exact: true }).click();
+      await expect(page.locator('.help-grid li').first()).toBeVisible();
+      await expect(page.locator('#start')).toBeEnabled();
+      await page.locator('#start').click();
+      await expect(page.locator('#reveal-screen')).toBeVisible();
+      await expect(page.locator('#secret')).toBeHidden();
+    } else {
     await expect(page.locator('[data-screen="mode"]')).toBeVisible();
     await expect(page.locator('#mode-title')).not.toBeEmpty();
     await expect(page.locator('#mode-sub')).not.toBeEmpty();
@@ -64,11 +75,7 @@ for (const { id, engine } of CORE) {
     if (await updateNotice.count()) await updateNotice.getByRole('button', { name: 'Später' }).click();
     await page.locator('#start-btn').click();
 
-    if (engine === 'word') {
-      await expect(page).toHaveURL(/\/word-imposter\.html$/);
-      await expect(page.locator('#setup-screen')).toBeVisible();
-      await expect(page.getByRole('button', { name: 'Spiel starten' })).toBeVisible();
-    } else if (engine === 'advanced') {
+    if (engine === 'advanced') {
       await expect(page).toHaveURL(new RegExp(`/advanced\\.html\\?game=${id}$`));
       await expect(page.locator('#advanced-start')).toBeVisible();
       await expect(page.locator('#advanced-pack')).toBeVisible();
@@ -76,6 +83,7 @@ for (const { id, engine } of CORE) {
       await expect(page).toHaveURL(/\/party\.html\?from=v2$/);
       await expect(page.locator('#play-layer')).toBeVisible();
       await expect(page.locator('#finish-hub-game')).toBeVisible();
+    }
     }
     expect(errors).toEqual([]);
   });

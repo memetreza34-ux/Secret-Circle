@@ -413,6 +413,7 @@
   }
   function openGame(id) {
     if (!gameById(id)) return;
+    if (id === 'imposter') { window.location.href = 'word-imposter.html?from=v2'; return; }
     currentId = id;
     show('mode');
   }
@@ -543,8 +544,8 @@
       h2.textContent = hero.title;
     }
     $('#hero-text').textContent = hero.desc;
-    $('#hero-play').textContent = players().length ? 'Spielen' : 'Spieler einrichten';
-    $('#hero-play').onclick = function () { if (players().length) openGame(hero.id); else show('players', { reset: true }); };
+    $('#hero-play').textContent = hero.id === 'imposter' ? 'Spiel öffnen' : players().length ? 'Spielen' : 'Spieler einrichten';
+    $('#hero-play').onclick = function () { if (hero.id === 'imposter' || players().length) openGame(hero.id); else show('players', { reset: true }); };
 
     /* Trefferfläche 44px, tastaturbedienbar — nicht der 6px-Punkt selbst. */
     var dots = $('.dots', screenEl('home'));
@@ -976,6 +977,7 @@
     if (target === 'spiele') return show('games', { reset: true });
     if (target === 'profil') return show('profile', { reset: true });
     if (target === 'spieler') return show('players', { reset: true });
+    if (target === 'spiel=imposter') { window.location.replace('word-imposter.html?from=v2'); return; }
     if (target.indexOf('spiel=') === 0 && gameById(target.slice(6))) {
       currentId = target.slice(6);
       show('games', { reset: true });

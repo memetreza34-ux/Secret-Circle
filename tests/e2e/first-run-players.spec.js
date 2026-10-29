@@ -10,26 +10,26 @@ test('neues Gerät: keine fiktiven Spieler, erste Gruppe wird bewusst eingericht
   await page.goto('/');
 
   await expect(page.locator('[data-screen="home"]')).toBeVisible();
-  await expect(page.locator('#hero-play')).toHaveText('Spieler einrichten');
+  await expect(page.locator('#hero-play')).toHaveText('Spiel öffnen');
   await expect(page.locator('#hero-title')).not.toBeEmpty();
   expect(await page.evaluate(key => localStorage.getItem(key), HUB_KEY)).toBeNull();
 
   await page.locator('#hero-play').click();
-  await expect(page.locator('[data-screen="players"]')).toBeVisible();
-  await expect(page.locator('#player-badge')).toHaveText('0/20');
-  await page.locator('#player-input').fill('Aylin');
-  await page.locator('#player-add').click();
-  await page.locator('#player-input').fill('Ben');
-  await page.locator('#player-add').click();
-  await page.locator('#player-input').fill('Cem');
-  await page.locator('#player-add').click();
+  await expect(page).toHaveURL(/word-imposter\.html\?from=v2$/);
+  await expect(page.locator('#player-list input')).toHaveCount(0);
+  await expect(page.locator('#players-help')).toContainText('0 von mindestens 3');
+  await expect(page.locator('#start')).toBeDisabled();
+  for (const name of ['Aylin', 'Ben', 'Cem']) {
+    await page.locator('#add-player').click();
+    await page.locator('#player-list input').last().fill(name);
+  }
 
   const names = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY);
   expect(names).toEqual(['Aylin', 'Ben', 'Cem']);
 
-  // Der Spieler-Screen hat bewusst keine Tabbar; über den kanonischen Root zurückgehen.
+  // Die bewusst eingerichtete Gruppe gilt auch für die übrigen Spiele.
   await page.goto('/');
-  await expect(page.locator('#hero-play')).toHaveText('Spielen');
+  await expect(page.locator('#hero-play')).toHaveText('Spiel öffnen');
   await page.goto('/#spiel=never-have');
   await expect(page.locator('#start-btn')).toBeEnabled();
   await page.locator('#start-btn').click();
