@@ -13,6 +13,9 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/bildproben/serie-2026-10-29/imposter.webp',
+    'docs/bildproben/serie-2026-10-29/mafia.webp',
+    'docs/bildproben/serie-2026-10-29/charades.webp',
     'docs/screenshots/word-imposter-rot-handy.webp',
     'docs/screenshots/word-imposter-rot-desktop.webp',
     'docs/screenshots/klassiker-zeichnen-desktop.webp',

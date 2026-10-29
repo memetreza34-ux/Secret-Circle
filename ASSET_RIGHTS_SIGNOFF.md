@@ -129,3 +129,7 @@ Zwei eigene Browser-Screenshots unter `docs/screenshots/klassiker-zeichnen-*.web
 Zwei eigene UI-Screenshots unter `docs/screenshots/word-schnellstart-*.webp` dokumentieren Handy (375 × 812) und Desktop (1280 × 900). Synthetische Testnamen; bestehendes freigegebenes Chamäleonmotiv unverändert, keine neue Illustration. Prüfsummen und Abmessungen stehen im Provenienzmanifest. Nur PR-Dokumentation, kein zusätzlicher Offline-Download.
 
 Zwei ergänzende UI-Screenshots unter `docs/screenshots/word-imposter-rot-*.webp` dokumentieren die rote Imposter-Karte in denselben Auflösungen (27. Oktober 2026). Dieselbe Herkunft und Nutzung als PR-Dokumentation; keine neue Spielillustration und kein zusätzlicher Offline-Download.
+
+### Dokumentierte Bildproben – 29. Oktober 2026
+
+Drei KI-generierte Vorschauen unter `docs/bildproben/serie-2026-10-29/` wurden auf Armans Wunsch für GitHub gesichert. Werkzeug: integriertes OpenAI `image_gen`, konkretes Modell nicht ausgewiesen. Eigene vorhandene Bildprobe als Stilreferenz; keine fremden Spielgrafiken übernommen. Vollständige Prompts und Korrekturen, Prüfsummen und Ableitungen stehen im Provenienzmanifest. Die Einträge dokumentieren die Herkunft; sie sind keine endgültige visuelle oder Releasefreigabe. Keine Einbindung in `GAME_ART` oder den Offline-Core.
