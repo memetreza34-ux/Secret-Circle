@@ -10,6 +10,8 @@
 
 Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und ein Gerät. Vanilla JavaScript, HTML und CSS, kein Build-Schritt, keine Runtime-Abhängigkeiten. Oberfläche und Texte sind deutsch; Commit-Nachrichten ebenfalls.
 
+**Weitere konkrete Bildauswahl (30. Oktober 2026):** Arman hat den gezeigten klassischen Showmaster für „Nicht sagen!“ mit „weiter bau die direkt ein und weiter“ ausgewählt. `assets/images/taboo.webp` ist eingebunden. Er erklärt einen Begriff, ohne verbotene Hinweise zu nennen. Jedes weitere Motiv bleibt einzeln auszuwählen.
+
 ## Stand der Oberfläche
 
 - **Startseite:** `/` und `index.html` (identisch zu `v2-hub.html` als Legacy-Alias) mit `v2-hub.js` und `v2-theme.css` – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.

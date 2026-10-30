@@ -22,6 +22,7 @@
   /* Spielbilder: '<spiel-id>': { src: 'assets/images/<spiel-id>.webp', alt: '…' }.
      Bildwelt, Prompts und Einbinden: docs/BILDWELT_V2.md. Ohne Eintrag zeigt das Spiel sein Emblem. */
   var GAME_ART = {
+    taboo: { src: 'assets/images/taboo.webp', alt: 'Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder' },
     charades: { src: 'assets/images/charades.webp', alt: 'Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr' },
     imposter: { src: 'assets/images/imposter.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen' },
     'truth-dare': { src: 'assets/images/truth-dare.webp', alt: 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt' },

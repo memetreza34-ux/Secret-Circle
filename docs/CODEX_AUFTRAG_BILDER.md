@@ -1,5 +1,7 @@
 # Auftrag für Codex: Bildwelt und einzelne Spielbilder
 
+**Weitere konkrete Bildauswahl (30. Oktober 2026):** Arman hat den gezeigten klassischen Showmaster für „Nicht sagen!“ mit „weiter bau die direkt ein und weiter“ ausgewählt. `assets/images/taboo.webp` ist eingebunden. Er erklärt einen Begriff, ohne verbotene Hinweise zu nennen. Jedes weitere Motiv bleibt einzeln auszuwählen.
+
 ## Aktueller Auftrag vom 30. Oktober 2026
 
 Arman hat die gemeinsame [Figurenbasis](bildwelt/vorlage-2026-10-30.webp) als Bildwelt gewählt und klassische, sofort erkennbare Rollenklischees verlangt. **Diese Vorlage hat für neue Bilder Vorrang vor früheren Mafia-/Chamäleon-Stilentscheidungen.** Der klassische Pantomime für Scharade ist mit „besser weiter“ ausgewählt und im aktuellen Arbeitsstand eingebunden.

@@ -1,5 +1,7 @@
 # Bildwelt für Secret Circle v2
 
+**Weitere konkrete Bildauswahl (30. Oktober 2026):** Arman hat den gezeigten klassischen Showmaster für „Nicht sagen!“ mit „weiter bau die direkt ein und weiter“ ausgewählt. `assets/images/taboo.webp` ist eingebunden. Er erklärt einen Begriff, ohne verbotene Hinweise zu nennen. Jedes weitere Motiv bleibt einzeln auszuwählen.
+
 ## Gewählte Bildwelt vom 30. Oktober 2026
 
 Arman hat das gemeinsame Figuren- und Materialblatt als Bildwelt gewählt. Die **alleinige Stilvorlage für neue Motive** ist jetzt [vorlage-2026-10-30.webp](bildwelt/vorlage-2026-10-30.webp). Menschen, Tiere und Gegenstände teilen plastische Cartoonformen, deutlich modellierte Augen/Brauen und vergleichbar vereinfachte matte Materialien. Klassische Rollen und passende Kostümklischees machen die Figuren sofort erkennbar: Detektiv mit Hut und Trenchcoat, Pantomime mit Baskenmütze, Streifen und weißen Handschuhen. Andere eigenständige Rollen oder reine Gegenstände bleiben möglich, wenn sie zum Modus passen.

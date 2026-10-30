@@ -13,6 +13,9 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'assets/images/taboo.webp',
+    'docs/screenshots/taboo-handy-375x812.webp',
+    'docs/screenshots/taboo-desktop-1280x900.webp',
     'assets/images/charades.webp',
     'docs/bildwelt/vorlage-2026-10-30.webp',
     'docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp',

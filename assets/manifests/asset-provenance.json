@@ -270,6 +270,54 @@
       "attribution": null,
       "derivedFrom": "assets/images/charades.webp",
       "dimensions": "1280x900"
+    },
+    {
+      "path": "assets/images/taboo.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+      "createdAt": "2026-10-30",
+      "sha256": "3e496bf28539eafaaf565f6487e6f89ef58fbdcd263f0b79942b2be591c111a8",
+      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "prompts": {
+        "generation": "Create ONE original 4:3 landscape illustration for Secret Circle's game \"Nicht sagen!\" (explaining a target word while avoiding forbidden words).\nThe attached APPROVED character/material sheet is the sole exact STYLE reference. Match its sculpted cartoon eye construction, expressive solid eyebrows, adult character stylization, rounded volumes, matte skin and thick cloth, restrained surface detail and soft shadow treatment. Every element belongs to this same animated world, no more realistic human, no photographic props.\nUse an immediately recognizable CLASSIC SHOWMASTER archetype as the clue giver: a broad-shouldered adult male presenter, expressive silver-gray hair swept back in a few large sculpted masses, strong brows, broad rounded nose, no moustache, warm medium-brown cartoon skin, confident lively stage manner. Royal-blue tuxedo with clear satin-like but restrained lapels, ivory shirt and a CORAL RED BOW TIE. A chunky unbranded silver retro microphone on a short stand beside his mouth makes the speaking role unmistakable.\nHe is ACTIVELY SPEAKING and carefully explaining, mouth slightly open, one amused eyebrow raised as he searches for an alternative phrase. One hand holds a large ivory clue card angled so the VIEWER can read its pictograms but the offscreen guessing team cannot. His other hand makes a clear open explanatory gesture; coherent five-fingered cartoon hands. He is NOT shushing, gagged or forbidden from speaking.\nThe card has a single large UMBRELLA pictogram at top, and below THREE simple forbidden pictograms each with a red CIRCLE-AND-SLASH: a rain cloud, a water droplet, and a small opening-umbrella pictogram. These pictograms are a visual metaphor for target and forbidden words, not an image-guessing game. No actual writing or letters. Keep the card simple and high contrast.\nQuiet game-show rehearsal setting: one deep emerald curved backdrop, two cream architectural shapes and a coral accent, no signage, answer buttons, screens or audience faces. Soft cream directional key, gentle cool fill, same light quality as the approved sheet. Main face, speaking mouth, explanatory hand and card grouped large in the central area so they survive a 136x104 tile.\nDry playful humor and a clear speaking/explaining action, classic role-costume rather than an ordinary party guest. Original character only. No pores, microtexture, textile fuzz, glitter, fog, bokeh, glossy toy look, floating UI, words, letters, digits, logos, watermarks, phones, screens, alcohol, drinks, weapons or existing franchise designs.\n"
+      },
+      "approvalStatus": "approved-by-Arman-2026-10-30",
+      "notes": "Arman wählt die gezeigte Showmaster-Probe mit „weiter bau die direkt ein und weiter“. Der Showmaster erklärt ein Wort ohne verbotene Begriffe; Bildzeichen sind eine Metapher, keine Änderung der Spielmechanik. 800x600 WebP, 34510 Bytes. Einzelnes Motiv ausgewählt, keine pauschale Freigabe weiterer Bilder."
+    },
+    {
+      "path": "docs/screenshots/taboo-handy-375x812.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chromium",
+      "source": "Own isolated Playwright Chromium context; v2-hub.html#spiel=taboo; viewport handy-375x812; 2026-10-30. WebP export with Pillow.",
+      "createdAt": "2026-10-30",
+      "sha256": "10c687e7529dd31569a1d46132a3cc1ed4d3008f1f24f66eea5fab16695e45f9",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/taboo.webp",
+      "dimensions": "375x812"
+    },
+    {
+      "path": "docs/screenshots/taboo-desktop-1280x900.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chromium",
+      "source": "Own isolated Playwright Chromium context; v2-hub.html#spiel=taboo; viewport desktop-1280x900; 2026-10-30. WebP export with Pillow.",
+      "createdAt": "2026-10-30",
+      "sha256": "299a890f387147a61990b4dae31e2af0b1cd959ef09d781e33acd6caf882ec9c",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/taboo.webp",
+      "dimensions": "1280x900"
     }
   ]
 }

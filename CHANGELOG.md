@@ -1,3 +1,9 @@
+## v101 – Freigegebener Showmaster für Nicht sagen! (30. Oktober 2026)
+
+- Das ausgewählte Showmaster-Bild erscheint lokal in Katalog und Spieldetail, mit deutschem Alt-Text und geprüftem Bildbudget.
+- Herkunft, vollständiger Prompt und konkrete Bildauswahl dokumentiert. Offline-Core v100 → v101.
+- Bild- und Offline-Vertrag um das Motiv ergänzt; Spiellogik, IDs, Speicher- und Schutzfunktionen unverändert.
+
 ## v100 – Freigegebenes Scharade-Bild (30. Oktober 2026)
 
 - Scharade zeigt den von Arman ausgewählten klassischen Pantomimen in Katalog, Empfehlungen und Spieldetail. Bild und Alt-Text bleiben lokal verfügbar.
