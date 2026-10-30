@@ -43,6 +43,7 @@ test('game artwork loads locally in cards, banner and details with readable mobi
   await seedHub(page);
   await openV2(page);
   const artwork = {
+    charades: 'Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr',
     imposter: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen',
     'truth-dare': 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt',
     mafia: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt'

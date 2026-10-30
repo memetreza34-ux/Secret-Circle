@@ -13,6 +13,12 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'assets/images/charades.webp',
+    'docs/bildwelt/vorlage-2026-10-30.webp',
+    'docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp',
+    'docs/screenshots/scharade-handy-375x812.webp',
+    'docs/screenshots/scharade-desktop-1280x900.webp',
+
     'icon.svg', 'icon-192.png', 'icon-512.png',
     'assets/images/imposter.webp',
     'assets/images/truth-dare.webp',

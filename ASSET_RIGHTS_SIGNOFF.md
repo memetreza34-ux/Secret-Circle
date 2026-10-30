@@ -113,3 +113,10 @@ Rechtebasis: projektseitige Output-Rechte gemäß geltenden OpenAI-Nutzungsbedin
 ## Release-Regel
 
 Der frühere **Icon-Rechteblocker ist quellsseitig geschlossen**. Das übergeordnete `assetsThirdParty`-Gate bleibt trotzdem `BLOCKED`, bis die realen Runner-/Installationsnachweise und der finale manuelle Review auf dem unveränderten Release Candidate abgeschlossen sind.
+
+
+## Gewählte Bildwelt und Scharade – 30. Oktober 2026
+
+Arman hat das Figuren-/Materialblatt `docs/bildwelt/vorlage-2026-10-30.webp` als Bildwelt und anschließend den klassischen Pantomimen in `assets/images/charades.webp` mit „besser weiter“ ausgewählt. Werkzeug: integriertes OpenAI `image_gen`; eine konkrete Modellbezeichnung wurde nicht ausgegeben. Nur eigene projektseitige Illustrationen dienten als Referenzen. Die tatsächliche Ausgangsreferenz aus Commit `9c12e6d` ist bytegleich unter `docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp` archiviert. Diese Dokumentationsbilder gehören nicht zum Offline-Core.
+
+Vollständige Generierungs- und Bearbeitungsprompts, Herkunft, Rechtebasis und SHA-256-Prüfsummen stehen im Provenienzmanifest; Prompts zusätzlich unter `docs/bildwelt/`. Der Pantomime zeigt eine eigene klassische Theaterrolle ohne erkennbare bekannte Figur, Bildschrift oder Marke. Export mit Pillow als 800×600 WebP unter 35 KB. Spielbildfreigabe und Herkunftsdokumentation sind keine öffentliche Releasefreigabe. Handy-/Desktop-Screenshots dokumentieren die eigene App mit diesem Bild.

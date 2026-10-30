@@ -1,4 +1,12 @@
-# Auftrag für Codex: Bildprobe mit drei Spielbildern
+# Auftrag für Codex: Bildwelt und einzelne Spielbilder
+
+## Aktueller Auftrag vom 30. Oktober 2026
+
+Arman hat die gemeinsame [Figurenbasis](bildwelt/vorlage-2026-10-30.webp) als Bildwelt gewählt und klassische, sofort erkennbare Rollenklischees verlangt. **Diese Vorlage hat für neue Bilder Vorrang vor früheren Mafia-/Chamäleon-Stilentscheidungen.** Der klassische Pantomime für Scharade ist mit „besser weiter“ ausgewählt und im aktuellen Arbeitsstand eingebunden.
+
+Ab jetzt ein passendes Spielbild erzeugen, zeigen, nach konkreter Auswahl einbauen und prüfen. Keine neue Serie unabhängig erzeugter Stilrichtungen. Form, Augen und Material am gewählten Figurenblatt messen. Einzelne Bilder erhalten keine Freigabe allein durch eine allgemeine Stilzusage. Format, Medien-/Rechte-/Offline-Verträge und alle vier Prüfungen bleiben verbindlich. Details: [BILDWELT_V2.md](BILDWELT_V2.md).
+
+Die folgenden Abschnitte dokumentieren frühere Aufträge; bei Widerspruch gilt der aktuelle Auftrag oben.
 
 **Nachtrag vom 14. Oktober 2026:** Arman hat nach den Stilproben den direkten Einbau einiger Bilder zur Ansicht in der App beauftragt. Die aktuelle Vorschau zeigt Word Imposter, Wahrheit oder Pflicht und Mafia. Als Stilreferenz dient die erste Mafia-Stadtplatzszene, nicht deren später vereinfachte Fassung. Die ursprünglichen Motive und der Ablauf unten dokumentieren den früheren Auftrag; Herkunft und tatsächlich verwendete Prompts der aktuellen Bilder stehen in `assets/manifests/asset-provenance.json`.
 

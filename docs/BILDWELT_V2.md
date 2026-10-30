@@ -1,10 +1,14 @@
 # Bildwelt für Secret Circle v2
 
-## Aktuelle App-Vorschau vom 14. Oktober 2026
+## Gewählte Bildwelt vom 30. Oktober 2026
 
-Arman bevorzugt die erste Mafia-Stadtplatzszene gegenüber der späteren Fassung mit vereinfachten Oberflächen. Sie dient als Stilreferenz für eine animierte 3D-Welt mit ausdrucksstarken, erwachsen auftretenden Figuren und zum Spiel passenden Orten, Kleidern und Handlungen. Word Imposter (Chamäleon blufft in einer Spielrunde), Wahrheit oder Pflicht (Maske ablegen und Mutprobe auf einer Bühne) und Mafia (heimliche Absprache, von einer Detektivin bemerkt) sind auf seine ausdrückliche Anweisung direkt in der App zu sehen. Die ganze Bildwelt ist damit noch nicht endgültig abgenommen. Die folgenden ursprünglichen Motivvorschläge bleiben Planungsgrundlage; die aktuellen Originalprompts stehen vollständig im Provenienzmanifest.
+Arman hat das gemeinsame Figuren- und Materialblatt als Bildwelt gewählt. Die **alleinige Stilvorlage für neue Motive** ist jetzt [vorlage-2026-10-30.webp](bildwelt/vorlage-2026-10-30.webp). Menschen, Tiere und Gegenstände teilen plastische Cartoonformen, deutlich modellierte Augen/Brauen und vergleichbar vereinfachte matte Materialien. Klassische Rollen und passende Kostümklischees machen die Figuren sofort erkennbar: Detektiv mit Hut und Trenchcoat, Pantomime mit Baskenmütze, Streifen und weißen Handschuhen. Andere eigenständige Rollen oder reine Gegenstände bleiben möglich, wenn sie zum Modus passen.
 
-Die Spielbilder teilen dieselbe sorgfältig gestaltete 3D-Bildsprache: prägnante Silhouetten, glaubwürdige Materialien, klare Mimik, gerichtetes Licht und eine lesbare Handlung. Jedes Spiel bekommt trotzdem eine eigene Figur oder Figurengruppe, Farbwelt, Umgebung und Requisiten.
+Der klassische Pantomime für **Scharade** ist von Arman mit „besser weiter“ ausgewählt und als `assets/images/charades.webp` eingebunden. Er stellt stumm eine unsichtbare Wand dar. Die Auswahl betrifft dieses Bild und die gemeinsame Machart; jedes weitere Spielbild wird einzeln gezeigt und ausgewählt. Die vorhandenen Bilder anderer Modi bleiben Bestand, keine automatische Abnahme als neue Serie.
+
+Die Vorlage und ihre tatsächliche projektseitige Ausgangsreferenz sind unter `docs/bildwelt/` archiviert; sie werden nicht im Offline-Core geladen. Vollständige Generierungs-/Bearbeitungsprompts und Provenienz stehen daneben und im Manifest. Herkunft der Referenzkette wird mit dem tatsächlichen Bild aus Commit `9c12e6d` dokumentiert, ohne das davon abweichende alte App-Bild auf `main` auszutauschen.
+
+Figuren, Orte, Kleidung, Palette und Handlung dürfen wechseln. Gleich bleiben Formensprache, Augenzeichnung, Materialbehandlung und Detailgrad. Die folgenden älteren Motivvorschläge sind Ausgangspunkte; diese aktuelle Stil- und Rollenentscheidung hat Vorrang. Keine Spiellogik, IDs, Speicher- oder Schutzverträge ändern.
 
 ## Motivregel
 
@@ -16,9 +20,9 @@ Eine Karte, ein Tisch, dieselbe Farbe oder dieselben Symbole werden nicht als ve
 
 Das hält die Welt zusammen, egal was zu sehen ist:
 
-- **Machart:** stilisierte 3D-Illustration in der Qualität eines Animationsfilms – weiche, runde Formen, glaubwürdige Materialien (Stoff, Fell, Holz, Metall, Glas), ausdrucksstarke Gesichter.
+- **Machart:** plastische, überzeichnete 3D-Cartoonformen wie im gewählten Figurenblatt. Markante Rollen, große modellierte Augen und Brauen, matte vereinfachte Materialien; keine realistischen Porträtgesichter oder Produktfoto-Requisiten.
 - **Licht:** gerichtetes, warmes Hauptlicht und ein farbiges Kantenlicht; die Akzentfarbe wählt jedes Motiv selbst.
-- **Hintergrund:** dunkel und weich unscharf, wenig Details – das Bild steht auf einer fast schwarzen Oberfläche.
+- **Hintergrund:** eine ruhige passende Kulisse; Tageszeit und Palette dürfen je Modus wechseln. Keine Pflicht zu dunkler Lounge, Tisch, Lampe oder fotografischer Unschärfe.
 - **Aufbau:** genau ein klares Hauptmotiv. Gesicht bzw. wichtigstes Detail liegt in der Bildmitte (mittlere 60 % der Breite und Höhe), weil Kachel und Startseiten-Banner unterschiedlich zuschneiden.
 - **Kein Text:** keine Buchstaben, Zahlen, Wörter, Schilder mit Schrift, Logos oder Wasserzeichen. Einzelne Zeichen wie „?“ oder „!“ als Form sind erlaubt.
 
@@ -34,14 +38,18 @@ Das hält die Welt zusammen, egal was zu sehen ist:
 Diesen Block vor jeden Motiv-Prompt setzen (Englisch, weil Bildmodelle darauf am zuverlässigsten reagieren):
 
 ```text
-Stylized 3D illustration with the polish of a high-end animated feature film.
-Soft rounded shapes, believable materials (fabric, fur, wood, metal, glass), expressive faces.
-Cinematic directional warm key light plus a subtle colored rim light, shallow depth of field,
-dark softly blurred background with little detail. Exactly one clear main subject;
-the face or key detail sits in the central 60% of the frame so it survives tight crops.
-Original designs only. No text, no letters, no numbers, no words, no signs with writing,
-no logos, no brands, no watermark, no device or phone frame. Family friendly: no alcohol,
-no cups that suggest drinking, no weapons, no violence. Landscape 4:3.
+Create one original 4:3 Secret Circle game illustration.
+The attached approved character/material sheet, docs/bildwelt/vorlage-2026-10-30.webp,
+is the sole exact STYLE reference. Match its sculpted cartoon forms, eye construction,
+head/body stylization, matte materials, restrained detail and soft shadow treatment.
+Humans, animals and props belong to this same animated world; do not make a human
+photorealistic or props into product photography. Classic recognizable role-archetypes,
+costumes, expression and action must support the actual game mechanic.
+Characters, location and palette may change. One clear main action; main face and decisive
+gesture remain readable in a 136x104 tile and the intended detail crop.
+One pupil per eye, deliberate gaze, coherent limbs and hands. No pores, textile noise,
+cinematic bokeh, glitter or glossy toy finish. Original designs only, no franchise copies,
+text, letters, digits, logos, brands, watermarks, phones, UI, alcohol, drinks, weapons or violence.
 ```
 
 Danach folgt der Motiv-Prompt aus der Tabelle unten.

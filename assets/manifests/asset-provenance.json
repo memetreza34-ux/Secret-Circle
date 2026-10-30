@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-14",
+  "updatedAt": "2026-10-30",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -184,6 +184,92 @@
       "derivedFrom": null,
       "dimensions": "375x812",
       "notes": "Startseite bzw. Mafia-Spieldetail; nicht im Offline-Core."
+    },
+    {
+      "path": "docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp",
+      "kind": "generated-style-reference",
+      "status": "verified-own",
+      "creator": "OpenAI integriertes image_gen in Codex; konkrete Modellkennung vom Werkzeug nicht ausgegeben",
+      "source": "Projektseitiges eigenes Bild aus Commit 9c12e6dfdc3bba9df738810dadc36068ad483f2f, damaliger Pfad assets/images/imposter.webp; hier bytegleich für die tatsächliche Referenzkette archiviert.",
+      "createdAt": "2026-10-14",
+      "sha256": "3c16a4fdc8d9250388a9925ec3800ee8f00073decd3a59c9fa267f116e185f31",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "800x600",
+      "prompt": "Ursprüngliche Generierung:\nUse case: stylized-concept.\nGenerate ONE original landscape 4:3 game illustration for WORD IMPOSTER, a social bluffing party game.\n\nSTYLE REFERENCES: Image 1 (green chameleon, coral graphic backdrop) defines the approved rounded sculpted 3D cartoon world. Image 2 (raccoon with pointing hands) confirms the same rendering, tactile costume details and clear composition. Match that world exactly: expressive eyes, bold eyebrows, rich bright colors, clean soft 3D volume and shaped graphic background. Refine the hero toward a clever grown-up character rather than an infant mascot. No cel shading, 2D drawing, polygon facets or realistic humans. The references are only style guides, not compositions to copy literally.\n\nSTORY: all other players know the SAME secret clue; the central chameleon received NO clue and confidently pretends to know it. Tell that through the contrast between matching clue cards and his blank one, plus comic acting.\n\nMAIN CHARACTER: an original emerald/lime-green anthropomorphic chameleon with a clearly reptilian wedge-shaped head, crest, curved neck and coiled tail. Rounded animation shapes, not photorealistic reptile skin. Head is expressive and large but a little smaller relative to the body than image 1. Lean natural reptile torso, no pot belly, baby cheeks or giant pleading pupils. Each eye has an independent sideways glance, one narrow eyelid and a raised eyebrow. A small lopsided closed-mouth smirk conveys \"of course I know\" while his eyes quietly search a neighbour's card. Clever, cheeky, quick-thinking, slightly caught off guard; not scared, angry or bored.\n\nCLOTHING: a fitted short deep-plum jacket with a standing collar, burgundy lining, rolled cuffs and two small brass snap buttons, over a simple charcoal shirt. Clearly designed seams and collar shapes; no logos or fussy weave. The jacket fits a reptilian body, no human muscular torso. Small green reptile paws with distinct short curved digits, not human palms.\n\nOne paw holds ONE large ivory card toward camera against his upper chest: the entire face of this card is completely BLANK. His other paw makes a restrained conversational open-hand gesture as he improvises a clue. Exactly two arms and two attached paws. His curly tail is visible at a lower edge.\n\nAt LEFT and RIGHT edges, only a small part of the other players' forearms enters: an amber feline paw on the left and an original ivory/coral segmented robot hand on the right. Each holds ONE ivory clue card facing the viewer. BOTH other cards show the EXACT SAME simple GOLD KEY pictogram, same design and size. The main card stays empty. Cards are clearly separated and do not cover eyes, mouths or other hands. No text or additional symbols on any card.\n\nCOMPOSITION: close, slightly asymmetric waist-up framing. The chameleon's face and blank card dominate. His gaze, blank card and two identical clue cards form one clear visual triangle, grouped within the central 75% so the image survives an 8:5 banner crop and reads at 136x104 thumbnail size. All important cards fully within the frame. Little empty space. Strong uncluttered silhouette and spontaneous acting.\n\nBACKGROUND: saturated coral and warm tangerine with just two broad darker coral curved shapes, like the reference's graphic backdrop. Dimensional softly lit character against a simple shaped color field. Clean neutral soft key light, gentle warm edge, no cinematic gold haze, purple lounge, furniture or table. No motion rays needed; the props and face tell the story.\n\nRender polished rounded 3D animation, controlled material detail and pleasing soft volume. No photographic pores, excessive scales, gritty textures, hyperrealistic hair, plasticky shine, huge wet doll eyes, baby proportions, glitter, bokeh, fog, bloom, silhouettes of bystanders, floating signs or symbols. No words, letters, numerals, logos, watermarks, app UI, phones, alcohol, drinking vessels, weapons or recognizable franchise characters. ONE finished illustration only, no collage or style sheet.\n\nGezielte Augen-Korrektur:\nEdit the attached Word Imposter illustration. Make a PRECISE LOCAL CORRECTION TO THE EYES ONLY.\n\nVisible error: the SMALLER EYE ON THE VIEWER'S RIGHT currently contains TWO separate dark irises/pupils, one at each end of its white eyeball. This must become ONE anatomically coherent eye with exactly ONE brown iris and exactly ONE black pupil. Remove the duplicated dark iris/pupil at the far RIGHT edge of that eyeball and reconstruct clean continuous ivory-white sclera in its place. There must be no black remnant, extra eye, pupil, iris, eye socket or dark oval in that corner.\n\nThe larger eye on the viewer's left already has ONE pupil. Keep that eye's design and size. Align the corrected right eye naturally with it: both eyes glance slightly toward the viewer's LEFT, with one iris/pupil per eye and a single restrained white catchlight per pupil. The character must have exactly TWO eye sockets, TWO eyeballs, TWO irises and TWO pupils in total, arranged as one normal cartoon pair. No independently wandering/crossed gaze or duplicate reflections that look like extra pupils. Keep the clever, mildly half-lidded and cheeky expression.\n\nPreserve everything else exactly: head and eyebrow shapes, emerald skin and crest, plum jacket and charcoal shirt, grin, curled tail, green paws, blank central card, two identical gold-key cards at the edges, tiger paw, robot hand, coral-orange graphic background, lighting, camera, composition, rounded 3D-cartoon style and landscape 4:3 format. No new objects, symbols, text, watermark or other redesign.",
+      "notes": "Freigegebene neue runde 3D-Cartoonserie: Chamäleon mit leerer Karte und frechem Blick, zwei gleiche goldene Schlüssel bei Mitspielern, eine Pupille je Auge. 800 × 600 Pixel, 34030 Bytes. Einbau nach konkreter Freigabe; übrige neue Serienmotive weiterhin einzeln freigeben lassen.",
+      "approvalStatus": "archived-project-reference"
+    },
+    {
+      "path": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "kind": "generated-style-reference",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+      "createdAt": "2026-10-30",
+      "sha256": "59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294",
+      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "prompts": {
+        "generation": "Use case: stylized-concept.\nCreate ONE cohesive CHARACTER-AND-MATERIAL FOUNDATION SHEET for Secret Circle, an original party-game app. Landscape 3:2.\nThe attached image of the green chameleon is the SOLE exact ART-STYLE reference. It is not an edit target. Study its precise sculpted head forms, very expressive oversized almond eyes, solid brows, broad curved shapes, plush matte surfaces, restrained tactile detail and clean colorful 3D-cartoon rendering. All subjects on this single sheet must look designed and rendered by the SAME character artist in the SAME production, under the SAME neutral light. This is a casting/model-development sheet, NOT three game illustrations or a collage of different styles.\nLAYOUT: one continuous warm-neutral gray studio background and one shared floor, no panel borders, no writing. Two distinct original role-characters stand next to each other, shown from head to mid-thigh at matching scale; small still-life props beside them establish material language.\nLEFT: the reference's green chameleon, recognizably the same character design, curled reptilian tail, short purple jacket over dark shirt, reptilian paws, one brow raised and a knowing tight half-smile. Preserve the chameleon skull and muzzle and the characteristic broad surface markings. One iris and one pupil per eye, a consistent deliberate sideways gaze. A blank ivory card is held in one paw.\nRIGHT: a stylized ADULT female detective with a memorable sturdy triangular silhouette, medium brown skin, short swept dark hair as a few sculpted masses, a broad blunt cartoon nose, strong expressive sculpted eyebrows, visibly adult jaw and cheek shapes, slightly asymmetrical skeptical closed-mouth expression. Her eyes use the SAME eye-construction language and stylization level as the chameleon's: large clear white shapes, single dark iris/pupil per eye, sculpted lids, shared restrained highlights. She is an animated cartoon person, NOT a pretty realistic human, fashion doll, baby or soft infant. A simple slate-teal trenchcoat with a broad collar, a burnt-orange scarf and plain round buttons communicate detective; no badges, brands, weapons or jewellery. One hand on hip, the other considering a blank card, skeptical glance toward the chameleon. Coherent stylized human hands with five fingers each.\nPROPS, on the shared floor or a plain low plinth: a chunky cream blank playing card, a small rounded wooden hourglass with plum frame and amber sand, and a simple folded purple cloth swatch. Props have NO faces or anthropomorphic limbs. The wood, paper, cloth and glass have the same broad modeled forms, soft edge transitions, simplified surface detail and matte 3D-cartoon material treatment as the characters. No food.\nUse one soft neutral key light and gentle fill for every subject, equivalent shadow softness, same perspective and shadow treatment, comparable edge sharpness and detail density. Strong shapes and character acting carry identity, not hyperreal textures.\nDo NOT make the human more realistic or cinematic than the animal. Do NOT make the props photorealistic product renders. Avoid pores, skin microdetail, textile fuzz, glossy plastic toys, cinematic depth of field, bokeh, dust, fog, magic glow, double pupils, mismatched gaze, extra fingers or limbs. No words, numbers, logos, watermarks, phones, screens, UI, real people, existing franchise designs, alcohol, drinks, violence or weapons.\nThe result should let an art director judge ONE reusable cartoon world for humans, animals and inanimate objects.\n"
+      },
+      "approvalStatus": "style-approved-by-Arman-2026-10-30",
+      "notes": "Arman wählt die gemeinsame Bildwelt. Stilfreigabe, keine automatische Auswahl anderer Spielbilder. WebP 1200x800, exportiert mit Pillow."
+    },
+    {
+      "path": "assets/images/charades.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+      "createdAt": "2026-10-30",
+      "sha256": "cf5ff56b01a560bbb2edfec5f5d33000123fee459e269da09ebb4fa44efffb15",
+      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "prompts": {
+        "generation": "Create ONE original 4:3 landscape game illustration for SCHARADE / CHARADES in Secret Circle.\nThe attached APPROVED character-and-material sheet is the sole exact style bible. Match its character sculpting, eye construction, head/body stylization, matte materials, detail density and soft shadow treatment. In particular the human must be as clearly cartoon-stylized as the sheet's detective: large shaped eyes, solid brows, a broad sculpted nose, simple cheek planes and hair modeled in a few masses. Do not introduce a more realistic cinematic human or a different cartoon style.\nONE new adult male mime, compact and sturdy, short swept dark hair, expressive dark eyebrows and a small sculpted moustache. Rust-burgundy short waistcoat, bold cream/charcoal striped shirt, charcoal trousers and ivory cloth gloves, rendered like the sheet's coat and folded fabric. No white face paint.\nHe silently acts being trapped behind an INVISIBLE wall: three-quarter SIDE VIEW, leaning into both open flat gloved palms at different heights, both palms pressed into the SAME imagined vertical plane. The wall itself is not visible; no actual glass, door or frame. Clearly coherent arms and five fingers on each glove. Closed mouth, comically intense concentrated expression, eyes deliberately looking toward his guessing audience outside the image.\nMain face and both hands large and near the central area; medium three-quarter-body framing, broad readable silhouette. A small plum-framed hourglass from the approved sheet sits at the edge of a low stage. Simplified plum curtains and one muted petrol curved wall form a quiet background. Soft cream key light and gentle cool fill, no photographic lighting effects. The pose communicates silent acting under time pressure. No other character.\nUse the exact approved sheet's rounded sculpted shapes and restrained material texture throughout. No pores, extra fabric microdetail, glitter, bokeh, glossy toy look or product photography. No words, letters, digits, logos, watermarks, phones, screens, UI, real people, known franchise characters, weapons, drinks or violence.\n",
+        "classicMimeEdit": "Use case: precise-object-edit.\nINPUT 1 is the Scharade game illustration to edit. INPUT 2 is the approved Secret Circle character/material style reference.\nKeep the exact original pose, face geometry and eye construction, direction of gaze, two five-fingered open gloves, body proportions, camera, stage, curtains, hourglass, lighting and 3D material language of input 1.\nChange ONLY the costume styling and theatrical face makeup to make this an instantly recognizable CLASSIC MIME archetype:\n- Add a simple soft BLACK BERET, visibly a beret, fitted naturally over his hair.\n- Replace the rust waistcoat with BLACK SUSPENDERS over the existing bold cream-and-charcoal striped shirt.\n- Add a small RED NECKERCHIEF tied close to the neck, not a long scarf.\n- Add simple matte WHITE MIME FACE PAINT, with his existing sculpted facial structure still clear; preserve black eyebrows, dark moustache and original expressive eyes. Keep it lighthearted, no dark tear marks, scary mask, clown red nose or horror styling.\n- Preserve the ivory gloves and dark trousers.\nThe mime is silently pressing both palms against the same imagined invisible wall. No actual wall or glass is visible. This should read as a familiar theatrical role at first glance, not an ordinary man in party clothes.\nPreserve the precise approved sheet's animated cartoon world. No realistic skin, photographic fabric, franchise references, added characters, written text, logo, watermark, screen, phone, weapon or drink. One finished 4:3 landscape illustration.\n"
+      },
+      "approvalStatus": "approved-by-Arman-2026-10-30",
+      "notes": "Arman bestätigt den klassischen Pantomimen mit „besser weiter“. Das Scharade-Spielbild zeigt stummes Darstellen; Karten-/Zeit-/Punktelogik unverändert. WebP 800x600, 33836 Bytes, Pillow-Export."
+    },
+    {
+      "path": "docs/screenshots/scharade-handy-375x812.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chromium",
+      "source": "Own isolated browser context, v2-hub.html#spiel=charades, viewport 375x812, 2026-10-30; WebP export with Pillow.",
+      "createdAt": "2026-10-30",
+      "sha256": "0c878e6cbde49ad57795cfb82de8d1a586b6157424c45f8f1a7d8eb0fd7654af",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/charades.webp",
+      "dimensions": "375x812"
+    },
+    {
+      "path": "docs/screenshots/scharade-desktop-1280x900.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chromium",
+      "source": "Own isolated browser context, v2-hub.html#spiel=charades, viewport 1280x900, 2026-10-30; WebP export with Pillow.",
+      "createdAt": "2026-10-30",
+      "sha256": "1ccbb6c6f1273610dfc854ba528f14cc26c0b239e0ac28be049024c4d526dc35",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/charades.webp",
+      "dimensions": "1280x900"
     }
   ]
 }

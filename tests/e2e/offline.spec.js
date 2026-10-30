@@ -30,6 +30,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const production = names.filter(name => /^secret-circle-v\d+$/.test(name));
     const cache = await caches.open(production[0]);
     const expected = [
+      './assets/images/charades.webp',
       './index.html', './v2-hub.html', './word-imposter.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
       './v2-theme.css', './v2-party-hub.css', './v2-update.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
@@ -60,6 +61,11 @@ test('service worker caches the complete v30 core including Creator guidance and
   await expect(page.getByRole('heading', { name: 'Eigenes Spiel erstellen' })).toBeVisible();
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
+  await page.goto('/v2-hub.html#spiel=charades');
+  const charades = page.locator('#mode-emblem img');
+  await expect(charades).toHaveAttribute('src', 'assets/images/charades.webp');
+  await expect(charades).toHaveAttribute('alt', /Pantomime/);
+  await expect.poll(() => charades.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/word-imposter.html');
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 });
