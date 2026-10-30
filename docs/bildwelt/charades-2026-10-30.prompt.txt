@@ -1,0 +1,20 @@
+ERSTE GENERIERUNG:
+Create ONE original 4:3 landscape game illustration for SCHARADE / CHARADES in Secret Circle.
+The attached APPROVED character-and-material sheet is the sole exact style bible. Match its character sculpting, eye construction, head/body stylization, matte materials, detail density and soft shadow treatment. In particular the human must be as clearly cartoon-stylized as the sheet's detective: large shaped eyes, solid brows, a broad sculpted nose, simple cheek planes and hair modeled in a few masses. Do not introduce a more realistic cinematic human or a different cartoon style.
+ONE new adult male mime, compact and sturdy, short swept dark hair, expressive dark eyebrows and a small sculpted moustache. Rust-burgundy short waistcoat, bold cream/charcoal striped shirt, charcoal trousers and ivory cloth gloves, rendered like the sheet's coat and folded fabric. No white face paint.
+He silently acts being trapped behind an INVISIBLE wall: three-quarter SIDE VIEW, leaning into both open flat gloved palms at different heights, both palms pressed into the SAME imagined vertical plane. The wall itself is not visible; no actual glass, door or frame. Clearly coherent arms and five fingers on each glove. Closed mouth, comically intense concentrated expression, eyes deliberately looking toward his guessing audience outside the image.
+Main face and both hands large and near the central area; medium three-quarter-body framing, broad readable silhouette. A small plum-framed hourglass from the approved sheet sits at the edge of a low stage. Simplified plum curtains and one muted petrol curved wall form a quiet background. Soft cream key light and gentle cool fill, no photographic lighting effects. The pose communicates silent acting under time pressure. No other character.
+Use the exact approved sheet's rounded sculpted shapes and restrained material texture throughout. No pores, extra fabric microdetail, glitter, bokeh, glossy toy look or product photography. No words, letters, digits, logos, watermarks, phones, screens, UI, real people, known franchise characters, weapons, drinks or violence.
+
+KLASSISCHE ROLLENFIGUR – GEZIELTE BEARBEITUNG:
+Use case: precise-object-edit.
+INPUT 1 is the Scharade game illustration to edit. INPUT 2 is the approved Secret Circle character/material style reference.
+Keep the exact original pose, face geometry and eye construction, direction of gaze, two five-fingered open gloves, body proportions, camera, stage, curtains, hourglass, lighting and 3D material language of input 1.
+Change ONLY the costume styling and theatrical face makeup to make this an instantly recognizable CLASSIC MIME archetype:
+- Add a simple soft BLACK BERET, visibly a beret, fitted naturally over his hair.
+- Replace the rust waistcoat with BLACK SUSPENDERS over the existing bold cream-and-charcoal striped shirt.
+- Add a small RED NECKERCHIEF tied close to the neck, not a long scarf.
+- Add simple matte WHITE MIME FACE PAINT, with his existing sculpted facial structure still clear; preserve black eyebrows, dark moustache and original expressive eyes. Keep it lighthearted, no dark tear marks, scary mask, clown red nose or horror styling.
+- Preserve the ivory gloves and dark trousers.
+The mime is silently pressing both palms against the same imagined invisible wall. No actual wall or glass is visible. This should read as a familiar theatrical role at first glance, not an ordinary man in party clothes.
+Preserve the precise approved sheet's animated cartoon world. No realistic skin, photographic fabric, franchise references, added characters, written text, logo, watermark, screen, phone, weapon or drink. One finished 4:3 landscape illustration.

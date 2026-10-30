@@ -1,3 +1,9 @@
+## v100 – Freigegebenes Scharade-Bild (30. Oktober 2026)
+
+- Scharade zeigt den von Arman ausgewählten klassischen Pantomimen in Katalog, Empfehlungen und Spieldetail. Bild und Alt-Text bleiben lokal verfügbar.
+- Die gewählte Figuren-/Materialvorlage und die tatsächliche Referenzkette sind mit vollständigen Prompts und Herkunft dokumentiert. Weitere Spielbilder brauchen eine eigene Auswahl.
+- Offline-Core v99 → v100; neue Spielillustration im geprüften Downloadbudget. Keine Änderungen an Spielregeln, Namen, Timer-, Punkte-, Speicher- oder Schutzlogik.
+
 ## v99 – Altersstufe wirkt auch in der kanonischen Startseite (16. Oktober 2026)
 
 - Der V2-Hub übernimmt die gespeicherte Altersstufe aus den gemeinsamen Party-Einstellungen. Der Familienmodus filtert Empfehlungen, Hero, Katalog und Suche.
