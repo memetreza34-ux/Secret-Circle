@@ -1,3 +1,9 @@
+## v102 – Bild für Heiße Kartoffel (2. November 2026)
+
+- Die ausgewählte Kartoffel-Probe erscheint lokal im Katalog und Spieldetail; Alt-Text, Rechte-/Medienvertrag und Bildbudget ergänzt.
+- Offline-Core v101 → v102. Bild- und Offline-Prüfungen um das neue Motiv erweitert.
+- Keine Änderung an Spielregeln, IDs, Timer-, Punkte-, Speicher- oder Schutzlogik.
+
 ## v101 – Freigegebener Showmaster für Nicht sagen! (30. Oktober 2026)
 
 - Das ausgewählte Showmaster-Bild erscheint lokal in Katalog und Spieldetail, mit deutschem Alt-Text und geprüftem Bildbudget.

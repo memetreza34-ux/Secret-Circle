@@ -6,6 +6,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 budgets = {
+    'assets/images/hot-potato.webp': 35_000,
     'assets/images/taboo.webp': 35_000,
     'assets/images/charades.webp': 35_000,
     'assets/images/imposter.webp': 35_000,

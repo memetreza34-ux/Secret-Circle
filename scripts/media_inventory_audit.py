@@ -13,6 +13,9 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'assets/images/hot-potato.webp',
+    'docs/screenshots/hot-potato-handy-375x812.webp',
+    'docs/screenshots/hot-potato-desktop-1280x900.webp',
     'assets/images/taboo.webp',
     'docs/screenshots/taboo-handy-375x812.webp',
     'docs/screenshots/taboo-desktop-1280x900.webp',

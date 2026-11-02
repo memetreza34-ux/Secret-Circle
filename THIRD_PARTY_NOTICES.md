@@ -149,3 +149,8 @@ Vollständige Generierungs- und Bearbeitungsprompts, Herkunft, Rechtebasis und S
 ## Nicht sagen! – 30. Oktober 2026
 
 Arman hat den klassischen Showmaster als einzelnes Spielbild konkret ausgewählt. `assets/images/taboo.webp` wurde mit dem integrierten OpenAI `image_gen` und der gewählten eigenen Figuren-/Materialvorlage erzeugt; das Werkzeug weist kein konkretes Modell aus. Eigener Rollenentwurf, keine echte Person, Marke oder bekannte Figur. Vollständiger Prompt: `docs/bildwelt/taboo-2026-10-30.prompt.txt`; Rechtebasis, Referenzkette und SHA-256 stehen im Provenienzmanifest. Lokale WebP-Datei, 800×600 und 34.510 Bytes. Die Kartensymbole veranschaulichen das Erklären ohne verbotene Begriffe, ohne eine neue Spielregel einzuführen. Screenshots zeigen die eigene App in isolierten Testkontexten. Keine öffentliche Releasefreigabe.
+
+
+## Heiße Kartoffel – 2. November 2026
+
+Eigenes Gegenstandsmotiv in der gewählten Bildwelt, erzeugt am 30. Oktober mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. Fortsetzung des Einbaus nach der gezeigten Probe von Arman beauftragt. `assets/images/hot-potato.webp`: 800×600 WebP, 34.954 Bytes. Die Kartoffel und die Sanduhr stehen sinnbildlich für Weitergeben unter Zeitdruck, ohne die Regeln zu ändern. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/hot-potato-2026-10-30.prompt.txt`, Herkunft, Rechtebasis und SHA-256 im Manifest. Screenshots dokumentieren ausschließlich die eigene App. Keine öffentliche Releasefreigabe.

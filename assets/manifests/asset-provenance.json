@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-30",
+  "updatedAt": "2026-11-02",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -317,6 +317,54 @@
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "assets/images/taboo.webp",
+      "dimensions": "1280x900"
+    },
+    {
+      "path": "assets/images/hot-potato.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+      "createdAt": "2026-10-30",
+      "sha256": "13613021865e8348f6ac4107f2d6a7f16c992ee3b9263a895a763034d9553c10",
+      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "prompts": {
+        "generation": "Use case: stylized-concept.\nCreate ONE original 4:3 game illustration for Secret Circle, \"Heiße Kartoffel\" (Hot Potato).\nINPUT 1 is the sole exact approved STYLE reference, not a composition to copy. Match the sheet's rounded sculpted cartoon shapes, simplified matte materials, soft shadows, controlled detail and deliberately animated prop design. This image uses objects and cropped mitts rather than another humanoid mascot.\nThe real game moment: quickly pass on the turn before time runs out. A hot potato is its clear visual metaphor; not a cooking tutorial.\nOne large irregular golden-brown POTATO is caught mid-toss at the center, a slight tilted arc, three large simple sculpted dimples, two graceful steam curls. No face, eyes or limbs on the potato.\nFrom the left edge one padded burnt-orange oven mitt has just tossed it; from the right edge one deep-blue padded oven mitt opens to catch it. ONLY TWO mitts total, one belonging to each unseen participant, no extra hands, no visible heads or bodies. The object has visibly just left one mitt and is about to land in the other: urgent and playful passing, no static presentation.\nA compact stylized red-framed hourglass on the lower rear counter shows a thin stream with most sand already at the bottom, supporting time pressure. Do not strap a timer to the potato. No clock numerals or text.\nComposition: close-up dynamic passing action, potato and catching action remain large and readable inside the central 60% of the 4:3 image. The mitt silhouettes frame the potato; hourglass is smaller and secondary. No complicated motion effects.\nBackdrop: simplified warm butter-yellow and soft blue kitchen shapes, just a few large rounded tiles and an arch, low detail. Fresh daytime palette, balanced warm key light and soft blue fill, same style as the approved sheet. A calm matte cartoon world, not realistic food photography or a shiny 3D product render.\nNo photoreal pores, gritty texture, tiny fabric noise, bokeh, glitter, sparks, fire, scary expression, explosions, weapons, cups, drinks, logos, brands, writing, digits, UI, phones, watermarks, franchise designs or famous characters. One polished finished illustration, not a collage or contact sheet.\n"
+      },
+      "approvalStatus": "approved-by-Arman-2026-11-02",
+      "notes": "Nach gezeigter Kartoffel-Probe und Frage folgt Armans wiederholtes „weiter“. Der Einbau wurde als Fortsetzung angekündigt. Gegenstandsmotiv für schnelles Weitergeben unter Zeitdruck; keine neue Koch-/Essensregel. 800x600 WebP, 34954 Bytes. Stilvorlage bleibt das gewählte Figuren-/Materialblatt."
+    },
+    {
+      "path": "docs/screenshots/hot-potato-handy-375x812.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chromium",
+      "source": "Own isolated Playwright Chromium context; v2-hub.html#spiel=hot-potato; viewport handy-375x812; 2026-11-02. WebP export with Pillow.",
+      "createdAt": "2026-11-02",
+      "sha256": "6f4315b25133fc94a89ef2ff0e72cd44856955aa25433c797da4e7e7d7251ace",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/hot-potato.webp",
+      "dimensions": "375x812"
+    },
+    {
+      "path": "docs/screenshots/hot-potato-desktop-1280x900.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chromium",
+      "source": "Own isolated Playwright Chromium context; v2-hub.html#spiel=hot-potato; viewport desktop-1280x900; 2026-11-02. WebP export with Pillow.",
+      "createdAt": "2026-11-02",
+      "sha256": "f21a008cf2e8d2be2c05708cc9f92b42c25d33fc341546c15c5fb2cf1928f9eb",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/hot-potato.webp",
       "dimensions": "1280x900"
     }
   ]

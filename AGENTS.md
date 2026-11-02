@@ -12,6 +12,8 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 
 **Weitere konkrete Bildauswahl (30. Oktober 2026):** Arman hat den gezeigten klassischen Showmaster für „Nicht sagen!“ mit „weiter bau die direkt ein und weiter“ ausgewählt. `assets/images/taboo.webp` ist eingebunden. Er erklärt einen Begriff, ohne verbotene Hinweise zu nennen. Jedes weitere Motiv bleibt einzeln auszuwählen.
 
+**Fortsetzung am 2. November 2026:** Nach der gezeigten Kartoffel-Probe hat Arman die Fortsetzung beauftragt. `assets/images/hot-potato.webp` ist eingebunden: eine dampfende Kartoffel wird zwischen Ofenhandschuhen weitergegeben, während eine Sanduhr läuft. Gleichbleibende Machart, erstmals in diesem Pass ein Gegenstandsmotiv. Weitere Bilder bleiben einzeln auszuwählen.
+
 ## Stand der Oberfläche
 
 - **Startseite:** `/` und `index.html` (identisch zu `v2-hub.html` als Legacy-Alias) mit `v2-hub.js` und `v2-theme.css` – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.

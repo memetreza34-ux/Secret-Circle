@@ -30,7 +30,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const production = names.filter(name => /^secret-circle-v\d+$/.test(name));
     const cache = await caches.open(production[0]);
     const expected = [
-      './assets/images/charades.webp', './assets/images/taboo.webp',
+      './assets/images/hot-potato.webp', './assets/images/charades.webp', './assets/images/taboo.webp',
       './index.html', './v2-hub.html', './word-imposter.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
       './v2-theme.css', './v2-party-hub.css', './v2-update.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
@@ -66,6 +66,11 @@ test('service worker caches the complete v30 core including Creator guidance and
   await expect(charades).toHaveAttribute('src', 'assets/images/charades.webp');
   await expect(charades).toHaveAttribute('alt', /Pantomime/);
   await expect.poll(() => charades.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  await page.goto('/v2-hub.html#spiel=hot-potato');
+  const potato = page.locator('#mode-emblem img');
+  await expect(potato).toHaveAttribute('src', 'assets/images/hot-potato.webp');
+  await expect(potato).toHaveAttribute('alt', /Kartoffel/);
+  await expect.poll(() => potato.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/v2-hub.html#spiel=taboo');
   const taboo = page.locator('#mode-emblem img');
   await expect(taboo).toHaveAttribute('src', 'assets/images/taboo.webp');
