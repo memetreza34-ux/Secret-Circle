@@ -1,5 +1,7 @@
 # Bildwelt für Secret Circle v2
 
+**Weitere Bildauswahl am 3. November 2026:** Arman hat den Fuchs-Abenteurer für „Zwei Wahrheiten, eine Lüge“ mit „Ja, einbauen und weiter“ konkret ausgewählt. `assets/images/two-truths.webp` zeigt drei erzählte Erlebnisse, darunter den erfundenen Papierflieger-Flug. Weitere Motive bleiben einzeln auszuwählen.
+
 **Bildauswahl am 3. November 2026:** Arman hat die gezeigte Wortkette ausdrücklich zum Einbau freigegeben. `assets/images/word-chain.webp` zeigt eine Zugbegleiterin beim Verbinden der Waggons mit Apfel, Lampe und Elefant. Die korrekte deutsche Wortfolge bleibt eine Bildmetapher. Der Auftrag umfasst weiterhin alle 55 Spielbilder; weitere Motive werden einzeln gezeigt und ausgewählt.
 
 **Weitere konkrete Bildauswahl (30. Oktober 2026):** Arman hat den gezeigten klassischen Showmaster für „Nicht sagen!“ mit „weiter bau die direkt ein und weiter“ ausgewählt. `assets/images/taboo.webp` ist eingebunden. Er erklärt einen Begriff, ohne verbotene Hinweise zu nennen. Jedes weitere Motiv bleibt einzeln auszuwählen.

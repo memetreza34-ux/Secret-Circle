@@ -1,3 +1,9 @@
+## v104 – Freigegebener Fuchs für Zwei Wahrheiten, eine Lüge (3. November 2026)
+
+- Das ausgewählte Fuchs-Motiv erscheint im Katalog und Spieldetail, mit deutschem Alt-Text.
+- Herkunft, vollständiger Prompt, Bildbudget sowie Medien- und Rechtevertrag ergänzt. Offline-Core v103 → v104.
+- Bestehende Bild- und Offline-Prüfungen um das Motiv erweitert.
+
 ## v103 – Freigegebene Wortkette (3. November 2026)
 
 - Die ausgewählte Zugbegleiterin mit Apfel, Lampe und Elefant erscheint im Katalog und Spieldetail, mit deutschem Alt-Text.

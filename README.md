@@ -12,7 +12,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
 - kein Wave-1-Lab erweitert automatisch den Januar-Core
 
-Aktueller Offline-Core: **`secret-circle-v103` / `secret-circle-v103-staging`**
+Aktueller Offline-Core: **`secret-circle-v104` / `secret-circle-v104-staging`**
 Package: **`1.0.0-beta.3`**  
 Classic Content: **v4**  
 Core Source Review/Hardening: **15/15 PREPARED**  
@@ -75,7 +75,7 @@ Gemeinsame Verträge:
 - `party-release-structure.js` v5 klassifiziert alle zehn Wave-1-Modi als Labs
 - Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie Prozent/Bracket/Bluff/Clue
 - `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10 und v64
-- offline in `secret-circle-v103`
+- offline in `secret-circle-v104`
 
 Langfristige Planung: `APP_SPIELMODI_UND_THEMEN_ANLEITUNG.md` + `GAME_LIBRARY_BACKLOG.json`.
 

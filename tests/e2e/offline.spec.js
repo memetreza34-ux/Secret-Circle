@@ -30,6 +30,7 @@ test('service worker caches the complete v30 core including Creator guidance and
     const production = names.filter(name => /^secret-circle-v\d+$/.test(name));
     const cache = await caches.open(production[0]);
     const expected = [
+      './assets/images/two-truths.webp',
       './assets/images/word-chain.webp',
       './assets/images/hot-potato.webp', './assets/images/charades.webp', './assets/images/taboo.webp',
       './index.html', './v2-hub.html', './word-imposter.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
@@ -67,6 +68,11 @@ test('service worker caches the complete v30 core including Creator guidance and
   await expect(charades).toHaveAttribute('src', 'assets/images/charades.webp');
   await expect(charades).toHaveAttribute('alt', /Pantomime/);
   await expect.poll(() => charades.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  await page.goto('/v2-hub.html#spiel=two-truths');
+  const twoTruths = page.locator('#mode-emblem img');
+  await expect(twoTruths).toHaveAttribute('src', 'assets/images/two-truths.webp');
+  await expect(twoTruths).toHaveAttribute('alt', 'Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger');
+  await expect.poll(() => twoTruths.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/v2-hub.html#spiel=word-chain');
   const wordChain = page.locator('#mode-emblem img');
   await expect(wordChain).toHaveAttribute('src', 'assets/images/word-chain.webp');

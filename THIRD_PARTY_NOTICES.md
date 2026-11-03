@@ -158,3 +158,7 @@ Eigenes Gegenstandsmotiv in der gewählten Bildwelt, erzeugt am 30. Oktober mit 
 ## Wortkette – 3. November 2026
 
 Von Arman konkret freigegebenes Motiv einer Zugbegleiterin, die Waggons mit Apfel, Lampe und Elefant verbindet. Erzeugt am 2. November mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/word-chain.webp`: 800×600 WebP, 34.030 Bytes. Eigene projektseitige Stilvorlage, keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/word-chain-2026-11-02.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Wortfolge und Waggons erklären den Spielgedanken bildlich, ohne die Regeln zu ändern. Keine öffentliche Releasefreigabe.
+
+## Zwei Wahrheiten, eine Lüge – 3. November 2026
+
+Von Arman konkret freigegebener Fuchs-Abenteurer mit drei erzählten Erlebnissen, darunter ein erfundener Papierflieger-Flug. Erzeugt mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/two-truths.webp`: 800×600 WebP, 34.470 Bytes. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/two-truths-2026-11-03.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Erlebnisse sind ein Bildmotiv und ändern keine Spielregel. Keine öffentliche Releasefreigabe.

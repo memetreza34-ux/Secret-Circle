@@ -13,6 +13,9 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/screenshots/two-truths-handy-375x812.webp',
+    'docs/screenshots/two-truths-desktop-1280x900.webp',
+    'assets/images/two-truths.webp',
     'docs/screenshots/word-chain-handy-375x812.webp',
     'docs/screenshots/word-chain-desktop-1280x900.webp',
     'assets/images/word-chain.webp',

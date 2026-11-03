@@ -43,6 +43,7 @@ test('game artwork loads locally in cards, banner and details with readable mobi
   await seedHub(page);
   await openV2(page);
   const artwork = {
+    'two-truths': 'Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger',
     'word-chain': 'Zugbegleiterin verbindet drei Waggons mit Apfel, Lampe und Elefant zu einer Wortkette',
     'hot-potato': 'Dampfende Kartoffel fliegt zwischen zwei Ofenhandschuhen; im Hintergrund läuft eine Sanduhr',
     taboo: 'Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder',

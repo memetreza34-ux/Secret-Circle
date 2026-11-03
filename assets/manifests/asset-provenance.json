@@ -414,6 +414,54 @@
       "attribution": null,
       "derivedFrom": "assets/images/word-chain.webp",
       "dimensions": "1280x900"
+    },
+    {
+      "path": "assets/images/two-truths.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-03",
+      "sha256": "e4f701b7c32f41f43eb532820bbe2083f627f33b737296088fb3f16d30c15042",
+      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "prompts": {
+        "generation": "Use case: stylized-concept.\nCreate ONE original landscape 4:3 Secret Circle game illustration for \"Zwei Wahrheiten, eine Lüge\" (Two truths and a lie).\nInput image 1 is ONLY the approved exact style reference. Match its sculpted cartoon anatomy, deliberately expressive large eyes and brows, simplified matte fabric and prop surfaces, restrained details and gentle shadows. Do not copy its poses, cards, characters or palette.\nVisible game idea: one person tells three experiences about themselves; two really happened and one is invented. The group identifies the invented story.\nOne charming original adult FOX ADVENTURER and storyteller, orange-red fur treated as simple sculpted volumes, cream muzzle, large clear eyes, one dark pupil in each eye, eyebrows, a slightly mischievous smile. Classic recognizable explorer role: soft khaki broad-brim expedition hat with plain band, moss-green field jacket over cream shirt, folded map tucked at the belt. No weapon or insignia. The fox is seated sideways on a low travel trunk, turns to the viewer and gestures openly while telling a story.\nAround and just above the shoulders are exactly THREE LARGE softly outlined illustrated memory/speech bubbles, with short clear tails leading toward the fox. These are in-scene imaginary experiences, not separate panels or a contact sheet. Each contains a tiny recognizable version of the same explorer: left, the fox reaching a broad mountain summit with a walking stick; upper middle, the fox beside a simple camping tent under a crescent moon; right, the fox impossibly riding a gigantic folded PAPER AIRPLANE in the sky. The third experience is playful invention. No check marks, crosses or words give away the answer. No extra bubbles or extra full-size foxes.\nThe face and open storytelling gesture are the dominant central subject. The three simple silhouettes and bubbles must remain legible in a small game tile. Close-medium framing, warm dusty-terracotta and muted moss palette, broad soft blue sky shapes, a simplified quiet explorer camp behind with no extra props or clutter. Warm key light and soft cool fill, same original matte animated world as reference.\nKeep important face, gesture and story shapes inside the central safe crop. Anatomically coherent paws, clear silhouettes, original costume. No photoreal fur, pores, textile micro-noise, bokeh, glossy toys, glitter, magic particles, text, letters, digits, logos, brands, watermark, UI, phone, drinks, alcohol, weapons, violence, real people or known franchise characters. One finished illustration.\n"
+      },
+      "approvalStatus": "approved-by-Arman-2026-11-03",
+      "notes": "Arman hat die gezeigte Fuchs-Vorschau mit „Ja, einbauen und weiter“ konkret ausgewählt. Zwei plausible Erlebnisse und ein erfundener Papierflieger-Flug zeigen den Spielgedanken. 800x600 WebP, 34470 Bytes. Weitere Motive bleiben einzeln auszuwählen."
+    },
+    {
+      "path": "docs/screenshots/two-truths-handy-375x812.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chrome (Chromium)",
+      "source": "Own isolated local Chrome browser context; v2-hub.html#spiel=two-truths; viewport handy-375x812; 2026-11-03. WebP export with Pillow.",
+      "createdAt": "2026-11-03",
+      "sha256": "b9148d58a6179f81f7502fc1b2a07f2c11ac4a81a50289807fe61b97884a0207",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/two-truths.webp",
+      "dimensions": "375x812"
+    },
+    {
+      "path": "docs/screenshots/two-truths-desktop-1280x900.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chrome (Chromium)",
+      "source": "Own isolated local Chrome browser context; v2-hub.html#spiel=two-truths; viewport desktop-1280x900; 2026-11-03. WebP export with Pillow.",
+      "createdAt": "2026-11-03",
+      "sha256": "14c2f3f427c021e80fa9a0f5581ad6b4619e05893d7925967c0c07cd2c613771",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/two-truths.webp",
+      "dimensions": "1280x900"
     }
   ]
 }
