@@ -154,3 +154,7 @@ Arman hat den klassischen Showmaster als einzelnes Spielbild konkret ausgewählt
 ## Heiße Kartoffel – 2. November 2026
 
 Eigenes Gegenstandsmotiv in der gewählten Bildwelt, erzeugt am 30. Oktober mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. Fortsetzung des Einbaus nach der gezeigten Probe von Arman beauftragt. `assets/images/hot-potato.webp`: 800×600 WebP, 34.954 Bytes. Die Kartoffel und die Sanduhr stehen sinnbildlich für Weitergeben unter Zeitdruck, ohne die Regeln zu ändern. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/hot-potato-2026-10-30.prompt.txt`, Herkunft, Rechtebasis und SHA-256 im Manifest. Screenshots dokumentieren ausschließlich die eigene App. Keine öffentliche Releasefreigabe.
+
+## Wortkette – 3. November 2026
+
+Von Arman konkret freigegebenes Motiv einer Zugbegleiterin, die Waggons mit Apfel, Lampe und Elefant verbindet. Erzeugt am 2. November mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/word-chain.webp`: 800×600 WebP, 34.030 Bytes. Eigene projektseitige Stilvorlage, keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/word-chain-2026-11-02.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Wortfolge und Waggons erklären den Spielgedanken bildlich, ohne die Regeln zu ändern. Keine öffentliche Releasefreigabe.

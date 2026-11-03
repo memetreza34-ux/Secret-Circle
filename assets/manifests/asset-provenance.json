@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-02",
+  "updatedAt": "2026-11-03",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -365,6 +365,54 @@
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "assets/images/hot-potato.webp",
+      "dimensions": "1280x900"
+    },
+    {
+      "path": "assets/images/word-chain.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-02",
+      "sha256": "9ca7aa1f15457746af76ba1dfea31971028a2cbe6f7f7edcc0732a8393951c34",
+      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "prompts": {
+        "generation": "Use case: stylized-concept.\nCreate ONE original 4:3 Secret Circle game illustration for \"Wortkette\" (word chain).\nINPUT 1 is the sole exact approved STYLE reference. Match its sculpted animated cartoon faces, one pupil per eye, brow geometry, head/body proportions, simplified matte fabric and prop materials, restrained surface detail and soft shadow treatment. Change the characters, palette and setting; do not copy the sheet's poses or cards.\nVisible idea: each word connects to the previous word. Three visibly COUPLED little freight wagons carry three clear objects in this exact left-to-right sequence: a red APPLE, a simple amber TABLE LAMP with a shade, a small original gray ELEPHANT figure with four animal legs. In German: Apfel -> Lampe -> Elefant, because each word begins with the preceding word's final letter. The words themselves must NOT be written. The connected wagons turn the word chain into a clear visual metaphor, not a new railway game rule.\nA CLASSIC ADULT TRAIN CONDUCTOR is the one supporting character, behind the wagons: an original sturdy middle-aged woman with round sculpted cheeks and deliberate expressive eyes, dark brown cartoon skin, neat silver hair, navy railway cap with a plain brass button, matching navy uniform jacket, burgundy waistcoat and crisp cream shirt. Recognizable professional conductor costume without writing, symbols or brand insignia. Adult animation character, not a child or photoreal portrait.\nShe is fitting the large curved coupling of the final elephant wagon onto the preceding lamp wagon, concentrating with a small knowing smile. One clear connecting gesture, anatomically coherent five-fingered hands. The conductor's head and three cargo shapes are large and readable; avoid clutter. The apple, lamp and elephant each visibly sit inside their own open wagon.\nThree-quarter side view across a slate-blue station workbench. All three wagons and the linking gesture sit in the central crop; conductor bust behind them. Background is a simple stylized railway arch with broad muted blue and warm cream shapes, no written signs, tracks into distance, crowd, clocks, lamps or decorative clutter. Navy, brick-red, muted mint and cream palette with warm soft key light, gentle cool fill.\nUse original hand-designed cartoon forms rather than generic emoji, glossy toys, tiny photoreal models or asset-store icons. The elephant is a little sculpted animal prop, no human body. No glitter, bokeh, textile micro-noise, extra fingers, extra wagons or duplicate objects.\nNo text, letters, digits, logos, brands, watermark, phones, screens, UI, alcohol, drinks, weapons, violence, real people or known franchise designs. One finished landscape illustration, no panels or contact sheet.\n"
+      },
+      "approvalStatus": "approved-by-Arman-2026-11-03",
+      "notes": "Arman hat die am 3. November gezeigte Wortketten-Probe ausdrücklich zum Einbau ausgewählt. Apfel → Lampe → Elefant: korrekte deutsche Wortfolge. Waggons sind eine Bildmetapher, keine neue Spielregel. 800x600 WebP, 34030 Bytes. Weitere Motive bleiben einzeln auszuwählen."
+    },
+    {
+      "path": "docs/screenshots/word-chain-handy-375x812.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chrome (Chromium)",
+      "source": "Own isolated local Chrome browser context; v2-hub.html#spiel=word-chain; viewport handy-375x812; 2026-11-03. WebP export with Pillow.",
+      "createdAt": "2026-11-03",
+      "sha256": "a32f53be04f86c7c9f2c155b22c99919a7dfc7be06a4f1528b973599ef3ff18b",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/word-chain.webp",
+      "dimensions": "375x812"
+    },
+    {
+      "path": "docs/screenshots/word-chain-desktop-1280x900.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chrome (Chromium)",
+      "source": "Own isolated local Chrome browser context; v2-hub.html#spiel=word-chain; viewport desktop-1280x900; 2026-11-03. WebP export with Pillow.",
+      "createdAt": "2026-11-03",
+      "sha256": "cee8cf70da51423ec07bc3724768625e442e717077f2bbb1fc8fab5bc8506aa5",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/word-chain.webp",
       "dimensions": "1280x900"
     }
   ]

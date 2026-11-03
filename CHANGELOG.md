@@ -1,3 +1,9 @@
+## v103 – Freigegebene Wortkette (3. November 2026)
+
+- Die ausgewählte Zugbegleiterin mit Apfel, Lampe und Elefant erscheint im Katalog und Spieldetail, mit deutschem Alt-Text.
+- Herkunft, vollständiger Prompt, Bildbudget sowie Medien- und Rechtevertrag ergänzt. Offline-Core v102 → v103.
+- Bestehende Bild- und Offline-Prüfungen um die Wortkette erweitert.
+
 ## v102 – Bild für Heiße Kartoffel (2. November 2026)
 
 - Die ausgewählte Kartoffel-Probe erscheint lokal im Katalog und Spieldetail; Alt-Text, Rechte-/Medienvertrag und Bildbudget ergänzt.
