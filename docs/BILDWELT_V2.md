@@ -1,5 +1,7 @@
 # Bildwelt für Secret Circle v2
 
+**Ein Bild pro Spiel (Armans Anweisung vom 4. November 2026):** Genau einen Entwurf je Modus erzeugen und zeigen, keine parallelen Varianten oder zusätzlichen Stilrichtungen. Eine notwendige Fehlerkorrektur ersetzt dieselbe Fassung; sie eröffnet keine zweite Auswahlserie. Ältere Aufträge mit 2–3 Varianten sind überholt.
+
 ## Verbindliche Korrektur vom 4. November 2026
 
 Arman hat die uneinheitliche Bildwelt ausdrücklich beanstandet und beauftragt, die Korrektur direkt im Repo festzuhalten. Die alleinige Figuren-/Materialvorlage bleibt [vorlage-2026-10-30.webp](bildwelt/vorlage-2026-10-30.webp), SHA-256 `59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294`. Ein neuer Entwurf wird niemals zur neuen Stilvorlage. Figuren, Rollen und Szenen variieren innerhalb derselben Formensprache: Augen/Brauen, modellierte Proportionen, zurückhaltende matte Materialien und Lichtbehandlung werden vor jedem Einbau unmittelbar mit dieser Datei verglichen. Bestehende Figuren behalten ihre Identität.
@@ -75,7 +77,7 @@ Danach folgt der Motiv-Prompt aus der Tabelle unten.
 - **Format:** WebP, **800 × 600** Pixel, Ziel **höchstens 35 KB** pro Bild (Qualität etwa 70–75). Erzeugen gern größer (z. B. 1600 × 1200) und dann verkleinern.
 - **Warum so klein:** Alle Bilder im Offline-Cache werden bei der Installation geladen. Das Gesamtbudget ist 3,2 MB (`scripts/performance_budget.py`), davon sind gut 1,1 MB belegt. Bilder für alle 55 Spiele passen nur mit etwa 35 KB pro Bild hinein. Reicht das Budget nicht, wird das vor dem Einbinden entschieden (Budget erhöhen oder Bilder außerhalb des Offline-Kerns laden) – nicht stillschweigend.
 - **Dateiname:** `assets/images/<spiel-id>.webp`, z. B. `assets/images/charades.webp`.
-- **Varianten:** pro Spiel 2–3 Varianten erzeugen, die beste auswählen; wir schauen sie gemeinsam an, bevor sie eingebunden werden.
+- **Anzahl:** genau ein Entwurf pro Spiel. Keine parallelen Varianten. Fehlerkorrekturen ersetzen dieselbe Fassung.
 
 ## Einbinden (Medienvertrag)
 

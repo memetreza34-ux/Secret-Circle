@@ -16,6 +16,8 @@ Secret Circle ist eine offline-first PWA mit Partyspielen für eine Gruppe und e
 
 **Verbindliche Bildwelt-Korrektur (4. November 2026):** Arman beanstandet ausdrücklich die gemischten Bildserien. Für alle 55 Spiele bleibt ausschließlich `docs/bildwelt/vorlage-2026-10-30.webp` maßgeblich (SHA-256 `59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294`). Neue Motive und Figuren dürfen diese Vorlage nicht durch eine neue Stilrichtung ersetzen. Vor Erzeugung und Einbau Formen, Augen/Brauen, Proportionen, Oberflächen und Licht direkt mit ihr vergleichen; dieselbe Figur behält ihre Identität. Ein neu erzeugtes oder einzeln ausgewähltes Motiv wird dadurch niemals zur neuen Stilvorlage. Zuerst den vorhandenen achtteiligen Bildbestand zusammenführen, dann weitere Modi ergänzen. Einzelne Bildfreigaben und technische Tests belegen keine einheitliche oder vollständig abgenommene Serie. Der tatsächliche Stand steht in `docs/BILDWELT_V2.md` und `docs/bildwelt/stilpruefung-2026-11-04.json`.
 
+**Ein Bild pro Spiel (Armans Anweisung vom 4. November 2026):** Genau einen Entwurf je Modus erzeugen und zeigen, keine parallelen Varianten oder zusätzlichen Stilrichtungen. Eine notwendige Fehlerkorrektur ersetzt dieselbe Fassung; sie eröffnet keine zweite Auswahlserie. Ältere Aufträge mit 2–3 Varianten sind überholt.
+
 ## Stand der Oberfläche
 
 - **Startseite:** `/` und `index.html` (identisch zu `v2-hub.html` als Legacy-Alias) mit `v2-hub.js` und `v2-theme.css` – das Design aus Claude Design. Sie zeigt Katalog, Spieldetail, Spielerliste und Profil und spielt selbst nichts.
