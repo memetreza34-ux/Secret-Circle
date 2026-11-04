@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-04",
+  "styleReference": "docs/bildwelt/vorlage-2026-10-30.webp",
+  "styleReferenceSha256": "59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294",
+  "seriesApproval": "open-user-reports-inconsistent-world",
+  "rules": [
+    "One fixed reference for every image; generated candidates never become new style references.",
+    "Compare every proposed image directly to the reference and the existing series before integration.",
+    "Keep character identity, eye construction, sculpted proportions and restrained material detail consistent.",
+    "Earlier individual selections do not prove a unified series."
+  ],
+  "findings": {
+    "imposter": "Stilkorrektur am 4. November nach konkreter Auswahl eingebaut; exakte Chamäleon-Identität aus der unveränderten festen Vorlage. Keine Abnahme der übrigen Serie.",
+    "truth-dare": "Old series: finer fur and fabric detail, stronger cinematic lighting.",
+    "mafia": "Old series: detailed fur, brickwork and cinematic light.",
+    "charades": "Closer to the fixed sculpted reference; still included in series review.",
+    "taboo": "Closer to the fixed sculpted reference; still included in series review.",
+    "hot-potato": "Food surface and glove detail are more realistic than the simplified reference props.",
+    "word-chain": "Face and sculpted forms close to reference; tabletop weathering and prop detail need comparison.",
+    "two-truths": "Fur texture and framed memory-bubble treatment diverge from the reference scene language."
+  },
+  "appChanged": true,
+  "correctedAssetSha256": "8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff",
+  "rejectedPreviews": [
+    {
+      "game": "question-imposter",
+      "sha256": "74c906c71a072c7c4c4916c2775065abfd22b1be97a261050e1ab653dfae55ad",
+      "status": "rejected-by-Arman-style-inconsistency",
+      "installed": false
+    },
+    {
+      "game": "question-imposter",
+      "sha256": "54782da4daffaedfc51c169d79cda8641d5524f80f7f97681873e2dc80fdf394",
+      "status": "unapproved-style-correction",
+      "installed": false
+    }
+  ]
+}

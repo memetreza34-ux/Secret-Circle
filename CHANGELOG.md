@@ -1,3 +1,9 @@
+## v105 – Eine feste Bildwelt und Word-Imposter-Korrektur (4. November 2026)
+
+- Die unveränderte Figuren-/Materialvorlage verbindlich in Agentenauftrag, Projektkompass und Bildanweisungen festgehalten. Belegten Vergleich des achtteiligen Bestands gespeichert; Gesamtserie bleibt offen.
+- Die konkret ausgewählte Word-Imposter-Korrektur übernimmt das Chamäleon aus dieser Vorlage und ersetzt die ältere Illustration am bestehenden Pfad. Herkunft, aktueller und früherer Prompt sowie Prüfsummen dokumentiert.
+- Offline-Core v104 → v105; der Offline-Browsertest prüft zusätzlich die tatsächlich gelieferte neue Bilddatei per SHA-256.
+
 ## v104 – Freigegebener Fuchs für Zwei Wahrheiten, eine Lüge (3. November 2026)
 
 - Das ausgewählte Fuchs-Motiv erscheint im Katalog und Spieldetail, mit deutschem Alt-Text.

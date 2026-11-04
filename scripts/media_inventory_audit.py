@@ -13,6 +13,8 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/screenshots/imposter-stilkorrektur-handy-375x812.webp',
+    'docs/screenshots/imposter-stilkorrektur-desktop-1280x900.webp',
     'docs/screenshots/two-truths-handy-375x812.webp',
     'docs/screenshots/two-truths-desktop-1280x900.webp',
     'assets/images/two-truths.webp',

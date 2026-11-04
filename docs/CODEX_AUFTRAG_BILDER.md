@@ -1,5 +1,13 @@
 # Auftrag für Codex: Bildwelt und einzelne Spielbilder
 
+## Verbindliche Korrektur vom 4. November 2026
+
+Arman hat die uneinheitliche Bildwelt ausdrücklich beanstandet und beauftragt, die Korrektur direkt im Repo festzuhalten. Die alleinige Figuren-/Materialvorlage bleibt [vorlage-2026-10-30.webp](bildwelt/vorlage-2026-10-30.webp), SHA-256 `59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294`. Ein neuer Entwurf wird niemals zur neuen Stilvorlage. Figuren, Rollen und Szenen variieren innerhalb derselben Formensprache: Augen/Brauen, modellierte Proportionen, zurückhaltende matte Materialien und Lichtbehandlung werden vor jedem Einbau unmittelbar mit dieser Datei verglichen. Bestehende Figuren behalten ihre Identität.
+
+Die bisherige App mischt ältere und neuere Motive. Frühere Einzelbildfreigaben bleiben historische Tatsachen; sie sind keine Abnahme der Gesamtserie. Zuerst den achtteiligen Bestand vereinheitlichen. Die Roboter-Proben für Question Imposter sind nicht zum Einbau freigegeben.
+
+**Konkret freigegeben und eingebaut:** Word-Imposter-Stilkorrektur vom 4. November mit dem Chamäleon aus der festen Vorlage, 800×600 WebP, 34.224 Bytes. Vollständiger Bearbeitungsprompt: [imposter-stilkorrektur-2026-11-04.prompt.txt](bildwelt/imposter-stilkorrektur-2026-11-04.prompt.txt). Der belegte Vergleich der acht vorhandenen Motive und die verbleibenden Abweichungen stehen in [stilpruefung-2026-11-04.json](bildwelt/stilpruefung-2026-11-04.json). Alle 55 bleiben Ziel; eine vollständige visuelle Abnahme liegt noch nicht vor.
+
 **Weitere Bildauswahl am 3. November 2026:** Arman hat den Fuchs-Abenteurer für „Zwei Wahrheiten, eine Lüge“ mit „Ja, einbauen und weiter“ konkret ausgewählt. `assets/images/two-truths.webp` zeigt drei erzählte Erlebnisse, darunter den erfundenen Papierflieger-Flug. Weitere Motive bleiben einzeln auszuwählen.
 
 **Bildauswahl am 3. November 2026:** Arman hat die gezeigte Wortkette ausdrücklich zum Einbau freigegeben. `assets/images/word-chain.webp` zeigt eine Zugbegleiterin beim Verbinden der Waggons mit Apfel, Lampe und Elefant. Die korrekte deutsche Wortfolge bleibt eine Bildmetapher. Der Auftrag umfasst weiterhin alle 55 Spielbilder; weitere Motive werden einzeln gezeigt und ausgewählt.

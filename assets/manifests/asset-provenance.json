@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-03",
+  "updatedAt": "2026-11-04",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -79,19 +79,40 @@
     },
     {
       "path": "assets/images/imposter.webp",
-      "kind": "game-illustration",
+      "kind": "generated-game-illustration",
       "status": "verified-own",
-      "creator": "OpenAI integriertes image_gen in Codex; konkrete Modellkennung vom Werkzeug nicht ausgegeben",
-      "source": "Originalillustration vom 14. Oktober 2026, auf Armans Anweisung erstellt. Erste Mafia-Stadtplatzszene vom 14. Oktober 2026. Lokaler WebP-Export mit cwebp.",
-      "createdAt": "2026-10-14",
-      "sha256": "15e7c9214042f5a21df56874e6a3d9057c9ea32b06ca08cdaf76aa146b082351",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; edit of the earlier project-owned game image using only the approved character/material sheet as style reference. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-04",
+      "sha256": "8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff",
       "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
-      "derivedFrom": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
       "dimensions": "800x600",
-      "prompt": "Create ONE original finished landscape 4:3 illustration for the Secret Circle party game app. The attached town-square Mafia illustration is the exact STYLE REFERENCE: match its clearly animated polished 3D characters, expressive eyes and eyebrows, adult cartoon acting, believable but stylized clothing, colorful shaped environments, strong staging and soft directional lighting. Keep the same degree of detail as this reference, not a flat toon-shader version, not live-action photorealism and not baby-like cute mascots. Design original characters only. The illustration must explain the game through character action, facial expression, outfit and location. Main faces and decisive gesture clustered in the central 60% of the image for small tile and banner crops. Use a DIFFERENT location, palette and story than the reference. No words, letters, numbers, logos, brands, watermarks, phones, UI, real people, existing franchise characters, alcohol, cups, weapons or violence.\n\nWORD IMPOSTER: A lean emerald-green anthropomorphic chameleon in a fitted plum-purple casual blazer and charcoal mock-neck shirt is seated in a stylish small indoor game lounge with rounded art-deco wall panels and muted emerald-green upholstery, warm brass accent lighting. Medium close-up framing, expressive face in center. The chameleon is confidently improvising a spoken clue, half-lidded eyes glance sideways, one brow raised and an asymmetrical smirk hides uncertainty. It holds ONE clearly BLANK ivory card at upper chest height toward the viewer; free hand makes a restrained conversational gesture. From each frame edge one other cartoon player's hand holds an ivory card with the SAME single gold KEY pictogram on both, showing that the other players know the same secret and our chameleon does not. The two edge cards flank the face, not cover it. Two arms and clean distinct hands on the chameleon. Animated stylized scales as broad simple shapes, not realistic reptile skin. Character face, blank card and matching edge clues readable in a small game tile. Coral and brass warm accent colors against a muted deep green lounge. No detective gadgets, no repeated moonlit village, no added crowd. This is a funny bluffing social game scene.",
-      "notes": "App-Vorschau; WebP-Qualität 56, 34446 Bytes. Originale Figuren, keine echten Personen, Marken oder Schrift. Visueller finaler Release-Review bleibt offen."
+      "prompts": {
+        "edit": "Use case: identity-preserve and style-transfer.\nThe user requires ONE consistent visual world for all Secret Circle game illustrations. Correct the existing Word Imposter image, do not create a new visual direction.\nINPUT 1 is the SOLE approved character, shape and material reference. It shows a green chameleon and a human woman on grey. INPUT 2 is the old game image to be repaired; use it only for the game moment and broad composition, never for style.\nReplace INPUT 2's central chameleon with the EXACT green chameleon character from INPUT 1: same facial planes, eye construction, eyelids, brow shapes, nose, mouth proportions, crest, large smooth green spots, lime body, sculpted fingers, purple coat and dark shirt. The skin is smooth, simplified, matte and sculpted exactly as INPUT 1. Remove all photographic scales, tiny skin pores, fuzzy fabric and distressed surface noise from INPUT 2. Copy the actual identity and production design from INPUT 1, not an approximation of a generic cartoon lizard.\nPreserve the actual game idea and 4:3 framing: central chameleon in a purple jacket trying to bluff, holding an entirely blank cream card; at the two foreground edges are two cropped participants' hands holding matching cream cards, both showing the same simple golden key symbol. The chameleon has a sly hesitant sideways glance like the approved reference. A blank card versus matching key cards communicates that one participant lacks the word. No written text.\nRebuild ALL props and the environment in INPUT 1's same simplified matte animated production style: broad rounded furnishings, restrained solid material response, clean geometric silhouettes, soft controlled shadows, neutral-balanced warm lighting. Replace the glossy marble table with a simple broad matte wooden table; simplify the lounge backdrop into a few calm large shapes. No golden photographic reflections, realistic bokeh or highly textured upholstery. The character is the central focus and must remain large and legible in a game tile. Reference lighting and forms take priority over INPUT 2's cinematic warm glow.\nThe two edge hands can be the same stylized human woman's hand language from INPUT 1 and a simplified animal paw belonging to that SAME world; no photoreal skin or fur. Do not add full extra characters.\nThis should visibly look like the EXACT approved INPUT 1 character acting in another scene from the same production, with the same level of detail, rendering and materials. Keep deliberate coherent hands and exactly one pupil per eye. No redesign of the character. No poster/comic panels, paper illustration treatment, rubber-toy treatment, clay pores, glitter, over-detailed fur, glossy plastic, text, letters, digits, brands, logos, watermarks, phones, UI, alcohol, drinks, weapons, violence, real people or franchise characters. Output one finished landscape 4:3 illustration.\n"
+      },
+      "approvalStatus": "approved-by-Arman-2026-11-04",
+      "notes": "Nach der gezeigten Korrektur mit „ja los und speichere es im Repo … direkt alles“ beauftragt. Exakte Chamäleon-Identität aus der festen Vorlage, vereinfachte matte Materialien. 34224 Bytes. Eine Korrektur im achtteiligen Bestand; keine vollständige Serienabnahme.",
+      "previousRevision": {
+        "path": "assets/images/imposter.webp",
+        "kind": "game-illustration",
+        "status": "verified-own",
+        "creator": "OpenAI integriertes image_gen in Codex; konkrete Modellkennung vom Werkzeug nicht ausgegeben",
+        "source": "Originalillustration vom 14. Oktober 2026, auf Armans Anweisung erstellt. Erste Mafia-Stadtplatzszene vom 14. Oktober 2026. Lokaler WebP-Export mit cwebp.",
+        "createdAt": "2026-10-14",
+        "sha256": "15e7c9214042f5a21df56874e6a3d9057c9ea32b06ca08cdaf76aa146b082351",
+        "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+        "commercialUse": true,
+        "attribution": null,
+        "derivedFrom": null,
+        "dimensions": "800x600",
+        "prompt": "Create ONE original finished landscape 4:3 illustration for the Secret Circle party game app. The attached town-square Mafia illustration is the exact STYLE REFERENCE: match its clearly animated polished 3D characters, expressive eyes and eyebrows, adult cartoon acting, believable but stylized clothing, colorful shaped environments, strong staging and soft directional lighting. Keep the same degree of detail as this reference, not a flat toon-shader version, not live-action photorealism and not baby-like cute mascots. Design original characters only. The illustration must explain the game through character action, facial expression, outfit and location. Main faces and decisive gesture clustered in the central 60% of the image for small tile and banner crops. Use a DIFFERENT location, palette and story than the reference. No words, letters, numbers, logos, brands, watermarks, phones, UI, real people, existing franchise characters, alcohol, cups, weapons or violence.\n\nWORD IMPOSTER: A lean emerald-green anthropomorphic chameleon in a fitted plum-purple casual blazer and charcoal mock-neck shirt is seated in a stylish small indoor game lounge with rounded art-deco wall panels and muted emerald-green upholstery, warm brass accent lighting. Medium close-up framing, expressive face in center. The chameleon is confidently improvising a spoken clue, half-lidded eyes glance sideways, one brow raised and an asymmetrical smirk hides uncertainty. It holds ONE clearly BLANK ivory card at upper chest height toward the viewer; free hand makes a restrained conversational gesture. From each frame edge one other cartoon player's hand holds an ivory card with the SAME single gold KEY pictogram on both, showing that the other players know the same secret and our chameleon does not. The two edge cards flank the face, not cover it. Two arms and clean distinct hands on the chameleon. Animated stylized scales as broad simple shapes, not realistic reptile skin. Character face, blank card and matching edge clues readable in a small game tile. Coral and brass warm accent colors against a muted deep green lounge. No detective gadgets, no repeated moonlit village, no added crowd. This is a funny bluffing social game scene.",
+        "notes": "App-Vorschau; WebP-Qualität 56, 34446 Bytes. Originale Figuren, keine echten Personen, Marken oder Schrift. Visueller finaler Release-Review bleibt offen."
+      }
     },
     {
       "path": "assets/images/truth-dare.webp",
@@ -461,6 +482,34 @@
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "assets/images/two-truths.webp",
+      "dimensions": "1280x900"
+    },
+    {
+      "path": "docs/screenshots/imposter-stilkorrektur-handy-375x812.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chrome (Chromium)",
+      "source": "Own isolated local Chrome context; v2-hub.html#spiel=imposter; viewport handy-375x812; 2026-11-04. WebP export with Pillow.",
+      "createdAt": "2026-11-04",
+      "sha256": "e38ebce4e986527c4d9f16a63fea493e4c0d02ac4eef208759d1c1fe1520a200",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/imposter.webp",
+      "dimensions": "375x812"
+    },
+    {
+      "path": "docs/screenshots/imposter-stilkorrektur-desktop-1280x900.webp",
+      "kind": "documentation-screenshot",
+      "status": "verified-own",
+      "creator": "Secret Circle – screenshot of the project application rendered with Playwright Chrome (Chromium)",
+      "source": "Own isolated local Chrome context; v2-hub.html#spiel=imposter; viewport desktop-1280x900; 2026-11-04. WebP export with Pillow.",
+      "createdAt": "2026-11-04",
+      "sha256": "16ef7fa2415f9a0a358d147e30642f5c47141bbb879735e75964f5ff0467a835",
+      "license": "Project-owned screenshot; bundled image and font rights documented in this manifest and THIRD_PARTY_NOTICES.md.",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "assets/images/imposter.webp",
       "dimensions": "1280x900"
     }
   ]

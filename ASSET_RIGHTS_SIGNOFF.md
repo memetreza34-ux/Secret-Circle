@@ -67,7 +67,7 @@ Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsb
 
 `scripts/media_inventory_audit.py` erzwingt die vollständige erlaubte Menge der App-Icons, lokalen Spielillustrationen und Dokumentationsscreenshots. Alle sind samt Herkunft und Prüfsumme im Provenienzmanifest erfasst. Dokumentationsscreenshots gehören nicht zum Offline-Core.
 
-## Aktuelle Spielbilder vom 14. Oktober 2026
+## Spielbilder vom 14. Oktober 2026 – historischer Erstellungsstand
 
 Auf Armans Anweisung zur Ansicht direkt eingebunden. Werkzeug: integriertes OpenAI `image_gen` in Codex; konkrete Modellkennung nicht ausgegeben. Originale projektseitige Stilreferenz: erste Mafia-Stadtplatzszene. WebP-Export lokal mit `cwebp`, 800 × 600 Pixel und höchstens 35 KB pro Bild.
 
@@ -138,3 +138,7 @@ Von Arman konkret freigegebenes Motiv einer Zugbegleiterin, die Waggons mit Apfe
 ## Zwei Wahrheiten, eine Lüge – 3. November 2026
 
 Von Arman konkret freigegebener Fuchs-Abenteurer mit drei erzählten Erlebnissen, darunter ein erfundener Papierflieger-Flug. Erzeugt mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/two-truths.webp`: 800×600 WebP, 34.470 Bytes. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/two-truths-2026-11-03.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Erlebnisse sind ein Bildmotiv und ändern keine Spielregel. Keine öffentliche Releasefreigabe.
+
+## Word Imposter – feste Bildwelt, 4. November 2026
+
+Die konkret ausgewählte Stilkorrektur ersetzt das frühere `assets/images/imposter.webp`. Werkzeug: integriertes OpenAI `image_gen`, konkrete Modellkennung nicht ausgewiesen. Ausschließliche Stilreferenz: die eigene gewählte Figuren-/Materialvorlage vom 30. Oktober; die alte App-Illustration diente nur als Szenen-/Bearbeitungsziel. 800×600 WebP, 34.224 Bytes, SHA-256 `8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff`. Vollständiger Prompt unter `docs/bildwelt/imposter-stilkorrektur-2026-11-04.prompt.txt`; vorherige Revision samt altem Prompt und Prüfsumme im Provenienzmanifest erhalten. Die oben genannten älteren SHA-Werte dokumentieren ihre historischen Fassungen. Aktuelle Rechte-/Herkunftsangaben und Prüfsumme stehen im Manifest. Die Serienabnahme bleibt offen.

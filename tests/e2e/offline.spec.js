@@ -68,6 +68,16 @@ test('service worker caches the complete v30 core including Creator guidance and
   await expect(charades).toHaveAttribute('src', 'assets/images/charades.webp');
   await expect(charades).toHaveAttribute('alt', /Pantomime/);
   await expect.poll(() => charades.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  await page.goto('/v2-hub.html#spiel=imposter');
+  const imposter = page.locator('#mode-emblem img');
+  await expect(imposter).toHaveAttribute('src', 'assets/images/imposter.webp');
+  await expect.poll(() => imposter.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  const imposterHash = await page.evaluate(async () => {
+    const response = await fetch('assets/images/imposter.webp');
+    const digest = await crypto.subtle.digest('SHA-256', await response.arrayBuffer());
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  });
+  expect(imposterHash).toBe('8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff');
   await page.goto('/v2-hub.html#spiel=two-truths');
   const twoTruths = page.locator('#mode-emblem img');
   await expect(twoTruths).toHaveAttribute('src', 'assets/images/two-truths.webp');
