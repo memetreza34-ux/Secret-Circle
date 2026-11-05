@@ -13,6 +13,13 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'assets/images/wrong-answers.webp',
+    'assets/images/paranoia.webp',
+    'assets/images/would-rather.webp',
+    'assets/images/most-likely.webp',
+    'assets/images/location-spy.webp',
+    'assets/images/question-imposter.webp',
+    'assets/images/never-have.webp',
     'docs/screenshots/imposter-stilkorrektur-handy-375x812.webp',
     'docs/screenshots/imposter-stilkorrektur-desktop-1280x900.webp',
     'docs/screenshots/two-truths-handy-375x812.webp',

@@ -1,5 +1,7 @@
 # Secret Circle – Projektkompass und verbindlicher roter Faden
 
+**Vollzug vom 5. November 2026:** Armans aktueller Auftrag umfasst den direkten Einbau eines einheitlichen Bildes je Modus für alle 55 Spiele. Ältere Einzelbild-Auswahlpausen sind damit ersetzt. Die feste Vorlage vom 30. Oktober bleibt unverändert; finale Serien- und Releaseabnahme bleiben offen.
+
 **Bildwelt-Auftrag vom 4. November 2026:** Eine feste Bildwelt für alle 55 Spiele. Maßgeblich bleibt ausschließlich das gewählte Figuren-/Materialblatt `docs/bildwelt/vorlage-2026-10-30.webp`; eine spätere Einzelbildfreigabe ändert diese Grundlage nicht. Der gemischte vorhandene Bildbestand muss zuerst daran vereinheitlicht werden. Die Word-Imposter-Korrektur ist konkret zum Einbau freigegeben; die übrige Serie bleibt in Prüfung. Siehe `docs/BILDWELT_V2.md` und `docs/bildwelt/stilpruefung-2026-11-04.json`.
 
 **Verbindliche Ergänzung vom 16. Oktober 2026: [55-Spiele-Übergabe an Claude Code und Codex](UEBERGABE_55_SPIELE_2026-10-16.md).** Für Version 1 gehören **alle 55 vorhandenen Spiele** zum abzunehmenden Umfang (15 Core, 13 Extended, 27 Labs); keine auf 15 begrenzte Veröffentlichung. Der 55er-Start-Sweep aus [PR #40](https://github.com/memetreza34-ux/Secret-Circle/pull/40) ist gemergt; Ergebnis-/Replay- und reale Gerätetests stehen noch aus. Die Übergabe dokumentiert aktuelle Owner, Aufgaben #41/#42/#43 und die Grenze zwischen vorhandenem Testbeleg und `NO_GO`. Ältere, widersprechende „Core zuerst“-Passagen unten beschreiben nur die frühere Reihenfolge, nicht eine neue Scope-Reduktion.

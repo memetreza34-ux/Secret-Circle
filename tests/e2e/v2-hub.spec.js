@@ -43,14 +43,21 @@ test('game artwork loads locally in cards, banner and details with readable mobi
   await seedHub(page);
   await openV2(page);
   const artwork = {
-    'two-truths': 'Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger',
-    'word-chain': 'Zugbegleiterin verbindet drei Waggons mit Apfel, Lampe und Elefant zu einer Wortkette',
-    'hot-potato': 'Dampfende Kartoffel fliegt zwischen zwei Ofenhandschuhen; im Hintergrund läuft eine Sanduhr',
-    taboo: 'Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder',
-    charades: 'Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr',
-    imposter: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen',
-    'truth-dare': 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt',
-    mafia: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt'
+    "two-truths": "Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger",
+    "word-chain": "Zugbegleiterin verbindet drei Waggons mit Apfel, Lampe und Elefant zu einer Wortkette",
+    "hot-potato": "Dampfende Kartoffel fliegt zwischen zwei Ofenhandschuhen; im Hintergrund läuft eine Sanduhr",
+    "taboo": "Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder",
+    "charades": "Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr",
+    "imposter": "Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen",
+    "truth-dare": "Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt",
+    "mafia": "Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt",
+    "never-have": "Elefanten-Abenteurer hebt ertappt die Hand und erinnert sich daran, wie er in einem viel zu kleinen Zelt übernachtet hat",
+    "question-imposter": "Vier Retro-Roboter vergleichen Fragekarten: drei zeigen eine Sonne, der nervöse vierte einen Mond",
+    "location-spy": "Verunsicherter Otter-Spion späht mit leerem Notizbuch hinter einer Palme in eine Hotellobby",
+    "most-likely": "Überraschter Igel zeigt auf sich, während vier Pfoten und Flügel gleichzeitig auf ihn deuten",
+    "would-rather": "Faultier an einer Weggabelung schwankt zwischen einer Eistüte und einem Stück Pizza",
+    "paranoia": "Zwei Erdmännchen flüstern hinter einer Pfote, während ein drittes misstrauisch zu ihnen zurückschaut",
+    "wrong-answers": "Ziegenprofessor präsentiert stolz eine absichtlich falsche Antwort: einen Fisch auf einem Fahrrad"
   };
   async function expectArtwork(image, id) {
     await expect(image).toHaveAttribute('src', 'assets/images/' + id + '.webp');
@@ -74,7 +81,7 @@ test('game artwork loads locally in cards, banner and details with readable mobi
     await openV2(page, '#spiel=' + id);
     await expectArtwork(page.locator('#mode-emblem img'), id);
   }
-  for (const id of ['never-have', 'most-likely']) {
+  for (const id of ['hot-takes', 'sound-imitation']) {
     await openV2(page, '#spiel=' + id);
     await expect(page.locator('#mode-emblem svg')).toBeVisible();
     await expect(page.locator('#mode-emblem img')).toHaveCount(0);

@@ -430,3 +430,8 @@ Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y + Spezialgates + Wave 
 Zusätzlicher struktureller Blocker: **PR-Stack mit aktuellem `main` reconciliieren**.
 
 Öffentlicher Release: **NO_GO**.
+# Bildwelt vom 5. November 2026
+
+- Acht vorhandene Spielbilder gegen dieselbe feste Vorlage geprüft; Wahrheit oder Pflicht, Mafia, Heiße Kartoffel, Wortkette und Zwei Wahrheiten an diese Welt angeglichen.
+- Sieben fehlende Kernspielbilder ergänzt: Ich habe noch nie, Question Imposter, Location Spy, Wer würde eher?, Entweder oder, Paranoia und Nur falsche Antworten. Damit 15 von 55 Motiven eingebunden; weitere 40 bleiben offen.
+- Bildzuordnung in ein eigenes lokales Datenmodul ausgelagert, deutsche Alternativtexte und Herkunft samt vollständigen Prompts erfasst. Offline-Cache angehoben; Offline-Prüfung verifiziert die tatsächlichen Bilddateien per SHA-256.

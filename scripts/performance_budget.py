@@ -6,6 +6,14 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 budgets = {
+    'assets/images/wrong-answers.webp': 35_000,
+    'assets/images/paranoia.webp': 35_000,
+    'assets/images/would-rather.webp': 35_000,
+    'assets/images/most-likely.webp': 35_000,
+    'assets/images/location-spy.webp': 35_000,
+    'assets/images/question-imposter.webp': 35_000,
+    'assets/images/never-have.webp': 35_000,
+    'v2-game-art.js': 16_000,
     'assets/images/two-truths.webp': 35_000,
     'assets/images/word-chain.webp': 35_000,
     'assets/images/hot-potato.webp': 35_000,

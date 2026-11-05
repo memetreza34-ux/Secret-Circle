@@ -1,5 +1,9 @@
 # Auftrag für Codex: Bildwelt und einzelne Spielbilder
 
+# Aktueller Vollzug vom 5. November 2026
+
+Arman beauftragt den direkten Einbau genau eines Bildes für jeden der 55 Modi in derselben festen Bildwelt. Ältere Einzelbild-Auswahlpausen und Variantenaufträge sind ersetzt. Unverändert gilt ausschließlich `docs/bildwelt/vorlage-2026-10-30.webp` als Stilvorlage. Herkunft, Sichtprüfung, Medien-/Offline-Verträge und Tests je Einbau bleiben erforderlich; finale Serien-/Releaseabnahme bleiben offen.
+
 **Ein Bild pro Spiel (Armans Anweisung vom 4. November 2026):** Genau einen Entwurf je Modus erzeugen und zeigen, keine parallelen Varianten oder zusätzlichen Stilrichtungen. Eine notwendige Fehlerkorrektur ersetzt dieselbe Fassung; sie eröffnet keine zweite Auswahlserie. Ältere Aufträge mit 2–3 Varianten sind überholt.
 
 ## Verbindliche Korrektur vom 4. November 2026

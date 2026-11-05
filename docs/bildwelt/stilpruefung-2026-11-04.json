@@ -2,7 +2,7 @@
   "date": "2026-11-04",
   "styleReference": "docs/bildwelt/vorlage-2026-10-30.webp",
   "styleReferenceSha256": "59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294",
-  "seriesApproval": "open-user-reports-inconsistent-world",
+  "seriesApproval": "implemented-images-reviewed-against-fixed-reference-final-user-series-review-open",
   "rules": [
     "One fixed reference for every image; generated candidates never become new style references.",
     "Compare every proposed image directly to the reference and the existing series before integration.",
@@ -11,13 +11,20 @@
   ],
   "findings": {
     "imposter": "Stilkorrektur am 4. November nach konkreter Auswahl eingebaut; exakte Chamäleon-Identität aus der unveränderten festen Vorlage. Keine Abnahme der übrigen Serie.",
-    "truth-dare": "Old series: finer fur and fabric detail, stronger cinematic lighting.",
-    "mafia": "Old series: detailed fur, brickwork and cinematic light.",
-    "charades": "Closer to the fixed sculpted reference; still included in series review.",
-    "taboo": "Closer to the fixed sculpted reference; still included in series review.",
-    "hot-potato": "Food surface and glove detail are more realistic than the simplified reference props.",
-    "word-chain": "Face and sculpted forms close to reference; tabletop weathering and prop detail need comparison.",
-    "two-truths": "Fur texture and framed memory-bubble treatment diverge from the reference scene language."
+    "truth-dare": "Magier und Waschbär behalten ihren Spielmoment; modellierte Augen, breite Haar-/Fellformen, matte Bühne an feste Vorlage angeglichen. Fehler am unteren Hosenanschnitt in derselben Fassung korrigiert.",
+    "mafia": "Detektivin mit derselben Identität wie die feste Vorlage; Katz-/Otterformen, Säule und Hintergrund vereinfacht, Fell- und Steinfeindetail reduziert. Flüstergeste klar sichtbar.",
+    "charades": "Beibehalten nach direktem Vergleich: modellierte Augen/Brauen, breite Haarformen, matte Kleidung und Bühne entsprechen der festen Vorlage.",
+    "taboo": "Beibehalten nach direktem Vergleich: modellierte Augen/Brauen, breite Gesichts-/Haarformen und matte Formensprache entsprechen der festen Vorlage.",
+    "hot-potato": "Kartoffel auf breite matte Form reduziert, Handschuhnähte und Küche vereinfacht; Wurf, Dampf und Sanduhr erhalten.",
+    "word-chain": "Zugbegleiterin mit unveränderter Identität; Apfel, Lampe und Elefant in dieser Reihenfolge, Kupplungsgeste erhalten. Verwitterte Bank und Fototexturen durch matte breite Formen ersetzt.",
+    "two-truths": "Fuchsidentität und drei Erlebnisse erhalten; Erinnerungen als räumlich modellierte Szenen statt flacher Umrandungen, Fell und Landschaft vereinfacht.",
+    "never-have": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Elefanten-Abenteurer hebt ertappt die Hand und erinnert sich daran, wie er in einem viel zu kleinen Zelt übernachtet hat.",
+    "question-imposter": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Vier Retro-Roboter vergleichen Fragekarten: drei zeigen eine Sonne, der nervöse vierte einen Mond.",
+    "location-spy": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Verunsicherter Otter-Spion späht mit leerem Notizbuch hinter einer Palme in eine Hotellobby.",
+    "most-likely": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Überraschter Igel zeigt auf sich, während vier Pfoten und Flügel gleichzeitig auf ihn deuten.",
+    "would-rather": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Faultier an einer Weggabelung schwankt zwischen einer Eistüte und einem Stück Pizza.",
+    "paranoia": "Mit der festen Vorlage verglichen: modellierte Augen und Brauen, plastische Formen und matte Materialien. Klarer Spielmoment; keine Bildschrift, Marken oder anatomischen Auffälligkeiten. Zwei Erdmännchen flüstern hinter einer Pfote, während ein drittes misstrauisch zu ihnen zurückschaut.",
+    "wrong-answers": "Mit der festen Vorlage verglichen: modellierte Augen/Brauen, breite plastische Fellformen und matte Materialien. Absichtlich falscher Fisch auf Fahrrad klar sichtbar, keine Schrift oder Marken."
   },
   "appChanged": true,
   "correctedAssetSha256": "8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff",
@@ -34,5 +41,71 @@
       "status": "unapproved-style-correction",
       "installed": false
     }
-  ]
+  ],
+  "updatedAt": "2026-11-05",
+  "integrationAuthorization": "Direkter Gesamtauftrag für alle 55 Modi; keine einzelnen Auswahlpausen mehr.",
+  "imageCount": 15,
+  "targetCount": 55,
+  "currentImages": {
+    "two-truths": {
+      "path": "assets/images/two-truths.webp",
+      "sha256": "a3ee1a7e4af293f2fb3eb129649a7f507b55677a24b3b26f678c4854963ced46"
+    },
+    "word-chain": {
+      "path": "assets/images/word-chain.webp",
+      "sha256": "b60204c4cd40ad2e11690e406353141d6cea02850797d0dda22fbdb17bbc58f4"
+    },
+    "hot-potato": {
+      "path": "assets/images/hot-potato.webp",
+      "sha256": "c7bcadc52eb39dfb9f99fbaa9cf5c639103284c0263d6f7f0f5f498f8ca9efd2"
+    },
+    "taboo": {
+      "path": "assets/images/taboo.webp",
+      "sha256": "3e496bf28539eafaaf565f6487e6f89ef58fbdcd263f0b79942b2be591c111a8"
+    },
+    "charades": {
+      "path": "assets/images/charades.webp",
+      "sha256": "cf5ff56b01a560bbb2edfec5f5d33000123fee459e269da09ebb4fa44efffb15"
+    },
+    "imposter": {
+      "path": "assets/images/imposter.webp",
+      "sha256": "8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff"
+    },
+    "truth-dare": {
+      "path": "assets/images/truth-dare.webp",
+      "sha256": "95810837d8f0f7925ea9b2427aa7538761a73dd76d6b6592713fee3d5fd839aa"
+    },
+    "mafia": {
+      "path": "assets/images/mafia.webp",
+      "sha256": "18978e08358a5443b8504e3b6e408dc78ca81d92ad441381bf62052db912f418"
+    },
+    "never-have": {
+      "path": "assets/images/never-have.webp",
+      "sha256": "1c8d9090a638d5a087345c6c28b7868129f88ce6d44f0687f205730e5509f58d"
+    },
+    "question-imposter": {
+      "path": "assets/images/question-imposter.webp",
+      "sha256": "de1ea76f62797683c322224510c6a221599033fdeba2cff94f361ca34f7cf2e7"
+    },
+    "location-spy": {
+      "path": "assets/images/location-spy.webp",
+      "sha256": "6929f147cbd4a196a815b676fe06235470dac14740f404e99bdc344d7deb0295"
+    },
+    "most-likely": {
+      "path": "assets/images/most-likely.webp",
+      "sha256": "f009f86220f4eb50d77c173d268180a6e3fd68f98144743bbe192890ce9069a1"
+    },
+    "would-rather": {
+      "path": "assets/images/would-rather.webp",
+      "sha256": "7738a967b4f560ce7e9db9f27b68ea9e392d04434a94ac738d64bcce4a4881d1"
+    },
+    "paranoia": {
+      "path": "assets/images/paranoia.webp",
+      "sha256": "b2992da104fcfc4c7dbfa1a5e78f84384e31610fff9d0edcde5531803631c36e"
+    },
+    "wrong-answers": {
+      "path": "assets/images/wrong-answers.webp",
+      "sha256": "f1c38d1b30b57506670910ef930fe94a9935cf5e692acab30a1c339ec2d1d8eb"
+    }
+  }
 }

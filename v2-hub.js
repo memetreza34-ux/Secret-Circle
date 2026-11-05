@@ -19,18 +19,8 @@
     { id: 'wissen', label: 'Wissen & Schätzen', tint: '#38BDF8', ground: '#093548', groups: ['Wissen & Quiz', 'Schätzen & Tippen'] },
     { id: 'schnell', label: 'Schnell', tint: '#F472B6', ground: '#451234', groups: ['Schnell & Challenge', 'Werkzeuge'] }
   ];
-  /* Spielbilder: '<spiel-id>': { src: 'assets/images/<spiel-id>.webp', alt: '…' }.
-     Bildwelt, Prompts und Einbinden: docs/BILDWELT_V2.md. Ohne Eintrag zeigt das Spiel sein Emblem. */
-  var GAME_ART = {
-    'two-truths': { src: 'assets/images/two-truths.webp', alt: 'Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger' },
-    'word-chain': { src: 'assets/images/word-chain.webp', alt: 'Zugbegleiterin verbindet drei Waggons mit Apfel, Lampe und Elefant zu einer Wortkette' },
-    'hot-potato': { src: 'assets/images/hot-potato.webp', alt: 'Dampfende Kartoffel fliegt zwischen zwei Ofenhandschuhen; im Hintergrund läuft eine Sanduhr' },
-    taboo: { src: 'assets/images/taboo.webp', alt: 'Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder' },
-    charades: { src: 'assets/images/charades.webp', alt: 'Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr' },
-    imposter: { src: 'assets/images/imposter.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen' },
-    'truth-dare': { src: 'assets/images/truth-dare.webp', alt: 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt' },
-    mafia: { src: 'assets/images/mafia.webp', alt: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt' }
-  };
+  /* Lokale Bildzuordnung aus v2-game-art.js; ohne Eintrag bleibt das Emblem. */
+  var GAME_ART = window.SecretCircleGameArt || {};
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */
 
   function $(s, r) { return (r || document).querySelector(s); }

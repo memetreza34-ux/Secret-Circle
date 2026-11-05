@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-04",
+  "updatedAt": "2026-11-05",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -116,35 +116,80 @@
     },
     {
       "path": "assets/images/truth-dare.webp",
-      "kind": "game-illustration",
+      "kind": "generated-game-illustration",
       "status": "verified-own",
-      "creator": "OpenAI integriertes image_gen in Codex; konkrete Modellkennung vom Werkzeug nicht ausgegeben",
-      "source": "Originalillustration vom 14. Oktober 2026, auf Armans Anweisung erstellt. Erste Mafia-Stadtplatzszene vom 14. Oktober 2026. Lokaler WebP-Export mit cwebp.",
-      "createdAt": "2026-10-14",
-      "sha256": "67d7ff134733f73ae669258b22a37ae0102f42f118e20420991eca46c54fd0d6",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "95810837d8f0f7925ea9b2427aa7538761a73dd76d6b6592713fee3d5fd839aa",
       "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
-      "derivedFrom": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
       "dimensions": "800x600",
-      "prompt": "Create ONE original finished landscape 4:3 illustration for the Secret Circle party game app. The attached town-square Mafia illustration is the exact STYLE REFERENCE: match its clearly animated polished 3D characters, expressive eyes and eyebrows, adult cartoon acting, believable but stylized clothing, colorful shaped environments, strong staging and soft directional lighting. Keep the same degree of detail as this reference, not a flat toon-shader version, not live-action photorealism and not baby-like cute mascots. Design original characters only. The illustration must explain the game through character action, facial expression, outfit and location. Main faces and decisive gesture clustered in the central 60% of the image for small tile and banner crops. Use a DIFFERENT location, palette and story than the reference. No words, letters, numbers, logos, brands, watermarks, phones, UI, real people, existing franchise characters, alcohol, cups, weapons or violence.\n\nTRUTH OR DARE: A playful little theater rehearsal stage with burgundy curtains and warm amber footlights, a restrained dark-indigo backdrop, no writing. TWO ORIGINAL adult cartoon characters illustrate both choices in one shared moment. Left, an adult human theater magician with an angular expressive face, short dark sculpted hair, fitted midnight-blue waistcoat over an ivory shirt, bow tie loosened, sleeves rolled neatly, is admitting an embarrassing truth: one hand over the heart, other hand has just lowered a small plain theatrical half-mask away from the face. Honest sheepish grin, one brow raised, a restrained blush; face visible and unmasked. The removed mask represents dropping the pretence and revealing the truth. Right, an original athletic copper-orange raccoon stunt performer with dark eye markings and a fitted teal stage jumpsuit with reinforced elbows is performing a controlled one-hand handstand on the stage, free hand stretches for balance and legs bend into a funny confident silhouette. Its expression is a mischievous determined grin looking toward the magician. Exactly two arms and two legs on each character, coherent grips and separate limbs, both figures fully understandable and no duplicate hands. Truth side is calm and candid, dare side bold and energetic. The two faces close enough to be visible centrally at thumbnail scale, slightly larger upper bodies, no tiny distant characters. Keep lively adult animation humor and appropriate role-specific outfits, no ordinary stock people, no question-mark cards or repeated detective archetype. Warm burgundy and amber with crisp teal costume accent. A believable stylized stage scene in exactly the same animation world as the Mafia reference.",
-      "notes": "App-Vorschau; WebP-Qualität 44, 34236 Bytes. Originale Figuren, keine echten Personen, Marken oder Schrift. Visueller finaler Release-Review bleibt offen."
+      "prompts": {
+        "truth-dare-stilkorrektur-2026-11-05.prompt.txt": "Use case: identity-preserve and style-transfer.\nCorrect the existing Secret Circle \"Wahrheit oder Pflicht\" game scene to belong to ONE fixed approved animated world.\nINPUT 1 is the SOLE binding style and production-design reference: the sculpted chameleon and human woman, their eyes, facial volumes, body proportions, restrained matte materials and soft shadow treatment. INPUT 2 is the existing illustration to repair. Preserve its narrative, costumes, character identities and staging, but do NOT borrow its old highly textured cinematic treatment.\nKeep exactly the same two original roles: an adult brown-haired male stage magician at left, in a dark blue waistcoat over cream rolled-sleeve shirt, holding a removed plain ivory theatrical mask in one hand, the other hand sincerely on his heart; an original adult-like raccoon stage acrobat at right in teal clothes and brown boots, performing the same playful one-handed balance pose as the target. The first action means telling the truth, the second means performing a dare. This is a symbolic game illustration, not a new game rule.\nRebuild the magician's facial modeling, eyelids, dark brows, deliberate gaze, stylized hair volumes and hand construction in the EXACT same production language as INPUT 1's human. Preserve his identity, brown quiff, nose and costume; do not turn him into a realistic man, an anime character or a bobble-head child. Rebuild the raccoon's fur as broad clean SCULPTED matte color volumes, with its recognizable mask markings and ringed tail, matching the simplification of INPUT 1's chameleon skin. Remove individual fur strands, realistic fuzz and dense clothing weave. Keep its adult cartoon posture and proportionate limbs.\nPreserve the two-character pose and readable central actions. Anatomically coherent hands and limbs; exactly two arms and two legs per character, one grounded acrobat hand. One pupil per eye. Large expressive faces, substantial sculpted eyelids and brows like INPUT 1, no new facial aesthetic.\nSimplify the theatrical setting: broad matte plum curtain folds, quiet dark blue background and a simple wooden stage. Remove the target's busy bulb-lined mirror, glowing footlight bokeh, sparkling gold detail and shiny photographic stage reflections. Keep a subdued warm key light and gentle neutral/cool fill using the reference's controlled contrast and soft cast shadows. Do not convert the picture into flat paper illustration, clay stop-motion, glossy toys, nursery art or a new fantasy style. Every face, prop, cloth fold and background shape should look as though it was rendered alongside the approved reference characters by the SAME animation production.\nNo text, letters, digits, logos, brands, watermark, UI, phones, drinks, alcohol, weapons, violence, real people or recognizable franchise designs. Keep the key faces, mask, heart gesture and balancing pose inside a legible central game-tile crop. One finished landscape 4:3 illustration.\n",
+        "truth-dare-anschnittkorrektur-2026-11-05.prompt.txt": "Use case: precise-object-edit.\nINPUT 1 is the just-created Truth or Dare illustration to repair. INPUT 2 is the unchanged approved STYLE reference. Keep INPUT 1's two faces, identities, expressions, colors, costumes, mask, hand-on-heart gesture, raccoon balance pose, four limbs per character, simplified background, materials and current animation style unchanged.\nCorrect ONLY the lower framing / magician trouser anatomy. Currently his trouser legs end in unnatural flat shapes standing on the stage as if cut off at the knees. That is a rendering error.\nMake the magician a naturally proportioned standing adult whose trouser legs continue OUT OF VIEW beyond the BOTTOM image edge. Crop his lower legs at the image boundary, with NO visible cut ends, no stump shapes, no knees resting on the floor, no sitting or kneeling pose. A slightly tighter medium-wide camera crop may accomplish this. Keep both faces, mask and truth gesture fully visible. The raccoon's grounded hand must still visibly rest on the narrow stage area at bottom right, and its raised boots and ringed tail remain inside the frame. Preserve the clear two-actions game meaning.\nDo not redesign anything else or invent a new style. Use precisely the same reference-based sculpted face construction and restrained matte materials. No new props, characters, text, letters, digits, logos, watermarks, phones, UI, drinks, alcohol, weapons or violence. One finished landscape 4:3 image.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Magier und Waschbär behalten ihren Spielmoment; modellierte Augen, breite Haar-/Fellformen, matte Bühne an feste Vorlage angeglichen. Fehler am unteren Hosenanschnitt in derselben Fassung korrigiert. 34344 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevision": {
+        "path": "assets/images/truth-dare.webp",
+        "kind": "game-illustration",
+        "status": "verified-own",
+        "creator": "OpenAI integriertes image_gen in Codex; konkrete Modellkennung vom Werkzeug nicht ausgegeben",
+        "source": "Originalillustration vom 14. Oktober 2026, auf Armans Anweisung erstellt. Erste Mafia-Stadtplatzszene vom 14. Oktober 2026. Lokaler WebP-Export mit cwebp.",
+        "createdAt": "2026-10-14",
+        "sha256": "67d7ff134733f73ae669258b22a37ae0102f42f118e20420991eca46c54fd0d6",
+        "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+        "commercialUse": true,
+        "attribution": null,
+        "derivedFrom": null,
+        "dimensions": "800x600",
+        "prompt": "Create ONE original finished landscape 4:3 illustration for the Secret Circle party game app. The attached town-square Mafia illustration is the exact STYLE REFERENCE: match its clearly animated polished 3D characters, expressive eyes and eyebrows, adult cartoon acting, believable but stylized clothing, colorful shaped environments, strong staging and soft directional lighting. Keep the same degree of detail as this reference, not a flat toon-shader version, not live-action photorealism and not baby-like cute mascots. Design original characters only. The illustration must explain the game through character action, facial expression, outfit and location. Main faces and decisive gesture clustered in the central 60% of the image for small tile and banner crops. Use a DIFFERENT location, palette and story than the reference. No words, letters, numbers, logos, brands, watermarks, phones, UI, real people, existing franchise characters, alcohol, cups, weapons or violence.\n\nTRUTH OR DARE: A playful little theater rehearsal stage with burgundy curtains and warm amber footlights, a restrained dark-indigo backdrop, no writing. TWO ORIGINAL adult cartoon characters illustrate both choices in one shared moment. Left, an adult human theater magician with an angular expressive face, short dark sculpted hair, fitted midnight-blue waistcoat over an ivory shirt, bow tie loosened, sleeves rolled neatly, is admitting an embarrassing truth: one hand over the heart, other hand has just lowered a small plain theatrical half-mask away from the face. Honest sheepish grin, one brow raised, a restrained blush; face visible and unmasked. The removed mask represents dropping the pretence and revealing the truth. Right, an original athletic copper-orange raccoon stunt performer with dark eye markings and a fitted teal stage jumpsuit with reinforced elbows is performing a controlled one-hand handstand on the stage, free hand stretches for balance and legs bend into a funny confident silhouette. Its expression is a mischievous determined grin looking toward the magician. Exactly two arms and two legs on each character, coherent grips and separate limbs, both figures fully understandable and no duplicate hands. Truth side is calm and candid, dare side bold and energetic. The two faces close enough to be visible centrally at thumbnail scale, slightly larger upper bodies, no tiny distant characters. Keep lively adult animation humor and appropriate role-specific outfits, no ordinary stock people, no question-mark cards or repeated detective archetype. Warm burgundy and amber with crisp teal costume accent. A believable stylized stage scene in exactly the same animation world as the Mafia reference.",
+        "notes": "App-Vorschau; WebP-Qualität 44, 34236 Bytes. Originale Figuren, keine echten Personen, Marken oder Schrift. Visueller finaler Release-Review bleibt offen."
+      }
     },
     {
       "path": "assets/images/mafia.webp",
-      "kind": "game-illustration",
+      "kind": "generated-game-illustration",
       "status": "verified-own",
-      "creator": "OpenAI integriertes image_gen in Codex; konkrete Modellkennung vom Werkzeug nicht ausgegeben",
-      "source": "Originalillustration vom 14. Oktober 2026, auf Armans Anweisung erstellt. Projektseitiges Chamäleon imposter-cool-1.png als Stilreferenz. Lokaler WebP-Export mit cwebp.",
-      "createdAt": "2026-10-14",
-      "sha256": "f261beca039c3e25641431959f0771c958ee9330d71cc6ad21019858b5cbff35",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "18978e08358a5443b8504e3b6e408dc78ca81d92ad441381bf62052db912f418",
       "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
-      "derivedFrom": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
       "dimensions": "800x600",
-      "prompt": "An original finished 4:3 landscape illustration for a playful social deduction party game, titled Mafia in the app (do not write the title in the image). A fully animated, stylish 3D cartoon scene with strongly simplified sculpted geometry, smooth matte color surfaces, appealing expressive adult cartoon characters, clean readable silhouettes and restrained stage lighting. Same animation universe as the reference chameleon, with far simpler surfaces: all fur and hair made from broad solid sculpted shapes. Visibly animated, cool and witty, suitable for a party game for friends.\n\nA compact cartoon town square at night with chunky curved cobblestones, two simplified crooked navy-blue houses, big warm amber windows, a rounded streetlamp and a simple moon disk. A slim original gray cat in a fitted ink-blue suit and charcoal fedora is secretly whispering to a stocky original weasel in a mustard waistcoat and rolled-sleeve shirt, behind a low rounded brick corner. The cat cups one paw near its mouth, checks the surroundings with a raised brow and intelligent sideways glance. The weasel has a very funny overconfident innocent smile and tense shoulders, pretending nothing is happening. Behind the far side of the corner, an original adult human woman detective with short sculpted swept hair and a dark teal trench coat peeks with a skeptical knowing expression; she has noticed their hidden alliance. Clothes, expressions and gestures clearly suit each role. Strong specific action and funny theatrical staging rather than posed portraits. Main cat/weasel pair large near center, detective smaller on the right, three anatomically coherent figures with clearly separate hands.\n\nRich violet-blue night palette, mustard and burgundy accents, warm stylized lamplight illuminating faces. Broad graphic background shapes and simple toon shadows, plenty of color even at night. Balanced adult cartoon proportions, expressive smaller eyes, confident character design. Flat large material shapes, smooth sculpted coat and hair masses, no tiny surface detail, no photographic skin or realistic animal rendering. No text, labels, logos, cards, interface or watermark. Original fictional designs only. One unified lively image, readable as a small game tile.",
-      "notes": "App-Vorschau; WebP-Qualität 52, 33770 Bytes. Originale Figuren, keine echten Personen, Marken oder Schrift. Visueller finaler Release-Review bleibt offen."
+      "prompts": {
+        "mafia-stilkorrektur-2026-11-05.prompt.txt": "Use case: style-transfer. Asset: ONE finished 4:3 game illustration for Secret Circle, Mafia.\nINPUT 1 is the SOLE immutable character/material/style reference. INPUT 2 is the older Mafia scene, a composition and narrative target ONLY. Rebuild that scene so it is unmistakably another shot from INPUT 1's exact animated production. Keep the cat in a charcoal fedora and dark suit whispering into the nervous otter's ear, and the woman detective noticing them from behind a pillar. The woman must be the EXACT woman from INPUT 1: same brown sculpted hair, facial planes, large modelled eyes and brows, teal coat and orange scarf. Keep the cat and otter roles, but use broad simplified matte sculpted fur shapes, never individual hairs. Match INPUT 1's eye construction, adult cartoon proportions, rounded hands, restrained fabric and skin detail.\nSimplify the town square at night into a handful of broad smooth buildings, flat stone shapes and warm windows. A large smooth pillar, no dense brickwork or photographic cobbles. Soft controlled directional light; warm windows and a restrained blue night fill, without orange bloom, shiny surfaces, lens effects or photographic bokeh. Subtle matte material response exactly like INPUT 1. Expressions tell the story: conspiratorial cat, uncertain listener, suspicious detective.\nCentral 60% contains the three faces and whispering gesture; all readable in a small tile. One coherent landscape scene, no panels. No redesign of reference woman, realistic fur, fine fabric weave, glossy plastic, toy style, drawn outlines, text, letters, numbers, logos, watermarks, weapons, violence, alcohol, real people or franchise characters. One pupil per visible eye, coherent limbs. Output just one final image.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Detektivin mit derselben Identität wie die feste Vorlage; Katz-/Otterformen, Säule und Hintergrund vereinfacht, Fell- und Steinfeindetail reduziert. Flüstergeste klar sichtbar. 34572 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevision": {
+        "path": "assets/images/mafia.webp",
+        "kind": "game-illustration",
+        "status": "verified-own",
+        "creator": "OpenAI integriertes image_gen in Codex; konkrete Modellkennung vom Werkzeug nicht ausgegeben",
+        "source": "Originalillustration vom 14. Oktober 2026, auf Armans Anweisung erstellt. Projektseitiges Chamäleon imposter-cool-1.png als Stilreferenz. Lokaler WebP-Export mit cwebp.",
+        "createdAt": "2026-10-14",
+        "sha256": "f261beca039c3e25641431959f0771c958ee9330d71cc6ad21019858b5cbff35",
+        "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+        "commercialUse": true,
+        "attribution": null,
+        "derivedFrom": null,
+        "dimensions": "800x600",
+        "prompt": "An original finished 4:3 landscape illustration for a playful social deduction party game, titled Mafia in the app (do not write the title in the image). A fully animated, stylish 3D cartoon scene with strongly simplified sculpted geometry, smooth matte color surfaces, appealing expressive adult cartoon characters, clean readable silhouettes and restrained stage lighting. Same animation universe as the reference chameleon, with far simpler surfaces: all fur and hair made from broad solid sculpted shapes. Visibly animated, cool and witty, suitable for a party game for friends.\n\nA compact cartoon town square at night with chunky curved cobblestones, two simplified crooked navy-blue houses, big warm amber windows, a rounded streetlamp and a simple moon disk. A slim original gray cat in a fitted ink-blue suit and charcoal fedora is secretly whispering to a stocky original weasel in a mustard waistcoat and rolled-sleeve shirt, behind a low rounded brick corner. The cat cups one paw near its mouth, checks the surroundings with a raised brow and intelligent sideways glance. The weasel has a very funny overconfident innocent smile and tense shoulders, pretending nothing is happening. Behind the far side of the corner, an original adult human woman detective with short sculpted swept hair and a dark teal trench coat peeks with a skeptical knowing expression; she has noticed their hidden alliance. Clothes, expressions and gestures clearly suit each role. Strong specific action and funny theatrical staging rather than posed portraits. Main cat/weasel pair large near center, detective smaller on the right, three anatomically coherent figures with clearly separate hands.\n\nRich violet-blue night palette, mustard and burgundy accents, warm stylized lamplight illuminating faces. Broad graphic background shapes and simple toon shadows, plenty of color even at night. Balanced adult cartoon proportions, expressive smaller eyes, confident character design. Flat large material shapes, smooth sculpted coat and hair masses, no tiny surface detail, no photographic skin or realistic animal rendering. No text, labels, logos, cards, interface or watermark. Original fictional designs only. One unified lively image, readable as a small game tile.",
+        "notes": "App-Vorschau; WebP-Qualität 52, 33770 Bytes. Originale Figuren, keine echten Personen, Marken oder Schrift. Visueller finaler Release-Review bleibt offen."
+      }
     },
     {
       "path": "docs/screenshots/bildvorschau-mafia-desktop-1280x800.webp",
@@ -345,20 +390,42 @@
       "kind": "generated-game-illustration",
       "status": "verified-own",
       "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
-      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
-      "createdAt": "2026-10-30",
-      "sha256": "13613021865e8348f6ac4107f2d6a7f16c992ee3b9263a895a763034d9553c10",
-      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "c7bcadc52eb39dfb9f99fbaa9cf5c639103284c0263d6f7f0f5f498f8ca9efd2",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
       "tool": "OpenAI image_gen",
       "model": "not exposed by tool",
+      "dimensions": "800x600",
       "prompts": {
-        "generation": "Use case: stylized-concept.\nCreate ONE original 4:3 game illustration for Secret Circle, \"Heiße Kartoffel\" (Hot Potato).\nINPUT 1 is the sole exact approved STYLE reference, not a composition to copy. Match the sheet's rounded sculpted cartoon shapes, simplified matte materials, soft shadows, controlled detail and deliberately animated prop design. This image uses objects and cropped mitts rather than another humanoid mascot.\nThe real game moment: quickly pass on the turn before time runs out. A hot potato is its clear visual metaphor; not a cooking tutorial.\nOne large irregular golden-brown POTATO is caught mid-toss at the center, a slight tilted arc, three large simple sculpted dimples, two graceful steam curls. No face, eyes or limbs on the potato.\nFrom the left edge one padded burnt-orange oven mitt has just tossed it; from the right edge one deep-blue padded oven mitt opens to catch it. ONLY TWO mitts total, one belonging to each unseen participant, no extra hands, no visible heads or bodies. The object has visibly just left one mitt and is about to land in the other: urgent and playful passing, no static presentation.\nA compact stylized red-framed hourglass on the lower rear counter shows a thin stream with most sand already at the bottom, supporting time pressure. Do not strap a timer to the potato. No clock numerals or text.\nComposition: close-up dynamic passing action, potato and catching action remain large and readable inside the central 60% of the 4:3 image. The mitt silhouettes frame the potato; hourglass is smaller and secondary. No complicated motion effects.\nBackdrop: simplified warm butter-yellow and soft blue kitchen shapes, just a few large rounded tiles and an arch, low detail. Fresh daytime palette, balanced warm key light and soft blue fill, same style as the approved sheet. A calm matte cartoon world, not realistic food photography or a shiny 3D product render.\nNo photoreal pores, gritty texture, tiny fabric noise, bokeh, glitter, sparks, fire, scary expression, explosions, weapons, cups, drinks, logos, brands, writing, digits, UI, phones, watermarks, franchise designs or famous characters. One polished finished illustration, not a collage or contact sheet.\n"
+        "hot-potato-stilkorrektur-2026-11-05.prompt.txt": "Use case: style-transfer. One final landscape 4:3 game illustration, Heiße Kartoffel.\nINPUT 1 is the sole immutable style/shape/material reference for this entire game series. INPUT 2 is the old game image; preserve its story and broad composition only. Rebuild its props and kitchen so they belong in the EXACT animated production of INPUT 1: clean large rounded sculpted shapes, restrained matte materials, subtle surface response and controlled soft lighting. Keep a steaming potato mid-toss between an orange left oven glove and blue right oven glove, with a running hourglass in the background and a simple cozy yellow/blue kitchen. The potato is a simplified rounded sculpted form with just a few broad indentations; remove photographic speckles, pores, crisp fried-food texture. Gloves have smooth solid matte surfaces and only a few broad seams, no quilted fabric weave or dense stitching. Background consists of a few large clean kitchen shapes with simplified arched window. Hands stay cropped at both side edges naturally. Potato and catching gesture centered, readable at thumbnail scale. Soft neutral-balanced warm light like the reference; no blooming highlights, product-photography effect, realism or plastic gloss. No new characters. No words, letters, digits, logos, watermark, UI, alcohol, weapons or brands. Just one finished coherent image.\n"
       },
-      "approvalStatus": "approved-by-Arman-2026-11-02",
-      "notes": "Nach gezeigter Kartoffel-Probe und Frage folgt Armans wiederholtes „weiter“. Der Einbau wurde als Fortsetzung angekündigt. Gegenstandsmotiv für schnelles Weitergeben unter Zeitdruck; keine neue Koch-/Essensregel. 800x600 WebP, 34954 Bytes. Stilvorlage bleibt das gewählte Figuren-/Materialblatt."
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Kartoffel auf breite matte Form reduziert, Handschuhnähte und Küche vereinfacht; Wurf, Dampf und Sanduhr erhalten. 33920 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevision": {
+        "path": "assets/images/hot-potato.webp",
+        "kind": "generated-game-illustration",
+        "status": "verified-own",
+        "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+        "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+        "createdAt": "2026-10-30",
+        "sha256": "13613021865e8348f6ac4107f2d6a7f16c992ee3b9263a895a763034d9553c10",
+        "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+        "commercialUse": true,
+        "attribution": null,
+        "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+        "tool": "OpenAI image_gen",
+        "model": "not exposed by tool",
+        "prompts": {
+          "generation": "Use case: stylized-concept.\nCreate ONE original 4:3 game illustration for Secret Circle, \"Heiße Kartoffel\" (Hot Potato).\nINPUT 1 is the sole exact approved STYLE reference, not a composition to copy. Match the sheet's rounded sculpted cartoon shapes, simplified matte materials, soft shadows, controlled detail and deliberately animated prop design. This image uses objects and cropped mitts rather than another humanoid mascot.\nThe real game moment: quickly pass on the turn before time runs out. A hot potato is its clear visual metaphor; not a cooking tutorial.\nOne large irregular golden-brown POTATO is caught mid-toss at the center, a slight tilted arc, three large simple sculpted dimples, two graceful steam curls. No face, eyes or limbs on the potato.\nFrom the left edge one padded burnt-orange oven mitt has just tossed it; from the right edge one deep-blue padded oven mitt opens to catch it. ONLY TWO mitts total, one belonging to each unseen participant, no extra hands, no visible heads or bodies. The object has visibly just left one mitt and is about to land in the other: urgent and playful passing, no static presentation.\nA compact stylized red-framed hourglass on the lower rear counter shows a thin stream with most sand already at the bottom, supporting time pressure. Do not strap a timer to the potato. No clock numerals or text.\nComposition: close-up dynamic passing action, potato and catching action remain large and readable inside the central 60% of the 4:3 image. The mitt silhouettes frame the potato; hourglass is smaller and secondary. No complicated motion effects.\nBackdrop: simplified warm butter-yellow and soft blue kitchen shapes, just a few large rounded tiles and an arch, low detail. Fresh daytime palette, balanced warm key light and soft blue fill, same style as the approved sheet. A calm matte cartoon world, not realistic food photography or a shiny 3D product render.\nNo photoreal pores, gritty texture, tiny fabric noise, bokeh, glitter, sparks, fire, scary expression, explosions, weapons, cups, drinks, logos, brands, writing, digits, UI, phones, watermarks, franchise designs or famous characters. One polished finished illustration, not a collage or contact sheet.\n"
+        },
+        "approvalStatus": "approved-by-Arman-2026-11-02",
+        "notes": "Nach gezeigter Kartoffel-Probe und Frage folgt Armans wiederholtes „weiter“. Der Einbau wurde als Fortsetzung angekündigt. Gegenstandsmotiv für schnelles Weitergeben unter Zeitdruck; keine neue Koch-/Essensregel. 800x600 WebP, 34954 Bytes. Stilvorlage bleibt das gewählte Figuren-/Materialblatt."
+      }
     },
     {
       "path": "docs/screenshots/hot-potato-handy-375x812.webp",
@@ -393,20 +460,42 @@
       "kind": "generated-game-illustration",
       "status": "verified-own",
       "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
-      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
-      "createdAt": "2026-11-02",
-      "sha256": "9ca7aa1f15457746af76ba1dfea31971028a2cbe6f7f7edcc0732a8393951c34",
-      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "b60204c4cd40ad2e11690e406353141d6cea02850797d0dda22fbdb17bbc58f4",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
       "tool": "OpenAI image_gen",
       "model": "not exposed by tool",
+      "dimensions": "800x600",
       "prompts": {
-        "generation": "Use case: stylized-concept.\nCreate ONE original 4:3 Secret Circle game illustration for \"Wortkette\" (word chain).\nINPUT 1 is the sole exact approved STYLE reference. Match its sculpted animated cartoon faces, one pupil per eye, brow geometry, head/body proportions, simplified matte fabric and prop materials, restrained surface detail and soft shadow treatment. Change the characters, palette and setting; do not copy the sheet's poses or cards.\nVisible idea: each word connects to the previous word. Three visibly COUPLED little freight wagons carry three clear objects in this exact left-to-right sequence: a red APPLE, a simple amber TABLE LAMP with a shade, a small original gray ELEPHANT figure with four animal legs. In German: Apfel -> Lampe -> Elefant, because each word begins with the preceding word's final letter. The words themselves must NOT be written. The connected wagons turn the word chain into a clear visual metaphor, not a new railway game rule.\nA CLASSIC ADULT TRAIN CONDUCTOR is the one supporting character, behind the wagons: an original sturdy middle-aged woman with round sculpted cheeks and deliberate expressive eyes, dark brown cartoon skin, neat silver hair, navy railway cap with a plain brass button, matching navy uniform jacket, burgundy waistcoat and crisp cream shirt. Recognizable professional conductor costume without writing, symbols or brand insignia. Adult animation character, not a child or photoreal portrait.\nShe is fitting the large curved coupling of the final elephant wagon onto the preceding lamp wagon, concentrating with a small knowing smile. One clear connecting gesture, anatomically coherent five-fingered hands. The conductor's head and three cargo shapes are large and readable; avoid clutter. The apple, lamp and elephant each visibly sit inside their own open wagon.\nThree-quarter side view across a slate-blue station workbench. All three wagons and the linking gesture sit in the central crop; conductor bust behind them. Background is a simple stylized railway arch with broad muted blue and warm cream shapes, no written signs, tracks into distance, crowd, clocks, lamps or decorative clutter. Navy, brick-red, muted mint and cream palette with warm soft key light, gentle cool fill.\nUse original hand-designed cartoon forms rather than generic emoji, glossy toys, tiny photoreal models or asset-store icons. The elephant is a little sculpted animal prop, no human body. No glitter, bokeh, textile micro-noise, extra fingers, extra wagons or duplicate objects.\nNo text, letters, digits, logos, brands, watermark, phones, screens, UI, alcohol, drinks, weapons, violence, real people or known franchise designs. One finished landscape illustration, no panels or contact sheet.\n"
+        "word-chain-stilkorrektur-2026-11-05.prompt.txt": "Use case: style-transfer. ONE finished 4:3 game image for Wortkette.\nINPUT 1 is the SOLE style reference. INPUT 2 is the current game image: retain the exact gray-haired train conductor, expression, uniform, linked wooden toy wagons, apple then lamp then elephant order, coupling gesture, broad train-station composition. Change only the surfaces and rendering that differ from INPUT 1: replace the heavily weathered photographic tabletop with a clean broad matte blue bench; simplify the apple's tiny speckles, wood grain, lamp reflections, toy elephant skin and small surface noise. All props must share the large clean sculpted shapes, restrained matte material and subtle surface response of INPUT 1. The conductor keeps her identity and reference-style modelled eyelids, eyes, eyebrows, hair masses and adult cartoon proportions. Softer neutral-balanced light, no glowing photographic reflections or bokeh. Keep the coupling between the three wagons clearly legible. One coherent animated scene with these exact three objects, faces and main action in central 60%. No text, letters, digits, brands, watermarks, UI, alcohol, weapons or franchise characters. One pupil per eye and coherent hands.\n"
       },
-      "approvalStatus": "approved-by-Arman-2026-11-03",
-      "notes": "Arman hat die am 3. November gezeigte Wortketten-Probe ausdrücklich zum Einbau ausgewählt. Apfel → Lampe → Elefant: korrekte deutsche Wortfolge. Waggons sind eine Bildmetapher, keine neue Spielregel. 800x600 WebP, 34030 Bytes. Weitere Motive bleiben einzeln auszuwählen."
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Zugbegleiterin mit unveränderter Identität; Apfel, Lampe und Elefant in dieser Reihenfolge, Kupplungsgeste erhalten. Verwitterte Bank und Fototexturen durch matte breite Formen ersetzt. 34320 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevision": {
+        "path": "assets/images/word-chain.webp",
+        "kind": "generated-game-illustration",
+        "status": "verified-own",
+        "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+        "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+        "createdAt": "2026-11-02",
+        "sha256": "9ca7aa1f15457746af76ba1dfea31971028a2cbe6f7f7edcc0732a8393951c34",
+        "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+        "commercialUse": true,
+        "attribution": null,
+        "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+        "tool": "OpenAI image_gen",
+        "model": "not exposed by tool",
+        "prompts": {
+          "generation": "Use case: stylized-concept.\nCreate ONE original 4:3 Secret Circle game illustration for \"Wortkette\" (word chain).\nINPUT 1 is the sole exact approved STYLE reference. Match its sculpted animated cartoon faces, one pupil per eye, brow geometry, head/body proportions, simplified matte fabric and prop materials, restrained surface detail and soft shadow treatment. Change the characters, palette and setting; do not copy the sheet's poses or cards.\nVisible idea: each word connects to the previous word. Three visibly COUPLED little freight wagons carry three clear objects in this exact left-to-right sequence: a red APPLE, a simple amber TABLE LAMP with a shade, a small original gray ELEPHANT figure with four animal legs. In German: Apfel -> Lampe -> Elefant, because each word begins with the preceding word's final letter. The words themselves must NOT be written. The connected wagons turn the word chain into a clear visual metaphor, not a new railway game rule.\nA CLASSIC ADULT TRAIN CONDUCTOR is the one supporting character, behind the wagons: an original sturdy middle-aged woman with round sculpted cheeks and deliberate expressive eyes, dark brown cartoon skin, neat silver hair, navy railway cap with a plain brass button, matching navy uniform jacket, burgundy waistcoat and crisp cream shirt. Recognizable professional conductor costume without writing, symbols or brand insignia. Adult animation character, not a child or photoreal portrait.\nShe is fitting the large curved coupling of the final elephant wagon onto the preceding lamp wagon, concentrating with a small knowing smile. One clear connecting gesture, anatomically coherent five-fingered hands. The conductor's head and three cargo shapes are large and readable; avoid clutter. The apple, lamp and elephant each visibly sit inside their own open wagon.\nThree-quarter side view across a slate-blue station workbench. All three wagons and the linking gesture sit in the central crop; conductor bust behind them. Background is a simple stylized railway arch with broad muted blue and warm cream shapes, no written signs, tracks into distance, crowd, clocks, lamps or decorative clutter. Navy, brick-red, muted mint and cream palette with warm soft key light, gentle cool fill.\nUse original hand-designed cartoon forms rather than generic emoji, glossy toys, tiny photoreal models or asset-store icons. The elephant is a little sculpted animal prop, no human body. No glitter, bokeh, textile micro-noise, extra fingers, extra wagons or duplicate objects.\nNo text, letters, digits, logos, brands, watermark, phones, screens, UI, alcohol, drinks, weapons, violence, real people or known franchise designs. One finished landscape illustration, no panels or contact sheet.\n"
+        },
+        "approvalStatus": "approved-by-Arman-2026-11-03",
+        "notes": "Arman hat die am 3. November gezeigte Wortketten-Probe ausdrücklich zum Einbau ausgewählt. Apfel → Lampe → Elefant: korrekte deutsche Wortfolge. Waggons sind eine Bildmetapher, keine neue Spielregel. 800x600 WebP, 34030 Bytes. Weitere Motive bleiben einzeln auszuwählen."
+      }
     },
     {
       "path": "docs/screenshots/word-chain-handy-375x812.webp",
@@ -441,20 +530,42 @@
       "kind": "generated-game-illustration",
       "status": "verified-own",
       "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
-      "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
-      "createdAt": "2026-11-03",
-      "sha256": "e4f701b7c32f41f43eb532820bbe2083f627f33b737296088fb3f16d30c15042",
-      "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "a3ee1a7e4af293f2fb3eb129649a7f507b55677a24b3b26f678c4854963ced46",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
       "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
       "tool": "OpenAI image_gen",
       "model": "not exposed by tool",
+      "dimensions": "800x600",
       "prompts": {
-        "generation": "Use case: stylized-concept.\nCreate ONE original landscape 4:3 Secret Circle game illustration for \"Zwei Wahrheiten, eine Lüge\" (Two truths and a lie).\nInput image 1 is ONLY the approved exact style reference. Match its sculpted cartoon anatomy, deliberately expressive large eyes and brows, simplified matte fabric and prop surfaces, restrained details and gentle shadows. Do not copy its poses, cards, characters or palette.\nVisible game idea: one person tells three experiences about themselves; two really happened and one is invented. The group identifies the invented story.\nOne charming original adult FOX ADVENTURER and storyteller, orange-red fur treated as simple sculpted volumes, cream muzzle, large clear eyes, one dark pupil in each eye, eyebrows, a slightly mischievous smile. Classic recognizable explorer role: soft khaki broad-brim expedition hat with plain band, moss-green field jacket over cream shirt, folded map tucked at the belt. No weapon or insignia. The fox is seated sideways on a low travel trunk, turns to the viewer and gestures openly while telling a story.\nAround and just above the shoulders are exactly THREE LARGE softly outlined illustrated memory/speech bubbles, with short clear tails leading toward the fox. These are in-scene imaginary experiences, not separate panels or a contact sheet. Each contains a tiny recognizable version of the same explorer: left, the fox reaching a broad mountain summit with a walking stick; upper middle, the fox beside a simple camping tent under a crescent moon; right, the fox impossibly riding a gigantic folded PAPER AIRPLANE in the sky. The third experience is playful invention. No check marks, crosses or words give away the answer. No extra bubbles or extra full-size foxes.\nThe face and open storytelling gesture are the dominant central subject. The three simple silhouettes and bubbles must remain legible in a small game tile. Close-medium framing, warm dusty-terracotta and muted moss palette, broad soft blue sky shapes, a simplified quiet explorer camp behind with no extra props or clutter. Warm key light and soft cool fill, same original matte animated world as reference.\nKeep important face, gesture and story shapes inside the central safe crop. Anatomically coherent paws, clear silhouettes, original costume. No photoreal fur, pores, textile micro-noise, bokeh, glossy toys, glitter, magic particles, text, letters, digits, logos, brands, watermark, UI, phone, drinks, alcohol, weapons, violence, real people or known franchise characters. One finished illustration.\n"
+        "two-truths-stilkorrektur-2026-11-05.prompt.txt": "Use case: style-transfer. ONE finished 4:3 illustration for Zwei Wahrheiten, eine Lüge.\nINPUT 1 is the only approved material, eyes, proportions and rendering reference. INPUT 2 is the old fox scene: preserve its narrative and fox identity but bring every element into INPUT 1's exact sculpted animated world. A fox explorer in a brown adventurer hat, olive jacket and cream shirt sits on a travel chest at a campsite and confidently tells three stories. Above and behind him are three large floating sculpted memory vignettes: the SAME fox hiking a mountain with a walking stick; the SAME fox resting beside a tent at night; the SAME fox riding an impossibly small paper airplane in the sky. The first two are plausible, the paper airplane is his absurd invented story.\nMake ALL four fox depictions tangible 3D models in the same production as INPUT 1: modelled eyes and brows, large clean facial planes, broad sculpted fur tufts, no fine hair strands or plush texture. Use spatial sculpted cloud forms as boundaries of the memories, no flat paper/cartoon outlines or comic panels. Keep just three memories, readable simple objects, no confusing additional scene. Large main fox face and open storytelling paw centered. Simple matte props and broad background landscape, restrained detailed surface response. Soft controlled reference lighting and solid material colors. A cohesive shot, not an illustrated collage. Original role, no recognizable franchise likeness. No text, letters, numbers, logos, watermark, weapons, violence, alcohol, photo textures, plastic gloss or tiny decorative clutter. Coherent limbs, one pupil per visible eye.\n"
       },
-      "approvalStatus": "approved-by-Arman-2026-11-03",
-      "notes": "Arman hat die gezeigte Fuchs-Vorschau mit „Ja, einbauen und weiter“ konkret ausgewählt. Zwei plausible Erlebnisse und ein erfundener Papierflieger-Flug zeigen den Spielgedanken. 800x600 WebP, 34470 Bytes. Weitere Motive bleiben einzeln auszuwählen."
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Fuchsidentität und drei Erlebnisse erhalten; Erinnerungen als räumlich modellierte Szenen statt flacher Umrandungen, Fell und Landschaft vereinfacht. 34828 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevision": {
+        "path": "assets/images/two-truths.webp",
+        "kind": "generated-game-illustration",
+        "status": "verified-own",
+        "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+        "source": "Integrated OpenAI image_gen; project-owned visual reference, complete prompts below. Concrete model not exposed by tool.",
+        "createdAt": "2026-11-03",
+        "sha256": "e4f701b7c32f41f43eb532820bbe2083f627f33b737296088fb3f16d30c15042",
+        "license": "Project-owned output rights under applicable OpenAI Terms of Use, to the extent permitted by law; no third-party visual asset license required.",
+        "commercialUse": true,
+        "attribution": null,
+        "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+        "tool": "OpenAI image_gen",
+        "model": "not exposed by tool",
+        "prompts": {
+          "generation": "Use case: stylized-concept.\nCreate ONE original landscape 4:3 Secret Circle game illustration for \"Zwei Wahrheiten, eine Lüge\" (Two truths and a lie).\nInput image 1 is ONLY the approved exact style reference. Match its sculpted cartoon anatomy, deliberately expressive large eyes and brows, simplified matte fabric and prop surfaces, restrained details and gentle shadows. Do not copy its poses, cards, characters or palette.\nVisible game idea: one person tells three experiences about themselves; two really happened and one is invented. The group identifies the invented story.\nOne charming original adult FOX ADVENTURER and storyteller, orange-red fur treated as simple sculpted volumes, cream muzzle, large clear eyes, one dark pupil in each eye, eyebrows, a slightly mischievous smile. Classic recognizable explorer role: soft khaki broad-brim expedition hat with plain band, moss-green field jacket over cream shirt, folded map tucked at the belt. No weapon or insignia. The fox is seated sideways on a low travel trunk, turns to the viewer and gestures openly while telling a story.\nAround and just above the shoulders are exactly THREE LARGE softly outlined illustrated memory/speech bubbles, with short clear tails leading toward the fox. These are in-scene imaginary experiences, not separate panels or a contact sheet. Each contains a tiny recognizable version of the same explorer: left, the fox reaching a broad mountain summit with a walking stick; upper middle, the fox beside a simple camping tent under a crescent moon; right, the fox impossibly riding a gigantic folded PAPER AIRPLANE in the sky. The third experience is playful invention. No check marks, crosses or words give away the answer. No extra bubbles or extra full-size foxes.\nThe face and open storytelling gesture are the dominant central subject. The three simple silhouettes and bubbles must remain legible in a small game tile. Close-medium framing, warm dusty-terracotta and muted moss palette, broad soft blue sky shapes, a simplified quiet explorer camp behind with no extra props or clutter. Warm key light and soft cool fill, same original matte animated world as reference.\nKeep important face, gesture and story shapes inside the central safe crop. Anatomically coherent paws, clear silhouettes, original costume. No photoreal fur, pores, textile micro-noise, bokeh, glossy toys, glitter, magic particles, text, letters, digits, logos, brands, watermark, UI, phone, drinks, alcohol, weapons, violence, real people or known franchise characters. One finished illustration.\n"
+        },
+        "approvalStatus": "approved-by-Arman-2026-11-03",
+        "notes": "Arman hat die gezeigte Fuchs-Vorschau mit „Ja, einbauen und weiter“ konkret ausgewählt. Zwei plausible Erlebnisse und ein erfundener Papierflieger-Flug zeigen den Spielgedanken. 800x600 WebP, 34470 Bytes. Weitere Motive bleiben einzeln auszuwählen."
+      }
     },
     {
       "path": "docs/screenshots/two-truths-handy-375x812.webp",
@@ -511,6 +622,160 @@
       "attribution": null,
       "derivedFrom": "assets/images/imposter.webp",
       "dimensions": "1280x900"
+    },
+    {
+      "path": "assets/images/never-have.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "1c8d9090a638d5a087345c6c28b7868129f88ce6d44f0687f205730e5509f58d",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "dimensions": "800x600",
+      "prompts": {
+        "never-have-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: Ich habe noch nie: an elephant adventurer with a moss-green jacket and orange scarf suddenly raises one broad open hand, with a sheepish caught-out smile as it remembers a past experience. A single sculpted thought-cloud behind its head shows the same elephant squeezing awkwardly into a tiny camping tent. In a quiet warm green expedition lounge, a simple travel backpack at its side. Clearly a remembered experience and volunteered admission; no drinks. The elephant has broad simplified sculpted skin, no realistic wrinkles.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Elefanten-Abenteurer hebt ertappt die Hand und erinnert sich daran, wie er in einem viel zu kleinen Zelt übernachtet hat. 34574 Bytes. Finale Serien-/Releaseabnahme offen."
+    },
+    {
+      "path": "assets/images/question-imposter.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "de1ea76f62797683c322224510c6a221599033fdeba2cff94f361ca34f7cf2e7",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "dimensions": "800x600",
+      "prompts": {
+        "question-imposter-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: Question Imposter: four adult-proportioned retro robot quiz contestants, made from matte painted broad rounded shapes with modelled expressive eyes and eyebrows like the reference. Standing close in a calm teal quiz studio, all examining their own cream question cards. Three cards show the SAME simple sun pictogram; the fourth shows a moon pictogram. The odd robot gives a nervous sideways glance while the other three confidently compare their sun cards. Use no question marks, letters or words. All robot faces and cards clearly readable; identical production style to reference, never baby toys, glossy metal, kawaii sticker shapes or a new robot art style. Original robots only.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Vier Retro-Roboter vergleichen Fragekarten: drei zeigen eine Sonne, der nervöse vierte einen Mond. 34754 Bytes. Finale Serien-/Releaseabnahme offen."
+    },
+    {
+      "path": "assets/images/location-spy.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "6929f147cbd4a196a815b676fe06235470dac14740f404e99bdc344d7deb0295",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "dimensions": "800x600",
+      "prompts": {
+        "location-spy-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: Location Spy: an adult otter undercover spy in a muted plum trench coat and broad fedora peeks from behind a large potted palm in a grand hotel lobby. Holding a tiny completely blank notebook, it looks confused and nervously searches the lobby; its raised eyebrow and hesitant gesture reveal it does not know where it is. Calm lobby with a broad curved reception desk and a few rounded luggage shapes. Restrained warm cream and teal palette, fur only broad smooth sculpted tufts. No sign text or hotel logos.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Verunsicherter Otter-Spion späht mit leerem Notizbuch hinter einer Palme in eine Hotellobby. 33532 Bytes. Finale Serien-/Releaseabnahme offen."
+    },
+    {
+      "path": "assets/images/most-likely.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "f009f86220f4eb50d77c173d268180a6e3fd68f98144743bbe192890ce9069a1",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "dimensions": "800x600",
+      "prompts": {
+        "most-likely-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: Wer würde eher?: a hedgehog explorer in a mustard utility vest stands surprised at the center, one paw on its chest as though asking 'me?'. Four different friends' stylized paws and wings enter naturally from the image edges and all point at the hedgehog at once. Broad smooth sculpted quills, large expressive modelled face, no realistic spikes. Calm lavender lounge background with a few rounded cushions. The simultaneous pointing and surprised hedgehog are the sole main action.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Überraschter Igel zeigt auf sich, während vier Pfoten und Flügel gleichzeitig auf ihn deuten. 33650 Bytes. Finale Serien-/Releaseabnahme offen."
+    },
+    {
+      "path": "assets/images/would-rather.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "7738a967b4f560ce7e9db9f27b68ea9e392d04434a94ac738d64bcce4a4881d1",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "dimensions": "800x600",
+      "prompts": {
+        "would-rather-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: Entweder oder: a sloth trail guide in a simple teal hiking vest sits at a fork in a woodland path, holding an ice cream cone in one hand and a triangular pizza slice in the other. It looks from one choice to the other, clearly torn. The two broad paths fork behind it into softly contrasting warm and cool colors. Broad matte sculpted fur and food, original adult cartoon face matching reference. No signage or decorative text.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Direkt gegen die feste Vorlage geprüft: modellierte Augen und Brauen, plastische Formen und matte Materialien, klarer Spielmoment, keine Bildschrift oder Marken. Faultier an einer Weggabelung schwankt zwischen einer Eistüte und einem Stück Pizza. 34864 Bytes. Finale Serien-/Releaseabnahme offen."
+    },
+    {
+      "path": "assets/images/paranoia.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "b2992da104fcfc4c7dbfa1a5e78f84384e31610fff9d0edcde5531803631c36e",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "dimensions": "800x600",
+      "prompts": {
+        "paranoia-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: Paranoia: two adult meerkat secret agents in simple plum and olive jackets whisper behind a raised paw, while a third meerkat in a cream jacket turns back toward them suspiciously with one raised brow. Three clearly distinct coherent bodies, broad sculpted fur and same modelled eyes as reference. Quiet rounded train-compartment seating, restrained teal and warm cream. Whispering pair slightly behind the suspicious foreground meerkat, all three faces and the whispering gesture inside central 60%.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Mit der festen Vorlage verglichen: modellierte Augen und Brauen, plastische Formen und matte Materialien. Klarer Spielmoment; keine Bildschrift, Marken oder anatomischen Auffälligkeiten. Zwei Erdmännchen flüstern hinter einer Pfote, während ein drittes misstrauisch zu ihnen zurückschaut. 34212 Bytes. Finale Serien-/Releaseabnahme offen."
+    },
+    {
+      "path": "assets/images/wrong-answers.webp",
+      "kind": "generated-game-illustration",
+      "status": "verified-own",
+      "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
+      "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
+      "createdAt": "2026-11-05",
+      "sha256": "f1c38d1b30b57506670910ef930fe94a9935cf5e692acab30a1c339ec2d1d8eb",
+      "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": "docs/bildwelt/vorlage-2026-10-30.webp",
+      "tool": "OpenAI image_gen",
+      "model": "not exposed by tool",
+      "dimensions": "800x600",
+      "prompts": {
+        "wrong-answers-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: Nur falsche Antworten: a goat professor with round glasses, a teal tweed-shaped jacket and a bow tie proudly points at a chalkboard that shows only a simple pictorial drawing of a fish riding a bicycle. It confidently presents this absurd answer with one open hand. Broad sculpted beard and horn shapes; matte lecture-room board and cream wood background. The goat and its unmistakably impossible fish-on-bicycle drawing are large and readable. Absolutely no written text or formulae.\n"
+      },
+      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "approvalStatus": "series-review-open",
+      "notes": "Mit der festen Vorlage verglichen: modellierte Augen/Brauen, breite plastische Fellformen und matte Materialien. Absichtlich falscher Fisch auf Fahrrad klar sichtbar, keine Schrift oder Marken. 34644 Bytes. Finale Serien-/Releaseabnahme offen."
     }
   ]
 }

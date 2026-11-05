@@ -1,4 +1,7 @@
 const { test, expect } = require('@playwright/test');
+const gameImages = require('../../assets/manifests/asset-provenance.json').assets
+  .filter(asset => asset.kind === 'generated-game-illustration' && asset.path.startsWith('assets/images/'))
+  .map(asset => ({ path: asset.path, sha256: asset.sha256 }));
 
 async function waitForWorker(page) {
   await page.evaluate(async () => {
@@ -23,7 +26,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/party.html');
   await waitForWorker(page);
 
-  const cacheState = await page.evaluate(async () => {
+  const cacheState = await page.evaluate(async images => {
     const names = await caches.keys();
     /* Cachegeneration nicht festschreiben: Sie steigt mit jedem Offline-Release.
        Geprueft wird, dass genau ein Produktions-Cache existiert und vollstaendig ist. */
@@ -46,15 +49,27 @@ test('service worker caches the complete v30 core including Creator guidance and
       './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png',
       './assets/images/imposter.webp', './assets/images/truth-dare.webp', './assets/images/mafia.webp'
     ];
+    expected.push(...images.map(image => './' + image.path));
     const missing = [];
     for (const path of expected) if (!await cache.match(path)) missing.push(path);
     return { names, missing };
-  });
+  }, gameImages);
   const productionCaches = cacheState.names.filter(name => /^secret-circle-v\d+$/.test(name));
   expect(productionCaches).toHaveLength(1);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
+  const imageHashes = await page.evaluate(async images => {
+    const actual = [];
+    for (const image of images) {
+      const response = await fetch(image.path);
+      if (!response.ok) throw new Error('Offline image missing: ' + image.path);
+      const digest = await crypto.subtle.digest('SHA-256', await response.arrayBuffer());
+      actual.push({ path: image.path, sha256: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') });
+    }
+    return actual;
+  }, gameImages);
+  expect(imageHashes).toEqual(gameImages);
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
   await expect(page.locator('#playable-count')).toHaveText('55');
