@@ -2,6 +2,8 @@ const { test, expect } = require('@playwright/test');
 const gameImages = require('../../assets/manifests/asset-provenance.json').assets
   .filter(asset => asset.kind === 'generated-game-illustration' && asset.path.startsWith('assets/images/'))
   .map(asset => ({ path: asset.path, sha256: asset.sha256 }));
+const expectedGameImagePaths = require('../../party-wave-one-clue-catalog.js').games
+  .map(game => 'assets/images/' + game.id + '.webp').sort();
 
 async function waitForWorker(page) {
   await page.evaluate(async () => {
@@ -23,6 +25,8 @@ async function seedPlayers(page) {
 }
 
 test('service worker caches the complete v30 core including Creator guidance and dedicated player', async ({ page, context }) => {
+  expect(gameImages).toHaveLength(55);
+  expect(gameImages.map(image => image.path).sort()).toEqual(expectedGameImagePaths);
   await page.goto('/party.html');
   await waitForWorker(page);
 

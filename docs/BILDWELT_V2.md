@@ -1,5 +1,7 @@
 # Bildwelt für Secret Circle v2
 
+**Umsetzungsstand vom 5. November 2026:** 55 von 55 Modi haben genau ein eingebundenes Bild. Alle Dateien liegen lokal unter `assets/images/<spiel-id>.webp`, die Zuordnung in `v2-game-art.js`. Für alle neuen Motive wurde ausschließlich dieselbe feste Vorlage verwendet. Sichtprüfung und aktuelle Prüfsummen: [stilpruefung-2026-11-04.json](bildwelt/stilpruefung-2026-11-04.json). Finale Beurteilung der Gesamtserie durch Arman bleibt offen.
+
 **Aktueller Gesamtauftrag vom 5. November 2026:** Für jeden der 55 Modi genau ein Bild aus derselben festen Bildwelt erstellen, prüfen und direkt im Repo einbauen. Armans „los“-Auftrag ersetzt die älteren Auswahlpausen je Motiv. Keine Variantenserien. Die finale Beurteilung der Gesamtserie durch Arman bleibt offen; technische Integration ist keine vorweggenommene Abnahme.
 
 **Ein Bild pro Spiel (Armans Anweisung vom 4. November 2026):** Genau einen Entwurf je Modus erzeugen und zeigen, keine parallelen Varianten oder zusätzlichen Stilrichtungen. Eine notwendige Fehlerkorrektur ersetzt dieselbe Fassung; sie eröffnet keine zweite Auswahlserie. Ältere Aufträge mit 2–3 Varianten sind überholt.

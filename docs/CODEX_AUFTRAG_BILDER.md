@@ -1,5 +1,7 @@
 # Auftrag für Codex: Bildwelt und einzelne Spielbilder
 
+**Umgesetzt am 5. November 2026:** Alle 55 Modi besitzen genau ein lokales Bild; `v2-game-art.js` enthält die Zuordnung und Alternativtexte. Herkunft und vollständige Prompts stehen im Manifest. Die feste Vorlage bleibt unverändert; finale Serien-/Releaseabnahme offen.
+
 # Aktueller Vollzug vom 5. November 2026
 
 Arman beauftragt den direkten Einbau genau eines Bildes für jeden der 55 Modi in derselben festen Bildwelt. Ältere Einzelbild-Auswahlpausen und Variantenaufträge sind ersetzt. Unverändert gilt ausschließlich `docs/bildwelt/vorlage-2026-10-30.webp` als Stilvorlage. Herkunft, Sichtprüfung, Medien-/Offline-Verträge und Tests je Einbau bleiben erforderlich; finale Serien-/Releaseabnahme bleiben offen.

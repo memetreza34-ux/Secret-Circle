@@ -146,3 +146,7 @@ Die konkret ausgewählte Stilkorrektur ersetzt das frühere `assets/images/impos
 ## Bildwelt-Fortsetzung vom 5. November 2026
 
 15 lokale Spielbilder in derselben festen Figuren-/Materialwelt eingebunden. Fünf vorhandene Motive angeglichen, sieben Kernspielbilder ergänzt; Scharade, Nicht sagen! und das bereits korrigierte Word Imposter beibehalten. Alle 800 × 600 WebP und höchstens 35.000 Bytes, lokal mit Pillow exportiert. Werkzeug: integriertes OpenAI image_gen; konkrete Modellkennung nicht ausgegeben. Alleinige projektseitige Stilreferenz: `docs/bildwelt/vorlage-2026-10-30.webp`. Aktuelle SHA-256-Werte, vollständige Prompts, frühere Revisionen und Rechtebasis stehen im Provenienzmanifest. Finale Serien-/Releaseabnahme bleibt offen.
+
+## Vollständiger Bildbestand vom 5. November 2026
+
+Alle 55 Modi besitzen genau eine lokale Illustration, jeweils 800 × 600 WebP und höchstens 35.000 Bytes. Die weiteren 40 Motive entstanden mit dem integrierten OpenAI image_gen und ausschließlich der unveränderten projektseitigen Figuren-/Materialvorlage vom 30. Oktober. Modellkennung nicht ausgegeben; WebP-Export lokal mit Pillow. Gezielte Anatomie-, Material- und Motivkorrekturen ersetzen denselben Entwurf; kein zusätzlicher Stil und keine parallelen App-Varianten. Vollständige tatsächliche Prompts, Tool, Rechtebasis und aktuelle SHA-256-Werte stehen im Provenienzmanifest. Finale manuelle Serien-/RC-Prüfung bleibt offen.

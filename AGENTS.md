@@ -1,5 +1,7 @@
 # Hinweise für Coding-Agenten (Codex, Claude Code)
 
+**Bildstand vom 5. November 2026:** Alle 55 Modi haben je ein lokales WebP-Bild in derselben festen Figuren-/Materialwelt. Zuordnung und deutsche Alternativtexte stehen in `v2-game-art.js`; vollständige Prompts, Herkunft und Prüfsummen im Provenienzmanifest. Einzelne Korrekturen ersetzen dieselbe Fassung. Die finale Serien-/Releaseabnahme bleibt offen.
+
 **Fortsetzungsauftrag vom 5. November 2026:** Arman beauftragt jetzt den direkten Einbau genau eines Bildes für jeden der 55 Modi in derselben festen Bildwelt. Damit entfällt die ältere Unterbrechung zur Einzelbildauswahl. Korrekturen ersetzen dieselbe Fassung. Herkunft, Sichtprüfung, Medien-/Offline-Verträge und Tests bleiben erforderlich; die Gesamtserie erhält dadurch keine vorweggenommene finale Abnahme.
 
 **Verbindlicher Projektkompass für alle Agenten:** Vor jeder Aufgabe `docs/PROJEKT_KOMPASS.md` lesen. ChatGPT übernimmt die unabhängige Produkt-/Qualitätsberatung und priorisiert nach echten Releaseblockern; Claude Code die technische Umsetzung, Codex den freigegebenen Design-/Asset-Pass. Alle arbeiten nach derselben belegbaren Definition of Done, unabhängig davon, wer die Aufgabe ausführt. Im Konflikt gelten die strengeren vorhandenen Sicherheits-, Daten-, Spiel- und Releaseverträge.

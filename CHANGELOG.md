@@ -435,3 +435,9 @@ Zusätzlicher struktureller Blocker: **PR-Stack mit aktuellem `main` reconciliie
 - Acht vorhandene Spielbilder gegen dieselbe feste Vorlage geprüft; Wahrheit oder Pflicht, Mafia, Heiße Kartoffel, Wortkette und Zwei Wahrheiten an diese Welt angeglichen.
 - Sieben fehlende Kernspielbilder ergänzt: Ich habe noch nie, Question Imposter, Location Spy, Wer würde eher?, Entweder oder, Paranoia und Nur falsche Antworten. Damit 15 von 55 Motiven eingebunden; weitere 40 bleiben offen.
 - Bildzuordnung in ein eigenes lokales Datenmodul ausgelagert, deutsche Alternativtexte und Herkunft samt vollständigen Prompts erfasst. Offline-Cache angehoben; Offline-Prüfung verifiziert die tatsächlichen Bilddateien per SHA-256.
+
+## Alle 55 Spielbilder – 5. November 2026
+
+- Weitere 40 Motive mit derselben festen Vorlage ergänzt; jeder der 55 Modi hat genau ein lokales Bild mit deutschem Alternativtext. Anatomiefehler korrigiert; Buchstaben-Kategorien zeigt Apfel, Anker, Ameise und Astronaut passend zum deutschen Anfangsbuchstaben.
+- Herkunft, vollständige Prompts, Medieninventar und Dateibudgets ergänzt. Offline-Cache v106 → v107; Prüfung zählt jetzt die tatsächlich installierten CORE-Dateien einschließlich Schriften und Root-Alias.
+- Browserprüfungen decken alle 55 Kacheln und Detailbilder ab; Offline-Prüfung verifiziert alle 55 Bilddateien per SHA-256.
