@@ -246,7 +246,7 @@
   function renderPartyQuiz(current) {
     $('#quick-content').append(element('div', 'challenge-card', current.question));
     if (active.phase === 'ready') {
-      current.options.forEach((option, index) => $('#quick-actions').append(button(option, () => chooseQuiz(index), index === 0 ? '' : 'secondary')));
+      current.options.forEach((option, index) => $('#quick-actions').append(button(option, () => chooseQuiz(index), 'secondary')));
       return;
     }
     const correct = current.selected === current.answer;
@@ -254,7 +254,7 @@
       element('p', correct ? 'success-text' : 'error', correct ? 'Richtig – 1 Punkt.' : `Nicht ganz. Richtig ist: ${current.options[current.answer]}`),
       element('p', 'muted', current.explanation)
     );
-    $('#quick-actions').append(button('Nächste Frage', nextRound));
+    $('#quick-actions').append(button(active.round >= active.targetRounds ? 'Zum Ergebnis' : 'Nächste Frage', nextRound));
   }
 
   function renderFactOrFake(current) {
@@ -268,7 +268,7 @@
       element('p', correct ? 'success-text' : 'error', correct ? 'Richtig – 1 Punkt.' : `Nicht ganz. Die Aussage ist ${current.fact ? 'Fakt' : 'Fake'}.`),
       element('p', 'muted', current.explanation)
     );
-    $('#quick-actions').append(button('Nächste Aussage', nextRound));
+    $('#quick-actions').append(button(active.round >= active.targetRounds ? 'Zum Ergebnis' : 'Nächste Aussage', nextRound));
   }
 
   function renderRound() {
@@ -346,7 +346,7 @@
     $('#quick-play').hidden = true;
     $('#quick-result').hidden = false;
     $('#quick-final-score').textContent = String(final.totalScore);
-    const ranking = Object.entries(final.scores).sort((a, b) => b[1] - a[1]);
+    const ranking = final.players.map(name => [name, Number(final.scores[name]) || 0]).sort((a, b) => b[1] - a[1]);
     $('#quick-result-text').textContent = ranking.length
       ? `Rangliste: ${ranking.map(([name, score]) => `${name} ${score}`).join(' · ')}`
       : `${final.targetRounds} Runden wurden lokal im Verlauf gespeichert.`;
@@ -406,6 +406,7 @@
     $('#quick-group').textContent = `${game.group} · Labs`;
     $('#quick-title').textContent = game.title;
     $('#quick-description').textContent = game.description;
+    if (gameId === 'party-quiz') $('#quick-description').textContent += ' Eine Runde ist eine Frage insgesamt; die Namen wechseln sich ab. Für gleich viele Züge muss die Rundenzahl durch eure Personenzahl teilbar sein.';
     $('#quick-player-range').textContent = `${game.minPlayers}–${game.maxPlayers} Personen`;
     $('#quick-duration').textContent = `ca. ${game.duration} Minuten`;
     $('#quick-content-count').textContent = `${C.itemCount(game.id)} Karten`;

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-05",
+  "updatedAt": "2026-11-07",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
@@ -1115,8 +1115,8 @@
       "status": "verified-own",
       "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
       "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
-      "createdAt": "2026-11-05",
-      "sha256": "d439f5c483d340bf6edb8755f4e0ababa73885e5ca1eff595f370979812173ed",
+      "createdAt": "2026-11-07",
+      "sha256": "d1cda01ece1bae8fa3d6b2c4a1a677b28912434e2ff36331eb78095c69125b12",
       "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
@@ -1125,11 +1125,30 @@
       "model": "not exposed by tool",
       "dimensions": "800x600",
       "prompts": {
-        "pass-the-phone-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A relay of different animal paws passing a glowing orb of light from one to the next in a smooth arc, motion trails behind it.\n"
+        "pass-the-phone-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A relay of different animal paws passing a glowing orb of light from one to the next in a smooth arc, motion trails behind it.\n",
+        "pass-the-phone-motivkorrektur-2026-11-07.prompt.txt": "Create one final 4:3 illustration for the Secret Circle party game app. The attached image is the SOLE exact character/material STYLE reference: preserve the same green chameleon in a purple vest and the same short dark-haired woman detective in teal coat and orange scarf wherever used. Match sculpted 3D cartoon shapes, large modelled eyes and brows, matte simplified surfaces, restrained cloth detail, warm soft directional light and gentle contact shadows. Do not introduce another style. A calm muted warm grey backdrop with a simple floor/table as needed. The composition must read at 140x105 pixels: one clear main action, few large props, all faces, hands and decisive props entirely within frame, at least 7% comfortable margin. No crop of heads, fingers, main props. NO text, letters, digits, logos, watermarks, interface, device frames, phones, drinks, alcohol, weapons, glowing magic or flying particles. Original project characters only. Full opaque background. Exactly one image, not a collage.\nGame moment: passing the turn to the next player based on a prompt. The woman detective on the left is physically handing a single large cream game card across to the green chameleon on the right; their hands hold opposite ends during the transfer. The card bears only one simple raised speech-bubble pictogram and a bold curved arrow pointing toward its receiver, no writing or screen. The chameleon is surprised and points its free hand toward its own chest, clearly 'my turn?', meeting her gaze. Seated group handoff in a restrained cosy room, tiny secondary fox spectator far behind if needed. The shared card transfer must be the unmistakable visual focal point. Do not substitute a magical orb or abstract floating light.\n"
       },
-      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "integrationAuthorization": "Arman beauftragt am 7. November 2026 den Ersatz der unpassenden Motive und die vollständige Bilddarstellung auf Handy und Tablet.",
       "approvalStatus": "series-review-open",
-      "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34310 Bytes. Finale Serien-/Releaseabnahme offen."
+      "notes": "Detektivin reicht dem überraschten Chamäleon eine Gesprächskarte und übergibt ihm den nächsten Zug. Mit der unveränderten festen Vorlage verglichen: gleiche Figurenidentitäten, modellierte Augen/Brauen und matte plastische Formen. Gesichter, entscheidende Hände und Requisiten im Bild sichtbar. Keine Schrift oder Marken gesehen. 32932 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevisions": [
+        {
+          "createdAt": "2026-11-05",
+          "sha256": "d439f5c483d340bf6edb8755f4e0ababa73885e5ca1eff595f370979812173ed",
+          "prompts": {
+            "pass-the-phone-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A relay of different animal paws passing a glowing orb of light from one to the next in a smooth arc, motion trails behind it.\n"
+          },
+          "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34310 Bytes. Finale Serien-/Releaseabnahme offen.",
+          "gitCommit": "49a2bc8953b2d5f1b37aa3df41d03c8048cfdbac"
+        }
+      ],
+      "generatedSourceSha256": "029c5b074335e3059486dab40e5afbfe63f33cd053c6ddde1f6752d6143d9067",
+      "encoding": {
+        "format": "WebP",
+        "quality": 79,
+        "method": 6,
+        "resize": "800x600, Lanczos, no crop"
+      }
     },
     {
       "path": "assets/images/know-me-best.webp",
@@ -1204,8 +1223,8 @@
       "status": "verified-own",
       "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
       "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
-      "createdAt": "2026-11-05",
-      "sha256": "e16eb6b9497fd9657032cd85287be526f7df47b4be826c68a9917a50e7bee55f",
+      "createdAt": "2026-11-07",
+      "sha256": "e50bdf7418af05afdb39e5315ff77443e6309765881caa8b4fad1507c80ed0cf",
       "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
@@ -1214,11 +1233,30 @@
       "model": "not exposed by tool",
       "dimensions": "800x600",
       "prompts": {
-        "password-one-word-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A fox cups its paws and releases a single small glowing orb toward a curious group of friends, who lean forward to catch it.\n"
+        "password-one-word-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A fox cups its paws and releases a single small glowing orb toward a curious group of friends, who lean forward to catch it.\n",
+        "password-one-word-motivkorrektur-2026-11-07.prompt.txt": "Create one final 4:3 illustration for the Secret Circle party game app. The attached image is the SOLE exact character/material STYLE reference: preserve the same green chameleon in a purple vest and the same short dark-haired woman detective in teal coat and orange scarf wherever used. Match sculpted 3D cartoon shapes, large modelled eyes and brows, matte simplified surfaces, restrained cloth detail, warm soft directional light and gentle contact shadows. Do not introduce another style. A calm muted warm grey backdrop with a simple floor/table as needed. The composition must read at 140x105 pixels: one clear main action, few large props, all faces, hands and decisive props entirely within frame, at least 7% comfortable margin. No crop of heads, fingers, main props. NO text, letters, digits, logos, watermarks, interface, device frames, phones, drinks, alcohol, weapons, glowing magic or flying particles. Original project characters only. Full opaque background. Exactly one image, not a collage.\nGame moment: give just one spoken clue for a hidden target while the other person guesses. The green chameleon is the clue giver on the left, holding a cream target card against its chest with a large simple gold key symbol clearly facing the viewer, shielded from the woman detective on the right. Its other index finger is raised to indicate exactly one. Beside its open mouth is ONE simple small empty speech balloon made in the same sculpted matte style. The woman is listening and thinking, one finger to chin and brows raised; she cannot see the face of its card. Waist-up scene with both heads and all hands fully visible. No glowing orb, no whispering secrecy scene, no second speech balloon, no lettering.\n"
       },
-      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "integrationAuthorization": "Arman beauftragt am 7. November 2026 den Ersatz der unpassenden Motive und die vollständige Bilddarstellung auf Handy und Tablet.",
       "approvalStatus": "series-review-open",
-      "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34278 Bytes. Finale Serien-/Releaseabnahme offen."
+      "notes": "Chamäleon zeigt mit einem erhobenen Finger genau einen Hinweis an; die Detektivin errät das verdeckt gehaltene Schlüsselmotiv. Mit der unveränderten festen Vorlage verglichen: gleiche Figurenidentitäten, modellierte Augen/Brauen und matte plastische Formen. Gesichter, entscheidende Hände und Requisiten im Bild sichtbar. Keine Schrift oder Marken gesehen. 32224 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevisions": [
+        {
+          "createdAt": "2026-11-05",
+          "sha256": "e16eb6b9497fd9657032cd85287be526f7df47b4be826c68a9917a50e7bee55f",
+          "prompts": {
+            "password-one-word-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A fox cups its paws and releases a single small glowing orb toward a curious group of friends, who lean forward to catch it.\n"
+          },
+          "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34278 Bytes. Finale Serien-/Releaseabnahme offen.",
+          "gitCommit": "49a2bc8953b2d5f1b37aa3df41d03c8048cfdbac"
+        }
+      ],
+      "generatedSourceSha256": "4d396dc816277a35a9dde99a447e1ef346504cec0d7a8661ef20095b1e8a5d6d",
+      "encoding": {
+        "format": "WebP",
+        "quality": 80,
+        "method": 6,
+        "resize": "800x600, Lanczos, no crop"
+      }
     },
     {
       "path": "assets/images/draw-guess.webp",
@@ -1315,8 +1353,8 @@
       "status": "verified-own",
       "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
       "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
-      "createdAt": "2026-11-05",
-      "sha256": "0f914ca156e252ad5cc88c3a42ca409bc49c417fe3df15db141d98efac22d22f",
+      "createdAt": "2026-11-07",
+      "sha256": "642a8a334f6e6d14b84e5e73917579c8573b1e44feab46d6d3cf242b2b50a743",
       "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
@@ -1325,11 +1363,30 @@
       "model": "not exposed by tool",
       "dimensions": "800x600",
       "prompts": {
-        "fill-blank-battle-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A puzzle with one missing piece; several very different puzzle pieces hover in front of the gap, each glowing and competing to fit in.\n"
+        "fill-blank-battle-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A puzzle with one missing piece; several very different puzzle pieces hover in front of the gap, each glowing and competing to fit in.\n",
+        "fill-blank-battle-motivkorrektur-2026-11-07.prompt.txt": "Create one final 4:3 illustration for the Secret Circle party game app. The attached image is the SOLE exact character/material STYLE reference: preserve the same green chameleon in a purple vest and the same short dark-haired woman detective in teal coat and orange scarf wherever used. Match sculpted 3D cartoon shapes, large modelled eyes and brows, matte simplified surfaces, restrained cloth detail, warm soft directional light and gentle contact shadows. Do not introduce another style. A calm muted warm grey backdrop with a simple floor/table as needed. The composition must read at 140x105 pixels: one clear main action, few large props, all faces, hands and decisive props entirely within frame, at least 7% comfortable margin. No crop of heads, fingers, main props. NO text, letters, digits, logos, watermarks, interface, device frames, phones, drinks, alcohol, weapons, glowing magic or flying particles. Original project characters only. Full opaque background. Exactly one image, not a collage.\nGame moment: people compete to supply the funniest missing part of a sentence. The woman detective and green chameleon sit at a table, each presenting a different cream answer card to fill a clearly visible empty rectangular space in one long horizontal cream sentence strip on a small stand between them. The strip shows a simple raised fox pictogram on the left, a large empty rectangular slot in the middle, and a raised moon pictogram on the right; these are pictograms, never letters or pseudo writing. The chameleon's offered card has a banana pictogram; the woman's card has a rubber duck pictogram. Both laugh at their competing silly suggestions. Their answer cards are the same rectangular shape as the missing space. Central visual logic = two humorous answers for one missing sentence slot. No jigsaw pieces, puzzle board, magic, sparks or text. All meaningful props large and clear, few elements, comfortable margins.\n"
       },
-      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "integrationAuthorization": "Arman beauftragt am 7. November 2026 den Ersatz der unpassenden Motive und die vollständige Bilddarstellung auf Handy und Tablet.",
       "approvalStatus": "series-review-open",
-      "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34290 Bytes. Finale Serien-/Releaseabnahme offen."
+      "notes": "Chamäleon und Detektivin bieten Banane und Gummiente als lustige Ergänzungen für dieselbe Lücke in einem Bildsatz an. Mit der unveränderten festen Vorlage verglichen: gleiche Figurenidentitäten, modellierte Augen/Brauen und matte plastische Formen. Gesichter, entscheidende Hände und Requisiten im Bild sichtbar. Keine Schrift oder Marken gesehen. 32880 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevisions": [
+        {
+          "createdAt": "2026-11-05",
+          "sha256": "0f914ca156e252ad5cc88c3a42ca409bc49c417fe3df15db141d98efac22d22f",
+          "prompts": {
+            "fill-blank-battle-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A puzzle with one missing piece; several very different puzzle pieces hover in front of the gap, each glowing and competing to fit in.\n"
+          },
+          "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34290 Bytes. Finale Serien-/Releaseabnahme offen.",
+          "gitCommit": "49a2bc8953b2d5f1b37aa3df41d03c8048cfdbac"
+        }
+      ],
+      "generatedSourceSha256": "56e19744fb303ef64cdb3248de6315d9cc3a765f543d1b250b69315e515fe529",
+      "encoding": {
+        "format": "WebP",
+        "quality": 79,
+        "method": 6,
+        "resize": "800x600, Lanczos, no crop"
+      }
     },
     {
       "path": "assets/images/who-wrote-it.webp",
@@ -1469,8 +1526,8 @@
       "status": "verified-own",
       "creator": "Secret Circle – user-directed original illustration created with OpenAI image_gen",
       "source": "Integrated OpenAI image_gen; sole style reference is the project-owned fixed character/material sheet. Concrete model not exposed by tool.",
-      "createdAt": "2026-11-05",
-      "sha256": "ae517b5b4536fc13e581e8c7a680b97d8054a0a3d4872369f985057b9907a053",
+      "createdAt": "2026-11-07",
+      "sha256": "fb9cba98b0e81eda74345e702c1fc53a602bef1f85dd65c2e52f43430f38a739",
       "license": "Projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig; keine fremde Bilddatei eingebunden",
       "commercialUse": true,
       "attribution": null,
@@ -1479,11 +1536,30 @@
       "model": "not exposed by tool",
       "dimensions": "800x600",
       "prompts": {
-        "spin-bottle-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A large glowing compass needle spins on a round rug, motion blur, while animal friends sit in a circle around it waiting to see who it points to. No bottle.\n"
+        "spin-bottle-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A large glowing compass needle spins on a round rug, motion blur, while animal friends sit in a circle around it waiting to see who it points to. No bottle.\n",
+        "spin-bottle-motivkorrektur-2026-11-07.prompt.txt": "Create one final 4:3 illustration for the Secret Circle party game app. The attached image is the SOLE exact character/material STYLE reference: preserve the same green chameleon in a purple vest and the same short dark-haired woman detective in teal coat and orange scarf wherever used. Match sculpted 3D cartoon shapes, large modelled eyes and brows, matte simplified surfaces, restrained cloth detail, warm soft directional light and gentle contact shadows. Do not introduce another style. A calm muted warm grey backdrop with a simple floor/table as needed. The composition must read at 140x105 pixels: one clear main action, few large props, all faces, hands and decisive props entirely within frame, at least 7% comfortable margin. No crop of heads, fingers, main props. NO text, letters, digits, logos, watermarks, interface, device frames, phones, drinks, alcohol, weapons, glowing magic or flying particles. Original project characters only. Full opaque background. Exactly one image, not a collage.\nGame moment: spin an empty bottle to choose the next player. Show a single unmistakable plain unbranded EMPTY light turquoise glass bottle lying horizontally on a round neutral rug, spinning on its side, neck aimed toward the delighted green chameleon. Subtle curved motion strokes, clearly a bottle shape with neck and open mouth, no liquid, no label, no cap, no alcohol association. The green chameleon in purple vest, woman detective in teal/orange, and a small fox in green explorer vest sit in a loose semicircle behind it, waiting and reacting. Bottle and three characters must stay entirely in frame with generous margins. Bottle prominent and large in foreground, faces readable. No compass, needle, dial, beverages, glasses or party cups.\n"
       },
-      "integrationAuthorization": "Armans Gesamtauftrag: jeder Modus erhält genau ein Bild in derselben Bildwelt; direkt im Repo einbauen.",
+      "integrationAuthorization": "Arman beauftragt am 7. November 2026 den Ersatz der unpassenden Motive und die vollständige Bilddarstellung auf Handy und Tablet.",
       "approvalStatus": "series-review-open",
-      "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34730 Bytes. Finale Serien-/Releaseabnahme offen."
+      "notes": "Eine leere unbeschriftete Flasche dreht sich auf einem Teppich zwischen Chamäleon, Detektivin und Fuchs. Mit der unveränderten festen Vorlage verglichen: gleiche Figurenidentitäten, modellierte Augen/Brauen und matte plastische Formen. Gesichter, entscheidende Hände und Requisiten im Bild sichtbar. Keine Schrift oder Marken gesehen. 32730 Bytes. Finale Serien-/Releaseabnahme offen.",
+      "previousRevisions": [
+        {
+          "createdAt": "2026-11-05",
+          "sha256": "ae517b5b4536fc13e581e8c7a680b97d8054a0a3d4872369f985057b9907a053",
+          "prompts": {
+            "spin-bottle-2026-11-05.prompt.txt": "Use case: stylized-concept. Asset: ONE finished 4:3 game cover for the German party-game PWA Secret Circle.\nThe attached image is the SOLE immutable style, sculpting and material reference. Every character and prop must look manufactured by the exact same animated production as this image: broad sculpted facial planes, large modelled eyes and brows, one pupil per visible eye, expressive adult cartoon proportions, deliberate hands, large clean rounded forms, restrained matte solid materials, subtle surface response, no realistic fur strands or photographic textures. Soft controlled directional light like the reference, warm key with restrained colored fill, clean shadows; no cinematic bloom or photoreal bokeh. New roles and scenes are allowed only inside this exact world.\nCompose one clear game moment, large and readable in a tiny tile, main face and action within central 60%, calm simple backdrop, naturally cropped bodies or complete limbs. No comic panels, no lettering, words, digits, logos, brands, UI, phone frame, watermarks, alcohol, weapons, violence, real people or recognizable franchise characters. No alternate versions.\nGame moment: A large glowing compass needle spins on a round rug, motion blur, while animal friends sit in a circle around it waiting to see who it points to. No bottle.\n"
+          },
+          "notes": "Direkt mit der festen Vorlage verglichen: modellierte Augen und Brauen, breite plastische Formen, matte vereinfachte Materialien und kontrolliertes Licht. Spielmoment, Gliedmaßen und Bildschrift geprüft. Keine auffälligen Anatomiefehler oder fremden Marken-/Franchiseelemente gesehen. 34730 Bytes. Finale Serien-/Releaseabnahme offen.",
+          "gitCommit": "49a2bc8953b2d5f1b37aa3df41d03c8048cfdbac"
+        }
+      ],
+      "generatedSourceSha256": "cf85e682e0da8446cfdb7efea849d1c61023882a7aaa1e0d5d2d1530ec0a3a09",
+      "encoding": {
+        "format": "WebP",
+        "quality": 72,
+        "method": 6,
+        "resize": "800x600, Lanczos, no crop"
+      }
     },
     {
       "path": "assets/images/dice-coin.webp",
@@ -1781,6 +1857,34 @@
       "derivedFrom": null,
       "dimensions": "580x1800",
       "notes": "Kategorie bei 1280×1800 vollständig sichtbar; seitliche schwarze Ränder für lesbare Dokumentation abgeschnitten. Die sechs Kategorieansichten decken zusammen alle 55 Modi ab. Nicht im Offline-Core."
+    },
+    {
+      "path": "docs/screenshots/bildausschnitt-handy-375x812.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright 1.54.2 / Chromium 139, Windows; WebP export with Pillow",
+      "source": "Lokale App mit den Änderungen vom 7. November 2026, /#spiele bei 375x812; vollständige Bildflächen nachgewiesen. Nur Dokumentation, kein Laufzeit-Asset.",
+      "createdAt": "2026-11-07",
+      "sha256": "ab1e9e82755d5f429fbce48b5f7c419a13ce0a1229c5baddc51a8604d987c25c",
+      "license": "Projektseitiger Screenshot der eigenen App; Rechtebasis der eingebundenen Illustrationen im selben Manifest",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "375x812"
+    },
+    {
+      "path": "docs/screenshots/bildausschnitt-tablet-768x1024.webp",
+      "kind": "pr-screenshot",
+      "status": "verified-own",
+      "creator": "Playwright 1.54.2 / Chromium 139, Windows; WebP export with Pillow",
+      "source": "Lokale App mit den Änderungen vom 7. November 2026, /#spiele bei 768x1024; vollständige Bildflächen nachgewiesen. Nur Dokumentation, kein Laufzeit-Asset.",
+      "createdAt": "2026-11-07",
+      "sha256": "e8a6dcbcc533efe9082f1b45b5d2fbd9a037c523110ab0ae5e9d42ffa8a921e8",
+      "license": "Projektseitiger Screenshot der eigenen App; Rechtebasis der eingebundenen Illustrationen im selben Manifest",
+      "commercialUse": true,
+      "attribution": null,
+      "derivedFrom": null,
+      "dimensions": "768x1024"
     }
   ]
 }

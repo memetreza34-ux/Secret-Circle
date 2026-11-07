@@ -1,3 +1,17 @@
+## v109 – Verständlicher Einstieg und klare Spielergebnisse (7. November 2026)
+
+- Namenseingabe erhält einen sichtbaren Abschluss; die Startempfehlung berücksichtigt das gewählte Spiel und dessen Mindestgruppe. Verlinkte Spiele führen mit „Spiel einrichten“ zu ihrer Einrichtung.
+- Word Imposter trennt Rundenergebnis und Matchabschluss, nennt die Gesamtsieger und vergibt bei gleicher Punktzahl denselben Rang. Punkte und Speicherformat bleiben erhalten.
+- Quizregeln erklären persönliche Züge, Punkte und die Gesamtzahl der Fragen. Die letzte Frage führt mit „Zum Ergebnis“ zum Abschluss; die Rangliste enthält auch Personen mit null Punkten.
+- Fragen und Satzanfänge sind kleiner und in normaler Schreibweise lesbar. Gleichwertige Antwortmöglichkeiten erhalten dieselbe Darstellung. Offline-Core v108 → v109.
+
+## v108 – Vollständige Spielbilder auf Handy und Tablet (7. November 2026)
+
+- Katalogkarten und Startbanner folgen dem 4:3-Bildformat. Die vollständigen Motive bleiben sichtbar; lange Kartentitel können auch bei vergrößerter Schrift umbrechen.
+- Vier unklare Motive an denselben Pfaden ersetzt: Pass das Handy, Ein-Wort-Hinweis, Flaschendrehen und Satzduell. Feste Stilvorlage, vollständige Prompts, frühere Revisionen und Herkunft erhalten.
+- Responsive Browserprüfungen für alle 55 Katalogbilder, Startbanner und ausgewählte Details bei 320–1280 Pixeln, Tablet/Querformat und doppelter Textgröße ergänzt. Offline-Core v107 → v108.
+- Die Prüfung der 55 Katalogbilder in vier Gruppen aufgeteilt, mit unveränderten Prüfzusagen und Zeitlimits. Detailmotive werden beim Größenwechsel derselben geöffneten Seite geprüft. Lokale Ergebnisse und verbleibende Abnahmegrenzen stehen in `docs/BILDWELT_V2.md`.
+
 ## v105 – Eine feste Bildwelt und Word-Imposter-Korrektur (4. November 2026)
 
 - Die unveränderte Figuren-/Materialvorlage verbindlich in Agentenauftrag, Projektkompass und Bildanweisungen festgehalten. Belegten Vergleich des achtteiligen Bestands gespeichert; Gesamtserie bleibt offen.

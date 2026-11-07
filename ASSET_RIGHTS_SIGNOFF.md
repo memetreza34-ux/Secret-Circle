@@ -1,5 +1,7 @@
 # Secret Circle – Asset Rights Sign-off
 
+**Motivkorrekturen, 7. November 2026:** Die nutzerbeauftragten Ersatzbilder für `pass-the-phone`, `password-one-word`, `spin-bottle` und `fill-blank-battle` stammen aus dem integrierten OpenAI `image_gen` mit der unveränderten eigenen Stilvorlage. Modellkennung nicht ausgegeben. Aktuelle Herkunft, tatsächliche Prompts, WebP-Export und historische Prüfsummen stehen im Provenienzmanifest. Die vier Bilder ersetzen jeweils dieselbe App-Fassung. Keine vorweggenommene finale Bildwelt-/Releasefreigabe.
+
 Stand: 29. August 2026  
 Status: **SOURCE SIGN-OFF COMPLETE – finaler RC-Visual-/Trademark-Review offen**
 

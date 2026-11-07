@@ -123,7 +123,7 @@ window.SecretCircleGameArt = {
   },
   "pass-the-phone": {
     "src": "assets/images/pass-the-phone.webp",
-    "alt": "Hände und Pfoten geben eine leuchtende Kugel in einer fließenden Bewegung weiter"
+    "alt": "Detektivin reicht dem überraschten Chamäleon eine Gesprächskarte und übergibt ihm den nächsten Zug"
   },
   "know-me-best": {
     "src": "assets/images/know-me-best.webp",
@@ -139,7 +139,7 @@ window.SecretCircleGameArt = {
   },
   "password-one-word": {
     "src": "assets/images/password-one-word.webp",
-    "alt": "Fuchs schickt mit den Pfoten einen einzigen leuchtenden Hinweis zu einer neugierigen Gruppe"
+    "alt": "Chamäleon zeigt mit einem erhobenen Finger genau einen Hinweis an; die Detektivin errät das verdeckt gehaltene Schlüsselmotiv"
   },
   "draw-guess": {
     "src": "assets/images/draw-guess.webp",
@@ -159,7 +159,7 @@ window.SecretCircleGameArt = {
   },
   "fill-blank-battle": {
     "src": "assets/images/fill-blank-battle.webp",
-    "alt": "Verschiedene Puzzleteile konkurrieren darum, eine freie Lücke im Puzzle zu füllen"
+    "alt": "Chamäleon und Detektivin bieten Banane und Gummiente als lustige Ergänzungen für dieselbe Lücke in einem Bildsatz an"
   },
   "who-wrote-it": {
     "src": "assets/images/who-wrote-it.webp",
@@ -187,7 +187,7 @@ window.SecretCircleGameArt = {
   },
   "spin-bottle": {
     "src": "assets/images/spin-bottle.webp",
-    "alt": "Freunde sitzen um einen großen drehenden Kompasszeiger und warten gespannt, auf wen er zeigt"
+    "alt": "Eine leere unbeschriftete Flasche dreht sich auf einem Teppich zwischen Chamäleon, Detektivin und Fuchs"
   },
   "dice-coin": {
     "src": "assets/images/dice-coin.webp",

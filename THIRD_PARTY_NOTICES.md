@@ -1,5 +1,7 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
+**Motivkorrekturen, 7. November 2026:** Vier bestehende Illustrationen (`pass-the-phone`, `password-one-word`, `spin-bottle`, `fill-blank-battle`) auf Nutzerauftrag am bestehenden Pfad ersetzt. Integriertes OpenAI `image_gen`, konkrete Modellkennung nicht ausgegeben; ausschließlich die eigene unveränderte Stilvorlage vom 30. Oktober. Lokaler WebP-Export mit Pillow, 800×600 ohne Zuschnitt. Vollständige Prompts und aktuelle/frühere SHA-256-Werte im Provenienzmanifest. Dieselbe projektseitige Output-Rechtebasis; finale manuelle Serien-/Rechteprüfung offen.
+
 Stand: 29. August 2026  
 Status: **IN PROGRESS – Icon-Provenienz gelöst; reale Install-/Audit-/Finalreview-Evidence offen**
 

@@ -70,23 +70,23 @@ const artwork = {
   "red-green-flag": "Flamingo-Schiedsrichter wägt zwischen einer roten und einer grünen Flagge ab",
   "tier-list": "Giraffe überlegt, auf welches von fünf farbigen Regalbrettern sie einen Donut einordnen soll",
   "hear-me-out": "Kleine Maus verteidigt auf einer großen Bühne am Mikrofon leidenschaftlich eine Ananas",
-  "pass-the-phone": "Hände und Pfoten geben eine leuchtende Kugel in einer fließenden Bewegung weiter",
+  "pass-the-phone": "Detektivin reicht dem überraschten Chamäleon eine Gesprächskarte und übergibt ihm den nächsten Zug",
   "know-me-best": "Hund denkt an Knochen, Ball oder Socke, während zwei Freunde seine Wahl zu erraten versuchen",
   "sound-imitation": "Chamäleon erzeugt mit aufgeblasenen Backen Geräusche; Schallwellen zeigen Kuh, Zug und Vogel",
   "hum-song": "Wal summt mit geschlossenen Augen; Notenblasen steigen im Wasser auf",
-  "password-one-word": "Fuchs schickt mit den Pfoten einen einzigen leuchtenden Hinweis zu einer neugierigen Gruppe",
+  "password-one-word": "Chamäleon zeigt mit einem erhobenen Finger genau einen Hinweis an; die Detektivin errät das verdeckt gehaltene Schlüsselmotiv",
   "draw-guess": "Känguru zeichnet mit einem großen Wachsstift ein unfertiges Bilderrätsel auf Papier",
   "caption-battle": "Galeriebild einer Kuh auf einem Skateboard ist von leeren Sprechblasen für Bildunterschriften umgeben",
   "story-chain": "Offene Bücher bilden eine Brücke; Figuren setzen den Weg von einer Buchseite zur nächsten fort",
   "finish-the-sentence": "Frau zeichnet mit einer Schreibfeder ein leuchtendes Fragezeichen in die Luft; ein Eichhörnchen schaut neugierig zu",
-  "fill-blank-battle": "Verschiedene Puzzleteile konkurrieren darum, eine freie Lücke im Puzzle zu füllen",
+  "fill-blank-battle": "Chamäleon und Detektivin bieten Banane und Gummiente als lustige Ergänzungen für dieselbe Lücke in einem Bildsatz an",
   "who-wrote-it": "Katzen-Detektiv untersucht mit einer Lupe gefaltete anonyme Zettel",
   "emoji-quiz": "Ein eigenständiger Cartoonkoch und ein schwebendes Pizzastück bilden gemeinsam ein Bilderrätsel",
   "guess-the-price": "Maus betrachtet einen Toaster mit Flügeln und leerem Preisschild durch eine Lupe",
   "fact-or-fake": "Pferd nimmt verlegen eine Einhornmaske ab und entlarvt die Täuschung",
   "percent-guess": "Eichhörnchen schätzt mit erhobener Pfote den Füllstand eines Glases mit Murmeln",
   "party-bracket": "Acht Alltagsgegenstände treten in einem Turnierbaum gegeneinander an; an der Spitze wartet ein Pokal",
-  "spin-bottle": "Freunde sitzen um einen großen drehenden Kompasszeiger und warten gespannt, auf wen er zeigt",
+  "spin-bottle": "Eine leere unbeschriftete Flasche dreht sich auf einem Teppich zwischen Chamäleon, Detektivin und Fuchs",
   "dice-coin": "Abgerundeter Würfel und schlichte goldene Münze wirbeln gemeinsam durch die Luft",
   "letter-categories": "Kaninchen jongliert Apfel, Anker, Ameise und Astronaut, während eine Sanduhr läuft",
   "dont-laugh": "Ernste Schildkröte versucht, bei den Faxen eines Affen nicht zu lachen",
@@ -117,17 +117,21 @@ test('game artwork loads locally in cards, banner and details with readable mobi
   expect(Object.keys(artwork).sort()).toEqual(gameIds.slice().sort());
   expect(gameIds).toHaveLength(55);
   await expect(page.locator('#grid .gcard img')).toHaveCount(55);
-  for (const id of Object.keys(artwork)) {
-    const card = page.locator('#grid [data-game-id="' + id + '"]');
-    await card.scrollIntoViewIfNeeded();
-    await expectArtwork(card.locator('img'), id);
-  }
-
 });
 
 const artworkIds = Object.keys(artwork);
 for (let offset = 0; offset < artworkIds.length; offset += 14) {
   const ids = artworkIds.slice(offset, offset + 14);
+  test('game artwork loads in every card, batch ' + (offset / 14 + 1), async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await seedHub(page);
+    await openV2(page, '#spiele');
+    for (const id of ids) {
+      const card = page.locator('#grid [data-game-id="' + id + '"]');
+      await card.scrollIntoViewIfNeeded();
+      await expectArtwork(card.locator('img'), id);
+    }
+  });
   test('game artwork loads in every detail, batch ' + (offset / 14 + 1), async ({ page }) => {
     await seedHub(page);
     for (const id of ids) {
@@ -227,8 +231,27 @@ test('the player list is shared with the rest of the app and gates the start', a
   await expect(page.locator('#player-badge')).toHaveText('2/20');
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alex', 'Sam']);
 
-  await page.locator('[data-screen="players"] [data-back]').click();
+  await expect(page.locator('#players-done')).toHaveText('Weiter zum Spiel');
+  await page.locator('#players-done').click();
   await expect(page.locator('#start-btn')).toBeEnabled();
+});
+
+test('first-time hero setup leads back to the chosen game with its actual player minimum', async ({ page }) => {
+  await seedHub(page, { players: [] });
+  await openV2(page);
+  await page.locator('#hero-play').click();
+  await expect(page.locator('#player-hint')).toContainText('3 Personen nötig für Word Imposter');
+  await expect(page.locator('#players-done')).toBeDisabled();
+  for (const name of ['Alex', 'Sam', 'Mika']) {
+    await page.locator('#player-input').fill(name);
+    await page.locator('#player-add').click();
+  }
+  await page.locator('#players-done').click();
+  await expect(page.locator('#mode-title')).toHaveText('Word Imposter');
+  await expect(page.locator('#start-btn')).toHaveText('Spiel einrichten');
+  await page.locator('#start-btn').click();
+  await expect(page).toHaveURL(/word-imposter\.html$/);
+  await expect(page.locator('#players')).toHaveValue('Alex\nSam\nMika');
 });
 
 test('Namen in der gemeinsamen Spielerliste lassen sich direkt ändern', async ({ page }) => {

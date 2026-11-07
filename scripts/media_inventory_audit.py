@@ -13,6 +13,8 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/screenshots/bildausschnitt-handy-375x812.webp',
+    'docs/screenshots/bildausschnitt-tablet-768x1024.webp',
     'docs/screenshots/bildwelt55-kategorie-schnell.webp',
     'docs/screenshots/bildwelt55-kategorie-wissen.webp',
     'docs/screenshots/bildwelt55-kategorie-kreativ.webp',

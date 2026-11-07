@@ -2,6 +2,15 @@
 
 Stand: 29. August 2026
 
+## Windows-Prüfung vom 7. November 2026 – aktueller Bild-/UX-Zwischenstand
+
+- `npm ci --ignore-scripts --no-audit --no-fund`, `npm run check`, `npm test` und sämtliche Audits aus `npm run validate` bestanden. Unter Windows wurde derselbe Audit-Befehl mit `python` statt dem nicht verfügbaren Alias `python3` ausgeführt.
+- Die UX-Regressionen sind in 80 gezielten Chromium-/WebKit-Desktop-/Handyfällen abgedeckt: 68 bestanden im ersten Lauf; die zwölf neuen Ergebnisfälle bestanden nach Korrektur eines ungültigen Test-Wortvorrats vollständig. Der separate responsive Bildlauf bestand zuvor mit 55 Fällen direkt und einem Fall nach Wiederholung. Das sind begrenzte lokale Nachweise, kein vollständiger aktueller CI-PASS.
+- Ein erster Gesamtlauf mit vier Workern wurde nach Zeitüberschreitungen beim Anlegen leerer Browserseiten gestoppt. Ein zweiter mit den bestehenden CI-Zeitlimits und zwei Workern wurde nach 875 von 1.614 Fällen und sechs dauerhaft roten Fällen beendet. Der Rechner hat vier CPUs und 8 GB RAM; während des Laufs waren häufig nur etwa 0,4 GB frei. **Beide abgebrochenen Läufe sind kein PASS.**
+- Die sechs Diagnosefälle betreffen Bildladen bei 320 CSS-Pixeln, Offline-Katalognavigation, einen Offline-Creator-Start, den zeitabhängigen Tabu-Neuladetest sowie zwei WebKit-Navigations-/Fokusfälle. Ihre Ursache ist noch nicht als Produkt- oder Umgebungsfehler abgegrenzt.
+- Ein weiterer vollständiger lokaler Lauf schreibt Artefakte außerhalb des OneDrive-Verzeichnisses und zeichnet keine Videos auf. Screenshots, Traces, Assertions, Browserprofile, CI-Zeitlimits und Wiederholungsregeln bleiben erhalten. Dieser Lauf ist beim Sichern des Zwischenstands noch unvollständig; auch dort ist ein Startfall von Gegenstandsjagd in ein Zeitlimit gelaufen.
+- Die unveränderten App-Dateien werden im Testserver aus einem Speicher-Snapshot ausgeliefert. Offline-Core v109: `916522350e77d61d022fdcb9cef226b3c28713c0bcf0e62a4177e2aaa11289c8`. Vollständige Pflicht-CI auf dem neuen PR-Commit, isolierte Nachprüfung aller roten Fälle, unabhängiges Review und reale Geräte-/Gruppentests bleiben erforderlich. PR #69 ist bis dahin Draft; Release bleibt **NO_GO**.
+
 ## Update 5./6. September 2026 – Runner-Blocker behoben
 
 Der unten beschriebene Pre-Step-/Runner-Ausfall (`steps: []`, `runner_id: 0`) ist seit dem 5. September 2026 nicht mehr reproduzierbar. Der Hosted Runner führt Checkout, Setup, `npm ci`, Python-Audits und Node-Tests real aus. `npm test` und `npm run validate` sind auf GitHub Actions grün; seit dem 25. September 2026 laufen auch die Browser-Tests vollständig durch, aufgeteilt auf die Jobs `validate` (Chromium) und `e2e-webkit` (siehe `RELEASE_STATUS.md`). Der folgende historische Befund bleibt als Nachweis stehen, beschreibt aber nicht mehr den aktuellen Zustand.
@@ -54,7 +63,7 @@ Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-C
 Zentrale Release-Metadaten: `release-meta.json`.
 
 - Source-Generation `v64`
-- Offline-Core `secret-circle-v107` / `secret-circle-v107-staging`
+- Offline-Core `secret-circle-v109` / `secret-circle-v109-staging`
 - 55 Built-ins · 15 Core / 13 Extended / 27 Labs
 - Expansion Wave 1: 10/10 quellsseitig implementiert
 - v50 Hub Resume Loader fail-closed
