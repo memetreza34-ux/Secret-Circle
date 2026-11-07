@@ -2,6 +2,30 @@
 
 Stand: 29. August 2026
 
+## 7. November 2026 – Browserinstallation auf Ubuntu 26.04 blockiert
+
+Die Pflichtläufe [CI #42378099065](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/42378099065) und [Smoke #42378099069](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/42378099069) auf `c779f26` erreichten Checkout und `npm ci`, scheiterten aber bei `playwright install --with-deps`. `ubuntu-latest` lieferte Ubuntu 26.04.1; Playwright 1.54.2 meldete ausdrücklich, dass diese Plattform nicht unterstützt wird. Die App-Tests wurden in diesen Jobs nicht ausgeführt.
+
+Alle drei Browser-Testjobs verwenden deshalb das feste Label `ubuntu-24.04`. Diese Plattform ist im [versionsgebundenen Playwright-Plattformvertrag](https://github.com/microsoft/playwright/blob/v1.54.2/packages/playwright-core/src/server/utils/hostPlatform.ts) unterstützt und als [GitHub-Runnerlabel verfügbar](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). Paketversionen, Installationsbefehle, Tests, Zeitlimits und Pflichtcheck-Namen bleiben erhalten. Erst der neue tatsächliche CI-Lauf belegt, ob Installation und anschließende Prüfungen erfolgreich sind.
+
+## Windows-Prüfung vom 7. November 2026 – aktueller Bild-/UX-Zwischenstand
+
+Im Cross-Browser-Smoke auf `13d28a4` bestand ein Fall erst nach Wiederholung: Der Test wechselte nach dem Öffnen von Advanced sofort zur nächsten Engine und zeichnete dabei die abgebrochene Anfrage des noch ladenden `party-advanced-preferences.js` als Fehler auf. Lokal trat dasselbe Muster bei noch ladenden Hub-Bildern auf. Der Test wartet vor eigener Navigation nun auf den Abschluss aller angeforderten Ressourcen und eine kurze Ruhephase; bei Advanced zusätzlich auf die tatsächlich übernommene gespeicherte Rundenzahl. Der Speicher wird auf einer skriptfreien JSON-Seite vorbereitet. Die abschließende Prüfung auf fehlerfreie Ressourcen bleibt bestehen; weder Abbruchfehler noch Skriptfehler werden ausgefiltert.
+
+Die vier Enginefamilien sind als eigenständige Fälle aufgeteilt. Hub-Katalog und Party-Night-Plan, alle vier Katalog-Startwege, Überschriften und Fehlerprüfungen bleiben abgedeckt. Jede Familie prüft zusätzlich die Zielroute und den abgeschlossenen Engine-Startaufbau; die ursprünglichen Zeitlimits bleiben unverändert.
+
+Der vollständige Hosted-Lauf auf `13d28a4` belegt erfolgreiche Browserinstallation und einen grünen `validate`-Job: Chromium 759 bestanden, 59 vorgesehene Ausnahmen, keine Fehler oder Wiederholungen. Der WebKit-Job blieb mit fünf Fehlern und zwei erst nach Wiederholung bestandenen Fällen rot (673 direkt bestanden, 116 vorgesehene Ausnahmen). Alle fünf Fehler und eine Wiederholung in `v2-hub.spec.js` entstanden durch einen verspätet sichtbaren Updatehinweis über den angeklickten Schaltflächen. Diese Navigationstests vertagen ihn nun mit der echten Schaltfläche „Später“, auch wenn er erst während einer Aktion erscheint. Ein gezielter Fall erzwingt diesen Zeitpunkt und prüft erhaltene Spieler, ausgeblendeten statt entfernten Hinweis und keine Aktivierungsnachricht an den Worker. Die eigenständigen Update-/Offline-Verträge bleiben unverändert. Der responsive Detailtest wartet nach dem Größenwechsel auf dieselbe Überlaufgrenze, die bisher einmal unmittelbar vor dem fertigen Layout fehlschlug; das Zeitlimit und die Grenze bleiben erhalten.
+
+Der [Hosted-Smoke auf `8ed9411`](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/42397526946) war grün mit 39 direkt bestandenen Fällen und einer Wiederholung. Im iPhone-WebKit-Profil verdeckte derselbe Updatehinweis den Katalogstart von `anime-guess`. Auch der Smoke vertagt ihn deshalb über die normale Schaltfläche „Später“. Die Ressourcenprüfung bleibt erhalten; das ist keine allgemeine Freigabe aufgrund eines grünen Laufs mit Wiederholung.
+
+- `npm ci --ignore-scripts --no-audit --no-fund`, `npm run check`, `npm test` und sämtliche Audits aus `npm run validate` bestanden. Unter Windows wurde derselbe Audit-Befehl mit `python` statt dem nicht verfügbaren Alias `python3` ausgeführt.
+- Die UX-Regressionen sind in 80 gezielten Chromium-/WebKit-Desktop-/Handyfällen abgedeckt: 68 bestanden im ersten Lauf; die zwölf neuen Ergebnisfälle bestanden nach Korrektur eines ungültigen Test-Wortvorrats vollständig. Der separate responsive Bildlauf bestand zuvor mit 55 Fällen direkt und einem Fall nach Wiederholung. Das sind begrenzte lokale Nachweise, kein vollständiger aktueller CI-PASS.
+- Ein erster Gesamtlauf mit vier Workern wurde nach Zeitüberschreitungen beim Anlegen leerer Browserseiten gestoppt. Ein zweiter mit den bestehenden CI-Zeitlimits und zwei Workern wurde nach 875 von 1.614 Fällen und sechs dauerhaft roten Fällen beendet. Der Rechner hat vier CPUs und 8 GB RAM; während des Laufs waren häufig nur etwa 0,4 GB frei. **Beide abgebrochenen Läufe sind kein PASS.**
+- Die sechs Diagnosefälle betreffen Bildladen bei 320 CSS-Pixeln, Offline-Katalognavigation, einen Offline-Creator-Start, den zeitabhängigen Tabu-Neuladetest sowie zwei WebKit-Navigations-/Fokusfälle. Ein dritter Gesamtlauf mit Artefakten außerhalb von OneDrive und ohne Video wurde nach 534 Fällen mit einem weiteren Zeitlimit beim Start von Gegenstandsjagd gestoppt und zählt ebenfalls nicht als PASS. Alle sieben Diagnosefälle wurden anschließend mit einem Worker und ohne Wiederholung isoliert geprüft: 21 bestanden, drei vorgesehene Ausnahmen. Die Fehler aus den abgebrochenen Gesamtläufen reproduzierten sich dabei nicht.
+- Der überarbeitete Cross-Browser-Smoke bestand lokal ohne Wiederholung mit 32 Fällen in Chromium und WebKit, jeweils Desktop und Handy. Windows-Firefox scheiterte zuvor bereits beim Erstellen der leeren Browserseite; seine Fälle bleiben im Hosted-Smoke unverändert aktiviert und benötigen dort den Nachweis.
+- Die sechs betroffenen Hub-Szenarien einschließlich des neuen verzögerten Updatehinweises bestanden anschließend in allen vier Chromium-/WebKit-Profilen: 24 bestanden ohne Wiederholung. Der korrigierte responsive Detailfall bestand ebenfalls in allen vier Profilen ohne Wiederholung und prüft je acht Größen. Syntax, Unit-/Vertragstests und sämtliche Validierungs-Audits wurden vor dem Commit erneut erfolgreich ausgeführt.
+- Die unveränderten App-Dateien werden im Testserver aus einem Speicher-Snapshot ausgeliefert. Offline-Core v109: `916522350e77d61d022fdcb9cef226b3c28713c0bcf0e62a4177e2aaa11289c8`. Vollständige Pflicht-CI auf dem neuen PR-Commit, isolierte Nachprüfung aller roten Fälle, unabhängiges Review und reale Geräte-/Gruppentests bleiben erforderlich. PR #69 ist bis dahin Draft; Release bleibt **NO_GO**.
+
 ## Update 5./6. September 2026 – Runner-Blocker behoben
 
 Der unten beschriebene Pre-Step-/Runner-Ausfall (`steps: []`, `runner_id: 0`) ist seit dem 5. September 2026 nicht mehr reproduzierbar. Der Hosted Runner führt Checkout, Setup, `npm ci`, Python-Audits und Node-Tests real aus. `npm test` und `npm run validate` sind auf GitHub Actions grün; seit dem 25. September 2026 laufen auch die Browser-Tests vollständig durch, aufgeteilt auf die Jobs `validate` (Chromium) und `e2e-webkit` (siehe `RELEASE_STATUS.md`). Der folgende historische Befund bleibt als Nachweis stehen, beschreibt aber nicht mehr den aktuellen Zustand.
@@ -54,7 +78,7 @@ Damit sind Checkout, Node/Python-Setup, `npm ci`, Playwright und Secret-Circle-C
 Zentrale Release-Metadaten: `release-meta.json`.
 
 - Source-Generation `v64`
-- Offline-Core `secret-circle-v99` / `secret-circle-v99-staging`
+- Offline-Core `secret-circle-v109` / `secret-circle-v109-staging`
 - 55 Built-ins · 15 Core / 13 Extended / 27 Labs
 - Expansion Wave 1: 10/10 quellsseitig implementiert
 - v50 Hub Resume Loader fail-closed

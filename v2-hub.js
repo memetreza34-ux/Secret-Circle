@@ -19,13 +19,8 @@
     { id: 'wissen', label: 'Wissen & Schätzen', tint: '#38BDF8', ground: '#093548', groups: ['Wissen & Quiz', 'Schätzen & Tippen'] },
     { id: 'schnell', label: 'Schnell', tint: '#F472B6', ground: '#451234', groups: ['Schnell & Challenge', 'Werkzeuge'] }
   ];
-  /* Spielbilder: '<spiel-id>': { src: 'assets/images/<spiel-id>.webp', alt: '…' }.
-     Bildwelt, Prompts und Einbinden: docs/BILDWELT_V2.md. Ohne Eintrag zeigt das Spiel sein Emblem. */
-  var GAME_ART = {
-    imposter: { src: 'assets/images/imposter.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen' },
-    'truth-dare': { src: 'assets/images/truth-dare.webp', alt: 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt' },
-    mafia: { src: 'assets/images/mafia.webp', alt: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt' }
-  };
+  /* Lokale Bildzuordnung aus v2-game-art.js; ohne Eintrag bleibt das Emblem. */
+  var GAME_ART = window.SecretCircleGameArt || {};
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -554,7 +549,7 @@
     }
     $('#hero-text').textContent = hero.desc;
     $('#hero-play').textContent = players().length ? 'Spielen' : 'Spieler einrichten';
-    $('#hero-play').onclick = function () { if (players().length) openGame(hero.id); else show('players', { reset: true }); };
+    $('#hero-play').onclick = function () { openGame(hero.id); if (!players().length) show('players'); };
 
     /* Trefferfläche 44px, tastaturbedienbar — nicht der 6px-Punkt selbst. */
     var dots = $('.dots', screenEl('home'));
@@ -716,6 +711,7 @@
     renderSteps($('#mode-steps'), g);
 
     var btn = $('#start-btn');
+    btn.textContent = g.linked ? 'Spiel einrichten' : 'Spiel starten';
     var note = $('#start-note');
     btn.disabled = short || over || restricted;
     note.className = 'dock-note' + (short || over || restricted ? ' warn' : '');
@@ -790,6 +786,8 @@
     var full = list.length >= limits.max;
     $('#player-add').disabled = full;
     $('#player-input').disabled = full;
+    $('#players-done').disabled = NAV[NAV.length - 1] === 'mode' && (list.length < limits.min || list.length > limits.max);
+    $('#players-done').textContent = NAV[NAV.length - 1] === 'mode' ? 'Weiter zum Spiel' : 'Fertig';
     if (full) setPlayerHint('Mehr als ' + limits.max + ' Personen gehen nicht.', true);
     else if (list.length < limits.min) setPlayerHint(limits.min + ' Personen nötig' + (limits.title ? ' für ' + limits.title : '') + '.', list.length > 0);
     else setPlayerHint('Das Gerät wandert in dieser Reihenfolge. Die Liste gilt für alle Spiele.', false);
@@ -952,6 +950,7 @@
 
     $('#howto-btn').addEventListener('click', function () { show('howto'); });
     $('#start-btn').addEventListener('click', startGame);
+    $('#players-done').addEventListener('click', back);
 
     /* Hero: drei echte Empfehlungen — per Punkt oder Wisch. */
     var heroEl = $('.hero');

@@ -3,6 +3,14 @@ const { test, expect } = require('@playwright/test');
 const HUB_KEY = 'secret-circle-party-hub-v1';
 const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
 
+// Ein verspäteter Updatehinweis wird über denselben Bedienweg vertagt wie im Spiel.
+// Die eigenen Update-/Offline-Tests prüfen Aktivierung und Session-Schutz separat.
+test.beforeEach(async ({ page }) => {
+  await page.addLocatorHandler(page.locator('.pwa-update-banner'), async notice => {
+    await notice.getByRole('button', { name: 'Später', exact: true }).click();
+  });
+});
+
 function captureErrors(page) {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -38,21 +46,75 @@ test('start screen renders from the real catalog without invented claims', async
   expect(errors).toEqual([]);
 });
 
+const gameIds = require('../../party-wave-one-clue-catalog.js').games.map(game => game.id);
+const artwork = {
+  "two-truths": "Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger",
+  "word-chain": "Zugbegleiterin verbindet drei Waggons mit Apfel, Lampe und Elefant zu einer Wortkette",
+  "hot-potato": "Dampfende Kartoffel fliegt zwischen zwei Ofenhandschuhen; im Hintergrund läuft eine Sanduhr",
+  "taboo": "Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder",
+  "charades": "Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr",
+  "imposter": "Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen",
+  "truth-dare": "Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt",
+  "mafia": "Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt",
+  "never-have": "Elefanten-Abenteurer hebt ertappt die Hand und erinnert sich daran, wie er in einem viel zu kleinen Zelt übernachtet hat",
+  "question-imposter": "Vier Retro-Roboter vergleichen Fragekarten: drei zeigen eine Sonne, der nervöse vierte einen Mond",
+  "location-spy": "Verunsicherter Otter-Spion späht mit leerem Notizbuch hinter einer Palme in eine Hotellobby",
+  "most-likely": "Überraschter Igel zeigt auf sich, während vier Pfoten und Flügel gleichzeitig auf ihn deuten",
+  "would-rather": "Faultier an einer Weggabelung schwankt zwischen einer Eistüte und einem Stück Pizza",
+  "paranoia": "Zwei Erdmännchen flüstern hinter einer Pfote, während ein drittes misstrauisch zu ihnen zurückschaut",
+  "wrong-answers": "Ziegenprofessor präsentiert stolz eine absichtlich falsche Antwort: einen Fisch auf einem Fahrrad",
+  "wavelength": "Pinguin balanciert zwischen einem Eiswürfel und einer warmen Sonne auf einem Seil",
+  "rapid-fire": "Gepard sprintet mit einer Stoppuhr in der Pfote an vorbeifliegenden Gegenständen vorbei",
+  "forehead-guess": "Lama trägt ein Bilderrätsel am Stirnband, das nur seine kichernden Freunde sehen können",
+  "who-am-i": "Verkleidete Rätselfigur betrachtet im Spiegel die möglichen Rollen Astronaut, Koch und Ritter",
+  "anime-guess": "Drei eigenständige Rollenfiguren mit Schal, Zauberstab und Umhang stehen auf einer Bühne",
+  "blind-ranking": "Maulwurf mit Augenbinde setzt eine Gummiente auf eine Stufe eines fünfstufigen Podests",
+  "put-a-finger-down": "Oktopus rollt einen weiteren Arm ein, während andere Arme noch aufgerichtet sind",
+  "higher-lower": "Bergziege steht zwischen einer Treppe nach oben und einer Treppe nach unten",
+  "undercover-similar-word": "Limette versucht unauffällig zwischen vier fröhlichen Zitronen zu stehen",
+  "bluff-trivia": "Pfau im Jackett erklärt selbstbewusst eine erfundene Museums-Erfindung: eine Teekanne mit Flügeln",
+  "hot-takes": "Chilischote hält auf einer Kiste eine leidenschaftliche Rede, während das Gemüsepublikum überrascht reagiert",
+  "money-challenge": "Hamster im Geschäftsanzug überlegt vor einem fliegenden Sparschwein mit schlichten goldenen Münzen",
+  "red-green-flag": "Flamingo-Schiedsrichter wägt zwischen einer roten und einer grünen Flagge ab",
+  "tier-list": "Giraffe überlegt, auf welches von fünf farbigen Regalbrettern sie einen Donut einordnen soll",
+  "hear-me-out": "Kleine Maus verteidigt auf einer großen Bühne am Mikrofon leidenschaftlich eine Ananas",
+  "pass-the-phone": "Detektivin reicht dem überraschten Chamäleon eine Gesprächskarte und übergibt ihm den nächsten Zug",
+  "know-me-best": "Hund denkt an Knochen, Ball oder Socke, während zwei Freunde seine Wahl zu erraten versuchen",
+  "sound-imitation": "Chamäleon erzeugt mit aufgeblasenen Backen Geräusche; Schallwellen zeigen Kuh, Zug und Vogel",
+  "hum-song": "Wal summt mit geschlossenen Augen; Notenblasen steigen im Wasser auf",
+  "password-one-word": "Chamäleon zeigt mit einem erhobenen Finger genau einen Hinweis an; die Detektivin errät das verdeckt gehaltene Schlüsselmotiv",
+  "draw-guess": "Känguru zeichnet mit einem großen Wachsstift ein unfertiges Bilderrätsel auf Papier",
+  "caption-battle": "Galeriebild einer Kuh auf einem Skateboard ist von leeren Sprechblasen für Bildunterschriften umgeben",
+  "story-chain": "Offene Bücher bilden eine Brücke; Figuren setzen den Weg von einer Buchseite zur nächsten fort",
+  "finish-the-sentence": "Frau zeichnet mit einer Schreibfeder ein leuchtendes Fragezeichen in die Luft; ein Eichhörnchen schaut neugierig zu",
+  "fill-blank-battle": "Chamäleon und Detektivin bieten Banane und Gummiente als lustige Ergänzungen für dieselbe Lücke in einem Bildsatz an",
+  "who-wrote-it": "Katzen-Detektiv untersucht mit einer Lupe gefaltete anonyme Zettel",
+  "emoji-quiz": "Ein eigenständiger Cartoonkoch und ein schwebendes Pizzastück bilden gemeinsam ein Bilderrätsel",
+  "guess-the-price": "Maus betrachtet einen Toaster mit Flügeln und leerem Preisschild durch eine Lupe",
+  "fact-or-fake": "Pferd nimmt verlegen eine Einhornmaske ab und entlarvt die Täuschung",
+  "percent-guess": "Eichhörnchen schätzt mit erhobener Pfote den Füllstand eines Glases mit Murmeln",
+  "party-bracket": "Acht Alltagsgegenstände treten in einem Turnierbaum gegeneinander an; an der Spitze wartet ein Pokal",
+  "spin-bottle": "Eine leere unbeschriftete Flasche dreht sich auf einem Teppich zwischen Chamäleon, Detektivin und Fuchs",
+  "dice-coin": "Abgerundeter Würfel und schlichte goldene Münze wirbeln gemeinsam durch die Luft",
+  "letter-categories": "Kaninchen jongliert Apfel, Anker, Ameise und Astronaut, während eine Sanduhr läuft",
+  "dont-laugh": "Ernste Schildkröte versucht, bei den Faxen eines Affen nicht zu lachen",
+  "scavenger-hunt": "Hund bringt eine Gummiente durch ein Wohnzimmer zurück und lässt Kissen hinter sich fliegen",
+  "secret-mission": "Maus in einem schlichten Ninja-Kostüm stellt heimlich eine kleine Flagge hinter eine Blumenvase",
+  "hot-seat": "Nervöses Kaninchen sitzt im Sessel unter einem Scheinwerfer, umgeben von Fragezeichen",
+  "no-word-imposter": "Drei Pinguine betrachten eine Gummiente am Ausstellungsstand, während der vierte ratlos die Flügel hebt",
+  "party-quiz": "Hamster am Quizpult hält seine Pfote bereit über vier farbigen Antwortknöpfen"
+};
+async function expectArtwork(image, id) {
+  await expect(image).toHaveAttribute('src', 'assets/images/' + id + '.webp');
+  await expect(image).toHaveAttribute('alt', artwork[id]);
+  await expect(image).toBeVisible();
+  await expect.poll(() => image.evaluate(el => el.complete && el.naturalWidth === 800 && el.naturalHeight === 600)).toBe(true);
+}
+
 test('game artwork loads locally in cards, banner and details with readable mobile titles', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await seedHub(page);
   await openV2(page);
-  const artwork = {
-    imposter: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen',
-    'truth-dare': 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt',
-    mafia: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt'
-  };
-  async function expectArtwork(image, id) {
-    await expect(image).toHaveAttribute('src', 'assets/images/' + id + '.webp');
-    await expect(image).toHaveAttribute('alt', artwork[id]);
-    await expect(image).toBeVisible();
-    await expect.poll(() => image.evaluate(el => el.complete && el.naturalWidth === 800 && el.naturalHeight === 600)).toBe(true);
-  }
   await expectArtwork(page.locator('#hero-art img'), 'imposter');
   await expect(page.locator('#hero-title')).toBeVisible();
   const bannerBottom = await page.locator('.hero-art').evaluate(el => el.getBoundingClientRect().bottom);
@@ -60,21 +122,32 @@ test('game artwork loads locally in cards, banner and details with readable mobi
   expect(bannerBottom).toBeLessThanOrEqual(titleTop);
 
   await openV2(page, '#spiele');
-  for (const id of Object.keys(artwork)) {
-    const card = page.locator('#grid [data-game-id="' + id + '"]');
-    await card.scrollIntoViewIfNeeded();
-    await expectArtwork(card.locator('img'), id);
-  }
-  for (const id of Object.keys(artwork)) {
-    await openV2(page, '#spiel=' + id);
-    await expectArtwork(page.locator('#mode-emblem img'), id);
-  }
-  for (const id of ['never-have', 'most-likely']) {
-    await openV2(page, '#spiel=' + id);
-    await expect(page.locator('#mode-emblem svg')).toBeVisible();
-    await expect(page.locator('#mode-emblem img')).toHaveCount(0);
-  }
+  expect(Object.keys(artwork).sort()).toEqual(gameIds.slice().sort());
+  expect(gameIds).toHaveLength(55);
+  await expect(page.locator('#grid .gcard img')).toHaveCount(55);
 });
+
+const artworkIds = Object.keys(artwork);
+for (let offset = 0; offset < artworkIds.length; offset += 14) {
+  const ids = artworkIds.slice(offset, offset + 14);
+  test('game artwork loads in every card, batch ' + (offset / 14 + 1), async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await seedHub(page);
+    await openV2(page, '#spiele');
+    for (const id of ids) {
+      const card = page.locator('#grid [data-game-id="' + id + '"]');
+      await card.scrollIntoViewIfNeeded();
+      await expectArtwork(card.locator('img'), id);
+    }
+  });
+  test('game artwork loads in every detail, batch ' + (offset / 14 + 1), async ({ page }) => {
+    await seedHub(page);
+    for (const id of ids) {
+      await openV2(page, '#spiel=' + id);
+      await expectArtwork(page.locator('#mode-emblem img'), id);
+    }
+  });
+}
 
 test('games screen lists all 55 games in six non-empty colour worlds', async ({ page }) => {
   await seedHub(page);
@@ -145,8 +218,6 @@ test('a linked game opens its own engine page', async ({ page }) => {
   await seedHub(page);
   await openV2(page, '#spiel=wavelength');
   await expect(page.locator('#pack-row')).toBeHidden();
-  const updateNotice = page.locator('.pwa-update-banner:visible');
-  if (await updateNotice.count()) await updateNotice.getByRole('button', { name: 'Später' }).click();
   await page.locator('#start-btn').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=wavelength$/);
   await expect(page.getByRole('heading', { name: 'Spektrum-Tipp' })).toBeVisible();
@@ -166,8 +237,48 @@ test('the player list is shared with the rest of the app and gates the start', a
   await expect(page.locator('#player-badge')).toHaveText('2/20');
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alex', 'Sam']);
 
-  await page.locator('[data-screen="players"] [data-back]').click();
+  await expect(page.locator('#players-done')).toHaveText('Weiter zum Spiel');
+  await page.locator('#players-done').click();
   await expect(page.locator('#start-btn')).toBeEnabled();
+});
+
+test('a delayed update notice can be deferred while adding players without activating it', async ({ page }) => {
+  await seedHub(page, { players: ['Alex'] });
+  await openV2(page, '#spiel=never-have');
+  await page.locator('#players-row').click();
+  await page.locator('#player-input').fill('Sam');
+  await page.evaluate(() => {
+    window.__updateMessages = [];
+    window.SecretCircleRuntime.showUpdate({ postMessage: message => window.__updateMessages.push(message) });
+  });
+  const notice = page.locator('.pwa-update-banner');
+  expect(await notice.isVisible()).toBe(true);
+  await page.locator('#player-add').click();
+  await expect(page.locator('#player-badge')).toHaveText('2/20');
+  await expect(notice).toBeHidden();
+  await expect(notice).toHaveCount(1);
+  expect(await page.evaluate(() => window.__updateMessages)).toEqual([]);
+  expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alex', 'Sam']);
+  await page.locator('#players-done').click();
+  await expect(page.locator('#start-btn')).toBeEnabled();
+});
+
+test('first-time hero setup leads back to the chosen game with its actual player minimum', async ({ page }) => {
+  await seedHub(page, { players: [] });
+  await openV2(page);
+  await page.locator('#hero-play').click();
+  await expect(page.locator('#player-hint')).toContainText('3 Personen nötig für Word Imposter');
+  await expect(page.locator('#players-done')).toBeDisabled();
+  for (const name of ['Alex', 'Sam', 'Mika']) {
+    await page.locator('#player-input').fill(name);
+    await page.locator('#player-add').click();
+  }
+  await page.locator('#players-done').click();
+  await expect(page.locator('#mode-title')).toHaveText('Word Imposter');
+  await expect(page.locator('#start-btn')).toHaveText('Spiel einrichten');
+  await page.locator('#start-btn').click();
+  await expect(page).toHaveURL(/word-imposter\.html$/);
+  await expect(page.locator('#players')).toHaveValue('Alex\nSam\nMika');
 });
 
 test('Namen in der gemeinsamen Spielerliste lassen sich direkt ändern', async ({ page }) => {

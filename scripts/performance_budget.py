@@ -2,10 +2,65 @@
 from pathlib import Path
 import json
 import subprocess
+import ast
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 
 budgets = {
+    'assets/images/party-quiz.webp': 35_000,
+    'assets/images/no-word-imposter.webp': 35_000,
+    'assets/images/hot-seat.webp': 35_000,
+    'assets/images/secret-mission.webp': 35_000,
+    'assets/images/scavenger-hunt.webp': 35_000,
+    'assets/images/dont-laugh.webp': 35_000,
+    'assets/images/letter-categories.webp': 35_000,
+    'assets/images/dice-coin.webp': 35_000,
+    'assets/images/spin-bottle.webp': 35_000,
+    'assets/images/party-bracket.webp': 35_000,
+    'assets/images/percent-guess.webp': 35_000,
+    'assets/images/fact-or-fake.webp': 35_000,
+    'assets/images/guess-the-price.webp': 35_000,
+    'assets/images/emoji-quiz.webp': 35_000,
+    'assets/images/who-wrote-it.webp': 35_000,
+    'assets/images/fill-blank-battle.webp': 35_000,
+    'assets/images/finish-the-sentence.webp': 35_000,
+    'assets/images/story-chain.webp': 35_000,
+    'assets/images/caption-battle.webp': 35_000,
+    'assets/images/draw-guess.webp': 35_000,
+    'assets/images/password-one-word.webp': 35_000,
+    'assets/images/hum-song.webp': 35_000,
+    'assets/images/sound-imitation.webp': 35_000,
+    'assets/images/know-me-best.webp': 35_000,
+    'assets/images/pass-the-phone.webp': 35_000,
+    'assets/images/hear-me-out.webp': 35_000,
+    'assets/images/tier-list.webp': 35_000,
+    'assets/images/red-green-flag.webp': 35_000,
+    'assets/images/money-challenge.webp': 35_000,
+    'assets/images/hot-takes.webp': 35_000,
+    'assets/images/bluff-trivia.webp': 35_000,
+    'assets/images/undercover-similar-word.webp': 35_000,
+    'assets/images/higher-lower.webp': 35_000,
+    'assets/images/put-a-finger-down.webp': 35_000,
+    'assets/images/blind-ranking.webp': 35_000,
+    'assets/images/anime-guess.webp': 35_000,
+    'assets/images/who-am-i.webp': 35_000,
+    'assets/images/forehead-guess.webp': 35_000,
+    'assets/images/rapid-fire.webp': 35_000,
+    'assets/images/wavelength.webp': 35_000,
+    'assets/images/wrong-answers.webp': 35_000,
+    'assets/images/paranoia.webp': 35_000,
+    'assets/images/would-rather.webp': 35_000,
+    'assets/images/most-likely.webp': 35_000,
+    'assets/images/location-spy.webp': 35_000,
+    'assets/images/question-imposter.webp': 35_000,
+    'assets/images/never-have.webp': 35_000,
+    'v2-game-art.js': 16_000,
+    'assets/images/two-truths.webp': 35_000,
+    'assets/images/word-chain.webp': 35_000,
+    'assets/images/hot-potato.webp': 35_000,
+    'assets/images/taboo.webp': 35_000,
+    'assets/images/charades.webp': 35_000,
     'assets/images/imposter.webp': 35_000,
     'assets/images/truth-dare.webp': 35_000,
     'assets/images/mafia.webp': 35_000,
@@ -54,8 +109,22 @@ for relative, maximum in budgets.items():
     if size > maximum:
         violations.append(f'{relative} is {size} bytes; budget is {maximum} bytes.')
 
-core_total = sum(sizes.values())
+budgeted_total = sum(sizes.values())
+core_match = re.search(r'const CORE=(\[[^\n]+\]);', (ROOT / 'sw.js').read_text())
+if not core_match:
+    raise SystemExit('Unable to inspect the actual offline CORE list.')
+core_paths = ast.literal_eval(core_match.group(1))
+core_total = 0
+for relative in core_paths:
+    if not relative.startswith('./') or '..' in Path(relative).parts:
+        raise SystemExit('Unexpected offline CORE path: ' + relative)
+    path = ROOT / ('index.html' if relative == './' else relative[2:])
+    if not path.is_file():
+        raise SystemExit('Missing offline CORE asset: ' + relative)
+    core_total += path.stat().st_size
 core_budget = 3_200_000
+if budgeted_total > core_budget:
+    violations.append(f'Budgeted assets are {budgeted_total} bytes; budget is {core_budget} bytes.')
 if core_total > core_budget:
     violations.append(f'Offline core is {core_total} bytes; budget is {core_budget} bytes.')
 
@@ -76,6 +145,7 @@ if violations: raise SystemExit('\n'.join(sorted(set(violations))))
 
 print(json.dumps({
     'performance_budget': 'PASS', 'core_total_bytes': core_total, 'core_budget_bytes': core_budget,
+    'budgeted_assets_total_bytes': budgeted_total, 'offline_core_entries': len(core_paths),
     'core_budget_used_percent': round(core_total / core_budget * 100, 2), 'tracked_files_checked': len(tracked),
     'budgeted_assets': len(budgets), 'visible_builtin_games': 55,
     'release_tiers': {'core': 15, 'extended': 13, 'labs': 27}, 'wave_one_complete': 10,
