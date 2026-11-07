@@ -59,7 +59,9 @@ for (const id of ['pass-the-phone', 'password-one-word', 'spin-bottle', 'fill-bl
     for (const [width, height] of sizes) {
       await page.setViewportSize({ width, height });
       await expectWholeImages(page.locator('#mode-emblem img'));
-      expect(await page.locator('[data-screen="mode"] .body').evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+      await expect.poll(() => page.locator('[data-screen="mode"] .body').evaluate(el => el.scrollWidth <= el.clientWidth + 1), {
+        message: `${id}: kein horizontaler Überlauf nach Wechsel auf ${width}x${height}`
+      }).toBe(true);
     }
   });
 }

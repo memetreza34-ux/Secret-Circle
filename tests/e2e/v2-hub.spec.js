@@ -3,6 +3,14 @@ const { test, expect } = require('@playwright/test');
 const HUB_KEY = 'secret-circle-party-hub-v1';
 const ACTIVE_KEY = 'secret-circle-party-hub-active-v1';
 
+// Ein verspäteter Updatehinweis wird über denselben Bedienweg vertagt wie im Spiel.
+// Die eigenen Update-/Offline-Tests prüfen Aktivierung und Session-Schutz separat.
+test.beforeEach(async ({ page }) => {
+  await page.addLocatorHandler(page.locator('.pwa-update-banner'), async notice => {
+    await notice.getByRole('button', { name: 'Später', exact: true }).click();
+  });
+});
+
 function captureErrors(page) {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -210,8 +218,6 @@ test('a linked game opens its own engine page', async ({ page }) => {
   await seedHub(page);
   await openV2(page, '#spiel=wavelength');
   await expect(page.locator('#pack-row')).toBeHidden();
-  const updateNotice = page.locator('.pwa-update-banner:visible');
-  if (await updateNotice.count()) await updateNotice.getByRole('button', { name: 'Später' }).click();
   await page.locator('#start-btn').click();
   await expect(page).toHaveURL(/quick-play\.html\?game=wavelength$/);
   await expect(page.getByRole('heading', { name: 'Spektrum-Tipp' })).toBeVisible();
@@ -232,6 +238,27 @@ test('the player list is shared with the rest of the app and gates the start', a
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alex', 'Sam']);
 
   await expect(page.locator('#players-done')).toHaveText('Weiter zum Spiel');
+  await page.locator('#players-done').click();
+  await expect(page.locator('#start-btn')).toBeEnabled();
+});
+
+test('a delayed update notice can be deferred while adding players without activating it', async ({ page }) => {
+  await seedHub(page, { players: ['Alex'] });
+  await openV2(page, '#spiel=never-have');
+  await page.locator('#players-row').click();
+  await page.locator('#player-input').fill('Sam');
+  await page.evaluate(() => {
+    window.__updateMessages = [];
+    window.SecretCircleRuntime.showUpdate({ postMessage: message => window.__updateMessages.push(message) });
+  });
+  const notice = page.locator('.pwa-update-banner');
+  expect(await notice.isVisible()).toBe(true);
+  await page.locator('#player-add').click();
+  await expect(page.locator('#player-badge')).toHaveText('2/20');
+  await expect(notice).toBeHidden();
+  await expect(notice).toHaveCount(1);
+  expect(await page.evaluate(() => window.__updateMessages)).toEqual([]);
+  expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).players, HUB_KEY)).toEqual(['Alex', 'Sam']);
   await page.locator('#players-done').click();
   await expect(page.locator('#start-btn')).toBeEnabled();
 });
