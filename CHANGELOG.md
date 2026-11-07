@@ -1,5 +1,6 @@
 ## v109 – Verständlicher Einstieg und klare Spielergebnisse (7. November 2026)
 
+- Die drei CI-Testjobs verwenden fest Ubuntu 24.04, passend zu Playwright 1.54.2. Das veränderliche `ubuntu-latest` lieferte Ubuntu 26.04 und blockierte bereits die Browserinstallation. Diese reine CI-Korrektur verändert den Offline-Core nicht.
 - Namenseingabe erhält einen sichtbaren Abschluss; die Startempfehlung berücksichtigt das gewählte Spiel und dessen Mindestgruppe. Verlinkte Spiele führen mit „Spiel einrichten“ zu ihrer Einrichtung.
 - Word Imposter trennt Rundenergebnis und Matchabschluss, nennt die Gesamtsieger und vergibt bei gleicher Punktzahl denselben Rang. Punkte und Speicherformat bleiben erhalten.
 - Quizregeln erklären persönliche Züge, Punkte und die Gesamtzahl der Fragen. Die letzte Frage führt mit „Zum Ergebnis“ zum Abschluss; die Rangliste enthält auch Personen mit null Punkten.

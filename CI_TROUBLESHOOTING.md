@@ -2,6 +2,12 @@
 
 Stand: 29. August 2026
 
+## 7. November 2026 – Browserinstallation auf Ubuntu 26.04 blockiert
+
+Die Pflichtläufe [CI #42378099065](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/42378099065) und [Smoke #42378099069](https://github.com/memetreza34-ux/Secret-Circle/actions/runs/42378099069) auf `c779f26` erreichten Checkout und `npm ci`, scheiterten aber bei `playwright install --with-deps`. `ubuntu-latest` lieferte Ubuntu 26.04.1; Playwright 1.54.2 meldete ausdrücklich, dass diese Plattform nicht unterstützt wird. Die App-Tests wurden in diesen Jobs nicht ausgeführt.
+
+Alle drei Browser-Testjobs verwenden deshalb das feste Label `ubuntu-24.04`. Diese Plattform ist im [versionsgebundenen Playwright-Plattformvertrag](https://github.com/microsoft/playwright/blob/v1.54.2/packages/playwright-core/src/server/utils/hostPlatform.ts) unterstützt und als [GitHub-Runnerlabel verfügbar](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). Paketversionen, Installationsbefehle, Tests, Zeitlimits und Pflichtcheck-Namen bleiben erhalten. Erst der neue tatsächliche CI-Lauf belegt, ob Installation und anschließende Prüfungen erfolgreich sind.
+
 ## Windows-Prüfung vom 7. November 2026 – aktueller Bild-/UX-Zwischenstand
 
 - `npm ci --ignore-scripts --no-audit --no-fund`, `npm run check`, `npm test` und sämtliche Audits aus `npm run validate` bestanden. Unter Windows wurde derselbe Audit-Befehl mit `python` statt dem nicht verfügbaren Alias `python3` ausgeführt.

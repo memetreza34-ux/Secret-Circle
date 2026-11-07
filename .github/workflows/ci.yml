@@ -17,7 +17,8 @@ env:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    # Playwright 1.54.2 unterstützt Ubuntu 24.04; ubuntu-latest ist veränderlich.
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
       - name: Check out repository
@@ -75,7 +76,7 @@ jobs:
           retention-days: 7
 
   e2e-webkit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
       - name: Check out repository
