@@ -1,10 +1,50 @@
 # Bildwelt für Secret Circle v2
 
-## Aktuelle App-Vorschau vom 14. Oktober 2026
+**Korrekturauftrag vom 7. November 2026:** Arman beanstandet abgeschnittene Bilder und beauftragt die Überarbeitung unklarer Motive. Katalogkarten, Startbanner und Details zeigen die vollständige 4:3-Bildfläche ohne zusätzlichen Beschnitt. Kataloghöhen folgen der Breite; lange Titel dürfen auch bei vergrößerter Schrift umbrechen. Das behebt den bisherigen festen 104-Pixel-Rahmen im zweispaltigen Katalog und den flacheren Startbanner.
 
-Arman bevorzugt die erste Mafia-Stadtplatzszene gegenüber der späteren Fassung mit vereinfachten Oberflächen. Sie dient als Stilreferenz für eine animierte 3D-Welt mit ausdrucksstarken, erwachsen auftretenden Figuren und zum Spiel passenden Orten, Kleidern und Handlungen. Word Imposter (Chamäleon blufft in einer Spielrunde), Wahrheit oder Pflicht (Maske ablegen und Mutprobe auf einer Bühne) und Mafia (heimliche Absprache, von einer Detektivin bemerkt) sind auf seine ausdrückliche Anweisung direkt in der App zu sehen. Die ganze Bildwelt ist damit noch nicht endgültig abgenommen. Die folgenden ursprünglichen Motivvorschläge bleiben Planungsgrundlage; die aktuellen Originalprompts stehen vollständig im Provenienzmanifest.
+Aktuelle Ansichten: [Handy 375×812](screenshots/bildausschnitt-handy-375x812.webp) und [Tablet 768×1024](screenshots/bildausschnitt-tablet-768x1024.webp). Aufgenommen mit Playwright 1.54.2 / Chromium 139 unter Windows; keine Abnahme echter Mobilgeräte.
 
-Die Spielbilder teilen dieselbe sorgfältig gestaltete 3D-Bildsprache: prägnante Silhouetten, glaubwürdige Materialien, klare Mimik, gerichtetes Licht und eine lesbare Handlung. Jedes Spiel bekommt trotzdem eine eigene Figur oder Figurengruppe, Farbwelt, Umgebung und Requisiten.
+**Lokale Prüfnachweise vom 7. November 2026:** `npm run check`, `npm test` und die vollständige Validierung bestanden; unter Windows wurde für die Validierung der vorhandene Befehl `python` statt des dort nicht funktionsfähigen `python3` verwendet. Geprüfter Offline-Core: `secret-circle-v108`, Hash `c3abad26cc0f2ca57850e3050775363c4b504b9547f508bfd3e2fe0a27bca87a`, 3.191.368 von 3.200.000 Bytes.
+
+- `artwork-responsive.spec.js`: **55 direkt bestanden, 1 nach Wiederholung bestanden**, Exit 0. Alle 55 Katalogbilder, Startbanner und fünf Detailmotive bei 320×568, 375×812, 430×932, 600×960, 768×1024, 1024×768, 844×390 und 1280×900; zusätzlich doppelte Textgröße. Vier Projektprofile: Chromium/WebKit, Desktop/Handy. Der erste Versuch des WebKit-Handyfalls bei 1280×900 überschritt das Zeitlimit; Wiederholung bestanden. Das ist kein fehlerfreier Erstlauf.
+- Katalog-/Bannerprüfung und alle 55 einzeln angesprungenen Katalogkarten in vier Gruppen: **20/20 bestanden**, Exit 0. Gleiche Sichtbarkeits-, Pfad-, Alternativtext-, Dekodierungs- und 800×600-Prüfungen wie zuvor. Der bisherige 55-Karten-Monolith lief unter Windows/WebKit in das Zeitlimit und wurde ohne verringerte Abdeckung aufgeteilt.
+- Vorangegangene kombinierte Hub-/Offline-/Bildsuite: **118 direkt bestanden, 1 nach Wiederholung bestanden, 3 fehlgeschlagen**. Die drei dauerhaften Fehler betrafen die inzwischen ersetzten beiden Karten-Monolithen und den neu aufgeteilten Größenfall. Die übrigen Tests prüfen unter anderem alle 55 Detailbilder, vorhandene Start-/Fortsetzen-Abläufe und die Offline-Auslieferung aller 55 Bilddateien per SHA-256. Der WebKit-Handy-Detailblock 4 war im kombinierten Lauf zeitabhängig; separater Nachlauf **1/1 bestanden** auf Port 4187.
+- Playwright 1.54.2, Chromium 139 und WebKit 26.0 unter Windows. Lokale Browserprüfungen nutzten einen statischen Speicherserver mit unveränderten Arbeitsbaumbytes; der finale Größenlauf und der separate Detailnachlauf zeichneten keine Videos auf. Screenshots und Fehler-Traces blieben aktiviert. Ein zusätzlicher Detailversuch auf Port 4190 scheiterte bereits am Storage-Zugriff mit `SecurityError`; er wird nicht als Bildnachweis gewertet.
+- Die offene Vorschau auf Port 4174 wurde über **„Jetzt aktualisieren“** von v107 auf v108 gebracht; vollständige Bildflächen und das neue Ein-Wort-Hinweis-Motiv dort tatsächlich gesehen. Der E2E-Gesamtlauf aller Spiel-Engines wurde nicht abgeschlossen. Keine allgemeine Browser-/Geräte-/Releasefreigabe.
+
+Vier Motive ersetzen ihre bisherige Fassung an denselben Pfaden: **Pass das Handy** zeigt die Übergabe einer Gesprächskarte an die nächste Person, **Ein-Wort-Hinweis** einen einzelnen Hinweis zum geheimen Ziel, **Flaschendrehen** eine leere unbeschriftete Flasche ohne Getränke-/Alkoholbezug und **Satzduell** zwei konkurrierende Ergänzungen für dieselbe Lücke in einem Bildsatz. Die Gesprächskarte bleibt eine bildliche Stellvertretung für die Geräteübergabe; kein Telefonrahmen. Alleinige Stilreferenz bleibt die unveränderte Vorlage vom 30. Oktober. Werkzeug: integriertes OpenAI `image_gen`, Modellkennung nicht ausgegeben. Vollständige tatsächliche Prompts: `docs/bildwelt/<spiel-id>-motivkorrektur-2026-11-07.prompt.txt`; aktuelle und frühere Prüfsummen im Provenienzmanifest. Finale Serienabnahme bleibt offen. Ältere Motivtabellen unten dokumentieren die vorausgegangenen Entwürfe.
+
+**Umsetzungsstand vom 5. November 2026:** 55 von 55 Modi haben genau ein eingebundenes Bild. Alle Dateien liegen lokal unter `assets/images/<spiel-id>.webp`, die Zuordnung in `v2-game-art.js`. Für alle neuen Motive wurde ausschließlich dieselbe feste Vorlage verwendet. Sichtprüfung und aktuelle Prüfsummen: [stilpruefung-2026-11-04.json](bildwelt/stilpruefung-2026-11-04.json). Finale Beurteilung der Gesamtserie durch Arman bleibt offen.
+
+**Aktueller Gesamtauftrag vom 5. November 2026:** Für jeden der 55 Modi genau ein Bild aus derselben festen Bildwelt erstellen, prüfen und direkt im Repo einbauen. Armans „los“-Auftrag ersetzt die älteren Auswahlpausen je Motiv. Keine Variantenserien. Die finale Beurteilung der Gesamtserie durch Arman bleibt offen; technische Integration ist keine vorweggenommene Abnahme.
+
+**Ein Bild pro Spiel (Armans Anweisung vom 4. November 2026):** Genau einen Entwurf je Modus erzeugen und zeigen, keine parallelen Varianten oder zusätzlichen Stilrichtungen. Eine notwendige Fehlerkorrektur ersetzt dieselbe Fassung; sie eröffnet keine zweite Auswahlserie. Ältere Aufträge mit 2–3 Varianten sind überholt.
+
+## Verbindliche Korrektur vom 4. November 2026
+
+Arman hat die uneinheitliche Bildwelt ausdrücklich beanstandet und beauftragt, die Korrektur direkt im Repo festzuhalten. Die alleinige Figuren-/Materialvorlage bleibt [vorlage-2026-10-30.webp](bildwelt/vorlage-2026-10-30.webp), SHA-256 `59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294`. Ein neuer Entwurf wird niemals zur neuen Stilvorlage. Figuren, Rollen und Szenen variieren innerhalb derselben Formensprache: Augen/Brauen, modellierte Proportionen, zurückhaltende matte Materialien und Lichtbehandlung werden vor jedem Einbau unmittelbar mit dieser Datei verglichen. Bestehende Figuren behalten ihre Identität.
+
+Die bisherige App mischt ältere und neuere Motive. Frühere Einzelbildfreigaben bleiben historische Tatsachen; sie sind keine Abnahme der Gesamtserie. Zuerst den achtteiligen Bestand vereinheitlichen. Die Roboter-Proben für Question Imposter sind nicht zum Einbau freigegeben.
+
+**Konkret freigegeben und eingebaut:** Word-Imposter-Stilkorrektur vom 4. November mit dem Chamäleon aus der festen Vorlage, 800×600 WebP, 34.224 Bytes. Vollständiger Bearbeitungsprompt: [imposter-stilkorrektur-2026-11-04.prompt.txt](bildwelt/imposter-stilkorrektur-2026-11-04.prompt.txt). Der belegte Vergleich der acht vorhandenen Motive und die verbleibenden Abweichungen stehen in [stilpruefung-2026-11-04.json](bildwelt/stilpruefung-2026-11-04.json). Alle 55 bleiben Ziel; eine vollständige visuelle Abnahme liegt noch nicht vor.
+
+**Weitere Bildauswahl am 3. November 2026:** Arman hat den Fuchs-Abenteurer für „Zwei Wahrheiten, eine Lüge“ mit „Ja, einbauen und weiter“ konkret ausgewählt. `assets/images/two-truths.webp` zeigt drei erzählte Erlebnisse, darunter den erfundenen Papierflieger-Flug. Weitere Motive bleiben einzeln auszuwählen.
+
+**Bildauswahl am 3. November 2026:** Arman hat die gezeigte Wortkette ausdrücklich zum Einbau freigegeben. `assets/images/word-chain.webp` zeigt eine Zugbegleiterin beim Verbinden der Waggons mit Apfel, Lampe und Elefant. Die korrekte deutsche Wortfolge bleibt eine Bildmetapher. Der Auftrag umfasst weiterhin alle 55 Spielbilder; weitere Motive werden einzeln gezeigt und ausgewählt.
+
+**Weitere konkrete Bildauswahl (30. Oktober 2026):** Arman hat den gezeigten klassischen Showmaster für „Nicht sagen!“ mit „weiter bau die direkt ein und weiter“ ausgewählt. `assets/images/taboo.webp` ist eingebunden. Er erklärt einen Begriff, ohne verbotene Hinweise zu nennen. Jedes weitere Motiv bleibt einzeln auszuwählen.
+
+**Fortsetzung am 2. November 2026:** Nach der gezeigten Kartoffel-Probe hat Arman die Fortsetzung beauftragt. `assets/images/hot-potato.webp` ist eingebunden: eine dampfende Kartoffel wird zwischen Ofenhandschuhen weitergegeben, während eine Sanduhr läuft. Gleichbleibende Machart, erstmals in diesem Pass ein Gegenstandsmotiv. Weitere Bilder bleiben einzeln auszuwählen.
+
+## Gewählte Bildwelt vom 30. Oktober 2026
+
+Arman hat das gemeinsame Figuren- und Materialblatt als Bildwelt gewählt. Die **alleinige Stilvorlage für neue Motive** ist jetzt [vorlage-2026-10-30.webp](bildwelt/vorlage-2026-10-30.webp). Menschen, Tiere und Gegenstände teilen plastische Cartoonformen, deutlich modellierte Augen/Brauen und vergleichbar vereinfachte matte Materialien. Klassische Rollen und passende Kostümklischees machen die Figuren sofort erkennbar: Detektiv mit Hut und Trenchcoat, Pantomime mit Baskenmütze, Streifen und weißen Handschuhen. Andere eigenständige Rollen oder reine Gegenstände bleiben möglich, wenn sie zum Modus passen.
+
+Der klassische Pantomime für **Scharade** ist von Arman mit „besser weiter“ ausgewählt und als `assets/images/charades.webp` eingebunden. Er stellt stumm eine unsichtbare Wand dar. Die Auswahl betrifft dieses Bild und die gemeinsame Machart; jedes weitere Spielbild wird einzeln gezeigt und ausgewählt. Die vorhandenen Bilder anderer Modi bleiben Bestand, keine automatische Abnahme als neue Serie.
+
+Die Vorlage und ihre tatsächliche projektseitige Ausgangsreferenz sind unter `docs/bildwelt/` archiviert; sie werden nicht im Offline-Core geladen. Vollständige Generierungs-/Bearbeitungsprompts und Provenienz stehen daneben und im Manifest. Herkunft der Referenzkette wird mit dem tatsächlichen Bild aus Commit `9c12e6d` dokumentiert, ohne das davon abweichende alte App-Bild auf `main` auszutauschen.
+
+Figuren, Orte, Kleidung, Palette und Handlung dürfen wechseln. Gleich bleiben Formensprache, Augenzeichnung, Materialbehandlung und Detailgrad. Die folgenden älteren Motivvorschläge sind Ausgangspunkte; diese aktuelle Stil- und Rollenentscheidung hat Vorrang. Keine Spiellogik, IDs, Speicher- oder Schutzverträge ändern.
 
 ## Motivregel
 
@@ -16,10 +56,10 @@ Eine Karte, ein Tisch, dieselbe Farbe oder dieselben Symbole werden nicht als ve
 
 Das hält die Welt zusammen, egal was zu sehen ist:
 
-- **Machart:** stilisierte 3D-Illustration in der Qualität eines Animationsfilms – weiche, runde Formen, glaubwürdige Materialien (Stoff, Fell, Holz, Metall, Glas), ausdrucksstarke Gesichter.
+- **Machart:** plastische, überzeichnete 3D-Cartoonformen wie im gewählten Figurenblatt. Markante Rollen, große modellierte Augen und Brauen, matte vereinfachte Materialien; keine realistischen Porträtgesichter oder Produktfoto-Requisiten.
 - **Licht:** gerichtetes, warmes Hauptlicht und ein farbiges Kantenlicht; die Akzentfarbe wählt jedes Motiv selbst.
-- **Hintergrund:** dunkel und weich unscharf, wenig Details – das Bild steht auf einer fast schwarzen Oberfläche.
-- **Aufbau:** genau ein klares Hauptmotiv. Gesicht bzw. wichtigstes Detail liegt in der Bildmitte (mittlere 60 % der Breite und Höhe), weil Kachel und Startseiten-Banner unterschiedlich zuschneiden.
+- **Hintergrund:** eine ruhige passende Kulisse; Tageszeit und Palette dürfen je Modus wechseln. Keine Pflicht zu dunkler Lounge, Tisch, Lampe oder fotografischer Unschärfe.
+- **Aufbau:** genau ein klares Hauptmotiv. Gesicht, entscheidende Geste und Requisiten bleiben mit Abstand zu den Bildrändern gut lesbar. Kachel, Startbanner und Detail zeigen dieselbe vollständige 4:3-Fläche; zusätzliche Layout-Zuschnitte sind nicht vorgesehen.
 - **Kein Text:** keine Buchstaben, Zahlen, Wörter, Schilder mit Schrift, Logos oder Wasserzeichen. Einzelne Zeichen wie „?“ oder „!“ als Form sind erlaubt.
 
 ## Was nie ins Bild darf
@@ -34,14 +74,18 @@ Das hält die Welt zusammen, egal was zu sehen ist:
 Diesen Block vor jeden Motiv-Prompt setzen (Englisch, weil Bildmodelle darauf am zuverlässigsten reagieren):
 
 ```text
-Stylized 3D illustration with the polish of a high-end animated feature film.
-Soft rounded shapes, believable materials (fabric, fur, wood, metal, glass), expressive faces.
-Cinematic directional warm key light plus a subtle colored rim light, shallow depth of field,
-dark softly blurred background with little detail. Exactly one clear main subject;
-the face or key detail sits in the central 60% of the frame so it survives tight crops.
-Original designs only. No text, no letters, no numbers, no words, no signs with writing,
-no logos, no brands, no watermark, no device or phone frame. Family friendly: no alcohol,
-no cups that suggest drinking, no weapons, no violence. Landscape 4:3.
+Create one original 4:3 Secret Circle game illustration.
+The attached approved character/material sheet, docs/bildwelt/vorlage-2026-10-30.webp,
+is the sole exact STYLE reference. Match its sculpted cartoon forms, eye construction,
+head/body stylization, matte materials, restrained detail and soft shadow treatment.
+Humans, animals and props belong to this same animated world; do not make a human
+photorealistic or props into product photography. Classic recognizable role-archetypes,
+costumes, expression and action must support the actual game mechanic.
+Characters, location and palette may change. One clear main action; main face and decisive
+gesture remain readable in a 136x104 tile and the intended detail crop.
+One pupil per eye, deliberate gaze, coherent limbs and hands. No pores, textile noise,
+cinematic bokeh, glitter or glossy toy finish. Original designs only, no franchise copies,
+text, letters, digits, logos, brands, watermarks, phones, UI, alcohol, drinks, weapons or violence.
 ```
 
 Danach folgt der Motiv-Prompt aus der Tabelle unten.
@@ -51,7 +95,7 @@ Danach folgt der Motiv-Prompt aus der Tabelle unten.
 - **Format:** WebP, **800 × 600** Pixel, Ziel **höchstens 35 KB** pro Bild (Qualität etwa 70–75). Erzeugen gern größer (z. B. 1600 × 1200) und dann verkleinern.
 - **Warum so klein:** Alle Bilder im Offline-Cache werden bei der Installation geladen. Das Gesamtbudget ist 3,2 MB (`scripts/performance_budget.py`), davon sind gut 1,1 MB belegt. Bilder für alle 55 Spiele passen nur mit etwa 35 KB pro Bild hinein. Reicht das Budget nicht, wird das vor dem Einbinden entschieden (Budget erhöhen oder Bilder außerhalb des Offline-Kerns laden) – nicht stillschweigend.
 - **Dateiname:** `assets/images/<spiel-id>.webp`, z. B. `assets/images/charades.webp`.
-- **Varianten:** pro Spiel 2–3 Varianten erzeugen, die beste auswählen; wir schauen sie gemeinsam an, bevor sie eingebunden werden.
+- **Anzahl:** genau ein Entwurf pro Spiel. Keine parallelen Varianten. Fehlerkorrekturen ersetzen dieselbe Fassung.
 
 ## Einbinden (Medienvertrag)
 

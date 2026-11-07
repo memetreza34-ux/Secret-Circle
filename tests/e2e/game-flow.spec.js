@@ -96,7 +96,8 @@ test('imposter spoken answer is accepted by the group without a keyboard', async
   await expect(page.locator('#guess-screen input')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Richtig', exact: true })).toBeFocused();
   await page.getByRole('button', { name: 'Richtig', exact: true }).click();
-  await expect(page.locator('#result-heading')).toHaveText('Die Imposter gewinnen');
+  await expect(page.locator('#result-heading')).toHaveText('Match beendet');
+  await expect(page.locator('#match-summary')).toContainText('Letzte Runde: Die Imposter gewinnen die Runde.');
 });
 
 test('Word Imposter uses the shared group and writes valid edits back to it', async ({ page }) => {
@@ -178,6 +179,35 @@ test('starts multiple match rounds, preserves scores and avoids repeated words',
   expect(stored.usedWords).toContain(firstState.word);
   expect(scoresBefore).toHaveLength(players.length);
 });
+
+for (const scenario of [
+  { title: 'gemeinsamen Sieg', scores: { Alex: 3, Sam: 3, Mika: 1 }, rounds: 1, summary: 'Gemeinsamer Sieg: Alex und Sam · 3 Punkte.', ranks: ['1. Alex', '1. Sam', '3. Mika'] },
+  { title: 'alleinigen Gesamtsieg', scores: { Alex: 4, Sam: 2, Mika: 0 }, rounds: 1, summary: 'Gesamtsieg: Alex · 4 Punkte.', ranks: ['1. Alex', '2. Sam', '3. Mika'] },
+  { title: 'Zwischenstand', scores: { Alex: 1, Sam: 1, Mika: 0 }, rounds: 2, ranks: ['1. Alex', '1. Sam', '3. Mika'] }
+]) {
+  test(`Word Imposter zeigt ${scenario.title} und erhält ihn beim Fortsetzen`, async ({ page }) => {
+    await page.evaluate(({ scores, rounds }) => {
+      const E = window.SecretCircleEngine;
+      let game = E.createGame({ players: ['Alex', 'Sam', 'Mika'], entries: [['Apfel', 'Obst'], ['Birne', 'Frucht']], category: 'Alltag', imposterCount: 1, roundSeconds: 60, matchRounds: rounds, seed: 'ux-result' });
+      for (let i = 0; i < 3; i += 1) game = E.advanceReveal(game);
+      game = E.startVoting(game);
+      const imposter = game.imposters[0];
+      for (const voter of game.players) game = E.castVote(game, voter, voter === imposter ? game.players.find(name => name !== imposter) : imposter);
+      game = E.confirmImposterAnswer(E.resolveVote(game), false);
+      game.scores = scores;
+      localStorage.setItem('secret-circle-active-v7', JSON.stringify(E.restoreGame(game)));
+    }, scenario);
+    await page.reload();
+    await page.getByRole('button', { name: 'Fortsetzen', exact: true }).click();
+    await expect(page.locator('#result-heading')).toHaveText(scenario.rounds === 1 ? 'Match beendet' : 'Die Gruppe gewinnt die Runde');
+    if (scenario.summary) await expect(page.locator('#match-summary')).toContainText(scenario.summary);
+    else await expect(page.locator('#match-summary')).toBeHidden();
+    await expect(page.locator('#leaderboard .leader-row span')).toHaveText(scenario.ranks);
+    await expect(page.locator('#next-round')).toBeVisible({ visible: scenario.rounds > 1 });
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('secret-circle-active-v7')));
+    expect(stored.scores).toEqual(scenario.scores);
+  });
+}
 
 test('restores an interrupted round from local storage', async ({ page }) => {
   await page.locator('#players').fill('Alex\nSam\nMika');

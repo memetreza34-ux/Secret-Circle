@@ -53,6 +53,9 @@ test('Satzduell keeps anonymous result and score exact-once through reload/resum
 
   const voteButtons = page.locator('#quick-actions button');
   await expect(voteButtons).toHaveCount(3);
+  const backgrounds = await voteButtons.evaluateAll(nodes => nodes.map(node => getComputedStyle(node).backgroundColor));
+  expect(new Set(backgrounds).size).toBe(1);
+  await expect(page.locator('.challenge-card')).toHaveCSS('text-transform', 'none');
   for (const name of ['Alex', 'Sam', 'Mika']) await expect(page.locator('#quick-actions')).not.toContainText(name);
   await voteButtons.first().click();
   await expect(page.locator('#quick-content')).toContainText('Geschrieben von');

@@ -1,5 +1,7 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
+**Motivkorrekturen, 7. November 2026:** Vier bestehende Illustrationen (`pass-the-phone`, `password-one-word`, `spin-bottle`, `fill-blank-battle`) auf Nutzerauftrag am bestehenden Pfad ersetzt. Integriertes OpenAI `image_gen`, konkrete Modellkennung nicht ausgegeben; ausschließlich die eigene unveränderte Stilvorlage vom 30. Oktober. Lokaler WebP-Export mit Pillow, 800×600 ohne Zuschnitt. Vollständige Prompts und aktuelle/frühere SHA-256-Werte im Provenienzmanifest. Dieselbe projektseitige Output-Rechtebasis; finale manuelle Serien-/Rechteprüfung offen.
+
 Stand: 29. August 2026  
 Status: **IN PROGRESS – Icon-Provenienz gelöst; reale Install-/Audit-/Finalreview-Evidence offen**
 
@@ -68,7 +70,7 @@ Aktuelle Hashes:
 
 Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle Nutzungsbasis. Sie ist **keine Markenregistrierung oder Garantie weltweiter Einzigartigkeit**.
 
-## 6. Media-Inventar
+## 6. Media-Inventar – historischer Stand vom 14. Oktober 2026
 
 Seit dem 14. Oktober 2026 umfasst die App neben den drei Icons drei lokale Spielillustrationen:
 
@@ -137,3 +139,40 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
 
 Der frühere **Icon-Rechteblocker ist geschlossen**, das übergeordnete Asset-/Third-Party-Gate bleibt bis zu den realen Ausführungs- und Finalreview-Nachweisen **BLOCKED**. Der öffentliche Release bleibt **NO_GO**.
+
+
+## Gewählte Bildwelt und Scharade – 30. Oktober 2026
+
+Arman hat das Figuren-/Materialblatt `docs/bildwelt/vorlage-2026-10-30.webp` als Bildwelt und anschließend den klassischen Pantomimen in `assets/images/charades.webp` mit „besser weiter“ ausgewählt. Werkzeug: integriertes OpenAI `image_gen`; eine konkrete Modellbezeichnung wurde nicht ausgegeben. Nur eigene projektseitige Illustrationen dienten als Referenzen. Die tatsächliche Ausgangsreferenz aus Commit `9c12e6d` ist bytegleich unter `docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp` archiviert. Diese Dokumentationsbilder gehören nicht zum Offline-Core.
+
+Vollständige Generierungs- und Bearbeitungsprompts, Herkunft, Rechtebasis und SHA-256-Prüfsummen stehen im Provenienzmanifest; Prompts zusätzlich unter `docs/bildwelt/`. Der Pantomime zeigt eine eigene klassische Theaterrolle ohne erkennbare bekannte Figur, Bildschrift oder Marke. Export mit Pillow als 800×600 WebP unter 35 KB. Spielbildfreigabe und Herkunftsdokumentation sind keine öffentliche Releasefreigabe. Handy-/Desktop-Screenshots dokumentieren die eigene App mit diesem Bild.
+
+
+## Nicht sagen! – 30. Oktober 2026
+
+Arman hat den klassischen Showmaster als einzelnes Spielbild konkret ausgewählt. `assets/images/taboo.webp` wurde mit dem integrierten OpenAI `image_gen` und der gewählten eigenen Figuren-/Materialvorlage erzeugt; das Werkzeug weist kein konkretes Modell aus. Eigener Rollenentwurf, keine echte Person, Marke oder bekannte Figur. Vollständiger Prompt: `docs/bildwelt/taboo-2026-10-30.prompt.txt`; Rechtebasis, Referenzkette und SHA-256 stehen im Provenienzmanifest. Lokale WebP-Datei, 800×600 und 34.510 Bytes. Die Kartensymbole veranschaulichen das Erklären ohne verbotene Begriffe, ohne eine neue Spielregel einzuführen. Screenshots zeigen die eigene App in isolierten Testkontexten. Keine öffentliche Releasefreigabe.
+
+
+## Heiße Kartoffel – 2. November 2026
+
+Eigenes Gegenstandsmotiv in der gewählten Bildwelt, erzeugt am 30. Oktober mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. Fortsetzung des Einbaus nach der gezeigten Probe von Arman beauftragt. `assets/images/hot-potato.webp`: 800×600 WebP, 34.954 Bytes. Die Kartoffel und die Sanduhr stehen sinnbildlich für Weitergeben unter Zeitdruck, ohne die Regeln zu ändern. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/hot-potato-2026-10-30.prompt.txt`, Herkunft, Rechtebasis und SHA-256 im Manifest. Screenshots dokumentieren ausschließlich die eigene App. Keine öffentliche Releasefreigabe.
+
+## Wortkette – 3. November 2026
+
+Von Arman konkret freigegebenes Motiv einer Zugbegleiterin, die Waggons mit Apfel, Lampe und Elefant verbindet. Erzeugt am 2. November mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/word-chain.webp`: 800×600 WebP, 34.030 Bytes. Eigene projektseitige Stilvorlage, keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/word-chain-2026-11-02.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Wortfolge und Waggons erklären den Spielgedanken bildlich, ohne die Regeln zu ändern. Keine öffentliche Releasefreigabe.
+
+## Zwei Wahrheiten, eine Lüge – 3. November 2026
+
+Von Arman konkret freigegebener Fuchs-Abenteurer mit drei erzählten Erlebnissen, darunter ein erfundener Papierflieger-Flug. Erzeugt mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/two-truths.webp`: 800×600 WebP, 34.470 Bytes. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/two-truths-2026-11-03.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Erlebnisse sind ein Bildmotiv und ändern keine Spielregel. Keine öffentliche Releasefreigabe.
+
+## Word Imposter – feste Bildwelt, 4. November 2026
+
+Die konkret ausgewählte Stilkorrektur ersetzt das frühere `assets/images/imposter.webp`. Werkzeug: integriertes OpenAI `image_gen`, konkrete Modellkennung nicht ausgewiesen. Ausschließliche Stilreferenz: die eigene gewählte Figuren-/Materialvorlage vom 30. Oktober; die alte App-Illustration diente nur als Szenen-/Bearbeitungsziel. 800×600 WebP, 34.224 Bytes, SHA-256 `8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff`. Vollständiger Prompt unter `docs/bildwelt/imposter-stilkorrektur-2026-11-04.prompt.txt`; vorherige Revision samt altem Prompt und Prüfsumme im Provenienzmanifest erhalten. Die oben genannten älteren SHA-Werte dokumentieren ihre historischen Fassungen. Aktuelle Rechte-/Herkunftsangaben und Prüfsumme stehen im Manifest. Die Serienabnahme bleibt offen.
+
+## Bildwelt-Fortsetzung vom 5. November 2026
+
+15 lokale Spielbilder in derselben festen Figuren-/Materialwelt eingebunden. Fünf vorhandene Motive angeglichen, sieben Kernspielbilder ergänzt; Scharade, Nicht sagen! und das bereits korrigierte Word Imposter beibehalten. Alle 800 × 600 WebP und höchstens 35.000 Bytes, lokal mit Pillow exportiert. Werkzeug: integriertes OpenAI image_gen; konkrete Modellkennung nicht ausgegeben. Alleinige projektseitige Stilreferenz: `docs/bildwelt/vorlage-2026-10-30.webp`. Aktuelle SHA-256-Werte, vollständige Prompts, frühere Revisionen und Rechtebasis stehen im Provenienzmanifest. Finale Serien-/Releaseabnahme bleibt offen.
+
+## Vollständiger Bildbestand vom 5. November 2026
+
+Alle 55 Modi besitzen genau eine lokale Illustration, jeweils 800 × 600 WebP und höchstens 35.000 Bytes. Die weiteren 40 Motive entstanden mit dem integrierten OpenAI image_gen und ausschließlich der unveränderten projektseitigen Figuren-/Materialvorlage vom 30. Oktober. Modellkennung nicht ausgegeben; WebP-Export lokal mit Pillow. Gezielte Anatomie-, Material- und Motivkorrekturen ersetzen denselben Entwurf; kein zusätzlicher Stil und keine parallelen App-Varianten. Vollständige tatsächliche Prompts, Tool, Rechtebasis und aktuelle SHA-256-Werte stehen im Provenienzmanifest. Finale manuelle Serien-/RC-Prüfung bleibt offen.

@@ -1,4 +1,9 @@
 const { test, expect } = require('@playwright/test');
+const gameImages = require('../../assets/manifests/asset-provenance.json').assets
+  .filter(asset => asset.kind === 'generated-game-illustration' && asset.path.startsWith('assets/images/'))
+  .map(asset => ({ path: asset.path, sha256: asset.sha256 }));
+const expectedGameImagePaths = require('../../party-wave-one-clue-catalog.js').games
+  .map(game => 'assets/images/' + game.id + '.webp').sort();
 
 async function waitForWorker(page) {
   await page.evaluate(async () => {
@@ -20,16 +25,21 @@ async function seedPlayers(page) {
 }
 
 test('service worker caches the complete v30 core including Creator guidance and dedicated player', async ({ page, context }) => {
+  expect(gameImages).toHaveLength(55);
+  expect(gameImages.map(image => image.path).sort()).toEqual(expectedGameImagePaths);
   await page.goto('/party.html');
   await waitForWorker(page);
 
-  const cacheState = await page.evaluate(async () => {
+  const cacheState = await page.evaluate(async images => {
     const names = await caches.keys();
     /* Cachegeneration nicht festschreiben: Sie steigt mit jedem Offline-Release.
        Geprueft wird, dass genau ein Produktions-Cache existiert und vollstaendig ist. */
     const production = names.filter(name => /^secret-circle-v\d+$/.test(name));
     const cache = await caches.open(production[0]);
     const expected = [
+      './assets/images/two-truths.webp',
+      './assets/images/word-chain.webp',
+      './assets/images/hot-potato.webp', './assets/images/charades.webp', './assets/images/taboo.webp',
       './index.html', './v2-hub.html', './word-imposter.html', './party.html', './advanced.html', './quick-play.html', './creator.html', './privacy.html',
       './v2-theme.css', './v2-party-hub.css', './v2-update.css', './v2-play.css', './v2-party-play.css', './v2-imposter.css', './v2-advanced.css', './v2-creator.css',
       './runtime-guard.js', './setup-ux.js', './privacy-guard.js', './wake-lock.js',
@@ -43,15 +53,27 @@ test('service worker caches the complete v30 core including Creator guidance and
       './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png',
       './assets/images/imposter.webp', './assets/images/truth-dare.webp', './assets/images/mafia.webp'
     ];
+    expected.push(...images.map(image => './' + image.path));
     const missing = [];
     for (const path of expected) if (!await cache.match(path)) missing.push(path);
     return { names, missing };
-  });
+  }, gameImages);
   const productionCaches = cacheState.names.filter(name => /^secret-circle-v\d+$/.test(name));
   expect(productionCaches).toHaveLength(1);
   expect(cacheState.missing).toEqual([]);
 
   await context.setOffline(true);
+  const imageHashes = await page.evaluate(async images => {
+    const actual = [];
+    for (const image of images) {
+      const response = await fetch(image.path);
+      if (!response.ok) throw new Error('Offline image missing: ' + image.path);
+      const digest = await crypto.subtle.digest('SHA-256', await response.arrayBuffer());
+      actual.push({ path: image.path, sha256: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') });
+    }
+    return actual;
+  }, gameImages);
+  expect(imageHashes).toEqual(gameImages);
   await page.goto('/party.html');
   await expect(page.getByRole('heading', { name: 'Von der ersten Runde bis zum nächsten Spiel' })).toBeVisible();
   await expect(page.locator('#playable-count')).toHaveText('55');
@@ -60,6 +82,41 @@ test('service worker caches the complete v30 core including Creator guidance and
   await expect(page.getByRole('heading', { name: 'Eigenes Spiel erstellen' })).toBeVisible();
   await page.goto('/privacy.html');
   await expect(page.getByRole('heading', { name: 'Deine Spieldaten bleiben auf deinem Gerät' })).toBeVisible();
+  await page.goto('/v2-hub.html#spiel=charades');
+  const charades = page.locator('#mode-emblem img');
+  await expect(charades).toHaveAttribute('src', 'assets/images/charades.webp');
+  await expect(charades).toHaveAttribute('alt', /Pantomime/);
+  await expect.poll(() => charades.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  await page.goto('/v2-hub.html#spiel=imposter');
+  const imposter = page.locator('#mode-emblem img');
+  await expect(imposter).toHaveAttribute('src', 'assets/images/imposter.webp');
+  await expect.poll(() => imposter.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  const imposterHash = await page.evaluate(async () => {
+    const response = await fetch('assets/images/imposter.webp');
+    const digest = await crypto.subtle.digest('SHA-256', await response.arrayBuffer());
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  });
+  expect(imposterHash).toBe('8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff');
+  await page.goto('/v2-hub.html#spiel=two-truths');
+  const twoTruths = page.locator('#mode-emblem img');
+  await expect(twoTruths).toHaveAttribute('src', 'assets/images/two-truths.webp');
+  await expect(twoTruths).toHaveAttribute('alt', 'Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger');
+  await expect.poll(() => twoTruths.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  await page.goto('/v2-hub.html#spiel=word-chain');
+  const wordChain = page.locator('#mode-emblem img');
+  await expect(wordChain).toHaveAttribute('src', 'assets/images/word-chain.webp');
+  await expect(wordChain).toHaveAttribute('alt', /Zugbegleiterin/);
+  await expect.poll(() => wordChain.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  await page.goto('/v2-hub.html#spiel=hot-potato');
+  const potato = page.locator('#mode-emblem img');
+  await expect(potato).toHaveAttribute('src', 'assets/images/hot-potato.webp');
+  await expect(potato).toHaveAttribute('alt', /Kartoffel/);
+  await expect.poll(() => potato.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
+  await page.goto('/v2-hub.html#spiel=taboo');
+  const taboo = page.locator('#mode-emblem img');
+  await expect(taboo).toHaveAttribute('src', 'assets/images/taboo.webp');
+  await expect(taboo).toHaveAttribute('alt', /Showmaster/);
+  await expect.poll(() => taboo.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/word-imposter.html');
   await expect(page.getByRole('heading', { name: 'Word Imposter', level: 1 })).toBeVisible();
 });

@@ -284,9 +284,9 @@ input[disabled] {
   background: #0D0E13;
 }
 .hero-art > .mark { width: 96px; height: 96px; }
-.hero-art.has-image { height: auto; aspect-ratio: 8 / 5; overflow: hidden; }
+.hero-art.has-image { height: auto; aspect-ratio: 4 / 3; overflow: hidden; }
 .hero-art > .mark.has-image { position: absolute; inset: 0; width: 100%; height: 100%; }
-.game-art-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.game-art-image { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
 .hero-badge {
   position: absolute;
   z-index: 1;
@@ -426,7 +426,8 @@ input[disabled] {
   border: 1px solid var(--line);
   text-align: left;
   display: grid;
-  grid-template-rows: 104px auto;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
   padding: 0;
   min-height: var(--touch);
 }
@@ -438,6 +439,8 @@ input[disabled] {
   display: grid;
   place-items: center;
   position: relative;
+  aspect-ratio: 4 / 3;
+  width: 100%;
   background: #0D0E13;
 }
 .gcard-art .mark { width: 66px; height: 66px; }
@@ -453,7 +456,7 @@ input[disabled] {
   font-weight: 400;
 }
 .gcard-pad { padding: 10px 12px 12px; display: grid; gap: 4px; }
-.gcard-pad b { font-size: .84rem; line-height: 1.15; font-weight: 700; }
+.gcard-pad b { font-size: .84rem; line-height: 1.15; font-weight: 700; overflow-wrap: anywhere; }
 .gcard-pad small {
   font-size: .7rem;
   color: var(--fg-dim);
@@ -463,7 +466,7 @@ input[disabled] {
 }
 .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
 
 /* ── Suche und Filter ────────────────────────────────────────────────── */
 

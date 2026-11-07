@@ -138,13 +138,14 @@
           <div id="seat-preview"></div>
         </div>
       </div>
-      <div class="dock">
+      <div class="dock dock-stack">
         <form class="add-row" id="player-form">
           <label class="sr-only" for="player-input">Neuer Spieler</label>
           <input id="player-input" type="text" maxlength="32" autocomplete="off" autocapitalize="words"
                  enterkeyhint="done" placeholder="Neuer Spieler">
           <button class="add-btn" type="submit" id="player-add" aria-label="Person hinzufügen" data-icon="plus"></button>
         </form>
+        <button class="pill pill-primary wide" type="button" id="players-done">Fertig</button>
       </div>
     </section>
 
@@ -301,6 +302,7 @@
   <script src="party-wave-one-clue-catalog.js"></script>
   <script src="party-custom-packs.js"></script>
   <script src="v2-hub-packs.js"></script>
+  <script src="v2-game-art.js"></script>
   <script src="v2-hub.js"></script>
 </body>
 </html>
