@@ -18,6 +18,10 @@ function captureErrors(page) {
 }
 
 test.beforeEach(async ({ page }) => {
+  // Ein neuer Offline-Cache kann den Hinweis erst während der Navigation zeigen.
+  await page.addLocatorHandler(page.locator('.pwa-update-banner'), async notice => {
+    await notice.getByRole('button', { name: 'Später', exact: true }).click();
+  });
   // Speicher vorbereiten, ohne bereits App-Bilder und Skripte zu starten.
   await page.goto('/package.json');
   await page.evaluate(() => localStorage.clear());
