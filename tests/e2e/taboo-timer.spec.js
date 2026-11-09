@@ -69,6 +69,10 @@ test('Taboo reload restores the same private card and remaining time paused', as
   await page.getByRole('button', { name: 'Session fortsetzen' }).click();
 
   await expect(page.locator('#pause-hub-game')).toHaveText('Fortsetzen');
+  /* Nach dem Neuladen ist die Karte erst verdeckt und erscheint auf Wunsch unverändert. */
+  await expect(page.locator('#hub-private-prompt-cover')).toContainText('Geheime Karte wurde automatisch verdeckt');
+  await expect(page.locator('#play-content')).toBeHidden();
+  await page.getByRole('button', { name: 'Geheime Karte wieder anzeigen' }).click();
   await expect(page.locator('.taboo-word')).toHaveText(word);
   for (const item of banned) await expect(page.locator('.banned-list')).toContainText(item);
 

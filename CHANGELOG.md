@@ -1,3 +1,11 @@
+## v110 – Verdeckte Geheimnisse und vollständige Spielablaufprüfungen (9. November 2026)
+
+- Schutzkorrekturen aus PR #46/#47/#50 mit dem aktuellen Bild-/UX-Stand zusammengeführt: private Karten, Identitäten, Missionen und Spektrum-Ziel bleiben beim Fortsetzen verdeckt; derselbe Inhalt wird erst bewusst wieder aufgedeckt.
+- Spektrum-Tipp zeigt das Ziel jeder Runde erst nach der Geräteübergabe. Ergebnisaktionen der schnellen Engines sind kurz gegen unbeabsichtigte Doppeltipps geschützt; der Fokus bleibt beim Ergebnis.
+- Flaschendrehen und Würfel/Münze aktualisieren ihren sichtbaren Rundenzähler nach jeder Aktion.
+- Die sechs Ende-/Wiederholungs-Suites aus PR #46–#51 und deren 55er-Matrix übernommen und an die aktuelle Quiz-Navigation und verspätete Updatehinweise angepasst. Historische Ausgangsnachweise sind ausdrücklich von der neuen kombinierten Prüfung getrennt; reale Geräte-/Gruppenabnahme und Release bleiben offen.
+- Offline-Core v109 → v110; aktuelle Bilder, Storage-Keys und Punkteverträge bleiben erhalten.
+
 ## v109 – Verständlicher Einstieg und klare Spielergebnisse (7. November 2026)
 
 - Die drei CI-Testjobs verwenden fest Ubuntu 24.04, passend zu Playwright 1.54.2. Das veränderliche `ubuntu-latest` lieferte Ubuntu 26.04 und blockierte bereits die Browserinstallation. Diese reine CI-Korrektur verändert den Offline-Core nicht.

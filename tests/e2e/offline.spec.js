@@ -189,6 +189,7 @@ test('classic Wavelength Quick Mode starts and resumes offline', async ({ page, 
   await context.setOffline(true);
   await page.goto('/quick-play.html?game=wavelength');
   await page.locator('#quick-start').click();
+  await page.getByRole('button', { name: 'Ziel anzeigen' }).click();
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
@@ -204,9 +205,14 @@ test('Anime Trend Mode starts and resumes completely offline', async ({ page, co
   await expect(page.getByRole('heading', { name: 'Anime-Archetypen erraten' })).toBeVisible();
   await page.locator('#quick-start').click();
   await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
-  await expect(page.locator('.challenge-card')).not.toHaveText('');
+  const figure = (await page.locator('.challenge-card').textContent()).trim();
+  expect(figure).not.toBe('');
   await page.reload();
   await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  /* v101: Nach dem Neuladen ist die Figur wieder verdeckt und erscheint erst erneut auf Wunsch. */
+  await expect(page.locator('.challenge-card')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Figur der Gruppe zeigen' }).click();
+  await expect(page.locator('.challenge-card')).toHaveText(figure);
   await expect(page.getByRole('button', { name: 'Figur verbergen und 60 Sekunden starten' })).toBeVisible();
 });
 
