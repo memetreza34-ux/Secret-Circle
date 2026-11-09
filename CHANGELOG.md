@@ -1,3 +1,9 @@
+## v111 – Hilfswörter verraten keine Wortteile (9. November 2026)
+
+- 28 verräterische Word-Imposter-Hilfswörter aus PR #52 ersetzt, ohne Begriffe, Kategorien oder Reihenfolge zu ändern. Beim Gegenlesen zwei direkte Synonyme verbreitert: Notenblatt → Orchester und Gedankenlesen → Superkraft.
+- Dauerhafte Inhaltsprüfung verbietet Hilfswörter, die den Begriff oder dessen Wortteile enthalten, auch bei Umlauten, ß und unterschiedlicher Großschreibung. Der alte Stand scheitert reproduzierbar an Föhn → Föhnen.
+- Zehn-Runden-Prüfungen aus fünf Engine-Familien ergänzen die 55er-Abnahme: Innerhalb eines noch nicht ausgeschöpften Stapels darf keine Karte doppelt erscheinen. Kein neues Kartengedächtnis oder neue Kartenpakete. Offline-Core v110 → v111.
+
 ## v110 – Verdeckte Geheimnisse und vollständige Spielablaufprüfungen (9. November 2026)
 
 - Schutzkorrekturen aus PR #46/#47/#50 mit dem aktuellen Bild-/UX-Stand zusammengeführt: private Karten, Identitäten, Missionen und Spektrum-Ziel bleiben beim Fortsetzen verdeckt; derselbe Inhalt wird erst bewusst wieder aufgedeckt.
