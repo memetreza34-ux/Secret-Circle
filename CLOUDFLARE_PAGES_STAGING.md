@@ -1,6 +1,6 @@
 # Secret Circle – Cloudflare Pages Staging Runbook
 
-Stand: 29. August 2026  
+Stand: 9. November 2026
 Status: **PREPARED – kein Cloudflare-Projekt/keine Origin real angelegt**  
 Preferred technical candidate: **Cloudflare Pages**
 
@@ -37,17 +37,21 @@ Project name: secret-circle-staging (oder eindeutiger real verfügbarer Name)
 Git provider: GitHub
 Repository: memetreza34-ux/Secret-Circle
 Framework preset: None / static
-Build command: exit 0
-Build output directory: Repository root (in der realen UI verifizieren; typischerweise .)
+Build command: npm run release:package
+Build output directory: dist/site
 Functions: keine für V1
 Web Analytics: nicht automatisch aktivieren
 Production branch des Staging-Projekts: bewusst gewählter Staging-/Release-Candidate-Branch
 Preview deployments: nur soweit für Review benötigt
 ```
 
+Nur `dist/site` veröffentlichen, niemals den Repository-Ordner. Der Paketierer liest die freigegebenen App-Dateien aus einem festen Git-Commit, prüft Offline-Core und Dateiprüfsummen und legt zusätzlich `release/secret-circle.zip` an. Interne Betreiber-/Releasevorlagen, Tests, Git-Dateien und Werkzeuge gehören nicht zum Paket. Lokale, noch nicht committete App-Änderungen stoppen den Export. Das Paketmanifest `release-build.json` nennt Commit, Cache und Prüfsummen; es enthält keine Betreiberangaben.
+
+Die CI erstellt und verifiziert dasselbe Paket als herunterladbares Artefakt. Ein PR-Artefakt bleibt ein Prüfstand; die spätere Veröffentlichung verwendet den geprüften, unveränderten RC auf dem geschützten Branch. Ein Paketexport veröffentlicht selbst nichts. Die [Build-Konfiguration](https://developers.cloudflare.com/pages/configuration/build-configuration/) verwendet ein eigenes Ausgabeverzeichnis; `_headers` liegt darin wie von [Cloudflare dokumentiert](https://developers.cloudflare.com/pages/configuration/headers/).
+
 ### Aktueller Branchhinweis
 
-`agent/release-foundation-2027` und `integration/v64-main-sync` sind noch Draft-/NO_GO-Arbeitsstände. Sie dürfen für **Stagingtests** verwendet werden, aber ihre Bereitstellung ist keine Production-Freigabe.
+PR #69 enthält Bilder/UX, PR #70 die darauf geprüften Spielabläufe und Schutzkorrekturen. Beide benötigen noch Review und Integration nach `main`. Für einen Stagingtest kann ein bewusst gewählter Prüfstand verwendet werden; das erteilt keine Production-Freigabe.
 
 Vor dem finalen RC wird ein klarer unveränderlicher RC-/Releasebranch benötigt. Der reale Branchname wird erst bei Freeze festgelegt.
 
@@ -83,11 +87,13 @@ Sobald eine echte Staging-Origin existiert:
 npm run staging:smoke -- https://REAL-STAGING-ORIGIN/ --expected-cache secret-circle-v111
 ```
 
+Für die spätere verbindliche Paketprüfung zusätzlich `--expected-commit <40-stelliger-RC-SHA>` verwenden. Damit werden das Paketmanifest und alle öffentlich ausgelieferten Dateibytes geprüft; ein gleicher Cachename allein genügt nicht. Alternativ den vorbereiteten GitHub-Workflow **Secret Circle Deployment Smoke** mit HTTPS-Origin und Commit starten. Er prüft nur und veröffentlicht nichts. Origin und reale Hostingfreigaben werden erst mit den tatsächlichen Angaben ergänzt.
+
 Erforderlich:
 
 - HTTPS
 - Same-Origin-Redirect-Vertrag
-- v64-Cache
+- zum gewählten Commit gehöriger Offline-Cache
 - PWA-/Manifest-/Icon-Vertrag
 - Response-CSP inklusive `frame-ancestors 'none'`
 - `X-Content-Type-Options: nosniff`
@@ -105,8 +111,7 @@ Danach Browser/PWA manuell:
 - Updatebanner
 - Upgrade aus älteren Installationen
 - bestehende Spezialgates bis HS60
-- Core 15
-- Wave-1-Labs getrennt
+- alle 55 Spiele einschließlich Wave-One-Labs
 
 ## 5. Staging-Evidence
 

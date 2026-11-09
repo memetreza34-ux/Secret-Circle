@@ -1,8 +1,10 @@
 # Secret Circle – Release-Checkliste Januar 2027
 
-Stand: 29. August 2026
+Stand: 9. November 2026
 
 Diese Checkliste gilt nur für **einen unveränderten Release-Candidate-Commit**. Source-Code, Tests oder Dokumentation allein sind kein realer PASS.
+
+Der zuletzt vollständig geprüfte Integrationsstand ist [`f9a8fcc`, PR #70](https://github.com/memetreza34-ux/Secret-Circle/pull/70): `validate`, `e2e-webkit` und `smoke` grün, 1.803 Fälle ohne Fehler oder Wiederholung. Er ist noch nicht nach `main` integriert. Die offenen Kästchen unten verlangen die erneute finale Abnahme auf dem festgelegten RC; sie behaupten keinen weiterhin bestehenden Runner-Ausfall. V1 umfasst alle 55 Spiele.
 
 Aktueller Arbeitsstand:
 
@@ -20,30 +22,28 @@ Quellsseitig vorbereitet:
 - [x] CI/Cross-Browser verwenden `npm ci`
 - [x] Release-/Foundation-/Backup-/Architecture-Audits
 - [x] Wave-1-Unit-/E2E-/Audit-Verträge
-- [x] Runner-Problem als Pre-Step-/Hosted-Runner-Problem isoliert
+- [x] Runner führt die Prüfungen real aus; Browserjobs verwenden das unterstützte Ubuntu 24.04
 
 Real offen:
 
 - [ ] exakter RC-Commit und Tag
-- [ ] Actions erreicht Step 1 / Checkout
+- [ ] Actions führt alle Pflichtjobs auf dem finalen RC aus
 - [ ] Online-`npm ci --ignore-scripts --no-audit --no-fund`
 - [ ] `npm run ci` grün
 - [ ] Chromium / Firefox / WebKit auf demselben Commit grün
 - [ ] **Required Check aktiv und grün**
 - [ ] Branch Protection real aktiv
 
-Solange `steps: []` / `runner_id: 0` reproduziert wird, darf kein App-Code als vermeintlicher CI-Fix abgeschwächt werden.
+Ein künftiger Infrastrukturfehler rechtfertigt weiterhin keine abgeschwächten App-Prüfungen.
 
 ## 2. PR-/Branch-Hygiene
 
-- [ ] Draft-PR #15 gegen aktuellen Releasebranch synchronisiert
-- [ ] GitHub-Compare: `behind_by = 0`
-- [ ] PR #15 weiterhin exakt 9 Reconciliation-Pfade
-- [ ] kein Engine-/Katalog-/Service-Worker-Runtime-Code im PR-#15-Diff
+- [ ] PR #69/#70 und technische Folgearbeiten unabhängig geprüft und nach `main` integriert
+- [ ] Zielbranch auf dem neuesten `main`, keine ungeprüften Konfliktlösungen
 - [ ] ältere Foundation-/Draft-PRs eindeutig historisch oder weiterhin erforderlich dokumentiert
 - [ ] kein Release direkt aus ungeschütztem Zwischenstand
 
-PR #13 und PR #15 bleiben bis zu realer Evidence Draft.
+Alte PR-Ketten werden nicht blind zusätzlich übernommen. Änderungen bleiben an ihren tatsächlichen Nachweis-Commit gebunden.
 
 ## 3. Core / Session / Spezialgates
 
@@ -84,7 +84,7 @@ Real je relevante Enginefamilie:
 - [ ] private Reveal-/Input-Pfade sicher
 - [ ] mindestens eine echte Gruppe vor möglicher Promotion
 
-**Core bleibt 15.** Labs werden nicht automatisch Core.
+Die Reifegrade bleiben 15 Core / 13 Extended / 27 Labs; die V1-Abnahme umfasst trotzdem alle 55 Spiele.
 
 ## 5. PWA / Offline / Upgrade
 
@@ -112,6 +112,8 @@ Source vorbereitet:
 - [x] sichere `sw.js`-Cache-Policy
 - [x] Cloudflare Pages als Preferred Candidate dokumentiert
 
+Technisch vorbereitet: Paketexport nach `dist/site`, Commit-/Dateiprüfsummen in `release-build.json`, CI-Paketartefakt und der manuell startbare Workflow **Secret Circle Deployment Smoke**. Nur das App-Paket hochladen. Für den späteren verbindlichen HTTPS-Staging-Smoke `npm run staging:smoke -- <STAGING> --expected-commit <RC-SHA>` verwenden; `scripts/staging_smoke.py` prüft dabei auch die tatsächlichen Dateibytes.
+
 Real offen:
 
 - [ ] Hostingprovider/Produkt final
@@ -138,7 +140,7 @@ Real offen:
 
 ## 8. Reale Gruppen / Beta
 
-Für jedes der 15 Core-Spiele:
+Für jedes der 55 V1-Spiele:
 
 - [ ] Start/Lobby/Regeln ohne Entwicklerhilfe verständlich
 - [ ] Randfälle / Spielerzahlen
@@ -164,7 +166,7 @@ Quellsseitig jetzt erledigt:
 - [x] `icon-192.png = verified-own`
 - [x] `icon-512.png = verified-own`
 - [x] neue SHA-256-Werte dokumentiert
-- [x] Media-Vertrag bleibt exakt drei Release-Medien
+- [x] Medienvertrag umfasst alle 55 lokalen Spielbilder, drei App-Icons und die zugehörigen Dokumentationsbilder
 - [x] `ASSET_RIGHTS_SIGNOFF.md` auf Ersatzicon synchronisiert
 - [x] `THIRD_PARTY_NOTICES.md` auf Ersatzicon synchronisiert
 

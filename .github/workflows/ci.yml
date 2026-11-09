@@ -59,10 +59,25 @@ jobs:
       - name: Validate offline PWA and release gates
         run: npm run validate
 
+      - name: Package immutable public app files
+        run: |
+          npm run release:package
+          npm run release:verify -- --expected-commit "$GITHUB_SHA"
+
       # WebKit läuft parallel im Job e2e-webkit. Beide Engines in einem Job
       # sprengten mit rund 40 Minuten das Zeitlimit.
       - name: Run browser end-to-end tests (Chromium)
         run: npm run test:e2e -- --project=chromium-desktop --project=chromium-mobile
+
+      - name: Upload verified app package
+        uses: actions/upload-artifact@v4
+        with:
+          name: secret-circle-package-${{ github.sha }}
+          path: |
+            dist/site
+            release/secret-circle.zip
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Upload browser test report
         if: always()

@@ -1,3 +1,10 @@
+## Technische Veröffentlichungsvorbereitung (9. November 2026)
+
+- Reproduzierbarer Export aus festem Git-Commit: nur öffentliche App-Dateien nach `dist/site` und `release/secret-circle.zip`, mit Dateiprüfsummen und Commit im Paketmanifest. Repositorydateien und interne Betreiberangaben werden nicht mit veröffentlicht.
+- Lokale Paketprüfung und späterer HTTPS-Smoke prüfen die tatsächlichen Dateibytes und den erwarteten Commit. Weiterleitungen auf fremde Origins werden vor der Folgeanfrage blockiert.
+- Echte Browser-Upgradeprüfungen von v99/v109 sowie fehlgeschlagene Cache-Installation und Wiederholung dauerhaft in die CI übernommen. Veröffentlichungspaket wird als CI-Artefakt vorbereitet; separater manueller HTTPS-Prüfworkflow veröffentlicht nichts.
+- Keine Änderung an App-Laufzeit oder Offline-Core v111. Hosting, Betreiberangaben und reale Geräte-/Gruppenfreigaben bleiben offen.
+
 ## v111 – Hilfswörter verraten keine Wortteile (9. November 2026)
 
 - 28 verräterische Word-Imposter-Hilfswörter aus PR #52 ersetzt, ohne Begriffe, Kategorien oder Reihenfolge zu ändern. Beim Gegenlesen zwei direkte Synonyme verbreitert: Notenblatt → Orchester und Gedankenlesen → Superkraft.
