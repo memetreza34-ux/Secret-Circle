@@ -36,6 +36,15 @@ jobs:
           PRODUCTION: ${{ inputs.production }}
         run: |
           set -euo pipefail
+          python - <<'PY'
+          import os, re, subprocess
+          commit = os.environ['EXPECTED_COMMIT']
+          if not re.fullmatch(r'[0-9a-f]{40}', commit):
+              raise SystemExit('Vollständiger Commit-SHA erforderlich.')
+          present = subprocess.run(['git', 'cat-file', '-e', commit + '^{commit}'], capture_output=True)
+          if present.returncode:
+              subprocess.run(['git', 'fetch', '--no-tags', '--depth=1', 'origin', commit], check=True)
+          PY
           args=("$DEPLOY_URL" --expected-commit "$EXPECTED_COMMIT")
           if [[ "$PRODUCTION" == "true" ]]; then args+=(--production); fi
           python scripts/staging_smoke.py "${args[@]}" | tee deployment-smoke.json

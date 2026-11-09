@@ -22,6 +22,11 @@ MANIFEST = 'release-build.json'
 EXTRAS = ('sw.js', '_headers', 'THIRD_PARTY_NOTICES.md')
 BLOCKED_PARTS = {'.git', '.github', '.cache', 'node_modules', 'tests', 'scripts', 'tools', 'docs', 'dist', 'release'}
 RUNTIME_SUFFIXES = {'.js', '.css', '.html', '.webmanifest', '.svg', '.png', '.webp', '.avif', '.woff', '.woff2', '.ico', '.jpg', '.jpeg', '.gif'}
+FONT_LICENSES = {
+    # Offizielle OFL-Texte, nur LF-Zeilenenden und entfernte Leerzeichen am Zeilenende.
+    'fonts/figtree-': ('FIGTREE', 'bb272dfcd8801eb31fb98fe51828f76f0e41ac82f89256101df8021aa3d30ce2'),
+    'fonts/archivo-black-': ('ARCHIVO_BLACK', '4cafdbbd100af37a23805af09b7068e4daafb4516dc3d6d52436f4a9d7b4c0d3'),
+}
 
 
 def safe_name(name):
@@ -118,6 +123,19 @@ def manifest_bytes(manifest):
     return (json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + '\n').encode('utf-8')
 
 
+def assert_font_notices(files):
+    fonts = [name for name in files if name.endswith(('.woff', '.woff2', '.ttf', '.otf'))]
+    text = files.get('THIRD_PARTY_NOTICES.md', b'').decode('utf-8').replace('\r\n', '\n')
+    for name in fonts:
+        license_record = next((record for prefix, record in FONT_LICENSES.items() if name.startswith(prefix)), None)
+        if not license_record:
+            raise ValueError(f'Schrift ohne geprüften Lizenztext: {name}')
+        label, digest = license_record
+        block = re.search(r'<!-- BEGIN_FONT_LICENSE_' + label + r' -->\n(.*?)<!-- END_FONT_LICENSE_' + label + r' -->', text, re.S)
+        if not block or hashlib.sha256(block[1].encode('utf-8')).hexdigest() != digest:
+            raise ValueError(f'Vollständiger unveränderter Schrift-Lizenztext fehlt: {name}')
+
+
 def check_manifest(manifest, expected_commit=None):
     if not isinstance(manifest, dict) or manifest.get('format') != FORMAT:
         raise ValueError('Ungültiges Paketmanifest.')
@@ -140,11 +158,15 @@ def check_manifest(manifest, expected_commit=None):
         raise ValueError('Unvollständiges oder rekursives Paketmanifest.')
 
 
-def verify_site(site, expected_commit=None):
+def verify_site(site, expected_commit=None, source_root=ROOT):
     if site.is_symlink():
         raise ValueError('Das Paketverzeichnis ist ein Symlink.')
     manifest = json.loads((site / MANIFEST).read_text(encoding='utf-8'))
     check_manifest(manifest, expected_commit)
+    if expected_commit:
+        _, trusted = load_commit(expected_commit, root=source_root)
+        if manifest != trusted:
+            raise ValueError('Das Paketmanifest stimmt nicht mit den echten Git-Dateien des erwarteten Commits überein.')
     actual = {file.relative_to(site).as_posix() for file in site.rglob('*') if file.is_file() or file.is_symlink()}
     if actual != set(manifest['files']) | {MANIFEST}:
         raise ValueError('Fremde oder fehlende Datei im Paketverzeichnis.')
@@ -159,11 +181,14 @@ def verify_site(site, expected_commit=None):
     sw = files['sw.js'].decode('utf-8')
     if public_names(sw) != set(files) or offline.core_hash(sw, files.__getitem__) != manifest['coreHash']:
         raise ValueError('Paket und Offline-CORE stimmen nicht überein.')
+    if expected_commit:
+        assert_font_notices(files)
     return manifest
 
 
 def write_package(files, manifest, site, archive):
     check_manifest(manifest)
+    assert_font_notices(files)
     if site.exists() and any(site.iterdir()):
         # Nur das eigene, vollständig geprüfte vorige Paket ersetzen. Keine fremden Dateien löschen.
         previous = verify_site(site)
@@ -182,7 +207,7 @@ def write_package(files, manifest, site, archive):
         temporary.replace(target)
     for name in obsolete:
         (site / name).unlink()
-    verify_site(site, manifest['commit'])
+    verify_site(site)
     archive.parent.mkdir(parents=True, exist_ok=True)
     temporary = archive.with_name(archive.name + '.' + uuid.uuid4().hex + '.tmp')
     with zipfile.ZipFile(temporary, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as target:
@@ -215,7 +240,7 @@ def main():
     args = parser.parse_args()
     site = output_path(args.output, 'dist')
     if args.verify:
-        manifest = verify_site(site, args.expected_commit)
+        manifest = verify_site(site, args.expected_commit or commit_for(args.ref))
     else:
         files, manifest = load_commit(args.ref)
         # Ein Paket aus einem älteren Commit trotz lokaler Änderungen ist nur mit explizitem --ref erlaubt.

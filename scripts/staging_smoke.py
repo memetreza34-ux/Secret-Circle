@@ -12,7 +12,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse
 from urllib.request import Request, HTTPRedirectHandler, build_opener
 
-from package_release import check_manifest
+from package_release import check_manifest, load_commit, assert_font_notices
 
 MAX_TEXT_BYTES = 2_000_000
 MAX_BINARY_BYTES = 3_000_000
@@ -244,6 +244,10 @@ def verify_deployed_package(base_url, expected_commit, cache_name, results):
         raise RuntimeError('release-build.json: JSON-Antwort erwartet, kein HTML-Fallback.')
     manifest = json.loads(decode_utf8(result, 'release-build.json'))
     check_manifest(manifest, expected_commit)
+    trusted_files, trusted = load_commit(expected_commit)
+    assert_font_notices(trusted_files)
+    if manifest != trusted:
+        raise RuntimeError('Das ausgelieferte Paketmanifest stimmt nicht mit dem erwarteten Git-Commit überein.')
     if manifest['cache'] != cache_name:
         raise RuntimeError('Paketmanifest und ausgelieferter Service Worker nennen verschiedene Caches.')
     for name, entry in manifest['files'].items():

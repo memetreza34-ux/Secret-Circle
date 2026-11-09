@@ -54,7 +54,7 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertNotIn('README.md', files)
         site, archive = self.root / 'dist/site', self.root / 'release/app.zip'
         package.write_package(files, manifest, site, archive)
-        self.assertEqual(package.verify_site(site, self.commit), manifest)
+        self.assertEqual(package.verify_site(site, self.commit, self.root), manifest)
         with zipfile.ZipFile(archive) as data:
             self.assertEqual(set(data.namelist()), set(files) | {package.MANIFEST})
 
@@ -85,6 +85,32 @@ class ReleasePackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.build()
 
+    def test_modified_file_and_forged_manifest_cannot_impersonate_a_git_commit(self):
+        import hashlib
+        files, manifest = self.build()
+        site, archive = self.root / 'site', self.root / 'app.zip'
+        package.write_package(files, manifest, site, archive)
+        forged = b'/*\n  Content-Security-Policy: unsafe\n'
+        (site / '_headers').write_bytes(forged)
+        manifest['files']['_headers'] = {'bytes': len(forged), 'sha256': hashlib.sha256(forged).hexdigest()}
+        (site / package.MANIFEST).write_bytes(package.manifest_bytes(manifest))
+        # Die Selbstprüfsummen allein wären konsistent; der tatsächliche Git-Stand ist anders.
+        package.verify_site(site)
+        with self.assertRaises(ValueError):
+            package.verify_site(site, self.commit, self.root)
+
+    def test_bundled_fonts_require_complete_unchanged_license_texts(self):
+        for prefix in package.FONT_LICENSES:
+            with self.subTest(font=prefix):
+                files = {**self.files, prefix + 'latin.woff2': b'font fixture'}
+                with self.assertRaises(ValueError):
+                    package.assert_font_notices(files)
+                files['THIRD_PARTY_NOTICES.md'] = (ROOT / 'THIRD_PARTY_NOTICES.md').read_bytes()
+                package.assert_font_notices(files)
+                files['THIRD_PARTY_NOTICES.md'] = files['THIRD_PARTY_NOTICES.md'].replace(b'SIL OPEN FONT LICENSE', b'CHANGED FONT LICENSE')
+                with self.assertRaises(ValueError):
+                    package.assert_font_notices(files)
+
     def test_unsafe_paths_and_false_commit_are_rejected(self):
         for name in ['../secret.js', '/app.js', 'tests/data.js', 'scripts/x.js', '.env', 'operator-release.json', 'README.md', 'app.js?x', 'C:/x.js', 'a\\b.js']:
             with self.subTest(name=name), self.assertRaises(ValueError):
@@ -109,7 +135,7 @@ class ReleasePackageTests(unittest.TestCase):
         manifest_result = smoke.FetchResult('', '', 200, 'application/json', {}, package.manifest_bytes(manifest))
         resources = {name: smoke.FetchResult('', '', 200, 'text/plain', {}, value) for name, value in files.items()}
         from unittest.mock import patch
-        with patch.object(smoke, 'fetch', return_value=manifest_result):
+        with patch.object(smoke, 'fetch', return_value=manifest_result), patch.object(smoke, 'load_commit', side_effect=lambda ref: package.load_commit(ref, root=self.root)):
             smoke.verify_deployed_package('https://test.invalid/', self.commit, manifest['cache'], resources)
             resources['app.js'].body = b'altered'
             with self.assertRaises(RuntimeError):
