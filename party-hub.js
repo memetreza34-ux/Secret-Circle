@@ -563,6 +563,11 @@
     $('#play-eyebrow').textContent = ''; $('#play-title').textContent = ''; $('#play-player').textContent = '';
     $('#play-content').className = 'play-content';
     clearNode($('#play-content')); clearNode($('#play-options')); clearNode($('#play-actions'));
+    updatePlayProgress();
+  }
+  /* Auch ohne neues Rendern aktualisieren: Flaschendrehen und Würfel zählen
+     jede Aktion als Runde, ohne die Karte neu aufzubauen. */
+  function updatePlayProgress() {
     $('#play-progress').textContent = countLabel(session.rounds, 'Runde', 'Runden');
     $('#play-score').textContent = session.score ? countLabel(session.score, 'Punkt', 'Punkte') : '';
     $('#play-layer .play-topbar').hidden = !session.rounds && !session.score;
@@ -685,7 +690,7 @@
       const player = randomItem(sessionPlayers());
       $('#play-content').textContent = player || 'Keine Person gespeichert.';
       $('#play-content').classList.add('random-result');
-      session.rounds += 1; persistActiveSession(); navigator.vibrate?.(80);
+      session.rounds += 1; updatePlayProgress(); persistActiveSession(); navigator.vibrate?.(80);
     }), actionButton('Neu wählen', renderPlayRound, 'secondary'));
     persistActiveSession();
   }
@@ -702,7 +707,7 @@
   function showUtilityResult(value) {
     $('#play-content').textContent = value;
     $('#play-content').classList.add('random-result');
-    session.rounds += 1; persistActiveSession(); navigator.vibrate?.(60);
+    session.rounds += 1; updatePlayProgress(); persistActiveSession(); navigator.vibrate?.(60);
   }
   function offerHubResume(active) {
     $('#hub-resume-session')?.remove();

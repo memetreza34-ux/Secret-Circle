@@ -13,6 +13,7 @@
   const VERSION = 1;
   const MAX_HISTORY = L.maximumHistory;
   const ALLOWED = new Set(C.trendingGameIds || []);
+  const PRIVATE_CARD_GAMES = new Set(['draw-guess', 'sound-imitation', 'hum-song', 'forehead-guess']);
   const $ = selector => document.querySelector(selector);
   const countLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
 
@@ -241,6 +242,17 @@
     $('#quick-player').textContent = `${currentPlayer()} gibt den Hinweis`;
     if (active.phase === 'ready') {
       $('#quick-private-note').hidden = false;
+      /* Das Ziel erst nach der Übergabe zeigen: Sonst sieht es, wer die
+         vorige Runde weitergetippt hat. */
+      if (!current.targetShown) {
+        $('#quick-content').append(element('p', 'muted', `Gerät an ${currentPlayer()} geben. Nur diese Person sieht gleich den Zielwert.`));
+        $('#quick-actions').append(button('Ziel anzeigen', () => {
+          current.targetShown = true;
+          saveActive();
+          renderRound();
+        }));
+        return;
+      }
       const scale = element('div', 'spectrum-card');
       scale.append(element('span', '', left), element('strong', '', `Ziel: ${current.target}`), element('span', '', right));
       $('#quick-content').append(scale, element('p', 'muted', 'Gib einen kurzen Hinweis, der dein Team möglichst nah an den geheimen Zielwert führt.'));
@@ -539,8 +551,19 @@
     if (active) $('#quick-resume-text').textContent = `${game.title} · Runde ${active.round} von ${active.targetRounds}`;
   }
 
+  /* Nach Neuladen oder Rückkehr weiß niemand, wer das Gerät hält. Offene
+     Geheimnisse werden deshalb wieder zugedeckt; Karte und Ziel bleiben
+     dieselben, damit sich durch Neuladen nichts neu ziehen lässt. */
+  function concealSecretsForResume() {
+    if (!active?.current) return;
+    if (gameId === 'wavelength' && active.phase === 'ready') active.current.targetShown = false;
+    if (PRIVATE_CARD_GAMES.has(gameId) && active.phase === 'card') active.phase = 'ready';
+    saveActive();
+  }
+
   function resumeSession() {
     if (!active) return;
+    concealSecretsForResume();
     sessionControls.setSessionActive(true);
     $('#quick-setup').hidden = true;
     $('#quick-result').hidden = true;
