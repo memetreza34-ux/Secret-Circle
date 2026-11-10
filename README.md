@@ -10,7 +10,7 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - **Expansion Wave 1: 10/10 geplante Labs quellsseitig implementiert**
 - Word Imposter + Smart Party Night + lokaler No-Code-Game-Creator
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
-- kein Wave-1-Lab erweitert automatisch den Januar-Core
+- alle 55 Spiele gehören zur V1-Abnahme; Core/Extended/Labs bleiben Reifegrad-Metadaten
 
 Aktueller Offline-Core: **`secret-circle-v111` / `secret-circle-v111-staging`**
 Package: **`1.0.0-beta.3`**  
@@ -24,6 +24,10 @@ Icon-Provenienz: **SOURCE RESOLVED – drei Release-Icons `verified-own`**
 Gesamtfreigabe: **NO_GO**
 
 **Quellsseitig gehärtet ist nicht automatisch releasefertig.**
+
+Zuletzt vollständig geprüft: Integrationsstand [`f9a8fcc`](https://github.com/memetreza34-ux/Secret-Circle/pull/70), alle drei Pflichtchecks grün mit 1.803 bestandenen Fällen ohne Wiederholung. Das ist noch kein nach `main` integrierter oder final freigegebener Release Candidate. Die technischen Veröffentlichungsvorbereitungen werden separat erneut geprüft.
+
+Das optionale Veröffentlichungspaket entsteht mit `npm run release:package` in `dist/site` und `release/secret-circle.zip`; `npm run release:verify -- --expected-commit <SHA>` prüft seine unveränderten Dateien. **Nur das Paket veröffentlichen, nie den Repository-Ordner.** Die App selbst benötigt weiterhin keinen Build und kein Backend. Betreiber-/Hostingangaben und reale Geräte-/Gruppenfreigaben bleiben offen.
 
 ## Releaseziel
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import json
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 PROVENANCE = ROOT / 'assets' / 'manifests' / 'asset-provenance.json'
@@ -113,10 +114,17 @@ provenance_paths = {
 }
 
 media_paths = set()
+# Das verifizierte Exportpaket kopiert dieselben Medien. Es ist kein zusätzlicher
+# Quellbestand; versionierte Dateien in diesem Ausgabeordner bleiben verboten.
+tracked_output = subprocess.run(['git', 'ls-files', '--', 'dist'], cwd=ROOT, capture_output=True, check=True)
+if tracked_output.stdout.strip():
+    raise SystemExit('Generierte Veröffentlichungspakete dürfen nicht versioniert werden.')
 for path in ROOT.rglob('*'):
     if not path.is_file():
         continue
     relative = path.relative_to(ROOT)
+    if relative.parts[0] == 'dist':
+        continue
     if any(part in IGNORED_DIRS for part in relative.parts):
         continue
     if path.suffix.lower() in MEDIA_SUFFIXES:

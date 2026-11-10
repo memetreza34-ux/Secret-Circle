@@ -1,3 +1,13 @@
+## Technische Veröffentlichungsvorbereitung (9. November 2026)
+
+- HTTPS-Prüfung weist falsch deklarierte JavaScript-/CSS-Antworten auch bei unveränderten Dateibytes zurück; damit kann ein durch `nosniff` blockierter App-Start nicht allein wegen gültiger Prüfsummen bestehen. Gilt auch für den Service Worker und den bisherigen Smoke ohne Commitangabe.
+- Reproduzierbarer Export aus festem Git-Commit: nur öffentliche App-Dateien nach `dist/site` und `release/secret-circle.zip`, mit Dateiprüfsummen und Commit im Paketmanifest. Repositorydateien und interne Betreiberangaben werden nicht mit veröffentlicht.
+- Vollständige Figtree-/Archivo-Black-Lizenztexte aus den offiziellen Google-Fonts-Quellen in die ausgelieferten Third-Party-Hinweise aufgenommen. Copyright-Angaben mit den Metadaten der vorhandenen WOFF2-Dateien abgeglichen; der Paketierer prüft die vollständigen Texte per SHA-256.
+- Lokale Paketprüfung und späterer HTTPS-Smoke vergleichen Dateibytes und Manifest mit den echten Git-Dateien des erwarteten Commits; ein gemeinsam verändertes Paket und Manifest besteht die Prüfung nicht. Weiterleitungen auf fremde Origins werden vor der Folgeanfrage blockiert.
+- Echte Browser-Upgradeprüfungen von v99/v109 sowie fehlgeschlagene Cache-Installation und Wiederholung dauerhaft in die CI übernommen. Veröffentlichungspaket wird als CI-Artefakt vorbereitet; separater manueller HTTPS-Prüfworkflow veröffentlicht nichts.
+- Windows-Kommandos für alle 36 Audits und beide Browser-Testserver auf denselben Python-Wrapper umgestellt; ein vorhandener Microsoft-Store-Alias ersetzt keinen Interpreter mehr. Prüfungen, Auslassungen und Zeitlimits bleiben erhalten.
+- Keine Änderung an App-Laufzeit oder Offline-Core v111. Hosting, Betreiberangaben und reale Geräte-/Gruppenfreigaben bleiben offen.
+
 ## v111 – Hilfswörter verraten keine Wortteile (9. November 2026)
 
 - 28 verräterische Word-Imposter-Hilfswörter aus PR #52 ersetzt, ohne Begriffe, Kategorien oder Reihenfolge zu ändern. Beim Gegenlesen zwei direkte Synonyme verbreitert: Notenblatt → Orchester und Gedankenlesen → Superkraft.

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import struct
@@ -9,7 +10,9 @@ import sys
 from dataclasses import dataclass
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse
-from urllib.request import Request, urlopen
+from urllib.request import Request, HTTPRedirectHandler, build_opener
+
+from package_release import check_manifest, load_commit, assert_font_notices
 
 MAX_TEXT_BYTES = 2_000_000
 MAX_BINARY_BYTES = 3_000_000
@@ -107,6 +110,17 @@ def ensure_same_origin(base_url: str, final_url: str) -> None:
         raise RuntimeError(f'Cross-Origin-Redirect blockiert: {final_url}')
 
 
+class SameOriginRedirectHandler(HTTPRedirectHandler):
+    def __init__(self, base_url):
+        super().__init__()
+        self.base_url = base_url
+
+    def redirect_request(self, request, fp, code, message, headers, new_url):
+        # Vor der Folgeanfrage prüfen, nicht erst nach einem fremden Netzwerkzugriff.
+        ensure_same_origin(self.base_url, new_url)
+        return super().redirect_request(request, fp, code, message, headers, new_url)
+
+
 def read_limited(response, limit: int) -> bytes:
     declared = response.headers.get('Content-Length')
     if declared:
@@ -126,7 +140,7 @@ def fetch(base_url: str, relative: str, *, binary: bool = False) -> FetchResult:
     request = Request(url, headers={'User-Agent': USER_AGENT, 'Accept': '*/*'})
     limit = MAX_BINARY_BYTES if binary else MAX_TEXT_BYTES
     try:
-        with urlopen(request, timeout=15) as response:
+        with build_opener(SameOriginRedirectHandler(base_url)).open(request, timeout=15) as response:
             final_url = response.geturl()
             ensure_same_origin(base_url, final_url)
             status = int(getattr(response, 'status', response.getcode()))
@@ -193,6 +207,19 @@ def assert_service_worker_cache_headers(result: FetchResult) -> None:
         raise RuntimeError('sw.js: Cache-Control max-age ist für Service-Worker-Updates zu lang')
 
 
+def assert_executable_content_type(result: FetchResult, relative: str) -> None:
+    # Gleiche Bytes reichen nicht: nosniff blockiert falsch deklarierte Skripte/Stile.
+    path = urlparse(relative).path
+    if path.endswith('.js'):
+        expected = ('text/javascript', 'application/javascript')
+    elif path.endswith('.css'):
+        expected = ('text/css',)
+    else:
+        return
+    if expected and result.content_type not in expected:
+        raise RuntimeError(f'{relative}: Content-Type {result.content_type!r} ist nicht ausführbar; erwartet: {expected}')
+
+
 def png_dimensions(data: bytes) -> tuple[int, int]:
     if len(data) < 24 or data[:8] != b'\x89PNG\r\n\x1a\n' or data[12:16] != b'IHDR':
         raise RuntimeError('Ungültige PNG-Signatur/IHDR')
@@ -220,7 +247,32 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('base_url', help='Basis-URL, z. B. https://staging.example.com/')
     parser.add_argument('--expected-cache', help='Erwarteter Service-Worker-Cache, z. B. secret-circle-v65')
     parser.add_argument('--production', action='store_true', help='Strengere Production-Prüfungen aktivieren')
+    parser.add_argument('--expected-commit', help='Erwarteter vollständiger Git-SHA; prüft das Paketmanifest und sämtliche öffentlichen Dateien')
     return parser.parse_args()
+
+
+def verify_deployed_package(base_url, expected_commit, cache_name, results):
+    result = fetch(base_url, 'release-build.json')
+    if result.content_type != 'application/json':
+        raise RuntimeError('release-build.json: JSON-Antwort erwartet, kein HTML-Fallback.')
+    manifest = json.loads(decode_utf8(result, 'release-build.json'))
+    check_manifest(manifest, expected_commit)
+    trusted_files, trusted = load_commit(expected_commit)
+    assert_font_notices(trusted_files)
+    if manifest != trusted:
+        raise RuntimeError('Das ausgelieferte Paketmanifest stimmt nicht mit dem erwarteten Git-Commit überein.')
+    if manifest['cache'] != cache_name:
+        raise RuntimeError('Paketmanifest und ausgelieferter Service Worker nennen verschiedene Caches.')
+    for name, entry in manifest['files'].items():
+        # Hostinganbieter werten _headers aus und liefern diese Datei absichtlich nicht öffentlich aus.
+        if name == '_headers':
+            continue
+        resource = results.get(name) or fetch(base_url, name, binary=True)
+        assert_executable_content_type(resource, name)
+        if len(resource.body) != entry['bytes'] or hashlib.sha256(resource.body).hexdigest() != entry['sha256']:
+            raise RuntimeError(f'{name}: ausgelieferte Bytes gehören nicht zum erwarteten Veröffentlichungspaket.')
+        results[name] = resource
+    return manifest
 
 
 def main() -> int:
@@ -231,6 +283,10 @@ def main() -> int:
         raise SystemExit('Staging/Production-Smoke verlangt HTTPS.')
     if not parsed.hostname:
         raise SystemExit('Ungültige Basis-URL.')
+    if parsed.username or parsed.password or parsed.query or parsed.fragment:
+        raise SystemExit('Die Basis-URL darf keine Zugangsdaten, Query oder Fragmente enthalten.')
+    if args.expected_commit and not re.fullmatch(r'[0-9a-f]{40}', args.expected_commit):
+        raise SystemExit('--expected-commit benötigt einen vollständigen Commit-SHA.')
 
     results: dict[str, FetchResult] = {}
     for relative in CORE_TEXT_PATHS:
@@ -243,6 +299,8 @@ def main() -> int:
     for relative in INTERACTIVE_HTML_PATHS:
         assert_security_headers(results[relative], relative, production=args.production)
     assert_security_headers(results['privacy.html'], 'privacy.html', production=args.production)
+    for relative, result in results.items():
+        assert_executable_content_type(result, relative)
     assert_service_worker_cache_headers(results['sw.js'])
 
     manifest = json.loads(texts['manifest.webmanifest'])
@@ -276,6 +334,8 @@ def main() -> int:
         raise RuntimeError('sw.js: aktiver und Staging-Cache sind nicht synchron')
     if args.expected_cache and cache_name != args.expected_cache:
         raise RuntimeError(f'sw.js: Cache {cache_name} != erwartet {args.expected_cache}')
+
+    deployed_package = verify_deployed_package(base_url, args.expected_commit, cache_name, results) if args.expected_commit else None
 
     party_html = texts['party.html']
     assert_contains(party_html, (
@@ -320,6 +380,8 @@ def main() -> int:
         'base_url': base_url,
         'mode': 'production' if args.production else 'staging',
         'pwa_cache': cache_name,
+        'verified_commit': deployed_package['commit'] if deployed_package else None,
+        'release_package_hashes_checked': deployed_package is not None,
         'resources_checked': len(results),
         'same_origin_redirects_enforced': True,
         'https_required': True,

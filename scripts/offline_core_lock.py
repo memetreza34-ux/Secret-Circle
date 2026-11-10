@@ -36,13 +36,16 @@ def core_paths(sw):
     return [path for path in paths if path]
 
 
-def core_hash(sw):
+def core_hash(sw, read_bytes=None):
     digest = hashlib.sha256()
     for relative in core_paths(sw):
-        path = ROOT / relative
-        if not path.is_file():
-            raise SystemExit(f'Offline-Core-Datei fehlt: {relative}')
-        content = path.read_bytes()
+        if read_bytes is None:
+            path = ROOT / relative
+            if not path.is_file():
+                raise SystemExit(f'Offline-Core-Datei fehlt: {relative}')
+            content = path.read_bytes()
+        else:
+            content = read_bytes(relative)
         # Der Cachename selbst steht in Seiten wie privacy.html. Er gehört zur Generation,
         # nicht zum Inhalt; sonst würde jede Erhöhung die Prüfsumme sofort wieder verändern.
         if relative.endswith(('.html', '.js', '.css', '.webmanifest', '.svg')):

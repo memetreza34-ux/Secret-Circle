@@ -1,6 +1,6 @@
 # Secret Circle Party Hub – Deployment und Rollback
 
-Stand: 29. August 2026
+Stand: 9. November 2026
 
 Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffentlicht. Production darf nicht der erste echte HTTPS-/Service-Worker-/Security-Header-Test eines Release Candidates sein.
 
@@ -12,8 +12,8 @@ Secret Circle wird für Januar 2027 als statische **offline-first PWA** veröffe
 - aktueller Offline-Core: **`secret-circle-v111` / `secret-circle-v111-staging`**
 - Package: **`1.0.0-beta.3`**
 - Quick Loader v11
-- Draft-PR #13 auf `agent/release-foundation-2027`
-- Main-Reconciliation-Kandidat: Draft-PR #15
+- Geprüfter Bild-/UX-Stand: PR #69; Spielabläufe/Schutzkorrekturen: darauf gestapelter PR #70
+- Technische Veröffentlichungsvorbereitung wird auf diesem kombinierten Stand separat geprüft
 - öffentliche Freigabe: **NO_GO**
 
 Wave 1: Party Quiz, Fake oder Fakt, Undercover – ähnliches Wort, Imposter ohne Wort, Satzduell, Wer hat das geschrieben?, Prozent schätzen, Party Bracket, Bluff Trivia und Ein-Wort-Hinweis. Alle bleiben Labs.
@@ -23,6 +23,19 @@ Wave 1: Party Quiz, Fake oder Fakt, Undercover – ähnliches Wort, Imposter ohn
 **Local → CI/Test → HTTPS-Staging → Release Candidate → Production**
 
 Production erhält denselben unveränderten RC, der auf Staging freigegeben wurde.
+
+## Vorbereitetes Veröffentlichungspaket
+
+```bash
+npm run release:package
+npm run release:verify -- --expected-commit <40-stelliger-Commit-SHA>
+```
+
+Der Export erzeugt `dist/site` und `release/secret-circle.zip` aus dem committeten Stand. Nur `dist/site` oder dessen ZIP-Inhalt wird später hochgeladen – niemals das Repository. Die App bleibt ohne Build-Schritt lokal startbar; der optionale Export stellt lediglich die unveränderten öffentlichen Dateien zusammen. Betreiber-/Releasevorlagen, Tests, Skripte und Git-Dateien werden ausgeschlossen. Ein bestehendes Paket mit fremden oder veränderten Dateien wird nicht stillschweigend überschrieben.
+
+`release-build.json` bindet das Paket an Commit, Offline-Core und SHA-256 jeder Datei. `npm run staging:smoke -- https://<ORIGIN>/ --expected-commit <RC-SHA>` prüft später alle ausgelieferten Dateibytes gegen dieses Manifest, zusätzlich zu den bestehenden HTTPS-/Header-/PWA-Verträgen. Die CI legt das geprüfte Paket als Artefakt ab. **Secret Circle Deployment Smoke** ist für einen späteren echten HTTPS-Test vorbereitet; er benötigt nur URL und den erwarteten Commit und führt kein Deployment aus.
+
+Die automatischen Browserprüfungen installieren echte Git-Stände v99/v109, übernehmen die aktuelle Version bewusst, prüfen erhaltene geheime Partien online/offline und einen fehlgeschlagenen Installationsversuch mit anschließendem Wiederholen. Das ersetzt weiterhin keine reale Handy-PWA-Abnahme oder den HTTPS-Rollback-Drill.
 
 ## Voraussetzungen vor Production
 
@@ -40,7 +53,7 @@ Production erhält denselben unveränderten RC, der auf Staging freigegeben wurd
 
 Ein Job mit `steps: []` ist kein Code-/Testnachweis.
 
-## PWA / Offline – v64
+## PWA / Offline – vorhandene Schutzverträge
 
 Offline enthalten sind alle Wave-1-Kataloge und Runner, `party-session-controls.js` Version 5, Quick Replacement Guard v2, Quick Loader v11 und Backup Registry v2.
 
@@ -76,14 +89,14 @@ Für `sw.js` gilt:
 
 Manuell zusätzlich: Installation, Offline-Neustart, Update/Rollback, bestehende Spezialgates und alle zehn Wave-1-Labs online/offline.
 
-Für v64 besonders prüfen:
+Bei der finalen Abnahme besonders prüfen:
 
 - Prozent schätzen: Ergebnis/Score nach Reload identisch;
 - Party Bracket: sieben Picks ergeben nach Reload denselben Sieger;
 - Bluff Trivia: Fake-Eingaben und Votes bleiben privat, richtige Antwort erst im Ergebnis, Scoring exact-once;
 - Ein-Wort-Hinweis: Zielwort nach Blur/Reload nicht automatisch sichtbar, Ergebnis stabil;
 - Cross-Game-Wechsel nutzt Quick-Family-Replacement-Schutz;
-- Labs bleiben vom 15-Core-Release getrennt.
+- Alle 55 Spiele bleiben im V1-Abnahmeumfang; die Stufen sind keine Freigabeausnahme.
 
 ## Update-Regel
 

@@ -1,0 +1,57 @@
+name: Secret Circle Deployment Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Tatsächliche HTTPS-Origin der bereitgestellten App'
+        required: true
+        type: string
+      commit:
+        description: 'Vollständiger Commit-SHA aus release-build.json des freigegebenen Pakets'
+        required: true
+        type: string
+      production:
+        description: 'Production einschließlich HSTS prüfen'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-deployment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact deployed app package
+        env:
+          DEPLOY_URL: ${{ inputs.url }}
+          EXPECTED_COMMIT: ${{ inputs.commit }}
+          PRODUCTION: ${{ inputs.production }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, re, subprocess
+          commit = os.environ['EXPECTED_COMMIT']
+          if not re.fullmatch(r'[0-9a-f]{40}', commit):
+              raise SystemExit('Vollständiger Commit-SHA erforderlich.')
+          present = subprocess.run(['git', 'cat-file', '-e', commit + '^{commit}'], capture_output=True)
+          if present.returncode:
+              subprocess.run(['git', 'fetch', '--no-tags', '--depth=1', 'origin', commit], check=True)
+          PY
+          args=("$DEPLOY_URL" --expected-commit "$EXPECTED_COMMIT")
+          if [[ "$PRODUCTION" == "true" ]]; then args+=(--production); fi
+          python scripts/staging_smoke.py "${args[@]}" | tee deployment-smoke.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployment-smoke-${{ github.run_id }}
+          path: deployment-smoke.json
+          if-no-files-found: ignore
+          retention-days: 14
