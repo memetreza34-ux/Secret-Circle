@@ -207,6 +207,19 @@ def assert_service_worker_cache_headers(result: FetchResult) -> None:
         raise RuntimeError('sw.js: Cache-Control max-age ist für Service-Worker-Updates zu lang')
 
 
+def assert_executable_content_type(result: FetchResult, relative: str) -> None:
+    # Gleiche Bytes reichen nicht: nosniff blockiert falsch deklarierte Skripte/Stile.
+    path = urlparse(relative).path
+    if path.endswith('.js'):
+        expected = ('text/javascript', 'application/javascript')
+    elif path.endswith('.css'):
+        expected = ('text/css',)
+    else:
+        return
+    if expected and result.content_type not in expected:
+        raise RuntimeError(f'{relative}: Content-Type {result.content_type!r} ist nicht ausführbar; erwartet: {expected}')
+
+
 def png_dimensions(data: bytes) -> tuple[int, int]:
     if len(data) < 24 or data[:8] != b'\x89PNG\r\n\x1a\n' or data[12:16] != b'IHDR':
         raise RuntimeError('Ungültige PNG-Signatur/IHDR')
@@ -255,6 +268,7 @@ def verify_deployed_package(base_url, expected_commit, cache_name, results):
         if name == '_headers':
             continue
         resource = results.get(name) or fetch(base_url, name, binary=True)
+        assert_executable_content_type(resource, name)
         if len(resource.body) != entry['bytes'] or hashlib.sha256(resource.body).hexdigest() != entry['sha256']:
             raise RuntimeError(f'{name}: ausgelieferte Bytes gehören nicht zum erwarteten Veröffentlichungspaket.')
         results[name] = resource
@@ -285,6 +299,8 @@ def main() -> int:
     for relative in INTERACTIVE_HTML_PATHS:
         assert_security_headers(results[relative], relative, production=args.production)
     assert_security_headers(results['privacy.html'], 'privacy.html', production=args.production)
+    for relative, result in results.items():
+        assert_executable_content_type(result, relative)
     assert_service_worker_cache_headers(results['sw.js'])
 
     manifest = json.loads(texts['manifest.webmanifest'])

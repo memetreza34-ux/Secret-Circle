@@ -133,7 +133,7 @@ class ReleasePackageTests(unittest.TestCase):
     def test_deployed_package_verifies_actual_bytes_and_rejects_html_or_wrong_commit(self):
         files, manifest = self.build()
         manifest_result = smoke.FetchResult('', '', 200, 'application/json', {}, package.manifest_bytes(manifest))
-        resources = {name: smoke.FetchResult('', '', 200, 'text/plain', {}, value) for name, value in files.items()}
+        resources = {name: smoke.FetchResult('', '', 200, 'application/javascript' if name.endswith('.js') else 'text/plain', {}, value) for name, value in files.items()}
         from unittest.mock import patch
         with patch.object(smoke, 'fetch', return_value=manifest_result), patch.object(smoke, 'load_commit', side_effect=lambda ref: package.load_commit(ref, root=self.root)):
             smoke.verify_deployed_package('https://test.invalid/', self.commit, manifest['cache'], resources)
@@ -155,6 +155,55 @@ class ReleasePackageTests(unittest.TestCase):
                 handler.redirect_request(request, None, 302, 'Found', {}, target)
         redirected = handler.redirect_request(request, None, 302, 'Found', {}, 'https://app.invalid:443/next')
         self.assertEqual(redirected.full_url, 'https://app.invalid:443/next')
+
+    def test_deployed_scripts_and_styles_reject_wrong_mime_with_unchanged_bytes(self):
+        from unittest.mock import patch
+        # Die CSS-Datei ist Teil eines echten Commit-Pakets, keine manipulierte Prüfsumme.
+        self.files['app.css'] = b'body { color: red; }'
+        self.files['sw.js'] = self.files['sw.js'].replace(b"'./app.js'", b"'./app.js','./app.css'")
+        for name in ('app.css', 'sw.js'):
+            (self.root / name).write_bytes(self.files[name])
+        meta_path = self.root / 'release-meta.json'
+        meta = json.loads(meta_path.read_text())
+        meta['offlineCache']['coreHash'] = package.offline.core_hash(self.files['sw.js'].decode(), self.files.__getitem__)
+        meta_path.write_text(json.dumps(meta))
+        self.git('add', '.')
+        self.git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-qm', 'CSS fixture')
+        commit = self.git('rev-parse', 'HEAD').decode().strip()
+        files, manifest = self.build()
+        manifest_result = smoke.FetchResult('', '', 200, 'application/json', {}, package.manifest_bytes(manifest))
+        resources = {name: smoke.FetchResult('', '', 200, 'text/javascript' if name.endswith('.js') else 'text/css', {}, value)
+                     for name, value in files.items()}
+        with patch.object(smoke, 'fetch', return_value=manifest_result), patch.object(smoke, 'load_commit', side_effect=lambda ref: package.load_commit(ref, root=self.root)):
+            smoke.verify_deployed_package('https://test.invalid/', commit, manifest['cache'], resources)
+            for name in ('app.js', 'sw.js', 'app.css'):
+                original = resources[name].content_type
+                for wrong in ('text/plain', 'text/html', 'application/octet-stream', ''):
+                    with self.subTest(file=name, mime=wrong):
+                        resources[name].content_type = wrong
+                        with self.assertRaisesRegex(RuntimeError, name):
+                            smoke.verify_deployed_package('https://test.invalid/', commit, manifest['cache'], resources)
+                resources[name].content_type = original
+            resources['app.js'].content_type = 'application/javascript'
+            resources['sw.js'].content_type = 'application/javascript'
+            smoke.verify_deployed_package('https://test.invalid/', commit, manifest['cache'], resources)
+            # Auch noch nicht geladene Ressourcen werden beim Abruf geprüft.
+            script = resources.pop('app.js')
+            script.content_type = 'text/html'
+            with patch.object(smoke, 'fetch', side_effect=lambda base, name, **kwargs: manifest_result if name == package.MANIFEST else script):
+                with self.assertRaisesRegex(RuntimeError, 'app.js'):
+                    smoke.verify_deployed_package('https://test.invalid/', commit, manifest['cache'], resources)
+
+    def test_legacy_smoke_also_rejects_service_worker_with_wrong_mime(self):
+        from argparse import Namespace
+        from unittest.mock import patch
+        args = Namespace(base_url='https://test.invalid/', expected_commit=None, expected_cache=None, production=False)
+        def response(base, name, **kwargs):
+            mime = 'application/javascript' if name.endswith('.js') else 'text/html'
+            return smoke.FetchResult('', '', 200, 'text/plain' if name == 'sw.js' else mime, {}, b'')
+        with patch.object(smoke, 'parse_args', return_value=args), patch.object(smoke, 'fetch', side_effect=response), patch.object(smoke, 'assert_security_headers'):
+            with self.assertRaisesRegex(RuntimeError, 'sw.js'):
+                smoke.main()
 
 
 if __name__ == '__main__':

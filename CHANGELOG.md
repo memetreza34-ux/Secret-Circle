@@ -1,5 +1,6 @@
 ## Technische Veröffentlichungsvorbereitung (9. November 2026)
 
+- HTTPS-Prüfung weist falsch deklarierte JavaScript-/CSS-Antworten auch bei unveränderten Dateibytes zurück; damit kann ein durch `nosniff` blockierter App-Start nicht allein wegen gültiger Prüfsummen bestehen. Gilt auch für den Service Worker und den bisherigen Smoke ohne Commitangabe.
 - Reproduzierbarer Export aus festem Git-Commit: nur öffentliche App-Dateien nach `dist/site` und `release/secret-circle.zip`, mit Dateiprüfsummen und Commit im Paketmanifest. Repositorydateien und interne Betreiberangaben werden nicht mit veröffentlicht.
 - Vollständige Figtree-/Archivo-Black-Lizenztexte aus den offiziellen Google-Fonts-Quellen in die ausgelieferten Third-Party-Hinweise aufgenommen. Copyright-Angaben mit den Metadaten der vorhandenen WOFF2-Dateien abgeglichen; der Paketierer prüft die vollständigen Texte per SHA-256.
 - Lokale Paketprüfung und späterer HTTPS-Smoke vergleichen Dateibytes und Manifest mit den echten Git-Dateien des erwarteten Commits; ein gemeinsam verändertes Paket und Manifest besteht die Prüfung nicht. Weiterleitungen auf fremde Origins werden vor der Folgeanfrage blockiert.
