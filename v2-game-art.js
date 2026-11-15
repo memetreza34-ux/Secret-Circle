@@ -3,7 +3,7 @@
 window.SecretCircleGameArt = {
   "two-truths": {
     "src": "assets/images/two-truths.webp",
-    "alt": "Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger"
+    "alt": "Fuchs-Abenteurer erzählt zwei plausible Erlebnisse und von einer Truhe auf einem Papierflieger; die Detektivin hört skeptisch zu"
   },
   "word-chain": {
     "src": "assets/images/word-chain.webp",
@@ -11,7 +11,7 @@ window.SecretCircleGameArt = {
   },
   "hot-potato": {
     "src": "assets/images/hot-potato.webp",
-    "alt": "Dampfende Kartoffel fliegt zwischen zwei Ofenhandschuhen; im Hintergrund läuft eine Sanduhr"
+    "alt": "Detektivin wirft dem Chamäleon eine dampfende Kartoffel zu, während die Sanduhr läuft"
   },
   "taboo": {
     "src": "assets/images/taboo.webp",
@@ -135,7 +135,7 @@ window.SecretCircleGameArt = {
   },
   "hum-song": {
     "src": "assets/images/hum-song.webp",
-    "alt": "Wal summt mit geschlossenen Augen; Notenblasen steigen im Wasser auf"
+    "alt": "Wal summt mit geschlossenem Mund eine Melodie, während ein kleiner Fisch nachdenklich zuhört"
   },
   "password-one-word": {
     "src": "assets/images/password-one-word.webp",
@@ -151,11 +151,11 @@ window.SecretCircleGameArt = {
   },
   "story-chain": {
     "src": "assets/images/story-chain.webp",
-    "alt": "Offene Bücher bilden eine Brücke; Figuren setzen den Weg von einer Buchseite zur nächsten fort"
+    "alt": "Detektivin reicht dem weitererzählenden Chamäleon ein Buch mit Fuchs, Häuschen und Riesenpilz"
   },
   "finish-the-sentence": {
     "src": "assets/images/finish-the-sentence.webp",
-    "alt": "Frau zeichnet mit einer Schreibfeder ein leuchtendes Fragezeichen in die Luft; ein Eichhörnchen schaut neugierig zu"
+    "alt": "Eichhörnchen ergänzt das fehlende Ende eines Bildsatzes mit einer Eichel; die Detektivin freut sich"
   },
   "fill-blank-battle": {
     "src": "assets/images/fill-blank-battle.webp",
@@ -167,7 +167,7 @@ window.SecretCircleGameArt = {
   },
   "emoji-quiz": {
     "src": "assets/images/emoji-quiz.webp",
-    "alt": "Ein eigenständiger Cartoonkoch und ein schwebendes Pizzastück bilden gemeinsam ein Bilderrätsel"
+    "alt": "Detektivin und Chamäleon lösen das Bilderrätsel aus Sonne und Brille: eine Sonnenbrille"
   },
   "guess-the-price": {
     "src": "assets/images/guess-the-price.webp",

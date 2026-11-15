@@ -378,3 +378,8 @@ DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 <!-- END_FONT_LICENSE_ARCHIVO_BLACK -->
+
+
+## Bildkorrekturen vom 15. November 2026
+
+Auf Armans Auftrag sechs unklare Spielmotive innerhalb der unveränderten eigenen Figuren-/Materialvorlage vom 30. Oktober neu erstellt: Heiße Kartoffel, Zwei Wahrheiten/eine Lüge, Melodie summen, Emoji Quiz, Geschichtenkette und Satz vervollständigen. Werkzeug: integriertes OpenAI `image_gen`; konkrete Modellkennung nicht ausgegeben. Eigene projektseitige Referenzen, keine fremden Bilddateien, echten Personen, Marken oder erkennbaren Franchise-Figuren. Die bestehenden lokalen Dateipfade bleiben erhalten, alle sechs Exporte sind 800 × 600 WebP und höchstens 35.000 Bytes. Vollständige tatsächliche Prompts unter `docs/bildwelt/<spiel-id>-vereinheitlichung-2026-11-15.prompt.txt`; Herkunft, Rechtebasis, aktuelle SHA-256 und historische Revisionen im Provenienzmanifest. Geprüft wurden alle 55 Motive; finale Serien-/Releaseabnahme bleibt offen.

@@ -152,3 +152,8 @@ Die konkret ausgewählte Stilkorrektur ersetzt das frühere `assets/images/impos
 ## Vollständiger Bildbestand vom 5. November 2026
 
 Alle 55 Modi besitzen genau eine lokale Illustration, jeweils 800 × 600 WebP und höchstens 35.000 Bytes. Die weiteren 40 Motive entstanden mit dem integrierten OpenAI image_gen und ausschließlich der unveränderten projektseitigen Figuren-/Materialvorlage vom 30. Oktober. Modellkennung nicht ausgegeben; WebP-Export lokal mit Pillow. Gezielte Anatomie-, Material- und Motivkorrekturen ersetzen denselben Entwurf; kein zusätzlicher Stil und keine parallelen App-Varianten. Vollständige tatsächliche Prompts, Tool, Rechtebasis und aktuelle SHA-256-Werte stehen im Provenienzmanifest. Finale manuelle Serien-/RC-Prüfung bleibt offen.
+
+
+## Bildkorrekturen vom 15. November 2026
+
+Auf Armans Auftrag sechs unklare Spielmotive innerhalb der unveränderten eigenen Figuren-/Materialvorlage vom 30. Oktober neu erstellt: Heiße Kartoffel, Zwei Wahrheiten/eine Lüge, Melodie summen, Emoji Quiz, Geschichtenkette und Satz vervollständigen. Werkzeug: integriertes OpenAI `image_gen`; konkrete Modellkennung nicht ausgegeben. Eigene projektseitige Referenzen, keine fremden Bilddateien, echten Personen, Marken oder erkennbaren Franchise-Figuren. Die bestehenden lokalen Dateipfade bleiben erhalten, alle sechs Exporte sind 800 × 600 WebP und höchstens 35.000 Bytes. Vollständige tatsächliche Prompts unter `docs/bildwelt/<spiel-id>-vereinheitlichung-2026-11-15.prompt.txt`; Herkunft, Rechtebasis, aktuelle SHA-256 und historische Revisionen im Provenienzmanifest. Geprüft wurden alle 55 Motive; finale Serien-/Releaseabnahme bleibt offen.

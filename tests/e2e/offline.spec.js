@@ -100,7 +100,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/v2-hub.html#spiel=two-truths');
   const twoTruths = page.locator('#mode-emblem img');
   await expect(twoTruths).toHaveAttribute('src', 'assets/images/two-truths.webp');
-  await expect(twoTruths).toHaveAttribute('alt', 'Fuchs-Abenteurer erzählt vom Bergsteigen, Zelten und einem erfundenen Flug auf einem Papierflieger');
+  await expect(twoTruths).toHaveAttribute('alt', 'Fuchs-Abenteurer erzählt zwei plausible Erlebnisse und von einer Truhe auf einem Papierflieger; die Detektivin hört skeptisch zu');
   await expect.poll(() => twoTruths.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/v2-hub.html#spiel=word-chain');
   const wordChain = page.locator('#mode-emblem img');
