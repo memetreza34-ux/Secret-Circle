@@ -1,3 +1,9 @@
+## v112 – Sechs Spielmotive in der festen Bildwelt korrigiert (15. November 2026)
+
+- Alle 55 Bilder gegen die unveränderte Figuren-/Materialvorlage vom 30. Oktober geprüft. Sechs unklare Motive ersetzt: Heiße Kartoffel, Zwei Wahrheiten/eine Lüge, Melodie summen, Emoji Quiz, Geschichtenkette und Satz vervollständigen.
+- Sichtbare Spielmomente statt Küchenmotiv, offenem Gesangsmund, Pizzamotiv, Bücher-Treppe und Fragezeichen: Weitergeben, Bluffen, Summen, Bilder kombinieren, gemeinsam weitererzählen und ein Satzende ergänzen.
+- Dieselben lokalen Pfade, 800 × 600 WebP und höchstens 35.000 Bytes je Bild. Alt-Texte, unveränderte Bildprüfzusagen, Prompts, Provenienz und 55er-Sichtprüfung aktualisiert. Offline-Core v111 → v112; finale Serienabnahme offen.
+
 ## Technische Veröffentlichungsvorbereitung (9. November 2026)
 
 - HTTPS-Prüfung weist falsch deklarierte JavaScript-/CSS-Antworten auch bei unveränderten Dateibytes zurück; damit kann ein durch `nosniff` blockierter App-Start nicht allein wegen gültiger Prüfsummen bestehen. Gilt auch für den Service Worker und den bisherigen Smoke ohne Commitangabe.
