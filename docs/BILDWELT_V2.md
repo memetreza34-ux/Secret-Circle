@@ -1,3 +1,7 @@
+# Vorschau mit wiederkehrenden Figuren vom 19. November 2026
+
+Arman hat beauftragt, die drei gezeigten Cover für Mafia, Scharade und Party Quiz direkt in der App zu zeigen. Die drei Motive verwenden dasselbe [Gruppenbild mit vier fiktiven Stammfiguren](bildwelt/stammfiguren-vorschau-2026-11-18.webp) als Figurenreferenz. Die älteren Aussagen unten dokumentieren den bisherigen Serienstand. Die Stammbesetzung für die Gesamtserie bleibt zur Beurteilung offen.
+
 **Bildkorrektur vom 15. November 2026:** Arman hat die erneute Sichtung aller 55 Bilder und das Neuerstellen unpassender Motive für eine einheitliche Welt beauftragt. Alle 55 wurden gegen die unveränderte Vorlage `docs/bildwelt/vorlage-2026-10-30.webp` beurteilt. Sechs Bilder sind an denselben Pfaden ersetzt: `hot-potato`, `two-truths`, `hum-song`, `emoji-quiz`, `story-chain`, `finish-the-sentence`. Weitergeben, skeptisches Zuhören, Summen mit geschlossenem Mund, Kombinieren von Bildhinweisen, Weitererzählen und Ergänzen eines Satzendes sind jetzt sichtbar. Die anderen 49 Motive bleiben erhalten. Die vollständigen tatsächlichen Prompts stehen unter `docs/bildwelt/<spiel-id>-vereinheitlichung-2026-11-15.prompt.txt`; aktuelle und frühere SHA-256 sowie Rechtebasis im Provenienzmanifest. Die Einzelentscheidungen für alle 55 enthält `stilpruefung-2026-11-04.json` unter `lastVisualPass`. Das ist eine Sichtprüfung durch Codex, keine finale Serienabnahme durch Arman.
 
 # Bildwelt für Secret Circle v2

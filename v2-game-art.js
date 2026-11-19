@@ -19,7 +19,7 @@ window.SecretCircleGameArt = {
   },
   "charades": {
     "src": "assets/images/charades.webp",
-    "alt": "Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr"
+    "alt": "Eine Pantomimin drückt ihre weißen Handschuhe gegen eine unsichtbare Wand"
   },
   "imposter": {
     "src": "assets/images/imposter.webp",
@@ -31,7 +31,7 @@ window.SecretCircleGameArt = {
   },
   "mafia": {
     "src": "assets/images/mafia.webp",
-    "alt": "Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt"
+    "alt": "Ein Mafioso mit Hut legt den Finger an die Lippen, während ihn eine Mitspielerin skeptisch ansieht"
   },
   "never-have": {
     "src": "assets/images/never-have.webp",
@@ -219,6 +219,6 @@ window.SecretCircleGameArt = {
   },
   "party-quiz": {
     "src": "assets/images/party-quiz.webp",
-    "alt": "Hamster am Quizpult hält seine Pfote bereit über vier farbigen Antwortknöpfen"
+    "alt": "Ein Spieler mit runder Brille drückt den roten Quizbuzzer, während eine Mitspielerin jubelt"
   }
 };

@@ -52,10 +52,10 @@ const artwork = {
   "word-chain": "Zugbegleiterin verbindet drei Waggons mit Apfel, Lampe und Elefant zu einer Wortkette",
   "hot-potato": "Detektivin wirft dem Chamäleon eine dampfende Kartoffel zu, während die Sanduhr läuft",
   "taboo": "Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder",
-  "charades": "Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr",
+  "charades": "Eine Pantomimin drückt ihre weißen Handschuhe gegen eine unsichtbare Wand",
   "imposter": "Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen",
   "truth-dare": "Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt",
-  "mafia": "Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt",
+  "mafia": "Ein Mafioso mit Hut legt den Finger an die Lippen, während ihn eine Mitspielerin skeptisch ansieht",
   "never-have": "Elefanten-Abenteurer hebt ertappt die Hand und erinnert sich daran, wie er in einem viel zu kleinen Zelt übernachtet hat",
   "question-imposter": "Vier Retro-Roboter vergleichen Fragekarten: drei zeigen eine Sonne, der nervöse vierte einen Mond",
   "location-spy": "Verunsicherter Otter-Spion späht mit leerem Notizbuch hinter einer Palme in eine Hotellobby",
@@ -102,7 +102,7 @@ const artwork = {
   "secret-mission": "Maus in einem schlichten Ninja-Kostüm stellt heimlich eine kleine Flagge hinter eine Blumenvase",
   "hot-seat": "Nervöses Kaninchen sitzt im Sessel unter einem Scheinwerfer, umgeben von Fragezeichen",
   "no-word-imposter": "Drei Pinguine betrachten eine Gummiente am Ausstellungsstand, während der vierte ratlos die Flügel hebt",
-  "party-quiz": "Hamster am Quizpult hält seine Pfote bereit über vier farbigen Antwortknöpfen"
+  "party-quiz": "Ein Spieler mit runder Brille drückt den roten Quizbuzzer, während eine Mitspielerin jubelt"
 };
 async function expectArtwork(image, id) {
   await expect(image).toHaveAttribute('src', 'assets/images/' + id + '.webp');

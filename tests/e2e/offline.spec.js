@@ -85,7 +85,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/v2-hub.html#spiel=charades');
   const charades = page.locator('#mode-emblem img');
   await expect(charades).toHaveAttribute('src', 'assets/images/charades.webp');
-  await expect(charades).toHaveAttribute('alt', /Pantomime/);
+  await expect(charades).toHaveAttribute('alt', 'Eine Pantomimin drückt ihre weißen Handschuhe gegen eine unsichtbare Wand');
   await expect.poll(() => charades.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/v2-hub.html#spiel=imposter');
   const imposter = page.locator('#mode-emblem img');

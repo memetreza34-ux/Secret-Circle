@@ -1,3 +1,8 @@
+## v113 – Drei Spielcover mit wiederkehrenden Figuren (19. November 2026)
+
+- Auf Armans Wunsch zeigen Mafia, Scharade und Party Quiz die vier Stammfiguren in unterschiedlichen Rollen. Die Cover ersetzen die bisherigen Bilder in Katalog und Spielansicht.
+- Die drei lokalen WebP-Dateien behalten ihre Pfade und das Format 800 × 600. Die Alternativtexte beschreiben die neuen Szenen. Die Bilddateien sind in der Offline-Generation v113 enthalten.
+
 ## v112 – Sechs Spielmotive in der festen Bildwelt korrigiert (15. November 2026)
 
 - Alle 55 Bilder gegen die unveränderte Figuren-/Materialvorlage vom 30. Oktober geprüft. Sechs unklare Motive ersetzt: Heiße Kartoffel, Zwei Wahrheiten/eine Lüge, Melodie summen, Emoji Quiz, Geschichtenkette und Satz vervollständigen.
