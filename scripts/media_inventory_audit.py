@@ -87,6 +87,7 @@ EXPECTED_CURRENT_MEDIA = {
     'docs/screenshots/taboo-desktop-1280x900.webp',
     'assets/images/charades.webp',
     'docs/bildwelt/vorlage-2026-10-30.webp',
+    'docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp',
     'docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp',
     'docs/screenshots/scharade-handy-375x812.webp',
     'docs/screenshots/scharade-desktop-1280x900.webp',

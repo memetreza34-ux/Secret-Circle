@@ -3,222 +3,222 @@
 window.SecretCircleGameArt = {
   "two-truths": {
     "src": "assets/images/two-truths.webp",
-    "alt": "Fuchs-Abenteurer erzählt zwei plausible Erlebnisse und von einer Truhe auf einem Papierflieger; die Detektivin hört skeptisch zu"
+    "alt": "Eine Spielerin prüft drei Karten, während ihr Mitspieler betont unschuldig lächelt"
   },
   "word-chain": {
     "src": "assets/images/word-chain.webp",
-    "alt": "Zugbegleiterin verbindet drei Waggons mit Apfel, Lampe und Elefant zu einer Wortkette"
+    "alt": "Zwei Spielerinnen verbinden ein rotes und ein gelbes Kettenglied"
   },
   "hot-potato": {
     "src": "assets/images/hot-potato.webp",
-    "alt": "Detektivin wirft dem Chamäleon eine dampfende Kartoffel zu, während die Sanduhr läuft"
+    "alt": "Zwei Spieler geben eine dampfende Kartoffel hektisch weiter"
   },
   "taboo": {
     "src": "assets/images/taboo.webp",
-    "alt": "Klassischer Showmaster erklärt am Mikrofon einen Begriff; seine Karte zeigt einen Regenschirm und drei verbotene Hinweisbilder"
+    "alt": "Ein Showmaster erklärt am Mikrofon einen Begriff, während er eine Karte mit Regenschirmmotiv hält"
   },
   "charades": {
     "src": "assets/images/charades.webp",
-    "alt": "Klassischer Pantomime mit Baskenmütze und weißen Handschuhen spielt eine unsichtbare Wand vor; daneben steht eine Sanduhr"
+    "alt": "Eine Pantomimin mit rotem Halstuch und weißen Handschuhen spielt eine unsichtbare Wand"
   },
   "imposter": {
     "src": "assets/images/imposter.webp",
-    "alt": "Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen"
+    "alt": "Ein ertappter Spieler zieht die Schultern hoch, während eine Mitspielerin grinsend auf ihn zeigt"
   },
   "truth-dare": {
     "src": "assets/images/truth-dare.webp",
-    "alt": "Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt"
+    "alt": "Eine Spielerin wählt grinsend zwischen einer Karte mit Sprechblase und einer mit Blitz"
   },
   "mafia": {
     "src": "assets/images/mafia.webp",
-    "alt": "Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt"
+    "alt": "Eine Detektivin im violetten Mantel lässt eine Rollenkarte verschwinden, während ein Mitspieler zurückblickt"
   },
   "never-have": {
     "src": "assets/images/never-have.webp",
-    "alt": "Elefanten-Abenteurer hebt ertappt die Hand und erinnert sich daran, wie er in einem viel zu kleinen Zelt übernachtet hat"
+    "alt": "Eine Spielerin legt sich lächelnd die Hand auf die Brust, während ihr Mitspieler überrascht lacht"
   },
   "question-imposter": {
     "src": "assets/images/question-imposter.webp",
-    "alt": "Vier Retro-Roboter vergleichen Fragekarten: drei zeigen eine Sonne, der nervöse vierte einen Mond"
+    "alt": "Zwei Spieler halten unterschiedliche Fragekarten mit Sonne und Mond nebeneinander"
   },
   "location-spy": {
     "src": "assets/images/location-spy.webp",
-    "alt": "Verunsicherter Otter-Spion späht mit leerem Notizbuch hinter einer Palme in eine Hotellobby"
+    "alt": "Eine Spionin schaut irritiert auf einen Stadtplan, während ihr Mitspieler auf die Ortsmarkierung zeigt"
   },
   "most-likely": {
     "src": "assets/images/most-likely.webp",
-    "alt": "Überraschter Igel zeigt auf sich, während vier Pfoten und Flügel gleichzeitig auf ihn deuten"
+    "alt": "Eine Spielerin zeigt auf ihren überraschten Mitspieler, der auf sich selbst deutet"
   },
   "would-rather": {
     "src": "assets/images/would-rather.webp",
-    "alt": "Faultier an einer Weggabelung schwankt zwischen einer Eistüte und einem Stück Pizza"
+    "alt": "Ein Spieler wägt zwischen einer Eistüte und einem Stück Pizza ab"
   },
   "paranoia": {
     "src": "assets/images/paranoia.webp",
-    "alt": "Zwei Erdmännchen flüstern hinter einer Pfote, während ein drittes misstrauisch zu ihnen zurückschaut"
+    "alt": "Eine Spielerin flüstert ihrer Nachbarin etwas zu, während ein Mitspieler neugierig hinsieht"
   },
   "wrong-answers": {
     "src": "assets/images/wrong-answers.webp",
-    "alt": "Ziegenprofessor präsentiert stolz eine absichtlich falsche Antwort: einen Fisch auf einem Fahrrad"
+    "alt": "Ein Spieler präsentiert mit ernster Miene einen Turnschuh in einer Müslischale"
   },
   "wavelength": {
     "src": "assets/images/wavelength.webp",
-    "alt": "Pinguin balanciert zwischen einem Eiswürfel und einer warmen Sonne auf einem Seil"
+    "alt": "Ein Spieler stellt den Zeiger auf einer farbigen Halbkreisskala ein"
   },
   "rapid-fire": {
     "src": "assets/images/rapid-fire.webp",
-    "alt": "Gepard sprintet mit einer Stoppuhr in der Pfote an vorbeifliegenden Gegenständen vorbei"
+    "alt": "Ein Spieler nennt unter Zeitdruck Antworten und hält eine große Stoppuhr"
   },
   "forehead-guess": {
     "src": "assets/images/forehead-guess.webp",
-    "alt": "Lama trägt ein Bilderrätsel am Stirnband, das nur seine kichernden Freunde sehen können"
+    "alt": "Ein Spieler trägt eine Fahrradkarte an der Stirn, während eine Mitspielerin einen Hinweis gestikuliert"
   },
   "who-am-i": {
     "src": "assets/images/who-am-i.webp",
-    "alt": "Verkleidete Rätselfigur betrachtet im Spiegel die möglichen Rollen Astronaut, Koch und Ritter"
+    "alt": "Ein Spieler rätselt über seine geheime Rolle. Neben ihm erscheint eine Astronautin als mögliche Antwort"
   },
   "anime-guess": {
     "src": "assets/images/anime-guess.webp",
-    "alt": "Drei eigenständige Rollenfiguren mit Schal, Zauberstab und Umhang stehen auf einer Bühne"
+    "alt": "Zwei Stammfiguren stellen eine Magieschülerin und einen Abenteurer in selbst erfundenen Kostümen dar"
   },
   "blind-ranking": {
     "src": "assets/images/blind-ranking.webp",
-    "alt": "Maulwurf mit Augenbinde setzt eine Gummiente auf eine Stufe eines fünfstufigen Podests"
+    "alt": "Eine Spielerin setzt einen Cupcake auf eine Rangstufe, während weitere Optionen verdeckt bleiben"
   },
   "put-a-finger-down": {
     "src": "assets/images/put-a-finger-down.webp",
-    "alt": "Oktopus rollt einen weiteren Arm ein, während andere Arme noch aufgerichtet sind"
+    "alt": "Ein Spieler klappt mit ertapptem Grinsen einen Finger ein"
   },
   "higher-lower": {
     "src": "assets/images/higher-lower.webp",
-    "alt": "Bergziege steht zwischen einer Treppe nach oben und einer Treppe nach unten"
+    "alt": "Ein Spieler entscheidet zwischen einem Pfeil nach oben und einem Pfeil nach unten"
   },
   "undercover-similar-word": {
     "src": "assets/images/undercover-similar-word.webp",
-    "alt": "Limette versucht unauffällig zwischen vier fröhlichen Zitronen zu stehen"
+    "alt": "Zwei Spielerinnen halten ähnliche Hinweiskarten mit einer Orange und einer Zitrone"
   },
   "bluff-trivia": {
     "src": "assets/images/bluff-trivia.webp",
-    "alt": "Pfau im Jackett erklärt selbstbewusst eine erfundene Museums-Erfindung: eine Teekanne mit Flügeln"
+    "alt": "Ein Spieler präsentiert einen angeblich echten Toaster mit Flügeln, während sein Mitspieler zweifelt"
   },
   "hot-takes": {
     "src": "assets/images/hot-takes.webp",
-    "alt": "Chilischote hält auf einer Kiste eine leidenschaftliche Rede, während das Gemüsepublikum überrascht reagiert"
+    "alt": "Eine Spielerin vertritt am Tisch ihre Meinung und die Runde reagiert überrascht"
   },
   "money-challenge": {
     "src": "assets/images/money-challenge.webp",
-    "alt": "Hamster im Geschäftsanzug überlegt vor einem fliegenden Sparschwein mit schlichten goldenen Münzen"
+    "alt": "Ein Spieler wägt eine goldene Spielmünze gegen eine geheimnisvolle Aufgabenschachtel ab"
   },
   "red-green-flag": {
     "src": "assets/images/red-green-flag.webp",
-    "alt": "Flamingo-Schiedsrichter wägt zwischen einer roten und einer grünen Flagge ab"
+    "alt": "Eine Spielerin hält eine rote und eine grüne Flagge hoch und wägt beide ab"
   },
   "tier-list": {
     "src": "assets/images/tier-list.webp",
-    "alt": "Giraffe überlegt, auf welches von fünf farbigen Regalbrettern sie einen Donut einordnen soll"
+    "alt": "Zwei Spieler diskutieren, in welches Fach eines farbigen Rangregals ein roter Becher gehört"
   },
   "hear-me-out": {
     "src": "assets/images/hear-me-out.webp",
-    "alt": "Kleine Maus verteidigt auf einer großen Bühne am Mikrofon leidenschaftlich eine Ananas"
+    "alt": "Ein Spieler verteidigt mit großer Geste eine Ananas als unerwartete Wahl"
   },
   "pass-the-phone": {
     "src": "assets/images/pass-the-phone.webp",
-    "alt": "Detektivin reicht dem überraschten Chamäleon eine Gesprächskarte und übergibt ihm den nächsten Zug"
+    "alt": "Eine Spielerin reicht ihr Handy an die überraschte Mitspielerin weiter"
   },
   "know-me-best": {
     "src": "assets/images/know-me-best.webp",
-    "alt": "Hund denkt an Knochen, Ball oder Socke, während zwei Freunde seine Wahl zu erraten versuchen"
+    "alt": "Eine Spielerin hält ihre Wahl verdeckt, während ihr Mitspieler versucht, sie zu erraten"
   },
   "sound-imitation": {
     "src": "assets/images/sound-imitation.webp",
-    "alt": "Chamäleon erzeugt mit aufgeblasenen Backen Geräusche; Schallwellen zeigen Kuh, Zug und Vogel"
+    "alt": "Ein Spieler ahmt das Heulen eines Wolfs nach"
   },
   "hum-song": {
     "src": "assets/images/hum-song.webp",
-    "alt": "Wal summt mit geschlossenem Mund eine Melodie, während ein kleiner Fisch nachdenklich zuhört"
+    "alt": "Eine Spielerin summt mit geschlossenem Mund. Neben ihr sind Musiknoten zu sehen"
   },
   "password-one-word": {
     "src": "assets/images/password-one-word.webp",
-    "alt": "Chamäleon zeigt mit einem erhobenen Finger genau einen Hinweis an; die Detektivin errät das verdeckt gehaltene Schlüsselmotiv"
+    "alt": "Eine Spielerin hebt einen Finger für den einzigen Hinweis. Ihr Mitspieler hat einen Einfall"
   },
   "draw-guess": {
     "src": "assets/images/draw-guess.webp",
-    "alt": "Känguru zeichnet mit einem großen Wachsstift ein unfertiges Bilderrätsel auf Papier"
+    "alt": "Eine Spielerin zeichnet einen Regenschirm, ihr Mitspieler scheint das Motiv zu erraten"
   },
   "caption-battle": {
     "src": "assets/images/caption-battle.webp",
-    "alt": "Galeriebild einer Kuh auf einem Skateboard ist von leeren Sprechblasen für Bildunterschriften umgeben"
+    "alt": "Eine Spielerin zeigt ein kurioses Foto, während ihr Mitspieler mit einem Stift eine Bildunterschrift vorbereitet"
   },
   "story-chain": {
     "src": "assets/images/story-chain.webp",
-    "alt": "Detektivin reicht dem weitererzählenden Chamäleon ein Buch mit Fuchs, Häuschen und Riesenpilz"
+    "alt": "Zwei Spieler reichen ein aufgeschlagenes Buch weiter und erzählen die Geschichte gemeinsam"
   },
   "finish-the-sentence": {
     "src": "assets/images/finish-the-sentence.webp",
-    "alt": "Eichhörnchen ergänzt das fehlende Ende eines Bildsatzes mit einer Eichel; die Detektivin freut sich"
+    "alt": "Ein Spieler deutet mit einem Stift auf die leere Stelle am Ende einer Sprechblase"
   },
   "fill-blank-battle": {
     "src": "assets/images/fill-blank-battle.webp",
-    "alt": "Chamäleon und Detektivin bieten Banane und Gummiente als lustige Ergänzungen für dieselbe Lücke in einem Bildsatz an"
+    "alt": "Zwei Spielerinnen schieben unterschiedliche Antworten auf dieselbe Lücke zu"
   },
   "who-wrote-it": {
     "src": "assets/images/who-wrote-it.webp",
-    "alt": "Katzen-Detektiv untersucht mit einer Lupe gefaltete anonyme Zettel"
+    "alt": "Eine Spielerin betrachtet einen anonymen Zettel und mustert ihren Mitspieler"
   },
   "emoji-quiz": {
     "src": "assets/images/emoji-quiz.webp",
-    "alt": "Detektivin und Chamäleon lösen das Bilderrätsel aus Sonne und Brille: eine Sonnenbrille"
+    "alt": "Zwei Spieler lösen mit einer Sonne und einer Brille das Bilderrätsel Sonnenbrille"
   },
   "guess-the-price": {
     "src": "assets/images/guess-the-price.webp",
-    "alt": "Maus betrachtet einen Toaster mit Flügeln und leerem Preisschild durch eine Lupe"
+    "alt": "Eine grauhaarige Spielerin schätzt den Preis eines Toasters mit leerem Preisschild"
   },
   "fact-or-fake": {
     "src": "assets/images/fact-or-fake.webp",
-    "alt": "Pferd nimmt verlegen eine Einhornmaske ab und entlarvt die Täuschung"
+    "alt": "Eine Spielerin entscheidet zwischen einem Häkchen und einem Kreuz"
   },
   "percent-guess": {
     "src": "assets/images/percent-guess.webp",
-    "alt": "Eichhörnchen schätzt mit erhobener Pfote den Füllstand eines Glases mit Murmeln"
+    "alt": "Eine Spielerin schätzt den Füllstand eines Glases mit bunten Kugeln"
   },
   "party-bracket": {
     "src": "assets/images/party-bracket.webp",
-    "alt": "Acht Alltagsgegenstände treten in einem Turnierbaum gegeneinander an; an der Spitze wartet ein Pokal"
+    "alt": "Ein Spieler hebt den Pokal über einem vereinfachten Turnierbaum mit zwei Finalisten"
   },
   "spin-bottle": {
     "src": "assets/images/spin-bottle.webp",
-    "alt": "Eine leere unbeschriftete Flasche dreht sich auf einem Teppich zwischen Chamäleon, Detektivin und Fuchs"
+    "alt": "Ein Spieler dreht eine leere Flasche auf einem runden Tisch, zwei Mitspielerinnen schauen zu"
   },
   "dice-coin": {
     "src": "assets/images/dice-coin.webp",
-    "alt": "Abgerundeter Würfel und schlichte goldene Münze wirbeln gemeinsam durch die Luft"
+    "alt": "Ein Spieler wirft eine goldene Münze hoch. Neben ihm ist ein großer Würfel zu sehen"
   },
   "letter-categories": {
     "src": "assets/images/letter-categories.webp",
-    "alt": "Kaninchen jongliert Apfel, Anker, Ameise und Astronaut, während eine Sanduhr läuft"
+    "alt": "Eine Spielerin sortiert eine Buchstabenkarte mit A neben Karten mit Apfel und Flugzeug"
   },
   "dont-laugh": {
     "src": "assets/images/dont-laugh.webp",
-    "alt": "Ernste Schildkröte versucht, bei den Faxen eines Affen nicht zu lachen"
+    "alt": "Ein Spieler versucht ernst zu bleiben, während eine Mitspielerin eine Grimasse schneidet"
   },
   "scavenger-hunt": {
     "src": "assets/images/scavenger-hunt.webp",
-    "alt": "Hund bringt eine Gummiente durch ein Wohnzimmer zurück und lässt Kissen hinter sich fliegen"
+    "alt": "Eine Spielerin eilt mit einem gefundenen blauen Turnschuh zurück"
   },
   "secret-mission": {
     "src": "assets/images/secret-mission.webp",
-    "alt": "Maus in einem schlichten Ninja-Kostüm stellt heimlich eine kleine Flagge hinter eine Blumenvase"
+    "alt": "Eine Spielerin stellt heimlich eine kleine Spielzeugente ab und blickt über die Schulter"
   },
   "hot-seat": {
     "src": "assets/images/hot-seat.webp",
-    "alt": "Nervöses Kaninchen sitzt im Sessel unter einem Scheinwerfer, umgeben von Fragezeichen"
+    "alt": "Ein Spieler sitzt im Scheinwerferlicht auf einem Sessel und beantwortet schnelle Fragen"
   },
   "no-word-imposter": {
     "src": "assets/images/no-word-imposter.webp",
-    "alt": "Drei Pinguine betrachten eine Gummiente am Ausstellungsstand, während der vierte ratlos die Flügel hebt"
+    "alt": "Ein Spieler hebt ratlos die leere Hand, während seine Mitspieler den Hinweis kennen"
   },
   "party-quiz": {
     "src": "assets/images/party-quiz.webp",
-    "alt": "Hamster am Quizpult hält seine Pfote bereit über vier farbigen Antwortknöpfen"
+    "alt": "Ein Spieler mit runder Brille drückt den roten Quizbuzzer, während eine Mitspielerin jubelt"
   }
 };
