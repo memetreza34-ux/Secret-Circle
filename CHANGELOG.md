@@ -1,3 +1,9 @@
+## v114 – Eine gemeinsame Bildwelt für alle 55 Spiele (20. November 2026)
+
+- Vier wiederkehrende menschliche Figuren tragen die Spielcover. Ein Wolf, ein Showmaster und weitere Gastfiguren treten bei passenden Motiven auf.
+- 54 Cover wurden an den bestehenden Bildpfaden ersetzt. Das Cover von Party Quiz bleibt als Vorlage für die klare Darstellung eines Spielmoments erhalten. Die Alternativtexte beschreiben die neuen Motive.
+- Alle Spielbilder bleiben lokale WebP-Dateien in 800 × 600. Die App übernimmt sie mit Offline-Generation v114.
+
 ## v113 – Drei Spielcover mit wiederkehrenden Figuren (19. November 2026)
 
 - Auf Armans Wunsch zeigen Mafia, Scharade und Party Quiz die vier Stammfiguren in unterschiedlichen Rollen. Die Cover ersetzen die bisherigen Bilder in Katalog und Spielansicht.

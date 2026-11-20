@@ -84,7 +84,7 @@ Cloudflare Pages dokumentiert `_headers` für statische Assets. V1 verwendet kei
 Sobald eine echte Staging-Origin existiert:
 
 ```bash
-npm run staging:smoke -- https://REAL-STAGING-ORIGIN/ --expected-cache secret-circle-v113
+npm run staging:smoke -- https://REAL-STAGING-ORIGIN/ --expected-cache secret-circle-v114
 ```
 
 Für die spätere verbindliche Paketprüfung zusätzlich `--expected-commit <40-stelliger-RC-SHA>` verwenden. Damit werden das Paketmanifest und alle öffentlich ausgelieferten Dateibytes geprüft; ein gleicher Cachename allein genügt nicht. Alternativ den vorbereiteten GitHub-Workflow **Secret Circle Deployment Smoke** mit HTTPS-Origin und Commit starten. Er prüft nur und veröffentlicht nichts. Origin und reale Hostingfreigaben werden erst mit den tatsächlichen Angaben ergänzt.
@@ -176,7 +176,7 @@ Cloudflare Pages erlaubt laut aktueller Dokumentation die Steuerung automatische
 Nur wenn Staging auf **demselben unveränderten RC** bestanden ist:
 
 ```bash
-npm run staging:smoke -- https://REAL-PRODUCTION-ORIGIN/ --expected-cache secret-circle-v113 --production
+npm run staging:smoke -- https://REAL-PRODUCTION-ORIGIN/ --expected-cache secret-circle-v114 --production
 ```
 
 Zusätzlich Production:

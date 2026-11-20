@@ -1,5 +1,7 @@
 # Secret Circle – Asset Rights Sign-off
 
+**Katalogbilder v114, 20. November 2026.** Die überarbeitete Serie umfasst 55 eigene Spielillustrationen. 54 Dateien wurden aus dem integrierten OpenAI `image_gen` mit Pillow als WebP exportiert. Party Quiz bleibt aus der Drei-Spiele-Vorschau erhalten. Die Bildeingänge stammen aus eigenen Entwürfen der fiktiven Stammfiguren. Das Provenienzmanifest dokumentiert Eingangs- und Exportprüfsummen, die tatsächlichen Prompts und die bisherigen Fassungen. Die abschließende Serie und die Rechteprüfung des Release-Kandidaten bleiben offen.
+
 **Stammfiguren in der App-Vorschau, 19. November 2026.** Die Cover für Mafia, Scharade und Party Quiz sind eigene Illustrationen aus dem integrierten OpenAI `image_gen`. Als Bildeingang diente das eigene Gruppenbild mit fiktiven Figuren. Das Provenienzmanifest enthält die tatsächlichen Prompts, Prüfsummen der PNG-Eingänge und WebP-Exporte sowie die früheren Fassungen. Die abschließende manuelle Serien- und Rechteprüfung bleibt offen.
 
 **Motivkorrekturen, 7. November 2026:** Die nutzerbeauftragten Ersatzbilder für `pass-the-phone`, `password-one-word`, `spin-bottle` und `fill-blank-battle` stammen aus dem integrierten OpenAI `image_gen` mit der unveränderten eigenen Stilvorlage. Modellkennung nicht ausgegeben. Aktuelle Herkunft, tatsächliche Prompts, WebP-Export und historische Prüfsummen stehen im Provenienzmanifest. Die vier Bilder ersetzen jeweils dieselbe App-Fassung. Keine vorweggenommene finale Bildwelt-/Releasefreigabe.

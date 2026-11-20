@@ -6,7 +6,7 @@ Stand: 9. November 2026
 
 ## Tatsächlich geprüfter Integrationsstand
 
-- Package `1.0.0-beta.3`, Offline-Core `secret-circle-v113` / `secret-circle-v113-staging`.
+- Package `1.0.0-beta.3`, Offline-Core `secret-circle-v114` / `secret-circle-v114-staging`.
 - [PR #69](https://github.com/memetreza34-ux/Secret-Circle/pull/69): 55 lokale Spielbilder, vollständige Bildflächen, Einstieg und Ergebnisdarstellung; finale Bildabnahme offen.
 - [PR #70](https://github.com/memetreza34-ux/Secret-Circle/pull/70), Commit `f9a8fcc54fda5640ad3edac4f1118cb34ec3f9e5`: alle 55 Spielabläufe bis Abschluss und erneute vollständige Partie, wieder verdeckte Geheimnisse, Doppeltippschutz und 28 korrigierte Hilfswörter.
 - Pflichtchecks auf diesem Commit: `validate`, `e2e-webkit`, `smoke` bestanden. Chromium 921, WebKit 842 und Smoke 40 Fälle bestanden; keine Fehler oder Wiederholungen. 175 vorgesehene Auslassungen bleiben sichtbar.

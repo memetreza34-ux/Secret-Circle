@@ -1,4 +1,8 @@
-# Vorschau mit wiederkehrenden Figuren vom 19. November 2026
+# Bildwelt mit wiederkehrenden Figuren vom 20. November 2026
+
+Arman hat nach Sichtung der drei eingebauten Motive die Überarbeitung des gesamten Katalogs beauftragt. Die vier fiktiven Menschen aus dem [Gruppenbild](bildwelt/stammfiguren-vorschau-2026-11-18.webp) sind die Figurenreferenz. Spielmomente, Besetzung und Bildaufbau variieren nach Spiel. Bei Geräusche erraten ergänzt ein Wolf die menschliche Besetzung. Klassische Rollen und Gäste treten gezielt auf. Party Quiz bleibt aus der Vorschau erhalten, 54 Bilder werden an ihren bestehenden Pfaden ersetzt. Die früheren Abschnitte dokumentieren die damals gültigen Entwürfe. Die finale Serienabnahme bleibt offen.
+
+## Erste App-Vorschau mit drei Motiven
 
 Arman hat beauftragt, die drei gezeigten Cover für Mafia, Scharade und Party Quiz direkt in der App zu zeigen. Die drei Motive verwenden dasselbe [Gruppenbild mit vier fiktiven Stammfiguren](bildwelt/stammfiguren-vorschau-2026-11-18.webp) als Figurenreferenz. Die älteren Aussagen unten dokumentieren den bisherigen Serienstand. Die Stammbesetzung für die Gesamtserie bleibt zur Beurteilung offen.
 

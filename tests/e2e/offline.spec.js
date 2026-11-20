@@ -85,7 +85,7 @@ test('service worker caches the complete v30 core including Creator guidance and
   await page.goto('/v2-hub.html#spiel=charades');
   const charades = page.locator('#mode-emblem img');
   await expect(charades).toHaveAttribute('src', 'assets/images/charades.webp');
-  await expect(charades).toHaveAttribute('alt', 'Eine Pantomimin drückt ihre weißen Handschuhe gegen eine unsichtbare Wand');
+  await expect(charades).toHaveAttribute('alt', 'Eine Pantomimin mit rotem Halstuch und weißen Handschuhen spielt eine unsichtbare Wand');
   await expect.poll(() => charades.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/v2-hub.html#spiel=imposter');
   const imposter = page.locator('#mode-emblem img');
@@ -96,16 +96,16 @@ test('service worker caches the complete v30 core including Creator guidance and
     const digest = await crypto.subtle.digest('SHA-256', await response.arrayBuffer());
     return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
   });
-  expect(imposterHash).toBe('8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff');
+  expect(imposterHash).toBe('c81b054d5ac9d945a8bb73075a2f6f0865715749be4944ec9cd42d634a4d4876');
   await page.goto('/v2-hub.html#spiel=two-truths');
   const twoTruths = page.locator('#mode-emblem img');
   await expect(twoTruths).toHaveAttribute('src', 'assets/images/two-truths.webp');
-  await expect(twoTruths).toHaveAttribute('alt', 'Fuchs-Abenteurer erzählt zwei plausible Erlebnisse und von einer Truhe auf einem Papierflieger; die Detektivin hört skeptisch zu');
+  await expect(twoTruths).toHaveAttribute('alt', 'Eine Spielerin prüft drei Karten, während ihr Mitspieler betont unschuldig lächelt');
   await expect.poll(() => twoTruths.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/v2-hub.html#spiel=word-chain');
   const wordChain = page.locator('#mode-emblem img');
   await expect(wordChain).toHaveAttribute('src', 'assets/images/word-chain.webp');
-  await expect(wordChain).toHaveAttribute('alt', /Zugbegleiterin/);
+  await expect(wordChain).toHaveAttribute('alt', "Zwei Spielerinnen verbinden ein rotes und ein gelbes Kettenglied");
   await expect.poll(() => wordChain.evaluate(image => image.complete && image.naturalWidth === 800 && image.naturalHeight === 600)).toBe(true);
   await page.goto('/v2-hub.html#spiel=hot-potato');
   const potato = page.locator('#mode-emblem img');
