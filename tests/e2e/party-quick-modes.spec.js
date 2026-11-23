@@ -34,6 +34,8 @@ test('Wavelength completes a round and persists a resumable session', async ({ p
   await page.locator('#quick-rounds').selectOption('3');
   await page.locator('#quick-start').click();
   await expect(page.locator('#quick-progress')).toContainText('Runde 1 von 3');
+  await expect(page.locator('.spectrum-card')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Ziel anzeigen' }).click();
   await expect(page.locator('.spectrum-card strong')).toContainText('Ziel:');
   await page.getByRole('button', { name: 'Ziel verbergen und Gerät weitergeben' }).click();
   await page.locator('input[type="range"]').evaluate(input => {

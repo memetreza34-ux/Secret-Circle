@@ -432,7 +432,7 @@
     if (!game || !ALLOWED.has(game.id) || game.status !== 'playable') {
       $('#quick-setup').innerHTML = '<h1>Spiel nicht verfügbar</h1><p>Dieser Schätz-/Voting-Modus ist noch nicht freigeschaltet.</p><a class="ghost-button" href="party.html">Zum Party Hub</a>'; return;
     }
-    document.title = `Secret Circle – ${game.title}`;
+    document.title = `Rundaloo – ${game.title}`;
     $('#quick-icon').textContent = game.icon; $('#quick-group').textContent = `${game.group} · Labs`; $('#quick-title').textContent = game.title;
     $('#quick-description').textContent = game.description; $('#quick-player-range').textContent = `${game.minPlayers}–${game.maxPlayers} Personen`;
     $('#quick-duration').textContent = `ca. ${game.duration} Minuten`; $('#quick-content-count').textContent = `${C.itemCount(game.id)} Karten`;

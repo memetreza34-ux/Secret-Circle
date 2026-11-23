@@ -12,7 +12,7 @@
   const HELP = {
     home: {
       title: 'In weniger als einer Minute starten',
-      intro: 'Secret Circle ist für spontane Gruppen gedacht. Du brauchst kein Konto und keine Vorbereitung.',
+      intro: 'Rundaloo ist für spontane Gruppen gedacht. Du brauchst kein Konto und keine Vorbereitung.',
       steps: ['Spieler einmal eintragen.', 'Spiel nach Stimmung oder Suche wählen.', 'Kategorie auswählen und auf Starten tippen.']
     },
     games: {

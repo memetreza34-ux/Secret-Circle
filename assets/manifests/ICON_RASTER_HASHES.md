@@ -1,10 +1,9 @@
-# Secret Circle – replacement icon raster hashes
+# Rundaloo – Prüfsummen der App-Icons
 
-Prepared from the replacement `icon.svg` on 2026-08-29.
+Exporte vom 22. November 2026. Die PNG-Dateien sind 192 × 192 und 512 × 512 Pixel groß.
 
-Expected release raster outputs after palette optimization:
+- `icon.svg` – SHA-256 `e4aa6bef26227645b556a1548674295d9460aed9e451914e6865b142d09648f2`
+- `icon-192.png` – SHA-256 `37c9d7cc5fd1fc2af3edf086ace798856fe8005a505459e484d1fdeb249d65e3`
+- `icon-512.png` – SHA-256 `ca33b11c3d46ccddab99aeac142586654b1b86bc9aa7d3bd532f1da57415749a`
 
-- `icon-192.png` — 192×192 — SHA-256 `75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e`
-- `icon-512.png` — 512×512 — SHA-256 `1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce`
-
-Generation path: replacement SVG → CairoSVG 2.8.2 raster export → Pillow palette optimization. These hashes become authoritative only after the corresponding binary files are committed and verified by `scripts/asset_provenance_audit.py`.
+Siehe [Herkunft](ORIGINAL_ICON_SOURCE.md) und [Provenienzmanifest](asset-provenance.json).

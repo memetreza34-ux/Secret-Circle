@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0A0B0F">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Secret Circle – offline spielbare Partyspiele für eine Gruppe und ein Gerät.">
+  <meta name="description" content="Rundaloo – 55 Partyspiele auf einem Handy. Auch offline.">
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Secret Circle">
+  <meta name="apple-mobile-web-app-title" content="Rundaloo">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
-  <title>Secret Circle</title>
+  <title>Rundaloo – Partyspiele</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
@@ -29,13 +29,19 @@
     <!-- ─────────── START ─────────── -->
     <section class="screen" data-screen="home">
       <div class="inner appbar">
-        <span class="wordmark">Secret Circle</span>
-        <button class="icon-btn" type="button" aria-label="Suchen" data-tab="games" data-icon="search"></button>
+        <span class="wordmark app-wordmark"><img src="icon-192.png" alt="" width="40" height="40">Rundaloo</span>
+        <button class="icon-btn" type="button" id="home-search" aria-label="Suchen" data-tab="games" data-icon="search"></button>
         <button class="icon-btn" type="button" aria-label="Profil" data-tab="profile" data-icon="user"></button>
       </div>
       <div class="body scroll">
         <div class="inner">
-          <h1 class="sr-only" tabindex="-1" data-head>Start</h1>
+          <div class="home-intro">
+            <div>
+              <h1 tabindex="-1" data-head>55 Partyspiele auf einem Handy.</h1>
+              <p>Handy rum. Runde an. Auch offline.</p>
+            </div>
+            <button class="pill pill-quiet" type="button" data-tab="games">Alle Spiele</button>
+          </div>
 
           <article class="hero">
             <div class="hero-art">
@@ -93,11 +99,6 @@
           <div class="meta" id="mode-meta"></div>
 
           <div class="rows">
-            <div class="row">
-              <span class="row-ico" data-icon="tv"></span>
-              <span class="row-main">Wie es geht</span>
-              <button class="row-action" type="button" id="howto-btn">Ansehen</button>
-            </div>
             <button class="row" type="button" data-open="players" id="players-row">
               <span class="row-ico" data-icon="users"></span>
               <span class="row-main">Spieler</span>
@@ -112,12 +113,15 @@
             </button>
           </div>
 
-          <ol class="steps" id="mode-steps"></ol>
+          <section class="mode-rules" aria-labelledby="mode-rules-title">
+            <h2 id="mode-rules-title">Spielregeln</h2>
+            <ol class="steps" id="mode-steps" role="list"></ol>
+          </section>
         </div>
       </div>
       <div class="dock">
         <p class="dock-note" id="start-note"></p>
-        <button class="pill pill-primary wide" type="button" id="start-btn">Spiel starten</button>
+        <button class="pill pill-primary wide" type="button" id="start-btn" aria-describedby="start-note">Spiel starten</button>
       </div>
     </section>
 
@@ -138,13 +142,14 @@
           <div id="seat-preview"></div>
         </div>
       </div>
-      <div class="dock">
+      <div class="dock dock-stack">
         <form class="add-row" id="player-form">
           <label class="sr-only" for="player-input">Neuer Spieler</label>
           <input id="player-input" type="text" maxlength="32" autocomplete="off" autocapitalize="words"
                  enterkeyhint="done" placeholder="Neuer Spieler">
           <button class="add-btn" type="submit" id="player-add" aria-label="Person hinzufügen" data-icon="plus"></button>
         </form>
+        <button class="pill pill-primary wide" type="button" id="players-done">Fertig</button>
       </div>
     </section>
 
@@ -159,23 +164,6 @@
           <h1 class="sr-only" tabindex="-1" data-head>Kategorie wählen</h1>
           <div class="rows" id="pack-list"></div>
           <p class="lede-dim">„Gemischt“ nimmt Karten aus allen Kategorien.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ─────────── WIE ES GEHT ─────────── -->
-    <section class="screen" data-screen="howto" data-tint hidden>
-      <div class="inner appbar">
-        <button class="icon-btn" type="button" data-back aria-label="Zurück" data-icon="back"></button>
-        <span class="appbar-title">Wie es geht</span>
-      </div>
-      <div class="body scroll">
-        <div class="inner">
-          <div class="fit howto-fit">
-            <h1 class="fit-text" id="howto-title" tabindex="-1" data-head></h1>
-          </div>
-          <p class="mode-sub howto-sub" id="howto-sub"></p>
-          <ol class="steps" id="howto-steps"></ol>
         </div>
       </div>
     </section>
@@ -242,7 +230,7 @@
           <h1 class="sr-only" tabindex="-1" data-head>Datenschutz</h1>
           <div class="text-block">
             <p>Kein Konto, keine Cloud.</p>
-            <p>Secret Circle sammelt nichts. Es gibt keine Anmeldung, keine Analyse, keine Werbung und keine Übertragung an Dritte.</p>
+            <p>Rundaloo sammelt nichts. Es gibt keine Anmeldung, keine Analyse, keine Werbung und keine Übertragung an Dritte.</p>
           </div>
           <div class="text-block">
             <p>Was gespeichert wird</p>
@@ -269,7 +257,7 @@
           <h1 class="sr-only" tabindex="-1" data-head>Hilfe</h1>
           <div class="text-block">
             <p>Ein Handy reicht</p>
-            <p>Secret Circle wird herumgereicht. Wer dran ist, steht groß auf dem Bildschirm. Gib das Gerät erst weiter, wenn geheime Inhalte wieder verdeckt sind.</p>
+            <p>Rundaloo wird herumgereicht. Wer dran ist, steht groß auf dem Bildschirm. Gib das Gerät erst weiter, wenn geheime Inhalte wieder verdeckt sind.</p>
           </div>
           <div class="text-block">
             <p>Vor dem Start</p>
@@ -301,6 +289,7 @@
   <script src="party-wave-one-clue-catalog.js"></script>
   <script src="party-custom-packs.js"></script>
   <script src="v2-hub-packs.js"></script>
+  <script src="v2-game-art.js"></script>
   <script src="v2-hub.js"></script>
 </body>
 </html>

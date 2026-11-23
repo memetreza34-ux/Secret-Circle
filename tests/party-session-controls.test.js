@@ -399,7 +399,65 @@ staleController.countdown(5, staleNode, () => {});
 assert.equal(staleNode.textContent, '0:05');
 assert.equal(staleController.remainingMilliseconds(), 5_000);
 
+// v100: Nach Session-Ende sind die Ergebnis-Aktionen kurz gesperrt, damit ein
+// Doppeltipp auf die letzte Spielaktion nicht sofort „Wiederholen“ auslöst.
+assert.equal(Controls.resultArmMilliseconds, 600);
+const armNodes = { ...createNodes(), '#quick-result .inline-actions': node() };
+const armTimeouts = new Map();
+let armTimeoutId = 0;
+const armController = Controls.createController({
+  documentRef: createDocument(armNodes),
+  windowRef: createWindow(createStorage()),
+  storageRef: createStorage(),
+  catalog,
+  gameId: 'one',
+  setIntervalFn() { return 1; },
+  clearIntervalFn() {},
+  setTimeoutFn(callback, delay) { armTimeoutId += 1; armTimeouts.set(armTimeoutId, { callback, delay }); return armTimeoutId; },
+  clearTimeoutFn(id) { armTimeouts.delete(id); }
+});
+const resultActions = armNodes['#quick-result .inline-actions'];
+armController.setSessionActive(true);
+assert.equal(resultActions.inert, false);
+armController.setSessionActive(false);
+assert.equal(resultActions.inert, true);
+assert.equal(resultActions.getAttribute('aria-disabled'), 'true');
+assert.equal(armTimeouts.size, 1);
+assert.equal([...armTimeouts.values()][0].delay, 600);
+armController.setSessionActive(false);
+assert.equal(armTimeouts.size, 1, 'erneutes Beenden startet die Sperre neu statt sie zu stapeln');
+[...armTimeouts.values()][0].callback();
+assert.equal(resultActions.inert, false);
+assert.equal(resultActions.getAttribute('aria-disabled'), null);
+
+// Hat ein zweiter Tipp während der Sperre den Fokus auf den Hintergrund geworfen,
+// geht er danach zurück auf die Ergebnis-Überschrift; sonst bleibt er, wo er ist.
+for (const focusLost of [true, false]) {
+  const title = { ...node(), focused: 0, focus() { this.focused += 1; } };
+  const focusNodes = { ...createNodes(), '#quick-result': node(), '#quick-result .inline-actions': node(), '#quick-result-title': title };
+  const focusDocument = createDocument(focusNodes);
+  focusDocument.body = node();
+  focusDocument.activeElement = focusLost ? focusDocument.body : focusNodes['#quick-result .inline-actions'];
+  let pending = null;
+  const focusController = Controls.createController({
+    documentRef: focusDocument,
+    windowRef: createWindow(createStorage()),
+    storageRef: createStorage(),
+    catalog,
+    gameId: 'one',
+    setIntervalFn() { return 1; },
+    clearIntervalFn() {},
+    setTimeoutFn(callback) { pending = callback; return 1; },
+    clearTimeoutFn() { pending = null; }
+  });
+  focusController.setSessionActive(true);
+  focusController.setSessionActive(false);
+  pending();
+  assert.equal(title.focused, focusLost ? 1 : 0, `Fokus nach der Sperre (verloren: ${focusLost})`);
+}
+
 console.log(JSON.stringify({
+  resultActionsArmedAfterEnd: true,
   ok: true,
   controllerVersion: Controls.version,
   pausableTimer: true,

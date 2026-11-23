@@ -280,7 +280,7 @@ function createRoundOptions(values) {
   };
 }
 
-/* Neue Partien meiden die zuletzt gespielten Begriffe aus dem Verlauf, bis die Kategorie durch ist. */
+/* Die Engine bekommt die verwendeten Begriffe in zeitlicher Reihenfolge. */
 function recentWords() {
   const seen = new Set();
   return history.map(item => String(item?.word ?? '').trim()).filter(word => {
@@ -288,14 +288,26 @@ function recentWords() {
     if (!key || seen.has(key)) return false;
     seen.add(key);
     return true;
-  });
+  }).reverse();
+}
+
+function previousRoundHint() {
+  const last = history[0];
+  if (!last) return undefined;
+  const category = Object.keys(LABELS).find(id => LABELS[id] === last.category) || 'all';
+  const word = last.word.toLocaleLowerCase('de-DE');
+  return E.normalizeEntries(categoryEntries(category)).find(entry => entry.word.toLocaleLowerCase('de-DE') === word)?.hint;
 }
 
 function startGame() {
   setStatus();
   try {
     const values = setupValues();
-    game = E.createGame({ ...createRoundOptions(values), usedWords: recentWords() });
+    game = E.createGame({
+      ...createRoundOptions(values),
+      usedWords: recentWords(),
+      previousHint: previousRoundHint()
+    });
     cardVisible = false;
     voteIndex = 0;
     lastPersistedTimerSecond = null;
@@ -563,14 +575,20 @@ function completeRound() {
 function renderResult() {
   recordRoundHistory();
   screen('result-screen');
-  $('#result-heading').textContent = game.winner === 'innocents' ? 'Die Gruppe gewinnt' : 'Die Imposter gewinnen';
+  const complete = E.isMatchComplete(game);
+  const ranking = E.leaderboard(game);
+  const leaders = ranking.filter(entry => entry.score === ranking[0].score).map(entry => entry.name);
+  const roundWinner = game.winner === 'innocents' ? 'Die Gruppe gewinnt die Runde' : 'Die Imposter gewinnen die Runde';
+  $('#result-heading').textContent = complete ? 'Match beendet' : roundWinner;
+  $('#match-summary').hidden = !complete;
+  $('#match-summary').textContent = complete ? `${leaders.length > 1 ? 'Gemeinsamer Sieg' : 'Gesamtsieg'}: ${leaders.join(' und ')} · ${ranking[0].score} Punkte. Letzte Runde: ${roundWinner}.` : '';
   $('#result-word').textContent = game.word;
   $('#result-imposters').innerHTML = game.imposters.map(name => `<li>${esc(name)}</li>`).join('');
   $('#result-meta').textContent = `${game.category} · Runde ${game.currentRound}/${game.matchRounds} · Ausgeschieden: ${game.eliminatedPlayer || 'niemand'}`;
-  $('#leaderboard').innerHTML = E.leaderboard(game)
-    .map((entry, index) => `<div class="leader-row"><span>${index + 1}. ${esc(entry.name)}</span><strong>${entry.score}</strong></div>`)
+  $('#leaderboard').innerHTML = ranking
+    .map(entry => `<div class="leader-row"><span>${ranking.findIndex(other => other.score === entry.score) + 1}. ${esc(entry.name)}</span><strong>${entry.score}</strong></div>`)
     .join('');
-  $('#next-round').hidden = E.isMatchComplete(game);
+  $('#next-round').hidden = complete;
   $('#next-round').textContent = `Runde ${game.currentRound + 1} starten`;
 }
 
@@ -637,7 +655,7 @@ function registerPwa() {
   });
   window.addEventListener('appinstalled', () => {
     $('#install-app').hidden = true;
-    setStatus('Secret Circle wurde installiert.');
+    setStatus('Rundaloo wurde installiert.');
   });
   window.addEventListener('online', updateConnection);
   window.addEventListener('offline', updateConnection);

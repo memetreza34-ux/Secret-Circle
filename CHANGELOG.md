@@ -1,3 +1,110 @@
+## v117 – Ruhigerer erster Blick auf Rundaloo (22. November 2026)
+
+- Die Startseite öffnet ohne Fokusrahmen an der Überschrift. Beim Wechsel zur Startansicht per Tastatur erhält die Überschrift weiterhin den Fokus.
+
+## v116 – Rundaloo und abwechslungsreichere Hilfswörter (22. November 2026)
+
+- Rundaloo ist in App, Browsertiteln und Installation sichtbar. Juna, Ben, Mira und Leo bilden das neue App-Icon. Installations-ID und Spielstände werden weiterverwendet.
+- Word Imposter vermeidet bei „Einfach“ das Hilfswort der vorherigen Runde, wenn ein ungespielter Begriff mit einem anderen Hilfswort verfügbar ist. Beim Neustart eines ausgeschöpften Wortstapels wird der zuletzt gespielte Begriff übersprungen.
+
+## v115 – Schneller von der Spielsuche zur Runde (22. November 2026)
+
+- Der Hauptknopf öffnet bei fehlenden Personen direkt die Spielerliste. Ist die Gruppe groß genug, führt er ins gewählte Spiel.
+- Auf der Startseite steht, dass 55 Partyspiele auf einem Handy auch offline spielbar sind. „Alle Spiele“ öffnet den Katalog. Die Lupe setzt den Fokus ins Suchfeld.
+- Die Regeln stehen einmal direkt auf der Spielseite.
+
+## v114 – Eine gemeinsame Bildwelt für alle 55 Spiele (20. November 2026)
+
+- Vier wiederkehrende menschliche Figuren tragen die Spielcover. Ein Wolf, ein Showmaster und weitere Gastfiguren treten bei passenden Motiven auf.
+- 54 Cover wurden an den bestehenden Bildpfaden ersetzt. Das Cover von Party Quiz bleibt als Vorlage für die klare Darstellung eines Spielmoments erhalten. Die Alternativtexte beschreiben die neuen Motive.
+- Alle Spielbilder bleiben lokale WebP-Dateien in 800 × 600. Die App übernimmt sie mit Offline-Generation v114.
+
+## v113 – Drei Spielcover mit wiederkehrenden Figuren (19. November 2026)
+
+- Auf Armans Wunsch zeigen Mafia, Scharade und Party Quiz die vier Stammfiguren in unterschiedlichen Rollen. Die Cover ersetzen die bisherigen Bilder in Katalog und Spielansicht.
+- Die drei lokalen WebP-Dateien behalten ihre Pfade und das Format 800 × 600. Die Alternativtexte beschreiben die neuen Szenen. Die Bilddateien sind in der Offline-Generation v113 enthalten.
+
+## v112 – Sechs Spielmotive in der festen Bildwelt korrigiert (15. November 2026)
+
+- Alle 55 Bilder gegen die unveränderte Figuren-/Materialvorlage vom 30. Oktober geprüft. Sechs unklare Motive ersetzt: Heiße Kartoffel, Zwei Wahrheiten/eine Lüge, Melodie summen, Emoji Quiz, Geschichtenkette und Satz vervollständigen.
+- Sichtbare Spielmomente statt Küchenmotiv, offenem Gesangsmund, Pizzamotiv, Bücher-Treppe und Fragezeichen: Weitergeben, Bluffen, Summen, Bilder kombinieren, gemeinsam weitererzählen und ein Satzende ergänzen.
+- Dieselben lokalen Pfade, 800 × 600 WebP und höchstens 35.000 Bytes je Bild. Alt-Texte, unveränderte Bildprüfzusagen, Prompts, Provenienz und 55er-Sichtprüfung aktualisiert. Offline-Core v111 → v112; finale Serienabnahme offen.
+
+## Technische Veröffentlichungsvorbereitung (9. November 2026)
+
+- HTTPS-Prüfung weist falsch deklarierte JavaScript-/CSS-Antworten auch bei unveränderten Dateibytes zurück; damit kann ein durch `nosniff` blockierter App-Start nicht allein wegen gültiger Prüfsummen bestehen. Gilt auch für den Service Worker und den bisherigen Smoke ohne Commitangabe.
+- Reproduzierbarer Export aus festem Git-Commit: nur öffentliche App-Dateien nach `dist/site` und `release/secret-circle.zip`, mit Dateiprüfsummen und Commit im Paketmanifest. Repositorydateien und interne Betreiberangaben werden nicht mit veröffentlicht.
+- Vollständige Figtree-/Archivo-Black-Lizenztexte aus den offiziellen Google-Fonts-Quellen in die ausgelieferten Third-Party-Hinweise aufgenommen. Copyright-Angaben mit den Metadaten der vorhandenen WOFF2-Dateien abgeglichen; der Paketierer prüft die vollständigen Texte per SHA-256.
+- Lokale Paketprüfung und späterer HTTPS-Smoke vergleichen Dateibytes und Manifest mit den echten Git-Dateien des erwarteten Commits; ein gemeinsam verändertes Paket und Manifest besteht die Prüfung nicht. Weiterleitungen auf fremde Origins werden vor der Folgeanfrage blockiert.
+- Echte Browser-Upgradeprüfungen von v99/v109 sowie fehlgeschlagene Cache-Installation und Wiederholung dauerhaft in die CI übernommen. Veröffentlichungspaket wird als CI-Artefakt vorbereitet; separater manueller HTTPS-Prüfworkflow veröffentlicht nichts.
+- Windows-Kommandos für alle 36 Audits und beide Browser-Testserver auf denselben Python-Wrapper umgestellt; ein vorhandener Microsoft-Store-Alias ersetzt keinen Interpreter mehr. Prüfungen, Auslassungen und Zeitlimits bleiben erhalten.
+- Keine Änderung an App-Laufzeit oder Offline-Core v111. Hosting, Betreiberangaben und reale Geräte-/Gruppenfreigaben bleiben offen.
+
+## v111 – Hilfswörter verraten keine Wortteile (9. November 2026)
+
+- 28 verräterische Word-Imposter-Hilfswörter aus PR #52 ersetzt, ohne Begriffe, Kategorien oder Reihenfolge zu ändern. Beim Gegenlesen zwei direkte Synonyme verbreitert: Notenblatt → Orchester und Gedankenlesen → Superkraft.
+- Dauerhafte Inhaltsprüfung verbietet Hilfswörter, die den Begriff oder dessen Wortteile enthalten, auch bei Umlauten, ß und unterschiedlicher Großschreibung. Der alte Stand scheitert reproduzierbar an Föhn → Föhnen.
+- Zehn-Runden-Prüfungen aus fünf Engine-Familien ergänzen die 55er-Abnahme: Innerhalb eines noch nicht ausgeschöpften Stapels darf keine Karte doppelt erscheinen. Kein neues Kartengedächtnis oder neue Kartenpakete. Offline-Core v110 → v111.
+
+## v110 – Verdeckte Geheimnisse und vollständige Spielablaufprüfungen (9. November 2026)
+
+- Schutzkorrekturen aus PR #46/#47/#50 mit dem aktuellen Bild-/UX-Stand zusammengeführt: private Karten, Identitäten, Missionen und Spektrum-Ziel bleiben beim Fortsetzen verdeckt; derselbe Inhalt wird erst bewusst wieder aufgedeckt.
+- Spektrum-Tipp zeigt das Ziel jeder Runde erst nach der Geräteübergabe. Ergebnisaktionen der schnellen Engines sind kurz gegen unbeabsichtigte Doppeltipps geschützt; der Fokus bleibt beim Ergebnis.
+- Flaschendrehen und Würfel/Münze aktualisieren ihren sichtbaren Rundenzähler nach jeder Aktion.
+- Die sechs Ende-/Wiederholungs-Suites aus PR #46–#51 und deren 55er-Matrix übernommen und an die aktuelle Quiz-Navigation und verspätete Updatehinweise angepasst. Historische Ausgangsnachweise sind ausdrücklich von der neuen kombinierten Prüfung getrennt; reale Geräte-/Gruppenabnahme und Release bleiben offen.
+- Offline-Core v109 → v110; aktuelle Bilder, Storage-Keys und Punkteverträge bleiben erhalten.
+
+## v109 – Verständlicher Einstieg und klare Spielergebnisse (7. November 2026)
+
+- Die drei CI-Testjobs verwenden fest Ubuntu 24.04, passend zu Playwright 1.54.2. Das veränderliche `ubuntu-latest` lieferte Ubuntu 26.04 und blockierte bereits die Browserinstallation. Diese reine CI-Korrektur verändert den Offline-Core nicht.
+- Namenseingabe erhält einen sichtbaren Abschluss; die Startempfehlung berücksichtigt das gewählte Spiel und dessen Mindestgruppe. Verlinkte Spiele führen mit „Spiel einrichten“ zu ihrer Einrichtung.
+- Word Imposter trennt Rundenergebnis und Matchabschluss, nennt die Gesamtsieger und vergibt bei gleicher Punktzahl denselben Rang. Punkte und Speicherformat bleiben erhalten.
+- Quizregeln erklären persönliche Züge, Punkte und die Gesamtzahl der Fragen. Die letzte Frage führt mit „Zum Ergebnis“ zum Abschluss; die Rangliste enthält auch Personen mit null Punkten.
+- Fragen und Satzanfänge sind kleiner und in normaler Schreibweise lesbar. Gleichwertige Antwortmöglichkeiten erhalten dieselbe Darstellung. Offline-Core v108 → v109.
+
+## v108 – Vollständige Spielbilder auf Handy und Tablet (7. November 2026)
+
+- Katalogkarten und Startbanner folgen dem 4:3-Bildformat. Die vollständigen Motive bleiben sichtbar; lange Kartentitel können auch bei vergrößerter Schrift umbrechen.
+- Vier unklare Motive an denselben Pfaden ersetzt: Pass das Handy, Ein-Wort-Hinweis, Flaschendrehen und Satzduell. Feste Stilvorlage, vollständige Prompts, frühere Revisionen und Herkunft erhalten.
+- Responsive Browserprüfungen für alle 55 Katalogbilder, Startbanner und ausgewählte Details bei 320–1280 Pixeln, Tablet/Querformat und doppelter Textgröße ergänzt. Offline-Core v107 → v108.
+- Die Prüfung der 55 Katalogbilder in vier Gruppen aufgeteilt, mit unveränderten Prüfzusagen und Zeitlimits. Detailmotive werden beim Größenwechsel derselben geöffneten Seite geprüft. Lokale Ergebnisse und verbleibende Abnahmegrenzen stehen in `docs/BILDWELT_V2.md`.
+
+## v105 – Eine feste Bildwelt und Word-Imposter-Korrektur (4. November 2026)
+
+- Die unveränderte Figuren-/Materialvorlage verbindlich in Agentenauftrag, Projektkompass und Bildanweisungen festgehalten. Belegten Vergleich des achtteiligen Bestands gespeichert; Gesamtserie bleibt offen.
+- Die konkret ausgewählte Word-Imposter-Korrektur übernimmt das Chamäleon aus dieser Vorlage und ersetzt die ältere Illustration am bestehenden Pfad. Herkunft, aktueller und früherer Prompt sowie Prüfsummen dokumentiert.
+- Offline-Core v104 → v105; der Offline-Browsertest prüft zusätzlich die tatsächlich gelieferte neue Bilddatei per SHA-256.
+
+## v104 – Freigegebener Fuchs für Zwei Wahrheiten, eine Lüge (3. November 2026)
+
+- Das ausgewählte Fuchs-Motiv erscheint im Katalog und Spieldetail, mit deutschem Alt-Text.
+- Herkunft, vollständiger Prompt, Bildbudget sowie Medien- und Rechtevertrag ergänzt. Offline-Core v103 → v104.
+- Bestehende Bild- und Offline-Prüfungen um das Motiv erweitert.
+
+## v103 – Freigegebene Wortkette (3. November 2026)
+
+- Die ausgewählte Zugbegleiterin mit Apfel, Lampe und Elefant erscheint im Katalog und Spieldetail, mit deutschem Alt-Text.
+- Herkunft, vollständiger Prompt, Bildbudget sowie Medien- und Rechtevertrag ergänzt. Offline-Core v102 → v103.
+- Bestehende Bild- und Offline-Prüfungen um die Wortkette erweitert.
+
+## v102 – Bild für Heiße Kartoffel (2. November 2026)
+
+- Die ausgewählte Kartoffel-Probe erscheint lokal im Katalog und Spieldetail; Alt-Text, Rechte-/Medienvertrag und Bildbudget ergänzt.
+- Offline-Core v101 → v102. Bild- und Offline-Prüfungen um das neue Motiv erweitert.
+- Keine Änderung an Spielregeln, IDs, Timer-, Punkte-, Speicher- oder Schutzlogik.
+
+## v101 – Freigegebener Showmaster für Nicht sagen! (30. Oktober 2026)
+
+- Das ausgewählte Showmaster-Bild erscheint lokal in Katalog und Spieldetail, mit deutschem Alt-Text und geprüftem Bildbudget.
+- Herkunft, vollständiger Prompt und konkrete Bildauswahl dokumentiert. Offline-Core v100 → v101.
+- Bild- und Offline-Vertrag um das Motiv ergänzt; Spiellogik, IDs, Speicher- und Schutzfunktionen unverändert.
+
+## v100 – Freigegebenes Scharade-Bild (30. Oktober 2026)
+
+- Scharade zeigt den von Arman ausgewählten klassischen Pantomimen in Katalog, Empfehlungen und Spieldetail. Bild und Alt-Text bleiben lokal verfügbar.
+- Die gewählte Figuren-/Materialvorlage und die tatsächliche Referenzkette sind mit vollständigen Prompts und Herkunft dokumentiert. Weitere Spielbilder brauchen eine eigene Auswahl.
+- Offline-Core v99 → v100; neue Spielillustration im geprüften Downloadbudget. Keine Änderungen an Spielregeln, Namen, Timer-, Punkte-, Speicher- oder Schutzlogik.
+
 ## v99 – Altersstufe wirkt auch in der kanonischen Startseite (16. Oktober 2026)
 
 - Der V2-Hub übernimmt die gespeicherte Altersstufe aus den gemeinsamen Party-Einstellungen. Der Familienmodus filtert Empfehlungen, Hero, Katalog und Suche.
@@ -394,3 +501,14 @@ Zentrale offene Issues: **#7 CI**, **#8 Geräte/Beta/A11y + Spezialgates + Wave 
 Zusätzlicher struktureller Blocker: **PR-Stack mit aktuellem `main` reconciliieren**.
 
 Öffentlicher Release: **NO_GO**.
+# Bildwelt vom 5. November 2026
+
+- Acht vorhandene Spielbilder gegen dieselbe feste Vorlage geprüft; Wahrheit oder Pflicht, Mafia, Heiße Kartoffel, Wortkette und Zwei Wahrheiten an diese Welt angeglichen.
+- Sieben fehlende Kernspielbilder ergänzt: Ich habe noch nie, Question Imposter, Location Spy, Wer würde eher?, Entweder oder, Paranoia und Nur falsche Antworten. Damit 15 von 55 Motiven eingebunden; weitere 40 bleiben offen.
+- Bildzuordnung in ein eigenes lokales Datenmodul ausgelagert, deutsche Alternativtexte und Herkunft samt vollständigen Prompts erfasst. Offline-Cache angehoben; Offline-Prüfung verifiziert die tatsächlichen Bilddateien per SHA-256.
+
+## Alle 55 Spielbilder – 5. November 2026
+
+- Weitere 40 Motive mit derselben festen Vorlage ergänzt; jeder der 55 Modi hat genau ein lokales Bild mit deutschem Alternativtext. Anatomiefehler korrigiert; Buchstaben-Kategorien zeigt Apfel, Anker, Ameise und Astronaut passend zum deutschen Anfangsbuchstaben.
+- Herkunft, vollständige Prompts, Medieninventar und Dateibudgets ergänzt. Offline-Cache v106 → v107; Prüfung zählt jetzt die tatsächlich installierten CORE-Dateien einschließlich Schriften und Root-Alias.
+- Browserprüfungen decken alle 55 Kacheln und Detailbilder ab; Offline-Prüfung verifiziert alle 55 Bilddateien per SHA-256.

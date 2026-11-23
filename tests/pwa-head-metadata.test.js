@@ -16,7 +16,7 @@ for (const page of pages) {
   assert.match(source, /<meta name="mobile-web-app-capable" content="yes">/, `${page}: mobile-web-app-capable fehlt`);
   assert.match(source, /<meta name="apple-mobile-web-app-capable" content="yes">/, `${page}: apple-mobile-web-app-capable fehlt`);
   assert.match(source, /<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">/, `${page}: iOS status bar style fehlt`);
-  assert.match(source, /<meta name="apple-mobile-web-app-title" content="Secret Circle">/, `${page}: iOS App-Titel fehlt`);
+  assert.match(source, /<meta name="apple-mobile-web-app-title" content="Rundaloo">/, `${page}: Rundaloo als iOS App-Titel fehlt`);
   assert.match(source, /manifest-src 'self'/, `${page}: CSP manifest-src fehlt`);
   assert.match(source, /<link rel="manifest" href="manifest\.webmanifest">/, `${page}: Manifest-Link fehlt`);
   assert.match(source, /<link rel="icon" href="icon\.svg" type="image\/svg\+xml">/, `${page}: SVG-Icon fehlt`);

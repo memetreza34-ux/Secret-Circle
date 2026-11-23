@@ -294,6 +294,9 @@
       else if (timerState.kind === 'word-chain') startWordChain(timerState.letter, timerState.remainingMs);
       setHubPaused(true);
       setStatus('Laufende Timer-Runde wiederhergestellt und sicher pausiert.');
+      /* Nach Neuladen weiß niemand, wer das Gerät hält: Die geheime Karte
+         genauso verdecken wie bei einem App-Wechsel. */
+      if (timerState.kind === 'charades' || timerState.kind === 'taboo') window.SecretCirclePartyHubPolish?.concealPrivatePrompt?.();
     }
 
     return Object.freeze({

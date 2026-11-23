@@ -18,6 +18,9 @@ assert.equal(new Set(categoryIds).size, categoryIds.length);
 assert.deepEqual(Object.keys(content.words), categoryIds);
 assert.deepEqual(Object.keys(content.labels), categoryIds);
 
+const fold = value => value.toLocaleLowerCase('de-DE').normalize('NFKD')
+  .replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]/g, '');
+
 let totalTerms = 0;
 const globalOccurrences = new Map();
 for (const id of categoryIds) {
@@ -44,6 +47,11 @@ for (const id of categoryIds) {
     assert.ok(!/[<>]/.test(word), `Markup-like character in word: ${word}`);
     assert.ok(!/[<>]/.test(hint), `Markup-like character in hint: ${hint}`);
     assert.notEqual(word.toLocaleLowerCase('de-DE'), hint.toLocaleLowerCase('de-DE'), `Hint repeats word: ${word}`);
+    /* Der Imposter sieht das Hilfswort. Ist es ein Teil des Begriffs
+       („Fußball“ → „Ball“) oder umgekehrt, verrät es die Runde. */
+    const foldedWord = fold(word);
+    const foldedHint = fold(hint);
+    assert.ok(!foldedWord.includes(foldedHint) && !foldedHint.includes(foldedWord), `Hint gives the word away: ${word} → ${hint}`);
 
     const key = word.toLocaleLowerCase('de-DE');
     assert.ok(!localTerms.has(key), `Duplicate term in ${label}: ${word}`);
@@ -74,5 +82,6 @@ console.log(JSON.stringify({
   uniqueWithinCategories: true,
   safeTextOnlyContent: true,
   exactWordHintDuplicates: 0,
+  hintsNeverContainWord: true,
   crossCategoryDuplicates
 }, null, 2));

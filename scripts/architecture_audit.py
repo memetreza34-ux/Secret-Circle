@@ -8,6 +8,7 @@ read = lambda relative: (ROOT / relative).read_text(encoding='utf-8')
 violations = []
 
 production_js = [
+    'v2-hub.js','v2-game-art.js',
     'runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js',
     'word-imposter-resume-guard.js','app.js','backup-schema-registry.js','session-ledger.js','party-session-controls.js','party-catalog.js',
     'party-expansion.js','party-trending-catalog.js','party-mega-catalog.js','party-viral-catalog.js','party-core-release-catalog.js','party-core-classic-content.js',

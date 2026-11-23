@@ -218,7 +218,7 @@
 
   function initialize() {
     if (!game || !ALLOWED.has(game.id) || game.status !== 'playable') { $('#quick-setup').innerHTML='<h1>Spiel nicht verfügbar</h1><p>Ein-Wort-Hinweis ist noch nicht freigeschaltet.</p><a class="ghost-button" href="party.html">Zum Party Hub</a>'; return; }
-    document.title=`Secret Circle – ${game.title}`; $('#quick-icon').textContent=game.icon; $('#quick-group').textContent=`${game.group} · Labs`; $('#quick-title').textContent=game.title; $('#quick-description').textContent=game.description;
+    document.title=`Rundaloo – ${game.title}`; $('#quick-icon').textContent=game.icon; $('#quick-group').textContent=`${game.group} · Labs`; $('#quick-title').textContent=game.title; $('#quick-description').textContent=game.description;
     $('#quick-player-range').textContent=`${game.minPlayers}–${game.maxPlayers} Personen`; $('#quick-duration').textContent=`ca. ${game.duration} Minuten`; $('#quick-content-count').textContent=`${C.itemCount(game.id)} Karten`;
     C.getPackNames(game.id).forEach(name=>$('#quick-pack').add(new Option(`${name} (${C.getItems(game.id,name).length})`,name))); game.instructions.forEach(rule=>$('#quick-rules').append(element('li','',rule)));
     updateResume(); sessionControls.updateNextGame(C,game.id); $('#quick-start').addEventListener('click',startSession); $('#quick-resume').addEventListener('click',resumeSession); $('#quick-discard').addEventListener('click',discardActive);

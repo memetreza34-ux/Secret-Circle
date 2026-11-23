@@ -147,6 +147,8 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
   font-weight: 400;
   margin-right: auto;
 }
+.app-wordmark { display: inline-flex; align-items: center; gap: 9px; }
+.app-wordmark img { flex: none; border-radius: 11px; }
 
 .icon-btn {
   width: var(--touch);
@@ -269,6 +271,18 @@ input[disabled] {
 
 /* ── Start: Banner ───────────────────────────────────────────────────── */
 
+.home-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin: 0 0 16px;
+}
+.home-intro > div { flex: 1 0 10rem; max-width: 100%; }
+.home-intro h1 { margin: 0; font-size: 1.15rem; line-height: 1.2; }
+.home-intro p { margin: 4px 0 0; color: var(--fg-dim); font-size: .86rem; }
+.home-intro .pill { padding: 10px 15px; font-size: .85rem; }
+
 .hero {
   border-radius: var(--r-big);
   overflow: hidden;
@@ -284,9 +298,9 @@ input[disabled] {
   background: #0D0E13;
 }
 .hero-art > .mark { width: 96px; height: 96px; }
-.hero-art.has-image { height: auto; aspect-ratio: 8 / 5; overflow: hidden; }
+.hero-art.has-image { height: auto; aspect-ratio: 4 / 3; overflow: hidden; }
 .hero-art > .mark.has-image { position: absolute; inset: 0; width: 100%; height: 100%; }
-.game-art-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.game-art-image { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
 .hero-badge {
   position: absolute;
   z-index: 1;
@@ -426,7 +440,8 @@ input[disabled] {
   border: 1px solid var(--line);
   text-align: left;
   display: grid;
-  grid-template-rows: 104px auto;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
   padding: 0;
   min-height: var(--touch);
 }
@@ -438,6 +453,8 @@ input[disabled] {
   display: grid;
   place-items: center;
   position: relative;
+  aspect-ratio: 4 / 3;
+  width: 100%;
   background: #0D0E13;
 }
 .gcard-art .mark { width: 66px; height: 66px; }
@@ -453,7 +470,7 @@ input[disabled] {
   font-weight: 400;
 }
 .gcard-pad { padding: 10px 12px 12px; display: grid; gap: 4px; }
-.gcard-pad b { font-size: .84rem; line-height: 1.15; font-weight: 700; }
+.gcard-pad b { font-size: .84rem; line-height: 1.15; font-weight: 700; overflow-wrap: anywhere; }
 .gcard-pad small {
   font-size: .7rem;
   color: var(--fg-dim);
@@ -463,7 +480,7 @@ input[disabled] {
 }
 .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
 
 /* ── Suche und Filter ────────────────────────────────────────────────── */
 
@@ -620,19 +637,7 @@ button.row:hover { background: #ffffff08; }
 .row-val.warn { color: var(--signal); }
 .row-chev { flex: none; display: grid; place-items: center; }
 .row-chev svg { width: 20px; height: 20px; }
-.row-action {
-  flex: none;
-  padding: 9px 16px;
-  border-radius: 999px;
-  background: var(--tint);
-  color: #08090C;
-  font-size: .8rem;
-  font-weight: 700;
-  min-height: var(--touch);
-  display: inline-flex;
-  align-items: center;
-}
-
+.mode-rules h2 { margin: 0 0 10px; font-size: 1rem; }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .steps li {
   display: flex;
@@ -1448,8 +1453,6 @@ button.row:hover { background: #ffffff08; }
 /* Ersetzen frühere Inline-Styles: Die Content-Security-Policy der App
    erlaubt Stile nur aus Stylesheets. */
 .svg-block { display: block; }
-.howto-fit { margin-bottom: 8px; }
-.howto-sub { margin: 0 0 22px; max-width: none; }
 .sec-ico { width: 20px; height: 20px; color: #838A9C; }
 
 /* Fehlermeldungen aus runtime-guard.js, etwa bei gesperrtem Speicher. */

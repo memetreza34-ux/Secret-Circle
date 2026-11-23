@@ -164,7 +164,12 @@ checks = {
     'package_version': package.get('version') == '1.0.0-beta.3',
     'node_baseline': package.get('engines', {}).get('node') == '>=20',
     'playwright_pinned': package.get('devDependencies', {}).get('@playwright/test') == '1.54.2',
-    'manifest_party_hub': manifest.get('name') == 'Secret Circle – Party Hub' and manifest.get('start_url') == './',
+    'manifest_party_hub': (
+        manifest.get('name') == 'Rundaloo – Partyspiele'
+        and manifest.get('short_name') == 'Rundaloo'
+        and manifest.get('id') == './'
+        and manifest.get('start_url') == './'
+    ),
     'standalone_pwa': manifest.get('display') == 'standalone' and manifest.get('scope') == './',
     'manifest_icon_contract_v42': (
         manifest_icons_by_src.get('icon-192.png', {}).get('sizes') == '192x192'
@@ -271,10 +276,13 @@ checks = {
     'asset_provenance_v42_metadata': (
         asset_by_path.get('icon-192.png', {}).get('dimensions') == '192x192'
         and len(str(asset_by_path.get('icon-192.png', {}).get('sha256', ''))) == 64
-        and asset_by_path.get('icon-192.png', {}).get('derivedFrom') == 'icon.svg'
+        and asset_by_path.get('icon-192.png', {}).get('derivedFrom') == 'docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp'
         and asset_by_path.get('icon-512.png', {}).get('dimensions') == '512x512'
         and len(str(asset_by_path.get('icon-512.png', {}).get('sha256', ''))) == 64
-        and asset_by_path.get('icon-512.png', {}).get('derivedFrom') == 'icon.svg'
+        and asset_by_path.get('icon-512.png', {}).get('derivedFrom') == 'docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp'
+        and len(str(asset_by_path.get('icon.svg', {}).get('sourceSha256', ''))) == 64
+        and all(asset_by_path.get(path, {}).get('sourceSha256') == asset_by_path.get('icon.svg', {}).get('sourceSha256')
+                for path in ('icon-192.png', 'icon-512.png'))
     ),
     'asset_release_gate_coherent': asset_gate_coherent,
     'asset_provenance_audit_in_validate': 'scripts/asset_provenance_audit.py' in validate_gate,

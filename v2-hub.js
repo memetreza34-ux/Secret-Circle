@@ -19,13 +19,8 @@
     { id: 'wissen', label: 'Wissen & Schätzen', tint: '#38BDF8', ground: '#093548', groups: ['Wissen & Quiz', 'Schätzen & Tippen'] },
     { id: 'schnell', label: 'Schnell', tint: '#F472B6', ground: '#451234', groups: ['Schnell & Challenge', 'Werkzeuge'] }
   ];
-  /* Spielbilder: '<spiel-id>': { src: 'assets/images/<spiel-id>.webp', alt: '…' }.
-     Bildwelt, Prompts und Einbinden: docs/BILDWELT_V2.md. Ohne Eintrag zeigt das Spiel sein Emblem. */
-  var GAME_ART = {
-    imposter: { src: 'assets/images/imposter.webp', alt: 'Chamäleon blufft mit leerer Karte zwischen zwei gleichen Schlüssel-Hinweisen' },
-    'truth-dare': { src: 'assets/images/truth-dare.webp', alt: 'Bühnenmagier legt seine Maske ab, während eine Stuntfigur eine Mutprobe vorführt' },
-    mafia: { src: 'assets/images/mafia.webp', alt: 'Kater flüstert einem Mitspieler heimlich etwas zu, während eine Detektivin die Absprache bemerkt' }
-  };
+  /* Lokale Bildzuordnung aus v2-game-art.js; ohne Eintrag bleibt das Emblem. */
+  var GAME_ART = window.SecretCircleGameArt || {};
   /* ── Kurzhelfer ───────────────────────────────────────────────────── */
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -190,7 +185,6 @@
     users: '<circle cx="9" cy="9" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="10" r="2.4"/><path d="M14 19a4 4 0 0 1 6.5-3"/>',
     dice: '<rect x="4.5" y="4.5" width="15" height="15" rx="4"/><circle cx="9" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>',
     gear: '<circle cx="12" cy="12" r="4"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/>',
-    tv: '<rect x="3.5" y="6" width="17" height="12" rx="3"/><polygon points="11,10 15,12 11,14" fill="currentColor" stroke="none"/>',
     check: '<polyline points="5,13 10,18 19,7"/>',
     plus: '<line x1="12" y1="5" x2="12" y2="19" stroke-width="2.2"/><line x1="5" y1="12" x2="19" y2="12" stroke-width="2.2"/>',
     minus: '<line x1="5" y1="12" x2="19" y2="12" stroke-width="2.2"/>',
@@ -347,7 +341,7 @@
     $$('.screen').forEach(function (s) { s.hidden = s.dataset.screen !== name; });
     render(name);
     var head = $('[data-head]', screenEl(name));
-    if (head) { try { head.focus({ preventScroll: true }); } catch (e) { head.focus(); } }
+    if (head && opts.focus !== false) { try { head.focus({ preventScroll: true }); } catch (e) { head.focus(); } }
     var body = $('.body', screenEl(name));
     if (body) body.scrollTop = 0;
     announce(head ? head.textContent : name);
@@ -554,7 +548,7 @@
     }
     $('#hero-text').textContent = hero.desc;
     $('#hero-play').textContent = players().length ? 'Spielen' : 'Spieler einrichten';
-    $('#hero-play').onclick = function () { if (players().length) openGame(hero.id); else show('players', { reset: true }); };
+    $('#hero-play').onclick = function () { openGame(hero.id); if (!players().length) show('players'); };
 
     /* Trefferfläche 44px, tastaturbedienbar — nicht der 6px-Punkt selbst. */
     var dots = $('.dots', screenEl('home'));
@@ -676,7 +670,9 @@
     clear(host);
     g.steps.forEach(function (t, i) {
       var li = make('li');
-      li.appendChild(make('i', null, String(i + 1)));
+      var number = make('i', null, String(i + 1));
+      number.setAttribute('aria-hidden', 'true');
+      li.appendChild(number);
       li.appendChild(document.createTextNode(t));
       host.appendChild(li);
     });
@@ -716,8 +712,9 @@
     renderSteps($('#mode-steps'), g);
 
     var btn = $('#start-btn');
+    btn.textContent = short && !restricted ? 'Personen hinzufügen' : (g.linked ? 'Spiel einrichten' : 'Spiel starten');
     var note = $('#start-note');
-    btn.disabled = short || over || restricted;
+    btn.disabled = over || restricted;
     note.className = 'dock-note' + (short || over || restricted ? ' warn' : '');
     if (restricted) note.textContent = 'Dieses Spiel passt nicht zur gewählten Altersstufe. Ändere sie unter Daten & Einstellungen.';
     else if (short) note.textContent = g.min + ' Personen nötig — ' + (g.min - count) + ' fehlen noch';
@@ -727,16 +724,15 @@
 
   function startGame() {
     var g = game();
-    if (!g || $('#start-btn').disabled) return;
+    if (!g || !ageAllowed(g)) return;
+    var count = players().length;
+    if (count < g.min) {
+      show('players');
+      $('#player-input').focus();
+      return;
+    }
+    if (count > g.max) return;
     window.location.href = startTarget(g);
-  }
-
-  function renderHowto() {
-    var g = game();
-    if (!g) { back(); return; }
-    fit($('#howto-title'), g.title, '2rem');
-    $('#howto-sub').textContent = g.desc;
-    renderSteps($('#howto-steps'), g);
   }
 
   /* ── SPIELER ──────────────────────────────────────────────────────── */
@@ -790,6 +786,8 @@
     var full = list.length >= limits.max;
     $('#player-add').disabled = full;
     $('#player-input').disabled = full;
+    $('#players-done').disabled = NAV[NAV.length - 1] === 'mode' && (list.length < limits.min || list.length > limits.max);
+    $('#players-done').textContent = NAV[NAV.length - 1] === 'mode' ? 'Weiter zum Spiel' : 'Fertig';
     if (full) setPlayerHint('Mehr als ' + limits.max + ' Personen gehen nicht.', true);
     else if (list.length < limits.min) setPlayerHint(limits.min + ' Personen nötig' + (limits.title ? ' für ' + limits.title : '') + '.', list.length > 0);
     else setPlayerHint('Das Gerät wandert in dieser Reihenfolge. Die Liste gilt für alle Spiele.', false);
@@ -926,7 +924,6 @@
     home: renderHome,
     games: renderGames,
     mode: renderMode,
-    howto: renderHowto,
     players: renderPlayers,
     packs: renderPacks,
     profile: renderProfile
@@ -943,15 +940,18 @@
     renderTabs();
 
     $$('[data-tab]').forEach(function (b) {
-      b.addEventListener('click', function () { show(b.dataset.tab, { reset: true }); });
+      b.addEventListener('click', function () {
+        show(b.dataset.tab, { reset: true });
+        if (b.id === 'home-search') $('#q').focus();
+      });
     });
     $$('[data-back]').forEach(function (b) { b.addEventListener('click', back); });
     $$('[data-open]').forEach(function (b) {
       b.addEventListener('click', function () { show(b.dataset.open); });
     });
 
-    $('#howto-btn').addEventListener('click', function () { show('howto'); });
     $('#start-btn').addEventListener('click', startGame);
+    $('#players-done').addEventListener('click', back);
 
     /* Hero: drei echte Empfehlungen — per Punkt oder Wisch. */
     var heroEl = $('.hero');
@@ -978,7 +978,7 @@
 
   /* Einsprung per Adresse, z. B. aus einem Spiel zurück: #spiele, #profil,
      #spieler oder #spiel=<id>. */
-  function initialScreen() {
+  function initialScreen(event) {
     var target;
     try { target = decodeURIComponent((window.location.hash || '').slice(1)); }
     catch (_) { target = ''; } // Beschädigte Links dürfen den Hub nicht blockieren.
@@ -990,7 +990,7 @@
       show('games', { reset: true });
       return show('mode');
     }
-    show('home', { reset: true });
+    show('home', { reset: true, focus: Boolean(event) });
   }
 
   wire();

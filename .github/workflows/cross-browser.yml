@@ -16,7 +16,8 @@ env:
 
 jobs:
   smoke:
-    runs-on: ubuntu-latest
+    # Passend zur in package-lock.json gesperrten Playwright-Version 1.54.2.
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - name: Check out repository

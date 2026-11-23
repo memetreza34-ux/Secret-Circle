@@ -15,8 +15,8 @@
       id: 'party-quiz', title: 'Party Quiz', icon: '🧠', group: 'Wissen & Quiz', status: 'playable', mode: 'link',
       href: quickHref('party-quiz'), minPlayers: 2, maxPlayers: 20, duration: 15,
       moods: ['clever', 'competitive', 'friendly'], age: 'all', featured: false,
-      description: 'Schnelles Multiple-Choice-Quiz für Gruppen. Eine Antwort wählen, direkt auflösen und Punkte sammeln.',
-      instructions: ['Kategorie und Rundenzahl wählen.', 'Frage und vier Antworten gemeinsam lesen.', 'Eine Antwort festlegen.', 'Auflösen, kurz erklären und zur nächsten Runde gehen.'],
+      description: 'Reihum beantwortet eine Person eine Quizfrage. Jede richtige Antwort gibt ihr einen Punkt.',
+      instructions: ['Kategorie und Anzahl der Fragen wählen.', 'Die angezeigte Person liest die Frage und wählt allein eine von vier Antworten.', 'Richtig gibt einen persönlichen Punkt; falsch gibt keinen Punkt.', 'Auflösung lesen, dann ist die nächste Person dran. Am Ende gewinnt die höchste Punktzahl; Gleichstand ist möglich.'],
       packs: ['Allgemeinwissen', 'Film & Serie', 'Technik']
     }),
     Object.freeze({

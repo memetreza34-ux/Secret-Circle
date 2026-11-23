@@ -23,6 +23,10 @@ required = [
     'scripts/public_release_placeholder_audit.py', 'scripts/operator_release_contract_audit.py',
     'scripts/release_evidence_audit.py', 'scripts/release_audit.py',
     'tests/pwa-head-metadata.test.js', 'tests/word-imposter-data-contract.test.js',
+    'scripts/package_release.py', 'scripts/run_python.cjs', 'scripts/fetch_upgrade_baselines.py',
+    'tests/release-package.test.py', 'tests/e2e/pwa-upgrade-offline.spec.js',
+    'tests/e2e/release-package.spec.js', 'tests/fixtures/pwa-baselines.json',
+    '.github/workflows/deployment-smoke.yml',
 ]
 missing = [relative for relative in required if not (ROOT / relative).is_file()]
 if missing:
@@ -105,6 +109,12 @@ operator_release_crosscheck = all(
 )
 
 checks = {
+    'public_package_command': package['scripts'].get('release:package') == 'node scripts/run_python.cjs scripts/package_release.py',
+    'public_package_verifier': package['scripts'].get('release:verify') == 'node scripts/run_python.cjs scripts/package_release.py --verify',
+    'package_integrity_tests_wired': 'tests/release-package.test.py' in unit,
+    'package_created_and_verified_in_ci': 'npm run release:package' in ci and 'npm run release:verify -- --expected-commit' in ci,
+    'upgrade_baselines_prepared_before_e2e': package['scripts'].get('pretest:e2e') == 'npm run test:prepare-upgrades',
+    'hosting_uses_only_public_directory': 'Build output directory: dist/site' in read('CLOUDFLARE_PAGES_STAGING.md'),
     'lockfile_v3': lock.get('lockfileVersion') == 3 and lock.get('name') == package.get('name'),
     'npm_ci_main': 'npm ci --ignore-scripts --no-audit --no-fund' in ci and 'npm install ' not in ci,
     'npm_ci_cross_browser': 'npm ci --ignore-scripts --no-audit --no-fund' in cross and 'npm install ' not in cross,

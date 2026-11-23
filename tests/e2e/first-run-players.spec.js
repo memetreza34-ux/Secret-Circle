@@ -45,13 +45,17 @@ test('neues Gerät: keine fiktiven Spieler, erste Gruppe wird bewusst eingericht
   await expect(page.getByRole('textbox', { name: 'Spieler 1' })).toHaveValue('Aylin');
 });
 
-test('ohne gespeicherte Gruppe bleiben Spieleinstieg und Smart Party Night gesperrt', async ({ page }) => {
+test('ohne gespeicherte Gruppe führt der Spielknopf zur Einrichtung, Smart Party Night bleibt gesperrt', async ({ page }) => {
   await page.goto('/package.json');
   await page.evaluate(() => localStorage.clear());
   await page.goto('/#spiel=never-have');
   await expect(page.locator('#players-count')).toHaveText(/0\//);
-  await expect(page.locator('#start-btn')).toBeDisabled();
+  await expect(page.locator('#start-btn')).toHaveText('Personen hinzufügen');
   await expect(page.locator('#start-note')).toContainText('fehlen noch');
+  await page.locator('#start-btn').click();
+  await expect(page.locator('[data-screen="players"]')).toBeVisible();
+  await expect(page.locator('#player-badge')).toHaveText('0/20');
+  await expect(page.locator('#players-done')).toBeDisabled();
 
   await page.goto('/party.html');
   await expect(page.locator('#party-night-player-count')).toHaveText('0');

@@ -1,8 +1,8 @@
-# Secret Circle Party Hub
+# Rundaloo – Partyspiele
 
 **Startadresse:** `/` bzw. `index.html` ist der Party-Hub. Das bisherige `v2-hub.html` bleibt als identische Legacy-Adresse erreichbar; Word Imposter startet separat über `word-imposter.html`.
 
-Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere Übergaben, belastbare Wiederaufnahme, lokale Datenkontrolle, Accessibility und nachvollziehbare Release-Gates.
+Rundaloo ist eine **offline-first Partyspiel-App für gemeinsame Spiele auf einem Gerät**. Der Januar-2027-Release priorisiert sichere Übergaben, belastbare Wiederaufnahme, lokale Datenkontrolle, Accessibility und nachvollziehbare Release-Gates.
 
 ## Aktueller Stand
 
@@ -10,9 +10,9 @@ Secret Circle ist eine **offline-first Partyspiel-Plattform für gemeinsame Spie
 - **Expansion Wave 1: 10/10 geplante Labs quellsseitig implementiert**
 - Word Imposter + Smart Party Night + lokaler No-Code-Game-Creator
 - Offline-PWA ohne Pflichtkonto, Tracking, Werbung oder Cloudzwang
-- kein Wave-1-Lab erweitert automatisch den Januar-Core
+- alle 55 Spiele gehören zur V1-Abnahme; Core/Extended/Labs bleiben Reifegrad-Metadaten
 
-Aktueller Offline-Core: **`secret-circle-v99` / `secret-circle-v99-staging`**
+Aktueller Offline-Core: **`secret-circle-v117` / `secret-circle-v117-staging`**
 Package: **`1.0.0-beta.3`**  
 Classic Content: **v4**  
 Core Source Review/Hardening: **15/15 PREPARED**  
@@ -24,6 +24,10 @@ Icon-Provenienz: **SOURCE RESOLVED – drei Release-Icons `verified-own`**
 Gesamtfreigabe: **NO_GO**
 
 **Quellsseitig gehärtet ist nicht automatisch releasefertig.**
+
+Zuletzt vollständig geprüft: Integrationsstand [`f9a8fcc`](https://github.com/memetreza34-ux/Secret-Circle/pull/70), alle drei Pflichtchecks grün mit 1.803 bestandenen Fällen ohne Wiederholung. Das ist noch kein nach `main` integrierter oder final freigegebener Release Candidate. Die technischen Veröffentlichungsvorbereitungen werden separat erneut geprüft.
+
+Das optionale Veröffentlichungspaket entsteht mit `npm run release:package` in `dist/site` und `release/secret-circle.zip`; `npm run release:verify -- --expected-commit <SHA>` prüft seine unveränderten Dateien. **Nur das Paket veröffentlichen, nie den Repository-Ordner.** Die App selbst benötigt weiterhin keinen Build und kein Backend. Betreiber-/Hostingangaben und reale Geräte-/Gruppenfreigaben bleiben offen.
 
 ## Releaseziel
 
@@ -75,7 +79,7 @@ Gemeinsame Verträge:
 - `party-release-structure.js` v5 klassifiziert alle zehn Wave-1-Modi als Labs
 - Unit-/E2E-Verträge für Quiz, Imposter, Writing sowie Prozent/Bracket/Bluff/Clue
 - `scripts/wave_one_remaining_audit.py` erzwingt Wave 1 = 10/10 und v64
-- offline in `secret-circle-v99`
+- offline in `secret-circle-v117`
 
 Langfristige Planung: `APP_SPIELMODI_UND_THEMEN_ANLEITUNG.md` + `GAME_LIBRARY_BACKLOG.json`.
 

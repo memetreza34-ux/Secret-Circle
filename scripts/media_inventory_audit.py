@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import json
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 PROVENANCE = ROOT / 'assets' / 'manifests' / 'asset-provenance.json'
@@ -13,6 +14,84 @@ IGNORED_DIRS = {
     '.git', 'node_modules', 'playwright-report', 'test-results', 'coverage', '.cache'
 }
 EXPECTED_CURRENT_MEDIA = {
+    'docs/screenshots/bildausschnitt-handy-375x812.webp',
+    'docs/screenshots/bildausschnitt-tablet-768x1024.webp',
+    'docs/screenshots/bildwelt55-kategorie-schnell.webp',
+    'docs/screenshots/bildwelt55-kategorie-wissen.webp',
+    'docs/screenshots/bildwelt55-kategorie-kreativ.webp',
+    'docs/screenshots/bildwelt55-kategorie-raten.webp',
+    'docs/screenshots/bildwelt55-kategorie-reden.webp',
+    'docs/screenshots/bildwelt55-kategorie-taeuschung.webp',
+    'docs/screenshots/bildwelt55-handy-375x812.webp',
+    'docs/screenshots/bildwelt55-desktop-1280.webp',
+    'assets/images/party-quiz.webp',
+    'assets/images/no-word-imposter.webp',
+    'assets/images/hot-seat.webp',
+    'assets/images/secret-mission.webp',
+    'assets/images/scavenger-hunt.webp',
+    'assets/images/dont-laugh.webp',
+    'assets/images/letter-categories.webp',
+    'assets/images/dice-coin.webp',
+    'assets/images/spin-bottle.webp',
+    'assets/images/party-bracket.webp',
+    'assets/images/percent-guess.webp',
+    'assets/images/fact-or-fake.webp',
+    'assets/images/guess-the-price.webp',
+    'assets/images/emoji-quiz.webp',
+    'assets/images/who-wrote-it.webp',
+    'assets/images/fill-blank-battle.webp',
+    'assets/images/finish-the-sentence.webp',
+    'assets/images/story-chain.webp',
+    'assets/images/caption-battle.webp',
+    'assets/images/draw-guess.webp',
+    'assets/images/password-one-word.webp',
+    'assets/images/hum-song.webp',
+    'assets/images/sound-imitation.webp',
+    'assets/images/know-me-best.webp',
+    'assets/images/pass-the-phone.webp',
+    'assets/images/hear-me-out.webp',
+    'assets/images/tier-list.webp',
+    'assets/images/red-green-flag.webp',
+    'assets/images/money-challenge.webp',
+    'assets/images/hot-takes.webp',
+    'assets/images/bluff-trivia.webp',
+    'assets/images/undercover-similar-word.webp',
+    'assets/images/higher-lower.webp',
+    'assets/images/put-a-finger-down.webp',
+    'assets/images/blind-ranking.webp',
+    'assets/images/anime-guess.webp',
+    'assets/images/who-am-i.webp',
+    'assets/images/forehead-guess.webp',
+    'assets/images/rapid-fire.webp',
+    'assets/images/wavelength.webp',
+    'assets/images/wrong-answers.webp',
+    'assets/images/paranoia.webp',
+    'assets/images/would-rather.webp',
+    'assets/images/most-likely.webp',
+    'assets/images/location-spy.webp',
+    'assets/images/question-imposter.webp',
+    'assets/images/never-have.webp',
+    'docs/screenshots/imposter-stilkorrektur-handy-375x812.webp',
+    'docs/screenshots/imposter-stilkorrektur-desktop-1280x900.webp',
+    'docs/screenshots/two-truths-handy-375x812.webp',
+    'docs/screenshots/two-truths-desktop-1280x900.webp',
+    'assets/images/two-truths.webp',
+    'docs/screenshots/word-chain-handy-375x812.webp',
+    'docs/screenshots/word-chain-desktop-1280x900.webp',
+    'assets/images/word-chain.webp',
+    'assets/images/hot-potato.webp',
+    'docs/screenshots/hot-potato-handy-375x812.webp',
+    'docs/screenshots/hot-potato-desktop-1280x900.webp',
+    'assets/images/taboo.webp',
+    'docs/screenshots/taboo-handy-375x812.webp',
+    'docs/screenshots/taboo-desktop-1280x900.webp',
+    'assets/images/charades.webp',
+    'docs/bildwelt/vorlage-2026-10-30.webp',
+    'docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp',
+    'docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp',
+    'docs/screenshots/scharade-handy-375x812.webp',
+    'docs/screenshots/scharade-desktop-1280x900.webp',
+
     'icon.svg', 'icon-192.png', 'icon-512.png',
     'assets/images/imposter.webp',
     'assets/images/truth-dare.webp',
@@ -36,10 +115,17 @@ provenance_paths = {
 }
 
 media_paths = set()
+# Das verifizierte Exportpaket kopiert dieselben Medien. Es ist kein zusätzlicher
+# Quellbestand; versionierte Dateien in diesem Ausgabeordner bleiben verboten.
+tracked_output = subprocess.run(['git', 'ls-files', '--', 'dist'], cwd=ROOT, capture_output=True, check=True)
+if tracked_output.stdout.strip():
+    raise SystemExit('Generierte Veröffentlichungspakete dürfen nicht versioniert werden.')
 for path in ROOT.rglob('*'):
     if not path.is_file():
         continue
     relative = path.relative_to(ROOT)
+    if relative.parts[0] == 'dist':
+        continue
     if any(part in IGNORED_DIRS for part in relative.parts):
         continue
     if path.suffix.lower() in MEDIA_SUFFIXES:

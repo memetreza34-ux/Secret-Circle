@@ -36,7 +36,8 @@ test('manifest opens the canonical Party Hub start screen and exposes installabl
   });
 
   expect(result.manifest.id).toBe('./');
-  expect(result.manifest.name).toBe('Secret Circle – Party Hub');
+  expect(result.manifest.name).toBe('Rundaloo – Partyspiele');
+  expect(result.manifest.short_name).toBe('Rundaloo');
   expect(result.manifest.start_url).toBe('./');
   expect(result.manifest.scope).toBe('./');
   expect(result.manifest.display).toBe('standalone');
@@ -46,11 +47,23 @@ test('manifest opens the canonical Party Hub start screen and exposes installabl
   expect(result.appleTouchIcon).toBe('icon-192.png');
   expect(result.mobileCapable).toBe('yes');
   expect(result.appleCapable).toBe('yes');
-  expect(result.appleTitle).toBe('Secret Circle');
+  expect(result.appleTitle).toBe('Rundaloo');
   expect(result.themeColor).toBe('#0A0B0F');
   /* Statusleiste der installierten App und Seite haben dieselbe v2-Grundfarbe. */
   expect(result.manifest.theme_color).toBe(result.themeColor);
   expect(result.manifest.background_color).toBe('#0A0B0F');
   expect(result.csp).toContain("default-src 'self'");
   expect(result.csp).toContain("object-src 'none'");
+
+  await page.goto('/');
+  await expect(page).toHaveTitle('Rundaloo – Partyspiele');
+  const wordmark = page.locator('.app-wordmark');
+  await expect(wordmark).toHaveText('Rundaloo');
+  await expect(wordmark.locator('img')).toHaveJSProperty('naturalWidth', 192);
+  await expect(page.locator('.home-intro')).toContainText('Handy rum. Runde an.');
+  const homeHeading = page.getByRole('heading', { name: '55 Partyspiele auf einem Handy.' });
+  await expect(homeHeading).not.toBeFocused();
+  await page.getByRole('button', { name: 'Alle Spiele', exact: true }).click();
+  await page.getByRole('tab', { name: 'Start', exact: true }).press('Enter');
+  await expect(homeHeading).toBeFocused();
 });

@@ -1,4 +1,36 @@
-# Auftrag für Codex: Bildprobe mit drei Spielbildern
+# Auftrag für Codex: Bildwelt und einzelne Spielbilder
+
+**Umgesetzt am 5. November 2026:** Alle 55 Modi besitzen genau ein lokales Bild; `v2-game-art.js` enthält die Zuordnung und Alternativtexte. Herkunft und vollständige Prompts stehen im Manifest. Die feste Vorlage bleibt unverändert; finale Serien-/Releaseabnahme offen.
+
+# Aktueller Vollzug vom 5. November 2026
+
+Arman beauftragt den direkten Einbau genau eines Bildes für jeden der 55 Modi in derselben festen Bildwelt. Ältere Einzelbild-Auswahlpausen und Variantenaufträge sind ersetzt. Unverändert gilt ausschließlich `docs/bildwelt/vorlage-2026-10-30.webp` als Stilvorlage. Herkunft, Sichtprüfung, Medien-/Offline-Verträge und Tests je Einbau bleiben erforderlich; finale Serien-/Releaseabnahme bleiben offen.
+
+**Ein Bild pro Spiel (Armans Anweisung vom 4. November 2026):** Genau einen Entwurf je Modus erzeugen und zeigen, keine parallelen Varianten oder zusätzlichen Stilrichtungen. Eine notwendige Fehlerkorrektur ersetzt dieselbe Fassung; sie eröffnet keine zweite Auswahlserie. Ältere Aufträge mit 2–3 Varianten sind überholt.
+
+## Verbindliche Korrektur vom 4. November 2026
+
+Arman hat die uneinheitliche Bildwelt ausdrücklich beanstandet und beauftragt, die Korrektur direkt im Repo festzuhalten. Die alleinige Figuren-/Materialvorlage bleibt [vorlage-2026-10-30.webp](bildwelt/vorlage-2026-10-30.webp), SHA-256 `59aff67efee0aa0e91bce995db3d4bc00262d6bc87af2e17a4df4d5486e51294`. Ein neuer Entwurf wird niemals zur neuen Stilvorlage. Figuren, Rollen und Szenen variieren innerhalb derselben Formensprache: Augen/Brauen, modellierte Proportionen, zurückhaltende matte Materialien und Lichtbehandlung werden vor jedem Einbau unmittelbar mit dieser Datei verglichen. Bestehende Figuren behalten ihre Identität.
+
+Die bisherige App mischt ältere und neuere Motive. Frühere Einzelbildfreigaben bleiben historische Tatsachen; sie sind keine Abnahme der Gesamtserie. Zuerst den achtteiligen Bestand vereinheitlichen. Die Roboter-Proben für Question Imposter sind nicht zum Einbau freigegeben.
+
+**Konkret freigegeben und eingebaut:** Word-Imposter-Stilkorrektur vom 4. November mit dem Chamäleon aus der festen Vorlage, 800×600 WebP, 34.224 Bytes. Vollständiger Bearbeitungsprompt: [imposter-stilkorrektur-2026-11-04.prompt.txt](bildwelt/imposter-stilkorrektur-2026-11-04.prompt.txt). Der belegte Vergleich der acht vorhandenen Motive und die verbleibenden Abweichungen stehen in [stilpruefung-2026-11-04.json](bildwelt/stilpruefung-2026-11-04.json). Alle 55 bleiben Ziel; eine vollständige visuelle Abnahme liegt noch nicht vor.
+
+**Weitere Bildauswahl am 3. November 2026:** Arman hat den Fuchs-Abenteurer für „Zwei Wahrheiten, eine Lüge“ mit „Ja, einbauen und weiter“ konkret ausgewählt. `assets/images/two-truths.webp` zeigt drei erzählte Erlebnisse, darunter den erfundenen Papierflieger-Flug. Weitere Motive bleiben einzeln auszuwählen.
+
+**Bildauswahl am 3. November 2026:** Arman hat die gezeigte Wortkette ausdrücklich zum Einbau freigegeben. `assets/images/word-chain.webp` zeigt eine Zugbegleiterin beim Verbinden der Waggons mit Apfel, Lampe und Elefant. Die korrekte deutsche Wortfolge bleibt eine Bildmetapher. Der Auftrag umfasst weiterhin alle 55 Spielbilder; weitere Motive werden einzeln gezeigt und ausgewählt.
+
+**Weitere konkrete Bildauswahl (30. Oktober 2026):** Arman hat den gezeigten klassischen Showmaster für „Nicht sagen!“ mit „weiter bau die direkt ein und weiter“ ausgewählt. `assets/images/taboo.webp` ist eingebunden. Er erklärt einen Begriff, ohne verbotene Hinweise zu nennen. Jedes weitere Motiv bleibt einzeln auszuwählen.
+
+**Fortsetzung am 2. November 2026:** Nach der gezeigten Kartoffel-Probe hat Arman die Fortsetzung beauftragt. `assets/images/hot-potato.webp` ist eingebunden: eine dampfende Kartoffel wird zwischen Ofenhandschuhen weitergegeben, während eine Sanduhr läuft. Gleichbleibende Machart, erstmals in diesem Pass ein Gegenstandsmotiv. Weitere Bilder bleiben einzeln auszuwählen.
+
+## Aktueller Auftrag vom 30. Oktober 2026
+
+Arman hat die gemeinsame [Figurenbasis](bildwelt/vorlage-2026-10-30.webp) als Bildwelt gewählt und klassische, sofort erkennbare Rollenklischees verlangt. **Diese Vorlage hat für neue Bilder Vorrang vor früheren Mafia-/Chamäleon-Stilentscheidungen.** Der klassische Pantomime für Scharade ist mit „besser weiter“ ausgewählt und im aktuellen Arbeitsstand eingebunden.
+
+Ab jetzt ein passendes Spielbild erzeugen, zeigen, nach konkreter Auswahl einbauen und prüfen. Keine neue Serie unabhängig erzeugter Stilrichtungen. Form, Augen und Material am gewählten Figurenblatt messen. Einzelne Bilder erhalten keine Freigabe allein durch eine allgemeine Stilzusage. Format, Medien-/Rechte-/Offline-Verträge und alle vier Prüfungen bleiben verbindlich. Details: [BILDWELT_V2.md](BILDWELT_V2.md).
+
+Die folgenden Abschnitte dokumentieren frühere Aufträge; bei Widerspruch gilt der aktuelle Auftrag oben.
 
 **Nachtrag vom 14. Oktober 2026:** Arman hat nach den Stilproben den direkten Einbau einiger Bilder zur Ansicht in der App beauftragt. Die aktuelle Vorschau zeigt Word Imposter, Wahrheit oder Pflicht und Mafia. Als Stilreferenz dient die erste Mafia-Stadtplatzszene, nicht deren später vereinfachte Fassung. Die ursprünglichen Motive und der Ablauf unten dokumentieren den früheren Auftrag; Herkunft und tatsächlich verwendete Prompts der aktuellen Bilder stehen in `assets/manifests/asset-provenance.json`.
 

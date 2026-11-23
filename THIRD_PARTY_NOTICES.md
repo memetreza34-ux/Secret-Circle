@@ -1,6 +1,12 @@
 # Secret Circle – Third-Party-, Lizenz- und Asset-Inventar
 
-Stand: 29. August 2026  
+**Katalogbilder v114, 20. November 2026.** Die menschliche Bildwelt umfasst 55 lokale Spielcover. 54 Dateien wurden an denselben Pfaden durch eigene Bilder aus dem integrierten OpenAI `image_gen` ersetzt. Eine konkrete Modellkennung wurde nicht ausgegeben. Die entsprechenden Bildvorlagen sind eigene, fiktive Entwürfe. App-Exporte, tatsächliche Prompts und Rechtebasis stehen im Provenienzmanifest. Die frühere Fassung von Party Quiz bleibt enthalten.
+
+**Stammfiguren in der App-Vorschau, 19. November 2026.** Mafia, Scharade und Party Quiz verwenden neue eigene Illustrationen aus dem integrierten OpenAI `image_gen` mit dem eigenen Gruppenbild als einzigem Bildeingang. Das Werkzeug gibt keine Modellkennung aus. Die drei Cover wurden mit Pillow auf 800 × 600 WebP exportiert. Prompts, Prüfsummen und Rechtebasis stehen im Provenienzmanifest. Die Kopie des Gruppenbilds dient der Dokumentation und liegt außerhalb des Offline-Caches.
+
+**Motivkorrekturen, 7. November 2026:** Vier bestehende Illustrationen (`pass-the-phone`, `password-one-word`, `spin-bottle`, `fill-blank-battle`) auf Nutzerauftrag am bestehenden Pfad ersetzt. Integriertes OpenAI `image_gen`, konkrete Modellkennung nicht ausgegeben; ausschließlich die eigene unveränderte Stilvorlage vom 30. Oktober. Lokaler WebP-Export mit Pillow, 800×600 ohne Zuschnitt. Vollständige Prompts und aktuelle/frühere SHA-256-Werte im Provenienzmanifest. Dieselbe projektseitige Output-Rechtebasis; finale manuelle Serien-/Rechteprüfung offen.
+
+Stand: 29. August 2026
 Status: **IN PROGRESS – Icon-Provenienz gelöst; reale Install-/Audit-/Finalreview-Evidence offen**
 
 ## 1. Zweck
@@ -45,30 +51,17 @@ Erlaubte Statuswerte bleiben `unresolved`, `verified-own` und `verified-third-pa
 
 ## 5. Aktuelles App-Iconset – Rechtebasis gelöst
 
-Das frühere ungeklärte App-Icon wurde vollständig durch ein neues Original ersetzt.
+Vier fiktive Stammfiguren aus dem eigenen Gruppenbild, illustriert mit OpenAI `image_gen` am 22. November 2026. Alle Exporte verwenden die projektseitige Nutzungsbasis des erzeugten Bildes.
 
-| Datei | Status | Nachweis |
+| Datei | Status | Export |
 |---|---|---|
-| `icon.svg` | `verified-own` | Originale geometrische SVG-Konstruktion vom 29.08.2026; keine externe Bild-/Logo-/Stock-/Fontvorlage |
-| `icon-192.png` | `verified-own` | 192×192-Ableitung aus dem aktuellen `icon.svg` |
-| `icon-512.png` | `verified-own` | 512×512-Ableitung aus dem aktuellen `icon.svg` |
+| `icon.svg` | `verified-own` | Maskierbarer Rahmen mit eingebettetem JPEG |
+| `icon-192.png` | `verified-own` | PNG für Startseite, Favicon und Home-Bildschirm |
+| `icon-512.png` | `verified-own` | PNG für PWA-Installation |
 
-Dokumente:
+Siehe [Herkunft](assets/manifests/ORIGINAL_ICON_SOURCE.md), [Prüfsummen](assets/manifests/ICON_RASTER_HASHES.md) und [Provenienzmanifest](assets/manifests/asset-provenance.json). Die Markenprüfung für Rundaloo steht aus.
 
-- `ASSET_RIGHTS_SIGNOFF.md`
-- `assets/manifests/ORIGINAL_ICON_SOURCE.md`
-- `assets/manifests/ICON_RASTER_HASHES.md`
-- `assets/manifests/asset-provenance.json`
-
-Aktuelle Hashes:
-
-- `icon.svg`: `ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c`
-- `icon-192.png`: `75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e`
-- `icon-512.png`: `1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce`
-
-Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle Nutzungsbasis. Sie ist **keine Markenregistrierung oder Garantie weltweiter Einzigartigkeit**.
-
-## 6. Media-Inventar
+## 6. Media-Inventar – historischer Stand vom 14. Oktober 2026
 
 Seit dem 14. Oktober 2026 umfasst die App neben den drei Icons drei lokale Spielillustrationen:
 
@@ -91,7 +84,7 @@ Die v2-Oberfläche (`v2-hub.html`, `v2-theme.css`) liefert vier WOFF2-Dateien lo
 | `figtree-latin.woff2`, `figtree-latin-ext.woff2` | Figtree (variabel) | 400–800 | Erik Kennedy | SIL Open Font License 1.1 |
 | `archivo-black-latin-400.woff2`, `archivo-black-latin-ext-400.woff2` | Archivo Black | 400 | Omnibus-Type | SIL Open Font License 1.1 |
 
-Die OFL erlaubt Bündelung und Weitergabe mit der App, solange die Schriften nicht einzeln verkauft werden und der Lizenzhinweis mitgeliefert wird. Vor einem öffentlichen Release gehört der vollständige OFL-Text zu den ausgelieferten Dateien.
+Die OFL erlaubt Bündelung und Weitergabe mit der App, solange die Schriften nicht einzeln verkauft werden und der Lizenzhinweis mitgeliefert wird. Die vollständigen OFL-Texte mit den zugehörigen Copyright-Hinweisen werden unten unverändert mitgeliefert; der Paketierer prüft ihre SHA-256-Werte.
 
 Die zwölf Dateien aus dem Claude-Design-Export vom 3. September waren teilweise defekt (vier ließen sich nicht dekodieren) und sind ersetzt.
 
@@ -137,3 +130,247 @@ Vor `THIRD-PARTY / ASSET PASS`:
 - [ ] Projekt-/Quellcodelizenz bewusst entschieden, falls Quellcode öffentlich verteilt wird
 
 Der frühere **Icon-Rechteblocker ist geschlossen**, das übergeordnete Asset-/Third-Party-Gate bleibt bis zu den realen Ausführungs- und Finalreview-Nachweisen **BLOCKED**. Der öffentliche Release bleibt **NO_GO**.
+
+
+## Gewählte Bildwelt und Scharade – 30. Oktober 2026
+
+Arman hat das Figuren-/Materialblatt `docs/bildwelt/vorlage-2026-10-30.webp` als Bildwelt und anschließend den klassischen Pantomimen in `assets/images/charades.webp` mit „besser weiter“ ausgewählt. Werkzeug: integriertes OpenAI `image_gen`; eine konkrete Modellbezeichnung wurde nicht ausgegeben. Nur eigene projektseitige Illustrationen dienten als Referenzen. Die tatsächliche Ausgangsreferenz aus Commit `9c12e6d` ist bytegleich unter `docs/bildwelt/ausgangsreferenz-imposter-2026-10-30.webp` archiviert. Diese Dokumentationsbilder gehören nicht zum Offline-Core.
+
+Vollständige Generierungs- und Bearbeitungsprompts, Herkunft, Rechtebasis und SHA-256-Prüfsummen stehen im Provenienzmanifest; Prompts zusätzlich unter `docs/bildwelt/`. Der Pantomime zeigt eine eigene klassische Theaterrolle ohne erkennbare bekannte Figur, Bildschrift oder Marke. Export mit Pillow als 800×600 WebP unter 35 KB. Spielbildfreigabe und Herkunftsdokumentation sind keine öffentliche Releasefreigabe. Handy-/Desktop-Screenshots dokumentieren die eigene App mit diesem Bild.
+
+
+## Nicht sagen! – 30. Oktober 2026
+
+Arman hat den klassischen Showmaster als einzelnes Spielbild konkret ausgewählt. `assets/images/taboo.webp` wurde mit dem integrierten OpenAI `image_gen` und der gewählten eigenen Figuren-/Materialvorlage erzeugt; das Werkzeug weist kein konkretes Modell aus. Eigener Rollenentwurf, keine echte Person, Marke oder bekannte Figur. Vollständiger Prompt: `docs/bildwelt/taboo-2026-10-30.prompt.txt`; Rechtebasis, Referenzkette und SHA-256 stehen im Provenienzmanifest. Lokale WebP-Datei, 800×600 und 34.510 Bytes. Die Kartensymbole veranschaulichen das Erklären ohne verbotene Begriffe, ohne eine neue Spielregel einzuführen. Screenshots zeigen die eigene App in isolierten Testkontexten. Keine öffentliche Releasefreigabe.
+
+
+## Heiße Kartoffel – 2. November 2026
+
+Eigenes Gegenstandsmotiv in der gewählten Bildwelt, erzeugt am 30. Oktober mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. Fortsetzung des Einbaus nach der gezeigten Probe von Arman beauftragt. `assets/images/hot-potato.webp`: 800×600 WebP, 34.954 Bytes. Die Kartoffel und die Sanduhr stehen sinnbildlich für Weitergeben unter Zeitdruck, ohne die Regeln zu ändern. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/hot-potato-2026-10-30.prompt.txt`, Herkunft, Rechtebasis und SHA-256 im Manifest. Screenshots dokumentieren ausschließlich die eigene App. Keine öffentliche Releasefreigabe.
+
+## Wortkette – 3. November 2026
+
+Von Arman konkret freigegebenes Motiv einer Zugbegleiterin, die Waggons mit Apfel, Lampe und Elefant verbindet. Erzeugt am 2. November mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/word-chain.webp`: 800×600 WebP, 34.030 Bytes. Eigene projektseitige Stilvorlage, keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/word-chain-2026-11-02.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Wortfolge und Waggons erklären den Spielgedanken bildlich, ohne die Regeln zu ändern. Keine öffentliche Releasefreigabe.
+
+## Zwei Wahrheiten, eine Lüge – 3. November 2026
+
+Von Arman konkret freigegebener Fuchs-Abenteurer mit drei erzählten Erlebnissen, darunter ein erfundener Papierflieger-Flug. Erzeugt mit integriertem OpenAI `image_gen`; konkretes Modell vom Werkzeug nicht ausgewiesen. `assets/images/two-truths.webp`: 800×600 WebP, 34.470 Bytes. Eigene projektseitige Stilvorlage; keine Marken oder fremden Figuren. Vollständiger Prompt unter `docs/bildwelt/two-truths-2026-11-03.prompt.txt`; Herkunft, Rechtebasis und SHA-256 im Manifest. Die Erlebnisse sind ein Bildmotiv und ändern keine Spielregel. Keine öffentliche Releasefreigabe.
+
+## Word Imposter – feste Bildwelt, 4. November 2026
+
+Die konkret ausgewählte Stilkorrektur ersetzt das frühere `assets/images/imposter.webp`. Werkzeug: integriertes OpenAI `image_gen`, konkrete Modellkennung nicht ausgewiesen. Ausschließliche Stilreferenz: die eigene gewählte Figuren-/Materialvorlage vom 30. Oktober; die alte App-Illustration diente nur als Szenen-/Bearbeitungsziel. 800×600 WebP, 34.224 Bytes, SHA-256 `8aeee29ddfbeb44da2be3ca091d32f0ec7194e508fdb10466db75e10ed360dff`. Vollständiger Prompt unter `docs/bildwelt/imposter-stilkorrektur-2026-11-04.prompt.txt`; vorherige Revision samt altem Prompt und Prüfsumme im Provenienzmanifest erhalten. Die oben genannten älteren SHA-Werte dokumentieren ihre historischen Fassungen. Aktuelle Rechte-/Herkunftsangaben und Prüfsumme stehen im Manifest. Die Serienabnahme bleibt offen.
+
+## Bildwelt-Fortsetzung vom 5. November 2026
+
+15 lokale Spielbilder in derselben festen Figuren-/Materialwelt eingebunden. Fünf vorhandene Motive angeglichen, sieben Kernspielbilder ergänzt; Scharade, Nicht sagen! und das bereits korrigierte Word Imposter beibehalten. Alle 800 × 600 WebP und höchstens 35.000 Bytes, lokal mit Pillow exportiert. Werkzeug: integriertes OpenAI image_gen; konkrete Modellkennung nicht ausgegeben. Alleinige projektseitige Stilreferenz: `docs/bildwelt/vorlage-2026-10-30.webp`. Aktuelle SHA-256-Werte, vollständige Prompts, frühere Revisionen und Rechtebasis stehen im Provenienzmanifest. Finale Serien-/Releaseabnahme bleibt offen.
+
+## Vollständiger Bildbestand vom 5. November 2026
+
+Alle 55 Modi besitzen genau eine lokale Illustration, jeweils 800 × 600 WebP und höchstens 35.000 Bytes. Die weiteren 40 Motive entstanden mit dem integrierten OpenAI image_gen und ausschließlich der unveränderten projektseitigen Figuren-/Materialvorlage vom 30. Oktober. Modellkennung nicht ausgegeben; WebP-Export lokal mit Pillow. Gezielte Anatomie-, Material- und Motivkorrekturen ersetzen denselben Entwurf; kein zusätzlicher Stil und keine parallelen App-Varianten. Vollständige tatsächliche Prompts, Tool, Rechtebasis und aktuelle SHA-256-Werte stehen im Provenienzmanifest. Finale manuelle Serien-/RC-Prüfung bleibt offen.
+
+
+## Vollständiger Schrift-Lizenztext: Figtree
+
+Quelle: https://raw.githubusercontent.com/google/fonts/main/ofl/figtree/OFL.txt · abgerufen am 9. November 2026. Die Copyright-Zeile stimmt mit den Metadaten der gebündelten WOFF2-Dateien überein. Nur Zeilenenden und Leerzeichen am Zeilenende wurden normalisiert; der vollständige Lizenztext ist enthalten.
+
+<!-- BEGIN_FONT_LICENSE_FIGTREE -->
+Copyright 2022 The Figtree Project Authors (https://github.com/erikdkennedy/figtree)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded,
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+<!-- END_FONT_LICENSE_FIGTREE -->
+
+
+## Vollständiger Schrift-Lizenztext: ArchivoBlack
+
+Quelle: https://raw.githubusercontent.com/google/fonts/main/ofl/archivoblack/OFL.txt · abgerufen am 9. November 2026. Die Copyright-Zeile stimmt mit den Metadaten der gebündelten WOFF2-Dateien überein. Nur Zeilenenden und Leerzeichen am Zeilenende wurden normalisiert; der vollständige Lizenztext ist enthalten.
+
+<!-- BEGIN_FONT_LICENSE_ARCHIVO_BLACK -->
+Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded,
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+<!-- END_FONT_LICENSE_ARCHIVO_BLACK -->
+
+
+## Bildkorrekturen vom 15. November 2026
+
+Auf Armans Auftrag sechs unklare Spielmotive innerhalb der unveränderten eigenen Figuren-/Materialvorlage vom 30. Oktober neu erstellt: Heiße Kartoffel, Zwei Wahrheiten/eine Lüge, Melodie summen, Emoji Quiz, Geschichtenkette und Satz vervollständigen. Werkzeug: integriertes OpenAI `image_gen`; konkrete Modellkennung nicht ausgegeben. Eigene projektseitige Referenzen, keine fremden Bilddateien, echten Personen, Marken oder erkennbaren Franchise-Figuren. Die bestehenden lokalen Dateipfade bleiben erhalten, alle sechs Exporte sind 800 × 600 WebP und höchstens 35.000 Bytes. Vollständige tatsächliche Prompts unter `docs/bildwelt/<spiel-id>-vereinheitlichung-2026-11-15.prompt.txt`; Herkunft, Rechtebasis, aktuelle SHA-256 und historische Revisionen im Provenienzmanifest. Geprüft wurden alle 55 Motive; finale Serien-/Releaseabnahme bleibt offen.

@@ -1,17 +1,9 @@
-# Secret Circle – Original App Icon Source Record
+# Rundaloo – Herkunft des App-Icons
 
-Created: 2026-08-29
+Arman hat den Einbau des Vierer-Icons für Rundaloo beauftragt. Auf dem Icon sind Juna, Ben, Mira und Leo. OpenAI `image_gen` in Codex erzeugte den Entwurf am 22. November 2026 aus dem eigenen [Gruppenbild](../../docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp). Das Werkzeug gab keine Modellkennung aus.
 
-This record documents the replacement app icon introduced during release hardening.
+Die ursprüngliche PNG-Datei heißt `rundaloo-icon-vier-figuren.png`. Ihre SHA-256 ist `405ab52277f723db0c490e7301c30bfe15a53ddfceddef86b46bc4e87fecf38c`. Der tatsächliche Prompt, der Referenzhash und die Exportdetails stehen in [asset-provenance.json](asset-provenance.json).
 
-- Source asset: `icon.svg`
-- Design method: original geometric composition built only from SVG primitives (`rect`, `circle`, `path`)
-- External image/logo/stock/template reference: none
-- External font asset: none
-- Third-party visual asset incorporated: none
-- Tool workflow: user-directed OpenAI/ChatGPT-assisted SVG construction; deterministic raster export with CairoSVG 2.8.2; PNG palette optimization with Pillow
-- Commercial-use basis: output rights assigned to the user under the applicable OpenAI Terms of Use, subject to applicable law
-- Attribution required by the generation workflow: none
-- Important limitation: this provenance record does not constitute trademark registration, trademark clearance, or a guarantee that no independently created similar mark exists.
+Pillow erstellt die beiden PNG-Größen und das in `icon.svg` eingebettete JPEG. Der SVG-Rahmen hält die Gesichter innerhalb des mittleren Kreises, wenn das Betriebssystem eine runde oder abgerundete Maske anwendet.
 
-The old unresolved app-icon artwork is not retained as a release asset. The current `icon-192.png` and `icon-512.png` are derivatives of the replacement `icon.svg` only.
+Rechtebasis sind die projektseitigen Output-Rechte nach den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig. Die markenrechtliche Recherche für Rundaloo bleibt offen.

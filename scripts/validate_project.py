@@ -60,7 +60,7 @@ quick=audit_html('quick-play.html',['runtime-guard.js',*catalog_chain,'party-cus
 advanced=audit_html('advanced.html',['runtime-guard.js','party-catalog.js','party-expansion.js','party-routing.js','party-advanced.js','advanced-resume-guard.js','secondary-surface-a11y.js','party-advanced-runner.js','advanced-privacy-guard.js','party-advanced-preferences.js'])
 creator=audit_html('creator.html',['runtime-guard.js','game-creator.js','secondary-surface-a11y.js','creator-page.js'])
 audit_html('privacy.html',[])
-index=audit_html('index.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','v2-hub-packs.js','v2-hub.js'])
+index=audit_html('index.html',['runtime-guard.js',*catalog_chain,'party-custom-packs.js','v2-hub-packs.js','v2-game-art.js','v2-hub.js'])
 if index != read('v2-hub.html'): raise SystemExit('Canonical root and v2-hub.html must expose the same home screen.')
 word=audit_html('word-imposter.html',['runtime-guard.js','setup-ux.js','privacy-guard.js','wake-lock.js','game-engine.js','role-assignment.js','word-packs.js','data-store.js','word-imposter-resume-guard.js','app.js'])
 
