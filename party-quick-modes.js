@@ -577,7 +577,7 @@
       $('#quick-setup').innerHTML = '<h1>Spiel nicht verfügbar</h1><p>Dieser Quick Mode ist noch nicht freigeschaltet.</p><a class="ghost-button" href="party.html">Zum Party Hub</a>';
       return;
     }
-    document.title = `Secret Circle – ${game.title}`;
+    document.title = `Rundaloo – ${game.title}`;
     $('#quick-icon').textContent = game.icon;
     $('#quick-group').textContent = game.group;
     $('#quick-title').textContent = game.title;

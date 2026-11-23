@@ -1,3 +1,18 @@
+## v117 – Ruhigerer erster Blick auf Rundaloo (22. November 2026)
+
+- Die Startseite öffnet ohne Fokusrahmen an der Überschrift. Beim Wechsel zur Startansicht per Tastatur erhält die Überschrift weiterhin den Fokus.
+
+## v116 – Rundaloo und abwechslungsreichere Hilfswörter (22. November 2026)
+
+- Rundaloo ist in App, Browsertiteln und Installation sichtbar. Juna, Ben, Mira und Leo bilden das neue App-Icon. Installations-ID und Spielstände werden weiterverwendet.
+- Word Imposter vermeidet bei „Einfach“ das Hilfswort der vorherigen Runde, wenn ein ungespielter Begriff mit einem anderen Hilfswort verfügbar ist. Beim Neustart eines ausgeschöpften Wortstapels wird der zuletzt gespielte Begriff übersprungen.
+
+## v115 – Schneller von der Spielsuche zur Runde (22. November 2026)
+
+- Der Hauptknopf öffnet bei fehlenden Personen direkt die Spielerliste. Ist die Gruppe groß genug, führt er ins gewählte Spiel.
+- Auf der Startseite steht, dass 55 Partyspiele auf einem Handy auch offline spielbar sind. „Alle Spiele“ öffnet den Katalog. Die Lupe setzt den Fokus ins Suchfeld.
+- Die Regeln stehen einmal direkt auf der Spielseite.
+
 ## v114 – Eine gemeinsame Bildwelt für alle 55 Spiele (20. November 2026)
 
 - Vier wiederkehrende menschliche Figuren tragen die Spielcover. Ein Wolf, ein Showmaster und weitere Gastfiguren treten bei passenden Motiven auf.

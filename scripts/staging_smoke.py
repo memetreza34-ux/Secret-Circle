@@ -68,7 +68,7 @@ PWA_HEAD_MARKERS = (
     'name="mobile-web-app-capable" content="yes"',
     'name="apple-mobile-web-app-capable" content="yes"',
     'name="apple-mobile-web-app-status-bar-style" content="black-translucent"',
-    'name="apple-mobile-web-app-title" content="Secret Circle"',
+    'name="apple-mobile-web-app-title" content="Rundaloo"',
     "manifest-src 'self'",
     '<link rel="manifest" href="manifest.webmanifest">',
     '<link rel="icon" href="icon.svg" type="image/svg+xml">',
@@ -304,10 +304,10 @@ def main() -> int:
     assert_service_worker_cache_headers(results['sw.js'])
 
     manifest = json.loads(texts['manifest.webmanifest'])
-    if manifest.get('name') != 'Secret Circle – Party Hub':
+    if manifest.get('name') != 'Rundaloo – Partyspiele' or manifest.get('short_name') != 'Rundaloo':
         raise RuntimeError('manifest.webmanifest: unerwarteter App-Name')
-    if manifest.get('start_url') != './' or manifest.get('display') != 'standalone':
-        raise RuntimeError('manifest.webmanifest: start_url/display-Vertrag verletzt')
+    if manifest.get('id') != './' or manifest.get('start_url') != './' or manifest.get('display') != 'standalone':
+        raise RuntimeError('manifest.webmanifest: Installations-ID, Startadresse oder Displaymodus abweichend')
 
     icon_map = {entry.get('src'): entry for entry in manifest.get('icons', []) if isinstance(entry, dict)}
     if icon_map.get('icon-192.png', {}).get('sizes') != '192x192':

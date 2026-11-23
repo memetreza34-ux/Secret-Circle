@@ -2,6 +2,14 @@
 
 Arman hat nach Sichtung der drei eingebauten Motive die Überarbeitung des gesamten Katalogs beauftragt. Die vier fiktiven Menschen aus dem [Gruppenbild](bildwelt/stammfiguren-vorschau-2026-11-18.webp) sind die Figurenreferenz. Spielmomente, Besetzung und Bildaufbau variieren nach Spiel. Bei Geräusche erraten ergänzt ein Wolf die menschliche Besetzung. Klassische Rollen und Gäste treten gezielt auf. Party Quiz bleibt aus der Vorschau erhalten, 54 Bilder werden an ihren bestehenden Pfaden ersetzt. Die früheren Abschnitte dokumentieren die damals gültigen Entwürfe. Die finale Serienabnahme bleibt offen.
 
+## Markenentwurf vom 22. November 2026
+
+- **Name:** Rundaloo – Partyspiele, gesprochen „Run-da-lu“.
+- **Spruch:** „Handy rum. Runde an.“
+- **App-Icon:** Juna und Ben oben, Mira und Leo unten, im violetten Kreis. Die vier Gesichter sind bei 48 Pixeln über Frisur und Farbe unterscheidbar. Entwurf aus OpenAI `image_gen` mit dem eigenen Gruppenbild als Vorlage. Export `rundaloo-icon-vier-figuren.png`, SHA-256 `405ab52277f723db0c490e7301c30bfe15a53ddfceddef86b46bc4e87fecf38c`.
+- **Einbau:** Rundaloo, Spruch und Vierer-Icon sind in der lokalen App und in den Installationsdaten eingebunden. [Herkunft und Exporte](../assets/manifests/ORIGINAL_ICON_SOURCE.md).
+- **Namensprüfung:** Die Websuche und öffentlich auffindbare App-Store-Einträge ergaben keinen gleichnamigen Treffer. Die Prüfung auf identische und ähnliche Marken mit Schutz in Deutschland steht aus.
+
 ## Erste App-Vorschau mit drei Motiven
 
 Arman hat beauftragt, die drei gezeigten Cover für Mafia, Scharade und Party Quiz direkt in der App zu zeigen. Die drei Motive verwenden dasselbe [Gruppenbild mit vier fiktiven Stammfiguren](bildwelt/stammfiguren-vorschau-2026-11-18.webp) als Figurenreferenz. Die älteren Aussagen unten dokumentieren den bisherigen Serienstand. Die Stammbesetzung für die Gesamtserie bleibt zur Beurteilung offen.

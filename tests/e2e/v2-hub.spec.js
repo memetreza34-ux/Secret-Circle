@@ -225,13 +225,15 @@ test('a linked game opens its own engine page', async ({ page }) => {
   await expect(page).toHaveURL(/v2-hub\.html$/);
 });
 
-test('the player list is shared with the rest of the app and gates the start', async ({ page }) => {
+test('the start button opens the shared player list until enough people are ready', async ({ page }) => {
   await seedHub(page, { players: ['Alex'] });
   await openV2(page, '#spiel=never-have');
-  await expect(page.locator('#start-btn')).toBeDisabled();
+  await expect(page.locator('#start-btn')).toHaveText('Personen hinzufügen');
   await expect(page.locator('#start-note')).toContainText('fehlen noch');
 
-  await page.locator('#players-row').click();
+  await page.locator('#start-btn').click();
+  await expect(page.locator('#player-input')).toBeFocused();
+  await expect(page.locator('#players-done')).toBeDisabled();
   await page.locator('#player-input').fill('Sam');
   await page.locator('#player-add').click();
   await expect(page.locator('#player-badge')).toHaveText('2/20');
@@ -239,7 +241,25 @@ test('the player list is shared with the rest of the app and gates the start', a
 
   await expect(page.locator('#players-done')).toHaveText('Weiter zum Spiel');
   await page.locator('#players-done').click();
-  await expect(page.locator('#start-btn')).toBeEnabled();
+  await expect(page.locator('#start-btn')).toHaveText('Spiel starten');
+  await page.locator('#start-btn').click();
+  await expect(page.locator('#play-layer')).toBeVisible();
+});
+
+test('home offers the catalog and search, and game details show one set of rules', async ({ page }) => {
+  await openV2(page);
+  await expect(page.getByRole('heading', { name: '55 Partyspiele auf einem Handy.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Alle Spiele', exact: true }).click();
+  await expect(page.locator('#grid-count')).toHaveText('55');
+
+  await page.getByRole('tab', { name: 'Start' }).click();
+  await page.getByRole('button', { name: 'Suchen', exact: true }).click();
+  await expect(page.getByRole('searchbox', { name: 'Spiel suchen' })).toBeFocused();
+  await page.locator('#q').fill('Mafia');
+  await page.locator('#grid [data-game-id="mafia"]').click();
+  const rules = page.getByRole('region', { name: 'Spielregeln' });
+  await expect(rules.getByRole('listitem')).toHaveCount(4);
+  await expect(page.getByRole('button', { name: 'Ansehen', exact: true })).toHaveCount(0);
 });
 
 test('a delayed update notice can be deferred while adding players without activating it', async ({ page }) => {

@@ -171,4 +171,18 @@ assert.throws(() => E.restoreGame({ ...medium.game, hintLevel: 'extrem' }), /Hil
 const mediumNext = E.nextRound(finishRound(medium.game), { entries: groupedEntries, seed: 'medium-2' });
 assert.equal(mediumNext.hintLevel, 'medium');
 
+const sharedHintEntries = [['Karte', 'Runde'], ['Ball', 'Runde'], ['Buch', 'Papier']];
+const variedHint = E.createGame({
+  ...options, entries: sharedHintEntries, hintLevel: 'easy', usedWords: ['Karte'], previousHint: 'Runde'
+});
+assert.equal(variedHint.word, 'Buch');
+
+const forcedHint = E.createGame({
+  ...options, entries: sharedHintEntries, hintLevel: 'easy', usedWords: ['Buch', 'Karte'], previousHint: 'Runde'
+});
+assert.equal(forcedHint.word, 'Ball');
+const newCycle = E.nextRound(finishRound(forcedHint), { entries: sharedHintEntries });
+assert.equal(newCycle.word, 'Buch');
+assert.deepEqual(newCycle.usedWords, ['Buch']);
+
 console.log(JSON.stringify({ ok: true, engineVersion: E.VERSION, deterministic: true, roles: true, persistence: true, deadlineTimer: true, backgroundResume: true, voting: true, finiteTieBreak: true, duplicateVoteProtection: true, scoring: true, matches: true, noRepeatedWords: true, validation: true, history: true, hintLevels: true }, null, 2));

@@ -304,7 +304,7 @@
         <div>
           <p class="eyebrow">Smart Mix · ohne Anmeldung</p>
           <h2 id="party-night-title">Euren ganzen Partyabend planen</h2>
-          <p>Secret Circle kombiniert passende Spiele zu einem abwechslungsreichen Ablauf. Gruppengröße, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden berücksichtigt.</p>
+          <p>Rundaloo kombiniert passende Spiele zu einem abwechslungsreichen Ablauf. Gruppengröße, Stimmung, Altersstufe, Favoriten und zuletzt gespielte Titel werden berücksichtigt.</p>
         </div>
         <div class="party-night-player-count"><strong id="party-night-player-count">0</strong><span>Personen</span></div>
       </div>

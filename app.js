@@ -280,7 +280,7 @@ function createRoundOptions(values) {
   };
 }
 
-/* Neue Partien meiden die zuletzt gespielten Begriffe aus dem Verlauf, bis die Kategorie durch ist. */
+/* Die Engine bekommt die verwendeten Begriffe in zeitlicher Reihenfolge. */
 function recentWords() {
   const seen = new Set();
   return history.map(item => String(item?.word ?? '').trim()).filter(word => {
@@ -288,14 +288,26 @@ function recentWords() {
     if (!key || seen.has(key)) return false;
     seen.add(key);
     return true;
-  });
+  }).reverse();
+}
+
+function previousRoundHint() {
+  const last = history[0];
+  if (!last) return undefined;
+  const category = Object.keys(LABELS).find(id => LABELS[id] === last.category) || 'all';
+  const word = last.word.toLocaleLowerCase('de-DE');
+  return E.normalizeEntries(categoryEntries(category)).find(entry => entry.word.toLocaleLowerCase('de-DE') === word)?.hint;
 }
 
 function startGame() {
   setStatus();
   try {
     const values = setupValues();
-    game = E.createGame({ ...createRoundOptions(values), usedWords: recentWords() });
+    game = E.createGame({
+      ...createRoundOptions(values),
+      usedWords: recentWords(),
+      previousHint: previousRoundHint()
+    });
     cardVisible = false;
     voteIndex = 0;
     lastPersistedTimerSecond = null;
@@ -643,7 +655,7 @@ function registerPwa() {
   });
   window.addEventListener('appinstalled', () => {
     $('#install-app').hidden = true;
-    setStatus('Secret Circle wurde installiert.');
+    setStatus('Rundaloo wurde installiert.');
   });
   window.addEventListener('online', updateConnection);
   window.addEventListener('offline', updateConnection);

@@ -21,43 +21,11 @@ Aktuelles Release-Iconset:
 
 Alle drei Dateien stehen in `assets/manifests/asset-provenance.json` auf `verified-own`.
 
-## Aktuelle Originalquelle
+## Rundaloo-Icon vom 22. November 2026
 
-### `icon.svg`
+Das integrierte OpenAI `image_gen` illustriert Juna, Ben, Mira und Leo auf Grundlage des eigenen Gruppenbilds. Die installierbare App nutzt PNG-Exporte in 192 × 192 und 512 × 512. Für maskierbare Icons gibt es einen SVG-Rahmen mit eingebettetem JPEG.
 
-- neu für Secret Circle am **29. August 2026** erstellt
-- rein geometrischer SVG-Aufbau mit `rect`, `circle` und `path`
-- keine fremde Logo-/Icon-Datei kopiert oder verändert
-- keine Stock-Datei
-- kein Icon-Pack
-- keine externe Bildreferenz
-- keine externe Fontdatei
-- keine fremde geschützte Grafik als Vorlage eingebunden
-- Workflow: nutzergesteuerte OpenAI/ChatGPT-Unterstützung bei der SVG-Konstruktion
-- detaillierter Herkunftsnachweis: `assets/manifests/ORIGINAL_ICON_SOURCE.md`
-- SHA-256: `ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c`
-
-Rechtebasis: projektseitige Output-Rechte unter den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig. Für den Erstellungsworkflow ist keine Drittanbieter-Attribution erforderlich.
-
-**Wichtig:** Dieser Provenienz-Sign-off ist keine Markenregistrierung, keine Markenrecherche und keine Garantie, dass weltweit kein unabhängig entwickeltes ähnliches Zeichen existiert.
-
-## Rasterableitungen
-
-### `icon-192.png`
-
-- 192×192
-- deterministische Ableitung aus dem aktuellen `icon.svg`
-- CairoSVG 2.8.2, anschließend Palette-Optimierung mit Pillow
-- SHA-256: `75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e`
-- keine zusätzliche Drittanbieter-Grafik enthalten
-
-### `icon-512.png`
-
-- 512×512
-- deterministische Ableitung aus dem aktuellen `icon.svg`
-- CairoSVG 2.8.2, anschließend Palette-Optimierung mit Pillow
-- SHA-256: `1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce`
-- keine zusätzliche Drittanbieter-Grafik enthalten
+Rechtebasis sind die projektseitigen Output-Rechte nach den anwendbaren OpenAI-Nutzungsbedingungen, soweit gesetzlich zulässig. Herkunft, Prompt und Exportprüfsummen stehen in den [Icon-Nachweisen](assets/manifests/ORIGINAL_ICON_SOURCE.md). Die Markenprüfung für Rundaloo steht aus.
 
 ## Maschinenlesbare Kontrolle
 

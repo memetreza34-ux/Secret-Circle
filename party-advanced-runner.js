@@ -402,7 +402,7 @@
       $('#advanced-start').disabled = true;
       return;
     }
-    document.title = `Secret Circle – ${game.title}`;
+    document.title = `Rundaloo – ${game.title}`;
     $('#advanced-group').textContent = game.group;
     $('#advanced-title').textContent = `${game.icon} ${game.title}`;
     $('#advanced-description').textContent = game.description;

@@ -129,8 +129,14 @@
     const usedKeys = new Set(usedWords.map(lower));
     let availableEntries = entries.filter(entry => !usedKeys.has(lower(entry.word)));
     if (!availableEntries.length) {
+      const lastWord = lower(usedWords.at(-1));
       usedWords = [];
-      availableEntries = entries;
+      availableEntries = entries.filter(entry => lower(entry.word) !== lastWord);
+    }
+    if (hintLevel === 'easy' && options?.previousHint) {
+      const previousHint = lower(options.previousHint);
+      const differentHints = availableEntries.filter(entry => lower(entry.hint) !== previousHint);
+      if (differentHints.length) availableEntries = differentHints;
     }
     const wordRandom = createRng(`${seed}|word-choice-v2`);
     const selected = availableEntries[Math.floor(wordRandom() * availableEntries.length)];
@@ -412,7 +418,8 @@
       hintLevel: options.hintLevel ?? previous.hintLevel,
       roundSeconds: options.roundSeconds ?? previous.roundSeconds,
       matchRounds: previous.matchRounds,
-      usedWords: previous.usedWords
+      usedWords: previous.usedWords,
+      previousHint: previous.hint
     });
     next.currentRound = previous.currentRound + 1;
     next.scores = clone(previous.scores);

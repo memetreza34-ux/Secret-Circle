@@ -401,7 +401,7 @@
       $('#quick-setup').innerHTML = '<h1>Spiel nicht verfügbar</h1><p>Dieser Wave-1-Modus ist noch nicht freigeschaltet.</p><a class="ghost-button" href="party.html">Zum Party Hub</a>';
       return;
     }
-    document.title = `Secret Circle – ${game.title}`;
+    document.title = `Rundaloo – ${game.title}`;
     $('#quick-icon').textContent = game.icon;
     $('#quick-group').textContent = `${game.group} · Labs`;
     $('#quick-title').textContent = game.title;

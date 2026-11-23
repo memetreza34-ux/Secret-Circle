@@ -51,28 +51,15 @@ Erlaubte Statuswerte bleiben `unresolved`, `verified-own` und `verified-third-pa
 
 ## 5. Aktuelles App-Iconset – Rechtebasis gelöst
 
-Das frühere ungeklärte App-Icon wurde vollständig durch ein neues Original ersetzt.
+Vier fiktive Stammfiguren aus dem eigenen Gruppenbild, illustriert mit OpenAI `image_gen` am 22. November 2026. Alle Exporte verwenden die projektseitige Nutzungsbasis des erzeugten Bildes.
 
-| Datei | Status | Nachweis |
+| Datei | Status | Export |
 |---|---|---|
-| `icon.svg` | `verified-own` | Originale geometrische SVG-Konstruktion vom 29.08.2026; keine externe Bild-/Logo-/Stock-/Fontvorlage |
-| `icon-192.png` | `verified-own` | 192×192-Ableitung aus dem aktuellen `icon.svg` |
-| `icon-512.png` | `verified-own` | 512×512-Ableitung aus dem aktuellen `icon.svg` |
+| `icon.svg` | `verified-own` | Maskierbarer Rahmen mit eingebettetem JPEG |
+| `icon-192.png` | `verified-own` | PNG für Startseite, Favicon und Home-Bildschirm |
+| `icon-512.png` | `verified-own` | PNG für PWA-Installation |
 
-Dokumente:
-
-- `ASSET_RIGHTS_SIGNOFF.md`
-- `assets/manifests/ORIGINAL_ICON_SOURCE.md`
-- `assets/manifests/ICON_RASTER_HASHES.md`
-- `assets/manifests/asset-provenance.json`
-
-Aktuelle Hashes:
-
-- `icon.svg`: `ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c`
-- `icon-192.png`: `75c0de14d6a6683f589a8bc2ca99c89e00dea69ee8c04fb51693dcb9fc6a5e5e`
-- `icon-512.png`: `1be8d9c863a2e05b96fcd64c4254126e7fcec3a9fcab25c6756d156b40e0b1ce`
-
-Die Provenienz bestätigt den Erstellungsweg und die dokumentierte kommerzielle Nutzungsbasis. Sie ist **keine Markenregistrierung oder Garantie weltweiter Einzigartigkeit**.
+Siehe [Herkunft](assets/manifests/ORIGINAL_ICON_SOURCE.md), [Prüfsummen](assets/manifests/ICON_RASTER_HASHES.md) und [Provenienzmanifest](assets/manifests/asset-provenance.json). Die Markenprüfung für Rundaloo steht aus.
 
 ## 6. Media-Inventar – historischer Stand vom 14. Oktober 2026
 

@@ -1,51 +1,75 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-20",
+  "updatedAt": "2026-11-22",
   "releasePolicy": "Every bundled visual asset must be inventoried. unresolved means the asset may remain in development but blocks final release sign-off.",
   "assets": [
     {
       "path": "icon.svg",
       "kind": "app-icon-source",
       "status": "verified-own",
-      "creator": "Secret Circle project – user-directed original geometric SVG created with OpenAI/ChatGPT assistance",
-      "source": "Root icon.svg plus assets/manifests/ORIGINAL_ICON_SOURCE.md; created 2026-08-29 without external visual/template/font/stock input",
-      "createdAt": "2026-08-29",
-      "sha256": "ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c",
-      "license": "Project-owned output rights under applicable OpenAI Terms of Use; no third-party visual asset license required",
+      "creator": "Rundaloo project – user-directed OpenAI image_gen illustration and deterministic Pillow export",
+      "source": "Vierer-Icon aus dem integrierten OpenAI image_gen. Maskierbarer SVG-Rahmen mit eingebettetem JPEG (144 × 144), violettem Vollflächenhintergrund und Motiv im sicheren Kreis.",
+      "createdAt": "2026-11-22",
+      "sha256": "e4aa6bef26227645b556a1548674295d9460aed9e451914e6865b142d09648f2",
+      "license": "Project output rights under the applicable OpenAI Terms of Use, subject to applicable law",
       "commercialUse": true,
       "attribution": null,
-      "derivedFrom": null,
-      "notes": "Replacement for the previous unresolved icon. Built only from SVG geometric primitives. Provenance does not constitute trademark registration/clearance or a uniqueness guarantee."
+      "derivedFrom": "docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp",
+      "notes": "Eigene fiktive Stammfiguren. Markenprüfung für Rundaloo offen.",
+      "sourceSha256": "405ab52277f723db0c490e7301c30bfe15a53ddfceddef86b46bc4e87fecf38c",
+      "previousReleaseAsset": {
+        "creator": "Secret Circle project – user-directed original geometric SVG created with OpenAI/ChatGPT assistance",
+        "source": "Root icon.svg plus assets/manifests/ORIGINAL_ICON_SOURCE.md; created 2026-08-29 without external visual/template/font/stock input",
+        "createdAt": "2026-08-29",
+        "sha256": "ccc23350cb82cd76ff804f36fadafa51b8b4690ce9c1f8fc2c6793c66888f83c"
+      },
+      "generationTool": "OpenAI image_gen in Codex (Modellkennung nicht ausgegeben)",
+      "referenceSha256": "14478cb4dbc2356ecf3db37d235a7c75e0fba4f7f5b5cb6eeb2083439a40d755",
+      "prompt": "Image 1 is the original Secret Circle character group and edit target, the exact visual identity reference. Recompose ALL FOUR unique adult human friends into ONE square 1:1 app launcher icon. Include exactly the four people from the reference, preserving each's recognizable original face, hair and clothing hue: Juna with dark straight bob and plum top; Leo with dark hairstyle, one blond streak and teal; Mira with brown curly puffs, freckles, warm coral red; Ben with thin round black glasses, short curls and gold yellow. Fun 3D animated feature acting, believable happy close friends genuinely reacting to a party game. Give them very large unobscured distinct faces, composition like a huddle seen from straight on ever so slightly low: Mira and Leo closest in the lower middle left and right, Juna and Ben leaned in above and behind left and right; stagger heights and leave an open little diamond between the four heads so the silhouette of each is readable. Important highest head, all eyes, hair signatures and face outlines fit inside central 80 percent diameter circular area, with ample solid background beyond, high clarity at 48 pixel icon size. Do not make a four-column banner, do not split into tiles, no table or object or phone between the faces. Focus purely on the memorable four friends. Mira in bright laughter, Leo smiles with one raised brow, Juna reacts with an amused half smile, and Ben opens up a big smile. No standard portrait posing, collaborative chemistry. One strong saturated violet circular halo behind the four, full-bleed dark ink violet square background, controlled soft rim highlights and strong warm skin contrast. Broad simplified texture, attractive original rounded animated feature character look; no child proportions, celebrities or familiar franchise characters, imperfect rendered hands absent, no branding, no words, no type, no numbers, no badges, no rounded square mask or watermark. One icon only."
     },
     {
       "path": "icon-192.png",
       "kind": "pwa-icon-raster",
       "status": "verified-own",
-      "creator": "Deterministic derivative of the verified-own replacement icon.svg",
-      "source": "icon.svg mit Chromium (Playwright) gerendert am 2026-09-09",
-      "createdAt": "2026-09-09",
-      "sha256": "b2a845833a4e24131e7a58843f8a50d80998ec03829a17c8c4eacd91b765a774",
-      "license": "Same project-owned rights basis as icon.svg",
+      "creator": "Rundaloo project – user-directed OpenAI image_gen illustration and deterministic Pillow export",
+      "source": "Vierer-Icon aus dem integrierten OpenAI image_gen. 192 × 192 PNG, Lanczos-Skalierung, 64 Farben.",
+      "createdAt": "2026-11-22",
+      "sha256": "37c9d7cc5fd1fc2af3edf086ace798856fe8005a505459e484d1fdeb249d65e3",
+      "license": "Project output rights under the applicable OpenAI Terms of Use, subject to applicable law",
       "commercialUse": true,
       "attribution": null,
-      "derivedFrom": "icon.svg",
+      "derivedFrom": "docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp",
       "dimensions": "192x192",
-      "notes": "Raster-Ableitung ohne fremdes Material. Neu erzeugt am 2026-09-09: die vorherigen Dateien hatten einen defekten IDAT-Datenstrom und liessen sich von Browsern nicht dekodieren."
+      "notes": "Eigene fiktive Stammfiguren. Markenprüfung für Rundaloo offen.",
+      "sourceSha256": "405ab52277f723db0c490e7301c30bfe15a53ddfceddef86b46bc4e87fecf38c",
+      "previousReleaseAsset": {
+        "creator": "Deterministic derivative of the verified-own replacement icon.svg",
+        "source": "icon.svg mit Chromium (Playwright) gerendert am 2026-09-09",
+        "createdAt": "2026-09-09",
+        "sha256": "b2a845833a4e24131e7a58843f8a50d80998ec03829a17c8c4eacd91b765a774"
+      }
     },
     {
       "path": "icon-512.png",
       "kind": "pwa-icon-raster",
       "status": "verified-own",
-      "creator": "Deterministic derivative of the verified-own replacement icon.svg",
-      "source": "icon.svg mit Chromium (Playwright) gerendert am 2026-09-09",
-      "createdAt": "2026-09-09",
-      "sha256": "5622c519b8f8b4711131bc05f78281eb3a9848ed4fb46c7df5eff75acac6af76",
-      "license": "Same project-owned rights basis as icon.svg",
+      "creator": "Rundaloo project – user-directed OpenAI image_gen illustration and deterministic Pillow export",
+      "source": "Vierer-Icon aus dem integrierten OpenAI image_gen. 512 × 512 PNG, Lanczos-Skalierung auf 448 × 448, mittig auf violetter Vollfläche, 48 Farben.",
+      "createdAt": "2026-11-22",
+      "sha256": "ca33b11c3d46ccddab99aeac142586654b1b86bc9aa7d3bd532f1da57415749a",
+      "license": "Project output rights under the applicable OpenAI Terms of Use, subject to applicable law",
       "commercialUse": true,
       "attribution": null,
-      "derivedFrom": "icon.svg",
+      "derivedFrom": "docs/bildwelt/stammfiguren-vorschau-2026-11-18.webp",
       "dimensions": "512x512",
-      "notes": "Raster-Ableitung ohne fremdes Material. Neu erzeugt am 2026-09-09: die vorherigen Dateien hatten einen defekten IDAT-Datenstrom und liessen sich von Browsern nicht dekodieren."
+      "notes": "Eigene fiktive Stammfiguren. Markenprüfung für Rundaloo offen.",
+      "sourceSha256": "405ab52277f723db0c490e7301c30bfe15a53ddfceddef86b46bc4e87fecf38c",
+      "previousReleaseAsset": {
+        "creator": "Deterministic derivative of the verified-own replacement icon.svg",
+        "source": "icon.svg mit Chromium (Playwright) gerendert am 2026-09-09",
+        "createdAt": "2026-09-09",
+        "sha256": "5622c519b8f8b4711131bc05f78281eb3a9848ed4fb46c7df5eff75acac6af76"
+      }
     },
     {
       "path": "docs/screenshots/v2-party-spiel-handy-375x812.webp",

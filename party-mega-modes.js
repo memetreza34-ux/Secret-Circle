@@ -594,7 +594,7 @@
   }
 
   function initialize() {
-    document.title = `Secret Circle – ${game.title}`;
+    document.title = `Rundaloo – ${game.title}`;
     $('#quick-icon').textContent = game.icon;
     $('#quick-group').textContent = game.group;
     $('#quick-title').textContent = game.title;
